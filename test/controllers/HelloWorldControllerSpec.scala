@@ -16,7 +16,8 @@ class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication {
   val env = Environment.simple()
   val configuration = Configuration.reference ++ Configuration.from(Map(
     "Test.google-analytics.token" -> "token",
-    "Test.google-analytics.host" -> "host"))
+    "Test.google-analytics.host" -> "host",
+    "appName" -> "bc-passengers-frontend"))
 
   val messageApi = new DefaultMessagesApi(env, configuration, new DefaultLangs(configuration))
   val appConfig = new AppConfig(configuration, env)

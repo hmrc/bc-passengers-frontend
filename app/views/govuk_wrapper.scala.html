@@ -47,11 +47,21 @@
 @footerTop = {}
 @footerLinks = {}
 
+@betaBanner = {
+    @uiLayouts.betaBanner(
+    userLoggedIn = false,
+    betaFeedbackUrl = appConfig.betaFeedbackUrl,
+    betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUrl,
+    showFeedbackLinkInBetaBanner = true
+    )
+}
+
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = HtmlFormat.empty,
+      betaBanner = betaBanner,
       includeGridWrapper = false,
-      serviceInfoContent = Some(serviceInfoContent))
+      serviceInfoContent = Some(serviceInfoContent),
+      includeHMRCBranding = false)
 }
 
 @mainContentHeader = {
