@@ -1,0 +1,48 @@
+@(countryForm: Form[SelectedCountryDto], countries: List[Country])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+
+@scriptElem={
+    <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
+    <script>
+        document.onreadystatechange = function () {
+            if (document.readyState == "interactive") {
+                accessibleAutocomplete.enhanceSelectElement({
+                  selectElement: document.querySelector('#country')
+                })
+            }
+        }
+    </script>
+}
+
+@linkElem={
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
+}
+
+@main_template(
+    title = messages("title.where_did_you_buy_goods"),
+    bodyClasses = None,
+    inlineScript = Some(scriptElem),
+    inlineLinkElem = Some(linkElem)) {
+
+    <h1 class="heading-xlarge">@messages("title.where_did_you_buy_goods")</h1>
+
+
+    @helper.form(action = routes.TravelDetailsController.selectCountryPost()){
+
+        @helper.CSRF.formField
+        <div class="form-group">
+
+            @helper.select(
+                field = countryForm("country"),
+                options = ("","") :: countries.map(c => (c.countryName,c.countryName)),
+                '_label -> Messages("label.enter_country")
+            )
+
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+
+    }
+}

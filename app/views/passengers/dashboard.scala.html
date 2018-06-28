@@ -1,0 +1,13 @@
+@(userData: JourneyData)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(title = messages("title.dashboard"), bodyClasses = None) {
+
+    <a id="back-button" class="link-back" href="@controllers.routes.TravelDetailsController.privateCraft()">@messages("global.back")</a>
+
+    <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
+
+    <p>Country: @userData.country</p>
+    <p>Age Confirmation: @userData.ageOver17</p>
+    <p>Private Travel: @userData.privateCraft</p>
+
+}

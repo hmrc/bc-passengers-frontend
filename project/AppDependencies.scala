@@ -10,7 +10,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % "7.17.0",
 
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-25" % "1.6.0"
+    "uk.gov.hmrc" %% "bootstrap-play-25" % "1.6.0",
+    "uk.gov.hmrc" %% "http-caching-client" % "7.1.0"
   )
 
   val test = Seq(
@@ -18,6 +19,8 @@ object AppDependencies {
     "org.scalatest" %% "scalatest" % "3.0.4" % "test,it",
     "org.pegdown" % "pegdown" % "1.4.2" % "test,it",
     "org.jsoup" % "jsoup" % "1.7.3" % "test,it",
-    "com.typesafe.play" %% "play-test" % PlayVersion.current % "test,it"
+    "com.typesafe.play" %% "play-test" % PlayVersion.current % "test,it",
+    "org.mockito" % "mockito-all" % "2.0.2-beta" % "test",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % "test"
   )
 }

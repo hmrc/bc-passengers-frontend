@@ -1,0 +1,31 @@
+@(privateCraftForm: Form[PrivateCraftDto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@main_template(title = messages("title.did_you_arrive_in_the_uk_privately"), bodyClasses = None) {
+
+    <a id="back-button" class="link-back" href="@controllers.routes.TravelDetailsController.confirmAge()">@messages("global.back")</a>
+
+    <h1 class="heading-xlarge">@messages("title.did_you_arrive_in_the_uk_privately")</h1>
+
+    @helper.form(action = routes.TravelDetailsController.privateCraftPost()){
+        @helper.CSRF.formField
+
+
+        <div class="form-group inline">
+
+            @inputRadioGroup(
+                privateCraftForm("privateCraft"),
+                Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+                '_labelClass -> "block-label inputLabelBeforeError"
+            )
+
+        </div>
+
+        <div class="form-group">
+            <button class="button" type="submit">@messages("global.continue_button")</button>
+        </div>
+    }
+
+
+}

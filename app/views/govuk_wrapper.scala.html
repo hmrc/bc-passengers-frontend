@@ -3,6 +3,7 @@
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
+  linkElem: Option[Html] = None,
   sidebar: Html = HtmlFormat.empty,
   contentHeader: Option[Html] = None,
   mainContent: Html = HtmlFormat.empty,
@@ -15,7 +16,7 @@
 
 @head = {
     @uiLayouts.head(
-      linkElem = None,
+      linkElem = linkElem,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
 }
@@ -27,10 +28,10 @@
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("bc-passengers-frontend"),
+      navTitle = Some("Passengers"),
       navTitleLink = None,
       showBetaLink = false,
-      navLinks = Some(headerNavLinks))
+      navLinks = None)
 }
 
 @afterHeader = {}
@@ -83,4 +84,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(title + " - GOV.UK"), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

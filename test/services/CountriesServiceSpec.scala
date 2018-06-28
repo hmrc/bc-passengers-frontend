@@ -1,9 +1,9 @@
 package services
 
 import models.Country
-import uk.gov.hmrc.play.test.UnitSpec
+import util.BaseSpec
 
-class CountriesServiceSpec extends UnitSpec {
+class CountriesServiceSpec extends BaseSpec {
 
   val expectedCountries = List(
     Country("Afghanistan", "AF", isEu = false, None),
@@ -13,7 +13,7 @@ class CountriesServiceSpec extends UnitSpec {
     Country("American Samoa", "AS", isEu = false, Some("USD")),
     Country("Andorra", "AD", isEu = false, Some("EUR")),
     Country("Angola", "AO", isEu = false, Some("AOA")),
-    Country("Anguilla", "AI", isEu = false, None),
+    Country("Anguilla", "AI", isEu = false, Some("XCD")),
     Country("Antarctica", "AQ", isEu = false, Some("USD")),
     Country("Antigua and Barbuda", "AG", isEu = false, Some("XCD")),
     Country("Argentina", "AR", isEu = false, Some("ARS")),
@@ -259,12 +259,23 @@ class CountriesServiceSpec extends UnitSpec {
 
   "getAllCountries" should {
 
-    val countries = CountriesService.getAllCountries
-    "return the country data as a list" in {
-      countries shouldBe a[List[_]]
-    }
+    val countriesService = app.injector.instanceOf[CountriesService] //CountriesService.getAllCountries
+
     "return the expected countries" in {
-      CountriesService.getAllCountries shouldEqual expectedCountries
+      countriesService.getAllCountries shouldEqual expectedCountries
+    }
+  }
+
+  "isInEu" should {
+
+    val countriesService = app.injector.instanceOf[CountriesService]
+
+    "return true for countries in EU" in {
+      countriesService.isInEu("Spain") shouldBe true
+    }
+
+    "return false for countries not in EU" in {
+      countriesService.isInEu("Tunisia") shouldBe false
     }
   }
 }

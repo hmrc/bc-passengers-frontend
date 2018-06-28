@@ -1,0 +1,61 @@
+@()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(title = messages("title.eu_allowances"), bodyClasses = None) {
+
+    <h1 class="heading-xlarge">@messages("title.eu_allowances")</h1>
+
+    <p>@messages("label.no_limits_on_goods")</p>
+
+    <ul class="list list-bullet">
+        <li>@messages("text.for_personal_use")</li>
+        <li>@messages("text.as_a_gift_for_someone_else")</li>
+    </ul>
+
+    <p>@messages("label.customs_officer_may_stop_you")</p>
+
+    <h4 class="heading-small">@messages("label.alcohol")</h4>
+    <table>
+        <tbody>
+            <tr>
+                <td>@messages("label.beer")</td>
+                <td class="numeric">@messages("label.110_litres")</td>
+            </tr><tr>
+                <td>@messages("label.wine")</td>
+                <td class="numeric">@messages("label.90_litres")</td>
+            </tr><tr>
+                <td>@messages("label.spirits")</td>
+                <td class="numeric">@messages("label.10_litres")</td>
+            </tr><tr>
+                <td>@messages("label.fortified_wine")</td>
+                <td class="numeric">@messages("label.20_litres")</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4 class="heading-small">@messages("label.tobacco")</h4>
+    <table>
+        <tbody>
+            <tr>
+                <td>@messages("label.cigarettes")</td>
+                <td class="numeric">@messages("label.800")</td>
+            </tr><tr>
+                <td>@messages("label.cigars")</td>
+                <td class="numeric">@messages("label.200")</td>
+            </tr><tr>
+                <td>@messages("label.cigarillos")</td>
+                <td class="numeric">@messages("label.400")</td>
+            </tr><tr>
+                <td>@messages("label.tobacco")</td>
+                <td class="numeric">@messages("label.1_kg")</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="heading-medium">@messages("label.what_happens_next")</h2>
+
+    <p>@messages("label.go_through_blue_channel")</p>
+
+    <p>
+        <a href="@controllers.routes.TravelDetailsController.start()" >@messages("label.start_again")</a>
+    </p>
+
+}

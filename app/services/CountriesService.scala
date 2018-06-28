@@ -4,7 +4,14 @@ import javax.inject.Singleton
 import models.Country
 
 
-object CountriesService {
+@Singleton
+class CountriesService {
+
+  def getAllCountries: List[Country] = countries
+
+  def isInEu(selectedCountry: String): Boolean = countries.exists(c => c.isEu && c.countryName == selectedCountry)
+
+
 
   private val countries = List(
     Country("Afghanistan", "AF", isEu = false, None),
@@ -14,7 +21,7 @@ object CountriesService {
     Country("American Samoa", "AS", isEu = false, Some("USD")),
     Country("Andorra", "AD", isEu = false, Some("EUR")),
     Country("Angola", "AO", isEu = false, Some("AOA")),
-    Country("Anguilla", "AI", isEu = false, None),
+    Country("Anguilla", "AI", isEu = false, Some("XCD")),
     Country("Antarctica", "AQ", isEu = false, Some("USD")),
     Country("Antigua and Barbuda", "AG", isEu = false, Some("XCD")),
     Country("Argentina", "AR", isEu = false, Some("ARS")),
@@ -257,8 +264,4 @@ object CountriesService {
     Country("Zambia", "ZM", isEu = false, Some("ZMW")),
     Country("Zimbabwe", "ZW", isEu = false, Some("ZWL"))
   )
-
-  def getAllCountries: List[Country] = {
-    countries
-  }
 }

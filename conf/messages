@@ -1,0 +1,45 @@
+#
+# Global
+#
+
+global.continue_button=Continue
+global.back=Back
+
+label.yes=Yes
+label.no=No
+
+#Title (Headings and Tab Titles)
+title.where_did_you_buy_goods=Where did you buy your goods?
+title.are_you_17_or_over=Are you 17 or over?
+title.did_you_arrive_in_the_uk_privately=Did you arrive in the UK by private boat or private plane?
+title.eu_allowances=Allowances for goods bought inside the European Union
+title.dashboard=Dashboard
+
+#Label (Paragraphs of text)
+label.no_limits_on_goods=There are no limits to the amount of goods you can bring into the UK from the European Union:
+label.customs_officer_may_stop_you=However, a customs officer may stop you if they think you are bringing in goods to sell. You are more likely to be stopped if you have more than the amounts shown below.
+label.what_happens_next=What happens next
+label.go_through_blue_channel=If you take goods bought in the EU into the UK you must go through the blue channel at border control.
+label.start_again=Start again
+label.alcohol=Alcohol
+label.beer=Beer
+label.wine=Wine
+label.spirits=Spirits
+label.fortified_wine=Fortified Wine
+label.tobacco=Tobacco
+label.cigarettes=Cigarettes
+label.cigars=Cigars
+label.cigarillos=Cigarillos
+label.110_litres=110 litres
+label.90_litres=90 litres
+label.10_litres=10 litres
+label.20_litres=20 litres
+label.800=800
+label.200=200
+label.400=400
+label.1_kg=1kg
+label.enter_country=Enter country
+
+#Text (Bullet points)
+text.for_personal_use=for your personal use
+text.as_a_gift_for_someone_else=as a gift for someone else
