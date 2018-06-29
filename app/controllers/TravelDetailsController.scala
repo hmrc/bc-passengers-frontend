@@ -47,12 +47,10 @@ class TravelDetailsController @Inject() (
       selectedCountryDto => {
         val euCountry = countriesService.isInEu(selectedCountryDto.country)
 
-        if (euCountry) {
-          Future.successful(Redirect(routes.TravelDetailsController.euDone()))
-        } else {
-          travelDetailsService.storeCountry( selectedCountryDto.country ) map { _ =>
-            Redirect(routes.TravelDetailsController.confirmAge())
-          }
+        travelDetailsService.storeCountry( selectedCountryDto.country ) map { _ =>
+
+          if (euCountry) Redirect(routes.TravelDetailsController.euDone())
+          else Redirect(routes.TravelDetailsController.confirmAge())
         }
       }
     )

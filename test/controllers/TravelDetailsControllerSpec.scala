@@ -75,7 +75,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to /passengers/eu_done when user selects country in EU" in {
 
-
+      when(controller.travelDetailsService.storeCountry(meq("Spain"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/country-of-purchase").withFormUrlEncodedBody("country" -> "Spain")).get
 
@@ -83,7 +83,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/bc-passengers-frontend/eu-done")
 
 
-      verify(controller.travelDetailsService, times(0)).storeCountry(any())(any())
+      verify(controller.travelDetailsService, times(1)).storeCountry(meq("Spain"))(any())
     }
 
     "redirect to /passengers/confirm_age when user selects country outside EU" in {
