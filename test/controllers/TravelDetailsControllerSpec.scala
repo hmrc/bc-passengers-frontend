@@ -11,6 +11,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import services.TravelDetailsService
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
 import util.{BaseSpec, FakeCookieCryptoFilter}
 
@@ -86,6 +87,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "redirect to /passengers/confirm_age when user selects country outside EU" in {
+
+      when(controller.travelDetailsService.storeCountry(meq("Afghanistan"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/country-of-purchase").withFormUrlEncodedBody("country" -> "Afghanistan")).get
 
@@ -163,6 +166,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to /passengers/private_travel" in {
 
+      when(controller.travelDetailsService.storeAgeOver17(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
@@ -232,6 +237,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "Invoking privateCraftPost" should {
 
     "redirect to /passengers/dashboard" in {
+
+      when(controller.travelDetailsService.storePrivateCraft(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
 

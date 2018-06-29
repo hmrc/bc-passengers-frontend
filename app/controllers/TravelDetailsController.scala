@@ -50,8 +50,9 @@ class TravelDetailsController @Inject() (
         if (euCountry) {
           Future.successful(Redirect(routes.TravelDetailsController.euDone()))
         } else {
-          travelDetailsService.storeCountry( selectedCountryDto.country )
-          Future.successful(Redirect(routes.TravelDetailsController.confirmAge()))
+          travelDetailsService.storeCountry( selectedCountryDto.country ) map { _ =>
+            Redirect(routes.TravelDetailsController.confirmAge())
+          }
         }
       }
     )
@@ -76,8 +77,9 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(views.html.passengers.confirm_age(formWithErrors)))
       },
       ageOver17Dto => {
-        travelDetailsService.storeAgeOver17( ageOver17Dto.ageOver17 )
-        Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
+        travelDetailsService.storeAgeOver17( ageOver17Dto.ageOver17 ) map { _ =>
+          Redirect(routes.TravelDetailsController.privateCraft())
+        }
       }
     )
   }
@@ -101,8 +103,9 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(views.html.passengers.confirm_private_craft(formWithErrors)))
       },
       privateCraftDto => {
-        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft )
-        Future.successful(Redirect(routes.TravelDetailsController.productDashboard()))
+        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) map { _ =>
+          Redirect(routes.TravelDetailsController.productDashboard())
+        }
       }
     )
   }
