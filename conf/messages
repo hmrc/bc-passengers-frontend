@@ -13,7 +13,7 @@ title.where_did_you_buy_goods=Where did you buy your goods?
 title.are_you_17_or_over=Are you 17 or over?
 title.did_you_arrive_in_the_uk_privately=Did you arrive in the UK by private boat or private plane?
 title.eu_allowances=Allowances for goods bought inside the European Union
-title.dashboard=Dashboard
+title.dashboard=Tell us about your purchases
 title.check_allowances_and_estimate_duties=Check allowances and estimate duties to bring goods into the UK
 
 #Label (Paragraphs of text)
@@ -49,3 +49,32 @@ text.for_personal_use=for your personal use
 text.as_a_gift_for_someone_else=as a gift for someone else
 text.check_if_you_need_to_declare=check if you need to declare your goods
 text.estimate_how_much_tax=estimate how much tax or customs duty you may owe
+
+#Buttons
+
+button.add = Add
+
+#Dashboard Page
+dashboard.your_travel_information = Your travel details
+dashboard.country_of_purchase = Country of purchase
+dashboard.17_or_over = 17 or over
+dashboard.private_travel = Private travel
+dashboard.product_heading.tobacco = Tobacco
+dashboard.product_heading.alcohol = Alcohol
+dashboard.product_heading.other-goods = Other goods
+dashboard.no_products_added.tobacco = No tobacco added
+dashboard.no_products_added.alcohol = No alcohol added
+dashboard.no_products_added.other-goods = No other goods added
+
+#Select Products Page
+
+select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
+select_products.heading.tobacco = What type of tobacco are you bringing into the UK?
+select_products.heading.other-goods = What items are you bringing into the UK?
+select_products.heading.other-goods.carpets-cotton-fabric = What carpets, cotton and fabrics are you bringing into the UK?
+select_products.heading.other-goods.clothing = What clothing and footwear are you bringing into the UK?
+select_products.heading.other-goods.disability-mobility = What disability equipment and mobility aids are you bringing into the UK?
+select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
+select_products.heading.other-goods.metals-wood = What metal and wood products are you bringing into the UK?
+select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
+select_products.form.p = Select all that apply

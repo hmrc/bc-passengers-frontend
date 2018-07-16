@@ -1,0 +1,16 @@
+@import uk.gov.hmrc.play.views.html._
+
+@(productName: String, templateID: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(title = messages("alcohol.heading"), bodyClasses = None) {
+
+  <h1>@productName</h1>
+
+  <p>Template ID: @templateID</p>
+
+  @helper.form(action = routes.ProductSelectController.nextStep()){
+    @helper.CSRF.formField
+    <button type="submit">Next Step</button>
+  }
+
+}

@@ -52,16 +52,16 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeCountry("Egypt"))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Egypt"), None, None)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Egypt"), None, None, None)) )(any())
     }
 
     "store the country in keystore, clearing subsequent journey data when journey data exists" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(true), Some(false)) )
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(true), Some(false), None) )
 
       await(travelDetailsService.storeCountry("Egypt"))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Egypt"), None, None)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Egypt"), None, None, None)) )(any())
     }
   }
 
@@ -73,16 +73,16 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeAgeOver17(true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, Some(true), None)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, Some(true), None, None)) )(any())
     }
 
     "store age confirmation in keystore, clearing subsequent journey data when journey data exists" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false)) )
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), None) )
 
       await(travelDetailsService.storeAgeOver17(true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(true), None)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(true), None, None)) )(any())
     }
   }
 
@@ -94,7 +94,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storePrivateCraft(false))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, Some(false))) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, Some(false), None)) )(any())
     }
 
     "store private craft setting in keystore when journey data does exist there currently" in new LocalSetup {
@@ -103,9 +103,59 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storePrivateCraft(true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(true))) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(true), None)) )(any())
     }
   }
+
+  "Calling addSelectedProducts" should {
+
+    "add selected products in keystore when no journey data there currently" in new LocalSetup {
+
+      override val journeyDataInCache = None
+
+      val selectedProducts = List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))
+
+      await(travelDetailsService.addSelectedProducts(selectedProducts))
+
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
+    }
+
+    "add selected products setting in keystore when journey data does exist there currently" in new LocalSetup {
+
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), None) )
+
+      val selectedProducts = List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))
+
+      await(travelDetailsService.addSelectedProducts(selectedProducts))
+
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
+    }
+
+    "when products already exist store selected products at the start of a combined list in keystore" in new LocalSetup {
+
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) ))
+
+      val selectedProducts = List(List("alcohol", "beer"))
+
+      await(travelDetailsService.addSelectedProducts(selectedProducts))
+
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("alcohol", "beer"), List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
+    }
+
+  }
+
+  "Calling removeSelectedProduct" should {
+
+    "remove the first selected product and update keystore" in new LocalSetup {
+
+      override val journeyDataInCache = Some(JourneyData(None, None, None, Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars")))))
+
+      await(travelDetailsService.removeSelectedProduct())
+
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, Some(List(List("tobacco", "cigars"))) )) )(any())
+    }
+  }
+
 
   "Calling fetchAndGetJourneyData" should {
 

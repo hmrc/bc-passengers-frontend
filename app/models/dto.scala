@@ -2,6 +2,7 @@ package models
 
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
 
 object SelectedCountryDto {
@@ -30,3 +31,18 @@ object PrivateCraftDto {
   )
 }
 case class PrivateCraftDto(privateCraft: Boolean)
+
+
+object SelectProductsDto {
+
+  def nonEmptyList[T]: Constraint[List[T]] = Constraint[List[T]]("constraint.required") { list =>
+    if (list.nonEmpty) Valid else Invalid(ValidationError("error.required"))
+  }
+
+  val form: Form[SelectProductsDto] = Form(
+    mapping(
+      "tokens" -> list(nonEmptyText).verifying(nonEmptyList)
+    )(SelectProductsDto.apply)(SelectProductsDto.unapply)
+  )
+}
+case class SelectProductsDto(tokens: List[String])

@@ -4,13 +4,14 @@ object ProductsService {
 
   sealed trait Node {
     val name: String
+    val token: String
   }
 
-  case class Branch(name: String, children: List[Node]) extends Node {
+  case class Branch(token: String, name: String, children: List[Node]) extends Node {
 
 
-    def getDescendant(path: List[String]): Option[Node] = {
-      val child = children.find(_.name==path.head)
+    def getDescendant(path: Seq[String]): Option[Node] = {
+      val child = children.find(_.token==path.head)
 
       child match {
         case None => None
@@ -23,84 +24,83 @@ object ProductsService {
     }
   }
 
-  case class Leaf(name: String, rateID: String, templateID: String) extends Node
+  case class Leaf(token: String, name: String, rateID: String, templateID: String) extends Node
 
   private val productTree =
-    Branch("Root",
+    Branch("root", "Root",
       List(
-        Branch(
-          "Tobacco", List(
-            Leaf("Cigarettes", "TOB/A1/CIGRT", "cigarettes"),
-            Leaf("Rolling Tobacco", "TOB/A1/HAND", "tobacco"),
-            Leaf("Chewing or Pipe Tobacco", "TOB/A1/OTHER", "tobacco"),
-            Leaf("Cigars", "TOB/A1/CIGAR", "cigars"),
-            Leaf("Cigarillos", "TOB/A1/CRILO", "tobacco")
-          )
-        ),
-        Branch(
+        Branch("alcohol",
           "Alcohol", List(
-            Leaf("Cider", "ALC/A1/CIDER", "alcohol"),
-            Leaf("Spirits", "ALC/A1/O22", "alcohol"),
-            Leaf("Beer", "ALC/A2/BEER", "alcohol"),
-            Leaf("Wine","ALC/A3/WINE","alcohol"),
-            Leaf("Sparkling or fortified wine and other alcoholic drinks" +
-              "up to 22% alcohol by volume", "ALC/A1/U22", "alcohol")
+            Leaf("beer", "Beer", "ALC/A2/BEER", "alcohol"),
+            Leaf("cider", "Cider", "ALC/A1/CIDER", "alcohol"),
+            Leaf("other", "Sparkling or fortified wine and other alcoholic drinks up to 22% alcohol by volume", "ALC/A1/U22", "alcohol"),
+            Leaf("spirits", "Spirits", "ALC/A1/O22", "alcohol"),
+            Leaf("wine", "Wine","ALC/A3/WINE","alcohol")
           )
         ),
-        Branch(
+        Branch("tobacco",
+          "Tobacco", List(
+            Leaf("cigarettes", "Cigarettes", "TOB/A1/CIGRT", "cigarettes"),
+            Leaf("cigars", "Cigars", "TOB/A1/CIGAR", "cigars"),
+            Leaf("cigarillos", "Cigarillos", "TOB/A1/CRILO", "tobacco"),
+            Leaf("rolling", "Rolling tobacco", "TOB/A1/HAND", "tobacco"),
+            Leaf("chewing", "Chewing or pipe tobacco", "TOB/A1/OTHER", "tobacco")
+          )
+        ),
+        Branch("other-goods",
           "Other Goods", List(
-            Leaf("Antiques and works of Art", "OGD/ART", "other-goods"),
-            Leaf("Books and publications", "OGD/BKS/MISC", "other-goods"),
-            Branch(
+            Leaf("antiques", "Antiques and works of art", "OGD/ART", "other-goods"),
+            Leaf("books", "Books and publications", "OGD/BKS/MISC", "other-goods"),
+            Branch("carpets-cotton-fabric",
               "Carpets, cotton and fabrics", List(
-                Leaf("Carpets", "OGD/CRPT", "other-goods"),
-                Leaf("Cotton", "OGD/CLTHS/ADULT", "other-goods"),
-                Leaf("Fabrics", "OGD/FBRIC", "other-goods")
+                Leaf("carpets", "Carpets", "OGD/CRPT", "other-goods"),
+                Leaf("cotton", "Cotton", "OGD/CLTHS/ADULT", "other-goods"),
+                Leaf("fabrics", "Fabrics", "OGD/FBRIC", "other-goods")
               )
             ),
-            Leaf("Children's car seats", "OGD/MOB/MISC", "other-goods"),
-            Branch(
+            Leaf("car-seats", "Children's car seats", "OGD/MOB/MISC", "other-goods"),
+            Branch("clothing",
               "Clothing and footwear", List(
-                Leaf("Children's clothing", "OGD/CLTHS/CHILD", "other-goods"),
-                Leaf("Footwear", "OGD/FOOTW", "other-goods"),
-                Leaf("All other clothing", "OGD/CLTHS/ADULT", "other-goods")
+                Leaf("childrens", "Children's clothing", "OGD/CLTHS/CHILD", "other-goods"),
+                Leaf("footwear", "Footwear", "OGD/FOOTW", "other-goods"),
+                Leaf("other", "All other clothing", "OGD/CLTHS/ADULT", "other-goods")
 
               )
             ),
-            Branch(
+            Branch("disability-mobility",
               "Disability equipment and mobility aids", List(
-                Leaf("Disability equipment", "OGD/BKS/MISC", "other-goods"),
-                Leaf("Mobility aids", "OGD/MOB/MISC", "other-goods")
+                Leaf("disability", "Disability equipment", "OGD/BKS/MISC", "other-goods"),
+                Leaf("mobility", "Mobility aids", "OGD/MOB/MISC", "other-goods")
               )
             ),
-            Branch(
+            Branch("electronic-devices",
               "Electronic devices", List(
-                Leaf("Televisions", "OGD/DIGI/TV", "other-goods"),
-                Leaf("All other electronic devices", "OGD/DIGI/MISC", "other-goods")
+                Leaf("televisions", "Televisions", "OGD/DIGI/TV", "other-goods"),
+                Leaf("other", "All other electronic devices", "OGD/DIGI/MISC", "other-goods")
               )
             ),
-            Leaf("Furniture", "ODG/ORN/MISC", "other-goods"),
-            Leaf("Games and sport equipment", "OGD/SPORT", "other-goods"),
-            Branch(
+            Leaf("furniture", "Furniture", "ODG/ORN/MISC", "other-goods"),
+            Leaf("games-sports", "Games and sport equipment", "OGD/SPORT", "other-goods"),
+            Branch("glassware-ornaments",
               "Glassware and ornaments", List(
-                Leaf("Glassware", "OGD/GLASS", "other-goods"),
-                Leaf("Ornaments", "OGD/ORN/MISC", "other-goods")
+                Leaf("glassware", "Glassware", "OGD/GLASS", "other-goods"),
+                Leaf("ornaments", "Ornaments", "OGD/ORN/MISC", "other-goods")
               )
             ),
-            Leaf("Jewellery","OGD/DIGI/MISC","other-goods"),
-            Branch(
+            Leaf("jewellery", "Jewellery","OGD/DIGI/MISC","other-goods"),
+            Branch("metals-wood",
               "Metals and wood products", List(
-                Leaf("Metals", "OGD/ORN/MISC", "other-goods"),
-                Leaf("Wood products", "OGD/ORN/MISC", "other-goods")
+                Leaf("metals", "Metals", "OGD/ORN/MISC", "other-goods"),
+                Leaf("wood", "Wood products", "OGD/ORN/MISC", "other-goods")
               )
             ),
-            Leaf("Perfumes and cosmetics", "OGD/COSMT", "other-goods"),
-            Leaf("Protective helmets", "OGD/BKS/MISC", "other-goods"),
-            Leaf("Sanitary products", "OGD/MOB/MISC", "other-goods"),
-            Leaf("Stop smoking products", "OGD/MOB/MISC", "other-goods"),
-            Leaf("Tableware", "OGD/TABLE", "other-goods"),
-            Leaf("Watches and clocks", "OGD/ORN/MISC", "other-goods"),
-            Leaf("Anything else", "OGD/OTHER", "other-goods")
+            Leaf("perfumes-cosmetics", "Perfumes and cosmetics", "OGD/COSMT", "other-goods"),
+            Leaf("protective-helmets", "Protective helmets", "OGD/BKS/MISC", "other-goods"),
+            Leaf("sanitary-products", "Sanitary products", "OGD/MOB/MISC", "other-goods"),
+            Leaf("stop-smoking", "Stop smoking products", "OGD/MOB/MISC", "other-goods"),
+            Leaf("tablewear", "Tableware", "OGD/TABLE", "other-goods"),
+            Leaf("watches-clocks", "Watches and clocks", "OGD/ORN/MISC", "other-goods"),
+            Leaf("other", "Anything else", "OGD/OTHER", "other-goods")
           )
         )
       )
@@ -109,4 +109,5 @@ object ProductsService {
   def getProducts: Branch = {
     productTree
   }
+
 }

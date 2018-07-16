@@ -1,3 +1,7 @@
 input[type="text"].autocomplete__input {
     width: 100%;
 }
+
+table .title {
+  font-weight: bold;
+}

@@ -22,4 +22,5 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
 
 
   lazy val betaFeedbackUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$contactFormServiceIdentifier"
+
 }
