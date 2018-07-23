@@ -33,6 +33,21 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   val controller = app.injector.instanceOf[TravelDetailsController]
 
+  "Invoking checkDeclareGoodsStartPage" should {
+
+    "return the check declare goods start page" in {
+
+      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/check-declare-goods-start-page")).get
+
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe("Check allowances and estimate duties to bring goods into the UK")
+    }
+  }
+
 
   "Invoking selectCountry" should {
 
