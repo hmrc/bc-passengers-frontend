@@ -22,10 +22,11 @@ class TravelDetailsController @Inject() (
   implicit val appConfig: AppConfig
 ) extends FrontendController with I18nSupport with PublicActions {
 
-  val start = Action.async { implicit request =>
-    Future.successful {
-      Redirect(routes.TravelDetailsController.selectCountry()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
-    }
+
+  val checkDeclareGoodsStartPage = Action.async { implicit request =>
+    Future.successful(
+      Ok(views.html.passengers.check_declare_goods_start_page()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
+    )
   }
 
 

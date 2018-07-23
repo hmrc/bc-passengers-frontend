@@ -1,13 +1,13 @@
 # microservice specific routes
 
-GET        /start                   controllers.TravelDetailsController.start
-GET        /country-of-purchase     controllers.TravelDetailsController.selectCountry
-POST       /country-of-purchase     controllers.TravelDetailsController.selectCountryPost
-GET        /confirm-age             controllers.TravelDetailsController.confirmAge
-POST       /confirm-age             controllers.TravelDetailsController.confirmAgePost
-GET        /private-travel          controllers.TravelDetailsController.privateCraft
-POST       /private-travel          controllers.TravelDetailsController.privateCraftPost
-GET        /dashboard               controllers.TravelDetailsController.productDashboard
-GET        /eu-done                 controllers.TravelDetailsController.euDone
+GET        /check-declare-goods-start-page  controllers.TravelDetailsController.checkDeclareGoodsStartPage
+POST       /country-of-purchase             controllers.TravelDetailsController.selectCountryPost
+GET        /country-of-purchase             controllers.TravelDetailsController.selectCountry
+GET        /confirm-age                     controllers.TravelDetailsController.confirmAge
+POST       /confirm-age                     controllers.TravelDetailsController.confirmAgePost
+GET        /private-travel                  controllers.TravelDetailsController.privateCraft
+POST       /private-travel                  controllers.TravelDetailsController.privateCraftPost
+GET        /dashboard                       controllers.TravelDetailsController.productDashboard
+GET        /eu-done                         controllers.TravelDetailsController.euDone
 
-GET        /assets/*file            controllers.Assets.at(path="/public", file)
+GET        /assets/*file                    controllers.Assets.at(path="/public", file)
