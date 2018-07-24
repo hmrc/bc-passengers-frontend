@@ -1,0 +1,33 @@
+@import services.ProductsService._
+@import uk.gov.hmrc.play.views.html._
+
+@(selectProductsForm: Form[SelectProductsDto], checkboxes: List[(String, String)], path: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(title = messages(s"select_products.heading.$path"), bodyClasses = None) {
+
+    <h1 class="heading-xlarge">@messages(s"select_products.heading.${path.replace('/','.')}")</h1>
+
+
+    @helper.form(action = routes.ProductSelectController.processSelectedProducts(path)){
+
+        @helper.CSRF.formField
+
+        <div class="form-group">
+
+            <p>@messages("select_products.form.p")</p>
+
+            @components.input_check_box(
+                selectProductsForm("tokens"),
+                legend = messages(s"select_products.heading.$path"),
+                legendClass = Some("visually-hidden"),
+                inputs = checkboxes
+            )
+
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+
+    }
+}

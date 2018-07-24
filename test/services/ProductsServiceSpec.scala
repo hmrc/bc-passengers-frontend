@@ -8,26 +8,26 @@ import uk.gov.hmrc.play.test.UnitSpec
 class ProductsServiceSpec extends UnitSpec with Matchers {
 
   val tree =
-    Branch("NestedTree",
+    Branch("root", "NestedTree",
       List(
-        Branch(
+        Branch("cat1",
           "Category1",
           List(
-            Leaf("someName","someRateID","someTemplateID")
+            Leaf("leaf1", "someName","someRateID","someTemplateID")
           )
         ),
-        Branch(
+        Branch("cat2",
           "Category2",
           List(
-            Leaf("someName","someRateID","someTemplateID"),
-            Branch(
+            Leaf("leaf2", "someName","someRateID","someTemplateID"),
+            Branch("subcat1",
               "SubCategory1",
-              List(Leaf("someName","someRateID","someTemplateID"),
-                Leaf("someOtherName","someOtherRateID","someOtherTemplateID"))
+              List(Leaf("leaf3", "someName","someRateID","someTemplateID"),
+                Leaf("leaf4", "someOtherName","someOtherRateID","someOtherTemplateID"))
             ),
-            Branch(
+            Branch("subcat2",
               "SubCategory2",
-              List(Leaf("someName","someRateID","someTemplateID"))
+              List(Leaf("leaf5", "someName","someRateID","someTemplateID"))
             )
           )
         )
@@ -38,13 +38,13 @@ class ProductsServiceSpec extends UnitSpec with Matchers {
 
     "Return a node from the product tree with a valid path" in {
 
-      tree.getDescendant(List("Category1", "someName")) shouldBe Some(Leaf("someName", "someRateID", "someTemplateID"))
+      tree.getDescendant(List("cat1", "leaf1")) shouldBe Some(Leaf("leaf1","someName", "someRateID", "someTemplateID"))
 
-      tree.getDescendant(List("Category1", "someName", "Not Used")) shouldBe Some(Leaf("someName", "someRateID", "someTemplateID"))
+      tree.getDescendant(List("cat1", "leaf1", "Not Used")) shouldBe Some(Leaf("leaf1", "someName", "someRateID", "someTemplateID"))
 
-      tree.getDescendant(List("Category1")) shouldBe Some(Branch("Category1", List(Leaf("someName", "someRateID", "someTemplateID"))))
+      tree.getDescendant(List("cat1")) shouldBe Some(Branch("cat1", "Category1", List(Leaf("leaf1", "someName", "someRateID", "someTemplateID"))))
 
-      tree.getDescendant(List("Category2", "SubCategory1", "someName")) shouldBe Some(Leaf("someName", "someRateID", "someTemplateID"))
+      tree.getDescendant(List("cat2", "subcat2", "leaf5")) shouldBe Some(Leaf("leaf5", "someName", "someRateID", "someTemplateID"))
     }
 
     "Return None if the head of the path is invalid" in {

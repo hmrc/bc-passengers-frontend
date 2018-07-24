@@ -10,4 +10,10 @@ POST       /private-travel                  controllers.TravelDetailsController.
 GET        /dashboard                       controllers.TravelDetailsController.productDashboard
 GET        /eu-done                         controllers.TravelDetailsController.euDone
 
-GET        /assets/*file                    controllers.Assets.at(path="/public", file)
+GET        /products/*path          controllers.ProductSelectController.selectProducts(path: String)
+POST       /products/*path          controllers.ProductSelectController.processSelectedProducts(path: String)
+
+GET        /next-step               controllers.ProductSelectController.nextStep()
+
+
+GET        /assets/*file            controllers.Assets.at(path="/public", file)
