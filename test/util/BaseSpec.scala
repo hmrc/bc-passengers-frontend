@@ -9,6 +9,8 @@ import play.filters.csrf.{CSRFConfigProvider, CSRFFilter}
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
+import scala.reflect.ClassTag
+
 
 trait BaseSpec extends WordSpecLike with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
@@ -24,8 +26,11 @@ trait BaseSpec extends WordSpecLike with Matchers with GuiceOneAppPerSuite with 
       Token.RequestTag      -> token
     )).withHeaders((csrfConfig.headerName, token)).withSession(SessionKeys.sessionId -> "fakesessionid")
 
-
   }
+
+  def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
+  def injected[T](implicit evidence: ClassTag[T]) = app.injector.instanceOf[T]
+
 
   def EnhancedFakeRequest(method: String, uri: String)(implicit app: Application) = addToken(FakeRequest(method, uri))
 }

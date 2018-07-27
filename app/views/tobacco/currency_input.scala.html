@@ -1,0 +1,55 @@
+@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, currencies: List[Currency], description: String, path: ProductPath, index: Int)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+@import play.api.mvc.Call
+@import models.{Currency, CurrencyDto}
+
+@scriptElem = {
+    <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
+    <script>
+        document.onreadystatechange = function () {
+            if (document.readyState == "interactive") {
+                accessibleAutocomplete.enhanceSelectElement({
+                  selectElement: document.querySelector('#currency')
+                })
+            }
+        }
+    </script>
+}
+
+@linkElem = {
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
+}
+
+@main_template(title = "Currency Input View", inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
+
+    @helpers.form(action = routes.TobaccoInputController.processCurrencyInput(path, index)){
+    <fieldset>
+        <legend>
+            <h1 class="heading-xlarge">@messages("tobacco.currency_input.heading", description)</h1>
+        </legend>
+        <div class="form-group">
+            @helper.select(
+                field = currencyForm("currency"),
+                options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
+                '_label -> messages("currency_input.form.label"),
+                '_labelTextClass -> "form-label",
+                '_inputClass -> "form-control"
+            )
+        </div>
+
+        <details class="form-group">
+            <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
+            <div class="panel panel-border-narrow">
+                <p>@messages("hidden_text.you_cant_use_service")</p>
+            </div>
+        </details>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+
+    </fieldset>
+    }
+
+}

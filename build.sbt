@@ -34,7 +34,8 @@ lazy val microservice = Project(appName, file("."))
     unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
     testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false
+    parallelExecution in IntegrationTest := false,
+    routesImport ++= Seq("binders.Binders._", "models._")
   )
   .settings(
     resolvers ++= Seq(

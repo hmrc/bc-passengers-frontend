@@ -1,8 +1,7 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-
-import models.JourneyData
+import models.{PurchasedProductInstance, JourneyData, PurchasedProduct}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -10,9 +9,7 @@ import scala.concurrent.Future
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 
-
-@Singleton
-class TravelDetailsService @Inject() ( val localSessionCache: LocalSessionCache) {
+class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) extends UsesJourneyData {
 
   def storeCountry(country: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
@@ -44,31 +41,18 @@ class TravelDetailsService @Inject() ( val localSessionCache: LocalSessionCache)
     }
   }
 
-  def addSelectedProducts(selectedProducts: List[List[String]])(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
-      localSessionCache.fetchAndGetJourneyData flatMap {
-        case Some(journeyData) => {
-          journeyData.selectedProducts match {
-            case Some(products) => localSessionCache.cacheJourneyData(journeyData.copy(selectedProducts = Some(selectedProducts ::: products)))
-            case None => localSessionCache.cacheJourneyData(journeyData.copy(selectedProducts = Some(selectedProducts)))
-          }
-        }
-        case None => localSessionCache.cacheJourneyData(JourneyData(selectedProducts = Some(selectedProducts)))
-      }
-  }
-
-  def removeSelectedProduct()(implicit hc: HeaderCarrier): Future[CacheMap] = {
-
+  def storeProductDetails(productDetailsToStore: PurchasedProduct)(implicit hc: HeaderCarrier): Future[CacheMap] = {
     localSessionCache.fetchAndGetJourneyData flatMap {
-      case Some(journeyData) => {
-        journeyData.selectedProducts match {
-          case Some(products) => localSessionCache.cacheJourneyData(journeyData.copy(selectedProducts = Some(products.tail)))
-          case None => localSessionCache.cacheJourneyData(journeyData.copy(selectedProducts = None))
+      case Some(journeyData) =>
+        journeyData.purchasedProducts match {
+          case Some(storedProductDetails) =>
+            localSessionCache.cacheJourneyData(journeyData.copy(purchasedProducts = Some(productDetailsToStore :: storedProductDetails)))
+          case None =>
+            localSessionCache.cacheJourneyData(journeyData.copy(purchasedProducts = Some(List(productDetailsToStore))))
         }
-      }
-      case None => localSessionCache.cacheJourneyData(JourneyData())
+
+      case None => localSessionCache.cacheJourneyData(JourneyData(purchasedProducts = Some(List(productDetailsToStore))))
     }
   }
-
-  def getUserInputData(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = localSessionCache.fetchAndGetJourneyData
 }

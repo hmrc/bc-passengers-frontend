@@ -1,0 +1,34 @@
+@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, index: Int, volume: BigDecimal, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@title = {
+    @messages("alcohol.cost_input.heading", volume, product.name.toLowerCase())
+}
+
+@main_template(title = title.toString) {
+
+
+    @helpers.form(action = routes.AlcoholInputController.processCostInput(path, index)) {
+
+        <fieldset>
+            <legend>
+                <h1 class="heading-xlarge">@title.toString</h1>
+            </legend>
+
+            <div class="form-group">
+                @helpers.input(
+                    costForm("cost"),
+                    '_label -> messages("cost_input.form.label", currency),
+                    '_labelTextClass -> "form-label",
+                    '_inputClass -> "form-control-1-8"
+                )
+            </div>
+
+            <div class="form-group">
+                <input type="submit" class="button" value="Continue">
+            </div>
+        </fieldset>
+    }
+
+}

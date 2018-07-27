@@ -1,0 +1,30 @@
+@(quantityForm: Form[QuantityDto], token: String, productName: String, path: ProductPath)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("other-goods.quantity_input.heading", productName.toLowerCase()), bodyClasses = None) {
+
+
+  @helpers.form(action = routes.OtherGoodsInputController.processQuantityInput(path)) {
+
+    <h1>
+        <label for="quantity" class="heading-xlarge">@messages("other-goods.quantity_input.heading", productName.toLowerCase())</label>
+    </h1>
+
+    <div class="panel panel-border-wide" id="panel">
+        <p>@messages("other-goods.quantity_input.panel.1")</p>
+        <p>@messages("other-goods.quantity_input.panel.2")</p>
+    </div>
+
+    <div class="form-group">
+        @helpers.input(
+            quantityForm("quantity"),
+            '_inputClass -> "form-control-1-8"
+        )
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Continue">
+    </div>
+  }
+}

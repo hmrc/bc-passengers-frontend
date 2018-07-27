@@ -1,7 +1,5 @@
 package services
 
-
-
 import models.JourneyData
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -15,9 +13,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-
 class TravelDetailsServiceSpec extends BaseSpec {
-
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
@@ -107,54 +103,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
     }
   }
 
-  "Calling addSelectedProducts" should {
 
-    "add selected products in keystore when no journey data there currently" in new LocalSetup {
-
-      override val journeyDataInCache = None
-
-      val selectedProducts = List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))
-
-      await(travelDetailsService.addSelectedProducts(selectedProducts))
-
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
-    }
-
-    "add selected products setting in keystore when journey data does exist there currently" in new LocalSetup {
-
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), None) )
-
-      val selectedProducts = List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))
-
-      await(travelDetailsService.addSelectedProducts(selectedProducts))
-
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
-    }
-
-    "when products already exist store selected products at the start of a combined list in keystore" in new LocalSetup {
-
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) ))
-
-      val selectedProducts = List(List("alcohol", "beer"))
-
-      await(travelDetailsService.addSelectedProducts(selectedProducts))
-
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("alcohol", "beer"), List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
-    }
-
-  }
-
-  "Calling removeSelectedProduct" should {
-
-    "remove the first selected product and update keystore" in new LocalSetup {
-
-      override val journeyDataInCache = Some(JourneyData(None, None, None, Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars")))))
-
-      await(travelDetailsService.removeSelectedProduct())
-
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, Some(List(List("tobacco", "cigars"))) )) )(any())
-    }
-  }
 
 
   "Calling fetchAndGetJourneyData" should {
@@ -163,7 +112,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       override val journeyDataInCache = None
 
-      await(travelDetailsService.getUserInputData)
+      await(travelDetailsService.getJourneyData)
 
       verify(localSessionCacheMock, times(1)).fetchAndGetJourneyData(any())
     }

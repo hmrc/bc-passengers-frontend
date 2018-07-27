@@ -2,13 +2,13 @@ package controllers
 
 import java.util.UUID
 
-import javax.inject.{Inject, Singleton}
 import config.AppConfig
+import javax.inject.{Inject, Singleton}
+import models.PrivateCraftDto._
 import models.{SelectedCountryDto, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Action
-import services.ProductsService.Branch
-import services.{CountriesService, ProductsService, TravelDetailsService}
+import play.api.mvc.{Action, AnyContent}
+import services.{CountriesService, ProductTreeService, TravelDetailsService}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -20,27 +20,26 @@ class TravelDetailsController @Inject() (
   val countriesService: CountriesService,
   val travelDetailsService: TravelDetailsService,
   val messagesApi: MessagesApi,
-  implicit val appConfig: AppConfig
-) extends FrontendController with I18nSupport with PublicActions {
+  val productsService: ProductTreeService
+)(implicit val appConfig: AppConfig) extends FrontendController with I18nSupport with PublicActions {
 
-
-  val checkDeclareGoodsStartPage = Action.async { implicit request =>
+  val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(
       Ok(views.html.passengers.check_declare_goods_start_page()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
     )
   }
 
 
-  val selectCountry = PublicAction { implicit request =>
-    travelDetailsService.getUserInputData map {
-      case Some(JourneyData(Some(country), _, _, _)) =>
+  val selectCountry: Action[AnyContent] = PublicAction { implicit request =>
+    travelDetailsService.getJourneyData map {
+      case Some(JourneyData(Some(country), _, _, _, _)) =>
         Ok(views.html.passengers.country_of_purchase(SelectedCountryDto.form.bind(Map("country" -> country)), countriesService.getAllCountries))
       case _ =>
         Ok(views.html.passengers.country_of_purchase(SelectedCountryDto.form, countriesService.getAllCountries))
     }
   }
 
-  val selectCountryPost = PublicAction { implicit request =>
+  val selectCountryPost: Action[AnyContent] = PublicAction { implicit request =>
 
     SelectedCountryDto.form.bindFromRequest.fold(
       formWithErrors => {
@@ -51,26 +50,26 @@ class TravelDetailsController @Inject() (
 
         travelDetailsService.storeCountry( selectedCountryDto.country ) map { _ =>
 
-          if (euCountry) Redirect(routes.TravelDetailsController.euDone())
-          else Redirect(routes.TravelDetailsController.confirmAge())
+          if (euCountry) {
+            Redirect(routes.TravelDetailsController.euDone())
+          } else {
+            Redirect(routes.TravelDetailsController.confirmAge())
+          }
         }
       }
     )
   }
 
-
-
-
-  val confirmAge = PublicAction { implicit request =>
-    travelDetailsService.getUserInputData map {
-      case Some(JourneyData(_, Some(ageOver17), _, _)) =>
+  val confirmAge: Action[AnyContent] = PublicAction { implicit request =>
+    travelDetailsService.getJourneyData map {
+      case Some(JourneyData(_, Some(ageOver17), _, _, _)) =>
         Ok(views.html.passengers.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
         Ok(views.html.passengers.confirm_age(AgeOver17Dto.form))
     }
   }
 
-  val confirmAgePost = PublicAction { implicit request =>
+  val confirmAgePost: Action[AnyContent] = PublicAction { implicit request =>
 
     AgeOver17Dto.form.bindFromRequest.fold(
       formWithErrors => {
@@ -85,53 +84,31 @@ class TravelDetailsController @Inject() (
   }
 
 
+  val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
 
-
-  val privateCraft = PublicAction { implicit request =>
-
-    travelDetailsService.getUserInputData map {
-      case Some(JourneyData(_, _, Some(privateCraft), _)) =>
-        Ok(views.html.passengers.confirm_private_craft(PrivateCraftDto.form.bind(Map("privateCraft" -> privateCraft.toString))))
+    travelDetailsService.getJourneyData map {
+      case Some(JourneyData(_, _, Some(privateCraft), _, _)) =>
+        Ok(views.html.passengers.confirm_private_craft(form.bind(Map("privateCraft" -> privateCraft.toString))))
       case _ =>
-        Ok(views.html.passengers.confirm_private_craft(PrivateCraftDto.form))
+        Ok(views.html.passengers.confirm_private_craft(form))
     }
   }
 
-  val privateCraftPost = PublicAction { implicit request =>
-    PrivateCraftDto.form.bindFromRequest.fold(
+  val privateCraftPost: Action[AnyContent] = PublicAction { implicit request =>
+    form.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.passengers.confirm_private_craft(formWithErrors)))
       },
       privateCraftDto => {
         travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) map { _ =>
-          Redirect(routes.TravelDetailsController.productDashboard())
+          Redirect(routes.DashboardController.showDashboard())
         }
       }
     )
   }
 
 
-
-
-  val productDashboard = PublicAction { implicit request =>
-
-    val products = ProductsService.getProducts.children.map(i => (i.name, i.token))
-
-    travelDetailsService.getUserInputData map {
-      case Some(journeyData) =>
-        Ok(views.html.passengers.dashboard(journeyData, products))
-      case None =>
-        Ok(views.html.passengers.dashboard(JourneyData(), products))
-    }
-
-
-  }
-
-
-
-
-  val euDone = PublicAction { implicit request =>
+  val euDone: Action[AnyContent] = PublicAction { implicit request =>
     Future.successful(Ok(views.html.passengers.eu_done()))
   }
-
 }
