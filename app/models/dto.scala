@@ -17,16 +17,18 @@ case class SelectedCountryDto(country: String)
 object AgeOver17Dto {
   val form: Form[AgeOver17Dto] = Form(
     mapping(
-      "ageOver17" -> optional(boolean).verifying("error.required", _.isDefined).transform[Boolean](_.get, b => Option(b))
+      "ageOver17" -> optional(boolean).verifying("over_17.error", _.isDefined).transform[Boolean](_.get, b => Option(b))
     )(AgeOver17Dto.apply)(AgeOver17Dto.unapply)
   )
 }
 case class AgeOver17Dto(ageOver17: Boolean)
 
+
 object PrivateCraftDto {
+
   val form: Form[PrivateCraftDto] = Form(
     mapping(
-      "privateCraft" -> optional(boolean).verifying("error.required", _.isDefined).transform[Boolean](_.get, b => Option(b))
+      "privateCraft" -> optional(boolean).verifying("private_craft.error", _.isDefined).transform[Boolean](_.get, b => Option(b))
     )(PrivateCraftDto.apply)(PrivateCraftDto.unapply)
   )
 }

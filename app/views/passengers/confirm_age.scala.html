@@ -1,22 +1,26 @@
 @(ageOver17Form: Form[AgeOver17Dto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@import uk.gov.hmrc.play.views.html.helpers._
+@import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("title.are_you_17_or_over"), bodyClasses = None) {
+@main_template(title = messages("title.are_you_17_or_over")) {
 
-    <a id="back-button" class="link-back" href="@controllers.routes.TravelDetailsController.selectCountry()">@messages("global.back")</a>
+    @helpers.form(action = routes.TravelDetailsController.confirmAgePost()){
 
-    <h1 class="heading-xlarge">@messages("title.are_you_17_or_over")</h1>
+        @views.html.tags.errors(ageOver17Form)
 
-    @helper.form(action = routes.TravelDetailsController.confirmAgePost()){
-        @helper.CSRF.formField
         <div class="form-group inline">
 
-            @inputRadioGroup(
+            <fieldset>
+                <legend>
+                    <h1 class="heading-xlarge">@messages("title.are_you_17_or_over")</h1>
+                </legend>
+
+            @components.input_radio_group(
                 ageOver17Form("ageOver17"),
                 Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
                 '_labelClass -> "block-label inputLabelBeforeError"
             )
+            </fieldset>
 
         </div>
 

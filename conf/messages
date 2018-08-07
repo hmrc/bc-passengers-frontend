@@ -43,6 +43,7 @@ label.enter_country=Enter country
 label.you_may_need_to_pay_tax_or_duties=You may need to pay tax or duties on any goods you bring into the UK from abroad.
 label.use_this_service_to=Use this service to:
 label.you_need_to_know_the_exact_price=You need to know the exact price you paid for your items to use this service.
+label.there_is_a_problem=There is a problem
 
 #Text (Bullet points)
 text.for_personal_use=for your personal use
@@ -78,3 +79,13 @@ select_products.heading.other-goods.electronic-devices = What electronic devices
 select_products.heading.other-goods.metals-wood = What metal and wood products are you bringing into the UK?
 select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
 select_products.form.p = Select all that apply
+
+#Private Craft Page
+
+private_craft.error=Select yes if you arrived in the UK by private aircraft or private boat
+head.private_craft.error=Select yes if you arrived in the UK by private aircraft or private boat
+
+#Over 17 Page
+
+over_17.error=Select yes if you are 17 or over
+head.over_17.error=Select yes if you are 17 or over

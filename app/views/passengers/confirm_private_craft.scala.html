@@ -1,24 +1,26 @@
 @(privateCraftForm: Form[PrivateCraftDto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@import uk.gov.hmrc.play.views.html.helpers._
+@import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("title.did_you_arrive_in_the_uk_privately"), bodyClasses = None) {
+@main_template(title = messages("title.did_you_arrive_in_the_uk_privately")) {
 
-    <a id="back-button" class="link-back" href="@controllers.routes.TravelDetailsController.confirmAge()">@messages("global.back")</a>
+    @helpers.form(action = routes.TravelDetailsController.privateCraftPost()){
 
-    <h1 class="heading-xlarge">@messages("title.did_you_arrive_in_the_uk_privately")</h1>
-
-    @helper.form(action = routes.TravelDetailsController.privateCraftPost()){
-        @helper.CSRF.formField
-
+        @views.html.tags.errors(privateCraftForm)
 
         <div class="form-group inline">
 
-            @inputRadioGroup(
+            <fieldset>
+                <legend>
+                    <h1 class="heading-xlarge">@messages("title.did_you_arrive_in_the_uk_privately")</h1>
+                </legend>
+
+            @components.input_radio_group(
                 privateCraftForm("privateCraft"),
                 Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
                 '_labelClass -> "block-label inputLabelBeforeError"
             )
+            </fieldset>
 
         </div>
 
