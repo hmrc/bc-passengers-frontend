@@ -2,8 +2,6 @@
 
 @main_template(title = messages("title.dashboard"), bodyClasses = None) {
 
-  <a id="back-button" class="link-back" href="@controllers.routes.TravelDetailsController.privateCraft()">@messages("global.back")</a>
-
   <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
 
   @for(product <- products) {

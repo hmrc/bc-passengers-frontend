@@ -17,7 +17,7 @@ import util.{BaseSpec, FakeCookieCryptoFilter}
 
 import scala.concurrent.Future
 import scala.language.postfixOps
-
+import scala.collection.JavaConversions._
 
 
 class TravelDetailsControllerSpec extends BaseSpec {
@@ -175,6 +175,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       verify(controller.travelDetailsService, times(1)).getUserInputData(any())
     }
+
   }
 
   "Invoking confirmAgePost" should {
@@ -199,6 +200,36 @@ class TravelDetailsControllerSpec extends BaseSpec {
       verify(controller.travelDetailsService, times(0)).storeAgeOver17(any())(any())
 
     }
+
+    "return top error summary box when trying to submit a blank form" in {
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      Option(doc.getElementById("errors").select("a[href=#ageOver17]")).isEmpty shouldBe false
+      Option(doc.getElementById("errors").select("a[href=#ageOver17]").html()).get shouldBe "Select yes if you are 17 or over"
+      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
+      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+
+    }
+
+    "return error notification on the control when trying to submit a blank form" in {
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are 17 or over"
+    }
+
   }
 
   "Invoking privateCraft" should {
@@ -265,6 +296,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return bad request when given invalid data" in {
+
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel").withFormUrlEncodedBody("value" -> "bad_value")).get
 
       status(response) shouldBe BAD_REQUEST
@@ -272,6 +304,37 @@ class TravelDetailsControllerSpec extends BaseSpec {
       verify(controller.travelDetailsService, times(0)).storePrivateCraft(any())(any())
 
     }
+
+    "return error summary box on the page head when trying to submit a blank form" in {
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      Option(doc.getElementById("errors").select("a[href=#privateCraft]")).isEmpty shouldBe false
+      Option(doc.getElementById("errors").select("a[href=#privateCraft]").html()).get shouldBe "Select yes if you arrived in the UK by private aircraft or private boat"
+      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
+      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+    }
+
+
+    "return error notification on the control when trying to submit a blank form" in {
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you arrived in the UK by private aircraft or private boat"
+
+    }
+
   }
 
   "Invoking productDashboard" should {
