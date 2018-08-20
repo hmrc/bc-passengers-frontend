@@ -5,6 +5,8 @@ import play.api.data.Forms._
 import play.api.data.validation._
 import services.CurrencyService
 
+import scala.math.BigDecimal.RoundingMode
+import util._
 
 object SelectedCountryDto {
   val form: Form[SelectedCountryDto] = Form(
@@ -83,7 +85,7 @@ object NoOfSticksAndWeightDto {
   val form: Form[NoOfSticksAndWeightDto] = Form(
     mapping(
       "noOfSticks" -> number,
-      "weight" -> bigDecimal
+      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format( (kilos*1000) )))
     )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
   )
 }
@@ -92,7 +94,7 @@ case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: BigDecimal)
 object WeightDto {
   val form: Form[WeightDto] = Form(
     mapping(
-      "weight" -> bigDecimal
+      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format( (kilos*1000) )))
     )(WeightDto.apply)(WeightDto.unapply)
   )
 }
@@ -116,3 +118,4 @@ object CostDto {
 }
 case class CostDto(cost: BigDecimal)
 
+case class CalculatorResponseDto(bands: Map[String, List[Item]], calculation: Calculation, hasOnlyGBP: Boolean)

@@ -18,7 +18,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
   implicit def appConfig: AppConfig
 
-  private def logAndRenderError(logMessage: String, status: Status = InternalServerError)(implicit request: Request[_]) = {
+  def logAndRenderError(logMessage: String, status: Status = InternalServerError)(implicit request: Request[_]) = {
     Logger.warn(logMessage)
     Future.successful(status(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
   }
@@ -33,19 +33,18 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
     }
   }
 
-  def requireSelectedProductPaths(block: List[ProductPath] => Future[Result])(implicit request: Request[_], messageApi: MessagesApi): Future[Result] = {
+  def requireTravelDetails(journeyData: JourneyData)(block: (Boolean, Boolean) => Future[Result])(implicit request: Request[_], messageApi: MessagesApi) = {
 
-    requireJourneyData {
-      case JourneyData(_, _, _, Some(selectedProducts), _) => block(selectedProducts.map(ProductPath.apply))
-      case _ => Future.successful(InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+    journeyData match {
+      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _) => block( ageOver17, privateCraft )
+      case _ =>
+        logAndRenderError(s"Incomplete or missing travel details found in journeyData")
     }
   }
 
-
-
   def requirePurchasedProductInstance(journeyData: JourneyData)(path: ProductPath, index: Int)(block: PurchasedProductInstance => Future[Result])(implicit request: Request[_], messageApi: MessagesApi) = {
 
-    journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.getOrElse(Nil).find(_.index==index) match {
+    journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.find(_.index==index) match {
       case Some(purchasedProductInstance) => block(purchasedProductInstance)
       case None =>
         logAndRenderError(s"No purchasedProductInstance found in journeyData for $path:$index")
@@ -102,9 +101,11 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
 
   def withNextSelectedProductPath(block: Option[ProductPath] => Future[Result])(implicit request: Request[_], messageApi: MessagesApi): Future[Result] = {
-    requireSelectedProductPaths {
-      case Nil => block(None)
-      case x :: _ => block(Some(x))
+    requireJourneyData { jd =>
+      jd.selectedProducts match {
+        case Nil => block(None)
+        case x :: _ => block(Some(ProductPath(x)))
+      }
     }
   }
 

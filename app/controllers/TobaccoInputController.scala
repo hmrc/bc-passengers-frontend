@@ -20,7 +20,7 @@ class TobaccoInputController @Inject()(
   def startInputJourney(path: ProductPath): Action[AnyContent] = PublicAction { implicit request =>
 
     requireJourneyData { journeyData =>
-      val nextIndex = journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.fold(0)(_.size)
+      val nextIndex = journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.size
       productDetailsService.storeQuantity(journeyData, path, 1) map { _ =>
 
         path.components.last match {

@@ -21,12 +21,12 @@ object PurchasedProduct {
 case class PurchasedProduct(
   path: Option[ProductPath] = None,
   quantity: Option[Int] = None,
-  purchasedProductInstances: Option[List[PurchasedProductInstance]] = None
+  purchasedProductInstances: List[PurchasedProductInstance] = Nil
 ) {
   def updatePurchasedProductInstance(index: Int)(block: PurchasedProductInstance => PurchasedProductInstance) = {
-    val currentItemData = purchasedProductInstances.getOrElse(Nil).find(_.index==index).getOrElse(PurchasedProductInstance(index))
-    val newItemDataList = block(currentItemData) :: purchasedProductInstances.getOrElse(Nil).filterNot(_.index == index)
-    this.copy(purchasedProductInstances = Some(newItemDataList.sortBy(_.index)))
+    val currentItemData = purchasedProductInstances.find(_.index==index).getOrElse(PurchasedProductInstance(index))
+    val newItemDataList = block(currentItemData) :: purchasedProductInstances.filterNot(_.index == index)
+    this.copy(purchasedProductInstances = newItemDataList.sortBy(_.index))
   }
 }
 
@@ -38,15 +38,21 @@ case class JourneyData(
   country: Option[String] = None,
   ageOver17: Option[Boolean] = None,
   privateCraft: Option[Boolean] = None,
-  selectedProducts: Option[List[List[String]]] = None,
-  purchasedProducts: Option[List[PurchasedProduct]] = None
+  selectedProducts: List[List[String]] = Nil,
+  purchasedProducts: List[PurchasedProduct] = Nil
 ) {
 
+  def allCurrencyCodes: Set[String] = (for {
+    purchasedProducts <- purchasedProducts
+    purchasedProductInstances <- purchasedProducts.purchasedProductInstances
+    currencyCode <- purchasedProductInstances.currency
+  } yield currencyCode).toSet
+
   def getOrCreatePurchasedProduct(path: ProductPath): PurchasedProduct
-    = purchasedProducts.getOrElse(Nil).find(_.path==Some(path)).getOrElse(PurchasedProduct(path = Some(path)))
+    = purchasedProducts.find(_.path==Some(path)).getOrElse(PurchasedProduct(path = Some(path)))
 
   def updatePurchasedProduct(path: ProductPath)(block: PurchasedProduct => PurchasedProduct) = {
-    val newPdList = block(getOrCreatePurchasedProduct(path)) :: purchasedProducts.getOrElse(Nil).filterNot(_.path == Some(path))
-    this.copy(purchasedProducts = Some(newPdList))
+    val newPdList = block(getOrCreatePurchasedProduct(path)) :: purchasedProducts.filterNot(_.path == Some(path))
+    this.copy(purchasedProducts = newPdList)
   }
 }

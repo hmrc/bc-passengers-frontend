@@ -1,5 +1,7 @@
 package models
 
+import util._
+
 sealed trait ProductTreeNode {
   val name: String
   val token: String
@@ -15,7 +17,7 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
         }
       case "tobacco" =>
         purchasedProductInstance.weightOrVolume.map { weightOrVolume =>
-          weightOrVolume + "g " + name.toLowerCase()
+          decimalFormat10.format( (weightOrVolume*1000) ) + "g " + name.toLowerCase()
         }
       case "alcohol" =>
         purchasedProductInstance.weightOrVolume.map { weightOrVolume =>
@@ -26,11 +28,38 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
     }
   }
 
+  def isValid(purchasedProductInstance: PurchasedProductInstance): Boolean = {
+
+    templateId match {
+      case "cigarettes" =>
+        purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.noOfSticks.isDefined
+      case "cigars" =>
+        purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.weightOrVolume.isDefined &&
+        purchasedProductInstance.noOfSticks.isDefined
+      case "tobacco" =>
+        purchasedProductInstance.currency.isDefined &&
+          purchasedProductInstance.cost.isDefined &&
+          purchasedProductInstance.weightOrVolume.isDefined
+      case "alcohol" =>
+        purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.weightOrVolume.isDefined
+      case "other-goods" =>
+        purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.cost.isDefined
+      case _ => false
+    }
+  }
+
   def getDisplayWeight(purchasedProductInstance: PurchasedProductInstance): Option[String] = {
     templateId match {
       case "cigars" =>
         purchasedProductInstance.weightOrVolume map { weightOrVolume =>
-          weightOrVolume + "g"
+          decimalFormat10.format( (weightOrVolume*1000) ) + "g"
         }
       case _ => None
     }

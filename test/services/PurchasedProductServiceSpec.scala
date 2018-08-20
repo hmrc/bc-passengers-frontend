@@ -46,19 +46,19 @@ class PurchasedProductServiceSpec extends BaseSpec {
       override def journeyDataInCache: Option[JourneyData] = None
 
       await(s.storeCurrency(
-        JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("/some/item/path")), quantity = Some(1))))),
+        JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("/some/item/path")), quantity = Some(1)))),
         ProductPath("/some/item/path"),
         0, "USD"
       ))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(purchasedProducts = Some(List(PurchasedProduct(
+        meq(JourneyData(purchasedProducts = List(PurchasedProduct(
           path = Some(ProductPath("/some/item/path")),
           quantity = Some(1),
-          purchasedProductInstances = Some(List(
+          purchasedProductInstances = List(
             PurchasedProductInstance(index = 0, currency = Some("USD"))
           ))
-        )))))
+        )))
       )(any())
 
     }

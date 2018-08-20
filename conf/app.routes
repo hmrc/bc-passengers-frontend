@@ -9,11 +9,8 @@ GET        /private-travel                                   controllers.TravelD
 POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
 GET        /eu-done                                          controllers.TravelDetailsController.euDone
 
-
-
+POST       /calculate                                        controllers.DashboardController.calculate
 GET        /dashboard                                        controllers.DashboardController.showDashboard
-
-
 
 
 GET        /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)

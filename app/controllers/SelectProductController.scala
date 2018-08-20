@@ -52,7 +52,7 @@ class   SelectProductController @Inject()(
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
-        Future.successful(Ok(views.html.passengers.select_products(SelectProductsDto.form, children.map( i => ( i.name, i.token ) ), path)))
+        Future.successful(Ok(views.html.purchased_products.select_products(SelectProductsDto.form, children.map( i => ( i.name, i.token ) ), path)))
       case _ =>
         Future.successful(InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
 
@@ -68,7 +68,7 @@ class   SelectProductController @Inject()(
       SelectProductsDto.form.bindFromRequest.fold(
         formWithErrors => {
           Future.successful {
-            BadRequest(views.html.passengers.select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
+            BadRequest(views.html.purchased_products.select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
           }
         },
         success = selectProductsDto => {

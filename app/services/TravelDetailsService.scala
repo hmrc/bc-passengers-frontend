@@ -15,7 +15,7 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(country = Some(country), ageOver17 = None, privateCraft = None, selectedProducts = None) )
+        localSessionCache.cacheJourneyData( journeyData.copy(country = Some(country), ageOver17 = None, privateCraft = None, selectedProducts = Nil) )
       case None =>
         localSessionCache.cacheJourneyData( JourneyData(country = Some(country)) )
     }
@@ -25,7 +25,7 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(ageOver17 = Some(ageOver17), privateCraft = None, selectedProducts = None) )
+        localSessionCache.cacheJourneyData( journeyData.copy(ageOver17 = Some(ageOver17), privateCraft = None, selectedProducts = Nil) )
       case None =>
         localSessionCache.cacheJourneyData( JourneyData(ageOver17 = Some(ageOver17)) )
     }
@@ -35,7 +35,7 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(privateCraft = Some(privateCraft), selectedProducts = None) )
+        localSessionCache.cacheJourneyData( journeyData.copy(privateCraft = Some(privateCraft), selectedProducts = Nil) )
       case None =>
         localSessionCache.cacheJourneyData( JourneyData(privateCraft = Some(privateCraft)) )
     }
@@ -45,14 +45,10 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
   def storeProductDetails(productDetailsToStore: PurchasedProduct)(implicit hc: HeaderCarrier): Future[CacheMap] = {
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        journeyData.purchasedProducts match {
-          case Some(storedProductDetails) =>
-            localSessionCache.cacheJourneyData(journeyData.copy(purchasedProducts = Some(productDetailsToStore :: storedProductDetails)))
-          case None =>
-            localSessionCache.cacheJourneyData(journeyData.copy(purchasedProducts = Some(List(productDetailsToStore))))
-        }
+        localSessionCache.cacheJourneyData(journeyData.copy(purchasedProducts = productDetailsToStore :: journeyData.purchasedProducts))
 
-      case None => localSessionCache.cacheJourneyData(JourneyData(purchasedProducts = Some(List(productDetailsToStore))))
+      case None =>
+        localSessionCache.cacheJourneyData(JourneyData(purchasedProducts = List(productDetailsToStore)))
     }
   }
 }
