@@ -31,7 +31,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     reset(app.injector.instanceOf[TravelDetailsService])
   }
 
-  val controller = app.injector.instanceOf[TravelDetailsController]
+  val controller: TravelDetailsController = app.injector.instanceOf[TravelDetailsController]
 
   "Invoking checkDeclareGoodsStartPage" should {
 
@@ -44,7 +44,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe("Check allowances and estimate duties to bring goods into the UK")
+      doc.getElementsByTag("h1").text() shouldBe "Check allowances and estimate duties to bring goods into the UK"
     }
   }
 
@@ -54,35 +54,33 @@ class TravelDetailsControllerSpec extends BaseSpec {
     "return the select country page with country populated if there is one in the keystore" in {
 
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( Some(JourneyData(country = Some("Egypt"))) )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(country = Some("Egypt"))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/country-of-purchase")).get
 
       status(response) shouldBe OK
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
 
       content should include ("""<option value="Egypt" selected="selected">Egypt</option>""")
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
 
     "return the select country page without country populated if there is not one in the keystore" in {
 
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( None )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/country-of-purchase")).get
 
       status(response) shouldBe OK
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
 
       content should include ("""<option value="Egypt">Egypt</option>""")
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
   }
 
@@ -127,7 +125,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return the confirm age page unpopulated if there is no age answer in keystore" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( None )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/confirm-age")).get
 
@@ -139,12 +137,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#ageOver17-true").hasAttr("checked") shouldBe false
       doc.select("#ageOver17-false").hasAttr("checked") shouldBe false
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
 
     "return the confirm age page pre-populated yes if there is age answer true in keystore" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(true))) )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(true))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/confirm-age")).get
 
@@ -156,12 +154,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#ageOver17-true").hasAttr("checked") shouldBe true
       doc.select("#ageOver17-false").hasAttr("checked") shouldBe false
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
 
     "return the confirm age page pre-populated no if there is age answer false in keystore" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(false))) )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(false))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/confirm-age")).get
 
@@ -173,7 +171,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#ageOver17-true").hasAttr("checked") shouldBe false
       doc.select("#ageOver17-false").hasAttr("checked") shouldBe true
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
 
   }
@@ -236,7 +234,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return the private craft page unpopulated if there is no age answer in keystore" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( None )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/private-travel")).get
 
@@ -246,12 +244,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
       doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
 
     "return the private craft page pre populated no if there is age answer false in keystore" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(false))) )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(false))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/private-travel")).get
 
@@ -261,12 +259,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
       doc.select("#privateCraft-false").hasAttr("checked") shouldBe true
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
 
     "return the private craft page pre populated yes if there is age answer true in keystore" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(true))) )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(true))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/private-travel")).get
 
@@ -276,7 +274,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#privateCraft-true").hasAttr("checked") shouldBe true
       doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
 
-      verify(controller.travelDetailsService, times(1)).getUserInputData(any())
+      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
   }
 
@@ -341,7 +339,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "display dashboard page" in {
 
-      when(controller.travelDetailsService.getUserInputData(any())) thenReturn Future.successful( None )
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
 
@@ -350,7 +348,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe ("Tell us about your purchases")
+      doc.getElementsByTag("h1").text() shouldBe "Tell us about your purchases"
 
 
     }

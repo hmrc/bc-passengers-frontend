@@ -1,39 +1,107 @@
-@(userData: JourneyData, products: List[(String, String)])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(journeyData: JourneyData,
+  alcoholPurchasedProductDetailsList: List[PurchasedProductDetails],
+  tobaccoPurchasedProductDetailsList: List[PurchasedProductDetails],
+  otherGoodsPurchasedProductDetailsList: List[PurchasedProductDetails])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @main_template(title = messages("title.dashboard"), bodyClasses = None) {
 
   <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
 
-  @for(product <- products) {
 
-    <h2 class="heading-large">@messages(s"dashboard.product_heading.${product._2}")</h2>
+  <h2 class="heading-large">@messages("dashboard.product_heading.alcohol")</h2>
 
-    <table class="cart">
-      <tbody>
+  <table class="cart">
+    <tbody>
+    @if(alcoholPurchasedProductDetailsList == List()){
+      <tr>
+        <td class="title">@messages("dashboard.no_products_added.alcohol")</td>
+        <td class="info-answer"></td>
+        <td class="numeric"><a href="products/alcohol" id="add">@messages("button.add")</a></td>
+      </tr>
+    } else {
+      @alcoholPurchasedProductDetailsList.map{ alcoholPurchasedProductDetail =>
         <tr>
-          <td class="title">@messages(s"dashboard.no_products_added.${product._2}")</td>
-          <td class="info-answer"></td>
-          <td class="numeric"><a href="products/@product._2" id="add-@product._2">@messages("button.add")</a></td>
+          <td class="">@alcoholPurchasedProductDetail.productDescription</td>
+          <td class="info-answer">@alcoholPurchasedProductDetail.purchasedProductInstance.cost @alcoholPurchasedProductDetail.currencyDisplayName</td>
         </tr>
-      </tbody>
-    </table>
+      }
+    }
 
+    </tbody>
+  </table>
+
+  @if(alcoholPurchasedProductDetailsList != List()){
+    <div class="add-more"><a href="products/alcohol" id="add-alcohol">@messages("button.add.alcohol")</a></div>
   }
+
+
+  <h2 class="heading-large">@messages("dashboard.product_heading.tobacco")</h2>
+
+  <table class="cart">
+    <tbody>
+    @if(tobaccoPurchasedProductDetailsList == List()){
+      <tr>
+        <td class="title">@messages("dashboard.no_products_added.tobacco")</td>
+        <td class="info-answer"></td>
+        <td class="numeric"><a href="products/tobacco" id="add">@messages("button.add")</a></td>
+      </tr>
+    } else {
+    @tobaccoPurchasedProductDetailsList.map{ tobaccoPurchasedProductDetail =>
+        <tr>
+          <td class="">@tobaccoPurchasedProductDetail.productDescription</td>
+          <td class="">@tobaccoPurchasedProductDetail.displayWeight</td>
+          <td class="info-answer">@tobaccoPurchasedProductDetail.purchasedProductInstance.cost @tobaccoPurchasedProductDetail.currencyDisplayName</td>
+        </tr>
+      }
+    }
+    </tbody>
+  </table>
+
+  @if(tobaccoPurchasedProductDetailsList != List()){
+    <div class="add-more"><a href="products/tobacco" id="add-tobacco">@messages("button.add.tobacco")</a></div>
+  }
+
+  <h2 class="heading-large">@messages("dashboard.product_heading.other-goods")</h2>
+
+  <table class="cart">
+    <tbody>
+    @if(otherGoodsPurchasedProductDetailsList == List()){
+      <tr>
+        <td class="">@messages("dashboard.no_products_added.other-goods")</td>
+        <td class="info-answer"></td>
+        <td class="numeric"><a href="products/other-goods" id="add">@messages("button.add")</a></td>
+      </tr>
+    } else {
+    @otherGoodsPurchasedProductDetailsList.map{ otherGoodsPurchasedProductDetail =>
+      <tr>
+        <td class="">@otherGoodsPurchasedProductDetail.productDescription</td>
+        <td class="info-answer">@otherGoodsPurchasedProductDetail.purchasedProductInstance.cost @otherGoodsPurchasedProductDetail.currencyDisplayName</td>
+      </tr>
+
+      }
+    }
+    </tbody>
+  </table>
+
+  @if(otherGoodsPurchasedProductDetailsList != List()){
+    <div class="add-more"><a href="products/other-goods" id="add-other-goods">@messages("button.add.other-goods")</a></div>
+  }
+
 
   <h2 class="heading-large">@messages("dashboard.your_travel_information")</h2>
   <table id="travel-details">
     <tbody>
       <tr>
         <td class="title">@messages("dashboard.country_of_purchase")</td>
-        <td class="info-answer">@userData.country</td>
+        <td class="info-answer">@journeyData.country</td>
       </tr>
       <tr>
         <td class="title">@messages("dashboard.17_or_over")</td>
-        <td class="info-answer">@{if(userData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
+        <td class="info-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
       </tr>
       <tr>
         <td class="title">@messages("dashboard.private_travel")</td>
-        <td class="info-answer">@{if(userData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
+        <td class="info-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
       </tr>
     </tbody>
   </table>

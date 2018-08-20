@@ -1,0 +1,40 @@
+@(weightForm: Form[WeightDto], token: String, productName: String, path: ProductPath, index: Int)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("tobacco.weight_input.heading", productName.toLowerCase()), bodyClasses = None) {
+
+  @helpers.form(action = routes.TobaccoInputController.processWeightInput(path, index)){
+
+  <fieldset>
+    <legend><h1 class="heading-xlarge">@messages("tobacco.weight_input.heading", productName.toLowerCase())</h1></legend>
+
+    <div class="panel panel-border-wide" id="panel">
+        <p>@messages(s"tobacco.weight_input.panel.${token}.1")</p>
+        <p>@messages(s"tobacco.weight_input.panel.${token}.2")</p>
+    </div>
+
+      <div class="form-group">
+          @helpers.input( weightForm("weight"),
+          '_label -> messages("tobacco.weight_input.form.label", productName.toLowerCase()),
+          '_labelClass -> "inline",
+          '_labelTextClass -> "form-label",
+          '_inputClass -> "form-control-1-8"
+          )
+          <span>g</span>
+      </div>
+
+    <details class="form-group">
+        <summary><span class="summary">@messages("hidden_text.weight_input.summary")</span></summary>
+        <div class="panel panel-border-narrow">
+            <p>@messages("hidden_text.you_cant_use_service")</p>
+        </div>
+    </details>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Continue">
+    </div>
+  </fieldset>
+  }
+
+}

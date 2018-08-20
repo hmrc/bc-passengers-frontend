@@ -51,9 +51,14 @@ text.as_a_gift_for_someone_else=as a gift for someone else
 text.check_if_you_need_to_declare=check if you need to declare your goods
 text.estimate_how_much_tax=estimate how much tax or customs duty you may owe
 
+button.start_now = Start now
+
 #Buttons
 
 button.add = Add
+button.add.alcohol = Add alcohol
+button.add.tobacco = Add tobacco
+button.add.other-goods = Add other goods
 
 #Dashboard Page
 dashboard.your_travel_information = Your travel details
@@ -67,6 +72,8 @@ dashboard.no_products_added.tobacco = No tobacco added
 dashboard.no_products_added.alcohol = No alcohol added
 dashboard.no_products_added.other-goods = No other goods added
 
+grams = {0}g
+
 #Select Products Page
 
 select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
@@ -78,6 +85,71 @@ select_products.heading.other-goods.disability-mobility = What disability equipm
 select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
 select_products.heading.other-goods.metals-wood = What metal and wood products are you bringing into the UK?
 select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
+select_products.form.p = Select all that apply
+
+#Alcohol Input
+alcohol.volume_input.form.label = Volume in litres
+alcohol.volume_input.heading = What is the volume of the {0} you are bringing into the UK?
+alcohol.volume_input.panel.beer.1 = For beer bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.beer.2 = If you bring in more than 16 litres of beer, you will pay tax and duty on the entire amount of your beer.
+alcohol.volume_input.panel.cider.1 = For cider bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.cider.2 = If you bring in more than 20 litres of cider, you will pay tax and duty on the entire amount of your cider.
+alcohol.volume_input.panel.spirits.1 = For spirits bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.spirits.2 = If you bring in more than 2 litres of spirits, you will pay tax and duty on the entire amount of your spirits.
+alcohol.volume_input.panel.wine.1 = For wine bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.wine.2 = If you bring in more than 4 litres of wine, you will pay tax and duty on the entire amount of your wine.
+alcohol.volume_input.panel.sparkling.1 = For sparkling or fortified wine and other alcoholic drinks up to 22% alcohol by volume bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.sparkling.2 = If you bring in more than 2 litres of sparkling, fortified wine or other you will pay tax and duty on the entire amount.
+
+alcohol.currency_input.heading = What currency did you use to pay for the {0} litres of {1}?
+alcohol.cost_input.heading = How much did you pay for the {0} litres of {1}?
+
+#Tabacco Inputs
+tobacco.no_of_sticks_input.heading = What is the quantity of the {0} you are bringing into the UK?
+tobacco.no_of_sticks_input.panel.cigarettes.1 = For cigarettes bought using more than one currency, you need to tell us about each purchase separately.
+tobacco.no_of_sticks_input.panel.cigarettes.2 = If you bring in more than 200 cigarettes, you will pay tax and duty on the entire amount of your cigarettes.
+tobacco.no_of_sticks_input.form.label = Quantity of {0}
+
+tobacco.no_of_sticks_weight_input.heading = What is the quantity and weight of the {0} you are bringing into the UK?
+tobacco.no_of_sticks_weight_input.panel.cigars.1 = For cigars bought using more than one currency, you need to tell us about each purchase separately.
+tobacco.no_of_sticks_weight_input.panel.cigars.2 = If you bring in more than 50 cigars, you will pay tax and duty on the entire amount of your cigars.
+tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = For cigarillos bought using more than one currency, you need to tell us about each purchase separately.
+tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you bring in more than 100 cigarillos, you will pay tax and duty on the entire amount of your cigarillos.
+tobacco.weight_input.form.label = Weight of {0}
+
+tobacco.weight_input.heading = What is the weight of the {0} you are bringing into the UK?
+tobacco.weight_input.panel.rolling.1 = For hand rolling tobacco bought using more than one currency, you need to tell us about each purchase separately.
+tobacco.weight_input.panel.rolling.2 = If you bring in more than 250g of hand-rolling tobacco, you will pay tax and duty on the entire amount of your hand-rolling tobacco.
+tobacco.weight_input.panel.chewing.1 = For pipe or chewing tobacco bought using more than one currency, you need to tell us about each purchase separately.
+tobacco.weight_input.panel.chewing.2 = If you bring in more than 250g of pipe or chewing tobacco, you will pay tax and duty on the entire amount of your pipe or chewing tobacco.
+
+tobacco.currency_input.heading = What currency did you use to pay for the {0}?
+tobacco.cost_input.heading=How much did you pay for the {0}?
+
+#Other Goods Inputs
+other-goods.quantity_input.heading = How many {0} are you bringing into the UK?
+other-goods.quantity_input.panel.1 = For goods bought using more than one currency, you need to tell us about each purchase separately.
+other-goods.quantity_input.panel.2 = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
+
+# Hidden Text
+hidden_text.quantity_input.summary = If you do not know the quantity
+hidden_text.no_of_sticks_input.summary = If you do not know the quantity
+hidden_text.no_of_sticks_weight_input.summary = If you do not know the quantity or weight
+hidden_text.weight_input.summary = If you do not know the weight
+hidden_text.currency.summary = If the currency you used is not shown
+hidden_text.you_cant_use_service = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
+
+hidden_text.volume_input.summary = If you do not know the volume
+
+#Currency Input
+currency_input.heading = What currency did you use to pay for this {0}?
+currency_input.form.label = Enter currency
+error.currency.invalid=Invalid currency
+
+#Cost Input
+cost_input.heading = How much did you pay for this {0}?
+cost_input.form.label = Price in {0}
+
 select_products.form.p = Select all that apply
 
 #Private Craft Page

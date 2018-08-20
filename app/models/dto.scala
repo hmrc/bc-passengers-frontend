@@ -2,7 +2,8 @@ package models
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.validation._
+import services.CurrencyService
 
 
 object SelectedCountryDto {
@@ -48,3 +49,70 @@ object SelectProductsDto {
   )
 }
 case class SelectProductsDto(tokens: List[String])
+
+object VolumeDto {
+
+  val form: Form[VolumeDto] = Form(
+    mapping(
+      "volume" -> number
+    )(VolumeDto.apply)(VolumeDto.unapply)
+  )
+
+}
+case class VolumeDto(volume: Int)
+
+object QuantityDto {
+  val form: Form[QuantityDto] = Form(
+    mapping(
+      "quantity" -> number
+    )(QuantityDto.apply)(QuantityDto.unapply)
+  )
+}
+case class QuantityDto(quantity: Int)
+
+object NoOfSticksDto {
+  val form: Form[NoOfSticksDto] = Form(
+    mapping(
+      "noOfSticks" -> number
+    )(NoOfSticksDto.apply)(NoOfSticksDto.unapply)
+  )
+}
+case class NoOfSticksDto(noOfSticks: Int)
+
+object NoOfSticksAndWeightDto {
+  val form: Form[NoOfSticksAndWeightDto] = Form(
+    mapping(
+      "noOfSticks" -> number,
+      "weight" -> number
+    )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
+  )
+}
+case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: Int)
+
+object WeightDto {
+  val form: Form[WeightDto] = Form(
+    mapping(
+      "weight" -> number
+    )(WeightDto.apply)(WeightDto.unapply)
+  )
+}
+case class WeightDto(weight: Int)
+
+object CurrencyDto {
+  def form(currencyService: CurrencyService): Form[CurrencyDto] = Form(
+    mapping(
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code))
+    )(CurrencyDto.apply)(CurrencyDto.unapply)
+  )
+}
+case class CurrencyDto(currency: String)
+
+object CostDto {
+  val form: Form[CostDto] = Form(
+    mapping(
+      "cost" -> bigDecimal
+    )(CostDto.apply)(CostDto.unapply)
+  )
+}
+case class CostDto(cost: BigDecimal)
+

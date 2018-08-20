@@ -5,3 +5,12 @@ input[type="text"].autocomplete__input {
 table .title {
   font-weight: bold;
 }
+
+label.inline {
+  display: inline;
+}
+
+.add-more {
+    margin-top: 0.85em;
+    margin-bottom: 2.75em;
+}

@@ -1,0 +1,31 @@
+@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, index: Int, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = "Cost Input View") {
+
+
+
+    @helpers.form(action = routes.OtherGoodsInputController.processCostInput(path, index)) {
+
+    <fieldset>
+        <legend>
+            <h1 class="heading-xlarge">@messages("cost_input.heading", product.name.toLowerCase())</h1>
+        </legend>
+
+        <div class="form-group">
+            @helpers.input(
+                costForm("cost"),
+                '_label -> messages("cost_input.form.label", currency),
+                '_labelTextClass -> "form-label",
+                '_inputClass -> "form-control-1-8"
+            )
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+    </fieldset>
+    }
+
+}

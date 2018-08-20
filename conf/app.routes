@@ -1,19 +1,70 @@
 # microservice specific routes
 
-GET        /check-declare-goods-start-page  controllers.TravelDetailsController.checkDeclareGoodsStartPage
-POST       /country-of-purchase             controllers.TravelDetailsController.selectCountryPost
-GET        /country-of-purchase             controllers.TravelDetailsController.selectCountry
-GET        /confirm-age                     controllers.TravelDetailsController.confirmAge
-POST       /confirm-age                     controllers.TravelDetailsController.confirmAgePost
-GET        /private-travel                  controllers.TravelDetailsController.privateCraft
-POST       /private-travel                  controllers.TravelDetailsController.privateCraftPost
-GET        /dashboard                       controllers.TravelDetailsController.productDashboard
-GET        /eu-done                         controllers.TravelDetailsController.euDone
-
-GET        /products/*path          controllers.ProductSelectController.selectProducts(path: String)
-POST       /products/*path          controllers.ProductSelectController.processSelectedProducts(path: String)
-
-GET        /next-step               controllers.ProductSelectController.nextStep()
+GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
+POST       /country-of-purchase                              controllers.TravelDetailsController.selectCountryPost
+GET        /country-of-purchase                              controllers.TravelDetailsController.selectCountry
+GET        /confirm-age                                      controllers.TravelDetailsController.confirmAge
+POST       /confirm-age                                      controllers.TravelDetailsController.confirmAgePost
+GET        /private-travel                                   controllers.TravelDetailsController.privateCraft
+POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
+GET        /eu-done                                          controllers.TravelDetailsController.euDone
 
 
-GET        /assets/*file            controllers.Assets.at(path="/public", file)
+
+GET        /dashboard                                        controllers.DashboardController.showDashboard
+
+
+
+
+GET        /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)
+POST       /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.processQuantityInput(path: ProductPath)
+
+GET        /products/$path<other-goods/.+>/currency/:index   controllers.OtherGoodsInputController.loadCurrencyInput(path: ProductPath, index: Int)
+POST       /products/$path<other-goods/.+>/currency/:index   controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, index: Int)
+
+GET        /products/$path<other-goods/.+>/cost/:index       controllers.OtherGoodsInputController.loadCostInput(path: ProductPath, index: Int)
+POST       /products/$path<other-goods/.+>/cost/:index       controllers.OtherGoodsInputController.processCostInput(path: ProductPath, index: Int)
+
+
+
+GET        /products/$path<tobacco/.+>/start                        controllers.TobaccoInputController.startInputJourney(path: ProductPath)
+
+GET        /products/$path<tobacco/cigarettes>/no-of-sticks/:index      controllers.TobaccoInputController.displayNoOfSticksInput(path: ProductPath, index: Int)
+POST       /products/$path<tobacco/cigarettes>/no-of-sticks/:index      controllers.TobaccoInputController.processNoOfSticksInput(path: ProductPath, index: Int)
+
+GET        /products/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:index   controllers.TobaccoInputController.displayNoOfSticksWeightInput(path: ProductPath, index: Int)
+POST       /products/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:index   controllers.TobaccoInputController.processNoOfSticksWeightInput(path: ProductPath, index: Int)
+
+GET        /products/$path<tobacco/(rolling|chewing)>/weight/:index           controllers.TobaccoInputController.displayWeightInput(path: ProductPath, index: Int)
+POST       /products/$path<tobacco/(rolling|chewing)>/weight/:index           controllers.TobaccoInputController.processWeightInput(path: ProductPath, index: Int)
+
+GET        /products/$path<tobacco/.+>/currency/:index              controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, index: Int)
+POST       /products/$path<tobacco/.+>/currency/:index              controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, index: Int)
+
+GET        /products/$path<tobacco/.+>/cost/:index                  controllers.TobaccoInputController.displayCostInput(path: ProductPath, index: Int)
+POST       /products/$path<tobacco/.+>/cost/:index                  controllers.TobaccoInputController.processCostInput(path: ProductPath, index: Int)
+
+
+
+GET        /products/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
+
+GET        /products/$path<alcohol/.+>/volume/:index         controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, index: Int)
+POST       /products/$path<alcohol/.+>/volume/:index         controllers.AlcoholInputController.processVolumeInput(path: ProductPath, index: Int)
+
+GET        /products/$path<alcohol/.+>/currency/:index       controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, index: Int)
+POST       /products/$path<alcohol/.+>/currency/:index       controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, index: Int)
+
+GET        /products/$path<alcohol/.+>/cost/:index           controllers.AlcoholInputController.displayCostInput(path: ProductPath, index: Int)
+POST       /products/$path<alcohol/.+>/cost/:index           controllers.AlcoholInputController.processCostInput(path: ProductPath, index: Int)
+
+
+
+
+GET        /products/*path                                   controllers.SelectProductController.askProductSelection(path: ProductPath)
+POST       /products/*path                                   controllers.SelectProductController.processProductSelection(path: ProductPath)
+
+GET        /next-step                                        controllers.SelectProductController.nextStep()
+
+
+
+GET        /assets/*file                                     controllers.Assets.at(path="/public", file)
