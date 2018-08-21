@@ -44,7 +44,7 @@ class OtherGoodsInputController @Inject() (
   }
 
 
-
+// FIXME: Add more enforcers to get expected NOT_FOUND in test
   def loadCurrencyInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
 
     requireProduct(path) { product =>
@@ -53,6 +53,7 @@ class OtherGoodsInputController @Inject() (
 
   }
 
+  // FIXME: Add more enforcers to get expected BAD_REQUEST in test
   def processCurrencyInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
 
     CurrencyDto.form(currencyService).bindFromRequest.fold(

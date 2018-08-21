@@ -21,12 +21,16 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
 }
 
-@main_template(title = "Currency Input View", inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
+@title = {
+    @messages("tobacco.currency_input.heading", description)
+}
+
+@main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
     @helpers.form(action = routes.TobaccoInputController.processCurrencyInput(path, index)){
     <fieldset>
         <legend>
-            <h1 class="heading-xlarge">@messages("tobacco.currency_input.heading", description)</h1>
+            <h1 class="heading-xlarge">@title.toString</h1>
         </legend>
         <div class="form-group">
             @helper.select(
@@ -51,5 +55,4 @@
 
     </fieldset>
     }
-
 }

@@ -3,18 +3,20 @@ package vertical
 import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.LocalSessionCache
 
+import scala.concurrent.Future
 
 class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
-  "Calling GET /products/.../quantity" should {
+  "Calling GET /products/other-goods/.../quantity" should {
 
     "return a 200" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity")).get
 
       status(result) shouldBe OK
 
@@ -23,22 +25,23 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling POST /products/.../quantity" should {
+  "Calling POST /products/other-goods/.../quantity" should {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
 
       verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())    }
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData())
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData())
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/currency/0")
@@ -50,12 +53,14 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling GET /products/.../currency/0" should {
+  "Calling GET /products/other-goods/.../currency/0" should {
+
+    // TODO: Revise after enforcer is added to other goods controller
 
     "return a 404 when the product path is not found" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/not/a/real/product/currency/0") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/not/a/real/product/currency/0")).get
 
       status(result) shouldBe NOT_FOUND
 
@@ -65,8 +70,8 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when cached JourneyData exists" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("other-goods/books")), Some(1))))))
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/currency/0") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("other-goods/books")), Some(1))))))
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/currency/0")).get
 
       status(result) shouldBe OK
 
@@ -75,12 +80,12 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling POST /products/.../currency/0" should {
+  "Calling POST /products/other-goods/.../currency/0" should {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/currency/0").withFormUrlEncodedBody("currency" -> "Not a currency code") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/currency/0").withFormUrlEncodedBody("currency" -> "Not a currency code")).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -90,8 +95,8 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("other-goods/books")), quantity = Some(2))))))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/currency/0").withFormUrlEncodedBody("currency" -> "USD") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("other-goods/books")), quantity = Some(2))))))
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/currency/0").withFormUrlEncodedBody("currency" -> "USD")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/cost/0")
@@ -103,12 +108,12 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling GET /products/.../cost/0" should {
+  "Calling GET /products/other-goods/.../cost/0" should {
 
     "return a 500 when there is no cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
 
@@ -118,7 +123,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 500 when there is no currency in the cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(
         purchasedProducts = Some(List(
           PurchasedProduct(
             path = Some(ProductPath("other-goods/books")),
@@ -126,7 +131,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
           )
         ))
       ))
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
 
@@ -136,7 +141,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when there is a currency in the cached journey data for this product instance" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(
         purchasedProducts = Some(List(
           PurchasedProduct(
             path = Some(ProductPath("other-goods/books")),
@@ -145,7 +150,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
           )
         ))
       ))
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
 
       status(result) shouldBe OK
 
@@ -154,12 +159,12 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling POST /products/.../cost/0" should {
+  "Calling POST /products/other-goods/.../cost/0" should {
 
     "return a 500 when given bad form input and there is no cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0") ).get
+      override lazy val cachedJourneyData: Option[JourneyData]= None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
 
@@ -169,7 +174,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 500 when given bad form input and there is no currency in the cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(
         purchasedProducts = Some(List(
           PurchasedProduct(
             path = Some(ProductPath("other-goods/books")),
@@ -177,7 +182,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
           )
         ))
       ))
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/0") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
 
@@ -187,7 +192,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(
         purchasedProducts = Some(List(
           PurchasedProduct(
             path = Some(ProductPath("other-goods/books")),
@@ -196,7 +201,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
           )
         ))
       ))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/0")).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -206,7 +211,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(
         purchasedProducts = Some(List(
           PurchasedProduct(
             path = Some(ProductPath("other-goods/books")),
@@ -215,7 +220,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
           )
         ))
       ))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/0").withFormUrlEncodedBody("cost" -> "2.99")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/0").withFormUrlEncodedBody("cost" -> "2.99")).get
 
       status(result) shouldBe SEE_OTHER
 
