@@ -20,7 +20,7 @@ trait PublicActions extends FrontendController {
           case Some(s) =>
             block(LocalContext(request))
           case None =>
-            Future.successful(Redirect(routes.TravelDetailsController.checkDeclareGoodsStartPage()))
+            Future.successful(Redirect(routes.TravelDetailsController.newSession()))
         }
 
       }

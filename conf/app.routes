@@ -65,6 +65,8 @@ POST       /products/*path                                   controllers.SelectP
 
 GET        /next-step                                        controllers.SelectProductController.nextStep()
 
+GET        /new-session                                      controllers.TravelDetailsController.newSession
+
 
 
 GET        /assets/*file                                     controllers.Assets.at(path="/public", file)
