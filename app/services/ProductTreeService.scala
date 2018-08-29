@@ -39,10 +39,10 @@ class ProductTreeService {
                 ProductTreeLeaf("fabrics", "Fabrics", "OGD/FBRIC", "other-goods")
               )
             ),
-            ProductTreeLeaf("car-seats", "Children's car seats", "OGD/MOB/MISC", "other-goods"),
+            ProductTreeLeaf("car-seats", "Children’s car seats", "OGD/MOB/MISC", "other-goods"),
             ProductTreeBranch("clothing",
               "Clothing and footwear", List(
-                ProductTreeLeaf("childrens", "Children's clothing", "OGD/CLTHS/CHILD", "other-goods"),
+                ProductTreeLeaf("childrens", "Children’s clothing", "OGD/CLTHS/CHILD", "other-goods"),
                 ProductTreeLeaf("footwear", "Footwear", "OGD/FOOTW", "other-goods"),
                 ProductTreeLeaf("other", "All other clothing", "OGD/CLTHS/ADULT", "other-goods")
 

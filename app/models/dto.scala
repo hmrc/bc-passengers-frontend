@@ -54,12 +54,12 @@ object VolumeDto {
 
   val form: Form[VolumeDto] = Form(
     mapping(
-      "volume" -> number
+      "volume" -> bigDecimal
     )(VolumeDto.apply)(VolumeDto.unapply)
   )
 
 }
-case class VolumeDto(volume: Int)
+case class VolumeDto(volume: BigDecimal)
 
 object QuantityDto {
   val form: Form[QuantityDto] = Form(
@@ -83,20 +83,20 @@ object NoOfSticksAndWeightDto {
   val form: Form[NoOfSticksAndWeightDto] = Form(
     mapping(
       "noOfSticks" -> number,
-      "weight" -> number
+      "weight" -> bigDecimal
     )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
   )
 }
-case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: Int)
+case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: BigDecimal)
 
 object WeightDto {
   val form: Form[WeightDto] = Form(
     mapping(
-      "weight" -> number
+      "weight" -> bigDecimal
     )(WeightDto.apply)(WeightDto.unapply)
   )
 }
-case class WeightDto(weight: Int)
+case class WeightDto(weight: BigDecimal)
 
 object CurrencyDto {
   def form(currencyService: CurrencyService): Form[CurrencyDto] = Form(

@@ -2,9 +2,13 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages(s"select_products.heading.$path"), bodyClasses = None) {
+@title = {
+    @messages(s"select_products.heading.${path.toString.replace('/','.')}")
+}
 
-    <h1 class="heading-xlarge">@messages(s"select_products.heading.${path.toString.replace('/','.')}")</h1>
+@main_template(title = title.toString, bodyClasses = None) {
+
+    <h1 class="heading-xlarge">@title.toString</h1>
 
 
     @helpers.form(action = routes.SelectProductController.processProductSelection(path)){

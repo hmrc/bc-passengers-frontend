@@ -45,7 +45,7 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     cacheJourneyData( updatedJourneyData )
   }
 
-  def storeWeightOrVolume(journeyData: JourneyData, path: ProductPath, index: Int, weightOrVolume: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext) = {
+  def storeWeightOrVolume(journeyData: JourneyData, path: ProductPath, index: Int, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext) = {
 
     val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
 
@@ -57,7 +57,7 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     cacheJourneyData( updatedJourneyData )
   }
 
-  def storeNoOfSticksAndWeightOrVolume(journeyData: JourneyData, path: ProductPath, index: Int, noOfSticks: Int, weightOrVolume: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext) = {
+  def storeNoOfSticksAndWeightOrVolume(journeyData: JourneyData, path: ProductPath, index: Int, noOfSticks: Int, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext) = {
 
     val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
 

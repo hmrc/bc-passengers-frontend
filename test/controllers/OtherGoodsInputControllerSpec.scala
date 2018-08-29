@@ -49,9 +49,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 200 with a quantity input view given a correct product path" in new LocalSetup {
 
-      override lazy val cachedJourneyData = None
+      override lazy val cachedJourneyData: Option[JourneyData]= None
 
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity") ).get
 
       status(result) shouldBe OK
     }
@@ -61,9 +61,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 with a quantity input view given bad form input" in new LocalSetup {
 
-      override val cachedJourneyData = None
+      override val cachedJourneyData: Option[JourneyData]= None
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN") ).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -72,9 +72,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override val cachedJourneyData = Some(JourneyData())
+      override val cachedJourneyData: Option[JourneyData]= Some(JourneyData())
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2") ).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/currency/0")

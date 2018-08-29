@@ -2,14 +2,17 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = "Cost Input View") {
+@title = {
+    @messages("tobacco.cost_input.heading", description)
+}
 
+@main_template(title = title.toString) {
 
     @helpers.form(action = routes.TobaccoInputController.processCostInput(path, index)) {
 
     <fieldset>
         <legend>
-            <h1 class="heading-xlarge">@messages("tobacco.cost_input.heading", description)</h1>
+            <h1 class="heading-xlarge">@title.toString</h1>
         </legend>
 
         <div class="form-group">

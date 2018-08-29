@@ -10,7 +10,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 
-class SelectProductController @Inject()(
+class   SelectProductController @Inject()(
   val productTreeService: ProductTreeService,
   val travelDetailsService: TravelDetailsService,
   val currencyService: CurrencyService,
