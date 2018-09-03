@@ -349,10 +349,26 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Tell us about your purchases"
-
+      Option(doc.getElementById("start-again")) should not be None
 
     }
   }
 
+  "Invoking redirectWithNewSession" should {
+
+  "redirect to select country when selecting start again on the dashboard page" in {
+
+    val fakeRequest = EnhancedFakeRequest("GET","/bc-passengers-frontend/new-session").withSession("test" -> "testValue")
+    val sessionId = fakeRequest.session.get("sessionId")
+    val response = route(app, fakeRequest).get
+
+    status(response) shouldBe  SEE_OTHER
+    redirectLocation(response) shouldBe Some("/bc-passengers-frontend/country-of-purchase")
+    session(response).data.get("test") shouldBe None
+    session(response).data.get("sessionId") should not be sessionId
+
+  }
+
+  }
 
 }
