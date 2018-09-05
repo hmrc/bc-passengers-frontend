@@ -51,29 +51,29 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProducts(selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, List(List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
     }
 
     "add selected products setting in keystore when journey data does exist there currently" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), None) )
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), Nil) )
 
       val selectedProducts = List(ProductPath("tobacco/cigarettes"), ProductPath("tobacco/cigars"))
 
       await(selectProductService.addSelectedProducts(selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), List(List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
     }
 
     "when products already exist store selected products at the start of a combined list in keystore" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))) ))
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), List(List("tobacco", "cigarettes"), List("tobacco", "cigars")) ))
 
       val selectedProducts = List(ProductPath("alcohol/beer"))
 
       await(selectProductService.addSelectedProducts(selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), Some(List(List("alcohol", "beer"), List("tobacco", "cigarettes"), List("tobacco", "cigars"))) )) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(false), List(List("alcohol", "beer"), List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
     }
 
   }
@@ -82,11 +82,11 @@ class SelectProductServiceSpec extends BaseSpec {
 
     "remove the first selected product and update keystore" in new LocalSetup {
 
-      override val journeyDataInCache = Some(JourneyData(None, None, None, Some(List(List("tobacco", "cigarettes"), List("tobacco", "cigars")))))
+      override val journeyDataInCache = Some(JourneyData(None, None, None, List(List("tobacco", "cigarettes"), List("tobacco", "cigars"))))
 
       await(selectProductService.removeSelectedProduct())
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, Some(List(List("tobacco", "cigars"))) )) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, List(List("tobacco", "cigars")) )) )(any())
     }
   }
 }

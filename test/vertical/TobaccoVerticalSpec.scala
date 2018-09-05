@@ -79,10 +79,10 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/currency/0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("tobacco/cigarettes")), purchasedProductInstances = Some(List(
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("tobacco/cigarettes")), purchasedProductInstances = List(
           PurchasedProductInstance(index = 0, noOfSticks = Some(5)))))
-      )))))(any())
+      )))(any())
     }
   }
 
@@ -110,10 +110,10 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/currency/0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("tobacco/cigars")), purchasedProductInstances = Some(List(
-          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))
-      )))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("tobacco/cigars")), purchasedProductInstances = List(
+          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(0.0302)), noOfSticks = Some(5))))
+      ))))(any())
     }
   }
 
@@ -141,10 +141,10 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/currency/0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("tobacco/rolling")), purchasedProductInstances = Some(List(
-          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2))))))
-      )))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("tobacco/rolling")), purchasedProductInstances = List(
+          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(0.0302)))))
+      ))))(any())
     }
   }
 
@@ -165,8 +165,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when cached JourneyData: Option[JourneyData]exists" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/currency/0")).get
 
@@ -181,8 +181,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/currency/0")
         .withFormUrlEncodedBody("currency" -> "Not a currency code")).get
@@ -195,8 +195,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/currency/0")
         .withFormUrlEncodedBody("currency" -> "USD")).get
@@ -205,8 +205,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/cost/0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD"))))))))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD"))))))))(any())
     }
   }
 
@@ -225,8 +225,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 500 when there is no currency in the cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/cost/0")).get
 
@@ -238,8 +238,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when there is a currency in the cached journey data for this product instance" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD")))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD")))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/cost/0")).get
 
@@ -267,8 +267,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 500 when given bad form input and there is no currency in the cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5)))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
@@ -281,8 +281,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 when given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD")))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD")))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
@@ -295,8 +295,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 when given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = Some(List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
-        purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD")))))))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(JourneyData(purchasedProducts = List(PurchasedProduct(Some(ProductPath("tobacco/cigars")),
+        purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD")))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/0")
         .withFormUrlEncodedBody("cost" -> "9.99")).get
@@ -304,9 +304,9 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       status(result) shouldBe SEE_OTHER
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("tobacco/cigars")), purchasedProductInstances = Some(List(
-          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD"), cost = Some(BigDecimal(9.99)))))))))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("tobacco/cigars")), purchasedProductInstances = List(
+          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(30.2)), noOfSticks = Some(5), currency = Some("USD"), cost = Some(BigDecimal(9.99)))))))))(any())
     }
   }
 }

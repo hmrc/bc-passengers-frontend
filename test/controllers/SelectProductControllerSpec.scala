@@ -149,7 +149,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "redirect to dashboard page when journeyData.selectedProducts returns an empty list" in new NextStepSetup {
 
-      override val journeyData = Some(JourneyData(selectedProducts = Some(List.empty)))
+      override val journeyData = Some(JourneyData(selectedProducts = Nil))
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/bc-passengers-frontend/dashboard")
@@ -159,7 +159,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "inform the user the item is not found when journeyData.selectedProducts contains an invalid path" in new NextStepSetup {
 
-      override val journeyData = Some(JourneyData(selectedProducts = Some(List(List("other-goods", "beer")))))
+      override val journeyData = Some(JourneyData(selectedProducts = List(List("other-goods", "beer"))))
 
       status(response) shouldBe NOT_FOUND
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
@@ -168,7 +168,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "go to purchase input form when journeyData.selectedProducts contains a leaf" in new NextStepSetup {
 
-      override val journeyData = Some(JourneyData(selectedProducts = Some(List(List("other-goods", "books")))))
+      override val journeyData = Some(JourneyData(selectedProducts = List(List("other-goods", "books"))))
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/quantity")
@@ -178,21 +178,12 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "redirect to selectProducts when journeyData.selectedProducts contains a branch" in new NextStepSetup {
 
-      override val journeyData = Some(JourneyData(selectedProducts = Some(List(List("alcohol")))))
+      override val journeyData = Some(JourneyData(selectedProducts = List(List("alcohol"))))
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/bc-passengers-frontend/products/alcohol")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
       verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any(),any())
-    }
-
-    "return a INTERNAL_SERVER_ERROR when journeyData.selectedProducts returns None" in new NextStepSetup {
-
-      override val journeyData = Some(JourneyData(selectedProducts = None))
-
-      status(response) shouldBe INTERNAL_SERVER_ERROR
-      verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
-      verify(injected[SelectProductService], times(0)).removeSelectedProduct()(any(),any())
     }
 
 

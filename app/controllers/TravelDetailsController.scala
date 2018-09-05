@@ -30,7 +30,7 @@ class TravelDetailsController @Inject() (
 
   val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(
-      Ok(views.html.passengers.check_declare_goods_start_page())
+      Ok(views.html.travel_details.check_declare_goods_start_page())
     )
   }
 
@@ -38,9 +38,9 @@ class TravelDetailsController @Inject() (
   val selectCountry: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
       case Some(JourneyData(Some(country), _, _, _, _)) =>
-        Ok(views.html.passengers.country_of_purchase(SelectedCountryDto.form.bind(Map("country" -> country)), countriesService.getAllCountries))
+        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form.bind(Map("country" -> country)), countriesService.getAllCountries))
       case _ =>
-        Ok(views.html.passengers.country_of_purchase(SelectedCountryDto.form, countriesService.getAllCountries))
+        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form, countriesService.getAllCountries))
     }
   }
 
@@ -48,7 +48,7 @@ class TravelDetailsController @Inject() (
 
     SelectedCountryDto.form.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.passengers.country_of_purchase(formWithErrors, countriesService.getAllCountries)))
+        Future.successful(BadRequest(views.html.travel_details.country_of_purchase(formWithErrors, countriesService.getAllCountries)))
       },
       selectedCountryDto => {
         val euCountry = countriesService.isInEu(selectedCountryDto.country)
@@ -68,9 +68,9 @@ class TravelDetailsController @Inject() (
   val confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
       case Some(JourneyData(_, Some(ageOver17), _, _, _)) =>
-        Ok(views.html.passengers.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
+        Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
-        Ok(views.html.passengers.confirm_age(AgeOver17Dto.form))
+        Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form))
     }
   }
 
@@ -78,7 +78,7 @@ class TravelDetailsController @Inject() (
 
     AgeOver17Dto.form.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.passengers.confirm_age(formWithErrors)))
+        Future.successful(BadRequest(views.html.travel_details.confirm_age(formWithErrors)))
       },
       ageOver17Dto => {
         travelDetailsService.storeAgeOver17( ageOver17Dto.ageOver17 ) map { _ =>
@@ -93,16 +93,16 @@ class TravelDetailsController @Inject() (
 
     travelDetailsService.getJourneyData map {
       case Some(JourneyData(_, _, Some(privateCraft), _, _)) =>
-        Ok(views.html.passengers.confirm_private_craft(form.bind(Map("privateCraft" -> privateCraft.toString))))
+        Ok(views.html.travel_details.confirm_private_craft(form.bind(Map("privateCraft" -> privateCraft.toString))))
       case _ =>
-        Ok(views.html.passengers.confirm_private_craft(form))
+        Ok(views.html.travel_details.confirm_private_craft(form))
     }
   }
 
   val privateCraftPost: Action[AnyContent] = PublicAction { implicit request =>
     form.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.passengers.confirm_private_craft(formWithErrors)))
+        Future.successful(BadRequest(views.html.travel_details.confirm_private_craft(formWithErrors)))
       },
       privateCraftDto => {
         travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) map { _ =>
@@ -114,6 +114,6 @@ class TravelDetailsController @Inject() (
 
 
   val euDone: Action[AnyContent] = PublicAction { implicit request =>
-    Future.successful(Ok(views.html.passengers.eu_done()))
+    Future.successful(Ok(views.html.travel_details.eu_done()))
   }
 }

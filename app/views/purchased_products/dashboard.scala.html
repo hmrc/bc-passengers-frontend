@@ -1,0 +1,140 @@
+@(journeyData: JourneyData,
+  alcoholPurchasedItemList: List[PurchasedItem],
+  tobaccoPurchasedItemList: List[PurchasedItem],
+  otherGoodsPurchasedItemList: List[PurchasedItem],
+  showCalculate: Boolean
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("title.dashboard"), bodyClasses = None) {
+
+  <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
+
+  <div class="alcohol">
+    <h2 class="heading-large">@messages("dashboard.product_heading.alcohol")</h2>
+
+    <table class="cart">
+      <tbody>
+      @if(alcoholPurchasedItemList == List()){
+        <tr>
+          <td class="title">@messages("dashboard.no_products_added.alcohol")</td>
+          <td class="info-answer"></td>
+          <td class="numeric">
+            <a href="products/alcohol" class="add">@messages("button.add")</a>
+          </td>
+        </tr>
+      } else {
+        @alcoholPurchasedItemList.map{ alcoholPurchasedProductDetail =>
+          <tr>
+            <td class="">@alcoholPurchasedProductDetail.description</td>
+            <td class="info-answer">@alcoholPurchasedProductDetail.purchasedProductInstance.cost @alcoholPurchasedProductDetail.displayCurrency</td>
+          </tr>
+        }
+      }
+
+      </tbody>
+    </table>
+
+    @if(alcoholPurchasedItemList != List()){
+      <div class="add-more">
+        <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
+      </div>
+    }
+  </div>
+
+  <div class="tobacco">
+    <h2 class="heading-large">@messages("dashboard.product_heading.tobacco")</h2>
+
+    <table class="cart">
+      <tbody>
+      @if(tobaccoPurchasedItemList == List()){
+        <tr>
+          <td class="title">@messages("dashboard.no_products_added.tobacco")</td>
+          <td class="info-answer"></td>
+          <td class="numeric">
+            <a href="products/tobacco" class="add">@messages("button.add")</a>
+          </td>
+        </tr>
+      } else {
+      @tobaccoPurchasedItemList.map{ tobaccoPurchasedProductDetail =>
+          <tr>
+            <td class="">@tobaccoPurchasedProductDetail.description</td>
+            <td class="">@tobaccoPurchasedProductDetail.displayWeight</td>
+            <td class="info-answer">@tobaccoPurchasedProductDetail.purchasedProductInstance.cost @tobaccoPurchasedProductDetail.displayCurrency</td>
+          </tr>
+        }
+      }
+      </tbody>
+    </table>
+
+    @if(tobaccoPurchasedItemList != List()){
+      <div class="add-more">
+        <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
+      </div>
+    }
+  </div>
+
+
+  <div class="other-goods">
+    <h2 class="heading-large">@messages("dashboard.product_heading.other-goods")</h2>
+
+    <table class="cart">
+      <tbody>
+      @if(otherGoodsPurchasedItemList == List()){
+        <tr>
+          <td class="">@messages("dashboard.no_products_added.other-goods")</td>
+          <td class="info-answer"></td>
+          <td class="numeric">
+            <a href="products/other-goods" class="add">@messages("button.add")</a>
+          </td>
+        </tr>
+      } else {
+      @otherGoodsPurchasedItemList.map{ otherGoodsPurchasedProductDetail =>
+        <tr>
+          <td class="">@otherGoodsPurchasedProductDetail.description</td>
+          <td class="info-answer">@otherGoodsPurchasedProductDetail.purchasedProductInstance.cost @otherGoodsPurchasedProductDetail.displayCurrency</td>
+        </tr>
+
+        }
+      }
+      </tbody>
+    </table>
+
+    @if(otherGoodsPurchasedItemList != List()){
+      <div class="add-more">
+        <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
+      </div>
+    }
+  </div>
+
+  <h2 class="heading-large">@messages("dashboard.your_travel_information")</h2>
+  <div class="form-group">
+    <table id="travel-details">
+      <tbody>
+        <tr>
+          <td class="title">@messages("dashboard.country_of_purchase")</td>
+          <td class="info-answer">@journeyData.country</td>
+        </tr>
+        <tr>
+          <td class="title">@messages("dashboard.17_or_over")</td>
+          <td class="info-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
+        </tr>
+        <tr>
+          <td class="title">@messages("dashboard.private_travel")</td>
+          <td class="info-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  @if(showCalculate) {
+    @helpers.form(action = routes.DashboardController.calculate()) {
+      <button type="submit" class="margin-bottom-30">Calculate</button>
+    }
+  }
+
+  <p>
+    <a href="@controllers.routes.TravelDetailsController.newSession()" id="start-again" >@messages("label.start_again")</a>
+  </p>
+}

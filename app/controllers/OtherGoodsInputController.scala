@@ -34,7 +34,7 @@ class OtherGoodsInputController @Inject() (
       },
       quantityDto => {
         requireJourneyData { journeyData =>
-          val nextIndex = journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.fold(0)(_.size)
+          val nextIndex = journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.size
           productDetailsService.storeQuantity(journeyData, path, quantityDto.quantity) map { _ =>
             Redirect(routes.OtherGoodsInputController.loadCurrencyInput(path, nextIndex))
           }

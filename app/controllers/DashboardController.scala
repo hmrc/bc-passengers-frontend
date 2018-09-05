@@ -3,68 +3,75 @@ package controllers
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.{ProductTreeLeaf, _}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent}
-import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
+import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-case class PurchasedProductDetails(
-  purchasedProductInstance: PurchasedProductInstance,
-  productTreeNode: ProductTreeNode,
-  currencyDisplayName: String,
-  productDescription: String,
-  displayWeight: Option[String]
-)
+import scala.collection.immutable
+import scala.concurrent.Future
+
+
 
 @Singleton
 class DashboardController @Inject() (
   val countriesService: CountriesService,
   val travelDetailsService: TravelDetailsService,
-  val messagesApi: MessagesApi,
   val productTreeService: ProductTreeService,
-  val currencyService: CurrencyService
-)(implicit val appConfig: AppConfig) extends FrontendController with I18nSupport with PublicActions with ControllerHelpers {
+  val currencyService: CurrencyService,
+  val calculatorService: CalculatorService
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with PublicActions with ControllerHelpers {
 
   val showDashboard: Action[AnyContent] = PublicAction { implicit request =>
 
-    travelDetailsService.getJourneyData map { journeyData =>
+    travelDetailsService.getJourneyData flatMap { journeyData: Option[JourneyData] =>
 
       val jd = journeyData.getOrElse(JourneyData())
+      calculatorService.journeyDataToCalculatorRequest(jd) map { maybeCalculatorRequest =>
 
-      val alcoholPurchasedProducts = jd.purchasedProducts.getOrElse(Nil).filter(_.path.fold(false)(_.components.head=="alcohol"))
-      val tobaccoPurchasedProducts = jd.purchasedProducts.getOrElse(Nil).filter(_.path.fold(false)(_.components.head=="tobacco"))
-      val otherGoodsPurchasedProducts = jd.purchasedProducts.getOrElse(Nil).filter(_.path.fold(false)(_.components.head=="other-goods"))
+        val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
-      val alcoholPurchasedProductDetailsList: List[PurchasedProductDetails] = for {
-        pp <- alcoholPurchasedProducts
-        ppi <- pp.purchasedProductInstances.getOrElse(Nil)
-        path <- pp.path.toList
-        ptn <- productTreeService.getProducts.getDescendant(path).collect { case p: ProductTreeLeaf => p}
-        c <- currencyService.getCurrencyByCode(ppi.currency.getOrElse(""))
-        description <- ptn.getDescription(ppi)
-      } yield PurchasedProductDetails(ppi, ptn, c.displayName, description, None)
+        val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid), _, _) if tid == "alcohol" => item
+        }
 
-      val tobaccoPurchasedProductDetailsList: List[PurchasedProductDetails] = for {
-        pp <- tobaccoPurchasedProducts
-        ppi <- pp.purchasedProductInstances.getOrElse(Nil)
-        path <- pp.path.toList
-        ptn <- productTreeService.getProducts.getDescendant(path).collect { case p: ProductTreeLeaf => p}
-        curCode <- ppi.currency
-        currency <- currencyService.getCurrencyByCode(curCode)
-        description <- ptn.getDescription(ppi)
-      } yield PurchasedProductDetails(ppi, ptn, currency.displayName, description, ptn.getDisplayWeight(ppi))
+        val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid), _, _) if tid == "cigarettes" | tid == "cigars" | tid == "tobacco" => item
+        }
 
-      val otherGoodsPurchasedProductDetailsList: List[PurchasedProductDetails] = for {
-        pp <- otherGoodsPurchasedProducts
-        ppi <- pp.purchasedProductInstances.getOrElse(Nil)
-        path <- pp.path.toList
-        ptn <- productTreeService.getProducts.getDescendant(path).collect { case p: ProductTreeLeaf => p}
-        c <- currencyService.getCurrencyByCode(ppi.currency.getOrElse(""))
-      } yield PurchasedProductDetails(ppi, ptn, c.displayName, ptn.name, None)
+        val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid), _, _) if tid == "other-goods" => item
+        }
 
+        val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
-      Ok(views.html.passengers.dashboard( jd, alcoholPurchasedProductDetailsList.reverse, tobaccoPurchasedProductDetailsList.reverse, otherGoodsPurchasedProductDetailsList.reverse))
-
+        Ok(views.html.purchased_products.dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate))
+      }
     }
   }
+
+
+  val calculate: Action[AnyContent] = PublicAction { implicit request =>
+    requireJourneyData { jd =>
+      requireTravelDetails(jd) { case _ =>
+
+        calculatorService.calculate() map {
+
+          case CalculatorServiceSuccessResponse(calculatorResponseDto) =>
+
+            if(BigDecimal(calculatorResponseDto.calculation.allTax)==0)
+              Ok(views.html.purchased_products.nothing_to_declare(calculatorResponseDto))
+            else
+              Ok(views.html.purchased_products.done(calculatorResponseDto, !calculatorResponseDto.hasOnlyGBP))
+
+          case _ =>
+            InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+        }
+      }
+    }
+
+  }
+
 }

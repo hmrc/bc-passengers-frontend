@@ -53,10 +53,10 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/currency/0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = Some(List(
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(
           PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))
-      )))))(any())
+      )))(any())
     }
   }
 
@@ -78,8 +78,8 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when cached JourneyData exists" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/currency/0")).get
 
@@ -94,8 +94,8 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/currency/0")
         .withFormUrlEncodedBody("currency" -> "Not a currency code")).get
@@ -109,8 +109,8 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
   "return a 303 given valid form input" in new LocalSetup {
 
-    override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = Some(List(
-      PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))))
+    override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = List(
+      PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))
 
     val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/currency/0")
       .withFormUrlEncodedBody("currency" -> "USD")).get
@@ -119,9 +119,9 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/cost/0")
 
     verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-    verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-      PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD")))))
-    )))))(any())
+    verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+      PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD")))))
+    )))(any())
   }
 
 
@@ -143,13 +143,13 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "return a 500 when there is no currency in the cached journey data" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        purchasedProducts = Some(List(
+        purchasedProducts = List(
           PurchasedProduct(
             path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)))))
+            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)))))
           )
-        ))
-      ))
+        )
+      )
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/cost/0")).get
 
@@ -162,13 +162,13 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "return a 200 when there is a currency in the cached journey data for this product instance" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        purchasedProducts = Some(List(
+        purchasedProducts = List(
           PurchasedProduct(
             path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
+            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
           )
-        ))
-      ))
+        )
+      )
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/cost/0")).get
 
@@ -196,13 +196,13 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "return a 500 when given bad form input and there is no currency in the cached journey data" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        purchasedProducts = Some(List(
+        purchasedProducts = List(
           PurchasedProduct(
             path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)))))
+            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)))))
           )
-        ))
-      ))
+        )
+      )
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
@@ -216,13 +216,13 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "return a 400 when given bad form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        purchasedProducts = Some(List(
+        purchasedProducts = List(
           PurchasedProduct(
             path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
+            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
           )
-        ))
-      ))
+        )
+      )
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
@@ -237,13 +237,13 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "return a 303 when given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        purchasedProducts = Some(List(
+        purchasedProducts = List(
           PurchasedProduct(
             path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
+            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
           )
-        ))
-      ))
+        )
+      )
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
         .withFormUrlEncodedBody("cost" -> "5.99")).get
@@ -251,9 +251,9 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
       status(result) shouldBe SEE_OTHER
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = Some(List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = Some(List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"), cost = Some(BigDecimal(5.99))))))
-      )))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
+        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"), cost = Some(BigDecimal(5.99))))))
+      )))(any())
     }
   }
 }

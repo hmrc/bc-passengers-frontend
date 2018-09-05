@@ -60,7 +60,7 @@ class ProductTreeService {
                 ProductTreeLeaf("other", "All other electronic devices", "OGD/DIGI/MISC", "other-goods")
               )
             ),
-            ProductTreeLeaf("furniture", "Furniture", "ODG/ORN/MISC", "other-goods"),
+            ProductTreeLeaf("furniture", "Furniture", "OGD/ORN/MISC", "other-goods"),
             ProductTreeLeaf("games-sports", "Games and sport equipment", "OGD/SPORT", "other-goods"),
             ProductTreeBranch("glassware-ornaments",
               "Glassware and ornaments", List(

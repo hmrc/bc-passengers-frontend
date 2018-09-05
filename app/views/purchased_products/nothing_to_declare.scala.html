@@ -1,0 +1,52 @@
+@(calculatorResponseDto: CalculatorResponseDto)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(title = messages("done.h1.nothing_to_declare")) {
+
+  <h1 class="heading-xlarge">@messages("done.h1.nothing_to_declare")</h1>
+
+  <table class="responsive-table" role="grid">
+    <caption class="heading-medium margin-top-0">@messages("done.all_items_within_allowance")</caption>
+    <thead>
+      <tr role="row">
+        <th scope="col">@messages("done.label.item")</th>
+        <th scope="col">@messages("done.label.currency")</th>
+        <th class="numeric" scope="col">@messages("done.label.amount")</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr class="total-row" role="row">
+        <th class="total" role="gridcell" colspan="2">@messages("done.label.total")</th>
+        <td class="total-value numeric" role="gridcell">&pound;0</td>
+      </tr>
+    </tfoot>
+    <tbody>
+      @calculatorResponseDto.bands.get("A").map { band =>
+        @band.map { item =>
+          <tr role="row">
+            <th scope="row" role="gridcell">
+              <span class="table-heading" aria-hidden="true">@messages("done.label.item")</span>
+              @item.metadata.description
+            </td>
+            <td role="gridcell">
+              <span class="table-heading" aria-hidden="true">@messages("done.label.currency")</span>
+              @item.metadata.cost @item.metadata.currency
+            </td>
+            <td role="gridcell" class="numeric">
+              <span class="table-heading" aria-hidden="true">@messages("done.label.amount")</span>
+              @messages("done.label.included_in_allowance")
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+
+  <h2 class="heading-medium">@messages("done.what_you_need_to_do_next")</h2>
+
+  <p>@messages("done.green_channel")</p>
+
+  <p>
+    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("done.link.start_again")</a>
+  </p>
+
+}
