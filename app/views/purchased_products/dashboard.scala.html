@@ -11,6 +11,20 @@
 
   <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
 
+  <h2 class="heading-large">@messages("dashboard.your_travel_information")</h2>
+  <table id="travel-details">
+    <tbody>
+    <tr>
+      <td class="title">@messages("dashboard.private_travel")</td>
+      <td class="info-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
+    </tr>
+    <tr>
+      <td class="title">@messages("dashboard.17_or_over")</td>
+      <td class="info-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
+    </tr>
+    </tbody>
+  </table>
+
   <div class="alcohol">
     <h2 class="heading-large">@messages("dashboard.product_heading.alcohol")</h2>
 
@@ -106,26 +120,6 @@
         <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
       </div>
     }
-  </div>
-
-  <h2 class="heading-large">@messages("dashboard.your_travel_information")</h2>
-  <div class="form-group">
-    <table id="travel-details">
-      <tbody>
-        <tr>
-          <td class="title">@messages("dashboard.country_of_purchase")</td>
-          <td class="info-answer">@journeyData.country</td>
-        </tr>
-        <tr>
-          <td class="title">@messages("dashboard.17_or_over")</td>
-          <td class="info-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
-        </tr>
-        <tr>
-          <td class="title">@messages("dashboard.private_travel")</td>
-          <td class="info-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 
   @if(showCalculate) {

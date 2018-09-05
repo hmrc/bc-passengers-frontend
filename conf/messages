@@ -61,7 +61,7 @@ button.add.tobacco = Add tobacco
 button.add.other-goods = Add other goods
 
 #Dashboard Page
-dashboard.your_travel_information = Your travel details
+dashboard.your_travel_information = Your details
 dashboard.country_of_purchase = Country of purchase
 dashboard.17_or_over = 17 or over
 dashboard.private_travel = Private travel
