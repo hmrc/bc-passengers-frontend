@@ -18,7 +18,7 @@ class WsAllMethods @Inject() (
   environment: Environment,
   config: Configuration
 ) extends WSHttp with HttpAuditing with AppName with RunMode {
-  
+
   override val hooks = Seq(AuditingHook)
 
   override val mode = environment.mode
