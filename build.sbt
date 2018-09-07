@@ -1,32 +1,34 @@
 import TestPhases.oneForkedJvmPerTest
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings, targetJvm}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
+import uk.gov.hmrc.{SbtBuildInfo}
 
-import scala.util.Properties.envOrElse
+import sbt.Keys._
+import sbt._
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
+import uk.gov.hmrc.versioning.SbtGitVersioning
+import uk.gov.hmrc.versioning.SbtGitVersioning.majorVersion
+import uk.gov.hmrc._
 
 val appName = "bc-passengers-frontend"
-val appVersion = envOrElse("BC_PASSENGERS_FRONTEND_VERSION", "999-SNAPSHOT")
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    retrieveManaged := true,
-    version := appVersion
+    retrieveManaged := true
   )
   .settings(scalaSettings: _*)
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
+  .settings( majorVersion := 1 )
   .settings(
     targetJvm := "jvm-1.8",
-    shellPrompt := ShellPrompt(appVersion),
     parallelExecution in Test := false,
     fork in Test := false
   )
-  .settings(Repositories.playPublishingSettings: _*)
-  .settings(SbtBuildInfo(): _*)
+  //.settings(SbtBuildInfo(): _*)
   .configs(IntegrationTest)
   .settings(
     inConfig(IntegrationTest)(Defaults.itSettings),
