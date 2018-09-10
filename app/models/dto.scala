@@ -101,21 +101,23 @@ object WeightDto {
 case class WeightDto(weight: BigDecimal)
 
 object CurrencyDto {
-  def form(currencyService: CurrencyService): Form[CurrencyDto] = Form(
+  def form(currencyService: CurrencyService, optionalItemsRemaining: Boolean = true): Form[CurrencyDto] = Form(
     mapping(
-      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code))
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
+      "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CurrencyDto.apply)(CurrencyDto.unapply)
   )
 }
-case class CurrencyDto(currency: String)
+case class CurrencyDto(currency: String, itemsRemaining: Int)
 
 object CostDto {
-  val form: Form[CostDto] = Form(
+  def form(optionalItemsRemaining: Boolean = true) = Form(
     mapping(
-      "cost" -> bigDecimal
+      "cost" -> bigDecimal,
+      "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CostDto.apply)(CostDto.unapply)
   )
 }
-case class CostDto(cost: BigDecimal)
+case class CostDto(cost: BigDecimal, itemsRemaining: Int)
 
 case class CalculatorResponseDto(bands: Map[String, List[Item]], calculation: Calculation, hasOnlyGBP: Boolean)

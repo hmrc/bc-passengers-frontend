@@ -9,6 +9,7 @@ import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import Console._
 
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -22,9 +23,9 @@ class DashboardController @Inject() (
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with PublicActions with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers  {
 
-  val showDashboard: Action[AnyContent] = PublicAction { implicit request =>
+  val showDashboard: Action[AnyContent] = DashboardAction { implicit request =>
 
     travelDetailsService.getJourneyData flatMap { journeyData: Option[JourneyData] =>
 
@@ -53,10 +54,7 @@ class DashboardController @Inject() (
   }
 
 
-  val calculate: Action[AnyContent] = PublicAction { implicit request =>
-    requireJourneyData { jd =>
-      requireTravelDetails(jd) { case _ =>
-
+  val calculate: Action[AnyContent] = DashboardAction { implicit request =>
         calculatorService.calculate() map {
 
           case CalculatorServiceSuccessResponse(calculatorResponseDto) =>
@@ -70,8 +68,4 @@ class DashboardController @Inject() (
             InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
         }
       }
-    }
-
-  }
-
 }

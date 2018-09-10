@@ -28,6 +28,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
   trait LocalSetup {
 
+    def requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
@@ -35,21 +36,15 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Future.successful(cachedJourneyData)
       }
 
-      when(injected[PurchasedProductService].storeQuantity(any(), any(), any())(any(),any())) thenReturn {
-        Future.successful(CacheMap("fakeid", Map.empty))
-      }
-
       rt(app, req)
     }
-
   }
-
 
   "Calling displayQuantityInput" should {
 
     "return a 200 with a quantity input view given a correct product path" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= None
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity") ).get
 
@@ -61,27 +56,22 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 with a quantity input view given bad form input" in new LocalSetup {
 
-      override val cachedJourneyData: Option[JourneyData]= None
+      override val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN") ).get
 
       status(result) shouldBe BAD_REQUEST
-
-      verify(injected[PurchasedProductService], times(0)).storeQuantity(any(), any(), any())(any(),any())
     }
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override val cachedJourneyData: Option[JourneyData]= Some(JourneyData())
+      override val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2") ).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/currency/0")
 
-      verify(injected[PurchasedProductService], times(1)).storeQuantity(any(), meq(ProductPath("other-goods/books")), meq(2))(any(),any())
+      redirectLocation(result).get should fullyMatch regex """^/bc-passengers-frontend/products/other-goods/books/currency/[a-zA-Z0-9]{6}[?]ir=2$""".r
     }
   }
-
-
 }

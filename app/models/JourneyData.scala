@@ -7,7 +7,8 @@ object PurchasedProductInstance {
   implicit val formats = Json.format[PurchasedProductInstance]
 }
 case class PurchasedProductInstance(
-  index: Int,
+  path: ProductPath,
+  iid: String,
   weightOrVolume: Option[BigDecimal] = None,
   noOfSticks: Option[Int] = None,
   currency: Option[String] = None,
@@ -19,14 +20,13 @@ object PurchasedProduct {
   implicit val formats = Json.format[PurchasedProduct]
 }
 case class PurchasedProduct(
-  path: Option[ProductPath] = None,
-  quantity: Option[Int] = None,
+  path: ProductPath,
   purchasedProductInstances: List[PurchasedProductInstance] = Nil
 ) {
-  def updatePurchasedProductInstance(index: Int)(block: PurchasedProductInstance => PurchasedProductInstance) = {
-    val currentItemData = purchasedProductInstances.find(_.index==index).getOrElse(PurchasedProductInstance(index))
-    val newItemDataList = block(currentItemData) :: purchasedProductInstances.filterNot(_.index == index)
-    this.copy(purchasedProductInstances = newItemDataList.sortBy(_.index))
+  def updatePurchasedProductInstance(iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {
+    val currentItemData = purchasedProductInstances.find(_.iid==iid).getOrElse(PurchasedProductInstance(path, iid))
+    val newItemDataList = block(currentItemData) :: purchasedProductInstances.filterNot(_.iid == iid)
+    this.copy(purchasedProductInstances = newItemDataList.sortBy(_.iid))
   }
 }
 
@@ -49,10 +49,10 @@ case class JourneyData(
   } yield currencyCode).toSet
 
   def getOrCreatePurchasedProduct(path: ProductPath): PurchasedProduct
-    = purchasedProducts.find(_.path==Some(path)).getOrElse(PurchasedProduct(path = Some(path)))
+    = purchasedProducts.find(_.path == path).getOrElse(PurchasedProduct(path = path))
 
   def updatePurchasedProduct(path: ProductPath)(block: PurchasedProduct => PurchasedProduct) = {
-    val newPdList = block(getOrCreatePurchasedProduct(path)) :: purchasedProducts.filterNot(_.path == Some(path))
+    val newPdList = block(getOrCreatePurchasedProduct(path)) :: purchasedProducts.filterNot(_.path == path)
     this.copy(purchasedProducts = newPdList)
   }
 }

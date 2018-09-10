@@ -335,25 +335,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
-  "Invoking productDashboard" should {
-
-    "display dashboard page" in {
-
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
-
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
-
-      status(response) shouldBe OK
-
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
-
-      doc.getElementsByTag("h1").text() shouldBe "Tell us about your purchases"
-      Option(doc.getElementById("start-again")) should not be None
-
-    }
-  }
-
   "Invoking redirectWithNewSession" should {
 
   "redirect to select country when selecting start again on the dashboard page" in {

@@ -1,4 +1,4 @@
-@(volumeInput: Form[VolumeDto], productName: String, token: String, path: ProductPath, index: Int)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(volumeInput: Form[VolumeDto], productName: String, token: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -16,7 +16,7 @@
 
 @main_template(title = title.toString, bodyClasses = None) {
 
-  @helpers.form(action = routes.AlcoholInputController.processVolumeInput(path, index)){
+  @helpers.form(action = routes.AlcoholInputController.processVolumeInput(path, iid)){
 
     <fieldset>
       <legend><h1 class="heading-xlarge">@title.toString</h1></legend>

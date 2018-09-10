@@ -1,4 +1,4 @@
-@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, currencies: List[Currency], description: String, path: ProductPath, index: Int)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, currencies: List[Currency], description: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.mvc.Call
@@ -27,7 +27,7 @@
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
-    @helpers.form(action = routes.TobaccoInputController.processCurrencyInput(path, index)){
+    @helpers.form(action = routes.TobaccoInputController.processCurrencyInput(path, iid)){
     <fieldset>
         <legend>
             <h1 class="heading-xlarge">@title.toString</h1>

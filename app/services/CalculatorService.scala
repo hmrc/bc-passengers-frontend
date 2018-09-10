@@ -88,14 +88,14 @@ class CalculatorService @Inject() (
 
       val purchasedItems: List[PurchasedItem] = for {
         purchasedProduct <- journeyData.purchasedProducts
-        path <- purchasedProduct.path.toList
-        productTreeLeaf <- productTreeService.getProducts.getDescendant(path).collect { case p: ProductTreeLeaf => p }.toList
+        productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProduct.path).collect { case p: ProductTreeLeaf => p }.toList
         purchasedProductInstance <- purchasedProduct.purchasedProductInstances.filter(productTreeLeaf.isValid)
         curCode <- purchasedProductInstance.currency
         currency <- currencyService.getCurrencyByCode(curCode)
         cost <- purchasedProductInstance.cost
         rate <- ratesMap.get(curCode)
       } yield PurchasedItem(purchasedProductInstance, productTreeLeaf, currency, (cost / rate).setScale(2, RoundingMode.DOWN))
+
 
       if(purchasedItems.isEmpty) {
         None

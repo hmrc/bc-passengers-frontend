@@ -1,4 +1,4 @@
-@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, path: ProductPath, currencies: List[Currency], index: Int)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, path: ProductPath, currencies: List[Currency], iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.mvc.Call
@@ -27,33 +27,34 @@
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
-    @helpers.form(action = routes.OtherGoodsInputController.processCurrencyInput(path, index)){
-    <fieldset>
-        <legend>
-            <h1 class="heading-xlarge">@messages("currency_input.heading", product.name.toLowerCase())</h1>
-        </legend>
-        <div class="form-group">
-            @helper.select(
-                field = currencyForm("currency"),
-                options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
-                '_label -> messages("currency_input.form.label"),
-                '_labelTextClass -> "form-label",
-                '_inputClass -> "form-control"
-            )
-        </div>
-
-        <details class="form-group">
-            <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
-            <div class="panel panel-border-narrow">
-                <p>@messages("hidden_text.you_cant_use_service")</p>
+    @helpers.form(action = routes.OtherGoodsInputController.processCurrencyInput(path, iid)){
+        <input type="hidden" name="itemsRemaining" value="@currencyForm("itemsRemaining").value">
+        <fieldset>
+            <legend>
+                <h1 class="heading-xlarge">@messages("currency_input.heading", product.name.toLowerCase())</h1>
+            </legend>
+            <div class="form-group">
+                @helper.select(
+                    field = currencyForm("currency"),
+                    options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
+                    '_label -> messages("currency_input.form.label"),
+                    '_labelTextClass -> "form-label",
+                    '_inputClass -> "form-control"
+                )
             </div>
-        </details>
 
-        <div class="form-group">
-            <input type="submit" class="button" value="Continue">
-        </div>
+            <details class="form-group">
+                <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
+                <div class="panel panel-border-narrow">
+                    <p>@messages("hidden_text.you_cant_use_service")</p>
+                </div>
+            </details>
 
-    </fieldset>
+            <div class="form-group">
+                <input type="submit" class="button" value="Continue">
+            </div>
+
+        </fieldset>
     }
 
 }

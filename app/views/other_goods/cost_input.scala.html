@@ -1,4 +1,4 @@
-@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, index: Int, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, iid: String, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -8,26 +8,27 @@
 
 @main_template(title = title.toString) {
 
-    @helpers.form(action = routes.OtherGoodsInputController.processCostInput(path, index)) {
+    @helpers.form(action = routes.OtherGoodsInputController.processCostInput(path, iid)) {
 
-    <fieldset>
-        <legend>
-            <h1 class="heading-xlarge">@title.toString</h1>
-        </legend>
+        <input type="hidden" name="itemsRemaining" value="@costForm("itemsRemaining").value">
+        <fieldset>
+            <legend>
+                <h1 class="heading-xlarge">@title.toString</h1>
+            </legend>
 
-        <div class="form-group">
-            @helpers.input(
-                costForm("cost"),
-                '_label -> messages("cost_input.form.label", currency),
-                '_labelTextClass -> "form-label",
-                '_inputClass -> "form-control-1-8"
-            )
-        </div>
+            <div class="form-group">
+                @helpers.input(
+                    costForm("cost"),
+                    '_label -> messages("cost_input.form.label", currency),
+                    '_labelTextClass -> "form-label",
+                    '_inputClass -> "form-control-1-8"
+                )
+            </div>
 
-        <div class="form-group">
-            <input type="submit" class="button" value="Continue">
-        </div>
-    </fieldset>
+            <div class="form-group">
+                <input type="submit" class="button" value="Continue">
+            </div>
+        </fieldset>
     }
 
 }

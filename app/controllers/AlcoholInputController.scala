@@ -5,124 +5,100 @@ import javax.inject.Inject
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.{CurrencyService, PurchasedProductService, ProductTreeService, TravelDetailsService}
+import services.{CurrencyService, ProductTreeService, PurchasedProductService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
+import scala.util.Random
 
 class AlcoholInputController @Inject() (
   val travelDetailsService: TravelDetailsService,
   val productDetailsService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with PublicActions with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
 
-  def startInputJourney(path: ProductPath): Action[AnyContent] = PublicAction { implicit request =>
-
-    requireJourneyData { journeyData =>
-      val nextIndex = journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.size
-      productDetailsService.storeQuantity(journeyData, path, 1) map { _ =>
-        Redirect(routes.AlcoholInputController.displayVolumeInput(path, nextIndex))
-      }
-    }
+  def startInputJourney(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+      Future.successful(Redirect(routes.AlcoholInputController.displayVolumeInput(path, generateIid)))
   }
 
-  def displayVolumeInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayVolumeInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.alcohol.volume_input(VolumeDto.form, product.name, product.token, path, index)))
+      Future.successful(Ok(views.html.alcohol.volume_input(VolumeDto.form, product.name, product.token, path, iid)))
     }
   }
 
-  def processVolumeInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processVolumeInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     VolumeDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.alcohol.volume_input(formWithErrors, product.name, product.token, path, index)))
+          Future.successful(BadRequest(views.html.alcohol.volume_input(formWithErrors, product.name, product.token, path, iid)))
         }
       },
       volumeDto => {
-        requireJourneyData { journeyData =>
-          productDetailsService.storeWeightOrVolume(journeyData, path, index, volumeDto.volume) map { _ =>
-            Redirect(routes.AlcoholInputController.displayCurrencyInput(path, index))
-          }
+        productDetailsService.storeWeightOrVolume(context.getJourneyData, path, iid, volumeDto.volume) map { _ =>
+          Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid))
         }
-
       }
     )
   }
 
-  def displayCurrencyInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayCurrencyInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    requireJourneyData { journeyData =>
-      requirePurchasedProductInstanceWeightOrVolume(journeyData)(path, index) { volume =>
-        requireProduct(path) { product =>
-          Future.successful(Ok(views.html.alcohol.currency_input(CurrencyDto.form(currencyService), product, path, index, currencyService.getAllCurrencies, volume)))
-        }
+    requirePurchasedProductInstanceWeightOrVolume(path, iid) { volume =>
+      requireProduct(path) { product =>
+        Future.successful(Ok(views.html.alcohol.currency_input(CurrencyDto.form(currencyService), product, path, iid, currencyService.getAllCurrencies, volume)))
       }
     }
   }
 
-  def processCurrencyInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processCurrencyInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     CurrencyDto.form(currencyService).bindFromRequest.fold(
       formWithErrors => {
-
-        requireJourneyData { journeyData =>
-          requirePurchasedProductInstanceWeightOrVolume(journeyData)(path, index) { volume =>
-            requireProduct(path) { product =>
-              Future.successful(BadRequest(views.html.alcohol.currency_input(formWithErrors, product, path, index, currencyService.getAllCurrencies, volume)))
-            }
+        requirePurchasedProductInstanceWeightOrVolume(path, iid) { volume =>
+          requireProduct(path) { product =>
+            Future.successful(BadRequest(views.html.alcohol.currency_input(formWithErrors, product, path, iid, currencyService.getAllCurrencies, volume)))
           }
         }
-
       },
       currencyDto => {
-        requireJourneyData { journeyData =>
-
-          productDetailsService.storeCurrency(journeyData, path, index, currencyDto.currency) map { _ =>
-            Redirect(routes.AlcoholInputController.displayCostInput(path, index))
-          }
+        productDetailsService.storeCurrency(context.getJourneyData, path, iid, currencyDto.currency) map { _ =>
+          Redirect(routes.AlcoholInputController.displayCostInput(path, iid))
         }
       }
     )
   }
 
-  def displayCostInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    requireJourneyData { journeyData =>
-      requirePurchasedProductInstanceWeightOrVolume(journeyData)(path, index) { volume =>
-        requirePurchasedProductInstanceCurrency(journeyData)(path, index) { currency: Currency =>
-          requireProduct(path) { product =>
-            Future.successful(Ok(views.html.alcohol.cost_input(CostDto.form, product, path, index, volume, currency.displayName)))
-          }
+    requirePurchasedProductInstanceWeightOrVolume(path, iid) { volume =>
+      requirePurchasedProductInstanceCurrency(path, iid) { currency: Currency =>
+        requireProduct(path) { product =>
+          Future.successful(Ok(views.html.alcohol.cost_input(CostDto.form(), product, path, iid, volume, currency.displayName)))
         }
       }
     }
   }
 
-  def processCostInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    CostDto.form.bindFromRequest.fold(
+    CostDto.form().bindFromRequest.fold(
       formWithErrors => {
-        requireJourneyData { journeyData =>
-          requirePurchasedProductInstanceWeightOrVolume(journeyData)(path, index) { volume =>
-            requirePurchasedProductInstanceCurrency(journeyData)(path, index) { currency: Currency =>
-              requireProduct(path) { product =>
-                Future.successful(BadRequest(views.html.alcohol.cost_input(formWithErrors, product, path, index, volume, currency.displayName)))
-              }
+        requirePurchasedProductInstanceWeightOrVolume(path, iid) { volume =>
+          requirePurchasedProductInstanceCurrency(path, iid) { currency: Currency =>
+            requireProduct(path) { product =>
+              Future.successful(BadRequest(views.html.alcohol.cost_input(formWithErrors, product, path, iid, volume, currency.displayName)))
             }
           }
         }
       },
       costDto => {
-        requireJourneyData { journeyData =>
-
-          productDetailsService.storeCost(journeyData, path, index, costDto.cost) map { _ =>
-            Redirect(routes.SelectProductController.nextStep())
-          }
+        productDetailsService.storeCost(context.getJourneyData, path, iid, costDto.cost) map { _ =>
+          Redirect(routes.SelectProductController.nextStep())
         }
       }
     )
