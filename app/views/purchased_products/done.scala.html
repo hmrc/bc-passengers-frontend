@@ -13,12 +13,6 @@
         <th class="numeric" scope="col">@messages("done.label.amount")</th>
       </tr>
     </thead>
-    <tfoot>
-      <tr class="total-row" role="row">
-        <th class="total" role="gridcell" colspan="2">@messages("done.label.total")</th>
-        <td class="total-value numeric" role="gridcell">&pound;@calculatorResponseDto.calculation.allTax</td>
-      </tr>
-    </tfoot>
     <tbody>
       @calculatorResponseDto.bands.get("A").map { band =>
         @band.map { item =>
@@ -77,6 +71,11 @@
     </tbody>
   </table>
 
+  <div class="table-foot">
+    <span class="total">@messages("done.label.total")</span>
+    <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
+  </div>
+
 
   <table class="responsive-table">
     <caption class="heading-medium">@messages("done.how_total_calculated")</caption>
@@ -86,27 +85,38 @@
         <th class="numeric" scope="col">@messages("done.label.amount")</th>
       </tr>
     </thead>
-    <tfoot>
-      <tr class="total-row" role="row">
-        <th class="total" role="gridcell">@messages("done.label.total")</th>
-        <td class="total-value numeric" role="gridcell">&pound;@calculatorResponseDto.calculation.allTax</td>
-      </tr>
-    </tfoot>
     <tbody>
       <tr>
-        <td>@messages("done.label.customs")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.customs</td>
+        <td>
+          <span class="table-heading" aria-hidden="true">@messages("done.label.tax")</span>
+          @messages("done.label.customs")</td>
+        <td class="numeric">
+          <span class="table-heading" aria-hidden="true">@messages("done.label.amount")</span>
+          &pound;@calculatorResponseDto.calculation.customs</td>
       </tr>
       <tr>
-        <td>@messages("done.label.excise")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.excise</td>
+        <td>
+          <span class="table-heading" aria-hidden="true">@messages("done.label.tax")</span>
+          @messages("done.label.excise")</td>
+        <td class="numeric">
+          <span class="table-heading" aria-hidden="true">@messages("done.label.amount")</span>
+          &pound;@calculatorResponseDto.calculation.excise</td>
       </tr>
       <tr>
-        <td>@messages("done.label.vat")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.vat</td>
+        <td>
+          <span class="table-heading" aria-hidden="true">@messages("done.label.tax")</span>
+          @messages("done.label.vat")</td>
+        <td class="numeric">
+          <span class="table-heading" aria-hidden="true">@messages("done.label.amount")</span>
+          &pound;@calculatorResponseDto.calculation.vat</td>
       </tr>
     </tbody>
   </table>
+
+  <div class="table-foot">
+    <span class="total">@messages("done.label.total")</span>
+    <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
+  </div>
 
   @if(showExchangeRateInfo) {
     <p class="margin-top-30">@Html(messages("done.exchange_rates"))</p>

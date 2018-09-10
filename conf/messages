@@ -8,6 +8,8 @@ global.back=Back
 label.yes=Yes
 label.no=No
 
+suffix.comma = {0},
+
 #Title (Headings and Tab Titles)
 title.where_did_you_buy_goods=Where did you buy your goods?
 title.are_you_17_or_over=Are you 17 or over?
@@ -15,6 +17,9 @@ title.did_you_arrive_in_the_uk_privately=Did you arrive in the UK by private boa
 title.eu_allowances=Allowances for goods bought inside the European Union
 title.dashboard=Tell us about your purchases
 title.check_allowances_and_estimate_duties=Check allowances and estimate duties to bring goods into the UK
+title.your_purchases = Your purchases
+title.item = Item
+title.price = Price
 
 #Label (Paragraphs of text)
 label.no_limits_on_goods=There are no limits to the amount of goods you can bring into the UK from the European Union:

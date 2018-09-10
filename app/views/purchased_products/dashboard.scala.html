@@ -12,123 +12,124 @@
   <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
 
   <h2 class="heading-large">@messages("dashboard.your_travel_information")</h2>
-  <table id="travel-details">
-    <tbody>
-    <tr>
-      <td class="title">@messages("dashboard.private_travel")</td>
-      <td class="info-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
-    </tr>
-    <tr>
-      <td class="title">@messages("dashboard.17_or_over")</td>
-      <td class="info-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</td>
-    </tr>
-    </tbody>
-  </table>
+
+  <dl class="govuk-check-your-answers cya-questions-short">
+    <div>
+      <dt class="cya-question">@messages("dashboard.private_travel")</dt>
+      <dd class="cya-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
+    </div>
+    <div>
+      <dt class="cya-question">@messages("dashboard.17_or_over")</dt>
+      <dd class="cya-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
+    </div>
+  </dl>
+
+  <h2 class="heading-large">@messages("title.your_purchases")</h2>
 
   <div class="alcohol">
-    <h2 class="heading-large">@messages("dashboard.product_heading.alcohol")</h2>
-
-    <table class="cart">
-      <tbody>
-      @if(alcoholPurchasedItemList == List()){
-        <tr>
-          <td class="title">@messages("dashboard.no_products_added.alcohol")</td>
-          <td class="info-answer"></td>
-          <td class="numeric">
-            <a href="products/alcohol" class="add">@messages("button.add")</a>
-          </td>
-        </tr>
-      } else {
-        @alcoholPurchasedItemList.map{ alcoholPurchasedProductDetail =>
-          <tr>
-            <td class="">@alcoholPurchasedProductDetail.description</td>
-            <td class="info-answer">@alcoholPurchasedProductDetail.purchasedProductInstance.cost @alcoholPurchasedProductDetail.displayCurrency</td>
-          </tr>
-        }
-      }
-
-      </tbody>
-    </table>
+    <h3 class="heading-medium">@messages("dashboard.product_heading.alcohol")</h3>
 
     @if(alcoholPurchasedItemList != List()){
       <div class="add-more">
         <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
       </div>
     }
+
+    @if(alcoholPurchasedItemList == List()){
+      <p class="border-bottom">
+        <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
+      </p>
+    } else {
+      @alcoholPurchasedItemList.map{ alcoholPurchasedProductDetail =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-30">
+          <div>
+            <dt class="cya-question">@messages("title.item")</dt>
+            <dd class="cya-answer">@alcoholPurchasedProductDetail.description</dd>
+          </div>
+          <div>
+            <dt class="cya-question">@messages("title.price")</dt>
+            <dd class="cya-answer">@alcoholPurchasedProductDetail.purchasedProductInstance.cost @alcoholPurchasedProductDetail.displayCurrency</dd>
+          </div>
+        </dl>
+      }
+    }
+
   </div>
 
   <div class="tobacco">
-    <h2 class="heading-large">@messages("dashboard.product_heading.tobacco")</h2>
-
-    <table class="cart">
-      <tbody>
-      @if(tobaccoPurchasedItemList == List()){
-        <tr>
-          <td class="title">@messages("dashboard.no_products_added.tobacco")</td>
-          <td class="info-answer"></td>
-          <td class="numeric">
-            <a href="products/tobacco" class="add">@messages("button.add")</a>
-          </td>
-        </tr>
-      } else {
-      @tobaccoPurchasedItemList.map{ tobaccoPurchasedProductDetail =>
-          <tr>
-            <td class="">@tobaccoPurchasedProductDetail.description</td>
-            <td class="">@tobaccoPurchasedProductDetail.displayWeight</td>
-            <td class="info-answer">@tobaccoPurchasedProductDetail.purchasedProductInstance.cost @tobaccoPurchasedProductDetail.displayCurrency</td>
-          </tr>
-        }
-      }
-      </tbody>
-    </table>
+    <h3 class="heading-medium">@messages("dashboard.product_heading.tobacco")</h3>
 
     @if(tobaccoPurchasedItemList != List()){
       <div class="add-more">
         <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
       </div>
     }
+
+    @if(tobaccoPurchasedItemList == List()){
+      <p class="border-bottom">
+        <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
+      </p>
+    } else {
+      @tobaccoPurchasedItemList.map{ tobaccoPurchasedProductDetail =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-30">
+          <div>
+            <dt class="cya-question">@messages("title.item")</dt>
+            <dd class="cya-answer">
+              @if(tobaccoPurchasedProductDetail.displayWeight){
+                @messages("suffix.comma", tobaccoPurchasedProductDetail.description.get) @tobaccoPurchasedProductDetail.displayWeight
+              } else {
+                @tobaccoPurchasedProductDetail.description
+              }
+               </dt>
+          </div>
+          <div>
+            <dt class="cya-question">@messages("title.price")</dt>
+            <dd class="cya-answer">@tobaccoPurchasedProductDetail.purchasedProductInstance.cost @tobaccoPurchasedProductDetail.displayCurrency</dd>
+          </div>
+        </dl>
+      }
+    }
+
   </div>
 
 
   <div class="other-goods">
-    <h2 class="heading-large">@messages("dashboard.product_heading.other-goods")</h2>
-
-    <table class="cart">
-      <tbody>
-      @if(otherGoodsPurchasedItemList == List()){
-        <tr>
-          <td class="">@messages("dashboard.no_products_added.other-goods")</td>
-          <td class="info-answer"></td>
-          <td class="numeric">
-            <a href="products/other-goods" class="add">@messages("button.add")</a>
-          </td>
-        </tr>
-      } else {
-      @otherGoodsPurchasedItemList.map{ otherGoodsPurchasedProductDetail =>
-        <tr>
-          <td class="">@otherGoodsPurchasedProductDetail.description</td>
-          <td class="info-answer">@otherGoodsPurchasedProductDetail.purchasedProductInstance.cost @otherGoodsPurchasedProductDetail.displayCurrency</td>
-        </tr>
-
-        }
-      }
-      </tbody>
-    </table>
+    <h3 class="heading-medium">@messages("dashboard.product_heading.other-goods")</h3>
 
     @if(otherGoodsPurchasedItemList != List()){
       <div class="add-more">
         <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
       </div>
     }
+
+    @if(otherGoodsPurchasedItemList == List()){
+      <p class="border-bottom">
+        <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
+      </p>
+    } else {
+      @otherGoodsPurchasedItemList.map{ otherGoodsPurchasedProductDetail =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-30">
+          <div>
+            <dt class="cya-question">@messages("title.item")</dt>
+            <dd class="cya-answer">@otherGoodsPurchasedProductDetail.description</dd>
+          </div>
+          <div>
+            <dt class="cya-question">@messages("title.price")</dt>
+            <dd class="cya-answer">@otherGoodsPurchasedProductDetail.purchasedProductInstance.cost @otherGoodsPurchasedProductDetail.displayCurrency</dd>
+          </div>
+        </dl>
+      }
+    }
+
   </div>
 
   @if(showCalculate) {
     @helpers.form(action = routes.DashboardController.calculate()) {
-      <button type="submit" class="margin-bottom-30">Calculate</button>
+      <button type="submit" class="margin-top-30">Calculate</button>
     }
   }
 
-  <p>
+  <p class="margin-top-30">
     <a href="@controllers.routes.TravelDetailsController.newSession()" id="start-again" >@messages("label.start_again")</a>
   </p>
 }
