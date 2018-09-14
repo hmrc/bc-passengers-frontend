@@ -1,9 +1,7 @@
-input[type="text"].autocomplete__input {
-    width: 100%;
-}
+@import "utils/responsive-table";
 
-table .title {
-  font-weight: bold;
+input[type="text"].autocomplete__input {
+  width: 100%;
 }
 
 label.inline {
@@ -11,27 +9,18 @@ label.inline {
 }
 
 .add-more {
-    margin-top: 0.85em;
-    margin-bottom: 2.75em;
-}
-
-
-.responsive-table {
-  width: 100%;
-}
-
-.responsive-table tfoot th,
-.responsive-table tfoot td {
-  font-weight: 700;
-}
-
-.responsive-table .table-heading {
-  display: none;
+  margin-top: 0.85em;
+  margin-bottom: 2.75em;
 }
 
 h1 span.heading-medium {
   display: block;
   margin-top:-5px;
+}
+
+.border-bottom {
+  padding: .63158em 1.05263em .47368em 0;
+  border-bottom: 1px solid #bfc1c3;
 }
 
 /*
