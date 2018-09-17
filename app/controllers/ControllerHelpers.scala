@@ -42,11 +42,15 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def DashboardAction(block: LocalContext => Future[Result]): Action[AnyContent] = {
 
     PublicAction { implicit context =>
-      requireJourneyData { jd =>
-        implicit val ctxWithJd = context.withJourneyData(jd)
-        requireTravelDetails {
-          block(ctxWithJd)
-        }(ctxWithJd, implicitly)
+
+      travelDetailsService.getJourneyData flatMap {
+        case Some(journeyData) =>
+          implicit val ctxWithJd = context.withJourneyData(journeyData)
+          requireTravelDetails {
+            block(ctxWithJd)
+          }(ctxWithJd, implicitly)
+        case None =>
+          logAndRedirect("Unable to get journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
       }
     }
   }
@@ -74,82 +78,65 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
   def requireJourneyData(block: JourneyData => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
-    travelDetailsService.getJourneyData flatMap {
+    context.journeyData match {
       case Some(journeyData) =>
         block(journeyData)
       case None =>
-        logAndRedirect("Unable to load required journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
+        logAndRedirect("Unable to get journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
+    }
+  }
+
+  def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    context.getJourneyData match {
+      case JourneyData(_, _, _, _, _, Some(workingInstance)) => block(workingInstance)
+      case _ =>
+        logAndRedirect(s"Missing working instance in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
   }
 
   def requireTravelDetails(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _) => block
+      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _, _) => block
       case _ =>
         logAndRedirect(s"Incomplete or missing travel details found in journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
     }
   }
 
-  def requirePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+  def requireWorkingInstanceWeightOrVolume(block: BigDecimal => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
-    context.getJourneyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.find(_.iid==iid) match {
-      case Some(purchasedProductInstance) => block(purchasedProductInstance)
-      case None =>
-        logAndRedirect(s"No purchasedProductInstance found in journeyData for $path:$iid! Redirecting to dashboard...", routes.DashboardController.showDashboard())
-    }
-  }
-
-  def withPurchasedProductInstanceCount(path: ProductPath, iid: String)(block: Int => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-    block(context.getJourneyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.size)
-  }
-
-
-  def requirePurchasedProductInstanceWeightOrVolume(path: ProductPath, iid: String)(block: BigDecimal => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    requirePurchasedProductInstance(path, iid) { purchasedProductInstance =>
+    requireWorkingInstance { purchasedProductInstance =>
       purchasedProductInstance.weightOrVolume match {
         case Some(weightOrVolume) => block(weightOrVolume)
         case None =>
-          logAndRedirect(s"No weightOrVolume found in journeyData for $path:$iid! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+          logAndRedirect(s"No weightOrVolume found in working instance! Redirecting to dashboard...", routes.DashboardController.showDashboard())
       }
     }
   }
 
-  def requirePurchasedProductInstanceNoOfSticks(path: ProductPath, iid: String)(block: Int => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+  def requireWorkingInstanceDescription(product: ProductTreeLeaf)(block: String => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
-    requirePurchasedProductInstance(path, iid) { purchasedProductInstance =>
-      purchasedProductInstance.noOfSticks match {
-        case Some(noOfSticks) => block(noOfSticks)
-        case None =>
-          logAndRedirect(s"No noOfSticks found in journeyData for $path:$iid! Redirecting to dashboard...", routes.DashboardController.showDashboard())
-      }
-    }
-  }
-
-  def requirePurchasedProductInstanceDescription(product: ProductTreeLeaf, path: ProductPath, iid: String)(block: String => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    requirePurchasedProductInstance(path, iid) { purchasedProductInstance =>
+    requireWorkingInstance { purchasedProductInstance =>
       block(product.getDescription(purchasedProductInstance).getOrElse(""))
     }
+
   }
 
-  def requirePurchasedProductInstanceCurrency(path: ProductPath, iid: String)(block: Currency => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+  def requireWorkingInstanceCurrency(block: Currency => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
-    requirePurchasedProductInstance(path, iid) { purchasedProductInstance =>
-      purchasedProductInstance.currency match {
-        case Some(currency) =>
-          currencyService.getCurrencyByCode(currency) match {
-            case Some(curr) => block(curr)
-            case None =>
-              logAndRedirect(s"Unable to fetch currency for $currency!", routes.DashboardController.showDashboard())
+    requireWorkingInstance {
+      case PurchasedProductInstance(_, _, _, _, Some(currency), _) =>
+        currencyService.getCurrencyByCode(currency) match {
+          case Some(curr) => block(curr)
+          case None =>
+            logAndRedirect(s"Unable to fetch currency for $currency!", routes.DashboardController.showDashboard())
 
-          }
-        case None => logAndRedirect(s"No currency found in journeyData for $path:$iid! Redirecting to dashboard...", routes.DashboardController.showDashboard())
-      }
+        }
+      case _ =>
+        logAndRedirect(s"Unable to extract working currency", routes.DashboardController.showDashboard())
     }
   }
-
 
   def withNextSelectedProductPath(block: Option[ProductPath] => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
     context.getJourneyData.selectedProducts match {

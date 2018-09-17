@@ -39,7 +39,8 @@ case class JourneyData(
   ageOver17: Option[Boolean] = None,
   privateCraft: Option[Boolean] = None,
   selectedProducts: List[List[String]] = Nil,
-  purchasedProducts: List[PurchasedProduct] = Nil
+  purchasedProducts: List[PurchasedProduct] = Nil,
+  workingInstance: Option[PurchasedProductInstance] = None
 ) {
 
   def allCurrencyCodes: Set[String] = (for {
@@ -55,4 +56,14 @@ case class JourneyData(
     val newPdList = block(getOrCreatePurchasedProduct(path)) :: purchasedProducts.filterNot(_.path == path)
     this.copy(purchasedProducts = newPdList)
   }
+
+  def withUpdatedWorkingInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {
+
+    val purchasedProductInstance = block(this.workingInstance.getOrElse(PurchasedProductInstance(path, iid)))
+
+    this.copy(workingInstance = Some(purchasedProductInstance))
+  }
+
+  def clearingWorking = this.copy(workingInstance = None)
+
 }

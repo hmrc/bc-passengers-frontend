@@ -5,6 +5,8 @@ import play.api.libs.json._
 case class ProductPath(components: List[String]) {
   override def toString = components.mkString("/")
   def addingComponent(component: String) = ProductPath(components :+ component)
+
+  def categoryComponent = components.dropRight(1)
 }
 
 object ProductPath {

@@ -37,7 +37,7 @@ class TravelDetailsController @Inject() (
 
   val selectCountry: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(Some(country), _, _, _, _)) =>
+      case Some(JourneyData(Some(country), _, _, _, _, _)) =>
         Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form.bind(Map("country" -> country)), countriesService.getAllCountries))
       case _ =>
         Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form, countriesService.getAllCountries))
@@ -67,7 +67,7 @@ class TravelDetailsController @Inject() (
 
   val confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(_, Some(ageOver17), _, _, _)) =>
+      case Some(JourneyData(_, Some(ageOver17), _, _, _, _)) =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form))
@@ -92,7 +92,7 @@ class TravelDetailsController @Inject() (
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
 
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(_, _, Some(privateCraft), _, _)) =>
+      case Some(JourneyData(_, _, Some(privateCraft), _, _, _)) =>
         Ok(views.html.travel_details.confirm_private_craft(form.bind(Map("privateCraft" -> privateCraft.toString))))
       case _ =>
         Ok(views.html.travel_details.confirm_private_craft(form))

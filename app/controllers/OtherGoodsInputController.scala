@@ -73,11 +73,15 @@ class OtherGoodsInputController @Inject() (
   def loadCostInput(path: ProductPath, iid: String, ir: Int): Action[AnyContent] = DashboardAction { implicit context =>
 
     val form = CostDto.form(optionalItemsRemaining = false).bind(Map("itemsRemaining" -> ir.toString)).discardingErrors
-    requirePurchasedProductInstanceCurrency(path, iid) { currency: Currency =>
+
+    requireWorkingInstanceCurrency { currency =>
+
       requireProduct(path) { product =>
         Future.successful(Ok(views.html.other_goods.cost_input(form, product, path, iid, currency.displayName)))
       }
+
     }
+
   }
 
   def processCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
@@ -85,7 +89,7 @@ class OtherGoodsInputController @Inject() (
     CostDto.form(optionalItemsRemaining = false).bindFromRequest.fold(
       formWithErrors => {
 
-        requirePurchasedProductInstanceCurrency(path, iid) { currency: Currency =>
+        requireWorkingInstanceCurrency { currency =>
           requireProduct(path) { product =>
             Future.successful(BadRequest(views.html.other_goods.cost_input(formWithErrors, product, path, iid, currency.displayName)))
           }
@@ -93,15 +97,35 @@ class OtherGoodsInputController @Inject() (
       },
       costDto => {
 
-        val itemsRemaining = costDto.itemsRemaining
-        val newItemsRemaining = itemsRemaining-1
+        val itemsRemaining = costDto.itemsRemaining-1
 
-        withPurchasedProductInstanceCount(path, iid) { count =>
-          productDetailsService.storeCost(context.getJourneyData, path, iid, costDto.cost) map { _ =>
-            if(newItemsRemaining > 0)
-              Redirect(routes.OtherGoodsInputController.loadCurrencyInput(path, generateIid, newItemsRemaining))
+        requireWorkingInstance { workingInstance =>
+
+          requireProduct(path) { product =>
+
+            val wi = workingInstance.copy(cost = Some(costDto.cost))
+
+            if (product.isValid(wi)) {
+              context.journeyData.map { jd =>
+                val updatedJourneyData = jd.updatePurchasedProduct(path) { product =>
+                  val l = product.purchasedProductInstances
+                  val m = (l.takeWhile(_.iid != iid), l.dropWhile(_.iid != iid)) match {
+                    case (x, Nil) => wi :: x  //Prepend
+                    case (x, y) => x ++ (wi :: y.tail)  //Replace in place
+                  }
+                  product.copy(purchasedProductInstances = m)
+                }
+                productDetailsService.cacheJourneyData(updatedJourneyData.copy(workingInstance = None))
+              }
+            } else {
+              Logger.warn("Working instance was not valid")
+            }
+
+            if (itemsRemaining > 0)
+              Future.successful(Redirect(routes.OtherGoodsInputController.loadCurrencyInput(path, generateIid, itemsRemaining)))
             else
-              Redirect(routes.SelectProductController.nextStep())
+              Future.successful(Redirect(routes.SelectProductController.nextStep()))
+
           }
         }
       }
