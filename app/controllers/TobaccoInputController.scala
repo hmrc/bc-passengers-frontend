@@ -3,15 +3,13 @@ package controllers
 import config.AppConfig
 import javax.inject.Inject
 import models._
-import org.apache.commons.lang3.StringUtils
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent}
 import services.{CurrencyService, ProductTreeService, PurchasedProductService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
-import scala.util.Random
 
 class TobaccoInputController @Inject()(
   val travelDetailsService: TravelDetailsService,

@@ -39,6 +39,49 @@ class PurchasedProductServiceSpec extends BaseSpec {
   }
 
 
+  "Calling PurchasedProductService.clearWorkingInstance" should {
+
+    "remove the working instance" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))))
+
+      await(s.clearWorkingInstance(journeyDataInCache.get))
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(workingInstance = None))
+      )(any())
+
+    }
+
+  }
+
+  "Calling PurchasedProductService.removePurchasedProductInstance" should {
+
+    "remove the working instance" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData( purchasedProducts = List(
+        PurchasedProduct(ProductPath("alcohol/beer"), List(
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some("USD"), Some(BigDecimal("12.99"))),
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some("USD"), Some(BigDecimal("4.99"))),
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        ))
+      )))
+
+      await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData( purchasedProducts = List(
+          PurchasedProduct(ProductPath("alcohol/beer"), List(
+            PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some("USD"), Some(BigDecimal("12.99"))),
+            PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+          ))
+        )))
+      )(any())
+
+    }
+
+  }
+
   "Calling PurchasedProductService.storeCurrency" should {
 
     "store a new working instance, containing the currency" in new LocalSetup {

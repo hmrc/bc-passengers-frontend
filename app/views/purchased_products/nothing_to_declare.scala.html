@@ -45,8 +45,10 @@
 
   <p>@messages("done.green_channel")</p>
 
-  <p>
-    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("done.link.start_again")</a>
-  </p>
+<p>
+  <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
+  <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("text.start_again")</a>
+</p>
+
 
 }

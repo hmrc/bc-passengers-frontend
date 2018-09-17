@@ -86,6 +86,26 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
     }
   }
 
+  def requirePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    context.getJourneyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.find(_.iid==iid) match {
+      case Some(purchasedProductInstance) => block(purchasedProductInstance)
+      case None =>
+        logAndRedirect(s"No purchasedProductInstance found in journeyData for $path:$iid! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+    }
+  }
+
+  def requirePurchasedProductInstanceDescription(product: ProductTreeLeaf, path: ProductPath, iid: String)(block: String => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    requirePurchasedProductInstance(path, iid) { purchasedProductInstance =>
+      product.getDescription(purchasedProductInstance) match {
+        case Some(desc) => block(desc)
+        case None =>
+          logAndRenderError(s"No purchasedProductInstance found in journeyData for $path:$iid!")
+      }
+    }
+  }
+
   def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {

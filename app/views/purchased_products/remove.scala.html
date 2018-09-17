@@ -1,0 +1,32 @@
+@(confirmRemoveForm: Form[ConfirmRemoveDto], productName: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("label.do_you_want_to_remove_this", productName)) {
+
+@helpers.form(action = routes.AlterProductsController.remove(path, iid)){
+
+  @views.html.tags.errors(confirmRemoveForm)
+
+  <div class="form-group inline">
+
+    <fieldset>
+      <legend>
+        <h1 class="heading-xlarge">@messages("label.do_you_want_to_remove_this", productName)</h1>
+      </legend>
+
+      @components.input_radio_group(
+        confirmRemoveForm("confirmRemove"),
+        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+        '_labelClass -> "block-label inputLabelBeforeError"
+      )
+    </fieldset>
+
+  </div>
+
+  <div class="form-group">
+    <button class="button" type="submit">@messages("global.continue_button")</button>
+  </div>
+}
+
+}
