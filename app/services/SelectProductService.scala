@@ -14,11 +14,17 @@ class SelectProductService @Inject()(
   val currencyService: CurrencyService
 ) extends UsesJourneyData {
 
-  def addSelectedProducts(selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
+  def addSelectedProducts(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
 
-    loanAndUpdateJourneyData { jd =>
-      val sp = selectedProducts.map(_.components) ++ jd.selectedProducts
-      jd.copy(selectedProducts = sp)
+    val truncatedCurrentSelectedProducts = journeyData.selectedProducts.foldLeft[List[List[String]]](List[List[String]]()) { (acc, ele) =>
+      val cat = ele.dropRight(1)
+      if(selectedProducts.exists(_.categoryComponent == cat)) acc
+      else acc :+ ele
+    }
+
+    val newJd = journeyData.copy(selectedProducts = (selectedProducts.map(_.components) ++ truncatedCurrentSelectedProducts))
+    cacheJourneyData(newJd) map { _ =>
+      newJd
     }
   }
 

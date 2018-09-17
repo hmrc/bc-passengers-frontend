@@ -9,14 +9,17 @@ import org.mockito.Mockito._
 import org.scalatest.Inspectors._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
+import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Result
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import services.{SelectProductService, TravelDetailsService}
+import services.{LocalSessionCache, PurchasedProductService, SelectProductService, TravelDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
 import util.{BaseSpec, FakeCookieCryptoFilter}
+import play.api.test.Helpers.{route => rt}
+
 
 import scala.concurrent.Future
 import scala.language.postfixOps
@@ -24,9 +27,13 @@ import scala.language.postfixOps
 
 class SelectProductControllerSpec extends BaseSpec {
 
+  val requiredJourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
+
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[SelectProductService].toInstance(MockitoSugar.mock[SelectProductService]))
+    .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
+    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
     .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
     .build()
 
@@ -34,20 +41,39 @@ class SelectProductControllerSpec extends BaseSpec {
     reset(injected[TravelDetailsService], injected[SelectProductService])
   }
 
-  val controller: SelectProductController = injected[SelectProductController]
 
   trait LocalSetup {
+
     def result: Future[Result]
     def content: String = contentAsString(result)
     def doc: Document = Jsoup.parse(content)
     def h1: String = doc.getElementsByTag("h1").text
     def title: String = doc.title
+
+    def cachedJourneyData: Option[JourneyData]
+
+    def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+
+      when(injected[SelectProductService].addSelectedProducts(any(),any())(any(),any())) thenReturn {
+        Future.successful(JourneyData())
+      }
+
+      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(),any())) thenReturn Future.successful(cachedJourneyData.get)
+      when(injected[SelectProductService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+
+      rt(app, req)
+    }
+
   }
 
   "Invoking askProductSelection for branch items" should {
 
     "return the select products alcohol page given path /alcohol (branch)" in new LocalSetup {
-      override val result: Future[Result] = controller.askProductSelection(ProductPath("alcohol"))(EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol"))
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What type of alcohol are you bringing into the UK?"
@@ -59,7 +85,10 @@ class SelectProductControllerSpec extends BaseSpec {
 
 
     "return the select products tobacco page given path /tobacco (branch)" in new LocalSetup {
-      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco")).get
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What type of tobacco are you bringing into the UK?"
@@ -71,7 +100,10 @@ class SelectProductControllerSpec extends BaseSpec {
 
 
     "return the select products other goods page given path /other-goods (branch" in new LocalSetup {
-      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods")).get
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What items are you bringing into the UK?"
@@ -79,7 +111,10 @@ class SelectProductControllerSpec extends BaseSpec {
     }
 
     "return the select products page given path /other-goods/carpets-cotton-fabric" in new LocalSetup {
-      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/carpets-cotton-fabric")).get
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/carpets-cotton-fabric")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What carpets, cotton and fabrics are you bringing into the UK?"
@@ -89,14 +124,20 @@ class SelectProductControllerSpec extends BaseSpec {
     }
 
     "return the technical error page given an incorrect path" in new LocalSetup {
-      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/invalid/path")).get
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/invalid/path")).get
 
       status(result) shouldBe NOT_FOUND
       h1 shouldBe "Technical problem"
     }
 
     "return the technical error page given a leaf path" in new LocalSetup {
-      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer")).get
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
       h1 shouldBe "Technical problem"
@@ -105,22 +146,27 @@ class SelectProductControllerSpec extends BaseSpec {
 
   "Invoking processSelectedProducts" should {
 
-    "return bad request when given invalid data" in {
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol").withFormUrlEncodedBody("value" -> "bad_value")).get
-      status(response) shouldBe BAD_REQUEST
+    "return bad request when given invalid data" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol").withFormUrlEncodedBody("value" -> "bad_value")).get
+      status(result) shouldBe BAD_REQUEST
     }
 
-    "addSelectedProducts to keystore and return redirect to nextStep given valid checkbox values" in {
+    "addSelectedProducts to keystore and return redirect to nextStep given valid checkbox values" in new LocalSetup {
 
-      when(injected[SelectProductService].addSelectedProducts(any())(any(),any())) thenReturn {
-        Future.successful(CacheMap("fakeid", Map.empty))
-      }
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(selectedProducts = List(
+        List("alcohol/beer"),List("alcohol/cider")
+      )))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
+      override val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
 
-      status(response) shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
 
-      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(List(ProductPath("alcohol/beer"))))(any(),any())
+      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(cachedJourneyData.get), meq(List(ProductPath("alcohol/beer"))))(any(),any())
+      verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
 
     }
   }

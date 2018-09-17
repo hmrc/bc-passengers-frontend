@@ -41,23 +41,14 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
   "Calling PurchasedProductService.storeCurrency" should {
 
-    "create a new PurchasedProductInstance on the PurchasedProduct which matches the supplied path, containing the currency" in new LocalSetup {
+    "store a new working instance, containing the currency" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      await(s.storeCurrency(
-        JourneyData(purchasedProducts = List(PurchasedProduct(ProductPath("some/item/path")))),
-        ProductPath("some/item/path"),
-        "iid0", "USD"
-      ))
+      await(s.storeCurrency(JourneyData(), ProductPath("some/item/path"), "iid0", "USD"))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(purchasedProducts = List(PurchasedProduct(
-          path = ProductPath("some/item/path"),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD"))
-          ))
-        )))
+        meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))))
       )(any())
 
     }

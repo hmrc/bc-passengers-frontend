@@ -14,8 +14,9 @@ class   SelectProductController @Inject()(
   val productTreeService: ProductTreeService,
   val travelDetailsService: TravelDetailsService,
   val currencyService: CurrencyService,
-  val selectProductService: SelectProductService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport  with ControllerHelpers {
+  val selectProductService: SelectProductService,
+  val purchasedProductService: PurchasedProductService
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def nextStep(): Action[AnyContent] = DashboardAction { implicit context =>
 
@@ -47,7 +48,7 @@ class   SelectProductController @Inject()(
     }
   }
 
-  def askProductSelection(path: ProductPath): Action[AnyContent] = PublicAction { implicit request =>
+  def askProductSelection(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProductOrCategory(path) {
 
@@ -60,7 +61,7 @@ class   SelectProductController @Inject()(
   }
 
 
-  def processProductSelection(path: ProductPath): Action[AnyContent] = PublicAction { implicit request =>
+  def processProductSelection(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireCategory(path) { branch =>
 
@@ -72,8 +73,11 @@ class   SelectProductController @Inject()(
         },
         success = selectProductsDto => {
 
-          selectProductService.addSelectedProducts(selectProductsDto.tokens.map(path.addingComponent)) map { _ =>
-            Redirect(routes.SelectProductController.nextStep())
+          selectProductService.addSelectedProducts(context.getJourneyData, selectProductsDto.tokens.map(path.addingComponent)) flatMap { journeyData =>
+
+            purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
+              Redirect(routes.SelectProductController.nextStep())
+            }
           }
         }
       )

@@ -2,6 +2,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 import models.{JourneyData, ProductPath}
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -11,63 +12,53 @@ import scala.util.Random
 @Singleton
 class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache) extends UsesJourneyData {
 
-  def storeCurrency(journeyData: JourneyData, path: ProductPath, iid: String, currency: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[CacheMap] = {
+  def clearWorkingInstance(journeyData: JourneyData)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
-
-      purchasedProduct.updatePurchasedProductInstance(iid) { purchasedProductInstance =>
-        purchasedProductInstance.copy(currency = Some(currency))
-      }
-    }
-
-    cacheJourneyData( updatedJourneyData )
+    val updatedJourneyData = journeyData.clearingWorking
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def storeCost(journeyData: JourneyData, path: ProductPath, iid: String, cost: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[CacheMap] = {
+  def storeCurrency(journeyData: JourneyData, path: ProductPath, iid: String, currency: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
-
-      purchasedProduct.updatePurchasedProductInstance(iid) { purchasedProductInstance =>
-        purchasedProductInstance.copy(cost = Some(cost))
-      }
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
+      purchasedProductInstance.copy(path = path, iid = iid, currency = Some(currency))
     }
 
-    cacheJourneyData( updatedJourneyData )
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def storeWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[CacheMap] = {
+  def storeCost(journeyData: JourneyData, path: ProductPath, iid: String, cost: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
-
-      purchasedProduct.updatePurchasedProductInstance(iid) { purchasedProductInstance =>
-        purchasedProductInstance.copy(weightOrVolume = Some(weightOrVolume))
-      }
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
+      purchasedProductInstance.copy(path = path, iid = iid, cost = Some(cost))
     }
 
-    cacheJourneyData( updatedJourneyData )
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def storeNoOfSticksAndWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Int, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[CacheMap] = {
+  def storeWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
-
-      purchasedProduct.updatePurchasedProductInstance(iid) { purchasedProductInstance =>
-        purchasedProductInstance.copy(noOfSticks = Some(noOfSticks), weightOrVolume = Some(weightOrVolume))
-      }
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
+      purchasedProductInstance.copy(path = path, iid = iid, weightOrVolume = Some(weightOrVolume))
     }
 
-    cacheJourneyData( updatedJourneyData )
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def storeNoOfSticks(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[CacheMap] = {
+  def storeNoOfSticksAndWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Int, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { purchasedProduct =>
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
+      purchasedProductInstance.copy(path = path, iid = iid, noOfSticks = Some(noOfSticks), weightOrVolume = Some(weightOrVolume))
+    }
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
 
-      purchasedProduct.updatePurchasedProductInstance(iid) { purchasedProductInstance =>
-        purchasedProductInstance.copy(noOfSticks = Some(noOfSticks))
-      }
+  def storeNoOfSticks(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
+      purchasedProductInstance.copy(path = path, iid = iid, noOfSticks = Some(noOfSticks))
     }
 
-    cacheJourneyData( updatedJourneyData )
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 }
