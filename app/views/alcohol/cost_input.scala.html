@@ -1,4 +1,4 @@
-@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, index: Int, volume: BigDecimal, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, iid: String, volume: BigDecimal, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -9,7 +9,7 @@
 @main_template(title = title.toString) {
 
 
-    @helpers.form(action = routes.AlcoholInputController.processCostInput(path, index)) {
+    @helpers.form(action = routes.AlcoholInputController.processCostInput(path, iid)) {
 
         <fieldset>
             <legend>

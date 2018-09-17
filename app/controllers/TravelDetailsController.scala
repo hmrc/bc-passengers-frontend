@@ -8,7 +8,7 @@ import models.PrivateCraftDto._
 import models.{SelectedCountryDto, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.{CountriesService, ProductTreeService, TravelDetailsService}
+import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -19,13 +19,13 @@ import scala.concurrent.Future
 class TravelDetailsController @Inject() (
   val countriesService: CountriesService,
   val travelDetailsService: TravelDetailsService,
-  val messagesApi: MessagesApi,
-  val productsService: ProductTreeService
-)(implicit val appConfig: AppConfig) extends FrontendController with I18nSupport with PublicActions {
+  val productsService: ProductTreeService,
+  val currencyService: CurrencyService,
+  val productTreeService: ProductTreeService
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Redirect(routes.TravelDetailsController.selectCountry).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
-
   }
 
   val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>

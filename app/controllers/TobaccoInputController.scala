@@ -3,55 +3,53 @@ package controllers
 import config.AppConfig
 import javax.inject.Inject
 import models._
+import org.apache.commons.lang3.StringUtils
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{CurrencyService, ProductTreeService, PurchasedProductService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
+import scala.util.Random
 
 class TobaccoInputController @Inject()(
   val travelDetailsService: TravelDetailsService,
   val productDetailsService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with PublicActions with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
-  def startInputJourney(path: ProductPath): Action[AnyContent] = PublicAction { implicit request =>
+  def startInputJourney(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
 
-    requireJourneyData { journeyData =>
-      val nextIndex = journeyData.getOrCreatePurchasedProduct(path).purchasedProductInstances.size
-      productDetailsService.storeQuantity(journeyData, path, 1) map { _ =>
+    val iid = generateIid
 
-        path.components.last match {
-          case "cigarettes"            =>  Redirect(routes.TobaccoInputController.displayNoOfSticksInput(path, nextIndex))
-          case "cigars" | "cigarillos" =>  Redirect(routes.TobaccoInputController.displayNoOfSticksWeightInput(path, nextIndex))
-          case "rolling" | "chewing"   =>  Redirect(routes.TobaccoInputController.displayWeightInput(path, nextIndex))
-        }
+    Future.successful {
+      path.components.last match {
+        case "cigarettes"            =>  Redirect(routes.TobaccoInputController.displayNoOfSticksInput(path, iid))
+        case "cigars" | "cigarillos" =>  Redirect(routes.TobaccoInputController.displayNoOfSticksWeightInput(path, iid))
+        case "rolling" | "chewing"   =>  Redirect(routes.TobaccoInputController.displayWeightInput(path, iid))
       }
     }
   }
 
 
-  def displayNoOfSticksInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayNoOfSticksInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.tobacco.no_of_sticks_input(NoOfSticksDto.form, product.token, product.name, path, index)))
+      Future.successful(Ok(views.html.tobacco.no_of_sticks_input(NoOfSticksDto.form, product.token, product.name, path, iid)))
     }
   }
 
-  def processNoOfSticksInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processNoOfSticksInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     NoOfSticksDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.tobacco.no_of_sticks_input(formWithErrors, product.token, product.name, path, index)))
+          Future.successful(BadRequest(views.html.tobacco.no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
         }
       },
       noOfSticksDto => {
-        requireJourneyData { journeyData =>
-          productDetailsService.storeNoOfSticks(journeyData, path, index, noOfSticksDto.noOfSticks) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCurrencyInput(path, index))
-          }
+        productDetailsService.storeNoOfSticks(context.getJourneyData, path, iid, noOfSticksDto.noOfSticks) map { _ =>
+          Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
         }
       }
     )
@@ -60,26 +58,25 @@ class TobaccoInputController @Inject()(
 
 
 
-  def displayNoOfSticksWeightInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayNoOfSticksWeightInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.tobacco.no_of_sticks_weight_input(NoOfSticksAndWeightDto.form, product.token, product.name, path, index)))
+      Future.successful(Ok(views.html.tobacco.no_of_sticks_weight_input(NoOfSticksAndWeightDto.form, product.token, product.name, path, iid)))
     }
 
   }
 
-  def processNoOfSticksWeightInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processNoOfSticksWeightInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     NoOfSticksAndWeightDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.tobacco.no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, index)))
+          Future.successful(BadRequest(views.html.tobacco.no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
         }
       },
       dto => {
-        requireJourneyData { journeyData =>
-          productDetailsService.storeNoOfSticksAndWeightOrVolume(journeyData, path, index, dto.noOfSticks, dto.weight) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCurrencyInput(path, index))
-          }
+        productDetailsService.storeNoOfSticksAndWeightOrVolume(context.getJourneyData, path, iid, dto.noOfSticks, dto.weight) map { _ =>
+          Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
         }
       }
     )
@@ -89,24 +86,23 @@ class TobaccoInputController @Inject()(
 
 
 
-  def displayWeightInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayWeightInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.tobacco.weight_input(WeightDto.form, product.token, product.name, path, index)))
+      Future.successful(Ok(views.html.tobacco.weight_input(WeightDto.form, product.token, product.name, path, iid)))
     }
   }
 
-  def processWeightInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processWeightInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
     WeightDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.tobacco.weight_input(formWithErrors, product.token, product.name, path, index)))
+          Future.successful(BadRequest(views.html.tobacco.weight_input(formWithErrors, product.token, product.name, path, iid)))
         }
       },
       dto => {
-        requireJourneyData { journeyData =>
-          productDetailsService.storeWeightOrVolume(journeyData, path, index, dto.weight) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCurrencyInput(path, index))
-          }
+        productDetailsService.storeWeightOrVolume(context.getJourneyData, path, iid, dto.weight) map { _ =>
+          Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
         }
       }
     )
@@ -116,36 +112,29 @@ class TobaccoInputController @Inject()(
 
 
 
-  def displayCurrencyInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayCurrencyInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProduct(path) { product =>
-      requireJourneyData { journeyData =>
-        requirePurchasedProductInstanceDescription(journeyData)(product, path, index) { description =>
-          Future.successful(Ok(views.html.tobacco.currency_input(CurrencyDto.form(currencyService), product, currencyService.getAllCurrencies, description, path, index)))
-        }
+      requirePurchasedProductInstanceDescription(product, path, iid) { description =>
+        Future.successful(Ok(views.html.tobacco.currency_input(CurrencyDto.form(currencyService), product, currencyService.getAllCurrencies, description, path, iid)))
       }
     }
 
   }
 
-  def processCurrencyInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processCurrencyInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     CurrencyDto.form(currencyService).bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          requireJourneyData { journeyData =>
-            requirePurchasedProductInstanceDescription(journeyData)(product, path, index) { description =>
-              Future.successful(BadRequest(views.html.tobacco.currency_input(formWithErrors, product, currencyService.getAllCurrencies, description, path, index)))
-            }
+          requirePurchasedProductInstanceDescription(product, path, iid) { description =>
+            Future.successful(BadRequest(views.html.tobacco.currency_input(formWithErrors, product, currencyService.getAllCurrencies, description, path, iid)))
           }
         }
       },
       currencyDto => {
-        requireJourneyData { journeyData =>
-
-          productDetailsService.storeCurrency(journeyData, path, index, currencyDto.currency) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCostInput(path, index))
-          }
+        productDetailsService.storeCurrency(context.getJourneyData, path, iid, currencyDto.currency) map { _ =>
+          Redirect(routes.TobaccoInputController.displayCostInput(path, iid))
         }
       }
     )
@@ -155,45 +144,38 @@ class TobaccoInputController @Inject()(
 
 
 
-  def displayCostInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def displayCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProduct(path) { product =>
-      requireJourneyData { journeyData =>
-        requirePurchasedProductInstanceDescription(journeyData)(product, path, index) { description =>
-          requirePurchasedProductInstanceCurrency(journeyData)(path, index) { currency =>
-            requireProduct(path) { product =>
-              Future.successful(Ok(views.html.tobacco.cost_input(CostDto.form, product, path, index, description, currency.displayName)))
-            }
+      requirePurchasedProductInstanceDescription(product, path, iid) { description =>
+        requirePurchasedProductInstanceCurrency(path, iid) { currency =>
+          requireProduct(path) { product =>
+            Future.successful(Ok(views.html.tobacco.cost_input(CostDto.form(), product, path, iid, description, currency.displayName)))
           }
         }
-
       }
     }
   }
 
-  def processCostInput(path: ProductPath, index: Int): Action[AnyContent] = PublicAction { implicit request =>
+  def processCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    CostDto.form.bindFromRequest.fold(
+    CostDto.form().bindFromRequest.fold(
       formWithErrors => {
 
         requireProduct(path) { product =>
-          requireJourneyData { journeyData =>
-            requirePurchasedProductInstanceDescription(journeyData)(product, path, index) { description =>
-              requirePurchasedProductInstanceCurrency(journeyData)(path, index) { currency =>
-                requireProduct(path) { product =>
-                  Future.successful(BadRequest(views.html.tobacco.cost_input(formWithErrors, product, path, index, description, currency.displayName)))
-                }
+          requirePurchasedProductInstanceDescription(product, path, iid) { description =>
+            requirePurchasedProductInstanceCurrency(path, iid) { currency =>
+              requireProduct(path) { product =>
+                Future.successful(BadRequest(views.html.tobacco.cost_input(formWithErrors, product, path, iid, description, currency.displayName)))
               }
             }
           }
         }
       },
       costDto => {
-        requireJourneyData { journeyData =>
 
-          productDetailsService.storeCost(journeyData, path, index, costDto.cost) map { _ =>
-            Redirect(routes.SelectProductController.nextStep())
-          }
+        productDetailsService.storeCost(context.getJourneyData, path, iid, costDto.cost) map { _ =>
+          Redirect(routes.SelectProductController.nextStep())
         }
       }
     )

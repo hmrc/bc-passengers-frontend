@@ -11,17 +11,19 @@ import scala.concurrent.Future
 
 class AlcoholVerticalSpec extends VerticalBaseSpec {
 
+  val requiredJourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
+
   "Calling GET /products/alcohol/.../volume" should {
 
     "return a 200" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = None
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/volume/0")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/volume/iid0")).get
 
       status(result) shouldBe OK
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
   }
@@ -30,47 +32,46 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = None
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/volume/0")
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/volume/iid0")
         .withFormUrlEncodedBody("volume" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
 
     }
 
     "return a 303 given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData())
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/volume/0")
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/volume/iid0")
         .withFormUrlEncodedBody("volume" -> "2.5")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/currency/0")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/currency/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(
-          PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
+        PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5))))))
       )))(any())
     }
   }
 
-  "Calling GET /products/alcohol/.../currency/0" should {
+  "Calling GET /products/alcohol/.../currency/iid0" should {
 
-    // TODO: Revise after enforcer is added to other goods controller
+    "redirect to dashboard when the product path is not found" in new LocalSetup {
 
-    "return a 500 when the product path is not found" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override lazy val cachedJourneyData: Option[JourneyData] = None
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/not/a/real/product/currency/iid0")).get
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/not/a/real/product/currency/0")).get
-
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -78,10 +79,10 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when cached JourneyData exists" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(purchasedProducts = List(
+        PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5))))))))
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/currency/0")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/currency/iid0")).get
 
       status(result) shouldBe OK
 
@@ -90,14 +91,14 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling POST /products/alcohol/.../currency/0" should {
+  "Calling POST /products/alcohol/.../currency/iid0" should {
 
     "return a 400 given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(purchasedProducts = List(
+        PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5))))))))
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/currency/0")
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/currency/iid0")
         .withFormUrlEncodedBody("currency" -> "Not a currency code")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -109,51 +110,53 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
   "return a 303 given valid form input" in new LocalSetup {
 
-    override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(purchasedProducts = List(
-      PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5))))))))
+    override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(purchasedProducts = List(
+      PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5))))))))
 
-    val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/currency/0")
-      .withFormUrlEncodedBody("currency" -> "USD")).get
+    val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/currency/iid0")
+      .withFormUrlEncodedBody("currency" -> "USD", "itemsRemaining" -> "4")).get
 
     status(result) shouldBe SEE_OTHER
-    redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/cost/0")
+    redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/cost/iid0")
 
     verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-    verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
-      PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD")))))
+    verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
+      PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD")))))
     )))(any())
   }
 
 
-  "Calling GET /products/alcohol/.../cost/0" should {
+  "Calling GET /products/alcohol/.../cost/iid0" should {
 
-    "return a 500 when there is no cached journey data" in new LocalSetup {
+    "start a new session when there is no cached journey data" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = None
 
       val result: Future[Result]= route(app, EnhancedFakeRequest("GET",
-        "/bc-passengers-frontend/products/alcohol/beer/cost/0")).get
+        "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")).get
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
-    "return a 500 when there is no currency in the cached journey data" in new LocalSetup {
+    "redirect to dashboard when there is no currency in the cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(
         purchasedProducts = List(
           PurchasedProduct(
-            path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)))))
+            path = ProductPath("alcohol/beer"),
+            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)))))
           )
         )
       )
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/cost/0")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")).get
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -161,16 +164,16 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when there is a currency in the cached journey data for this product instance" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(
         purchasedProducts = List(
           PurchasedProduct(
-            path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
+            path = ProductPath("alcohol/beer"),
+            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
           )
         )
       )
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/cost/0")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")).get
 
       status(result) shouldBe OK
 
@@ -179,35 +182,37 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling POST /products/alcohol/.../cost/0" should {
+  "Calling POST /products/alcohol/.../cost/iid0" should {
 
-    "return a 500 when given a bad form input and there is no cached journey data" in new LocalSetup {
+    "start a new session when given a bad form input and there is no cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = None
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")
           .withFormUrlEncodedBody("cost" -> "NaN")).get
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
-    "return a 500 when given bad form input and there is no currency in the cached journey data" in new LocalSetup {
+    "return user to dashboard when given bad form input and there is no currency in the cached journey data" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(
         purchasedProducts = List(
           PurchasedProduct(
-            path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)))))
+            path = ProductPath("alcohol/beer"),
+            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)))))
           )
         )
       )
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
 
-      status(result) shouldBe INTERNAL_SERVER_ERROR
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -215,16 +220,16 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 when given bad form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(
         purchasedProducts = List(
           PurchasedProduct(
-            path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
+            path = ProductPath("alcohol/beer"),
+            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
           )
         )
       )
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -236,23 +241,23 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 when given valid form input" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(
         purchasedProducts = List(
           PurchasedProduct(
-            path = Some(ProductPath("alcohol/beer")),
-            purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
+            path = ProductPath("alcohol/beer"),
+            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"))))
           )
         )
       )
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/0")
-        .withFormUrlEncodedBody("cost" -> "5.99")).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/cost/iid0")
+        .withFormUrlEncodedBody("cost" -> "5.99", "itemsRemaining" -> "5")).get
 
       status(result) shouldBe SEE_OTHER
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(JourneyData(purchasedProducts = List(
-        PurchasedProduct(Some(ProductPath("alcohol/beer")), purchasedProductInstances = List(PurchasedProductInstance(index = 0, weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"), cost = Some(BigDecimal(5.99))))))
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
+        PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.5)), currency = Some("USD"), cost = Some(BigDecimal(5.99))))))
       )))(any())
     }
   }

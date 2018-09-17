@@ -1,11 +1,11 @@
-@(noOfSticksForm: Form[NoOfSticksDto], token: String, productName: String, path: ProductPath, index: Int)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(noOfSticksForm: Form[NoOfSticksDto], token: String, productName: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 
 @main_template(title = messages("tobacco.no_of_sticks_input.heading", productName.toLowerCase()), bodyClasses = None) {
 
 
-  @helpers.form(action = routes.TobaccoInputController.processNoOfSticksInput(path, index)) {
+  @helpers.form(action = routes.TobaccoInputController.processNoOfSticksInput(path, iid)) {
 
     <h1>
         <label for="noOfSticks" class="heading-xlarge">@messages("tobacco.no_of_sticks_input.heading", productName.toLowerCase())</label>

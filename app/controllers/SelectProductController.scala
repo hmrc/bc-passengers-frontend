@@ -15,9 +15,9 @@ class   SelectProductController @Inject()(
   val travelDetailsService: TravelDetailsService,
   val currencyService: CurrencyService,
   val selectProductService: SelectProductService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with PublicActions with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport  with ControllerHelpers {
 
-  def nextStep(): Action[AnyContent] = PublicAction { implicit request =>
+  def nextStep(): Action[AnyContent] = DashboardAction { implicit context =>
 
     withNextSelectedProductPath {
 
@@ -57,7 +57,6 @@ class   SelectProductController @Inject()(
         Future.successful(InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
 
     }
-
   }
 
 
