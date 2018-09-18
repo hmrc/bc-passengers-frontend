@@ -37,6 +37,14 @@ object PrivateCraftDto {
 }
 case class PrivateCraftDto(privateCraft: Boolean)
 
+object ConfirmRemoveDto {
+  val form: Form[ConfirmRemoveDto] = Form(
+    mapping(
+      "confirmRemove" -> optional(boolean).verifying("remove_product.error", _.isDefined).transform[Boolean](_.get, b => Option(b))
+    )(ConfirmRemoveDto.apply)(ConfirmRemoveDto.unapply)
+  )
+}
+case class ConfirmRemoveDto(confirmRemove: Boolean)
 
 object SelectProductsDto {
 

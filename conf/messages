@@ -49,12 +49,16 @@ label.you_may_need_to_pay_tax_or_duties=You may need to pay tax or duties on any
 label.use_this_service_to=Use this service to:
 label.you_need_to_know_the_exact_price=You need to know the exact price you paid for your items to use this service.
 label.there_is_a_problem=There is a problem
+label.remove_this_item=Remove this item
+label.do_you_want_to_remove_this=Do you want to remove this {0}?
+label.change_your_answers=Change your answers
 
 #Text (Bullet points)
 text.for_personal_use=for your personal use
 text.as_a_gift_for_someone_else=as a gift for someone else
 text.check_if_you_need_to_declare=check if you need to declare your goods
 text.estimate_how_much_tax=estimate how much tax or customs duty you may owe
+text.start_again=start again
 
 button.start_now = Start now
 
@@ -167,6 +171,9 @@ head.private_craft.error=Select yes if you arrived in the UK by private aircraft
 over_17.error=Select yes if you are 17 or over
 head.over_17.error=Select yes if you are 17 or over
 
+remove_product.error=Select yes if you want to remove this item
+head.remove_product.error=Select yes if you want to remove this item
+
 #Done page
 done.page_title = You will need to pay £{0} for goods purchased outside of the EU
 done.h1 = You will need to pay<br />£{0}<span class="heading-medium">for goods purchased outside of the EU</span>
@@ -186,7 +193,7 @@ done.label.vat = VAT
 done.exchange_rates = We use the <a href="http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm" target="_blank">HMRC exchange rates for customs and VAT (opens in a new window or tab)</a> to calculate these figures. The rates are updated monthly.
 done.red_channel = If you take these goods into the UK you must go to the red channel or red point phone and declare your goods to Border Force.
 done.link.change_your_answers = Change your answers
-done.link.start_again = Start again
+
 
 #Done page - Nothing to Declare
 done.h1.nothing_to_declare = You have nothing to declare

@@ -20,6 +20,7 @@ import scala.concurrent.Future
 class DashboardController @Inject() (
   val countriesService: CountriesService,
   val travelDetailsService: TravelDetailsService,
+  val purhasedProductService: PurchasedProductService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService
@@ -55,17 +56,18 @@ class DashboardController @Inject() (
 
 
   val calculate: Action[AnyContent] = DashboardAction { implicit request =>
-        calculatorService.calculate() map {
+    calculatorService.calculate() map {
 
-          case CalculatorServiceSuccessResponse(calculatorResponseDto) =>
+      case CalculatorServiceSuccessResponse(calculatorResponseDto) =>
 
-            if(BigDecimal(calculatorResponseDto.calculation.allTax)==0)
-              Ok(views.html.purchased_products.nothing_to_declare(calculatorResponseDto))
-            else
-              Ok(views.html.purchased_products.done(calculatorResponseDto, !calculatorResponseDto.hasOnlyGBP))
+        if(BigDecimal(calculatorResponseDto.calculation.allTax)==0)
+          Ok(views.html.purchased_products.nothing_to_declare(calculatorResponseDto))
+        else
+          Ok(views.html.purchased_products.done(calculatorResponseDto, !calculatorResponseDto.hasOnlyGBP))
 
-          case _ =>
-            InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
-        }
-      }
+      case _ =>
+        InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+    }
+  }
+
 }

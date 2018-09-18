@@ -12,47 +12,49 @@ GET        /eu-done                                          controllers.TravelD
 POST       /calculate                                        controllers.DashboardController.calculate
 GET        /dashboard                                        controllers.DashboardController.showDashboard
 
+GET        /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
+POST       /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
 GET        /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)
 POST       /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.processQuantityInput(path: ProductPath)
 
-GET        /products/$path<other-goods/.+>/currency/:iid   controllers.OtherGoodsInputController.loadCurrencyInput(path: ProductPath, iid: String, ir: Int)
-POST       /products/$path<other-goods/.+>/currency/:iid   controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<other-goods/.+>/currency/:iid     controllers.OtherGoodsInputController.loadCurrencyInput(path: ProductPath, iid: String, ir: Int)
+POST       /products/$path<other-goods/.+>/currency/:iid     controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, iid: String)
 
-GET        /products/$path<other-goods/.+>/cost/:iid       controllers.OtherGoodsInputController.loadCostInput(path: ProductPath, iid: String, ir: Int)
-POST       /products/$path<other-goods/.+>/cost/:iid       controllers.OtherGoodsInputController.processCostInput(path: ProductPath, iid: String)
+GET        /products/$path<other-goods/.+>/cost/:iid         controllers.OtherGoodsInputController.loadCostInput(path: ProductPath, iid: String, ir: Int)
+POST       /products/$path<other-goods/.+>/cost/:iid         controllers.OtherGoodsInputController.processCostInput(path: ProductPath, iid: String)
 
 
 
-GET        /products/$path<tobacco/.+>/start                        controllers.TobaccoInputController.startInputJourney(path: ProductPath)
+GET        /products/$path<tobacco/.+>/start                                       controllers.TobaccoInputController.startInputJourney(path: ProductPath)
 
-GET        /products/$path<tobacco/cigarettes>/no-of-sticks/:iid      controllers.TobaccoInputController.displayNoOfSticksInput(path: ProductPath, iid: String)
-POST       /products/$path<tobacco/cigarettes>/no-of-sticks/:iid      controllers.TobaccoInputController.processNoOfSticksInput(path: ProductPath, iid: String)
+GET        /products/$path<tobacco/cigarettes>/no-of-sticks/:iid                   controllers.TobaccoInputController.displayNoOfSticksInput(path: ProductPath, iid: String)
+POST       /products/$path<tobacco/cigarettes>/no-of-sticks/:iid                   controllers.TobaccoInputController.processNoOfSticksInput(path: ProductPath, iid: String)
 
 GET        /products/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid   controllers.TobaccoInputController.displayNoOfSticksWeightInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid   controllers.TobaccoInputController.processNoOfSticksWeightInput(path: ProductPath, iid: String)
 
-GET        /products/$path<tobacco/(rolling|chewing)>/weight/:iid           controllers.TobaccoInputController.displayWeightInput(path: ProductPath, iid: String)
-POST       /products/$path<tobacco/(rolling|chewing)>/weight/:iid           controllers.TobaccoInputController.processWeightInput(path: ProductPath, iid: String)
+GET        /products/$path<tobacco/(rolling|chewing)>/weight/:iid                  controllers.TobaccoInputController.displayWeightInput(path: ProductPath, iid: String)
+POST       /products/$path<tobacco/(rolling|chewing)>/weight/:iid                  controllers.TobaccoInputController.processWeightInput(path: ProductPath, iid: String)
 
-GET        /products/$path<tobacco/.+>/currency/:iid              controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /products/$path<tobacco/.+>/currency/:iid              controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, iid: String)
+POST       /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, iid: String)
 
-GET        /products/$path<tobacco/.+>/cost/:iid                  controllers.TobaccoInputController.displayCostInput(path: ProductPath, iid: String)
-POST       /products/$path<tobacco/.+>/cost/:iid                  controllers.TobaccoInputController.processCostInput(path: ProductPath, iid: String)
+GET        /products/$path<tobacco/.+>/cost/:iid                                   controllers.TobaccoInputController.displayCostInput(path: ProductPath, iid: String)
+POST       /products/$path<tobacco/.+>/cost/:iid                                   controllers.TobaccoInputController.processCostInput(path: ProductPath, iid: String)
 
 
 
 GET        /products/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
 
-GET        /products/$path<alcohol/.+>/volume/:iid         controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/volume/:iid         controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
 
-GET        /products/$path<alcohol/.+>/currency/:iid       controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/currency/:iid       controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
 
-GET        /products/$path<alcohol/.+>/cost/:iid           controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/cost/:iid           controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
 
 
 

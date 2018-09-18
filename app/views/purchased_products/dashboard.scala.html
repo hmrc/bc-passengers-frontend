@@ -29,64 +29,69 @@
   <div class="alcohol">
     <h3 class="heading-medium">@messages("dashboard.product_heading.alcohol")</h3>
 
-    @if(alcoholPurchasedItemList != List()){
-      <div class="add-more">
-        <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
-      </div>
-    }
-
-    @if(alcoholPurchasedItemList == List()){
+    @if(alcoholPurchasedItemList.isEmpty){
       <p class="border-bottom">
         <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
       </p>
     } else {
-      @alcoholPurchasedItemList.map{ alcoholPurchasedProductDetail =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-30">
+
+      <div class="add-more">
+        <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
+      </div>
+
+      @alcoholPurchasedItemList.map { purchasedItem =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
           <div>
             <dt class="cya-question">@messages("title.item")</dt>
-            <dd class="cya-answer">@alcoholPurchasedProductDetail.description</dd>
+            <dd class="cya-answer">@purchasedItem.description</dd>
           </div>
           <div>
             <dt class="cya-question">@messages("title.price")</dt>
-            <dd class="cya-answer">@alcoholPurchasedProductDetail.purchasedProductInstance.cost @alcoholPurchasedProductDetail.displayCurrency</dd>
+            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
           </div>
         </dl>
+        <div class="margin-bottom-50">
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item")</a>
+        </div>
       }
     }
 
   </div>
 
   <div class="tobacco">
+
     <h3 class="heading-medium">@messages("dashboard.product_heading.tobacco")</h3>
 
-    @if(tobaccoPurchasedItemList != List()){
-      <div class="add-more">
-        <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
-      </div>
-    }
-
-    @if(tobaccoPurchasedItemList == List()){
+    @if(tobaccoPurchasedItemList.isEmpty){
       <p class="border-bottom">
         <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
       </p>
     } else {
-      @tobaccoPurchasedItemList.map{ tobaccoPurchasedProductDetail =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-30">
+
+      <div class="add-more">
+        <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
+      </div>
+
+      @tobaccoPurchasedItemList.map { purchasedItem =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
           <div>
             <dt class="cya-question">@messages("title.item")</dt>
             <dd class="cya-answer">
-              @if(tobaccoPurchasedProductDetail.displayWeight){
-                @messages("suffix.comma", tobaccoPurchasedProductDetail.description.get) @tobaccoPurchasedProductDetail.displayWeight
+              @if(purchasedItem.displayWeight){
+                @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
               } else {
-                @tobaccoPurchasedProductDetail.description
+                @purchasedItem.description
               }
                </dt>
           </div>
           <div>
             <dt class="cya-question">@messages("title.price")</dt>
-            <dd class="cya-answer">@tobaccoPurchasedProductDetail.purchasedProductInstance.cost @tobaccoPurchasedProductDetail.displayCurrency</dd>
+            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
           </div>
         </dl>
+        <div class="margin-bottom-50">
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item")</a>
+        </div>
       }
     }
 
@@ -96,28 +101,33 @@
   <div class="other-goods">
     <h3 class="heading-medium">@messages("dashboard.product_heading.other-goods")</h3>
 
-    @if(otherGoodsPurchasedItemList != List()){
-      <div class="add-more">
-        <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
-      </div>
-    }
-
-    @if(otherGoodsPurchasedItemList == List()){
+    @if(otherGoodsPurchasedItemList.isEmpty){
       <p class="border-bottom">
         <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
       </p>
     } else {
-      @otherGoodsPurchasedItemList.map{ otherGoodsPurchasedProductDetail =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-30">
+
+      <div class="add-more">
+        <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
+      </div>
+
+      @otherGoodsPurchasedItemList.map { purchasedItem =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
           <div>
             <dt class="cya-question">@messages("title.item")</dt>
-            <dd class="cya-answer">@otherGoodsPurchasedProductDetail.description</dd>
+            <dd class="cya-answer">@purchasedItem.description</dd>
           </div>
           <div>
             <dt class="cya-question">@messages("title.price")</dt>
-            <dd class="cya-answer">@otherGoodsPurchasedProductDetail.purchasedProductInstance.cost @otherGoodsPurchasedProductDetail.displayCurrency</dd>
+            <dd class="cya-answer">
+              @purchasedItem.purchasedProductInstance.cost
+              @purchasedItem.displayCurrency
+            </dd>
           </div>
         </dl>
+        <div class="margin-bottom-50">
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item")</a>
+        </div>
       }
     }
 

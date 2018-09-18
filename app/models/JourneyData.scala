@@ -28,6 +28,9 @@ case class PurchasedProduct(
     val newItemDataList = block(currentItemData) :: purchasedProductInstances.filterNot(_.iid == iid)
     this.copy(purchasedProductInstances = newItemDataList.sortBy(_.iid))
   }
+  def removePurchasedProductInstance(iid: String): PurchasedProduct = {
+    this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid==iid))
+  }
 }
 
 

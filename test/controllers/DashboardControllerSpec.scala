@@ -1,17 +1,20 @@
 package controllers
 
-import models.JourneyData
+import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
+import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import services.TravelDetailsService
+import services.{PurchasedProductService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
 import util.{BaseSpec, FakeCookieCryptoFilter}
+import play.api.test.Helpers.{route => rt, _}
 
 import scala.concurrent.Future
 
@@ -19,19 +22,33 @@ class DashboardControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+    .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {
-    reset(app.injector.instanceOf[TravelDetailsService])
+    reset(injected[TravelDetailsService], injected[PurchasedProductService])
   }
 
   val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
-  "Calling GET /bc-passengers-frontend/dashboard" should {
-    "start a new session if any travel details are missing" in {
+  trait LocalSetup {
 
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), None)))
+    def cachedJourneyData: Option[JourneyData]
+
+    def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+
+      when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
+      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+
+      rt(app, req)
+    }
+  }
+
+  "Calling GET /bc-passengers-frontend/dashboard" should {
+    "start a new session if any travel details are missing" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), None))
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
 
@@ -43,9 +60,9 @@ class DashboardControllerSpec extends BaseSpec {
   }
 
 
-  "respond with 200 and display the page is all travel details exist" in {
+  "respond with 200 and display the page is all travel details exist" in new LocalSetup {
 
-    when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), privateCraft = Some(false))))
+    override lazy val cachedJourneyData = Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), privateCraft = Some(false)))
 
     val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
 

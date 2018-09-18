@@ -2,12 +2,9 @@ package services
 
 import javax.inject.{Inject, Singleton}
 import models.{JourneyData, ProductPath}
-import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Random
 
 @Singleton
 class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache) extends UsesJourneyData {
@@ -15,6 +12,14 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
   def clearWorkingInstance(journeyData: JourneyData)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
     val updatedJourneyData = journeyData.clearingWorking
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
+  def removePurchasedProductInstance(journeyData: JourneyData, path: ProductPath, iid: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+
+    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { pp =>
+      pp.removePurchasedProductInstance(iid)
+    }
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
