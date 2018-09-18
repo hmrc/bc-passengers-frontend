@@ -17,9 +17,7 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
 
   def removePurchasedProductInstance(journeyData: JourneyData, path: ProductPath, iid: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.updatePurchasedProduct(path) { pp =>
-      pp.removePurchasedProductInstance(iid)
-    }
+    val updatedJourneyData = journeyData.removePurchasedProductInstance(iid)
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 

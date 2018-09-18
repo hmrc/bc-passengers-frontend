@@ -1,13 +1,10 @@
 package vertical
 
-import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify}
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.LocalSessionCache
-
-import scala.concurrent.Future
 
 class TobaccoVerticalSpec extends VerticalBaseSpec {
 
@@ -341,9 +338,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       status(result) shouldBe SEE_OTHER
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
-        PurchasedProduct(ProductPath("tobacco/cigars"), purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), cost = Some(BigDecimal("9.99")))))))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), cost = Some(BigDecimal("9.99")))))))(any())
     }
   }
 }

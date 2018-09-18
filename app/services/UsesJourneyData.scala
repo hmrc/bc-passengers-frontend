@@ -1,6 +1,6 @@
 package services
 
-import models.{JourneyData, PurchasedProduct, ProductPath}
+import models.JourneyData
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

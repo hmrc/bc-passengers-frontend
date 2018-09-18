@@ -1,6 +1,6 @@
 package controllers
 
-import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
+import models.JourneyData
 import org.jsoup.Jsoup
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -10,11 +10,10 @@ import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{route => rt, _}
 import services.{PurchasedProductService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
 import util.{BaseSpec, FakeCookieCryptoFilter}
-import play.api.test.Helpers.{route => rt, _}
 
 import scala.concurrent.Future
 

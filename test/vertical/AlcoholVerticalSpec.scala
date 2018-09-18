@@ -3,11 +3,8 @@ package vertical
 import models._
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.LocalSessionCache
-
-import scala.concurrent.Future
 
 class AlcoholVerticalSpec extends VerticalBaseSpec {
 
@@ -246,9 +243,9 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
-        PurchasedProduct(ProductPath("alcohol/beer"), purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")), currency = Some("USD"), cost = Some(BigDecimal("5.99"))))))
-      )))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")), currency = Some("USD"), cost = Some(BigDecimal("5.99"))))))
+      )(any())
     }
   }
 }

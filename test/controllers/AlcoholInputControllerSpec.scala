@@ -1,7 +1,6 @@
 package controllers
 
-import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
-import org.jsoup.Jsoup
+import models.JourneyData
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
