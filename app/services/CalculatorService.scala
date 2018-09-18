@@ -87,9 +87,8 @@ class CalculatorService @Inject() (
     getCurrencyConversionRates(journeyData) map { ratesMap =>
 
       val purchasedItems: List[PurchasedItem] = for {
-        purchasedProduct <- journeyData.purchasedProducts
-        productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProduct.path).collect { case p: ProductTreeLeaf => p }.toList
-        purchasedProductInstance <- purchasedProduct.purchasedProductInstances.filter(productTreeLeaf.isValid)
+        purchasedProductInstance <- journeyData.purchasedProductInstances
+        productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
         curCode <- purchasedProductInstance.currency
         currency <- currencyService.getCurrencyByCode(curCode)
         cost <- purchasedProductInstance.cost
@@ -104,7 +103,7 @@ class CalculatorService @Inject() (
         for {
           isAgeOver17 <- journeyData.ageOver17
           isPrivateCraft <- journeyData.privateCraft
-        } yield CalculatorRequest(isPrivateCraft, isAgeOver17, purchasedItems)
+        } yield CalculatorRequest(isPrivateCraft, isAgeOver17, purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
     }
 

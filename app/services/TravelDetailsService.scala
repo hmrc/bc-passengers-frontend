@@ -1,12 +1,12 @@
 package services
 
-import javax.inject.{Inject, Singleton}
-import models.{PurchasedProductInstance, JourneyData, PurchasedProduct}
+import javax.inject.Inject
+import models.JourneyData
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 
 class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) extends UsesJourneyData {
@@ -41,14 +41,4 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
     }
   }
 
-
-  def storeProductDetails(productDetailsToStore: PurchasedProduct)(implicit hc: HeaderCarrier): Future[CacheMap] = {
-    localSessionCache.fetchAndGetJourneyData flatMap {
-      case Some(journeyData) =>
-        localSessionCache.cacheJourneyData(journeyData.copy(purchasedProducts = productDetailsToStore :: journeyData.purchasedProducts))
-
-      case None =>
-        localSessionCache.cacheJourneyData(JourneyData(purchasedProducts = List(productDetailsToStore)))
-    }
-  }
 }

@@ -1,13 +1,10 @@
 package vertical
 
-import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.LocalSessionCache
-
-import scala.concurrent.Future
 
 class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
@@ -71,7 +68,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when cached JourneyData exists" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(purchasedProducts = List(PurchasedProduct(ProductPath("other-goods/books")))))
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
       val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/currency/iid0?ir=1")).get
 
       status(result) shouldBe OK
@@ -203,9 +200,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
-        PurchasedProduct(ProductPath("other-goods/books"), List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))
-      ))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))))(any())
 
     }
 
@@ -219,18 +214,14 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
-        PurchasedProduct(ProductPath("other-goods/books"), List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))
-      ))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))))(any())
 
     }
 
     "store the cost, replace the working product in purchased products if it already existed and redirect to the next step when items remaining was 1 and given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
-        purchasedProducts = List(
-          PurchasedProduct(ProductPath("other-goods/books"), List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")))))
-        ),
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")))),
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD")))
       ))
       val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
@@ -239,21 +230,17 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
-        PurchasedProduct(ProductPath("other-goods/books"), List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))
-      ))))(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))))(any())
 
     }
 
     "store the cost, replace the working product in purchased products (maintaining order) if it already existed and redirect to the next step when items remaining was 1 and given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
-        purchasedProducts = List(
-          PurchasedProduct(ProductPath("other-goods/books"), List(
-            PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99"))),
-            PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("0.99"))),
-            PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")))
-          ))
+        purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99"))),
+          PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("0.99"))),
+          PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")))
         ),
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid1", currency = Some("USD")))
       ))
@@ -263,12 +250,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
-      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProducts = List(
-        PurchasedProduct(ProductPath("other-goods/books"), List(
-          PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99"))),
-          PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("2.99"))),
-          PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")))
-        ))
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99"))),
+        PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("2.99"))),
+        PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")))
       ))))(any())
 
     }

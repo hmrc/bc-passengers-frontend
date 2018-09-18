@@ -16,24 +16,6 @@ case class PurchasedProductInstance(
 )
 
 
-object PurchasedProduct {
-  implicit val formats = Json.format[PurchasedProduct]
-}
-case class PurchasedProduct(
-  path: ProductPath,
-  purchasedProductInstances: List[PurchasedProductInstance] = Nil
-) {
-  def updatePurchasedProductInstance(iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {
-    val currentItemData = purchasedProductInstances.find(_.iid==iid).getOrElse(PurchasedProductInstance(path, iid))
-    val newItemDataList = block(currentItemData) :: purchasedProductInstances.filterNot(_.iid == iid)
-    this.copy(purchasedProductInstances = newItemDataList.sortBy(_.iid))
-  }
-  def removePurchasedProductInstance(iid: String): PurchasedProduct = {
-    this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid==iid))
-  }
-}
-
-
 object JourneyData {
   implicit val formats = Json.format[JourneyData]
 }
@@ -42,22 +24,25 @@ case class JourneyData(
   ageOver17: Option[Boolean] = None,
   privateCraft: Option[Boolean] = None,
   selectedProducts: List[List[String]] = Nil,
-  purchasedProducts: List[PurchasedProduct] = Nil,
+  purchasedProductInstances: List[PurchasedProductInstance] = Nil,
   workingInstance: Option[PurchasedProductInstance] = None
 ) {
 
   def allCurrencyCodes: Set[String] = (for {
-    purchasedProducts <- purchasedProducts
-    purchasedProductInstances <- purchasedProducts.purchasedProductInstances
+    purchasedProductInstances <- purchasedProductInstances
     currencyCode <- purchasedProductInstances.currency
   } yield currencyCode).toSet
 
-  def getOrCreatePurchasedProduct(path: ProductPath): PurchasedProduct
-    = purchasedProducts.find(_.path == path).getOrElse(PurchasedProduct(path = path))
+  def getOrCreatePurchasedProductInstance(path: ProductPath, iid: String): PurchasedProductInstance
+    = purchasedProductInstances.find(_.path == path).getOrElse(getOrCreatePurchasedProductInstance(path, iid))
 
-  def updatePurchasedProduct(path: ProductPath)(block: PurchasedProduct => PurchasedProduct) = {
-    val newPdList = block(getOrCreatePurchasedProduct(path)) :: purchasedProducts.filterNot(_.path == path)
-    this.copy(purchasedProducts = newPdList)
+  def updatePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {
+    val newPdList = block(getOrCreatePurchasedProductInstance(path, iid)) :: purchasedProductInstances.filterNot(_.path == path)
+    this.copy(purchasedProductInstances = newPdList)
+  }
+
+  def removePurchasedProductInstance(iid: String): JourneyData = {
+    this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid==iid))
   }
 
   def withUpdatedWorkingInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {

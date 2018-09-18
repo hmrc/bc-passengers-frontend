@@ -1,15 +1,15 @@
 package services
 
-import models.{JourneyData, ProductPath, PurchasedProduct, PurchasedProductInstance}
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import util.BaseSpec
-import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -59,22 +59,18 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
     "remove the working instance" in new LocalSetup {
 
-      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData( purchasedProducts = List(
-        PurchasedProduct(ProductPath("alcohol/beer"), List(
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some("USD"), Some(BigDecimal("12.99"))),
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some("USD"), Some(BigDecimal("4.99"))),
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
-        ))
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData( purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some("USD"), Some(BigDecimal("4.99"))),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
       )))
 
       await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData( purchasedProducts = List(
-          PurchasedProduct(ProductPath("alcohol/beer"), List(
-            PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some("USD"), Some(BigDecimal("12.99"))),
-            PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
-          ))
+        meq(JourneyData( purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some("USD"), Some(BigDecimal("12.99"))),
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
         )))
       )(any())
 

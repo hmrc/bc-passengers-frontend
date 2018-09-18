@@ -16,7 +16,6 @@ import util.BaseSpec
 
 import scala.concurrent.Future
 import scala.math.BigDecimal.RoundingMode
-import scala.util.Random
 
 class CalculatorServiceSpec extends BaseSpec {
 
@@ -46,9 +45,7 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(true),
       Some(false),
       Nil,
-      List(
-        PurchasedProduct(ProductPath("alcohol/beer"),List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("USD"),Some(123))))
-      )
+      List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("USD"),Some(123)))
     )
 
     val goodJourneyData = JourneyData(
@@ -57,12 +54,13 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(false),
       Nil,
       List(
-        PurchasedProduct(ProductPath("other-goods/car-seats"),List(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)))),
-        PurchasedProduct(ProductPath("other-goods/antiques"),List(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)), PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("CHF"),Some(5432)))),
-        PurchasedProduct(ProductPath("tobacco/chewing"),List(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)))),
-        PurchasedProduct(ProductPath("tobacco/cigars"),List(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some("AUD"),Some(1234)))),
-        PurchasedProduct(ProductPath("tobacco/cigarettes"),List(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)))),
-        PurchasedProduct(ProductPath("alcohol/beer"),List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123))))
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("CHF"),Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some("AUD"),Some(1234)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123))
       )
     )
 
@@ -72,12 +70,13 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(false),
       Nil,
       List(
-        PurchasedProduct(ProductPath("other-goods/car-seats"),List(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)))),
-        PurchasedProduct(ProductPath("other-goods/antiques"),List(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)), PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("CHF"),Some(5432)))),
-        PurchasedProduct(ProductPath("tobacco/chewing"),List(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)))),
-        PurchasedProduct(ProductPath("tobacco/cigars"),List(PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some("AUD"),Some(1234)))), //Note weightOrVolume = None
-        PurchasedProduct(ProductPath("tobacco/cigarettes"),List(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)))),
-        PurchasedProduct(ProductPath("alcohol/beer"),List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123))))
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("CHF"),Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some("AUD"),Some(1234)), //Note weightOrVolume = None
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123))
       )
     )
 
@@ -182,17 +181,11 @@ class CalculatorServiceSpec extends BaseSpec {
         country = Some("United States"),
         ageOver17 = Some(true),
         privateCraft = Some(false),
-        purchasedProducts = List(
-          PurchasedProduct(
-            path = ProductPath("other-goods/antiques"),
-            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", currency = Some("CAD"), cost = Some(BigDecimal("2.00"))))
-          ),
-          PurchasedProduct(
-            path = ProductPath("tobacco/cigars"),
-            purchasedProductInstances = List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", currency = Some("USD"), cost = Some(BigDecimal("4.00"))))
-          )
-        ))
-      )
+        purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", currency = Some("USD"), cost = Some(BigDecimal("4.00")))
+        )
+      ))
 
       val response: CalculatorServiceResponse = await(service.calculate())
 

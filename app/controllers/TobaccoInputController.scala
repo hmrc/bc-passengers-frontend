@@ -181,15 +181,12 @@ class TobaccoInputController @Inject()(
 
             if (product.isValid(wi)) {
               context.journeyData.map { jd =>
-                val updatedJourneyData = jd.updatePurchasedProduct(path) { product =>
-                  val l = product.purchasedProductInstances
-                  val m = (l.takeWhile(_.iid != iid), l.dropWhile(_.iid != iid)) match {
-                    case (x, Nil) => wi :: x  //Prepend
-                    case (x, y) => x ++ (wi :: y.tail)  //Replace in place
-                  }
-                  product.copy(purchasedProductInstances = m)
+                val l = jd.purchasedProductInstances
+                val m = (l.takeWhile(_.iid != iid), l.dropWhile(_.iid != iid)) match {
+                  case (x, Nil) => wi :: x  //Prepend
+                  case (x, y) => x ++ (wi :: y.tail)  //Replace in place
                 }
-                productDetailsService.cacheJourneyData(updatedJourneyData.copy(workingInstance = None))
+                productDetailsService.cacheJourneyData(jd.copy(purchasedProductInstances = m, workingInstance = None))
               }
             } else {
               Logger.warn("Working instance was not valid")
