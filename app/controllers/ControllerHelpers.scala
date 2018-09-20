@@ -105,7 +105,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, Some(workingInstance)) => block(workingInstance)
+      case JourneyData(_, _, _, _, _, Some(workingInstance), _) => block(workingInstance)
       case _ =>
         logAndRedirect(s"Missing working instance in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
@@ -114,7 +114,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def requireTravelDetails(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _, _) => block
+      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _, _, _) => block
       case _ =>
         logAndRedirect(s"Incomplete or missing travel details found in journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
     }

@@ -10,7 +10,7 @@ import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 
-
+@Singleton
 class LocalSessionCache @Inject() (override val http: WsAllMethods, environment: Environment, config: Configuration) extends SessionCache with AppName with ServicesConfig {
   override lazy val defaultSource = appName
   override lazy val baseUri = baseUrl("cachable.session-cache")

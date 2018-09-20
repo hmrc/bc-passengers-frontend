@@ -14,7 +14,7 @@ import scala.util.Random
 
 class AlcoholInputController @Inject() (
   val travelDetailsService: TravelDetailsService,
-  val productDetailsService: PurchasedProductService,
+  val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
@@ -41,7 +41,7 @@ class AlcoholInputController @Inject() (
         }
       },
       volumeDto => {
-        productDetailsService.storeWeightOrVolume(context.getJourneyData, path, iid, volumeDto.volume) map { _ =>
+        purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, volumeDto.volume) map { _ =>
           Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid))
         }
       }
@@ -68,7 +68,7 @@ class AlcoholInputController @Inject() (
         }
       },
       currencyDto => {
-        productDetailsService.storeCurrency(context.getJourneyData, path, iid, currencyDto.currency) map { _ =>
+        purchasedProductService.storeCurrency(context.getJourneyData, path, iid, currencyDto.currency) map { _ =>
           Redirect(routes.AlcoholInputController.displayCostInput(path, iid))
         }
       }
@@ -113,7 +113,7 @@ class AlcoholInputController @Inject() (
                   case (x, Nil) => wi :: x  //Prepend
                   case (x, y) => x ++ (wi :: y.tail)  //Replace in place
                 }
-                productDetailsService.cacheJourneyData(jd.copy(purchasedProductInstances = m, workingInstance = None))
+                purchasedProductService.cacheJourneyData(jd.copy(purchasedProductInstances = m, workingInstance = None))
               }
             } else {
               Logger.warn("Working instance was not valid")

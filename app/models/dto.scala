@@ -1,5 +1,6 @@
 package models
 
+import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
@@ -7,6 +8,8 @@ import services.CurrencyService
 
 import scala.math.BigDecimal.RoundingMode
 import util._
+import uk.gov.hmrc.play.mappers.DateTuple._
+
 
 object SelectedCountryDto {
   val form: Form[SelectedCountryDto] = Form(
@@ -129,3 +132,16 @@ object CostDto {
 case class CostDto(cost: BigDecimal, itemsRemaining: Int)
 
 case class CalculatorResponseDto(bands: Map[String, List[Item]], calculation: Calculation, hasOnlyGBP: Boolean)
+
+object EnterYourDetailsDto {
+  val form: Form[EnterYourDetailsDto] = Form(
+    mapping(
+      "firstName" -> nonEmptyText(1,35),
+      "lastName" -> nonEmptyText(1,35),
+      "passportNumber" -> nonEmptyText(1,40),
+      "placeOfArrival" -> nonEmptyText(1,40),
+      "dateOfArrival" -> mandatoryDateTuple("error.enter_a_date")
+    )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
+  )
+}
+case class EnterYourDetailsDto(firstName: String, lastName: String, passportNumber: String, placeOfArrival: String, dateOfArrival: LocalDate)

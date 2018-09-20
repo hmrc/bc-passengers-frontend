@@ -63,7 +63,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     override lazy val cachedJourneyData = Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), privateCraft = Some(false)))
 
-    val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
+    val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
 
     status(response) shouldBe OK
 
