@@ -178,14 +178,28 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "Invoking confirmAgePost" should {
 
-    "redirect to /passengers/private_travel" in {
+    "redirect to /bc-passengers-frontend/private_travel when only age journey data is present" in {
 
       when(controller.travelDetailsService.storeAgeOver17(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(ageOver17 = Some(false))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/bc-passengers-frontend/private-travel")
+
+      verify(controller.travelDetailsService, times(1)).storeAgeOver17(meq(true))(any())
+    }
+
+    "redirect to /bc-passengers-frontend/dashboard when subsequent journey data is present" in {
+
+      when(controller.travelDetailsService.storeAgeOver17(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(false), privateCraft = Some(false))) )
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/dashboard")
 
       verify(controller.travelDetailsService, times(1)).storeAgeOver17(meq(true))(any())
     }

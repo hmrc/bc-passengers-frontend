@@ -25,7 +25,7 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(ageOver17 = Some(ageOver17), privateCraft = None, selectedProducts = Nil) )
+        localSessionCache.cacheJourneyData(journeyData.copy(ageOver17 = Some(ageOver17)))
       case None =>
         localSessionCache.cacheJourneyData( JourneyData(ageOver17 = Some(ageOver17)) )
     }
@@ -35,10 +35,9 @@ class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) 
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(privateCraft = Some(privateCraft), selectedProducts = Nil) )
+        localSessionCache.cacheJourneyData(journeyData.copy(privateCraft = Some(privateCraft)) )
       case None =>
         localSessionCache.cacheJourneyData( JourneyData(privateCraft = Some(privateCraft)) )
     }
   }
-
 }
