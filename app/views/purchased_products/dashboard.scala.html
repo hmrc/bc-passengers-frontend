@@ -17,10 +17,12 @@
     <div>
       <dt class="cya-question">@messages("dashboard.private_travel")</dt>
       <dd class="cya-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
+      <dd class="cya-answer change-link-single"><a href="private-travel">@messages("dashboard.change")</a></dd>
     </div>
     <div>
       <dt class="cya-question">@messages("dashboard.17_or_over")</dt>
       <dd class="cya-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
+      <dd class="cya-answer change-link-single"><a href="confirm-age">@messages("dashboard.change")</a></dd>
     </div>
   </dl>
 

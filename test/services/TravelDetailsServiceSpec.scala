@@ -67,39 +67,39 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       override val journeyDataInCache = None
 
-      await(travelDetailsService.storeAgeOver17(true))
+      await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
       verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, Some(true), None, Nil)) )(any())
     }
 
-    "store age confirmation in keystore, clearing subsequent journey data when journey data exists" in new LocalSetup {
+    "store age confirmation in keystore maintaining subsequent journey data" in new LocalSetup {
 
       override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), Nil) )
 
-      await(travelDetailsService.storeAgeOver17(true))
+      await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(true), None, Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(true), Some(false), Nil)) )(any())
     }
   }
 
   "Calling storePrivateCraft" should {
 
-    "store private craft setting in keystore when no journey data there currently" in new LocalSetup {
+    "store private craft setting in keystore when no journey data is currently there" in new LocalSetup {
 
       override val journeyDataInCache = None
 
-      await(travelDetailsService.storePrivateCraft(false))
+      await(travelDetailsService.storePrivateCraft(privateCraft = false))
 
       verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, Some(false), Nil)) )(any())
     }
 
-    "store private craft setting in keystore when journey data does exist there currently" in new LocalSetup {
+    "store private craft setting in keystore when journey data does exist " in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false)) )
+      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(false), Some(false), List(List("someProduct"))) )
 
-      await(travelDetailsService.storePrivateCraft(true))
+      await(travelDetailsService.storePrivateCraft(privateCraft = true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(true), Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(true), List(List("someProduct")))) )(any())
     }
   }
 

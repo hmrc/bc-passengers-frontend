@@ -73,13 +73,14 @@ button.add.other-goods = Add other goods
 dashboard.your_travel_information = Your details
 dashboard.country_of_purchase = Country of purchase
 dashboard.17_or_over = 17 or over
-dashboard.private_travel = Private travel
+dashboard.private_travel = Private aircraft or private boat
 dashboard.product_heading.tobacco = Tobacco
 dashboard.product_heading.alcohol = Alcohol
 dashboard.product_heading.other-goods = Other goods
 dashboard.no_products_added.tobacco = No tobacco added
 dashboard.no_products_added.alcohol = No alcohol added
 dashboard.no_products_added.other-goods = No other goods added
+dashboard.change = Change
 
 grams = {0}g
 

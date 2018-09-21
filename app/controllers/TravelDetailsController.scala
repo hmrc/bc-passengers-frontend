@@ -25,7 +25,7 @@ class TravelDetailsController @Inject() (
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Redirect(routes.TravelDetailsController.selectCountry).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
+    Future.successful(Redirect(routes.TravelDetailsController.selectCountry()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
   }
 
   val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
@@ -65,7 +65,7 @@ class TravelDetailsController @Inject() (
     )
   }
 
-  val confirmAge: Action[AnyContent] = PublicAction { implicit request =>
+  def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
       case Some(JourneyData(_, Some(ageOver17), _, _, _, _)) =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
@@ -74,15 +74,20 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val confirmAgePost: Action[AnyContent] = PublicAction { implicit request =>
+  def confirmAgePost: Action[AnyContent] = PublicAction { implicit request =>
 
     AgeOver17Dto.form.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.travel_details.confirm_age(formWithErrors)))
       },
       ageOver17Dto => {
-        travelDetailsService.storeAgeOver17( ageOver17Dto.ageOver17 ) map { _ =>
-          Redirect(routes.TravelDetailsController.privateCraft())
+        travelDetailsService.storeAgeOver17(ageOver17Dto.ageOver17) flatMap { _ =>
+          travelDetailsService.getJourneyData map {
+            case Some(JourneyData(_, Some(_), Some(_), _, _, _)) =>
+              Redirect(routes.DashboardController.showDashboard())
+            case _ =>
+              Redirect(routes.TravelDetailsController.privateCraft())
+          }
         }
       }
     )

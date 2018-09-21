@@ -3,8 +3,10 @@
 GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
 POST       /country-of-purchase                              controllers.TravelDetailsController.selectCountryPost
 GET        /country-of-purchase                              controllers.TravelDetailsController.selectCountry
+
 GET        /confirm-age                                      controllers.TravelDetailsController.confirmAge
 POST       /confirm-age                                      controllers.TravelDetailsController.confirmAgePost
+
 GET        /private-travel                                   controllers.TravelDetailsController.privateCraft
 POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
 GET        /eu-done                                          controllers.TravelDetailsController.euDone
