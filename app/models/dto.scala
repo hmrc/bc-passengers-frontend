@@ -96,7 +96,7 @@ object NoOfSticksAndWeightDto {
   val form: Form[NoOfSticksAndWeightDto] = Form(
     mapping(
       "noOfSticks" -> number,
-      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format( (kilos*1000) )))
+      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format(kilos * 1000)))
     )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
   )
 }
@@ -105,7 +105,7 @@ case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: BigDecimal)
 object WeightDto {
   val form: Form[WeightDto] = Form(
     mapping(
-      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format( (kilos*1000) )))
+      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format(kilos * 1000)))
     )(WeightDto.apply)(WeightDto.unapply)
   )
 }
@@ -122,7 +122,7 @@ object CurrencyDto {
 case class CurrencyDto(currency: String, itemsRemaining: Int)
 
 object CostDto {
-  def form(optionalItemsRemaining: Boolean = true) = Form(
+  def form(optionalItemsRemaining: Boolean = true): Form[CostDto] = Form(
     mapping(
       "cost" -> bigDecimal,
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))

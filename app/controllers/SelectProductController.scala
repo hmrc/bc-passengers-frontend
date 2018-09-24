@@ -81,9 +81,7 @@ class   SelectProductController @Inject()(
           }
         }
       )
-
     }
-
   }
 
 }

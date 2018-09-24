@@ -27,8 +27,22 @@ class AlcoholInputController @Inject() (
 
   def displayVolumeInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
+    val form = {
+      context.getJourneyData.workingInstance match {
+        case Some(PurchasedProductInstance(_, _, Some(volume), _, _, _)) => VolumeDto.form.fill(VolumeDto(volume))
+        case _ => VolumeDto.form
+      }
+    }
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.alcohol.volume_input(VolumeDto.form, product.name, product.token, path, iid)))
+      Future.successful(Ok(views.html.alcohol.volume_input(form, product.name, product.token, path, iid)))
+    }
+  }
+
+  def displayVolumeUpdate(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+    requirePurchasedProductInstance(path, iid) { product =>
+      purchasedProductService.makeWorkingInstance(context.getJourneyData, product) flatMap { _ =>
+        Future.successful(Redirect(routes.AlcoholInputController.displayVolumeInput(path, iid)))
+      }
     }
   }
 
@@ -40,19 +54,41 @@ class AlcoholInputController @Inject() (
           Future.successful(BadRequest(views.html.alcohol.volume_input(formWithErrors, product.name, product.token, path, iid)))
         }
       },
-      volumeDto => {
-        purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, volumeDto.volume) map { _ =>
-          Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid))
+      dto => {
+
+        context.getJourneyData.workingInstance match {
+          case Some(wi) if wi.iid == iid => purchasedProductService.updateWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
+            Redirect(routes.DashboardController.showDashboard())
+          }
+          case _ => purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
+            Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
+          }
         }
       }
     )
   }
 
+  def displayCurrencyUpdate(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+    requirePurchasedProductInstance(path, iid) { product =>
+      purchasedProductService.makeWorkingInstance(context.getJourneyData, product) flatMap { _ =>
+        Future.successful(Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid)))
+      }
+    }
+  }
+
+
   def displayCurrencyInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+
+    val form = {
+      context.getJourneyData.workingInstance match {
+        case Some(PurchasedProductInstance(_, _, _, _, Some(currency), _)) => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, 0))
+        case _ => CurrencyDto.form(currencyService)
+      }
+    }
 
     requireWorkingInstanceWeightOrVolume { volume =>
       requireProduct(path) { product =>
-        Future.successful(Ok(views.html.alcohol.currency_input(CurrencyDto.form(currencyService), product, path, iid, currencyService.getAllCurrencies, volume)))
+        Future.successful(Ok(views.html.alcohol.currency_input(form, product, path, iid, currencyService.getAllCurrencies, volume)))
       }
     }
   }
@@ -67,8 +103,8 @@ class AlcoholInputController @Inject() (
           }
         }
       },
-      currencyDto => {
-        purchasedProductService.storeCurrency(context.getJourneyData, path, iid, currencyDto.currency) map { _ =>
+      dto => {
+        purchasedProductService.storeCurrency(context.getJourneyData, path, iid, dto.currency) map { _ =>
           Redirect(routes.AlcoholInputController.displayCostInput(path, iid))
         }
       }
@@ -77,10 +113,17 @@ class AlcoholInputController @Inject() (
 
   def displayCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
+    val form = {
+      context.getJourneyData.workingInstance match {
+        case Some(PurchasedProductInstance(_, _, _, _, _, Some(cost))) => CostDto.form().fill(CostDto(cost, 0))
+        case _ => CostDto.form()
+      }
+    }
+
     requireWorkingInstanceWeightOrVolume { volume =>
       requireWorkingInstanceCurrency { currency: Currency =>
         requireProduct(path) { product =>
-          Future.successful(Ok(views.html.alcohol.cost_input(CostDto.form(), product, path, iid, volume, currency.displayName)))
+          Future.successful(Ok(views.html.alcohol.cost_input(form, product, path, iid, volume, currency.displayName)))
         }
       }
     }
@@ -98,13 +141,13 @@ class AlcoholInputController @Inject() (
           }
         }
       },
-      costDto => {
+      dto => {
 
         requireWorkingInstance { workingInstance =>
 
           requireProduct(path) { product =>
 
-            val wi = workingInstance.copy(cost = Some(costDto.cost))
+            val wi = workingInstance.copy(cost = Some(dto.cost))
 
             if (product.isValid(wi)) {
               context.journeyData.map { jd =>

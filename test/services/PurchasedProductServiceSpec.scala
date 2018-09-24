@@ -55,6 +55,29 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
   }
 
+  "Calling PurchasedProductService.makeWorkingInstance" should {
+
+    "make the provided purchased product instance the working product" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")),
+        PurchasedProductInstance(ProductPath("some/other/item"), iid = "iid1", currency = Some("JMD"))),
+        workingInstance = None))
+
+      val productToMakeWorkingInstance = PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD"))
+
+      await(s.makeWorkingInstance(journeyDataInCache.get, productToMakeWorkingInstance))
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("some/item/path"),"iid0",None,None,Some("USD"),None),
+          PurchasedProductInstance(ProductPath("some/other/item"),"iid1",None,None,Some("JMD"),None)),
+          workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))))
+      )(any())
+
+    }
+
+  }
+
   "Calling PurchasedProductService.removePurchasedProductInstance" should {
 
     "remove the working instance" in new LocalSetup {
@@ -91,7 +114,84 @@ class PurchasedProductServiceSpec extends BaseSpec {
       )(any())
 
     }
-
   }
 
+  "Calling PurchasedProductService.storeNoOfSticks" should {
+
+    "store a new working instance, containing the noOfSticks" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      await(s.storeNoOfSticks(JourneyData(), ProductPath("some/item/path"), "iid0", 100))
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", noOfSticks = Some(100)))))
+      )(any())
+
+    }
+  }
+
+  "Calling PurchasedProductService.updateNoOfSticks" should {
+
+    "update a current selected product, containing the updated noOfSticks" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", None, Some(50), Some("USD"), Some(BigDecimal("12.99"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+      )))
+
+      await(s.updateNoOfSticks(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", 100)
+      )
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", None, Some(100), Some("USD"), Some(BigDecimal("12.99"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        ))
+      ))(any())
+
+    }
+  }
+
+  "Calling PurchasedProductService.updateWeightOrVolume" should {
+
+    "update a current selected product, containing the updated weightOrVolume" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), None, Some("USD"), Some(BigDecimal("15.50"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        )))
+
+      await(s.updateWeightOrVolume(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", BigDecimal("1000"))
+      )
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("1000")), None, Some("USD"), Some(BigDecimal("15.50"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        ))
+      ))(any())
+    }
+  }
+
+  "Calling PurchasedProductService.updateNoOfSticksAndWeightOrVolume" should {
+
+    "update a current selected product, containing the updated noOfSticks and the updated weightOrVolume" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some("USD"), Some(BigDecimal("15.50"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        )))
+
+      await(s.updateNoOfSticksAndWeightOrVolume(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", 200, BigDecimal("1000"))
+      )
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("1000")), Some(200), Some("USD"), Some(BigDecimal("15.50"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        ))
+      ))(any())
+    }
+  }
 }

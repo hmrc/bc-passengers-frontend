@@ -1,5 +1,4 @@
-# microservice specific routes
-
+# Travel Details
 GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
 POST       /country-of-purchase                              controllers.TravelDetailsController.selectCountryPost
 GET        /country-of-purchase                              controllers.TravelDetailsController.selectCountry
@@ -11,6 +10,10 @@ GET        /private-travel                                   controllers.TravelD
 POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
 GET        /eu-done                                          controllers.TravelDetailsController.euDone
 
+GET        /new-session                                      controllers.TravelDetailsController.newSession
+
+
+# Dashboard
 GET        /dashboard                                        controllers.DashboardController.showDashboard
 POST       /dashboard                                        controllers.DashboardController.calculate
 
@@ -23,15 +26,23 @@ POST       /products/$path<.+>/:iid/remove                   controllers.AlterPr
 GET        /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)
 POST       /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.processQuantityInput(path: ProductPath)
 
-GET        /products/$path<other-goods/.+>/currency/:iid     controllers.OtherGoodsInputController.loadCurrencyInput(path: ProductPath, iid: String, ir: Int)
-POST       /products/$path<other-goods/.+>/currency/:iid     controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, iid: String)
+# Alcohol Input/Update
+GET        /products/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
 
-GET        /products/$path<other-goods/.+>/cost/:iid         controllers.OtherGoodsInputController.loadCostInput(path: ProductPath, iid: String, ir: Int)
-POST       /products/$path<other-goods/.+>/cost/:iid         controllers.OtherGoodsInputController.processCostInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/volume/:iid/update    controllers.AlcoholInputController.displayVolumeUpdate(path: ProductPath, iid: String)
+
+GET        /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/currency/:iid/update  controllers.AlcoholInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
+
+GET        /products/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
 
 
-
-GET        /products/$path<tobacco/.+>/start                                       controllers.TobaccoInputController.startInputJourney(path: ProductPath)
+# Tobacco Input/Update
+GET        /products/$path<tobacco/.+>/start                                       controllers.TobaccoInputController.inputNoOfSticksAndWeight(path: ProductPath)
 
 GET        /products/$path<tobacco/cigarettes>/no-of-sticks/:iid                   controllers.TobaccoInputController.displayNoOfSticksInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/cigarettes>/no-of-sticks/:iid                   controllers.TobaccoInputController.processNoOfSticksInput(path: ProductPath, iid: String)
@@ -44,32 +55,34 @@ POST       /products/$path<tobacco/(rolling|chewing)>/weight/:iid               
 
 GET        /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<tobacco/.+>/currency/:iid/update                        controllers.TobaccoInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
 
 GET        /products/$path<tobacco/.+>/cost/:iid                                   controllers.TobaccoInputController.displayCostInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/.+>/cost/:iid                                   controllers.TobaccoInputController.processCostInput(path: ProductPath, iid: String)
 
+GET        /products/$path<tobacco/.+>/:iid/update                                 controllers.TobaccoInputController.updateNoOfSticksAndWeight(path: ProductPath, iid: String)
 
+# Other Goods Input/Update
+GET        /products/$path<other-goods/.+>/quantity                  controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)
+POST       /products/$path<other-goods/.+>/quantity                  controllers.OtherGoodsInputController.processQuantityInput(path: ProductPath)
 
-GET        /products/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
+GET        /products/$path<other-goods/.+>/currency/:iid             controllers.OtherGoodsInputController.displayCurrencyInput(path: ProductPath, iid: String, ir: Int)
+POST       /products/$path<other-goods/.+>/currency/:iid             controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<other-goods/.+>/currency/:iid/update      controllers.OtherGoodsInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
 
-GET        /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
+GET        /products/$path<other-goods/.+>/cost/:iid                 controllers.OtherGoodsInputController.displayCostInput(path: ProductPath, iid: String, ir: Int)
+POST       /products/$path<other-goods/.+>/cost/:iid                 controllers.OtherGoodsInputController.processCostInput(path: ProductPath, iid: String)
 
-GET        /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/currency/:iid                 controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/currency/:iid                 controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
 
-GET        /products/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
-
-
-
-
+# Product Selection
 GET        /products/*path                                   controllers.SelectProductController.askProductSelection(path: ProductPath)
 POST       /products/*path                                   controllers.SelectProductController.processProductSelection(path: ProductPath)
 
-GET        /next-step                                        controllers.SelectProductController.nextStep()
+GET        /next-step                                        controllers.SelectProductController.nextStep
 
-GET        /new-session                                      controllers.TravelDetailsController.newSession
+
 
 
 GET        /assets/*file                                     controllers.Assets.at(path="/public", file)

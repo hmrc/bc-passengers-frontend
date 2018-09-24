@@ -50,9 +50,9 @@ case class JourneyData(
   } yield currencyCode).toSet
 
   def getOrCreatePurchasedProductInstance(path: ProductPath, iid: String): PurchasedProductInstance
-    = purchasedProductInstances.find(_.path == path).getOrElse(getOrCreatePurchasedProductInstance(path, iid))
+    = purchasedProductInstances.find(_.iid == iid).getOrElse(PurchasedProductInstance(path, iid))
 
-  def updatePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {
+  def updatePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance): JourneyData = {
     val newPdList = block(getOrCreatePurchasedProductInstance(path, iid)) :: purchasedProductInstances.filterNot(_.path == path)
     this.copy(purchasedProductInstances = newPdList)
   }
@@ -61,13 +61,10 @@ case class JourneyData(
     this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid==iid))
   }
 
-  def withUpdatedWorkingInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance) = {
-
+  def withUpdatedWorkingInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance): JourneyData = {
     val purchasedProductInstance = block(this.workingInstance.getOrElse(PurchasedProductInstance(path, iid)))
-
     this.copy(workingInstance = Some(purchasedProductInstance))
   }
 
-  def clearingWorking = this.copy(workingInstance = None)
-
+  def clearingWorking: JourneyData = this.copy(workingInstance = None)
 }

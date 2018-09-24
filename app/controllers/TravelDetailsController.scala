@@ -65,6 +65,7 @@ class TravelDetailsController @Inject() (
     )
   }
 
+
   def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
       case Some(JourneyData(_, Some(ageOver17), _, _, _, _, _)) =>
