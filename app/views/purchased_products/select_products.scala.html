@@ -8,21 +8,22 @@
 
 @main_template(title = title.toString, bodyClasses = None) {
 
-    <h1 class="heading-xlarge">@title.toString</h1>
-
-
     @helpers.form(action = routes.SelectProductController.processProductSelection(path)){
 
         <div class="form-group">
 
-            <p>@messages("select_products.form.p")</p>
+            <fieldset>
 
-            @components.input_check_box(
-                selectProductsForm("tokens"),
-                legend = messages(s"select_products.heading.$path.toString"),
-                legendClass = Some("visually-hidden"),
-                inputs = checkboxes
-            )
+                <legend>
+                    <h1 class="heading-xlarge">@title.toString</h1>
+                    <span class="body-text">@messages("select_products.form.p")</span>
+                </legend>
+
+                @components.input_check_box(
+                    selectProductsForm("tokens"),
+                    inputs = checkboxes
+                )
+            </fieldset>
 
         </div>
 

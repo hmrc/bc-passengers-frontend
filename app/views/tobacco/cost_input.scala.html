@@ -8,12 +8,9 @@
 
 @main_template(title = title.toString) {
 
-    @helpers.form(action = routes.TobaccoInputController.processCostInput(path, iid)) {
+    <h1 class="heading-xlarge">@title.toString</h1>
 
-    <fieldset>
-        <legend>
-            <h1 class="heading-xlarge">@title.toString</h1>
-        </legend>
+    @helpers.form(action = routes.TobaccoInputController.processCostInput(path, iid)) {
 
         <div class="form-group">
             @helpers.input(
@@ -27,7 +24,6 @@
         <div class="form-group">
             <input type="submit" class="button" value="Continue">
         </div>
-    </fieldset>
     }
 
 }

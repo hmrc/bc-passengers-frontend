@@ -7,9 +7,7 @@
 
   @helpers.form(action = routes.TobaccoInputController.processNoOfSticksInput(path, iid)) {
 
-    <h1>
-        <label for="noOfSticks" class="heading-xlarge">@messages("tobacco.no_of_sticks_input.heading", productName.toLowerCase())</label>
-    </h1>
+    <h1 class="heading-xlarge">@messages("tobacco.no_of_sticks_input.heading", productName.toLowerCase())</h1>
 
     <div class="panel panel-border-wide" id="panel">
         <p>@messages(s"tobacco.no_of_sticks_input.panel.${token}.1")</p>

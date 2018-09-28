@@ -27,11 +27,10 @@
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
+    <h1 class="heading-xlarge">@title.toString</h1>
+
     @helpers.form(action = routes.TobaccoInputController.processCurrencyInput(path, iid)){
-    <fieldset>
-        <legend>
-            <h1 class="heading-xlarge">@title.toString</h1>
-        </legend>
+
         <div class="form-group">
             @helper.select(
                 field = currencyForm("currency"),
@@ -53,6 +52,5 @@
             <input type="submit" class="button" value="Continue">
         </div>
 
-    </fieldset>
     }
 }

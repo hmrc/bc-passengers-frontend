@@ -7,24 +7,28 @@
 
   @helpers.form(action = routes.OtherGoodsInputController.processQuantityInput(path)) {
 
-    <h1>
-        <label for="quantity" class="heading-xlarge">@messages("other-goods.quantity_input.heading", productName.toLowerCase())</label>
-    </h1>
-
-    <div class="panel panel-border-wide" id="panel">
-        <p>@messages("other-goods.quantity_input.panel.1")</p>
+    <fieldset>
+      <legend>
+          <h1 class="heading-xlarge">@messages("other-goods.quantity_input.heading", productName.toLowerCase())</h1>
+      </legend>
+      <div class="panel panel-border-wide" id="panel">
+      <p>@messages("other-goods.quantity_input.panel.1")</p>
         <p>@messages("other-goods.quantity_input.panel.2")</p>
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         @helpers.input(
             quantityForm("quantity"),
-            '_inputClass -> "form-control-1-8"
+            '_inputClass -> "form-control-1-8",
+            '_label -> messages("other-goods.quantity_input.heading", productName.toLowerCase()),
+            '_labelTextClass -> "visually-hidden"
         )
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         <input type="submit" class="button" value="Continue">
-    </div>
+      </div>
+    </fieldset>
+
   }
 }

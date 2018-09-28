@@ -77,7 +77,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
       h1 shouldBe "What type of alcohol are you bringing into the UK?"
-      title shouldBe "What type of alcohol are you bringing into the UK? - GOV.UK"
+      title shouldBe "What type of alcohol are you bringing into the UK? - Check tax on goods you bring into the UK - GOV.UK"
       forAll(List("beer", "wine", "cider", "spirits", "wine", "sparkling")) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
