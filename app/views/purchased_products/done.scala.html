@@ -124,11 +124,17 @@
 
   <h2 class="heading-medium">@messages("done.what_you_need_to_do_next")</h2>
 
-  <p>@messages("done.red_channel")</p>
+  <p>@messages("label.you_must_pay_duty_and_tax_")</p>
+  <p>@messages("label.you_can_declare_these_goods_")</p>
+
+  <a class="button margin-bottom-30" href="@controllers.routes.DonePageController.enterYourDetails()">
+    @messages("label.declare_your_goods_and_pay_online")
+  </a>
+
 
   <p>
     <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
-    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("text.start_again")</a>
+    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("text.start_again")</a>.
   </p>
 
 }

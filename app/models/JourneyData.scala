@@ -1,5 +1,6 @@
 package models
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
 
@@ -15,6 +16,20 @@ case class PurchasedProductInstance(
   cost: Option[BigDecimal] = None
 )
 
+object UserInformation {
+  implicit val formats = Json.format[UserInformation]
+
+  def build(dto: EnterYourDetailsDto) =
+    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival)
+}
+case class UserInformation(
+  firstName: String,
+  lastName: String,
+  passportNumber: String,
+  placeOfArrival: String,
+  dateOfArrival: LocalDate
+)
+
 
 object JourneyData {
   implicit val formats = Json.format[JourneyData]
@@ -25,7 +40,8 @@ case class JourneyData(
   privateCraft: Option[Boolean] = None,
   selectedProducts: List[List[String]] = Nil,
   purchasedProductInstances: List[PurchasedProductInstance] = Nil,
-  workingInstance: Option[PurchasedProductInstance] = None
+  workingInstance: Option[PurchasedProductInstance] = None,
+  userInformation: Option[UserInformation] = None
 ) {
 
   def allCurrencyCodes: Set[String] = (for {

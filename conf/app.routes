@@ -11,8 +11,11 @@ GET        /private-travel                                   controllers.TravelD
 POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
 GET        /eu-done                                          controllers.TravelDetailsController.euDone
 
-POST       /calculate                                        controllers.DashboardController.calculate
 GET        /dashboard                                        controllers.DashboardController.showDashboard
+POST       /dashboard                                        controllers.DashboardController.calculate
+
+GET        /user-information                                 controllers.DonePageController.enterYourDetails
+POST       /user-information                                 controllers.DonePageController.processEnterYourDetails
 
 GET        /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.remove(path: ProductPath, iid: String)

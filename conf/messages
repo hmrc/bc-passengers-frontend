@@ -52,6 +52,20 @@ label.there_is_a_problem=There is a problem
 label.remove_this_item=Remove this item
 label.do_you_want_to_remove_this=Do you want to remove this {0}?
 label.change_your_answers=Change your answers
+label.declare_your_goods_and_pay_online=Declare your goods and pay online
+label.enter_your_details=Enter your details
+label.first_name=First name
+label.last_name=Last name
+label.passport_number=Passport number
+label.place_of_arrival=Place of arrival in UK
+
+label.continue=Continue
+label.for_example_heathrow_airport_or_dover=For example, Heathrow airport or Dover
+label.date_of_arrival=Date of arrival
+label.for_example_31_10_2018=For example, 31 10 2018
+
+label.you_must_pay_duty_and_tax_=You must pay duty and tax on these goods if you bring them into the UK.
+label.you_can_declare_these_goods_=You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
 
 #Text (Bullet points)
 text.for_personal_use=for your personal use
@@ -192,7 +206,6 @@ done.label.customs = Customs
 done.label.excise = Excise (alcohol and tobacco only)
 done.label.vat = VAT
 done.exchange_rates = We use the <a href="http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm" target="_blank">HMRC exchange rates for customs and VAT (opens in a new window or tab)</a> to calculate these figures. The rates are updated monthly.
-done.red_channel = If you take these goods into the UK you must go to the red channel or red point phone and declare your goods to Border Force.
 done.link.change_your_answers = Change your answers
 
 

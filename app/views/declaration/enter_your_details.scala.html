@@ -1,0 +1,58 @@
+@(form: Form[EnterYourDetailsDto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+
+
+@main_template(title = messages("label.enter_your_details"), bodyClasses = None) {
+
+
+  @helpers.form(action = routes.DonePageController.processEnterYourDetails) {
+
+    <fieldset>
+      <legend><h1 class="heading-xlarge">@messages("label.enter_your_details")</h1></legend>
+
+      <div class="form-group">
+        <label class="form-label-bold" for="firstName">@messages("label.first_name")</label>
+        @helpers.input(
+          form("firstName"),
+          '_inputClass -> "form-control-3-4"
+        )
+      </div>
+      <div class="form-group">
+        <label class="form-label-bold " for="lastName">@messages("label.last_name")</label>
+        @helpers.input(
+          form("lastName"),
+          '_inputClass -> "form-control-3-4"
+        )
+      </div>
+      <div class="form-group">
+        <label class="form-label-bold" for="passportNumber">@messages("label.passport_number")</label>
+        @helpers.input(
+          form("passportNumber"),
+          '_inputClass -> "form-control-3-4"
+        )
+      </div>
+      <div class="form-group">
+        <label class="form-label-bold" for="placeOfArrival">@messages("label.place_of_arrival")</label>
+        <span class="form-hint">@messages("label.for_example_heathrow_airport_or_dover")</span>
+        @helpers.input(
+          form("placeOfArrival"),
+          '_inputClass -> "form-control-3-4"
+        )
+      </div>
+
+      @helpers.dateFieldsFreeInlineLegend(
+        form,
+        "dateOfArrival",
+        '_inputHint -> messages("label.for_example_31_10_2018"),
+        '_legendSpanClass -> "form-label-bold",
+        '_legend -> messages("label.date_of_arrival")
+      )
+
+      <div class="form-group">
+        <button type="submit" class="button">@messages("label.continue")</button>
+      </div>
+    </fieldset>
+  }
+}
