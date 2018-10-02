@@ -18,34 +18,32 @@
 
   @helpers.form(action = routes.AlcoholInputController.processVolumeInput(path, iid)){
 
-    <fieldset>
-      <legend><h1 class="heading-xlarge">@title.toString</h1></legend>
+    <h1 class="heading-xlarge">@title.toString</h1>
 
-      <div class="panel panel-border-wide" id="panel">
-        <p>@messages(s"alcohol.volume_input.panel.${token}.1")</p>
-        <p>@messages(s"alcohol.volume_input.panel.${token}.2")</p>
+    <div class="panel panel-border-wide" id="panel">
+      <p>@messages(s"alcohol.volume_input.panel.${token}.1")</p>
+      <p>@messages(s"alcohol.volume_input.panel.${token}.2")</p>
+    </div>
+
+    <div class="form-group">
+      @helpers.input(
+        volumeInput("volume"),
+        '_label -> messages("alcohol.volume_input.form.label"),
+        '_labelTextClass -> "form-label",
+        '_inputClass -> "form-control-1-8"
+      )
+    </div>
+
+    <details class="form-group">
+      <summary><span class="summary">@messages("hidden_text.volume_input.summary")</span></summary>
+      <div class="panel panel-border-narrow">
+        <p>@messages("hidden_text.you_cant_use_service")</p>
       </div>
+    </details>
 
-      <div class="form-group">
-        @helpers.input(
-          volumeInput("volume"),
-          '_label -> messages("alcohol.volume_input.form.label"),
-          '_labelTextClass -> "form-label",
-          '_inputClass -> "form-control-1-8"
-        )
-      </div>
-
-      <details class="form-group">
-        <summary><span class="summary">@messages("hidden_text.volume_input.summary")</span></summary>
-        <div class="panel panel-border-narrow">
-          <p>@messages("hidden_text.you_cant_use_service")</p>
-        </div>
-      </details>
-
-      <div class="form-group">
-        <input type="submit" class="button" value="Continue">
-      </div>
-    </fieldset>
+    <div class="form-group">
+      <input type="submit" class="button" value="Continue">
+    </div>
   }
 
 }

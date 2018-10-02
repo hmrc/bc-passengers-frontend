@@ -4,10 +4,9 @@
 
 @main_template(title = messages("tobacco.weight_input.heading", productName.toLowerCase()), bodyClasses = None) {
 
-  @helpers.form(action = routes.TobaccoInputController.processWeightInput(path, iid)){
+  <h1 class="heading-xlarge">@messages("tobacco.weight_input.heading", productName.toLowerCase())</h1>
 
-  <fieldset>
-    <legend><h1 class="heading-xlarge">@messages("tobacco.weight_input.heading", productName.toLowerCase())</h1></legend>
+  @helpers.form(action = routes.TobaccoInputController.processWeightInput(path, iid)){
 
     <div class="panel panel-border-wide" id="panel">
         <p>@messages(s"tobacco.weight_input.panel.${token}.1")</p>
@@ -34,7 +33,6 @@
     <div class="form-group">
         <input type="submit" class="button" value="Continue">
     </div>
-  </fieldset>
   }
 
 }

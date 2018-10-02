@@ -29,33 +29,31 @@
 
     @currencyForm.errors
 
+    <h1 class="heading-xlarge">@title.toString</h1>
+
     @helpers.form(action = routes.AlcoholInputController.processCurrencyInput(path, iid)){
-        <fieldset>
-            <legend>
-                <h1 class="heading-xlarge">@title.toString</h1>
-            </legend>
-            <div class="form-group">
-                @helper.select(
-                    field = currencyForm("currency"),
-                    options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
-                    '_label -> messages("currency_input.form.label"),
-                    '_labelTextClass -> "form-label",
-                    '_inputClass -> "form-control"
-                )
+
+        <div class="form-group">
+            @helper.select(
+                field = currencyForm("currency"),
+                options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
+                '_label -> messages("currency_input.form.label"),
+                '_labelTextClass -> "form-label",
+                '_inputClass -> "form-control"
+            )
+        </div>
+
+        <details class="form-group">
+            <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
+            <div class="panel panel-border-narrow">
+                <p>@messages("hidden_text.you_cant_use_service")</p>
             </div>
+        </details>
 
-            <details class="form-group">
-                <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
-                <div class="panel panel-border-narrow">
-                    <p>@messages("hidden_text.you_cant_use_service")</p>
-                </div>
-            </details>
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
 
-            <div class="form-group">
-                <input type="submit" class="button" value="Continue">
-            </div>
-
-        </fieldset>
     }
 
 }

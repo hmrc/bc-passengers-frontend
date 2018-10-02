@@ -13,31 +13,35 @@
       <legend><h1 class="heading-xlarge">@messages("label.enter_your_details")</h1></legend>
 
       <div class="form-group">
-        <label class="form-label-bold" for="firstName">@messages("label.first_name")</label>
         @helpers.input(
           form("firstName"),
+          '_label -> messages("label.first_name"),
+          '_labelTextClass -> "form-label-bold",
           '_inputClass -> "form-control-3-4"
         )
       </div>
       <div class="form-group">
-        <label class="form-label-bold " for="lastName">@messages("label.last_name")</label>
         @helpers.input(
           form("lastName"),
+          '_label -> messages("label.last_name"),
+          '_labelTextClass -> "form-label-bold",
           '_inputClass -> "form-control-3-4"
         )
       </div>
       <div class="form-group">
-        <label class="form-label-bold" for="passportNumber">@messages("label.passport_number")</label>
         @helpers.input(
           form("passportNumber"),
+          '_label -> messages("label.passport_number"),
+          '_labelTextClass -> "form-label-bold",
           '_inputClass -> "form-control-3-4"
         )
       </div>
       <div class="form-group">
-        <label class="form-label-bold" for="placeOfArrival">@messages("label.place_of_arrival")</label>
-        <span class="form-hint">@messages("label.for_example_heathrow_airport_or_dover")</span>
         @helpers.input(
           form("placeOfArrival"),
+          '_label -> messages("label.place_of_arrival"),
+          '_labelTextClass -> "form-label-bold",
+          '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
           '_inputClass -> "form-control-3-4"
         )
       </div>
