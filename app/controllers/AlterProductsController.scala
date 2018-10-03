@@ -48,7 +48,5 @@ class AlterProductsController @Inject() (
         }
       }
     )
-
-
   }
 }

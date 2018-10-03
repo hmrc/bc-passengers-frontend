@@ -1,7 +1,7 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-import models.{JourneyData, ProductPath}
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -13,6 +13,15 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
 
     val updatedJourneyData = journeyData.clearingWorking
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
+  def makeWorkingInstance(journeyData: JourneyData, purchasedProductInstance: PurchasedProductInstance)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(purchasedProductInstance.path, purchasedProductInstance.iid) { _ =>
+      purchasedProductInstance
+    }
+
+    cacheJourneyData(updatedJourneyData).map(_ => updatedJourneyData)
   }
 
   def removePurchasedProductInstance(journeyData: JourneyData, path: ProductPath, iid: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
@@ -48,11 +57,35 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
+  def updateWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, updatedWeightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+    val updatedProductInstances = journeyData.purchasedProductInstances.map { ppi =>
+      if (ppi.iid == iid)
+        ppi.copy(weightOrVolume = Some(updatedWeightOrVolume))
+      else
+        ppi
+    }
+
+    val updatedJourneyData = journeyData.copy(purchasedProductInstances = updatedProductInstances)
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
   def storeNoOfSticksAndWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Int, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
     val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
       purchasedProductInstance.copy(path = path, iid = iid, noOfSticks = Some(noOfSticks), weightOrVolume = Some(weightOrVolume))
     }
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
+  def updateNoOfSticksAndWeightOrVolume(journeyData: JourneyData, path: ProductPath, iid: String, updatedNoOfSticks: Int, weightOrVolume: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+    val updatedProductInstances = journeyData.purchasedProductInstances.map { ppi =>
+      if (ppi.iid == iid)
+        ppi.copy(noOfSticks = Some(updatedNoOfSticks), weightOrVolume = Some(weightOrVolume))
+      else
+        ppi
+    }
+
+    val updatedJourneyData = journeyData.copy(purchasedProductInstances = updatedProductInstances)
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
@@ -62,6 +95,18 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
       purchasedProductInstance.copy(path = path, iid = iid, noOfSticks = Some(noOfSticks))
     }
 
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
+  def updateNoOfSticks(journeyData: JourneyData, path: ProductPath, iid: String, updatedNoOfSticks: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+    val updatedProductInstances = journeyData.purchasedProductInstances.map { ppi =>
+      if (ppi.iid == iid)
+        ppi.copy(noOfSticks = Some(updatedNoOfSticks))
+      else
+        ppi
+    }
+
+    val updatedJourneyData = journeyData.copy(purchasedProductInstances = updatedProductInstances)
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 }

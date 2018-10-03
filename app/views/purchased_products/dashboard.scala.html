@@ -17,12 +17,12 @@
     <div>
       <dt class="cya-question">@messages("dashboard.private_travel")</dt>
       <dd class="cya-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer change-link-single"><a href="private-travel">@messages("dashboard.change")</a></dd>
+      <dd class="cya-answer cya-change"><a href="private-travel">@messages("dashboard.change")</a></dd>
     </div>
     <div>
       <dt class="cya-question">@messages("dashboard.17_or_over")</dt>
       <dd class="cya-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer change-link-single"><a href="confirm-age">@messages("dashboard.change")</a></dd>
+      <dd class="cya-answer cya-change"><a href="confirm-age">@messages("dashboard.change")</a></dd>
     </div>
   </dl>
 
@@ -46,10 +46,12 @@
           <div>
             <dt class="cya-question">@messages("title.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
           </div>
           <div>
             <dt class="cya-question">@messages("title.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
@@ -85,10 +87,12 @@
                 @purchasedItem.description
               }
             </dd>
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
           </div>
           <div>
             <dt class="cya-question">@messages("title.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
@@ -125,6 +129,7 @@
               @purchasedItem.purchasedProductInstance.cost
               @purchasedItem.displayCurrency
             </dd>
+            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
@@ -142,6 +147,6 @@
   }
 
   <p class="margin-top-30">
-    <a href="@controllers.routes.TravelDetailsController.newSession()" id="start-again" >@messages("label.start_again")</a>
+    <a href="@controllers.routes.TravelDetailsController.newSession()" id="start-again" >@messages("label.start_again")</a>.
   </p>
 }
