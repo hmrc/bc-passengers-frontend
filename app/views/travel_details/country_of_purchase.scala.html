@@ -21,12 +21,12 @@
 }
 
 @main_template(
-    title = messages("title.where_did_you_buy_goods"),
+    title = messages("label.where_did_you_buy_goods"),
     bodyClasses = None,
     inlineScript = Some(scriptElem),
     inlineLinkElem = Some(linkElem)) {
 
-    <h1 class="heading-xlarge">@messages("title.where_did_you_buy_goods")</h1>
+    <h1 class="heading-xlarge">@messages("label.where_did_you_buy_goods")</h1>
 
 
     @helpers.form(action = routes.TravelDetailsController.selectCountryPost()){

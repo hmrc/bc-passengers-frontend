@@ -23,7 +23,7 @@ case class SelectedCountryDto(country: String)
 object AgeOver17Dto {
   val form: Form[AgeOver17Dto] = Form(
     mapping(
-      "ageOver17" -> optional(boolean).verifying("over_17.error", _.isDefined).transform[Boolean](_.get, b => Option(b))
+      "ageOver17" -> optional(boolean).verifying("error.over_17", _.isDefined).transform[Boolean](_.get, b => Option(b))
     )(AgeOver17Dto.apply)(AgeOver17Dto.unapply)
   )
 }
@@ -34,7 +34,7 @@ object PrivateCraftDto {
 
   val form: Form[PrivateCraftDto] = Form(
     mapping(
-      "privateCraft" -> optional(boolean).verifying("private_craft.error", _.isDefined).transform[Boolean](_.get, b => Option(b))
+      "privateCraft" -> optional(boolean).verifying("error.private_craft", _.isDefined).transform[Boolean](_.get, b => Option(b))
     )(PrivateCraftDto.apply)(PrivateCraftDto.unapply)
   )
 }
@@ -43,7 +43,7 @@ case class PrivateCraftDto(privateCraft: Boolean)
 object ConfirmRemoveDto {
   val form: Form[ConfirmRemoveDto] = Form(
     mapping(
-      "confirmRemove" -> optional(boolean).verifying("remove_product.error", _.isDefined).transform[Boolean](_.get, b => Option(b))
+      "confirmRemove" -> optional(boolean).verifying("error.remove_product", _.isDefined).transform[Boolean](_.get, b => Option(b))
     )(ConfirmRemoveDto.apply)(ConfirmRemoveDto.unapply)
   )
 }
@@ -114,7 +114,7 @@ case class WeightDto(weight: BigDecimal)
 object CurrencyDto {
   def form(currencyService: CurrencyService, optionalItemsRemaining: Boolean = true): Form[CurrencyDto] = Form(
     mapping(
-      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
+      "currency" -> text.verifying("error.invalid_currency", code => currencyService.isValidCurrencyCode(code)),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CurrencyDto.apply)(CurrencyDto.unapply)
   )

@@ -1,17 +1,17 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = messages("title.eu_allowances"), bodyClasses = None) {
+@main_template(title = messages("label.allowances_for_goods_"), bodyClasses = None) {
 
-    <h1 class="heading-xlarge">@messages("title.eu_allowances")</h1>
+    <h1 class="heading-xlarge">@messages("label.allowances_for_goods_")</h1>
 
-    <p>@messages("label.no_limits_on_goods")</p>
+    <p>@messages("label.there_are_no_limits_")</p>
 
     <ul class="list list-bullet">
-        <li>@messages("text.for_personal_use")</li>
+        <li>@messages("text.for_your_personal_use")</li>
         <li>@messages("text.as_a_gift_for_someone_else")</li>
     </ul>
 
-    <p>@messages("label.customs_officer_may_stop_you")</p>
+    <p>@messages("label.however_a_customs_officer_may_stop_you_")</p>
 
     <h4 class="heading-small">@messages("label.alcohol")</h4>
     <table>
