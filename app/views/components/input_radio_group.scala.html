@@ -20,11 +20,10 @@
     @import views.html.helper._
 
     @elements = @{new FieldElements(field.id, field, null, args.toMap, messages) }
-    @groupDivClass = {@elements.args.get('_groupDivClass)@if(elements.hasErrors){ form-group-error}}
     @fieldsetClass = {@elements.args.get('_groupClass)}
     @labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
 
-    <div class="@groupDivClass">
+    <div class="form-group @if(elements.hasErrors){ form-group-error}">
 
         @elements.errors.map{error => <span class="error-message">@Messages(error)</span>}
 

@@ -3,8 +3,11 @@ package vertical
 import models._
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.LocalSessionCache
+
+import scala.concurrent.Future
 
 class AlcoholVerticalSpec extends VerticalBaseSpec {
 
@@ -57,7 +60,7 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     }
 
-    "redirect the user to the currency input, storing weightOrVolume given valid form input" in new LocalSetup {
+    "redirect the user to the country input, storing weightOrVolume given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
@@ -65,11 +68,64 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
         .withFormUrlEncodedBody("volume" -> "2.5")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/currency/iid0")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(
         meq(requiredJourneyData.copy(workingInstance = Some(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")))))))(any())
+    }
+  }
+
+  "Calling GET /products/alcohol/.../country/iid0" should {
+
+    "return a 404 when the product path is invalid" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/not/a/real/product/country/iid0")).get
+
+      status(result) shouldBe NOT_FOUND
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
+    "return a 200 when the product path is valid and there is a working instance with a volume" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/cider/country/iid0")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+  }
+
+  "Calling POST /products/alcohol/.../country/iid0" should {
+
+    "return a 400 given bad form input" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
+
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/cider/country/iid0").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
+
+      status(result) shouldBe BAD_REQUEST
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
+    "store the country in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/cider/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/cider/currency/iid0")
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", country = Some("Egypt"))))))(any())
     }
   }
 

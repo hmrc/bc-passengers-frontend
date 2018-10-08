@@ -45,7 +45,7 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(true),
       Some(false),
       Nil,
-      List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("USD"),Some(123)))
+      List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("Egypt"),Some("USD"),Some(123)))
     )
 
     val goodJourneyData = JourneyData(
@@ -54,13 +54,13 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(false),
       Nil,
       List(
-        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)),
-        PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some("AUD"),Some(1234)),
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)),
-        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123))
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("Egypt"),Some("CHF"),Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("Egypt"),Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some("Egypt"),Some("AUD"),Some(1234)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("Egypt"),Some("GBP"),Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("Egypt"),Some("GGP"),Some(123))
       )
     )
 
@@ -70,25 +70,25 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(false),
       Nil,
       List(
-        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)),
-        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some("AUD"),Some(1234)), //Note weightOrVolume = None
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)),
-        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123))
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some("Egypt"),Some("CHF"),Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("Egypt"),Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some("Egypt"),Some("AUD"),Some(1234)), //Note weightOrVolume = None
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("Egypt"),Some("GBP"),Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("Egypt"),Some("GGP"),Some(123))
       )
     )
 
 
     val calcRequest = CalculatorRequest(false,true,List(
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","Children’s car seats","OGD/MOB/MISC","other-goods"),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("AUD"),Some(33)),ProductTreeLeaf("antiques","Antiques and works of art","OGD/ART","other-goods"),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","Antiques and works of art","OGD/ART","other-goods"),Currency("CHF","Switzerland Franc (CHF)",Some("CHF")), BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("CHF"),Some(43)),ProductTreeLeaf("chewing","Chewing or pipe tobacco","TOB/A1/OTHER","tobacco"),Currency("CHF","Switzerland Franc (CHF)",Some("CHF")), BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some("AUD"),Some(1234)),ProductTreeLeaf("cigars","Cigars","TOB/A1/CIGAR","cigars"),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), BigDecimal(1234/1.76).setScale(2, RoundingMode.DOWN)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("GBP"),Some(60)),ProductTreeLeaf("cigarettes","Cigarettes","TOB/A1/CIGRT","cigarettes"),Currency("GBP","British Pound (GBP)",None), BigDecimal(60).setScale(2, RoundingMode.DOWN)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("GGP"),Some(123)),ProductTreeLeaf("beer","Beer","ALC/A2/BEER","alcohol"),Currency("GGP","Guernsey Pound (GGP)",None), BigDecimal(123).setScale(2, RoundingMode.DOWN))
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","Children’s car seats","OGD/MOB/MISC","other-goods"),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), "Egypt", BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(33)),ProductTreeLeaf("antiques","Antiques and works of art","OGD/ART","other-goods"),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), "Egypt", BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some("Egypt"),Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","Antiques and works of art","OGD/ART","other-goods"),Currency("CHF","Switzerland Franc (CHF)",Some("CHF")), "Egypt", BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some("Egypt"),Some("CHF"),Some(43)),ProductTreeLeaf("chewing","Chewing or pipe tobacco","TOB/A1/OTHER","tobacco"),Currency("CHF","Switzerland Franc (CHF)",Some("CHF")), "Egypt", BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some("Egypt"),Some("AUD"),Some(1234)),ProductTreeLeaf("cigars","Cigars","TOB/A1/CIGAR","cigars"),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), "Egypt", BigDecimal(1234/1.76).setScale(2, RoundingMode.DOWN)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some("Egypt"),Some("GBP"),Some(60)),ProductTreeLeaf("cigarettes","Cigarettes","TOB/A1/CIGRT","cigarettes"),Currency("GBP","British Pound (GBP)",None), "Egypt", BigDecimal(60).setScale(2, RoundingMode.DOWN)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("Egypt"),Some("GGP"),Some(123)),ProductTreeLeaf("beer","Beer","ALC/A2/BEER","alcohol"),Currency("GGP","Guernsey Pound (GGP)",None), "Egypt", BigDecimal(123).setScale(2, RoundingMode.DOWN))
     ))
 
     trait LocalSetup {
@@ -182,8 +182,8 @@ class CalculatorServiceSpec extends BaseSpec {
         ageOver17 = Some(true),
         privateCraft = Some(false),
         purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
-          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", currency = Some("USD"), cost = Some(BigDecimal("4.00")))
+          PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some("Egypt"), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", country = Some("Egypt"), currency = Some("USD"), cost = Some(BigDecimal("4.00")))
         )
       ))
 
@@ -198,7 +198,7 @@ class CalculatorServiceSpec extends BaseSpec {
       verify(injected[WsAllMethods], times(1)).POST[CalculatorRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
         meq(CalculatorRequest(false, true, List(
-          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","Antiques and works of art","OGD/ART","other-goods"),Currency("CAD","Canada Dollar (CAD)",Some("CAD")),BigDecimal("1.13"))
+          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some("Egypt"),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","Antiques and works of art","OGD/ART","other-goods"),Currency("CAD","Canada Dollar (CAD)",Some("CAD")), "Egypt", BigDecimal("1.13"))
         ))),
         any())(any(),any(),any(),any())
 

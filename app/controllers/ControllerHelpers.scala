@@ -142,7 +142,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def requireWorkingInstanceCurrency(block: Currency => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     requireWorkingInstance {
-      case PurchasedProductInstance(_, _, _, _, Some(currency), _) =>
+      case PurchasedProductInstance(_, _, _, _, _, Some(currency), _) =>
         currencyService.getCurrencyByCode(currency) match {
           case Some(curr) => block(curr)
           case None =>
@@ -182,6 +182,13 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
       case branch: ProductTreeBranch => block(branch)
       case _ =>
         logAndRenderError(s"Category not found at $path!", NotFound)
+    }
+  }
+
+  def replaceProductInPlace(purchasedProductInstances: List[PurchasedProductInstance], productToReplace: PurchasedProductInstance): List[PurchasedProductInstance] = {
+    (purchasedProductInstances.takeWhile(_.iid != productToReplace.iid), purchasedProductInstances.dropWhile(_.iid != productToReplace.iid)) match {
+      case (x, Nil) => productToReplace :: x  //Prepend
+      case (x, y) => x ++ (productToReplace :: y.tail)  //Replace in place
     }
   }
 

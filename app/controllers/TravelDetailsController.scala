@@ -38,15 +38,15 @@ class TravelDetailsController @Inject() (
   val selectCountry: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
       case Some(JourneyData(Some(country), _, _, _, _, _, _)) =>
-        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form.bind(Map("country" -> country)), countriesService.getAllCountries))
+        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form(countriesService).bind(Map("country" -> country)), countriesService.getAllCountries))
       case _ =>
-        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form, countriesService.getAllCountries))
+        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form(countriesService), countriesService.getAllCountries))
     }
   }
 
   val selectCountryPost: Action[AnyContent] = PublicAction { implicit request =>
 
-    SelectedCountryDto.form.bindFromRequest.fold(
+    SelectedCountryDto.form(countriesService).bindFromRequest.fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.travel_details.country_of_purchase(formWithErrors, countriesService.getAllCountries)))
       },

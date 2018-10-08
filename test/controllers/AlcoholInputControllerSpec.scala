@@ -105,6 +105,24 @@ class AlcoholInputControllerSpec extends BaseSpec {
     }
   }
 
+  "Calling GET /products/alcohol/.../country" should {
+
+    "return a 200 and not prepopulate the country value if there is no working instance" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/cider/country/iid0")).get
+      val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
+
+      status(result) shouldBe OK
+
+      doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
+    }
+
+  }
+
   "Calling GET /products/alcohol/.../currency" should {
 
     "return a 200 with and not prepopulate if there is no currency in the working instance" in new LocalSetup {
@@ -115,10 +133,11 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/currency/iid1")).get
       val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
 
       status(result) shouldBe OK
 
-      content should not include """selected="selected""""
+      doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
     }
 
     "return a 200 with the currency value populated if there is a working instance" in new LocalSetup {
@@ -131,10 +150,11 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer/currency/iid0")).get
       val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
 
       status(result) shouldBe OK
 
-      content should include ("""<option value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
     }
   }
 
@@ -153,7 +173,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      content should not include """selected="selected""""
+      doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
     }
 
     "return a 200 with the cost value populated if there is a working instance" in new LocalSetup {
@@ -191,7 +211,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("500")), None, Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("500")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/volume/iid1")
@@ -202,16 +222,16 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
+    "redirect to the country input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/cider"), "iid0", None, None, Some("USD"), Some(BigDecimal("12.99")))
+        PurchasedProductInstance(ProductPath("alcohol/cider"), "iid0", None, None, Some("Egypt"), Some("USD"), Some(BigDecimal("12.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/beer/volume/iid1")
         .withFormUrlEncodedBody("volume" -> "20")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/currency/iid1")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/beer/country/iid1")
     }
   }
 }

@@ -1,4 +1,4 @@
-@(countryForm: Form[SelectedCountryDto], countries: List[Country])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(countryForm: Form[SelectedCountryDto], product: ProductTreeLeaf, path: ProductPath, iid: String, countries: List[Country], volume: BigDecimal)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
 }
 
+@title = {
+    @messages("label.alcohol.where_did_you_buy_the_", volume, product.name.toLowerCase())
+}
+
 @main_template(
     title = messages("label.where_did_you_buy_goods"),
     bodyClasses = None,
@@ -28,9 +32,11 @@
 
     @views.html.tags.errors(countryForm)
 
-    <h1 class="heading-xlarge">@messages("label.where_did_you_buy_goods")</h1>
+    <h1 class="heading-xlarge">@title</h1>
 
-    @helpers.form(action = routes.TravelDetailsController.selectCountryPost()){
+    <div class="panel panel-border-wide">@messages("text.if_you_have_bought_goods_from_more_")</div>
+
+    @helpers.form(action = routes.AlcoholInputController.processCountryInput(path, iid)){
 
         @components.select(
             field = countryForm("country"),

@@ -49,6 +49,10 @@
             <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
           <div>
+            <dt class="cya-question">@messages("label.country")</dt>
+            <dd class="cya-answer">@purchasedItem.country</dd>
+          </div>
+          <div>
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
             <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
@@ -90,6 +94,10 @@
             <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
           <div>
+            <dt class="cya-question">@messages("label.country")</dt>
+            <dd class="cya-answer">@purchasedItem.country</dd>
+          </div>
+          <div>
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
             <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
@@ -122,6 +130,10 @@
           <div>
             <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
+          </div>
+          <div>
+            <dt class="cya-question">@messages("label.country")</dt>
+            <dd class="cya-answer">@purchasedItem.country</dd>
           </div>
           <div>
             <dt class="cya-question">@messages("label.price")</dt>

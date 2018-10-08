@@ -61,8 +61,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe OK
 
       val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
 
-      content should include ("""<option value="Egypt" selected="selected">Egypt</option>""")
+      doc.getElementById("country-Egypt").outerHtml should include ("""<option id="country-Egypt" value="Egypt" selected="selected">Egypt</option>""")
 
       verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
@@ -73,12 +74,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/country-of-purchase")).get
-
       status(response) shouldBe OK
 
       val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
 
-      content should include ("""<option value="Egypt">Egypt</option>""")
+      doc.getElementById("country-Egypt").outerHtml should include ("""<option id="country-Egypt" value="Egypt">Egypt</option>""")
 
       verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
