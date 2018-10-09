@@ -4,7 +4,7 @@ import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
-import services.CurrencyService
+import services.{CountriesService, CurrencyService}
 
 import scala.math.BigDecimal.RoundingMode
 import util._
@@ -12,13 +12,14 @@ import uk.gov.hmrc.play.mappers.DateTuple._
 
 
 object SelectedCountryDto {
-  val form: Form[SelectedCountryDto] = Form(
+  def form(countryService: CountriesService, optionalItemsRemaining: Boolean = true): Form[SelectedCountryDto] = Form(
     mapping(
-      "country" -> text
+      "country" -> text.verifying("error.country.invalid", countryName => countryService.isValidCountryName(countryName)),
+      "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(SelectedCountryDto.apply)(SelectedCountryDto.unapply)
   )
 }
-case class SelectedCountryDto(country: String)
+case class SelectedCountryDto(country: String, itemsRemaining: Int)
 
 object AgeOver17Dto {
   val form: Form[AgeOver17Dto] = Form(

@@ -30,6 +30,14 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
+  def storeCountry(journeyData: JourneyData, path: ProductPath, iid: String, country: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
+      purchasedProductInstance.copy(path = path, iid = iid, country = Some(country))
+    }
+
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
   def storeCurrency(journeyData: JourneyData, path: ProductPath, iid: String, currency: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
 
     val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>

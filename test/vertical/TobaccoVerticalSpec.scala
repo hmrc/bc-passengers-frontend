@@ -3,8 +3,11 @@ package vertical
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.LocalSessionCache
+
+import scala.concurrent.Future
 
 class TobaccoVerticalSpec extends VerticalBaseSpec {
 
@@ -95,7 +98,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
-    "redirect the user to the currency input page given valid form input" in new LocalSetup {
+    "redirect the user to the country input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
@@ -103,7 +106,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
         .withFormUrlEncodedBody("noOfSticks" -> "5")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -127,7 +130,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
-    "redirect the user to the currency input page given valid form input" in new LocalSetup {
+    "redirect the user to the country input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
@@ -135,7 +138,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
         .withFormUrlEncodedBody("noOfSticks" -> "5", "weight" -> "30.2")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/currency/iid0")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -159,7 +162,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
-    "redirect the user to the currency input page given valid form input" in new LocalSetup {
+    "redirect the user to the country input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
       
@@ -167,7 +170,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
         .withFormUrlEncodedBody("weight" -> "30.2")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/currency/iid0")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -176,9 +179,60 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
     }
   }
 
-  "Calling GET /products/tobacco/.../currency/iid0" should {
+  "Calling GET /products/tobacco/.../country/iid0" should {
 
-    // TODO: Revise after refactor controller
+    "return a 404 when the product path is invalid" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/not/a/real/product/country/iid0")).get
+
+      status(result) shouldBe NOT_FOUND
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
+    "return a 200 when the product path is valid" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/country/iid0")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+  }
+
+  "Calling POST /products/tobacco/.../country/iid0" should {
+
+    "return a 400 given bad form input" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
+
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
+
+      status(result) shouldBe BAD_REQUEST
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
+    "store the country in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some("Egypt"))))))(any())
+    }
+  }
+
+  "Calling GET /products/tobacco/.../currency/iid0" should {
 
     "return a 404 when the product path is not found" in new LocalSetup {
 
@@ -305,6 +359,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
+
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")

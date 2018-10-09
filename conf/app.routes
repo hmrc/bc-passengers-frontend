@@ -23,8 +23,6 @@ POST       /user-information                                 controllers.DonePag
 GET        /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
-GET        /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)
-POST       /products/$path<other-goods/.+>/quantity          controllers.OtherGoodsInputController.processQuantityInput(path: ProductPath)
 
 # Alcohol Input/Update
 GET        /products/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
@@ -32,6 +30,9 @@ GET        /products/$path<alcohol/.+>/start                 controllers.Alcohol
 GET        /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
 POST       /products/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
 GET        /products/$path<alcohol/.+>/volume/:iid/update    controllers.AlcoholInputController.displayVolumeUpdate(path: ProductPath, iid: String)
+
+GET        /products/$path<alcohol/.+>/country/:iid          controllers.AlcoholInputController.displayCountryInput(path: ProductPath, iid: String)
+POST       /products/$path<alcohol/.+>/country/:iid          controllers.AlcoholInputController.processCountryInput(path: ProductPath, iid: String)
 
 GET        /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
 POST       /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
@@ -53,6 +54,9 @@ POST       /products/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid
 GET        /products/$path<tobacco/(rolling|chewing)>/weight/:iid                  controllers.TobaccoInputController.displayWeightInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/(rolling|chewing)>/weight/:iid                  controllers.TobaccoInputController.processWeightInput(path: ProductPath, iid: String)
 
+GET        /products/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.displayCountryInput(path: ProductPath, iid: String)
+POST       /products/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.processCountryInput(path: ProductPath, iid: String)
+
 GET        /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, iid: String)
 GET        /products/$path<tobacco/.+>/currency/:iid/update                        controllers.TobaccoInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
@@ -65,6 +69,9 @@ GET        /products/$path<tobacco/.+>/:iid/update                              
 # Other Goods Input/Update
 GET        /products/$path<other-goods/.+>/quantity                  controllers.OtherGoodsInputController.displayQuantityInput(path: ProductPath)
 POST       /products/$path<other-goods/.+>/quantity                  controllers.OtherGoodsInputController.processQuantityInput(path: ProductPath)
+
+GET        /products/$path<other-goods/.+>/country/:iid              controllers.OtherGoodsInputController.displayCountryInput(path: ProductPath, iid: String, ir: Int)
+POST       /products/$path<other-goods/.+>/country/:iid              controllers.OtherGoodsInputController.processCountryInput(path: ProductPath, iid: String)
 
 GET        /products/$path<other-goods/.+>/currency/:iid             controllers.OtherGoodsInputController.displayCurrencyInput(path: ProductPath, iid: String, ir: Int)
 POST       /products/$path<other-goods/.+>/currency/:iid             controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, iid: String)

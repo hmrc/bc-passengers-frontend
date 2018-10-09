@@ -11,6 +11,7 @@ class CountriesService {
 
   def isInEu(selectedCountry: String): Boolean = countries.exists(c => c.isEu && c.countryName == selectedCountry)
 
+  def isValidCountryName(selectedCountry: String): Boolean = countries.exists(c => c.countryName == selectedCountry)
 
 
   private val countries = List(

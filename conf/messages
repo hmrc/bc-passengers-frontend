@@ -84,6 +84,7 @@ label.other_goods = Other goods
 label.change = Change
 label.item = Item
 label.price = Price
+label.country = Country
 label.add_alcohol = Add alcohol
 label.add_tobacco = Add tobacco
 label.add_other_goods = Add other goods
@@ -122,13 +123,17 @@ alcohol.volume_input.panel.wine.2 = If you bring in more than 4 litres of wine, 
 alcohol.volume_input.panel.sparkling.1 = For sparkling or fortified wine and other alcoholic drinks up to 22% alcohol by volume bought using more than one currency, you need to tell us about each purchase separately.
 alcohol.volume_input.panel.sparkling.2 = If you bring in more than 2 litres of sparkling, fortified wine or other you will pay tax and duty on the entire amount.
 
+## Country Input Page
+label.alcohol.where_did_you_buy_the_ = Where did you buy the {0} litres of {1}?
+text.if_you_have_bought_goods_from_more_ = If you have bought goods from more than one country, you can add those purchases later.
+
 ## Currency Input Page
 label.alcohol.what_currency_did_you_use_ = What currency did you use to pay for the {0} litres of {1}?
 
 ## Cost Input Page
 label.alcohol.how_much_did_you_pay_ = How much did you pay for the {0} litres of {1}?
 
-# Tabacco Inputs
+# Tobacco Inputs
 
 ## No of Sticks Input Page
 
@@ -157,6 +162,9 @@ tobacco.weight_input.panel.rolling.2 = If you bring in more than 250g of hand-ro
 tobacco.weight_input.panel.chewing.1 = For pipe or chewing tobacco bought using more than one currency, you need to tell us about each purchase separately.
 tobacco.weight_input.panel.chewing.2 = If you bring in more than 250g of pipe or chewing tobacco, you will pay tax and duty on the entire amount of your pipe or chewing tobacco.
 
+## Country Input Page
+label.tobacco.where_did_you_buy_the_ = Where did you buy the {0}?
+
 ## Currency Input Page
 label.what_currency_did_you_use_to_pay_for_the_ = What currency did you use to pay for the {0}?
 
@@ -168,6 +176,9 @@ other-goods.quantity_input.heading = How many {0} are you bringing into the UK?
 
 label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.
 label.if_your_goods_are_worth_more_than_ = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
+
+## Country Input Page
+label.other-goods.where_did_you_buy_this_ = Where did you buy this {0}?
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?

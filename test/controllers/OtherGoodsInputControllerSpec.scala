@@ -32,6 +32,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     def requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
+    def result: Future[Result]
+    def content: String = contentAsString(result)
+    def doc: Document = Jsoup.parse(content)
+
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn {
@@ -49,13 +53,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0?ir=0")).get
-      val content: String = contentAsString(result)
 
       status(result) shouldBe OK
 
-      content should not include """selected="selected""""
+      doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
     }
-
   }
 
   "Calling GET /products/other-goods/.../currency/<iid>/update" should {
@@ -69,12 +71,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0/update")).get
-      val content: String = contentAsString(result)
-      val doc: Document = Jsoup.parse(content)
 
       status(result) shouldBe OK
 
-      content should include ("""<option value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
 
       verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
     }
@@ -85,16 +85,28 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         List(PurchasedProductInstance(ProductPath("other-goods/jewellery"), iid = "iid0", currency = Some("JMD")))))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0/update")).get
-      val content: String = contentAsString(result)
-      val doc: Document = Jsoup.parse(content)
 
       status(result) shouldBe OK
 
-      content should include ("""<option value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
     }
   }
 
-  "Calling displayQuantityInput" should {
+  "Calling GET /products/other-goods/.../country" should {
+
+    "return a 200 and not prepopulate the country value if there is no working instance" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(requiredJourneyData)
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/country/iid0?ir=0")).get
+
+      status(result) shouldBe OK
+
+      doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
+    }
+  }
+
+  "Calling GET /products/other-goods/.../quantity" should {
 
     "return a 200 with a quantity input view given a correct product path" in new LocalSetup {
 
@@ -106,7 +118,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling processQuantityInput" should {
+  "Calling POST /products/other-goods/.../quantity" should {
 
     "return a 400 with a quantity input view given bad form input" in new LocalSetup {
 
@@ -125,7 +137,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe SEE_OTHER
 
-      redirectLocation(result).get should fullyMatch regex """^/bc-passengers-frontend/products/other-goods/books/currency/[a-zA-Z0-9]{6}[?]ir=2$""".r
+      redirectLocation(result).get should fullyMatch regex """^/bc-passengers-frontend/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=2$""".r
     }
   }
 }

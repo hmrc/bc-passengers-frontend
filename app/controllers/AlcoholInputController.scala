@@ -6,13 +6,13 @@ import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.{CurrencyService, ProductTreeService, PurchasedProductService, TravelDetailsService}
+import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
-import scala.util.Random
 
 class AlcoholInputController @Inject() (
+  val countriesService: CountriesService,
   val travelDetailsService: TravelDetailsService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
@@ -29,7 +29,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, Some(volume), _, _, _)) => VolumeDto.form.fill(VolumeDto(volume))
+        case Some(PurchasedProductInstance(_, _, Some(volume), _,  _, _, _)) => VolumeDto.form.fill(VolumeDto(volume))
         case _ => VolumeDto.form
       }
     }
@@ -61,8 +61,34 @@ class AlcoholInputController @Inject() (
             Redirect(routes.DashboardController.showDashboard())
           }
           case _ => purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
+            Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
           }
+        }
+      }
+    )
+  }
+
+  def displayCountryInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+    requireProduct(path) { product =>
+      requireWorkingInstanceWeightOrVolume { volume =>
+        Future.successful(Ok(views.html.alcohol.country_of_purchase(SelectedCountryDto.form(countriesService), product, path, iid, countriesService.getAllCountries, volume)))
+      }
+    }
+  }
+
+  def processCountryInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+
+    SelectedCountryDto.form(countriesService).bindFromRequest.fold(
+      formWithErrors => {
+        requireProduct(path) { product =>
+          requireWorkingInstanceWeightOrVolume { volume =>
+            Future.successful(BadRequest(views.html.alcohol.country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, volume)))
+          }
+        }
+      },
+      selectedCountryDto => {
+        purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
+          Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid))
         }
       }
     )
@@ -81,7 +107,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, Some(currency), _)) => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, 0))
+        case Some(PurchasedProductInstance(_, _, _, _, _, Some(currency), _)) => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, 0))
         case _ => CurrencyDto.form(currencyService)
       }
     }
@@ -115,7 +141,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, Some(cost))) => CostDto.form().fill(CostDto(cost, 0))
+        case Some(PurchasedProductInstance(_, _, _, _, _, _, Some(cost))) => CostDto.form().fill(CostDto(cost, 0))
         case _ => CostDto.form()
       }
     }
@@ -151,12 +177,8 @@ class AlcoholInputController @Inject() (
 
             if (product.isValid(wi)) {
               context.journeyData.map { jd =>
-                val l = jd.purchasedProductInstances
-                val m = (l.takeWhile(_.iid != iid), l.dropWhile(_.iid != iid)) match {
-                  case (x, Nil) => wi :: x  //Prepend
-                  case (x, y) => x ++ (wi :: y.tail)  //Replace in place
-                }
-                purchasedProductService.cacheJourneyData(jd.copy(purchasedProductInstances = m, workingInstance = None))
+                val updatedPurchasedProductInstances = replaceProductInPlace(jd.purchasedProductInstances, wi)
+                purchasedProductService.cacheJourneyData(jd.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None))
               }
             } else {
               Logger.warn("Working instance was not valid")

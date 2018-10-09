@@ -12,6 +12,7 @@ case class PurchasedProductInstance(
   iid: String,
   weightOrVolume: Option[BigDecimal] = None,
   noOfSticks: Option[Int] = None,
+  country: Option[String] = None,
   currency: Option[String] = None,
   cost: Option[BigDecimal] = None
 )
@@ -19,7 +20,7 @@ case class PurchasedProductInstance(
 object UserInformation {
   implicit val formats = Json.format[UserInformation]
 
-  def build(dto: EnterYourDetailsDto) =
+  def build(dto: EnterYourDetailsDto): UserInformation =
     UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival)
 }
 case class UserInformation(

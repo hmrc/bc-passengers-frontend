@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Mode.Mode
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Reads}
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,10 +35,10 @@ class CalculatorService @Inject() (
 ) extends ServicesConfig with UsesJourneyData {
 
   override protected def mode: Mode = environment.mode
-  override protected def runModeConfiguration = configuration
+  override protected def runModeConfiguration: Configuration = configuration
 
-  lazy val currencyConversionBaseUrl = baseUrl("currency-conversion")
-  lazy val passengersDutyCalculatorBaseUrl = baseUrl("passengers-duty-calculator")
+  lazy val currencyConversionBaseUrl: String = baseUrl("currency-conversion")
+  lazy val passengersDutyCalculatorBaseUrl: String = baseUrl("passengers-duty-calculator")
 
   def todaysDate: String = LocalDate.now.format(DateTimeFormatter.ISO_DATE)
 
@@ -92,8 +92,9 @@ class CalculatorService @Inject() (
         curCode <- purchasedProductInstance.currency
         currency <- currencyService.getCurrencyByCode(curCode)
         cost <- purchasedProductInstance.cost
+        country <- purchasedProductInstance.country
         rate <- ratesMap.get(curCode)
-      } yield PurchasedItem(purchasedProductInstance, productTreeLeaf, currency, (cost / rate).setScale(2, RoundingMode.DOWN))
+      } yield PurchasedItem(purchasedProductInstance, productTreeLeaf, currency, country, (cost / rate).setScale(2, RoundingMode.DOWN))
 
 
       if(purchasedItems.isEmpty) {
@@ -112,12 +113,12 @@ class CalculatorService @Inject() (
 
   private def getCurrencyConversionRates(journeyData: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[String, BigDecimal]] = {
 
-    val allCurrencies: Set[Currency] = journeyData.allCurrencyCodes.map(currencyService.getCurrencyByCode).flatten
+    val allCurrencies: Set[Currency] = journeyData.allCurrencyCodes.flatMap(currencyService.getCurrencyByCode)
 
 
-    implicit val formats = Json.reads[CurrencyConversionRate]
+    implicit val formats: Reads[CurrencyConversionRate] = Json.reads[CurrencyConversionRate]
 
-    val currenciesToFetch: Set[String] = allCurrencies.map(_.value).flatten
+    val currenciesToFetch: Set[String] = allCurrencies.flatMap(_.value)
 
     val gbpEquivCurrencies: Map[String, BigDecimal] = allCurrencies.filterNot(_.value.isDefined).map(c => (c.code, BigDecimal(1))).toMap
 
@@ -135,7 +136,7 @@ class CalculatorService @Inject() (
 
         }
 
-        gbpEquivCurrencies ++ currencyConversionRates.map(ccr => ccr.rate.map(rate => (ccr.currencyCode, BigDecimal(rate)))).flatten.toMap
+        gbpEquivCurrencies ++ currencyConversionRates.flatMap(ccr => ccr.rate.map(rate => (ccr.currencyCode, BigDecimal(rate)))).toMap
 
       }
 

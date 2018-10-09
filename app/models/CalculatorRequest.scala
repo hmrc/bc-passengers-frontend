@@ -21,6 +21,7 @@ object CalculatorRequest {
           "metadata" -> Json.obj(
             "description" -> item.description,
             "cost" -> item.purchasedProductInstance.cost.map(_.setScale(2, RoundingMode.DOWN).toString),
+            "country" -> item.purchasedProductInstance.country,
             "currency" -> item.displayCurrency
           )
         ).stripNulls

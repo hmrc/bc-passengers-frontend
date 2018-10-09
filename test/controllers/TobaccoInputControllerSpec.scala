@@ -148,20 +148,36 @@ class TobaccoInputControllerSpec extends BaseSpec {
     }
   }
 
+  "Calling GET /products/tobacco/.../country" should {
+
+    "return a 200 and not prepopulate the country value if there is no working instance country" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/country/iid0")).get
+      val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
+
+      status(result) shouldBe OK
+
+      doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
+    }
+
+  }
+
   "Calling GET /products/tobacco/.../currency" should {
 
     "redirect to the dashboard if there is no working instance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")).get
-      val content: String = contentAsString(result)
-      val doc: Document = Jsoup.parse(content)
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
     }
 
-    "return a 200 with the currency value populated if there is a working instance" in new LocalSetup {
+    "return a 200 with the currency value populated if there is a working instance currency" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", currency = Some("JMD")))
@@ -169,10 +185,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")).get
       val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
 
       status(result) shouldBe OK
 
-      content should include ("""<option value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      doc.getElementById("currency-JMD").outerHtml should include ("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
     }
   }
 
@@ -268,7 +285,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", None, Some(100), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", None, Some(100), Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid1")
@@ -280,14 +297,14 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the currency input when the iid does not match the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None, Some("USD"), Some(BigDecimal("24.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid1")
         .withFormUrlEncodedBody("noOfSticks" -> "200")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid1")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/country/iid1")
     }
   }
 
@@ -295,7 +312,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("500")), None, Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("500")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid1")
@@ -308,15 +325,15 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("250")), None, Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some("Egypt"), Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("250")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid2")
         .withFormUrlEncodedBody("weight" -> "600")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/currency/iid2")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/country/iid2")
     }
   }
 
@@ -324,7 +341,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("500")), Some(1000), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("500")), Some(1000), Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid1")
@@ -337,15 +354,15 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("250")), Some(1000), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some("Egypt"), Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("250")), Some(1000), Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid2")
         .withFormUrlEncodedBody("noOfSticks" -> "500", "weight" -> "125")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarillos/currency/iid2")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarillos/country/iid2")
     }
   }
 }
