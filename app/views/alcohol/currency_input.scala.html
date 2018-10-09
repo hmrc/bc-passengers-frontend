@@ -22,7 +22,7 @@
 }
 
 @title = {
-    @messages("alcohol.currency_input.heading", volume, product.name.toLowerCase())
+    @messages("label.alcohol.what_currency_did_you_use_", volume, product.name.toLowerCase())
 }
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
@@ -37,21 +37,21 @@
             @helper.select(
                 field = currencyForm("currency"),
                 options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
-                '_label -> messages("currency_input.form.label"),
+                '_label -> messages("label.enter_currency"),
                 '_labelTextClass -> "form-label",
                 '_inputClass -> "form-control"
             )
         </div>
 
         <details class="form-group">
-            <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
+            <summary><span class="summary">@messages("label.if_the_currency_you_used_is_not_shown")</span></summary>
             <div class="panel panel-border-narrow">
-                <p>@messages("hidden_text.you_cant_use_service")</p>
+                <p>@messages("label.you_cannot_use_this_service_")</p>
             </div>
         </details>
 
         <div class="form-group">
-            <input type="submit" class="button" value="Continue">
+            <input type="submit" class="button" value="@messages("label.continue")">
         </div>
 
     }

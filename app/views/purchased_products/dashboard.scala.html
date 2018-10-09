@@ -7,51 +7,51 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("title.dashboard"), bodyClasses = None) {
+@main_template(title = messages("label.tell_us_about_your_purchases"), bodyClasses = None) {
 
-  <h1 class="heading-xlarge">@messages("title.dashboard")</h1>
+  <h1 class="heading-xlarge">@messages("label.tell_us_about_your_purchases")</h1>
 
-  <h2 class="heading-large">@messages("dashboard.your_travel_information")</h2>
+  <h2 class="heading-large">@messages("label.your_details")</h2>
 
   <dl class="govuk-check-your-answers cya-questions-short">
     <div>
-      <dt class="cya-question">@messages("dashboard.private_travel")</dt>
+      <dt class="cya-question">@messages("label.private_aircraft_or_private_boat")</dt>
       <dd class="cya-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer cya-change"><a href="private-travel">@messages("dashboard.change")</a></dd>
+      <dd class="cya-answer cya-change"><a href="private-travel">@messages("label.change")</a></dd>
     </div>
     <div>
-      <dt class="cya-question">@messages("dashboard.17_or_over")</dt>
+      <dt class="cya-question">@messages("label.17_or_over")</dt>
       <dd class="cya-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer cya-change"><a href="confirm-age">@messages("dashboard.change")</a></dd>
+      <dd class="cya-answer cya-change"><a href="confirm-age">@messages("label.change")</a></dd>
     </div>
   </dl>
 
-  <h2 class="heading-large">@messages("title.your_purchases")</h2>
+  <h2 class="heading-large">@messages("label.your_purchases")</h2>
 
   <div class="alcohol">
-    <h3 class="heading-medium">@messages("dashboard.product_heading.alcohol")</h3>
+    <h3 class="heading-medium">@messages("label.alcohol")</h3>
 
     @if(alcoholPurchasedItemList.isEmpty){
       <p class="border-bottom">
-        <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
+        <a href="products/alcohol" class="add">@messages("label.add_alcohol")</a>
       </p>
     } else {
 
       <div class="add-more">
-        <a href="products/alcohol" class="add">@messages("button.add.alcohol")</a>
+        <a href="products/alcohol" class="add">@messages("label.add_alcohol")</a>
       </div>
 
       @alcoholPurchasedItemList.map { purchasedItem =>
         <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
           <div>
-            <dt class="cya-question">@messages("title.item")</dt>
+            <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
           <div>
-            <dt class="cya-question">@messages("title.price")</dt>
+            <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
@@ -64,22 +64,22 @@
 
   <div class="tobacco">
 
-    <h3 class="heading-medium">@messages("dashboard.product_heading.tobacco")</h3>
+    <h3 class="heading-medium">@messages("label.tobacco")</h3>
 
     @if(tobaccoPurchasedItemList.isEmpty){
       <p class="border-bottom">
-        <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
+        <a href="products/tobacco" class="add">@messages("label.add_tobacco")</a>
       </p>
     } else {
 
       <div class="add-more">
-        <a href="products/tobacco" class="add">@messages("button.add.tobacco")</a>
+        <a href="products/tobacco" class="add">@messages("label.add_tobacco")</a>
       </div>
 
       @tobaccoPurchasedItemList.map { purchasedItem =>
         <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
           <div>
-            <dt class="cya-question">@messages("title.item")</dt>
+            <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">
               @if(purchasedItem.displayWeight){
                 @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
@@ -87,12 +87,12 @@
                 @purchasedItem.description
               }
             </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
           <div>
-            <dt class="cya-question">@messages("title.price")</dt>
+            <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
@@ -105,31 +105,31 @@
 
 
   <div class="other-goods">
-    <h3 class="heading-medium">@messages("dashboard.product_heading.other-goods")</h3>
+    <h3 class="heading-medium">@messages("label.other_goods")</h3>
 
     @if(otherGoodsPurchasedItemList.isEmpty){
       <p class="border-bottom">
-        <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
+        <a href="products/other-goods" class="add">@messages("label.add_other_goods")</a>
       </p>
     } else {
 
       <div class="add-more">
-        <a href="products/other-goods" class="add">@messages("button.add.other-goods")</a>
+        <a href="products/other-goods" class="add">@messages("label.add_other_goods")</a>
       </div>
 
       @otherGoodsPurchasedItemList.map { purchasedItem =>
         <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
           <div>
-            <dt class="cya-question">@messages("title.item")</dt>
+            <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
           </div>
           <div>
-            <dt class="cya-question">@messages("title.price")</dt>
+            <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">
               @purchasedItem.purchasedProductInstance.cost
               @purchasedItem.displayCurrency
             </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("dashboard.change")</a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">

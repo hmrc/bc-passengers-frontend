@@ -1,105 +1,94 @@
-#
 # Global
-#
-
-global.continue_button=Continue
-global.back=Back
-
-label.yes=Yes
-label.no=No
+label.continue = Continue
+label.yes = Yes
+label.no = No
 
 suffix.comma = {0},
-
-#Title (Headings and Tab Titles)
-title.where_did_you_buy_goods=Where did you buy your goods?
-title.are_you_17_or_over=Are you 17 or over?
-title.did_you_arrive_in_the_uk_privately=Did you arrive in the UK by private boat or private plane?
-title.eu_allowances=Allowances for goods bought inside the European Union
-title.dashboard=Tell us about your purchases
-title.check_allowances_and_estimate_duties=Check allowances and estimate duties to bring goods into the UK
-title.your_purchases = Your purchases
-title.item = Item
-title.price = Price
-
-#Label (Paragraphs of text)
-label.no_limits_on_goods=There are no limits to the amount of goods you can bring into the UK from the European Union:
-label.customs_officer_may_stop_you=However, a customs officer may stop you if they think you are bringing in goods to sell. You are more likely to be stopped if you have more than the amounts shown below.
-label.what_happens_next=What happens next
-label.go_through_blue_channel=If you take goods bought in the EU into the UK you must go through the blue channel at border control.
-label.start_again=Start again
-label.alcohol=Alcohol
-label.beer=Beer
-label.wine=Wine
-label.spirits=Spirits
-label.fortified_wine=Fortified Wine
-label.tobacco=Tobacco
-label.cigarettes=Cigarettes
-label.cigars=Cigars
-label.cigarillos=Cigarillos
-label.110_litres=110 litres
-label.90_litres=90 litres
-label.10_litres=10 litres
-label.20_litres=20 litres
-label.800=800
-label.200=200
-label.400=400
-label.1_kg=1kg
-label.enter_country=Enter country
-label.you_may_need_to_pay_tax_or_duties=You may need to pay tax or duties on any goods you bring into the UK from abroad.
-label.use_this_service_to=Use this service to:
-label.you_need_to_know_the_exact_price=You need to know the exact price you paid for your items to use this service.
-label.there_is_a_problem=There is a problem
-label.remove_this_item=Remove this item
-label.do_you_want_to_remove_this=Do you want to remove this {0}?
-label.change_your_answers=Change your answers
-label.declare_your_goods_and_pay_online=Declare your goods and pay online
-label.enter_your_details=Enter your details
-label.first_name=First name
-label.last_name=Last name
-label.passport_number=Passport number
-label.place_of_arrival=Place of arrival in UK
-
-label.continue=Continue
-label.for_example_heathrow_airport_or_dover=For example, Heathrow airport or Dover
-label.date_of_arrival=Date of arrival
-label.for_example_31_10_2018=For example, 31 10 2018
-
-label.you_must_pay_duty_and_tax_=You must pay duty and tax on these goods if you bring them into the UK.
-label.you_can_declare_these_goods_=You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
-
-#Text (Bullet points)
-text.for_personal_use=for your personal use
-text.as_a_gift_for_someone_else=as a gift for someone else
-text.check_if_you_need_to_declare=check if you need to declare your goods
-text.estimate_how_much_tax=estimate how much tax or customs duty you may owe
-text.start_again=start again
-
-button.start_now = Start now
-
-#Buttons
-
-button.add = Add
-button.add.alcohol = Add alcohol
-button.add.tobacco = Add tobacco
-button.add.other-goods = Add other goods
-
-#Dashboard Page
-dashboard.your_travel_information = Your details
-dashboard.country_of_purchase = Country of purchase
-dashboard.17_or_over = 17 or over
-dashboard.private_travel = Private aircraft or private boat
-dashboard.product_heading.tobacco = Tobacco
-dashboard.product_heading.alcohol = Alcohol
-dashboard.product_heading.other-goods = Other goods
-dashboard.no_products_added.tobacco = No tobacco added
-dashboard.no_products_added.alcohol = No alcohol added
-dashboard.no_products_added.other-goods = No other goods added
-dashboard.change = Change
-
 grams = {0}g
 
-#Select Products Page
+# Error messages
+label.there_is_a_problem = There is a problem
 
+## Over 17 Page
+error.over_17 = Select yes if you are 17 or over
+head.error.over_17 = Select yes if you are 17 or over
+
+## Private Craft Page
+error.private_craft = Select yes if you arrived in the UK by private aircraft or private boat
+head.error.private_craft = Select yes if you arrived in the UK by private aircraft or private boat
+
+## Remove page
+error.remove_product = Select yes if you want to remove this item
+head.error.remove_product = Select yes if you want to remove this item
+
+## Currency Input
+error.invalid_currency = Invalid currency
+
+# Start page
+label.check_allowances_and_estimate_duties_ = Check allowances and estimate duties to bring goods into the UK
+label.you_may_need_to_pay_tax_or_duties_ = You may need to pay tax or duties on any goods you bring into the UK from abroad.
+label.use_this_service_to = Use this service to:
+text.check_if_you_need_to_declare_ = check if you need to declare your goods
+text.estimate_how_much_tax_ = estimate how much tax or customs duty you may owe
+label.you_need_to_know_the_exact_price_ = You need to know the exact price you paid for your items to use this service.
+label.start_now = Start now
+
+# Where did you buy your goods?
+label.where_did_you_buy_goods = Where did you buy your goods?
+label.enter_country = Enter country
+
+# Over 17
+label.are_you_17_or_over = Are you 17 or over?
+
+# Private Craft
+label.did_you_arrive_in_the_uk_by_private_boat_ = Did you arrive in the UK by private boat or private plane?
+
+# Allowances for goods bought inside the European Union
+label.allowances_for_goods_ = Allowances for goods bought inside the European Union
+label.there_are_no_limits_ = There are no limits to the amount of goods you can bring into the UK from the European Union:
+
+text.for_your_personal_use = for your personal use
+text.as_a_gift_for_someone_else = as a gift for someone else
+
+label.however_a_customs_officer_may_stop_you_ = However, a customs officer may stop you if they think you are bringing in goods to sell. You are more likely to be stopped if you have more than the amounts shown below.
+label.alcohol = Alcohol
+label.beer = Beer
+label.wine = Wine
+label.spirits = Spirits
+label.fortified_wine = Fortified Wine
+label.tobacco = Tobacco
+label.cigarettes = Cigarettes
+label.cigars = Cigars
+label.cigarillos = Cigarillos
+label.110_litres = 110 litres
+label.90_litres = 90 litres
+label.10_litres = 10 litres
+label.20_litres = 20 litres
+label.800 = 800
+label.200 = 200
+label.400 = 400
+label.1_kg = 1kg
+label.what_happens_next = What happens next
+label.go_through_blue_channel = If you take goods bought in the EU into the UK you must go through the blue channel at border control.
+label.start_again = Start again
+
+# Dashboard Page
+label.tell_us_about_your_purchases = Tell us about your purchases
+label.your_details = Your details
+label.your_purchases = Your purchases
+label.17_or_over = 17 or over
+label.private_aircraft_or_private_boat = Private aircraft or private boat
+label.tobacco = Tobacco
+label.alcohol = Alcohol
+label.other_goods = Other goods
+label.change = Change
+label.item = Item
+label.price = Price
+label.add_alcohol = Add alcohol
+label.add_tobacco = Add tobacco
+label.add_other_goods = Add other goods
+
+# Select Products Page
 select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
 select_products.heading.tobacco = What type of tobacco are you bringing into the UK?
 select_products.heading.other-goods = What items are you bringing into the UK?
@@ -109,107 +98,130 @@ select_products.heading.other-goods.disability-mobility = What disability equipm
 select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
 select_products.heading.other-goods.metals-wood = What metal and wood products are you bringing into the UK?
 select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
-select_products.form.p = Select all that apply
 
-#Alcohol Input
-alcohol.volume_input.form.label = Volume in litres
-alcohol.volume_input.heading = What is the volume of the {0} you are bringing into the UK?
+label.select_all_that_apply = Select all that apply
+
+# Alcohol Input
+
+## Volume Input Page
+label.what_is_the_volume_of_ = What is the volume of the {0} you are bringing into the UK?
+label.volume_in_litres = Volume in litres
+
 alcohol.volume_input.panel.beer.1 = For beer bought using more than one currency, you need to tell us about each purchase separately.
 alcohol.volume_input.panel.beer.2 = If you bring in more than 16 litres of beer, you will pay tax and duty on the entire amount of your beer.
+
 alcohol.volume_input.panel.cider.1 = For cider bought using more than one currency, you need to tell us about each purchase separately.
 alcohol.volume_input.panel.cider.2 = If you bring in more than 2 litres of cider, you will pay tax and duty on the entire amount of your cider.
+
 alcohol.volume_input.panel.spirits.1 = For spirits bought using more than one currency, you need to tell us about each purchase separately.
 alcohol.volume_input.panel.spirits.2 = If you bring in more than 1 litre of spirits, you will pay tax and duty on the entire amount of your spirits.
+
 alcohol.volume_input.panel.wine.1 = For wine bought using more than one currency, you need to tell us about each purchase separately.
 alcohol.volume_input.panel.wine.2 = If you bring in more than 4 litres of wine, you will pay tax and duty on the entire amount of your wine.
+
 alcohol.volume_input.panel.sparkling.1 = For sparkling or fortified wine and other alcoholic drinks up to 22% alcohol by volume bought using more than one currency, you need to tell us about each purchase separately.
 alcohol.volume_input.panel.sparkling.2 = If you bring in more than 2 litres of sparkling, fortified wine or other you will pay tax and duty on the entire amount.
 
-alcohol.currency_input.heading = What currency did you use to pay for the {0} litres of {1}?
-alcohol.cost_input.heading = How much did you pay for the {0} litres of {1}?
+## Currency Input Page
+label.alcohol.what_currency_did_you_use_ = What currency did you use to pay for the {0} litres of {1}?
 
-#Tabacco Inputs
-tobacco.no_of_sticks_input.heading = What is the quantity of the {0} you are bringing into the UK?
+## Cost Input Page
+label.alcohol.how_much_did_you_pay_ = How much did you pay for the {0} litres of {1}?
+
+# Tabacco Inputs
+
+## No of Sticks Input Page
+
+label.what_is_the_quantity_of_ = What is the quantity of the {0} you are bringing into the UK?
+
+label.quantity_of_ = Quantity of {0}
+label.weight_of_ = Weight of {0}
+
 tobacco.no_of_sticks_input.panel.cigarettes.1 = For cigarettes bought using more than one currency, you need to tell us about each purchase separately.
 tobacco.no_of_sticks_input.panel.cigarettes.2 = If you bring in more than 200 cigarettes, you will pay tax and duty on the entire amount of your cigarettes.
-tobacco.no_of_sticks_input.form.label = Quantity of {0}
 
 tobacco.no_of_sticks_weight_input.heading = What is the quantity and weight of the {0} you are bringing into the UK?
+
 tobacco.no_of_sticks_weight_input.panel.cigars.1 = For cigars bought using more than one currency, you need to tell us about each purchase separately.
 tobacco.no_of_sticks_weight_input.panel.cigars.2 = If you bring in more than 50 cigars, you will pay tax and duty on the entire amount of your cigars.
+
 tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = For cigarillos bought using more than one currency, you need to tell us about each purchase separately.
 tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you bring in more than 100 cigarillos, you will pay tax and duty on the entire amount of your cigarillos.
-tobacco.weight_input.form.label = Weight of {0}
 
-tobacco.weight_input.heading = What is the weight of the {0} you are bringing into the UK?
+## Weight Input Page
+label.what_is_the_weight_of_ = What is the weight of the {0} you are bringing into the UK?
+
 tobacco.weight_input.panel.rolling.1 = For hand rolling tobacco bought using more than one currency, you need to tell us about each purchase separately.
 tobacco.weight_input.panel.rolling.2 = If you bring in more than 250g of hand-rolling tobacco, you will pay tax and duty on the entire amount of your hand-rolling tobacco.
+
 tobacco.weight_input.panel.chewing.1 = For pipe or chewing tobacco bought using more than one currency, you need to tell us about each purchase separately.
 tobacco.weight_input.panel.chewing.2 = If you bring in more than 250g of pipe or chewing tobacco, you will pay tax and duty on the entire amount of your pipe or chewing tobacco.
 
-tobacco.currency_input.heading = What currency did you use to pay for the {0}?
-tobacco.cost_input.heading=How much did you pay for the {0}?
+## Currency Input Page
+label.what_currency_did_you_use_to_pay_for_the_ = What currency did you use to pay for the {0}?
 
-#Other Goods Inputs
+## Cost Input Page
+label.how_much_did_you_pay_for_the_ = How much did you pay for the {0}?
+
+# Other Goods Inputs
 other-goods.quantity_input.heading = How many {0} are you bringing into the UK?
-other-goods.quantity_input.panel.1 = For goods bought using more than one currency, you need to tell us about each purchase separately.
-other-goods.quantity_input.panel.2 = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
+
+label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.
+label.if_your_goods_are_worth_more_than_ = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
+
+## Currency Input
+label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
+label.enter_currency = Enter currency
+
+## Cost Input
+label.how_much_did_you_pay_for_this_ = How much did you pay for this {0}?
+label.price_in = Price in {0}
 
 # Hidden Text
-hidden_text.quantity_input.summary = If you do not know the quantity
-hidden_text.no_of_sticks_input.summary = If you do not know the quantity
-hidden_text.no_of_sticks_weight_input.summary = If you do not know the quantity or weight
-hidden_text.weight_input.summary = If you do not know the weight
-hidden_text.currency.summary = If the currency you used is not shown
-hidden_text.you_cant_use_service = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
+label.if_you_do_not_know_the_volume = If you do not know the volume
+label.if_you_do_not_know_the_quantity = If you do not know the quantity
+label.if_you_do_not_know_the_quantity_or_weight = If you do not know the quantity or weight
+label.if_you_do_not_know_the_weight = If you do not know the weight
+label.if_the_currency_you_used_is_not_shown = If the currency you used is not shown
+label.you_cannot_use_this_service_ = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
 
-hidden_text.volume_input.summary = If you do not know the volume
-
-#Currency Input
-currency_input.heading = What currency did you use to pay for this {0}?
-currency_input.form.label = Enter currency
-error.currency.invalid=Invalid currency
-
-#Cost Input
-cost_input.heading = How much did you pay for this {0}?
-cost_input.form.label = Price in {0}
-
-select_products.form.p = Select all that apply
-
-#Private Craft Page
-
-private_craft.error=Select yes if you arrived in the UK by private aircraft or private boat
-head.private_craft.error=Select yes if you arrived in the UK by private aircraft or private boat
-
-#Over 17 Page
-
-over_17.error=Select yes if you are 17 or over
-head.over_17.error=Select yes if you are 17 or over
-
-remove_product.error=Select yes if you want to remove this item
-head.remove_product.error=Select yes if you want to remove this item
-
-#Done page
+## Done page
 done.page_title = You will need to pay £{0} for goods purchased outside of the EU
 done.h1 = You will need to pay<br />£{0}<span class="heading-medium">for goods purchased outside of the EU</span>
-done.what_you_need_to_do_next = What you need to do next
-done.duty_and_tax_to_pay = Duty and tax to pay per item
-done.how_total_calculated = How your total was calculated
-done.label.item = Item
-done.label.currency = Currency
-done.label.amount = Amount
-done.label.total = Total
-done.label.included_in_allowance = Included in allowance
-done.label.tax = Tax
-done.label.total = Total
-done.label.customs = Customs
-done.label.excise = Excise (alcohol and tobacco only)
-done.label.vat = VAT
-done.exchange_rates = We use the <a href="http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm" target="_blank">HMRC exchange rates for customs and VAT (opens in a new window or tab)</a> to calculate these figures. The rates are updated monthly.
-done.link.change_your_answers = Change your answers
+label.what_you_need_to_do_next = What you need to do next
+label.duty_and_tax_to_pay_per_item = Duty and tax to pay per item
+label.how_your_total_was_calculated = How your total was calculated
+label.item = Item
+label.currency = Currency
+label.amount = Amount
+label.total = Total
+label.included_in_allowance = Included in allowance
+label.tax = Tax
+label.total = Total
+label.customs = Customs
+label.excise = Excise (alcohol and tobacco only)
+label.vat = VAT
+label.exchange_rates = We use the <a href="http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm" target="_blank">HMRC exchange rates for customs and VAT (opens in a new window or tab)</a> to calculate these figures. The rates are updated monthly.
+label.you_must_pay_duty_and_tax_ = You must pay duty and tax on these goods if you bring them into the UK.
+label.you_can_declare_these_goods_ = You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
+label.change_your_answers = Change your answers
+label.declare_your_goods_and_pay_online = Declare your goods and pay online
 
+# Done page - Nothing to Declare
+label.you_have_nothing_to_declare = You have nothing to declare
+label.all_items_within_allowance = All the items you entered are included within your personal allowances
+label.green_channel = If you take these goods into the UK you can go through the green channel - you do not need to declare your goods to Border Force.
 
-#Done page - Nothing to Declare
-done.h1.nothing_to_declare = You have nothing to declare
-done.all_items_within_allowance = All the items you entered are included within your personal allowances
-done.green_channel = If you take these goods into the UK you can go through the green channel - you do not need to declare your goods to Border Force.
+# Declaration Page
+label.enter_your_details = Enter your details
+label.first_name = First name
+label.last_name = Last name
+label.passport_number = Passport number
+label.place_of_arrival = Place of arrival in UK
+label.for_example_heathrow_airport_or_dover = For example, Heathrow airport or Dover
+label.date_of_arrival = Date of arrival
+label.for_example_31_10_2018 = For example, 31 10 2018
+
+# Remove Page
+label.remove_this_item = Remove this item
+label.do_you_want_to_remove_this = Do you want to remove this {0}?

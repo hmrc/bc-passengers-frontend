@@ -3,7 +3,7 @@
 @import uk.gov.hmrc.play.views.html._
 
 @title = {
-    @messages("tobacco.cost_input.heading", description)
+    @messages("label.how_much_did_you_pay_for_the_", description)
 }
 
 @main_template(title = title.toString) {
@@ -15,7 +15,7 @@
         <div class="form-group">
             @helpers.input(
                 costForm("cost"),
-                '_label -> messages("cost_input.form.label", currency),
+                '_label -> messages("label.price_in", currency),
                 '_labelTextClass -> "form-label",
                 '_inputClass -> "form-control-1-8"
             )

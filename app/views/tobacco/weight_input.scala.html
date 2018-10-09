@@ -2,9 +2,9 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("tobacco.weight_input.heading", productName.toLowerCase()), bodyClasses = None) {
+@main_template(title = messages("label.what_is_the_weight_of_", productName.toLowerCase()), bodyClasses = None) {
 
-  <h1 class="heading-xlarge">@messages("tobacco.weight_input.heading", productName.toLowerCase())</h1>
+  <h1 class="heading-xlarge">@messages("label.what_is_the_weight_of_", productName.toLowerCase())</h1>
 
   @helpers.form(action = routes.TobaccoInputController.processWeightInput(path, iid)){
 
@@ -15,7 +15,7 @@
 
       <div class="form-group">
           @helpers.input( weightForm("weight"),
-          '_label -> messages("tobacco.weight_input.form.label", productName.toLowerCase()),
+          '_label -> messages("label.weight_of_", productName.toLowerCase()),
           '_labelClass -> "inline",
           '_labelTextClass -> "form-label",
           '_inputClass -> "form-control-1-8"
@@ -24,9 +24,9 @@
       </div>
 
     <details class="form-group">
-        <summary><span class="summary">@messages("hidden_text.weight_input.summary")</span></summary>
+        <summary><span class="summary">@messages("label.if_you_do_not_know_the_weight")</span></summary>
         <div class="panel panel-border-narrow">
-            <p>@messages("hidden_text.you_cant_use_service")</p>
+            <p>@messages("label.you_cannot_use_this_service_")</p>
         </div>
     </details>
 

@@ -22,12 +22,12 @@
 }
 
 @title = {
-    @messages("currency_input.heading", product.name.toLowerCase())
+    @messages("label.what_currency_did_you_use_to_pay_for_this_", product.name.toLowerCase())
 }
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
-    <h1 class="heading-xlarge">@messages("currency_input.heading", product.name.toLowerCase())</h1>
+    <h1 class="heading-xlarge">@title</h1>
 
     @helpers.form(action = routes.OtherGoodsInputController.processCurrencyInput(path, iid)){
         <input type="hidden" name="itemsRemaining" value="@currencyForm("itemsRemaining").value">
@@ -36,16 +36,16 @@
             @helper.select(
                 field = currencyForm("currency"),
                 options = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
-                '_label -> messages("currency_input.form.label"),
+                '_label -> messages("label.enter_currency"),
                 '_labelTextClass -> "form-label",
                 '_inputClass -> "form-control"
             )
         </div>
 
         <details class="form-group">
-            <summary><span class="summary">@messages("hidden_text.currency.summary")</span></summary>
+            <summary><span class="summary">@messages("label.if_the_currency_you_used_is_not_shown")</span></summary>
             <div class="panel panel-border-narrow">
-                <p>@messages("hidden_text.you_cant_use_service")</p>
+                <p>@messages("label.you_cannot_use_this_service_")</p>
             </div>
         </details>
 

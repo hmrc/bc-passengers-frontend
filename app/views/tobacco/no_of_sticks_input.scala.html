@@ -2,12 +2,12 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("tobacco.no_of_sticks_input.heading", productName.toLowerCase()), bodyClasses = None) {
+@main_template(title = messages("label.what_is_the_quantity_of_", productName.toLowerCase()), bodyClasses = None) {
 
 
   @helpers.form(action = routes.TobaccoInputController.processNoOfSticksInput(path, iid)) {
 
-    <h1 class="heading-xlarge">@messages("tobacco.no_of_sticks_input.heading", productName.toLowerCase())</h1>
+    <h1 class="heading-xlarge">@messages("label.what_is_the_quantity_of_", productName.toLowerCase())</h1>
 
     <div class="panel panel-border-wide" id="panel">
         <p>@messages(s"tobacco.no_of_sticks_input.panel.${token}.1")</p>
@@ -17,16 +17,16 @@
     <div class="form-group">
         @helpers.input(
             noOfSticksForm("noOfSticks"),
-            '_label -> messages("tobacco.no_of_sticks_input.form.label", productName.toLowerCase()),
+            '_label -> messages("label.quantity_of_", productName.toLowerCase()),
             '_labelTextClass -> "form-label",
             '_inputClass -> "form-control-1-8"
         )
     </div>
 
     <details class="form-group">
-      <summary><span class="summary">@messages("hidden_text.no_of_sticks_input.summary")</span></summary>
+      <summary><span class="summary">@messages("label.if_you_do_not_know_the_quantity")</span></summary>
       <div class="panel panel-border-narrow">
-        <p>@messages("hidden_text.you_cant_use_service")</p>
+        <p>@messages("label.you_cannot_use_this_service_")</p>
       </div>
     </details>
 

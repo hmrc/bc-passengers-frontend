@@ -17,7 +17,7 @@
         <div class="form-group">
           @helpers.input(
             noOfSticksWeightForm("noOfSticks"),
-            '_label -> messages("tobacco.no_of_sticks_input.form.label", productName.toLowerCase()),
+            '_label -> messages("label.quantity_of_", productName.toLowerCase()),
             '_labelTextClass -> "form-label",
             '_inputClass -> "form-control-1-8"
           )
@@ -26,7 +26,7 @@
         <div class="form-group">
           @helpers.input(
           noOfSticksWeightForm("weight"),
-          '_label -> messages("tobacco.weight_input.form.label", productName.toLowerCase()),
+          '_label -> messages("label.weight_of_", productName.toLowerCase()),
           '_labelClass -> "inline",
           '_labelTextClass -> "form-label",
           '_inputClass -> "form-control-1-8"
@@ -35,9 +35,9 @@
         </div>
 
         <details class="form-group">
-            <summary><span class="summary">@messages("hidden_text.no_of_sticks_weight_input.summary")</span></summary>
+            <summary><span class="summary">@messages("label.if_you_do_not_know_the_quantity_or_weight")</span></summary>
             <div class="panel panel-border-narrow">
-                <p>@messages("hidden_text.you_cant_use_service")</p>
+                <p>@messages("label.you_cannot_use_this_service_")</p>
             </div>
         </details>
 
