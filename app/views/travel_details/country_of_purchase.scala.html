@@ -9,8 +9,10 @@
         document.onreadystatechange = function () {
             if (document.readyState == "interactive") {
                 accessibleAutocomplete.enhanceSelectElement({
+                  defaultValue: '',
                   selectElement: document.querySelector('#country')
                 })
+                document.querySelector('#country-select').setAttribute("aria-label", "@messages("label.enter_country")");
             }
         }
     </script>
