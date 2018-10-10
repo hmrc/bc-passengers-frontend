@@ -42,12 +42,26 @@ class OtherGoodsInputController @Inject() (
 
   def displayCountryInput(path: ProductPath, iid: String, itemsRemaining: Int): Action[AnyContent] = DashboardAction { implicit context =>
 
-    val form = SelectedCountryDto.form(countriesService).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
+    val form = {
+      context.getJourneyData.workingInstance match {
+        case Some(PurchasedProductInstance(_, _, _, _, Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country, itemsRemaining)).discardingErrors
+        case _ => SelectedCountryDto.form(countriesService).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
+      }
+    }
 
     requireProduct(path) { product =>
       Future.successful(Ok(views.html.other_goods.country_of_purchase(form, product, path, iid, countriesService.getAllCountries)))
     }
   }
+
+  def displayCountryUpdate(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+    requirePurchasedProductInstance(path, iid) { product =>
+      purchasedProductService.makeWorkingInstance(context.getJourneyData, product) map { _ =>
+        Redirect(routes.OtherGoodsInputController.displayCountryInput(path, iid, 0))
+      }
+    }
+  }
+
 
   def processCountryInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
@@ -58,8 +72,14 @@ class OtherGoodsInputController @Inject() (
         }
       },
       selectedCountryDto => {
-        purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
-          Redirect(routes.OtherGoodsInputController.displayCurrencyInput(path, iid, selectedCountryDto.itemsRemaining))
+        context.getJourneyData.workingInstance match {
+
+          case Some(PurchasedProductInstance(_, workingIid, _, _, Some(_), Some(_), Some(_))) if workingIid == iid => purchasedProductService.updateCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
+            Redirect(routes.DashboardController.showDashboard())
+          }
+          case _ => purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
+            Redirect(routes.OtherGoodsInputController.displayCurrencyInput(path, iid, selectedCountryDto.itemsRemaining))
+          }
         }
       }
     )
@@ -82,19 +102,8 @@ class OtherGoodsInputController @Inject() (
   def displayCurrencyUpdate(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     requirePurchasedProductInstance(path, iid) { product =>
-      purchasedProductService.makeWorkingInstance(context.getJourneyData, product) flatMap { updatedJourneyData =>
-        val form = {
-          updatedJourneyData.workingInstance match {
-            case Some(PurchasedProductInstance(_, _, _, _, _, Some(currency), _)) =>
-              CurrencyDto.form(currencyService).fill(CurrencyDto(currency, 0)).discardingErrors
-            case _ =>
-              CurrencyDto.form(currencyService)
-          }
-        }
-
-        requireProduct(path) { product =>
-          Future.successful(Ok(views.html.other_goods.currency_input(form, product, path, currencyService.getAllCurrencies, iid)))
-        }
+      purchasedProductService.makeWorkingInstance(context.getJourneyData, product) flatMap { _ =>
+          Future.successful(Redirect(routes.OtherGoodsInputController.displayCurrencyInput(path, iid, 0)))
       }
     }
   }

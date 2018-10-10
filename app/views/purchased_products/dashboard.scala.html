@@ -43,16 +43,17 @@
 
       @alcoholPurchasedItemList.map { purchasedItem =>
         <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div>
+          <div class="product-item">
             <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
             <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
-          <div>
+          <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
             <dd class="cya-answer">@purchasedItem.country</dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
-          <div>
+          <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
             <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
@@ -82,7 +83,7 @@
 
       @tobaccoPurchasedItemList.map { purchasedItem =>
         <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div>
+          <div class="product-item">
             <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">
               @if(purchasedItem.displayWeight){
@@ -93,11 +94,13 @@
             </dd>
             <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
-          <div>
+          <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
             <dd class="cya-answer">@purchasedItem.country</dd>
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
+
           </div>
-          <div>
+          <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
             <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
@@ -127,15 +130,16 @@
 
       @otherGoodsPurchasedItemList.map { purchasedItem =>
         <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div>
+          <div class="product-item">
             <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
           </div>
-          <div>
+          <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
             <dd class="cya-answer">@purchasedItem.country</dd>
+            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")</a></dd>
           </div>
-          <div>
+          <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">
               @purchasedItem.purchasedProductInstance.cost
