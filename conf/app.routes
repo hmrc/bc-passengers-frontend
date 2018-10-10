@@ -12,7 +12,6 @@ GET        /eu-done                                          controllers.TravelD
 
 GET        /new-session                                      controllers.TravelDetailsController.newSession
 
-
 # Dashboard
 GET        /dashboard                                        controllers.DashboardController.showDashboard
 POST       /dashboard                                        controllers.DashboardController.calculate
@@ -33,6 +32,7 @@ GET        /products/$path<alcohol/.+>/volume/:iid/update    controllers.Alcohol
 
 GET        /products/$path<alcohol/.+>/country/:iid          controllers.AlcoholInputController.displayCountryInput(path: ProductPath, iid: String)
 POST       /products/$path<alcohol/.+>/country/:iid          controllers.AlcoholInputController.processCountryInput(path: ProductPath, iid: String)
+GET        /products/$path<alcohol/.+>/country/:iid/update   controllers.AlcoholInputController.displayCountryUpdate(path: ProductPath, iid: String)
 
 GET        /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
 POST       /products/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
@@ -56,6 +56,7 @@ POST       /products/$path<tobacco/(rolling|chewing)>/weight/:iid               
 
 GET        /products/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.displayCountryInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.processCountryInput(path: ProductPath, iid: String)
+GET        /products/$path<tobacco/.+>/country/:iid/update                         controllers.TobaccoInputController.displayCountryUpdate(path: ProductPath, iid: String)
 
 GET        /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, iid: String)
 POST       /products/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, iid: String)
@@ -72,6 +73,7 @@ POST       /products/$path<other-goods/.+>/quantity                  controllers
 
 GET        /products/$path<other-goods/.+>/country/:iid              controllers.OtherGoodsInputController.displayCountryInput(path: ProductPath, iid: String, ir: Int)
 POST       /products/$path<other-goods/.+>/country/:iid              controllers.OtherGoodsInputController.processCountryInput(path: ProductPath, iid: String)
+GET        /products/$path<other-goods/.+>/country/:iid/update       controllers.OtherGoodsInputController.displayCountryUpdate(path: ProductPath, iid: String)
 
 GET        /products/$path<other-goods/.+>/currency/:iid             controllers.OtherGoodsInputController.displayCurrencyInput(path: ProductPath, iid: String, ir: Int)
 POST       /products/$path<other-goods/.+>/currency/:iid             controllers.OtherGoodsInputController.processCurrencyInput(path: ProductPath, iid: String)
@@ -79,9 +81,6 @@ GET        /products/$path<other-goods/.+>/currency/:iid/update      controllers
 
 GET        /products/$path<other-goods/.+>/cost/:iid                 controllers.OtherGoodsInputController.displayCostInput(path: ProductPath, iid: String, ir: Int)
 POST       /products/$path<other-goods/.+>/cost/:iid                 controllers.OtherGoodsInputController.processCostInput(path: ProductPath, iid: String)
-
-GET        /products/$path<alcohol/.+>/currency/:iid                 controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /products/$path<alcohol/.+>/currency/:iid                 controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
 
 # Product Selection
 GET        /products/*path                                   controllers.SelectProductController.askProductSelection(path: ProductPath)
