@@ -1,6 +1,6 @@
 package models
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Json
 
 object Calculation {
   implicit val formats = Json.format[Calculation]
@@ -41,4 +41,35 @@ case class Band(code: String, items: List[Item], calculation: Calculation)
 case class Alcohol(bands: List[Band], calculation: Calculation)
 case class Tobacco(bands: List[Band], calculation: Calculation)
 case class OtherGoods(bands: List[Band], calculation: Calculation)
-case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco], otherGoods: Option[OtherGoods], calculation: Calculation)
+case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco], otherGoods: Option[OtherGoods], calculation: Calculation) {
+
+
+  def hasOnlyGBP: Boolean = {
+    val currencies = for {
+      alcohol <- alcohol.toList
+      tobacco <- tobacco.toList
+      otherGoods <- otherGoods.toList
+      ab <- alcohol.bands
+      tb <- tobacco.bands
+      ob <- otherGoods.bands
+    } yield {
+      ab.items.map(_.metadata.currency) ++
+        tb.items.map(_.metadata.currency) ++
+        ob.items.map(_.metadata.currency)
+    }
+
+    !currencies.flatten.exists(_!="GBP")
+  }
+
+
+  def asDto: CalculatorResponseDto = {
+
+    val alcoholItems = this.alcohol.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
+    val tobaccoItems = this.tobacco.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
+    val otherGoodsItems = this.otherGoods.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
+
+    val bands = (alcoholItems ++ tobaccoItems ++ otherGoodsItems).groupBy(_._1).map { case (key, list) => (key, list.map( _._2 )) }
+
+    CalculatorResponseDto(bands, this.calculation, hasOnlyGBP)
+  }
+}

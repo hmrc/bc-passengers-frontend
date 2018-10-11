@@ -31,6 +31,4 @@ object CalculatorRequest {
   }
 }
 
-case class CalculatorRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, items: List[PurchasedItem]) {
-  def hasOnlyGBP: Boolean = !items.exists(_.currency.code != "GBP")
-}
+case class CalculatorRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, items: List[PurchasedItem])

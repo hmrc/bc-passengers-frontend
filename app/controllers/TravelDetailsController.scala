@@ -37,7 +37,7 @@ class TravelDetailsController @Inject() (
 
   val selectCountry: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(Some(country), _, _, _, _, _, _)) =>
+      case Some(JourneyData(Some(country), _, _, _, _, _, _, _)) =>
         Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form(countriesService).bind(Map("country" -> country)), countriesService.getAllCountries))
       case _ =>
         Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form(countriesService), countriesService.getAllCountries))
@@ -68,7 +68,7 @@ class TravelDetailsController @Inject() (
 
   def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(_, Some(ageOver17), _, _, _, _, _)) =>
+      case Some(JourneyData(_, Some(ageOver17), _, _, _, _, _, _)) =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form))
@@ -84,7 +84,7 @@ class TravelDetailsController @Inject() (
       ageOver17Dto => {
         travelDetailsService.storeAgeOver17(ageOver17Dto.ageOver17) flatMap { _ =>
           travelDetailsService.getJourneyData map {
-            case Some(JourneyData(_, Some(_), Some(_), _, _, _, _)) =>
+            case Some(JourneyData(_, Some(_), Some(_), _, _, _, _, _)) =>
               Redirect(routes.DashboardController.showDashboard())
             case _ =>
               Redirect(routes.TravelDetailsController.privateCraft())
@@ -98,7 +98,7 @@ class TravelDetailsController @Inject() (
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
 
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(_, _, Some(privateCraft), _, _, _, _)) =>
+      case Some(JourneyData(_, _, Some(privateCraft), _, _, _, _, _)) =>
         Ok(views.html.travel_details.confirm_private_craft(form.bind(Map("privateCraft" -> privateCraft.toString))))
       case _ =>
         Ok(views.html.travel_details.confirm_private_craft(form))

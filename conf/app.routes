@@ -17,8 +17,10 @@ GET        /new-session                                      controllers.TravelD
 GET        /dashboard                                        controllers.DashboardController.showDashboard
 POST       /dashboard                                        controllers.DashboardController.calculate
 
-GET        /user-information                                 controllers.DonePageController.enterYourDetails
-POST       /user-information                                 controllers.DonePageController.processEnterYourDetails
+GET        /calculation                                      controllers.DashboardController.showCalculation
+
+GET        /user-information                                 controllers.UserInformationController.enterYourDetails
+POST       /user-information                                 controllers.UserInformationController.processEnterYourDetails
 
 GET        /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.remove(path: ProductPath, iid: String)

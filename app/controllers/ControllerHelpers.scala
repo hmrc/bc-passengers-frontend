@@ -86,6 +86,16 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
     }
   }
 
+
+  def requireCalculatorResponse(block: CalculatorResponse => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    context.getJourneyData match {
+      case JourneyData(_, _, _, _, _, _, _, Some(calculatorResponse)) => block(calculatorResponse)
+      case _ =>
+        logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+    }
+  }
+
   def requirePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     block(context.getJourneyData.getOrCreatePurchasedProductInstance(path, iid))
@@ -105,7 +115,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, Some(workingInstance), _) => block(workingInstance)
+      case JourneyData(_, _, _, _, _, Some(workingInstance), _, _) => block(workingInstance)
       case _ =>
         logAndRedirect(s"Missing working instance in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
@@ -114,7 +124,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def requireTravelDetails(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _, _, _) => block
+      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _, _, _, _) => block
       case _ =>
         logAndRedirect(s"Incomplete or missing travel details found in journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
     }
