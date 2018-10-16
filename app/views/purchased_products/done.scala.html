@@ -77,7 +77,7 @@
   </div>
 
 
-  <table class="responsive-table">
+  <table>
     <caption class="heading-medium">@messages("label.how_your_total_was_calculated")</caption>
     <thead>
       <tr role="row">
@@ -87,28 +87,16 @@
     </thead>
     <tbody>
       <tr>
-        <td>
-          <span class="table-heading" aria-hidden="true">@messages("label.tax")</span>
-          @messages("label.customs")</td>
-        <td class="numeric">
-          <span class="table-heading" aria-hidden="true">@messages("label.amount")</span>
-          &pound;@calculatorResponseDto.calculation.customs</td>
+        <td>@messages("label.customs")</td>
+        <td class="numeric">&pound;@calculatorResponseDto.calculation.customs</td>
       </tr>
       <tr>
-        <td>
-          <span class="table-heading" aria-hidden="true">@messages("label.tax")</span>
-          @messages("label.excise")</td>
-        <td class="numeric">
-          <span class="table-heading" aria-hidden="true">@messages("label.amount")</span>
-          &pound;@calculatorResponseDto.calculation.excise</td>
+        <td>@messages("label.excise")</td>
+        <td class="numeric">&pound;@calculatorResponseDto.calculation.excise</td>
       </tr>
       <tr>
-        <td>
-          <span class="table-heading" aria-hidden="true">@messages("label.tax")</span>
-          @messages("label.vat")</td>
-        <td class="numeric">
-          <span class="table-heading" aria-hidden="true">@messages("label.amount")</span>
-          &pound;@calculatorResponseDto.calculation.vat</td>
+        <td>@messages("label.vat")</td>
+        <td class="numeric">&pound;@calculatorResponseDto.calculation.vat</td>
       </tr>
     </tbody>
   </table>
