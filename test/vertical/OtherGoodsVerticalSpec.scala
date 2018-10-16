@@ -102,6 +102,24 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Egypt"))))))(any())
     }
+
+    "redirect dashboard given existing journey data for an item and valid form input" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Jamaica"), currency = Some("JMD"), cost = Some(20.0))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Jamaica"), currency = Some("JMD"), cost = Some(20.0)))
+      ))
+
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Egypt"), currency = Some("JMD"), cost = Some(20.0))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Jamaica"), currency = Some("JMD"), cost = Some(20.0))))))(any())
+    }
   }
 
 

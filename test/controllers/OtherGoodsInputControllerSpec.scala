@@ -27,6 +27,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
     .build()
 
+  override def beforeEach: Unit = {
+    reset(injected[TravelDetailsService], injected[PurchasedProductService])
+  }
+
   trait LocalSetup {
 
     def requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
@@ -37,6 +41,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     def doc: Document = Jsoup.parse(content)
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+
+      when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
 
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn {
         Future.successful(cachedJourneyData)
@@ -62,33 +68,22 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
   "Calling GET /products/other-goods/.../currency/<iid>/update" should {
 
-    "add a product to the working instance, return a 200 and prepopulate the currency value" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Some(requiredJourneyData)
-
-      when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", currency = Some("JMD"))))
-      )
-
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0/update")).get
-
-      status(result) shouldBe OK
-
-      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
-
-      verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
-    }
-
-    "return a 200 with the currency value populated if there is a working instance" in new LocalSetup {
+    "redirect to the currency input page and add the purchased product to the working instance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances =
         List(PurchasedProductInstance(ProductPath("other-goods/jewellery"), iid = "iid0", currency = Some("JMD")))))
 
+      when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("other-goods/jewellery"), iid = "iid0", currency = Some("JMD"))))
+      )
+
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0/update")).get
 
-      status(result) shouldBe OK
+      status(result) shouldBe SEE_OTHER
 
-      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0?ir=0")
+
+      verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
     }
   }
 
@@ -105,6 +100,27 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
     }
   }
+
+  "Calling GET /products/other-goods/.../country/<iid>/update" should {
+
+    "redirect to the country input page and add the purchased product to the working instance" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances =
+        List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0",  weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))))
+
+      when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/country/iid0/update")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/country/iid0")
+
+      verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
+    }
+  }
+
 
   "Calling GET /products/other-goods/.../quantity" should {
 

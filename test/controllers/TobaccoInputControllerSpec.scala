@@ -163,8 +163,28 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       doc.getElementsByAttributeValue("selected", "selected").attr("value") shouldBe empty
     }
-
   }
+
+  "Calling GET /products/tobacco/.../country/<iid>/update" should {
+
+    "redirect to the country input page and add the purchased product to the working instance" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances =
+        List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0",  weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))))
+
+      when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData(workingInstance =
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/country/iid0/update")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/country/iid0")
+
+      verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
+    }
+  }
+
 
   "Calling GET /products/tobacco/.../currency" should {
 

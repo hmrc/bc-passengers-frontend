@@ -209,4 +209,25 @@ class PurchasedProductServiceSpec extends BaseSpec {
       ))(any())
     }
   }
+
+  "Calling PurchasedProductService.updateCountry" should {
+
+    "update a current selected product, containing the updated country and the updated weightOrVolume" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some("Egypt"), Some("USD"), Some(BigDecimal("15.50"))),
+        PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("24.99")))
+      )))
+
+      await(s.updateCountry(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", "Jamaica")
+      )
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some("Jamaica"), Some("USD"), Some(BigDecimal("15.50"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("24.99")))
+        ))
+        ))(any())
+    }
+  }
 }
