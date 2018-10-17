@@ -153,9 +153,25 @@ class TobaccoInputController @Inject()(
   }
 
   def displayCountryInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+
+    val form = {
+      context.getJourneyData.workingInstance match {
+        case Some(PurchasedProductInstance(_, _, _, _, Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country, 0))
+        case _ => SelectedCountryDto.form(countriesService)
+      }
+    }
+
     requireProduct(path) { product =>
       requireWorkingInstanceDescription(product) { description =>
-        Future.successful(Ok(views.html.tobacco.country_of_purchase(SelectedCountryDto.form(countriesService), product, path, iid, countriesService.getAllCountries, description)))
+        Future.successful(Ok(views.html.tobacco.country_of_purchase(form, product, path, iid, countriesService.getAllCountries, description)))
+      }
+    }
+  }
+
+  def displayCountryUpdate(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+    requirePurchasedProductInstance(path, iid) { product =>
+      purchasedProductService.makeWorkingInstance(context.getJourneyData, product) map { _ =>
+        Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
       }
     }
   }
@@ -171,8 +187,14 @@ class TobaccoInputController @Inject()(
         }
       },
       selectedCountryDto => {
-        purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
-          Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
+        context.getJourneyData.workingInstance match {
+
+          case Some(PurchasedProductInstance(_, workingIid, _, _, Some(_), Some(_), Some(_))) if workingIid == iid => purchasedProductService.updateCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
+            Redirect(routes.DashboardController.showDashboard())
+          }
+          case _ => purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
+            Redirect(routes.TobaccoInputController.displayCurrencyInput(path, iid))
+          }
         }
       }
     )

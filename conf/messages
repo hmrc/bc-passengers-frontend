@@ -8,6 +8,8 @@ grams = {0}g
 
 # Error messages
 label.there_is_a_problem = There is a problem
+head.error.country.invalid = Enter the country of purchase
+error.country.invalid = Enter the country of purchase
 
 ## Over 17 Page
 error.over_17 = Select yes if you are 17 or over
