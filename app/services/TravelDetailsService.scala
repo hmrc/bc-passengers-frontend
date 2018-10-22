@@ -11,13 +11,13 @@ import scala.concurrent.Future
 
 class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) extends UsesJourneyData {
 
-  def storeCountry(country: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeEuCountryCheck(countryChoice: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(country = Some(country), ageOver17 = None, privateCraft = None, selectedProducts = Nil) )
+        localSessionCache.cacheJourneyData( journeyData.copy(euCountryCheck = Some(countryChoice), ageOver17 = None, privateCraft = None, selectedProducts = Nil) )
       case None =>
-        localSessionCache.cacheJourneyData( JourneyData(country = Some(country)) )
+        localSessionCache.cacheJourneyData( JourneyData(euCountryCheck = Some(countryChoice)) )
     }
   }
 

@@ -47,7 +47,7 @@ class DashboardControllerSpec extends BaseSpec {
   "Calling GET /bc-passengers-frontend/dashboard" should {
     "start a new session if any travel details are missing" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), None))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("nonEuOnly"), ageOver17 = Some(true), privateCraft = None))
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
 
@@ -61,7 +61,7 @@ class DashboardControllerSpec extends BaseSpec {
 
   "respond with 200 and display the page is all travel details exist" in new LocalSetup {
 
-    override lazy val cachedJourneyData = Some(JourneyData(country = Some("Egypt"), ageOver17 = Some(true), privateCraft = Some(false)))
+    override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("nonEuOnly"), ageOver17 = Some(true), privateCraft = Some(false)))
 
     val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
 

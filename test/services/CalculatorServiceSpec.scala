@@ -44,16 +44,16 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val missingRateJourneyData = JourneyData(
       Some("Andorra"),
-      Some(true),
       Some(false),
+      Some(true),
       Nil,
       List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some("Egypt"),Some("USD"),Some(123)))
     )
 
     val goodJourneyData = JourneyData(
       Some("Andorra"),
-      Some(true),
       Some(false),
+      Some(true),
       Nil,
       List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(74563)),
@@ -68,8 +68,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val imperfectJourneyData = JourneyData(
       Some("Andorra"),
-      Some(true),
       Some(false),
+      Some(true),
       Nil,
       List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some("Egypt"),Some("AUD"),Some(74563)),
@@ -180,7 +180,7 @@ class CalculatorServiceSpec extends BaseSpec {
     "make a call to the currency-conversion service, the calculator service and return a valid response" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(
-        country = Some("United States"),
+        euCountryCheck = Some("nonEuOnly"),
         ageOver17 = Some(true),
         privateCraft = Some(false),
         purchasedProductInstances = List(

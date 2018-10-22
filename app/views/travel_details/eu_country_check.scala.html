@@ -1,0 +1,41 @@
+@(form: Form[EuCountryCheckDto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("heading.did_you_buy_your_goods_from_")) {
+
+@helpers.form(action = routes.TravelDetailsController.euCountryCheckPost()){
+
+@views.html.tags.errors(form)
+
+    <div class="form-group">
+
+        <fieldset>
+            <legend>
+                <h1 class="heading-xlarge">@messages("heading.did_you_buy_your_goods_from_")</h1>
+            </legend>
+
+            <h3 class="heaing-medium">@messages("heading.eu_countries")</h3>
+            <p style="padding-bottom:1em">
+                @messages("text.eu_countries")
+            </p>
+            <h3 class="heaing-medium">@messages("heading.non_eu_countries")</h3>
+            <p style="padding-bottom:1em">
+                @messages("text.non_eu_countries")
+            </p>
+
+            @components.input_radio_group(
+                form("euCountryCheck"),
+                Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "both" -> Messages("label.both_eu_and_non_eu_countries"))
+            )
+        </fieldset>
+
+        <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+
+
+
+
+    }
+}
+2

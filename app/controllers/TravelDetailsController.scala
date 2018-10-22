@@ -25,7 +25,7 @@ class TravelDetailsController @Inject() (
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Redirect(routes.TravelDetailsController.selectCountry()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
+    Future.successful(Redirect(routes.TravelDetailsController.euCountryCheck()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
   }
 
   val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
@@ -34,41 +34,54 @@ class TravelDetailsController @Inject() (
     )
   }
 
-
-  val selectCountry: Action[AnyContent] = PublicAction { implicit request =>
+  val euCountryCheck: Action[AnyContent] = PublicAction { implicit request => {
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(Some(country), _, _, _, _, _, _, _)) =>
-        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form(countriesService).bind(Map("country" -> country)), countriesService.getAllCountries))
+      case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _)) =>
+        Ok(views.html.travel_details.eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck))))
       case _ =>
-        Ok(views.html.travel_details.country_of_purchase(SelectedCountryDto.form(countriesService), countriesService.getAllCountries))
+        Ok(views.html.travel_details.eu_country_check(EuCountryCheckDto.form))
+      }
     }
   }
 
-  val selectCountryPost: Action[AnyContent] = PublicAction { implicit request =>
+  def euCountryCheckPost: Action[AnyContent] = PublicAction { implicit request =>
 
-    SelectedCountryDto.form(countriesService).bindFromRequest.fold(
+    EuCountryCheckDto.form.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.travel_details.country_of_purchase(formWithErrors, countriesService.getAllCountries)))
+        Future.successful(BadRequest(views.html.travel_details.eu_country_check(formWithErrors)))
       },
-      selectedCountryDto => {
-        val euCountry = countriesService.isInEu(selectedCountryDto.country)
-
-        travelDetailsService.storeCountry( selectedCountryDto.country ) map { _ =>
-
-          if (euCountry) {
-            Redirect(routes.TravelDetailsController.euDone())
-          } else {
-            Redirect(routes.TravelDetailsController.confirmAge())
+      euCountryCheckDto => {
+        travelDetailsService.storeEuCountryCheck(euCountryCheckDto.euCountryCheck) flatMap { _ =>
+          travelDetailsService.getJourneyData map {
+            case Some(JourneyData(Some(_), Some(_), Some(_), _, _, _, _, _)) =>
+              Redirect(routes.DashboardController.showDashboard())
+            case _ =>
+              euCountryCheckDto.euCountryCheck match {
+                case "euOnly" => Redirect(routes.TravelDetailsController.euDone())
+                case "nonEuOnly" => Redirect(routes.TravelDetailsController.nonEuInterrupt())
+                case "both" =>Redirect(routes.TravelDetailsController.bothInterrupt())
+              }
           }
         }
       }
     )
   }
 
+  val nonEuInterrupt: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(views.html.travel_details.interrupt_page(mixEuRow = false)))
+  }
+
+  def interruptPost: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
+  }
+
+  val bothInterrupt: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(views.html.travel_details.interrupt_page(mixEuRow = true)))
+  }
 
   def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(_, Some(ageOver17), _, _, _, _, _, _)) =>
+      case Some(JourneyData(_, _, Some(ageOver17), _, _, _, _, _)) =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
         Ok(views.html.travel_details.confirm_age(AgeOver17Dto.form))
@@ -82,13 +95,8 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(views.html.travel_details.confirm_age(formWithErrors)))
       },
       ageOver17Dto => {
-        travelDetailsService.storeAgeOver17(ageOver17Dto.ageOver17) flatMap { _ =>
-          travelDetailsService.getJourneyData map {
-            case Some(JourneyData(_, Some(_), Some(_), _, _, _, _, _)) =>
-              Redirect(routes.DashboardController.showDashboard())
-            case _ =>
-              Redirect(routes.TravelDetailsController.privateCraft())
-          }
+        travelDetailsService.storeAgeOver17(ageOver17Dto.ageOver17) map { _ =>
+          Redirect(routes.DashboardController.showDashboard())
         }
       }
     )
@@ -98,8 +106,8 @@ class TravelDetailsController @Inject() (
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
 
     travelDetailsService.getJourneyData map {
-      case Some(JourneyData(_, _, Some(privateCraft), _, _, _, _, _)) =>
-        Ok(views.html.travel_details.confirm_private_craft(form.bind(Map("privateCraft" -> privateCraft.toString))))
+      case Some(JourneyData(_, Some(pc), _, _, _, _, _, _)) =>
+        Ok(views.html.travel_details.confirm_private_craft(form.bind(Map("privateCraft" -> pc.toString))))
       case _ =>
         Ok(views.html.travel_details.confirm_private_craft(form))
     }
@@ -111,8 +119,13 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(views.html.travel_details.confirm_private_craft(formWithErrors)))
       },
       privateCraftDto => {
-        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) map { _ =>
-          Redirect(routes.DashboardController.showDashboard())
+        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) flatMap { _ =>
+          travelDetailsService.getJourneyData map {
+            case Some(JourneyData(_, Some(_), Some(_), _, _, _, _, _)) =>
+              Redirect(routes.DashboardController.showDashboard())
+            case _ =>
+              Redirect(routes.TravelDetailsController.confirmAge())
+          }
         }
       }
     )

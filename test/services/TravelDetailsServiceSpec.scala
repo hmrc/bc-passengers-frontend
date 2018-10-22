@@ -40,24 +40,24 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
   }
 
-  "Calling storeCountry" should {
+  "Calling storeEuCountryCheck" should {
 
     "store the country in keystore when no journey data there currently" in new LocalSetup {
 
       override val journeyDataInCache = None
 
-      await(travelDetailsService.storeCountry("Egypt"))
+      await(travelDetailsService.storeEuCountryCheck("nonEuOnly"))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Egypt"), None, None, Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("nonEuOnly"), None, None, Nil)) )(any())
     }
 
     "store the country in keystore, clearing subsequent journey data when journey data exists" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("Australia"), Some(true), Some(false), Nil) )
+      override val journeyDataInCache = Some( JourneyData(Some("nonEuOnly"), Some(true), Some(false), Nil) )
 
-      await(travelDetailsService.storeCountry("Egypt"))
+      await(travelDetailsService.storeEuCountryCheck("both"))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Egypt"), None, None, Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("both"), None, None, Nil)) )(any())
     }
   }
 
@@ -69,7 +69,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, Some(true), None, Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, Some(true), Nil)) )(any())
     }
 
     "store age confirmation in keystore maintaining subsequent journey data" in new LocalSetup {
@@ -78,7 +78,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(true), Some(false), Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(true), Nil)) )(any())
     }
   }
 
@@ -90,7 +90,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storePrivateCraft(privateCraft = false))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, Some(false), Nil)) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, Some(false), None, Nil)) )(any())
     }
 
     "store private craft setting in keystore when journey data does exist " in new LocalSetup {
@@ -99,7 +99,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storePrivateCraft(privateCraft = true))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(false), Some(true), List(List("someProduct")))) )(any())
+      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("Australia"), Some(true), Some(false), List(List("someProduct")))) )(any())
     }
   }
 
