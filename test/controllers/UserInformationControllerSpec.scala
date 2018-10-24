@@ -1,6 +1,6 @@
 package controllers
 
-import models.JourneyData
+import models._
 import org.jsoup.Jsoup
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -37,6 +37,26 @@ class UserInformationControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Option[JourneyData]
     def payApiResponse: PayApiServiceResponse
+
+    lazy val cr = CalculatorResponse(
+      Some(Alcohol(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "100.00", "USD"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(Tobacco(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "100.00", "USD"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(OtherGoods(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "100.00", "USD"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Calculation("0.00", "0.00", "0.00", "0.00")
+    )
+
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
@@ -191,7 +211,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -213,7 +233,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
