@@ -26,7 +26,7 @@ class DashboardController @Inject() (
   val calculatorService: CalculatorService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers  {
 
-  val showDashboard: Action[AnyContent] = DashboardAction { implicit request =>
+  def showDashboard: Action[AnyContent] = DashboardAction { implicit context =>
 
     travelDetailsService.getJourneyData flatMap { journeyData: Option[JourneyData] =>
 
@@ -55,18 +55,31 @@ class DashboardController @Inject() (
   }
 
 
-  val calculate: Action[AnyContent] = DashboardAction { implicit request =>
-    calculatorService.calculate() map {
+  def calculate: Action[AnyContent] = DashboardAction { implicit context =>
+    calculatorService.calculate() flatMap {
 
-      case CalculatorServiceSuccessResponse(calculatorResponseDto) =>
+      case CalculatorServiceSuccessResponse(calculatorResponse) =>
 
-        if(BigDecimal(calculatorResponseDto.calculation.allTax)==0)
-          Ok(views.html.purchased_products.nothing_to_declare(calculatorResponseDto))
-        else
-          Ok(views.html.purchased_products.done(calculatorResponseDto, !calculatorResponseDto.hasOnlyGBP))
+        calculatorService.storeCalculatorResponse(context.getJourneyData, calculatorResponse) map { _ =>
+          Redirect(routes.DashboardController.showCalculation())
+        }
+
 
       case _ =>
-        InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+        Future.successful {
+          InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+        }
+    }
+  }
+
+  def showCalculation: Action[AnyContent] = DashboardAction { implicit context =>
+    requireCalculatorResponse { calculatorResponse =>
+      Future.successful {
+        if (BigDecimal(calculatorResponse.calculation.allTax)==0)
+          Ok(views.html.purchased_products.nothing_to_declare(calculatorResponse.asDto))
+        else
+          Ok(views.html.purchased_products.done(calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+      }
     }
   }
 

@@ -19,7 +19,7 @@ import scala.math.BigDecimal.RoundingMode
 trait CalculatorServiceResponse
 case object CalculatorServiceNoJourneyDataResponse extends CalculatorServiceResponse
 case object CalculatorServiceCantBuildCalcReqResponse extends CalculatorServiceResponse
-case class CalculatorServiceSuccessResponse(calculatorResponseDto: CalculatorResponseDto) extends CalculatorServiceResponse
+case class CalculatorServiceSuccessResponse(calculatorResponse: CalculatorResponse) extends CalculatorServiceResponse
 
 case class CurrencyConversionRate(startDate: LocalDate, endDate: LocalDate, currencyCode: String, rate: Option[String])
 
@@ -66,20 +66,21 @@ class CalculatorService @Inject() (
   }
 
 
-  def doCalculation(calculatorRequest: CalculatorRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculatorResponseDto] = {
+  def doCalculation(calculatorRequest: CalculatorRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculatorResponse] = {
 
     wsAllMethods.POST[CalculatorRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { calculatorResponse =>
 
-      val alcoholItems = calculatorResponse.alcohol.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
-      val tobaccoItems = calculatorResponse.tobacco.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
-      val otherGoodsItems = calculatorResponse.otherGoods.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
-
-      val bands = (alcoholItems ++ tobaccoItems ++ otherGoodsItems).groupBy(_._1).map { case (key, list) => (key, list.map( _._2 )) }
-
-      CalculatorResponseDto(bands, calculatorResponse.calculation, calculatorRequest.hasOnlyGBP)
+      calculatorResponse
     }
 
 
+  }
+
+  def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+
+    val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse))
+
+    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
   def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[CalculatorRequest]] = {

@@ -7,10 +7,12 @@ import models._
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
+import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import util.BaseSpec
 
@@ -189,7 +191,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: CalculatorServiceResponse = await(service.calculate())
 
-      response.asInstanceOf[CalculatorServiceSuccessResponse].calculatorResponseDto shouldBe CalculatorResponseDto(Map(), Calculation("0.00", "0.00", "0.00", "0.00"), hasOnlyGBP = false)
+      response.asInstanceOf[CalculatorServiceSuccessResponse].calculatorResponse shouldBe
+        CalculatorResponse(Some(Alcohol(List(),Calculation("0.00","0.00","0.00","0.00"))),Some(Tobacco(List(),Calculation("0.00","0.00","0.00","0.00"))),Some(OtherGoods(List(),Calculation("0.00","0.00","0.00","0.00"))),Calculation("0.00","0.00","0.00","0.00"))
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
 
@@ -204,5 +207,28 @@ class CalculatorServiceSpec extends BaseSpec {
 
 
     }
+  }
+
+
+  "Calling UserInformationService.storeCalculatorResponse" should {
+
+    "store a new user information" in {
+
+      lazy val s = {
+        val service = app.injector.instanceOf[CalculatorService]
+        val mock = service.localSessionCache
+        when(mock.fetchAndGetJourneyData(any())) thenReturn Future.successful( None )
+        when(mock.cacheJourneyData(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+        service
+      }
+
+      await(s.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"))))
+
+      verify(s.localSessionCache, times(1)).cacheJourneyData(
+        meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00")))))
+      )(any())
+
+    }
+
   }
 }

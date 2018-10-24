@@ -1,9 +1,8 @@
 package controllers
 
-import util.BaseSpec
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
@@ -11,23 +10,22 @@ import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import services.{PurchasedProductService, TravelDetailsService, UserInformationService}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import play.api.test.Helpers.{route => rt, _}
+import services._
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
 import util.{BaseSpec, FakeCookieCryptoFilter}
 
 import scala.concurrent.Future
 import scala.language.postfixOps
-import scala.collection.JavaConversions._
-import play.api.test.Helpers.{route => rt, _}
 
 
-class DonePageControllerSpec extends BaseSpec {
+class UserInformationControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
+    .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
     .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
     .build()
 
@@ -38,12 +36,14 @@ class DonePageControllerSpec extends BaseSpec {
   trait LocalSetup {
 
     def cachedJourneyData: Option[JourneyData]
+    def payApiResponse: PayApiServiceResponse
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[PayApiService].requestPaymentUrl(any(),any())(any(),any())) thenReturn Future.successful(payApiResponse)
 
       rt(app, req)
     }
@@ -54,6 +54,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Display the user information page" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/user-information")).get
 
@@ -71,6 +72,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -90,6 +92,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Return BAD REQUEST and display the user information when first name is too long" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -109,6 +112,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Return BAD REQUEST and display the user information when last name is too long" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -128,6 +132,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Return BAD REQUEST and display the user information when passport number is too long" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -147,6 +152,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Return BAD REQUEST and display the user information when place of arrival is too long" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -166,6 +172,7 @@ class DonePageControllerSpec extends BaseSpec {
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -182,9 +189,10 @@ class DonePageControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Redirect to ... and cache the submitted user information when valid form input is sent" in new LocalSetup {
+    "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -198,7 +206,30 @@ class DonePageControllerSpec extends BaseSpec {
         )
       ).get
 
-      status(response) shouldBe OK
+      status(response) shouldBe INTERNAL_SERVER_ERROR
+
+      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+    }
+
+    "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "passportNumber" -> "801375812",
+          "placeOfArrival" -> "Newcastle airport",
+          "dateOfArrival.day" -> "01",
+          "dateOfArrival.month" -> "02",
+          "dateOfArrival.year" -> "2018"
+        )
+      ).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response).get shouldBe "http://example.com/payment-journey"
 
       verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
     }
