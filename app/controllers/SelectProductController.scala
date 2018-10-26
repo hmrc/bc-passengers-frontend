@@ -14,6 +14,7 @@ class   SelectProductController @Inject()(
   val productTreeService: ProductTreeService,
   val travelDetailsService: TravelDetailsService,
   val currencyService: CurrencyService,
+  val countriesService: CountriesService,
   val selectProductService: SelectProductService,
   val purchasedProductService: PurchasedProductService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {

@@ -12,7 +12,7 @@ case class PurchasedProductInstance(
   iid: String,
   weightOrVolume: Option[BigDecimal] = None,
   noOfSticks: Option[Int] = None,
-  country: Option[String] = None,
+  country: Option[Country] = None,
   currency: Option[String] = None,
   cost: Option[BigDecimal] = None
 )

@@ -1,6 +1,6 @@
 package vertical
 
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify}
 import play.api.mvc.Result
@@ -228,7 +228,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some("Egypt"))))))(any())
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))))))))(any())
     }
   }
 

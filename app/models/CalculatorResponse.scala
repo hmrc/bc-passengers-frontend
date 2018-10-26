@@ -6,6 +6,10 @@ object Calculation {
   implicit val formats = Json.format[Calculation]
 }
 
+object ExchangeRate {
+  implicit val formats = Json.format[ExchangeRate]
+}
+
 object Metadata {
   implicit val formats = Json.format[Metadata]
 }
@@ -35,7 +39,8 @@ object CalculatorResponse {
 }
 
 case class Calculation(excise: String, customs: String, vat: String, allTax: String)
-case class Metadata(description: String, cost: String, currency: String)
+case class ExchangeRate(rate: String, date: String)
+case class Metadata(description: String, declarationMessageDescription: String, cost: String, currency: Currency, country: Country, exchangeRate: ExchangeRate)
 case class Item(rateId: String, purchaseCost: String, noOfUnits: Option[Int], weightOrVolume: Option[BigDecimal], calculation: Calculation, metadata: Metadata)
 case class Band(code: String, items: List[Item], calculation: Calculation)
 case class Alcohol(bands: List[Band], calculation: Calculation)
@@ -58,7 +63,7 @@ case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco]
         ob.items.map(_.metadata.currency)
     }
 
-    !currencies.flatten.exists(_!="GBP")
+    !currencies.flatten.exists(_.code !="GBP")
   }
 
 

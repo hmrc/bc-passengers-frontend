@@ -1,6 +1,6 @@
 package vertical
 
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import play.api.mvc.Result
@@ -100,14 +100,14 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Egypt"))))))(any())
+        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))))))))(any())
     }
 
     "redirect dashboard given existing journey data for an item and valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
-        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Jamaica"), currency = Some("JMD"), cost = Some(20.0))),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Jamaica"), currency = Some("JMD"), cost = Some(20.0)))
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))), currency = Some("JMD"), cost = Some(20.0))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))), currency = Some("JMD"), cost = Some(20.0)))
       ))
 
       val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
@@ -117,8 +117,8 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(
-        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Egypt"), currency = Some("JMD"), cost = Some(20.0))),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some("Jamaica"), currency = Some("JMD"), cost = Some(20.0))))))(any())
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), currency = Some("JMD"), cost = Some(20.0))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))), currency = Some("JMD"), cost = Some(20.0))))))(any())
     }
   }
 

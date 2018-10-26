@@ -44,7 +44,7 @@ class OtherGoodsInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country, itemsRemaining)).discardingErrors
+        case Some(PurchasedProductInstance(_, _, _, _, Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country.countryName, itemsRemaining)).discardingErrors
         case _ => SelectedCountryDto.form(countriesService).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
       }
     }
@@ -72,13 +72,14 @@ class OtherGoodsInputController @Inject() (
         }
       },
       selectedCountryDto => {
+        requireCountryByName(selectedCountryDto.country) { country =>
         context.getJourneyData.workingInstance match {
-
-          case Some(PurchasedProductInstance(_, workingIid, _, _, Some(_), Some(_), Some(_))) if workingIid == iid => purchasedProductService.updateCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
-          }
-          case _ => purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
-            Redirect(routes.OtherGoodsInputController.displayCurrencyInput(path, iid, selectedCountryDto.itemsRemaining))
+            case Some(PurchasedProductInstance(_, workingIid, _, _, Some(_), Some(_), Some(_))) if workingIid == iid => purchasedProductService.updateCountry(context.getJourneyData, path, iid, country) map { _ =>
+              Redirect(routes.DashboardController.showDashboard())
+            }
+            case _ => purchasedProductService.storeCountry(context.getJourneyData, path, iid, country) map { _ =>
+              Redirect(routes.OtherGoodsInputController.displayCurrencyInput(path, iid, selectedCountryDto.itemsRemaining))
+            }
           }
         }
       }

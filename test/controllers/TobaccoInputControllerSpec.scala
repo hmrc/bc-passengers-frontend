@@ -1,6 +1,6 @@
 package controllers
 
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Matchers._
@@ -170,10 +170,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
     "redirect to the country input page and add the purchased product to the working instance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances =
-        List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0",  weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))))
+        List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0",  weightOrVolume = Some(BigDecimal("20")), country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD")))))))
 
       when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD")))))
       ))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/country/iid0/update")).get
@@ -305,7 +305,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", None, Some(100), Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", None, Some(100), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid1")
@@ -317,7 +317,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the currency input when the iid does not match the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("24.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid1")
@@ -332,7 +332,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("500")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("500")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid1")
@@ -345,8 +345,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some("Egypt"), Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("250")), None, Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("250")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid2")
@@ -361,7 +361,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("500")), Some(1000), Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("500")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid1")
@@ -374,8 +374,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some("Egypt"), Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("250")), Some(1000), Some("Egypt"), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("250")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid2")

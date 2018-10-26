@@ -278,4 +278,13 @@ class CountriesServiceSpec extends BaseSpec {
       countriesService.isInEu("Tunisia") shouldBe false
     }
   }
+
+  "getCountryByName" should {
+
+    val countriesService = app.injector.instanceOf[CountriesService]
+
+    "get a country by its name" in {
+      countriesService.getCountryByName("Egypt") shouldBe Some(Country("Egypt", "EG", isEu = false, Some("EGP")))
+    }
+  }
 }

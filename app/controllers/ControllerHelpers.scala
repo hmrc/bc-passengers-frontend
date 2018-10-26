@@ -5,7 +5,7 @@ import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.{CurrencyService, ProductTreeService, TravelDetailsService}
+import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
 
@@ -17,6 +17,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def travelDetailsService: TravelDetailsService
   def productTreeService: ProductTreeService
   def currencyService: CurrencyService
+  def countriesService: CountriesService
 
   implicit def appConfig: AppConfig
   implicit def messagesApi: play.api.i18n.MessagesApi
@@ -129,6 +130,16 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
         logAndRedirect(s"Incomplete or missing travel details found in journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
     }
   }
+
+  def requireCountryByName(countryName: String)(block: Country => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    countriesService.getCountryByName(countryName) match {
+      case Some(country) => block(country)
+      case _ =>
+        logAndRedirect(s"Country missing in the countries lookup service! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
+    }
+  }
+
 
   def requireWorkingInstanceWeightOrVolume(block: BigDecimal => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 

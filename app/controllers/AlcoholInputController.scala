@@ -55,9 +55,8 @@ class AlcoholInputController @Inject() (
         }
       },
       dto => {
-
         context.getJourneyData.workingInstance match {
-          case Some(wi) if wi.iid == iid => purchasedProductService.updateWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
+          case Some(wi@PurchasedProductInstance(_, _, Some(_), _, Some(_), Some(_), Some(_))) if wi.iid == iid => purchasedProductService.updateWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
             Redirect(routes.DashboardController.showDashboard())
           }
           case _ => purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
@@ -72,7 +71,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _,  Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country, 0))
+        case Some(PurchasedProductInstance(_, _, _, _,  Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country.countryName, 0))
         case _ => SelectedCountryDto.form(countriesService)
       }
     }
@@ -103,15 +102,16 @@ class AlcoholInputController @Inject() (
         }
       },
       selectedCountryDto => {
-
-        context.getJourneyData.workingInstance match {
-          case Some(PurchasedProductInstance(_, workingIid, Some(_), None, Some(_), Some(_), Some(_))) if workingIid == iid  => purchasedProductService.updateCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
-          }
-          case _ =>
-            purchasedProductService.storeCountry(context.getJourneyData, path, iid, selectedCountryDto.country) map { _ =>
-              Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid))
+        requireCountryByName(selectedCountryDto.country) { country =>
+          context.getJourneyData.workingInstance match {
+            case Some(PurchasedProductInstance(_, workingIid, Some(_), None, Some(_), Some(_), Some(_))) if workingIid == iid  => purchasedProductService.updateCountry(context.getJourneyData, path, iid, country) map { _ =>
+              Redirect(routes.DashboardController.showDashboard())
             }
+            case _ =>
+              purchasedProductService.storeCountry(context.getJourneyData, path, iid, country) map { _ =>
+                Redirect(routes.AlcoholInputController.displayCurrencyInput(path, iid))
+              }
+          }
         }
       }
     )
