@@ -11,6 +11,17 @@ import util._
 import uk.gov.hmrc.play.mappers.DateTuple._
 
 
+
+object EuCountryCheckDto {
+  val form: Form[EuCountryCheckDto] = Form(
+    mapping(
+     "euCountryCheck" -> optional(text).verifying("error.eu_check", x => x.fold(false)(_.nonEmpty)).transform[String](_.get, s => Some(s))
+    )(EuCountryCheckDto.apply)(EuCountryCheckDto.unapply)
+  )
+}
+
+case class EuCountryCheckDto(euCountryCheck: String)
+
 object SelectedCountryDto {
   def form(countryService: CountriesService, optionalItemsRemaining: Boolean = true): Form[SelectedCountryDto] = Form(
     mapping(

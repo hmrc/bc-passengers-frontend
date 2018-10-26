@@ -36,9 +36,9 @@ object JourneyData {
   implicit val formats = Json.format[JourneyData]
 }
 case class JourneyData(
-  country: Option[String] = None,
-  ageOver17: Option[Boolean] = None,
+  euCountryCheck: Option[String] = None,
   privateCraft: Option[Boolean] = None,
+  ageOver17: Option[Boolean] = None,
   selectedProducts: List[List[String]] = Nil,
   purchasedProductInstances: List[PurchasedProductInstance] = Nil,
   workingInstance: Option[PurchasedProductInstance] = None,

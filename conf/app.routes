@@ -1,14 +1,22 @@
 # Travel Details
 GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
-POST       /country-of-purchase                              controllers.TravelDetailsController.selectCountryPost
-GET        /country-of-purchase                              controllers.TravelDetailsController.selectCountry
 
-GET        /confirm-age                                      controllers.TravelDetailsController.confirmAge
-POST       /confirm-age                                      controllers.TravelDetailsController.confirmAgePost
+GET        /eu-country-check                                 controllers.TravelDetailsController.euCountryCheck
+POST       /eu-country-check                                 controllers.TravelDetailsController.euCountryCheckPost
+
+GET        /eu-done                                          controllers.TravelDetailsController.euDone
+
+GET        /arrivals-from-outside-the-eu                     controllers.TravelDetailsController.nonEuInterrupt
+POST       /arrivals-from-outside-the-eu                     controllers.TravelDetailsController.interruptPost
+
+GET        /arrivals-from-both                               controllers.TravelDetailsController.bothInterrupt
+POST       /arrivals-from-both                               controllers.TravelDetailsController.interruptPost
 
 GET        /private-travel                                   controllers.TravelDetailsController.privateCraft
 POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
-GET        /eu-done                                          controllers.TravelDetailsController.euDone
+
+GET        /confirm-age                                      controllers.TravelDetailsController.confirmAge
+POST       /confirm-age                                      controllers.TravelDetailsController.confirmAgePost
 
 GET        /new-session                                      controllers.TravelDetailsController.newSession
 

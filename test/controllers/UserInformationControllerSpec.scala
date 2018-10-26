@@ -1,8 +1,9 @@
 package controllers
 
+import util.BaseSpec
 import models._
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
@@ -17,6 +18,8 @@ import util.{BaseSpec, FakeCookieCryptoFilter}
 
 import scala.concurrent.Future
 import scala.language.postfixOps
+import scala.collection.JavaConversions._
+import play.api.test.Helpers.{route => rt, _}
 
 
 class UserInformationControllerSpec extends BaseSpec {
@@ -73,7 +76,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Display the user information page" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/user-information")).get
@@ -91,7 +94,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -111,7 +114,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when first name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -131,7 +134,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when last name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -151,7 +154,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when passport number is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -171,7 +174,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when place of arrival is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -191,7 +194,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -211,7 +214,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
@@ -233,7 +236,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(country = Some("Uganda"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")

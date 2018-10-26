@@ -11,6 +11,69 @@ label.there_is_a_problem = There is a problem
 head.error.country.invalid = Enter the country of purchase
 error.country.invalid = Enter the country of purchase
 
+## EU Check Page
+heading.did_you_buy_your_goods_from_ =Did you buy goods from EU countries, non-EU countries or both?
+heading.eu_countries =EU countries
+heading.non_eu_countries =Non-EU countries
+label.eu_countries_only =EU countries only
+label.non_eu_countries_only =Non-EU countries only
+label.both_eu_and_non_eu_countries =Both EU and non-EU countries
+label.continue_to_tell_us_about_your_non_eu_goods=Continue to tell us about your non-EU goods
+text.eu_countries =Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden and Switzerland.
+text.non_eu_countries =Any other country (including the Canary Islands, Channel Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
+error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
+head.error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
+
+## Interrupt Page
+heading.you_only_need_to_tell_us_=You only need to tell us about goods bought in non‑EU countries
+heading.tell_us_about_goods_=Tell us about goods bought in non‑EU countries
+text.you_do_not_need_to_tell_us_=You do not need to tell us about goods bought from countries inside the EU.
+text.there_are_separate_allowances_=There are separate allowances for bringing alcohol, tobacco and other goods into the UK from non-EU countries without paying duty or tax.
+text.if_you_go_over_an_individual_allowance_=If you go over an individual allowance you pay tax or duty on the full value of those goods within that allowance and not just on the amount you are over.
+label.tobacco_allowance=Tobacco allowance
+label.alcohol_allowance=Alcohol allowance
+label.other_goods_allowance=Other goods allowance
+text.200_cigarettes_or_=200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
+text.1_litre_of_spirits_or_=1 litre of spirits or 2 litres of sparkling wine or 2 litres of fortified wine or 2 litres of cider (this allowance can be split)
+text.16_litres_of_beer=16 litres of beer
+text.4_litres_of_still_wine=4 litres of still wine
+text.200_cigarettes_or_=200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
+text.a_total_of_390_worth_of_=A total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
+text.more_info_about_bringing_goods_into_the_uk_and_splitting_allowances_=More information about bringing goods into the UK and splitting allowances (opens in a new window or tab)
+
+## EU Done Page
+label.alcohol = Alcohol
+label.beer = Beer
+label.wine = Wine
+label.wine_not_sparkling =Wine (not sparkling)
+label.spirits = Spirits (such as gin or vodka)
+label.fortified_wine = Fortified wine (such as sherry or port)
+label.sparkling_wine= Sparkling wine (such as Champagne and Prosecco)
+label.tobacco = Tobacco
+label.cigarettes = Cigarettes
+label.cigars = Cigars
+label.cigarillos = Cigarillos
+label.hand_rolling_tobacco = Hand-rolling tobacco
+label.110_litres = 110 litres
+label.90_litres = 90 litres
+label.10_litres = 10 litres
+label.20_litres = 20 litres
+label.800 = 800
+label.200 = 200
+label.400 = 400
+label.1_kg = 1kg
+label.start_again = Start again
+heading.you_do_not_need_to_tell_us_about_goods_=You do not need to tell us about your goods
+text.you_do_not_pay_duty_or_tax_=You do not pay duty or tax on alcohol, tobacco and most other goods you bring in from the European Union (EU) as long as you:
+text.transport_them_yourself=transport them yourself
+text.will_use_them_yourself_or_give_=will use them yourself or give them away as a gift
+text.paid_duty_and_tax_=have paid duty and tax in the country where you bought them
+label.customs_checks=Customs checks on alcohol and tobacco
+text.you_are_more_likely_to_be_stopped_=You are more likely to be stopped and asked questions by a customs officer if you have more than the amounts of alcohol and tobacco below.
+label.type_of_goods=Type of goods
+label.amount=Amount
+text.more_info_about_bringing_goods_into_the_uk_=More information about bringing goods into the UK from the European Union, including restricted and banned items
+
 ## Over 17 Page
 error.over_17 = Select yes if you are 17 or over
 head.error.over_17 = Select yes if you are 17 or over
@@ -45,34 +108,6 @@ label.are_you_17_or_over = Are you 17 or over?
 # Private Craft
 label.did_you_arrive_in_the_uk_by_private_boat_ = Did you arrive in the UK by private boat or private plane?
 
-# Allowances for goods bought inside the European Union
-label.allowances_for_goods_ = Allowances for goods bought inside the European Union
-label.there_are_no_limits_ = There are no limits to the amount of goods you can bring into the UK from the European Union:
-
-text.for_your_personal_use = for your personal use
-text.as_a_gift_for_someone_else = as a gift for someone else
-
-label.however_a_customs_officer_may_stop_you_ = However, a customs officer may stop you if they think you are bringing in goods to sell. You are more likely to be stopped if you have more than the amounts shown below.
-label.alcohol = Alcohol
-label.beer = Beer
-label.wine = Wine
-label.spirits = Spirits
-label.fortified_wine = Fortified Wine
-label.tobacco = Tobacco
-label.cigarettes = Cigarettes
-label.cigars = Cigars
-label.cigarillos = Cigarillos
-label.110_litres = 110 litres
-label.90_litres = 90 litres
-label.10_litres = 10 litres
-label.20_litres = 20 litres
-label.800 = 800
-label.200 = 200
-label.400 = 400
-label.1_kg = 1kg
-label.what_happens_next = What happens next
-label.go_through_blue_channel = If you take goods bought in the EU into the UK you must go through the blue channel at border control.
-label.start_again = Start again
 
 # Dashboard Page
 label.tell_us_about_your_purchases = Tell us about your purchases

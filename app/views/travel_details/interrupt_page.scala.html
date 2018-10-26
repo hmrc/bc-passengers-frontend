@@ -1,0 +1,61 @@
+@(mixEuRow: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@import uk.gov.hmrc.play.views.html._
+
+@title = {
+    @if(mixEuRow) {
+        @messages("heading.you_only_need_to_tell_us_")
+    } else {
+        @messages("heading.tell_us_about_goods_")
+    }
+}
+
+@main_template(title = title.toString) {
+
+    <h1 class="heading-xlarge">
+        @title
+    </h1>
+        @if(mixEuRow) {
+            <p>@messages("text.you_do_not_need_to_tell_us_")</p>
+        }
+        <p>@messages("text.there_are_separate_allowances_")</p>
+
+        <p>@messages("text.if_you_go_over_an_individual_allowance_")</p>
+
+
+    <h1 class="heading-small">@messages("label.tobacco_allowance")</h1>
+    <ul class="list-bullet">
+        <li>
+            @messages("text.200_cigarettes_or_")
+        </li>
+    </ul>
+    <h1 class="heading-small">@messages("label.alcohol_allowance")</h1>
+    <ul class="list-bullet">
+        <li>
+            @messages("text.1_litre_of_spirits_or_")
+        </li>
+        <li>
+            @messages("text.16_litres_of_beer")
+        </li>
+        <li>
+            @messages("text.4_litres_of_still_wine")
+        </li>
+    </ul>
+    <h1 class="heading-small">@messages("label.other_goods_allowance")</h1>
+    <ul class="list-bullet">
+        <li>
+            @messages("text.a_total_of_390_worth_of_")
+        </li>
+    </ul>
+    <br>
+
+    @helpers.form(action = routes.TravelDetailsController.interruptPost()) {
+        <div class="form-group">
+            <button class="button" type="submit">@messages("label.continue_to_tell_us_about_your_non_eu_goods")</button>
+        </div>
+    }
+    <br>
+    <p>
+        <a href="https://www.gov.uk/duty-free-goods/arrivals-from-outside-the-eu" target="_blank">@messages("text.more_info_about_bringing_goods_into_the_uk_and_splitting_allowances_")</a>
+    </p>
+}
