@@ -34,8 +34,6 @@
 
     <h1 class="heading-xlarge">@title</h1>
 
-    <div class="panel panel-border-wide">@messages("text.if_you_have_bought_goods_from_more_")</div>
-
     @helpers.form(action = routes.AlcoholInputController.processCountryInput(path, iid)){
 
         @components.select(

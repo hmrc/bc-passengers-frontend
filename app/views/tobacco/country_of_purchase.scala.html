@@ -30,8 +30,6 @@
 
     <h1 class="heading-xlarge">@messages("label.tobacco.where_did_you_buy_the_", description, product.name.toLowerCase())</h1>
 
-    <div class="panel panel-border-wide">@messages("text.if_you_have_bought_goods_from_more_")</div>
-
     @helpers.form(action = routes.TobaccoInputController.processCountryInput(path, iid)){
 
             @components.select(

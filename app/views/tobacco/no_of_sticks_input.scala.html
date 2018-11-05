@@ -17,14 +17,14 @@
     <div class="form-group">
         @helpers.input(
             noOfSticksForm("noOfSticks"),
-            '_label -> messages("label.quantity_of_", productName.toLowerCase()),
+            '_label -> messages("label.number_of_", productName.toLowerCase()),
             '_labelTextClass -> "form-label",
             '_inputClass -> "form-control-1-8"
         )
     </div>
 
     <details class="form-group">
-      <summary><span class="summary">@messages("label.if_you_do_not_know_the_quantity")</span></summary>
+      <summary><span class="summary">@messages("label.if_you_do_not_know_the_number")</span></summary>
       <div class="panel panel-border-narrow">
         <p>@messages("label.you_cannot_use_this_service_")</p>
       </div>

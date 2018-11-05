@@ -16,14 +16,19 @@
 
 @(
   field: Field,
-  inputs: List[(String, String)]
+  inputs: List[(String, String)],
+  path: Option[ProductPath] = None
 )(implicit messages: Messages)
 
-<div class="form-field @if(field.hasErrors){form-group-error}">
+<div class="form-field @if(field.hasErrors){form-group-error}" id="@field.id">
 
   @field.errors.map { error =>
     <span class="error-message" id="error-message-@field.id-input">
-      @messages(error.message, error.args: _*)
+      @{path match {
+        case Some(path) => messages(s"${error.message}.${path.toString.replace('/','.')}")
+        case None => messages(error.message) }
+      }
+
     </span>
   }
 
