@@ -2,21 +2,27 @@
 
 @import uk.gov.hmrc.play.views.html.helpers._
 
-@main_template(title = messages("label.check_allowances_and_estimate_duties_")) {
+@main_template(title = messages("label.check_tax_on_goods_you_bring_")) {
 
-    <h1 class="heading-xlarge">@messages("label.check_allowances_and_estimate_duties_")</h1>
-
-    <p>@messages("label.you_may_need_to_pay_tax_or_duties_")</p>
+    <h1 class="heading-xlarge">@messages("label.check_tax_on_goods_you_bring_")</h1>
 
     <p>@messages("label.use_this_service_to")</p>
 
     <ul class="list list-bullet">
         <li>@messages("text.check_if_you_need_to_declare_")</li>
         <li>@messages("text.estimate_how_much_tax_")</li>
+        <li>@messages("text.declare_your_goods_and_make_a_payment_")</li>
     </ul>
 
-    <p>@messages("label.you_need_to_know_the_exact_price_")</p>
+    <p>@messages("label.you_will_need_to_know")</p>
 
-    <a class="button button-start" href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_now")</a>
+    <ul class="list list-bullet">
+        <li>@messages("text.the_exact_price_of_your_goods_")</li>
+        <li>@messages("text.the_quantity_or_volume_of_your_goods")</li>
+    </ul>
+
+    <p>@messages("label.if_you_want_to_declare_and_pay_online_")</p>
+
+    <a class="button button-start margin-top-30" href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_now")</a>
 
 }
