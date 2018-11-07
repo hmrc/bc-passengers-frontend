@@ -90,12 +90,16 @@ head.error.remove_product = Select yes if you want to remove this item
 error.invalid_currency = Invalid currency
 
 # Start page
-label.check_allowances_and_estimate_duties_ = Check allowances and estimate duties to bring goods into the UK
+label.check_tax_on_goods_you_bring_ = Check tax on goods you bring into the UK
 label.you_may_need_to_pay_tax_or_duties_ = You may need to pay tax or duties on any goods you bring into the UK from abroad.
 label.use_this_service_to = Use this service to:
-text.check_if_you_need_to_declare_ = check if you need to declare your goods
-text.estimate_how_much_tax_ = estimate how much tax or customs duty you may owe
-label.you_need_to_know_the_exact_price_ = You need to know the exact price you paid for your items to use this service.
+text.check_if_you_need_to_declare_ = check if you need to declare your alcohol, tobacco or other goods
+text.estimate_how_much_tax_ = estimate how much tax or customs duty you may owe before you reach the border
+text.declare_your_goods_and_make_a_payment_ = declare your goods and make a payment online up to 72 hours before you arrive in the UK
+label.you_will_need_to_know = You will need to know:
+text.the_exact_price_of_your_goods_ = the exact price of your goods in the currency used
+text.the_quantity_or_volume_of_your_goods = the quantity or volume of your goods
+label.if_you_want_to_declare_and_pay_online_ = If you want to declare and pay online, you will need your passport number and card details.
 label.start_now = Start now
 
 # Where did you buy your goods?
