@@ -44,7 +44,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Check allowances and estimate duties to bring goods into the UK"
+      doc.getElementsByTag("h1").text() shouldBe "Check tax on goods you bring into the UK"
     }
   }
 
