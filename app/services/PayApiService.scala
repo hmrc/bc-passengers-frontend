@@ -1,7 +1,11 @@
 package services
 
+import java.time.LocalDateTime
+
+import controllers.routes
 import javax.inject.{Inject, Singleton}
-import models.ChargeReference
+import models.{CalculatorResponse, ChargeReference, UserInformation}
+import org.joda.time.DateTime
 import play.api.Mode.Mode
 import play.api.libs.json.{JsString, JsValue, Json}
 import play.api.{Configuration, Environment}
@@ -34,25 +38,57 @@ class PayApiService @Inject()(
   lazy val bcPassengersFrontendHost = configuration.getString("bc-passengers-frontend.host").getOrElse("")
 
 
-  def requestPaymentUrl(chargeReference: ChargeReference, amountPence: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiServiceResponse] = {
 
-    val extras = Json.obj(
-      "taxType" -> "pngr",
-      "reference" -> chargeReference.value,
-      "description" -> "Customs Declaration Payment",
-      "amountInPence" -> amountPence,
-      "extras"  -> Json.obj(),
-      "backUrl" -> s"$bcPassengersFrontendHost/back",
-      "returnUrl" -> s"$bcPassengersFrontendHost/return",
-      "returnUrlFailure" -> s"$bcPassengersFrontendHost/return-fail",
-      "returnUrlCancel" -> s"$bcPassengersFrontendHost/return-cancel"
+    def items = {
+      val allItems = for {
+        alcohol <- calculatorResponse.alcohol.toList
+        tobacco <- calculatorResponse.tobacco.toList
+        otherGoods <- calculatorResponse.otherGoods.toList
+        ab <- alcohol.bands
+        tb <- tobacco.bands
+        ob <- otherGoods.bands
+      } yield {
+        ab.items ++ tb.items ++ ob.items
+      }
+      allItems.flatten.filter(x => BigDecimal(x.calculation.allTax) > 0)
+    }.zipWithIndex
+
+
+    val d = Json.obj(
+      "NAME" -> s"${userInformation.firstName} ${userInformation.lastName}",
+      "DATE" -> receiptDateTime.toString("dd MMMM Y HH:mm:ss z"),
+      "PLACEOFARRIVAL" -> userInformation.placeOfArrival,
+      "DATEOFARRIVAL" -> userInformation.dateOfArrival,
+      "REFERENCE" -> chargeReference.value,
+      "TOTAL" -> calculatorResponse.calculation.allTax
     )
 
-    wsAllMethods.POST[JsValue,HttpResponse](payApiBaseUrl+"/pay-api/payment", extras) map { r =>
+    val emailTemplateData = items.foldLeft(d) { case (jsObject, (item, index)) =>
+        jsObject ++ Json.obj(s"NAME_$index" -> item.metadata.description, s"CURRENCY_$index" -> item.metadata.currency.displayName, s"COSTGBP_$index" -> item.metadata.cost)
+    }
+
+    val extras = Json.obj(
+      "reference" -> chargeReference.value,
+      "amountInPence" -> amountPence,
+      "taxType" -> "pngr",
+      "showCAWPTPage" -> false,
+      "isWelshSupported" -> false,
+      "emailTemplateId" -> "passengers_payment_confirmation",
+      "emailTemplateData" -> emailTemplateData,
+      "description" -> "Customs Declaration Payment",
+      "searchScope" -> "pngr",
+      "searchTag" -> chargeReference.value,
+      "title" -> "Check tax on goods you bring into the UK",
+      "returnUrl" -> (bcPassengersFrontendHost + routes.TravelDetailsController.checkDeclareGoodsStartPage().url)
+    )
+
+    wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/payment", extras) map { r =>
       r.status match {
         case CREATED => PayApiServiceSuccessResponse((r.json \ "links" \ "nextUrl").as[JsString].value)
         case _ => PayApiServiceFailureResponse
       }
     }
+
   }
 }

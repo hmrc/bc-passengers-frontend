@@ -97,6 +97,16 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
     }
   }
 
+
+  def requireUserInformation(block: UserInformation => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    context.getJourneyData match {
+      case JourneyData(_, _, _, _, _, _, Some(userInformation), _) => block(userInformation)
+      case _ =>
+        logAndRedirect(s"Missing user info in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+    }
+  }
+
   def requirePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     block(context.getJourneyData.getOrCreatePurchasedProductInstance(path, iid))

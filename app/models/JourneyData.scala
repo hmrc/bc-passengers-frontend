@@ -1,6 +1,6 @@
 package models
 
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json.Json
 
 
@@ -20,15 +20,17 @@ case class PurchasedProductInstance(
 object UserInformation {
   implicit val formats = Json.format[UserInformation]
 
-  def build(dto: EnterYourDetailsDto): UserInformation =
-    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival)
+  def build(dto: EnterYourDetailsDto, temporaryChargeReference: ChargeReference, temporaryReceiptDateTime: DateTime): UserInformation =
+    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival, temporaryChargeReference.value, temporaryReceiptDateTime)
 }
 case class UserInformation(
   firstName: String,
   lastName: String,
   passportNumber: String,
   placeOfArrival: String,
-  dateOfArrival: LocalDate
+  dateOfArrival: LocalDate,
+  temporaryChargeReference: String,
+  temporaryReceiptDateTime: DateTime
 )
 
 
