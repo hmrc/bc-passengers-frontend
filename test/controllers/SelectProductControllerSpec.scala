@@ -114,11 +114,11 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/carpets-cotton-fabric")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/carpets-fabric")).get
 
       status(result) shouldBe OK
-      h1 shouldBe "What carpets, cotton and fabrics are you bringing into the UK?"
-      forAll(List("carpets", "cotton", "fabrics")) { cb =>
+      h1 shouldBe "What items of carpet or fabric are you bringing into the UK?"
+      forAll(List("carpets", "fabrics")) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
     }

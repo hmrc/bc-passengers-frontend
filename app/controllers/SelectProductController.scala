@@ -74,7 +74,7 @@ class   SelectProductController @Inject()(
         success = selectProductsDto => {
 
           selectProductService.addSelectedProducts(context.getJourneyData, selectProductsDto.tokens.map(path.addingComponent)) flatMap { journeyData =>
-
+            
             purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
               Redirect(routes.SelectProductController.nextStep())
             }

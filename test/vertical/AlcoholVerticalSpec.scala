@@ -90,9 +90,9 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when the product path is valid and there is a working instance with a volume" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
+        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/cider/country/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/wine/country/iid0")).get
 
       status(result) shouldBe OK
 
@@ -106,9 +106,9 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "return a 400 given bad form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
+        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", weightOrVolume = Some(BigDecimal(2.00))))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/cider/country/iid0").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/wine/country/iid0").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe BAD_REQUEST
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
@@ -118,14 +118,14 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
     "store the country in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/cider/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol/wine/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/cider/currency/iid0")
+      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/alcohol/wine/currency/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid0", country = Some("Egypt"))))))(any())
+        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", country = Some("Egypt"))))))(any())
     }
   }
 

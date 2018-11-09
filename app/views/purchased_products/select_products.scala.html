@@ -10,18 +10,37 @@
 
     @helpers.form(action = routes.SelectProductController.processProductSelection(path)){
 
+        @views.html.tags.errors(selectProductsForm, Some(path))
+
+        <h1 class="heading-xlarge">@title.toString</h1>
+
+        @if(path.toString contains "cider"){
+        <div class="panel panel-border-wide" id="panel">
+            <p>@messages("alcohol.volume_input.panel.cider.1")</p>
+            <p>@messages("alcohol.volume_input.panel.cider.2")</p>
+        </div>
+        }
+
+        @if(path.toString endsWith "other-goods"){
+        <div class="panel panel-border-wide" id="panel">
+            <p>@messages("other-goods.volume_input.panel.1")</p>
+            <p>@messages("other-goods.volume_input.panel.2")</p>
+        </div>
+        }
+
         <div class="form-group">
 
             <fieldset>
 
                 <legend>
-                    <h1 class="heading-xlarge">@title.toString</h1>
+                    <span class="visually-hidden">@title.toString</span>
                     <span class="body-text">@messages("label.select_all_that_apply")</span>
                 </legend>
 
                 @components.input_check_box(
                     selectProductsForm("tokens"),
-                    inputs = checkboxes
+                    inputs = checkboxes,
+                    Some(path)
                 )
             </fieldset>
 

@@ -12,40 +12,40 @@ head.error.country.invalid = Enter the country of purchase
 error.country.invalid = Enter the country of purchase
 
 ## EU Check Page
-heading.did_you_buy_your_goods_from_ =Did you buy goods from EU countries, non-EU countries or both?
-heading.eu_countries =EU countries
-heading.non_eu_countries =Non-EU countries
-label.eu_countries_only =EU countries only
-label.non_eu_countries_only =Non-EU countries only
-label.both_eu_and_non_eu_countries =Both EU and non-EU countries
-label.continue_to_tell_us_about_your_non_eu_goods=Continue to tell us about your non-EU goods
+heading.did_you_buy_your_goods_from_ = Did you buy goods from EU countries, non-EU countries or both?
+heading.eu_countries = EU countries
+heading.non_eu_countries = Non-EU countries
+label.eu_countries_only = EU countries only
+label.non_eu_countries_only = Non-EU countries only
+label.both_eu_and_non_eu_countries = Both EU and non-EU countries
+label.continue_to_tell_us_about_your_non_eu_goods = Continue to tell us about your non-EU goods
 text.eu_countries =Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden and Switzerland.
-text.non_eu_countries =Any other country (including the Canary Islands, Channel Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
+text.non_eu_countries = Any other country (including the Canary Islands, Channel Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
 error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
-head.error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
+head.error.eu_check = Select if you bought goods from EU countries only, non-EU countries only or both
 
 ## Interrupt Page
-heading.you_only_need_to_tell_us_=You only need to tell us about goods bought in non‑EU countries
-heading.tell_us_about_goods_=Tell us about goods bought in non‑EU countries
-text.you_do_not_need_to_tell_us_=You do not need to tell us about goods bought from countries inside the EU.
-text.there_are_separate_allowances_=There are separate allowances for bringing alcohol, tobacco and other goods into the UK from non-EU countries without paying duty or tax.
-text.if_you_go_over_an_individual_allowance_=If you go over an individual allowance you pay tax or duty on the full value of those goods within that allowance and not just on the amount you are over.
-label.tobacco_allowance=Tobacco allowance
-label.alcohol_allowance=Alcohol allowance
-label.other_goods_allowance=Other goods allowance
-text.200_cigarettes_or_=200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
-text.1_litre_of_spirits_or_=1 litre of spirits or 2 litres of sparkling wine or 2 litres of fortified wine or 2 litres of cider (this allowance can be split)
-text.16_litres_of_beer=16 litres of beer
-text.4_litres_of_still_wine=4 litres of still wine
-text.200_cigarettes_or_=200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
-text.a_total_of_390_worth_of_=A total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
-text.more_info_about_bringing_goods_into_the_uk_and_splitting_allowances_=More information about bringing goods into the UK and splitting allowances (opens in a new window or tab)
+heading.you_only_need_to_tell_us_= You only need to tell us about goods bought in non‑EU countries
+heading.tell_us_about_goods_ = Tell us about goods bought in non‑EU countries
+text.you_do_not_need_to_tell_us_ = You do not need to tell us about goods bought from countries inside the EU.
+text.there_are_separate_allowances_ = There are separate allowances for bringing alcohol, tobacco and other goods into the UK from non-EU countries without paying duty or tax.
+text.if_you_go_over_an_individual_allowance_ = If you go over an individual allowance you pay tax or duty on the full value of those goods within that allowance and not just on the amount you are over.
+label.tobacco_allowance = Tobacco allowance
+label.alcohol_allowance = Alcohol allowance
+label.other_goods_allowance = Other goods allowance
+text.200_cigarettes_or_ = 200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
+text.1_litre_of_spirits_or_ = 1 litre of spirits or 2 litres of sparkling wine or 2 litres of fortified wine or 2 litres of cider (this allowance can be split)
+text.16_litres_of_beer = 16 litres of beer
+text.4_litres_of_still_wine = 4 litres of still wine
+text.200_cigarettes_or_ = 200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
+text.a_total_of_390_worth_of_ = A total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
+text.more_info_about_bringing_goods_into_the_uk_and_splitting_allowances_ = More information about bringing goods into the UK and splitting allowances (opens in a new window or tab)
 
 ## EU Done Page
 label.alcohol = Alcohol
 label.beer = Beer
 label.wine = Wine
-label.wine_not_sparkling =Wine (not sparkling)
+label.wine_not_sparkling = Wine (not sparkling)
 label.spirits = Spirits (such as gin or vodka)
 label.fortified_wine = Fortified wine (such as sherry or port)
 label.sparkling_wine= Sparkling wine (such as Champagne and Prosecco)
@@ -66,13 +66,13 @@ label.start_again = Start again
 heading.you_do_not_need_to_tell_us_about_goods_=You do not need to tell us about your goods
 text.you_do_not_pay_duty_or_tax_=You do not pay duty or tax on alcohol, tobacco and most other goods you bring in from the European Union (EU) as long as you:
 text.transport_them_yourself=transport them yourself
-text.will_use_them_yourself_or_give_=will use them yourself or give them away as a gift
-text.paid_duty_and_tax_=have paid duty and tax in the country where you bought them
-label.customs_checks=Customs checks on alcohol and tobacco
-text.you_are_more_likely_to_be_stopped_=You are more likely to be stopped and asked questions by a customs officer if you have more than the amounts of alcohol and tobacco below.
-label.type_of_goods=Type of goods
-label.amount=Amount
-text.more_info_about_bringing_goods_into_the_uk_=More information about bringing goods into the UK from the European Union, including restricted and banned items
+text.will_use_them_yourself_or_give_ = will use them yourself or give them away as a gift
+text.paid_duty_and_tax_ = have paid duty and tax in the country where you bought them
+label.customs_checks = Customs checks on alcohol and tobacco
+text.you_are_more_likely_to_be_stopped_ = You are more likely to be stopped and asked questions by a customs officer if you have more than the amounts of alcohol and tobacco below.
+label.type_of_goods = Type of goods
+label.amount = Amount
+text.more_info_about_bringing_goods_into_the_uk_ = More information about bringing goods into the UK from the European Union, including restricted and banned items
 
 ## Over 17 Page
 error.over_17 = Select yes if you are 17 or over
@@ -129,9 +129,11 @@ label.country = Country
 label.add_alcohol = Add alcohol
 label.add_tobacco = Add tobacco
 label.add_other_goods = Add other goods
+label.add_purchases_separately_ = Add purchases separately if you bought them from more than one country or used more than one currency.
 
 # Select Products Page
 select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
+select_products.heading.alcohol.cider = What type of cider are you bringing into the UK?
 select_products.heading.tobacco = What type of tobacco are you bringing into the UK?
 select_products.heading.other-goods = What items are you bringing into the UK?
 select_products.heading.other-goods.carpets-cotton-fabric = What carpets, cotton and fabrics are you bringing into the UK?
@@ -140,8 +142,32 @@ select_products.heading.other-goods.disability-mobility = What disability equipm
 select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
 select_products.heading.other-goods.metals-wood = What metal and wood products are you bringing into the UK?
 select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
+select_products.heading.other-goods.adult = What adult clothing or footwear are you bringing into the UK?
+select_products.heading.other-goods.carpets-fabric = What items of carpet or fabric are you bringing into the UK?
+select_products.heading.other-goods.childrens-clothing = What children’s clothing or footwear are you bringing into the UK?
+head.error.required.other-goods.glassware-ornaments = Select glassware or ornaments or both
+error.required.other-goods.glassware-ornaments = Select glassware or ornaments or both
 
 label.select_all_that_apply = Select all that apply
+
+## Select Product Errors
+head.error.required.alcohol = Select what type of alcohol you are bringing into the UK
+error.required.alcohol = Select what type of alcohol you are bringing into the UK
+head.error.required.alcohol.cider = Select what type of cider you are bringing into the UK
+error.required.alcohol.cider = Select what type of cider you are bringing into the UK
+head.error.required.tobacco = Select what type of tobacco you are bringing into the UK
+error.required.tobacco = Select what type of tobacco you are bringing into the UK
+head.error.required.other-goods = Select what type of other goods you are bringing into the UK
+error.required.other-goods = Select what type of other goods you are bringing into the UK
+head.error.required.other-goods.adult = Select adult clothing or adult footwear or both
+error.required.other-goods.adult = Select adult clothing or adult footwear or both
+head.error.required.other-goods.carpets-fabric = Select carpets or fabrics or both
+error.required.other-goods.carpets-fabric = Select carpets or fabrics or both
+head.error.required.other-goods.childrens-clothing = Select children’s clothing or children’s footwear or both
+error.required.other-goods.childrens-clothing = Select children’s clothing or children’s footwear or both
+head.error.required.other-goods.electronic-devices = Select televisions or all other electronic devices or both
+error.required.other-goods.electronic-devices = Select televisions or all other electronic devices or both
+
 
 # Alcohol Input
 
@@ -149,20 +175,23 @@ label.select_all_that_apply = Select all that apply
 label.what_is_the_volume_of_ = What is the volume of the {0} you are bringing into the UK?
 label.volume_in_litres = Volume in litres
 
-alcohol.volume_input.panel.beer.1 = For beer bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.beer.1 = You can bring in up to 16 litres of beer without paying duty or tax.
 alcohol.volume_input.panel.beer.2 = If you bring in more than 16 litres of beer, you will pay tax and duty on the entire amount of your beer.
 
-alcohol.volume_input.panel.cider.1 = For cider bought using more than one currency, you need to tell us about each purchase separately.
-alcohol.volume_input.panel.cider.2 = If you bring in more than 2 litres of cider, you will pay tax and duty on the entire amount of your cider.
+alcohol.volume_input.panel.cider.1 = You can bring in up to 2 litres of cider without paying duty or tax.
+alcohol.volume_input.panel.cider.2 = If you bring in any other alcohol, tell us about all your purchases.
 
-alcohol.volume_input.panel.spirits.1 = For spirits bought using more than one currency, you need to tell us about each purchase separately.
-alcohol.volume_input.panel.spirits.2 = If you bring in more than 1 litre of spirits, you will pay tax and duty on the entire amount of your spirits.
+alcohol.volume_input.panel.spirits.1 = You can bring in up to 1 litre of spirits without paying duty or tax.
+alcohol.volume_input.panel.spirits.2 = If you bring in any other alcohol, tell us about all your purchases.
 
-alcohol.volume_input.panel.wine.1 = For wine bought using more than one currency, you need to tell us about each purchase separately.
+alcohol.volume_input.panel.wine.1 = You can bring in up to 4 litres of wine without paying duty or tax.
 alcohol.volume_input.panel.wine.2 = If you bring in more than 4 litres of wine, you will pay tax and duty on the entire amount of your wine.
 
-alcohol.volume_input.panel.sparkling.1 = For sparkling or fortified wine and other alcoholic drinks up to 22% alcohol by volume bought using more than one currency, you need to tell us about each purchase separately.
-alcohol.volume_input.panel.sparkling.2 = If you bring in more than 2 litres of sparkling, fortified wine or other you will pay tax and duty on the entire amount.
+alcohol.volume_input.panel.sparkling.1 = You can bring in up to 2 litres of sparkling wine without paying duty or tax.
+alcohol.volume_input.panel.sparkling.2 = If you bring in any other alcohol, tell us about all your purchases.
+
+alcohol.volume_input.panel.other.1 = You can bring in up to 2 litres of port, sherry or alcohol up to 22% without paying duty or tax.
+alcohol.volume_input.panel.other.2 = If you bring in any other alcohol, tell us about all your purchases.
 
 ## Country Input Page
 label.alcohol.where_did_you_buy_the_ = Where did you buy the {0} litres of {1}?
@@ -180,28 +209,28 @@ label.alcohol.how_much_did_you_pay_ = How much did you pay for the {0} litres of
 
 label.what_is_the_quantity_of_ = What is the quantity of the {0} you are bringing into the UK?
 
-label.quantity_of_ = Quantity of {0}
+label.number_of_ = Number of {0}
 label.weight_of_ = Weight of {0}
 
-tobacco.no_of_sticks_input.panel.cigarettes.1 = For cigarettes bought using more than one currency, you need to tell us about each purchase separately.
-tobacco.no_of_sticks_input.panel.cigarettes.2 = If you bring in more than 200 cigarettes, you will pay tax and duty on the entire amount of your cigarettes.
+tobacco.no_of_sticks_input.panel.cigarettes.1 = You can bring in up to 200 cigarettes without paying duty or tax
+tobacco.no_of_sticks_input.panel.cigarettes.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
 
 tobacco.no_of_sticks_weight_input.heading = What is the quantity and weight of the {0} you are bringing into the UK?
 
-tobacco.no_of_sticks_weight_input.panel.cigars.1 = For cigars bought using more than one currency, you need to tell us about each purchase separately.
-tobacco.no_of_sticks_weight_input.panel.cigars.2 = If you bring in more than 50 cigars, you will pay tax and duty on the entire amount of your cigars.
+tobacco.no_of_sticks_weight_input.panel.cigars.1 = You can bring in up to 50 cigars without paying duty or tax.
+tobacco.no_of_sticks_weight_input.panel.cigars.2 = If you are bringing in other tobacco products, tell us about all your purchases.
 
-tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = For cigarillos bought using more than one currency, you need to tell us about each purchase separately.
-tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you bring in more than 100 cigarillos, you will pay tax and duty on the entire amount of your cigarillos.
+tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = You can bring in up to 100 cigarillos without paying duty or tax.
+tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
 
 ## Weight Input Page
 label.what_is_the_weight_of_ = What is the weight of the {0} you are bringing into the UK?
 
-tobacco.weight_input.panel.rolling.1 = For hand rolling tobacco bought using more than one currency, you need to tell us about each purchase separately.
+tobacco.weight_input.panel.rolling.1 = You can bring in up to 250g of hand-rolling tobacco without paying duty or tax.
 tobacco.weight_input.panel.rolling.2 = If you bring in more than 250g of hand-rolling tobacco, you will pay tax and duty on the entire amount of your hand-rolling tobacco.
 
-tobacco.weight_input.panel.chewing.1 = For pipe or chewing tobacco bought using more than one currency, you need to tell us about each purchase separately.
-tobacco.weight_input.panel.chewing.2 = If you bring in more than 250g of pipe or chewing tobacco, you will pay tax and duty on the entire amount of your pipe or chewing tobacco.
+tobacco.weight_input.panel.chewing.1 = You can bring in up to 250g of pipe or chewing tobacco without paying duty or tax.
+tobacco.weight_input.panel.chewing.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
 
 ## Country Input Page
 label.tobacco.where_did_you_buy_the_ = Where did you buy the {0}?
@@ -218,6 +247,9 @@ other-goods.quantity_input.heading = How many {0} are you bringing into the UK?
 label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.
 label.if_your_goods_are_worth_more_than_ = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
 
+other-goods.volume_input.panel.1 = If the total value of all your other goods is less than £270 because you arrived by private aircraft or private boat, you do not need to declare them.
+other-goods.volume_input.panel.2 = If your other goods total more than £270 because you arrived by private aircraft or private boat, you pay tax or duty on the full value of those goods and not just on the amount you are over. Tobacco and alcohol have separate allowances.
+
 ## Country Input Page
 label.other-goods.where_did_you_buy_this_ = Where did you buy this {0}?
 
@@ -231,8 +263,8 @@ label.price_in = Price in {0}
 
 # Hidden Text
 label.if_you_do_not_know_the_volume = If you do not know the volume
-label.if_you_do_not_know_the_quantity = If you do not know the quantity
-label.if_you_do_not_know_the_quantity_or_weight = If you do not know the quantity or weight
+label.if_you_do_not_know_the_number = If you do not know the number
+label.if_you_do_not_know_the_number_or_weight = If you do not know the number or weight
 label.if_you_do_not_know_the_weight = If you do not know the weight
 label.if_the_currency_you_used_is_not_shown = If the currency you used is not shown
 label.you_cannot_use_this_service_ = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
