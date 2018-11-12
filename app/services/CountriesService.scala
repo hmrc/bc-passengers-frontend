@@ -13,6 +13,7 @@ class CountriesService {
 
   def isValidCountryName(selectedCountry: String): Boolean = countries.exists(c => c.countryName == selectedCountry)
 
+  def getCountryByName(countryName: String): Option[Country] = countries.find(_.countryName == countryName)
 
   private val countries = List(
     Country("Afghanistan", "AF", isEu = false, None),

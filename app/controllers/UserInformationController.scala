@@ -15,6 +15,7 @@ class UserInformationController @Inject()(
   val travelDetailsService: TravelDetailsService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
+  val countriesService: CountriesService,
   val userInformationService: UserInformationService,
   val payApiService: PayApiService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
@@ -36,7 +37,7 @@ class UserInformationController @Inject()(
 
           requireCalculatorResponse { calculatorResponse =>
 
-            payApiService.requestPaymentUrl(ChargeReference.generate, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt) map {
+            payApiService.requestPaymentUrl(ChargeReference("XJPR1234567893"), (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt) map {
 
               case PayApiServiceFailureResponse =>
                 InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))

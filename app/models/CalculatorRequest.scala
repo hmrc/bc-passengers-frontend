@@ -1,15 +1,15 @@
 package models
 
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsValue, Json, OWrites, Writes}
 import util._
 
 import scala.math.BigDecimal.RoundingMode
 
 object CalculatorRequest {
 
-  implicit val writes = {
+  implicit val writes: OWrites[CalculatorRequest] = {
 
-    implicit val piw = new Writes[PurchasedItem] {
+    implicit val piw: Writes[PurchasedItem] = new Writes[PurchasedItem] {
 
       override def writes(item: PurchasedItem): JsValue = {
 
@@ -20,9 +20,11 @@ object CalculatorRequest {
           "noOfUnits" -> item.purchasedProductInstance.noOfSticks,
           "metadata" -> Json.obj(
             "description" -> item.description,
+            "declarationMessageDescription" -> item.declarationMessageDescription,
             "cost" -> item.purchasedProductInstance.cost.map(_.setScale(2, RoundingMode.DOWN).toString),
+            "currency" -> item.currency,
             "country" -> item.purchasedProductInstance.country,
-            "currency" -> item.displayCurrency
+            "exchangeRate" -> item.exchangeRate
           )
         ).stripNulls
       }

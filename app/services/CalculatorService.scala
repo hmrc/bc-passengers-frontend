@@ -72,8 +72,6 @@ class CalculatorService @Inject() (
 
       calculatorResponse
     }
-
-
   }
 
   def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
@@ -95,7 +93,7 @@ class CalculatorService @Inject() (
         cost <- purchasedProductInstance.cost
         country <- purchasedProductInstance.country
         rate <- ratesMap.get(curCode)
-      } yield PurchasedItem(purchasedProductInstance, productTreeLeaf, currency, country, (cost / rate).setScale(2, RoundingMode.DOWN))
+      } yield PurchasedItem(purchasedProductInstance, productTreeLeaf, currency, (cost / rate).setScale(2, RoundingMode.DOWN), ExchangeRate(rate.toString, todaysDate))
 
 
       if(purchasedItems.isEmpty) {
@@ -121,7 +119,7 @@ class CalculatorService @Inject() (
 
     val currenciesToFetch: Set[String] = allCurrencies.flatMap(_.value)
 
-    val gbpEquivCurrencies: Map[String, BigDecimal] = allCurrencies.filterNot(_.value.isDefined).map(c => (c.code, BigDecimal(1))).toMap
+    val gbpEquivCurrencies: Map[String, BigDecimal] = allCurrencies.filterNot(_.value.isDefined).map(c => (c.code, BigDecimal("1.00"))).toMap
 
     val queryString = currenciesToFetch.mkString("cc=", "&cc=", "")
 
@@ -134,15 +132,11 @@ class CalculatorService @Inject() (
 
         if (currencyConversionRates.exists(_.rate.isEmpty)) {
           Logger.error("Missing currency for " + currencyConversionRates.filter(_.rate.isEmpty).mkString(", "))
-
         }
 
         gbpEquivCurrencies ++ currencyConversionRates.flatMap(ccr => ccr.rate.map(rate => (ccr.currencyCode, BigDecimal(rate)))).toMap
-
       }
-
-
     }
-
   }
+
 }

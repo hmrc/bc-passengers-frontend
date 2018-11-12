@@ -1,6 +1,6 @@
 package controllers
 
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Matchers._
@@ -106,10 +106,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "redirect to the country input page and add the purchased product to the working instance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances =
-        List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0",  weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))))
+        List(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0",  weightOrVolume = Some(BigDecimal("20")), country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD")))))))
 
       when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some("Jamaica")))
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD")))))
       ))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/country/iid0/update")).get

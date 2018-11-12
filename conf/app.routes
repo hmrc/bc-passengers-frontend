@@ -98,7 +98,7 @@ POST       /products/*path                                   controllers.SelectP
 
 GET        /next-step                                        controllers.SelectProductController.nextStep
 
-
-
+# Declaration
+GET        /declaration                                      controllers.DeclarationMessageController.declarationMessage
 
 GET        /assets/*file                                     controllers.Assets.at(path="/public", file)

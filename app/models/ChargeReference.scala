@@ -13,7 +13,7 @@ object ChargeReference {
   val ChargeRefWeights = List(9,10,11,12,13,8,7,6,5,4,3,2,1)
 
   def generate: ChargeReference = {
-    val randomFactor: List[Char] = Random.alphanumeric.filter(c => c.isDigit || c.isUpper).take(10).toList
+    val randomFactor: List[Char] = Random.alphanumeric.filter(c => c.isDigit).take(10).toList
     val digits: List[Int] = 48 :: 50 :: randomFactor.map(c => if(c.isDigit) c.asDigit else c.toInt-32)
     val checkSum: Int = (ChargeRefWeights zip digits).map(x => x._1 * x._2).sum % 23
 

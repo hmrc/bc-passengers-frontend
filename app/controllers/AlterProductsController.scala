@@ -5,7 +5,7 @@ import javax.inject.Inject
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.{CurrencyService, ProductTreeService, PurchasedProductService, TravelDetailsService}
+import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
@@ -14,6 +14,7 @@ class AlterProductsController @Inject() (
   val travelDetailsService: TravelDetailsService,
   val purhasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
+  val countriesService: CountriesService,
   val productTreeService: ProductTreeService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 

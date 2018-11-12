@@ -1,7 +1,7 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def storeCountry(journeyData: JourneyData, path: ProductPath, iid: String, country: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+  def storeCountry(journeyData: JourneyData, path: ProductPath, iid: String, country: Country)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
     val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
       purchasedProductInstance.copy(path = path, iid = iid, country = Some(country))
     }
@@ -38,7 +38,7 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def updateCountry(journeyData: JourneyData, path: ProductPath, iid: String, updatedCountry:String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+  def updateCountry(journeyData: JourneyData, path: ProductPath, iid: String, updatedCountry: Country)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
     val updatedProductInstances = journeyData.purchasedProductInstances.map { ppi =>
       if (ppi.iid == iid)
         ppi.copy(country = Some(updatedCountry))

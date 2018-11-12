@@ -60,7 +60,7 @@ class DashboardController @Inject() (
 
       case CalculatorServiceSuccessResponse(calculatorResponse) =>
 
-        calculatorService.storeCalculatorResponse(context.getJourneyData, calculatorResponse) map { _ =>
+        calculatorService.storeCalculatorResponse(context.getJourneyData, calculatorResponse) map { jd =>
           Redirect(routes.DashboardController.showCalculation())
         }
 

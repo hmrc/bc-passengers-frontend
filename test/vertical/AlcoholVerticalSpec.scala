@@ -125,7 +125,7 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", country = Some("Egypt"))))))(any())
+        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))))))))(any())
     }
   }
 
