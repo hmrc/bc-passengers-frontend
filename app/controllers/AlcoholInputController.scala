@@ -29,7 +29,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, Some(volume), _,  _, _, _)) => VolumeDto.form.fill(VolumeDto(volume))
+        case Some(PurchasedProductInstance(_, workingIid, Some(volume), _,  _, _, _)) if workingIid == iid => VolumeDto.form.fill(VolumeDto(volume))
         case _ => VolumeDto.form
       }
     }
@@ -71,7 +71,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _,  Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country.countryName, 0))
+        case Some(PurchasedProductInstance(_, workingIid, _, _,  Some(country), _, _)) if workingIid == iid => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country.countryName, 0))
         case _ => SelectedCountryDto.form(countriesService)
       }
     }
@@ -130,7 +130,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, Some(currency), _)) => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, 0))
+        case Some(PurchasedProductInstance(_, workingIid, _, _, _, Some(currency), _)) if workingIid == iid => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, 0))
         case _ => CurrencyDto.form(currencyService)
       }
     }
@@ -164,7 +164,7 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, Some(cost))) => CostDto.form().fill(CostDto(cost, 0))
+        case Some(PurchasedProductInstance(_, workingIid, _, _, _, _, Some(cost))) if workingIid == iid => CostDto.form().fill(CostDto(cost, 0))
         case _ => CostDto.form()
       }
     }
@@ -198,16 +198,14 @@ class AlcoholInputController @Inject() (
 
             val wi = workingInstance.copy(cost = Some(dto.cost))
 
-            if (product.isValid(wi)) {
-              context.journeyData.map { jd =>
-                val updatedPurchasedProductInstances = replaceProductInPlace(jd.purchasedProductInstances, wi)
-                purchasedProductService.cacheJourneyData(jd.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None))
-              }
-            } else {
-              Logger.warn("Working instance was not valid")
+            movingValidWorkingInstance(wi, product) {
+              case Some(updatedJourneyData) =>
+                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                  Redirect(routes.SelectProductController.nextStep())
+                }
+              case None =>
+                Future.successful(Redirect(routes.SelectProductController.nextStep()))
             }
-
-            Future.successful(Redirect(routes.SelectProductController.nextStep()))
           }
         }
       }

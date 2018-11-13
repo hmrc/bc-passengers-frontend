@@ -1,7 +1,8 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
+import models._
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,15 +55,6 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
 
     val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
       purchasedProductInstance.copy(path = path, iid = iid, currency = Some(currency))
-    }
-
-    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
-  }
-
-  def storeCost(journeyData: JourneyData, path: ProductPath, iid: String, cost: BigDecimal)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
-
-    val updatedJourneyData = journeyData.withUpdatedWorkingInstance(path, iid) { purchasedProductInstance =>
-      purchasedProductInstance.copy(path = path, iid = iid, cost = Some(cost))
     }
 
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
@@ -129,4 +121,6 @@ class PurchasedProductService @Inject()(val localSessionCache: LocalSessionCache
     val updatedJourneyData = journeyData.copy(purchasedProductInstances = updatedProductInstances)
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
+
+
 }

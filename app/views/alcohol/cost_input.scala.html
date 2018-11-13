@@ -2,11 +2,20 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@title = {
-    @messages("label.alcohol.how_much_did_you_pay_", volume, product.name.toLowerCase())
+@pageTitle = {
+    @messages(s"label.page_title.how_much_did_you_pay_.${path.toMessageKey}")
 }
 
-@main_template(title = title.toString) {
+@unit = {
+@{if(volume == 1) messages("label.litre") else messages("label.litres")}
+}
+
+
+@title = {
+@messages(s"label.how_much_did_you_pay_for_the_.${path.toMessageKey}", volume, unit)
+}
+
+@main_template(title = pageTitle.toString) {
 
     <h1 class="heading-xlarge">@title.toString</h1>
 

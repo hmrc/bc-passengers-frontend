@@ -7,6 +7,7 @@ case class ProductPath(components: List[String]) {
   def addingComponent(component: String) = ProductPath(components :+ component)
 
   def categoryComponent = components.dropRight(1)
+  def toMessageKey = components.mkString(".")
 }
 
 object ProductPath {

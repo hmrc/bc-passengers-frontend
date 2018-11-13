@@ -21,13 +21,14 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
 }
 
-@title = {
-    @messages("label.what_currency_did_you_use_to_pay_for_the_", description)
+
+@pageTitle = {
+    @messages(s"label.page_title.what_currency_did_you_use_.${path.toMessageKey}")
 }
 
-@main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
+@main_template(title = pageTitle.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
-    <h1 class="heading-xlarge">@title.toString</h1>
+    <h1 class="heading-xlarge">@messages("label.what_currency_did_you_use_to_pay_for_the_", description)</h1>
 
     @helpers.form(action = routes.TobaccoInputController.processCurrencyInput(path, iid)){
 

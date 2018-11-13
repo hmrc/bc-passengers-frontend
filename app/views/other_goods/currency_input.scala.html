@@ -22,12 +22,12 @@
 }
 
 @title = {
-    @messages("label.what_currency_did_you_use_to_pay_for_this_", product.name.toLowerCase())
+    @messages(s"label.what_currency_did_you_use_.${path.toMessageKey}")
 }
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
-    <h1 class="heading-xlarge">@title</h1>
+    <h1 class="heading-xlarge">@title.toString</h1>
 
     @helpers.form(action = routes.OtherGoodsInputController.processCurrencyInput(path, iid)){
         <input type="hidden" name="itemsRemaining" value="@currencyForm("itemsRemaining").value">

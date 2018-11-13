@@ -23,7 +23,7 @@ class ProductTreeNodeSpec extends BaseSpec {
       val productTreeLeaf = ProductTreeLeaf("chewing", "Chewing or pipe tobacco", "TOB/A1/OTHER", "tobacco")
       val purchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/chewing"), "iid0", Some(1.54332), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("AUD"), Some(BigDecimal(10.234)))
       productTreeLeaf.isValid(purchasedProductInstance) shouldBe true
-      productTreeLeaf.getDescription(purchasedProductInstance) shouldBe Some("1543.32g chewing or pipe tobacco")
+      productTreeLeaf.getDescription(purchasedProductInstance) shouldBe Some("1543.32g of chewing or pipe tobacco")
     }
 
     "return the correct display description for alcohol" in {

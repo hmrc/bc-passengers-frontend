@@ -21,11 +21,20 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
 }
 
-@title = {
-    @messages("label.alcohol.what_currency_did_you_use_", volume, product.name.toLowerCase())
+@pageTitle = {
+    @messages(s"label.page_title.what_currency_did_you_use_.${path.toMessageKey}")
 }
 
-@main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
+@unit = {
+    @{if(volume == 1) messages("label.litre") else messages("label.litres")}
+}
+
+
+@title = {
+    @messages(s"label.what_currency_did_you_use_.${path.toMessageKey}", volume, unit)
+}
+
+@main_template(title = pageTitle.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
 
     <h1 class="heading-xlarge">@title.toString</h1>

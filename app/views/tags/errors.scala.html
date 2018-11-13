@@ -26,7 +26,7 @@
             @form.errors.map { error =>
                 <li><a href="#@error.key">
                     @{path match {
-                        case Some(path) => Messages(s"head.${error.message}.${path.toString.replace('/','.')}")
+                        case Some(path) => Messages(s"head.${error.message}.${path.toMessageKey}")
                         case None => Messages(s"head.${error.message}") }
                     }
                 </a></li>

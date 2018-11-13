@@ -2,12 +2,12 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("label.what_is_the_quantity_of_", productName.toLowerCase()), bodyClasses = None) {
+@main_template(title = messages("label.how_many_", productName.toLowerCase()), bodyClasses = None) {
 
 
   @helpers.form(action = routes.TobaccoInputController.processNoOfSticksInput(path, iid)) {
 
-    <h1 class="heading-xlarge">@messages("label.what_is_the_quantity_of_", productName.toLowerCase())</h1>
+    <h1 class="heading-xlarge">@messages("label.how_many_", productName.toLowerCase())</h1>
 
     <div class="panel panel-border-wide" id="panel">
         <p>@messages(s"tobacco.no_of_sticks_input.panel.${token}.1")</p>

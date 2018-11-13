@@ -3,8 +3,9 @@
 @import uk.gov.hmrc.play.views.html._
 
 @title = {
-    @messages("label.how_much_did_you_pay_for_this_", product.name.toLowerCase())
+    @messages(s"label.how_much_did_you_pay_.${path.toMessageKey}")
 }
+
 
 @main_template(title = title.toString) {
 

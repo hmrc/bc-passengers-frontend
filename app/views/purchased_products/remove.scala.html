@@ -2,7 +2,12 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("label.do_you_want_to_remove_this", productName)) {
+@title = {
+  @messages(s"label.do_you_want_to_remove_.${path.toMessageKey}")
+}
+
+
+@main_template(title = title.toString) {
 
 @helpers.form(action = routes.AlterProductsController.remove(path, iid)){
 
@@ -12,7 +17,7 @@
 
     <fieldset>
       <legend>
-        <h1 class="heading-xlarge">@messages("label.do_you_want_to_remove_this", productName)</h1>
+        <h1 class="heading-xlarge">@title.toString</h1>
       </legend>
 
       @components.input_radio_group(

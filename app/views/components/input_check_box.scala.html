@@ -25,7 +25,7 @@
   @field.errors.map { error =>
     <span class="error-message" id="error-message-@field.id-input">
       @{path match {
-        case Some(path) => messages(s"${error.message}.${path.toString.replace('/','.')}")
+        case Some(path) => messages(s"${error.message}.${path.toMessageKey}")
         case None => messages(error.message) }
       }
 
