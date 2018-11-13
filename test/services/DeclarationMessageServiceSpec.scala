@@ -36,7 +36,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
 
     "fail if it does not match the schema format rules (acknowledgement reference too long)" in {
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = None,
           otherGoods = None,
@@ -65,7 +65,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d9487hd289"
       )
 
@@ -76,7 +76,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
 
     "fail if there is any required information missing (empty passport number)" in {
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = None,
           otherGoods = None,
@@ -105,7 +105,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94"
       )
 
@@ -118,13 +118,13 @@ class DeclarationMessageServiceSpec extends BaseSpec {
     "populate the data for journey data containing the collected user information" in {
 
       lazy val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-10-31")))
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-10-31"), "TOBEREMOVED", DateTime.parse("2018-08-31")))
       )
 
       declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94" //UUID.randomUUID().toString.filter(_ != '-')
       ) shouldEqual Json.obj(
         "simpleDeclarationRequest" -> Json.obj(
@@ -145,7 +145,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
     "generate the correct payload and adhere to the schema when journeyData contains required data for only tobacco products" in {
 
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = None,
           otherGoods = None,
@@ -174,7 +174,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94" //UUID.randomUUID().toString.filter(_ != '-')
       )
 
@@ -257,7 +257,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
     "truncate a product description to 40 characters if the product description is too big in the metadata." in {
 
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = Some(Alcohol(
             List(
@@ -279,7 +279,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94" //UUID.randomUUID().toString.filter(_ != '-')
       )
 
@@ -334,7 +334,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
     "generate the correct payload and adhere to the schema when journeyData contains required data for only alcohol products" in {
 
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = Some(Alcohol(
             List(
@@ -363,7 +363,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94" //UUID.randomUUID().toString.filter(_ != '-')
       )
 
@@ -446,7 +446,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
     "generate the correct payload and adhere to the schema when journeyData contains required data for only other-goods products" in {
 
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = None,
           otherGoods = Some(OtherGoods(
@@ -475,7 +475,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94"
       )
 
@@ -558,7 +558,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
     "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in {
 
       val journeyData = JourneyData(
-        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))),
+        userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))),
         calculatorResponse = Some(CalculatorResponse(
           alcohol = Some(Alcohol(
             List(
@@ -621,7 +621,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
       val dm = declarationMessageService.declarationMessage(
         ChargeReference("XAPR0123456789"),
         journeyData,
-        DateTime.parse("2018-05-31T13:14:08"),
+        DateTime.parse("2018-05-31T13:14:08+0100"),
         "e6469aeacf754dc4bd2d2d6800b37d94" //UUID.randomUUID().toString.filter(_ != '-')
       )
 

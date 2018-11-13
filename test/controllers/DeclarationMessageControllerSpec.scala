@@ -1,6 +1,7 @@
 package controllers
 
-import models.JourneyData
+import models.{JourneyData, UserInformation}
+import org.joda.time.{DateTime, LocalDate}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.mockito.MockitoSugar
@@ -32,7 +33,7 @@ class DeclarationMessageControllerSpec extends BaseSpec {
   }
 
   trait LocalSetup {
-    def requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
+    def requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false), userInformation = Some(UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), "TOBEREMOVED", DateTime.parse("2018-11-12"))))
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 

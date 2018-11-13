@@ -21,9 +21,11 @@ class DeclarationMessageController @Inject() (
                                              )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def declarationMessage() = DashboardAction { implicit context =>
-    val chargeReference = ChargeReference.generate
-    val declarationJson = declarationMessageService.declarationMessage(chargeReference, context.getJourneyData, DateTime.now(), chargeReference.value + "0")
 
-    Future.successful(Ok(declarationJson).withHeaders("X-Correlation-ID" -> UUID.randomUUID().toString.filter(_ != '-')))
+    requireUserInformation { userInfo =>
+      val chargeReference = ChargeReference(userInfo.temporaryChargeReference)
+      val declarationJson = declarationMessageService.declarationMessage(chargeReference, context.getJourneyData, userInfo.temporaryReceiptDateTime, chargeReference.value + "0")
+      Future.successful(Ok(declarationJson).withHeaders("X-Correlation-ID" -> UUID.randomUUID().toString.filter(_ != '-')))
+    }
   }
 }
