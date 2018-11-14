@@ -136,6 +136,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("chargeReference" -> "XAPR0123456789", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-10-31")
           )
         )
@@ -193,6 +194,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("chargeReference" -> "XAPR0123456789", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
@@ -298,6 +300,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("chargeReference" -> "XAPR0123456789", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
             "declarationAlcohol" -> Json.obj(
               "totalExciseAlcohol" -> "100.54",
@@ -382,6 +385,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("chargeReference" -> "XAPR0123456789", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
             "declarationAlcohol" -> Json.obj(
               "totalExciseAlcohol" -> "100.54",
@@ -494,6 +498,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("chargeReference" -> "XAPR0123456789", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
             "declarationOther" -> Json.obj(
               "totalExciseOther" -> "100.54",
@@ -640,6 +645,7 @@ class DeclarationMessageServiceSpec extends BaseSpec {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("chargeReference" -> "XAPR0123456789", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",

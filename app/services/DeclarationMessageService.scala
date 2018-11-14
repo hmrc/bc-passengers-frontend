@@ -143,6 +143,7 @@ class DeclarationMessageService {
         "requestDetail" -> Json.obj(
           "customerReference" -> customerReference,
           "personalDetails" -> personalDetails,
+          "contactDetails" -> Json.obj(),
           "declarationHeader" -> declarationHeader,
           "declarationTobacco" -> declarationTobacco,
           "declarationAlcohol" -> declarationAlcohol,
