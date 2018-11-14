@@ -35,7 +35,7 @@ class PayApiService @Inject()(
   override protected def runModeConfiguration = configuration
 
   lazy val payApiBaseUrl = baseUrl("pay-api")
-  lazy val redirectUrl = envPath(routes.TravelDetailsController.checkDeclareGoodsStartPage().url)(other = configuration.getString("bc-passengers-frontend.host").getOrElse(""))
+  lazy val redirectUrl = configuration.getString("bc-passengers-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage().url
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiServiceResponse] = {
 
