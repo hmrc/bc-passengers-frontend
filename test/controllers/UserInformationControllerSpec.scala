@@ -30,17 +30,20 @@ class UserInformationControllerSpec extends BaseSpec {
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
+    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
     .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[TravelDetailsService], injected[PurchasedProductService], injected[UserInformationService])
+    reset(injected[TravelDetailsService], injected[PurchasedProductService], injected[UserInformationService],
+      injected[PayApiService], injected[DeclarationService])
   }
 
   trait LocalSetup {
 
     def cachedJourneyData: Option[JourneyData]
     def payApiResponse: PayApiServiceResponse
+    def declarationServiceResponse: DeclarationServiceResponse
 
     lazy val cr = CalculatorResponse(
       Some(Alcohol(List(
@@ -61,7 +64,7 @@ class UserInformationControllerSpec extends BaseSpec {
       Calculation("0.00", "0.00", "0.00", "0.00")
     )
 
-    lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), "TOBEREMOVED", DateTime.parse("2018-11-12"))
+    lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"))
 
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
@@ -70,6 +73,7 @@ class UserInformationControllerSpec extends BaseSpec {
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any(),any())) thenReturn Future.successful(payApiResponse)
+      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any())(any(),any())) thenReturn Future.successful(declarationServiceResponse)
 
       rt(app, req)
     }
@@ -81,6 +85,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/user-information")).get
 
@@ -99,6 +104,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -119,6 +125,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -139,6 +146,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -159,6 +167,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -179,6 +188,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -199,6 +209,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -215,10 +226,34 @@ class UserInformationControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
     }
 
+    "Return INTERNAL_SERVER_ERROR but still store valid user information, when the declaration service request fails" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
+      override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
+
+      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "passportNumber" -> "801375812",
+          "placeOfArrival" -> "Newcastle airport",
+          "dateOfArrival.day" -> "01",
+          "dateOfArrival.month" -> "02",
+          "dateOfArrival.year" -> "2018"
+        )
+      ).get
+
+      status(response) shouldBe INTERNAL_SERVER_ERROR
+
+      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+    }
+
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(
@@ -241,6 +276,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
         .withFormUrlEncodedBody(

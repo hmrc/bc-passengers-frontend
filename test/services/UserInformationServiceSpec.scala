@@ -45,10 +45,10 @@ class UserInformationServiceSpec extends BaseSpec {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      await(s.storeUserInformation(JourneyData(), UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"), "TOBEREMOVED", DateTime.parse("2018-08-31"))))
+      await(s.storeUserInformation(JourneyData(), UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"))))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(userInformation = Some(UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"), "TOBEREMOVED", DateTime.parse("2018-08-31")))))
+        meq(JourneyData(userInformation = Some(UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31")))))
       )(any())
 
     }

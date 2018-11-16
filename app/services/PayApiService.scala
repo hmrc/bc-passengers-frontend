@@ -1,7 +1,5 @@
 package services
 
-import java.time.LocalDateTime
-
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.{CalculatorResponse, ChargeReference, UserInformation}
@@ -15,10 +13,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
-
-trait PayApiServiceResponse
-case object PayApiServiceFailureResponse extends PayApiServiceResponse
-case class PayApiServiceSuccessResponse(url: String) extends PayApiServiceResponse
 
 
 @Singleton
@@ -54,7 +48,7 @@ class PayApiService @Inject()(
     }.zipWithIndex
 
 
-    val d = Json.obj(
+    val baseEmailTemplateData = Json.obj(
       "NAME" -> s"${userInformation.firstName} ${userInformation.lastName}",
       "DATE" -> receiptDateTime.toString("dd MMMM Y HH:mm:ss z"),
       "PLACEOFARRIVAL" -> userInformation.placeOfArrival,
@@ -63,11 +57,11 @@ class PayApiService @Inject()(
       "TOTAL" -> calculatorResponse.calculation.allTax
     )
 
-    val emailTemplateData = items.foldLeft(d) { case (jsObject, (item, index)) =>
+    val emailTemplateData = items.foldLeft(baseEmailTemplateData) { case (jsObject, (item, index)) =>
         jsObject ++ Json.obj(s"NAME_$index" -> item.metadata.description, s"CURRENCY_$index" -> item.metadata.currency.displayName, s"COSTGBP_$index" -> item.metadata.cost)
     }
 
-    val extras = Json.obj(
+    val requestBody = Json.obj(
       "reference" -> chargeReference.value,
       "amountInPence" -> amountPence,
       "taxType" -> "pngr",
@@ -82,7 +76,7 @@ class PayApiService @Inject()(
       "returnUrl" -> redirectUrl
     )
 
-    wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/payment", extras) map { r =>
+    wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/payment", requestBody) map { r =>
       r.status match {
         case CREATED => PayApiServiceSuccessResponse((r.json \ "links" \ "nextUrl").as[JsString].value)
         case _ => PayApiServiceFailureResponse
@@ -91,3 +85,7 @@ class PayApiService @Inject()(
 
   }
 }
+
+trait PayApiServiceResponse
+case object PayApiServiceFailureResponse extends PayApiServiceResponse
+case class PayApiServiceSuccessResponse(url: String) extends PayApiServiceResponse
