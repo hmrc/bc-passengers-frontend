@@ -17,7 +17,7 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
         }
       case "tobacco" =>
         purchasedProductInstance.weightOrVolume.map { weightOrVolume =>
-          decimalFormat10.format( (weightOrVolume*1000) ) + "g " + name.toLowerCase()
+          decimalFormat10.format( (weightOrVolume*1000) ) + "g of " + name.toLowerCase()
         }
       case "alcohol" =>
         purchasedProductInstance.weightOrVolume.map { weightOrVolume =>

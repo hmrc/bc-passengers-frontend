@@ -216,6 +216,17 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
     }
   }
 
+  def movingValidWorkingInstance(workingInstance: PurchasedProductInstance, product: ProductTreeLeaf)(block: Option[JourneyData] => Future[Result])(implicit context: LocalContext): Future[Result] = {
+
+    if (product.isValid(workingInstance)) {
+      val updatedPurchasedProductInstances = replaceProductInPlace(context.getJourneyData.purchasedProductInstances, workingInstance)
+      block(Some(context.getJourneyData.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None)))
+    } else {
+      Logger.warn("Working instance was not valid")
+      block(None)
+    }
+  }
+
   def replaceProductInPlace(purchasedProductInstances: List[PurchasedProductInstance], productToReplace: PurchasedProductInstance): List[PurchasedProductInstance] = {
     (purchasedProductInstances.takeWhile(_.iid != productToReplace.iid), purchasedProductInstances.dropWhile(_.iid != productToReplace.iid)) match {
       case (x, Nil) => productToReplace :: x  //Prepend

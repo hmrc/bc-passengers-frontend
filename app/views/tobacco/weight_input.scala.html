@@ -2,9 +2,9 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("label.what_is_the_weight_of_", productName.toLowerCase()), bodyClasses = None) {
+@main_template(title = messages("label.how_much_", productName.toLowerCase()), bodyClasses = None) {
 
-  <h1 class="heading-xlarge">@messages("label.what_is_the_weight_of_", productName.toLowerCase())</h1>
+  <h1 class="heading-xlarge">@messages("label.how_much_", productName.toLowerCase())</h1>
 
   @helpers.form(action = routes.TobaccoInputController.processWeightInput(path, iid)){
 

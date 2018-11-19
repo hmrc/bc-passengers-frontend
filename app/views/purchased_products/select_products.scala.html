@@ -3,7 +3,7 @@
 @import uk.gov.hmrc.play.views.html._
 
 @title = {
-    @messages(s"select_products.heading.${path.toString.replace('/','.')}")
+    @messages(s"select_products.heading.${path.toMessageKey}")
 }
 
 @main_template(title = title.toString, bodyClasses = None) {

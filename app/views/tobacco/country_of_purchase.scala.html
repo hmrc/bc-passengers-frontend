@@ -20,15 +20,19 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
 }
 
+@pageTitle = {
+    @messages(s"label.page_title.where_did_you_buy_.${path.toMessageKey}")
+}
+
 @main_template(
-    title = messages("label.where_did_you_buy_goods"),
+    title = pageTitle.toString,
     bodyClasses = None,
     inlineScript = Some(scriptElem),
     inlineLinkElem = Some(linkElem)) {
 
     @views.html.tags.errors(countryForm)
 
-    <h1 class="heading-xlarge">@messages("label.tobacco.where_did_you_buy_the_", description, product.name.toLowerCase())</h1>
+    <h1 class="heading-xlarge">@messages("label.tobacco.where_did_you_buy_the_", description)</h1>
 
     @helpers.form(action = routes.TobaccoInputController.processCountryInput(path, iid)){
 

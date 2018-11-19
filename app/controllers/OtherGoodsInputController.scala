@@ -9,6 +9,7 @@ import play.api.mvc.{Action, AnyContent}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent
 import scala.concurrent.Future
 
 class OtherGoodsInputController @Inject() (
@@ -44,7 +45,7 @@ class OtherGoodsInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, Some(country), _, _)) => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country.countryName, itemsRemaining)).discardingErrors
+        case Some(PurchasedProductInstance(_, workingIid, _, _, Some(country), _, _)) if workingIid == iid => SelectedCountryDto.form(countriesService).fill(SelectedCountryDto(country.countryName, itemsRemaining)).discardingErrors
         case _ => SelectedCountryDto.form(countriesService).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
       }
     }
@@ -90,7 +91,7 @@ class OtherGoodsInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, Some(currency), _)) => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, itemsRemaining)).discardingErrors
+        case Some(PurchasedProductInstance(_, workingIid, _, _, _, Some(currency), _)) if workingIid == iid => CurrencyDto.form(currencyService).fill(CurrencyDto(currency, itemsRemaining)).discardingErrors
         case _ => CurrencyDto.form(currencyService).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
       }
     }
@@ -132,7 +133,7 @@ class OtherGoodsInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, Some(cost))) => CostDto.form(optionalItemsRemaining = false).bind(Map("cost" -> cost.toString, "itemsRemaining" -> itemsRemaining.toString)).discardingErrors
+        case Some(PurchasedProductInstance(_, workingIid, _, _, _, _, Some(cost))) if workingIid == iid => CostDto.form(optionalItemsRemaining = false).bind(Map("cost" -> cost.toString, "itemsRemaining" -> itemsRemaining.toString)).discardingErrors
         case _ => CostDto.form(optionalItemsRemaining = false).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
       }
     }
@@ -167,25 +168,25 @@ class OtherGoodsInputController @Inject() (
 
             val wi = workingInstance.copy(cost = Some(costDto.cost))
 
-            if (product.isValid(wi)) {
-              context.journeyData.map { jd =>
-                val updatedPurchasedProductInstances = replaceProductInPlace(jd.purchasedProductInstances, wi)
-                purchasedProductService.cacheJourneyData(jd.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None))
+            movingValidWorkingInstance(wi, product) {
+              case Some(updatedJourneyData) =>
+                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                  if (itemsRemaining > 0) {
+                    Redirect(routes.OtherGoodsInputController.displayCountryInput(path, generateIid, itemsRemaining))
+                  } else {
+                    Redirect(routes.SelectProductController.nextStep())
+                  }
+                }
+              case None =>
+                if (itemsRemaining > 0) {
+                  Future.successful(Redirect(routes.OtherGoodsInputController.displayCountryInput(path, generateIid, itemsRemaining)))
+                } else {
+                  Future.successful(Redirect(routes.SelectProductController.nextStep()))
+                }
               }
-            } else {
-              Logger.warn("Working instance was not valid")
-            }
-
-            if (itemsRemaining > 0) {
-              Future.successful(Redirect(routes.OtherGoodsInputController.displayCountryInput(path, generateIid, itemsRemaining)))
-            } else {
-              Future.successful(Redirect(routes.SelectProductController.nextStep()))
-            }
           }
         }
       }
     )
   }
-
-
 }

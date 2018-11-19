@@ -2,16 +2,9 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@product = {
-  @if(token == "sparkling") {
-    sparkling, fortified wine
-  } else {
-    @productName.toLowerCase()
-  }
-}
 
 @title = {
-  @messages("label.what_is_the_volume_of_", productName.toLowerCase())
+  @messages(s"label.what_is_the_volume_of_.${path.toMessageKey}")
 }
 
 @main_template(title = title.toString, bodyClasses = None) {

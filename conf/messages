@@ -132,19 +132,18 @@ label.add_other_goods = Add other goods
 label.add_purchases_separately_ = Add purchases separately if you bought them from more than one country or used more than one currency.
 
 # Select Products Page
-select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
-select_products.heading.alcohol.cider = What type of cider are you bringing into the UK?
-select_products.heading.tobacco = What type of tobacco are you bringing into the UK?
+select_products.heading.alcohol = What alcohol are you bringing into the UK?
+select_products.heading.alcohol.cider = What cider are you bringing into the UK?
+
+select_products.heading.tobacco = What tobacco are you bringing into the UK?
+
 select_products.heading.other-goods = What items are you bringing into the UK?
-select_products.heading.other-goods.carpets-cotton-fabric = What carpets, cotton and fabrics are you bringing into the UK?
-select_products.heading.other-goods.clothing = What clothing and footwear are you bringing into the UK?
-select_products.heading.other-goods.disability-mobility = What disability equipment and mobility aids are you bringing into the UK?
-select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
-select_products.heading.other-goods.metals-wood = What metal and wood products are you bringing into the UK?
-select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
 select_products.heading.other-goods.adult = What adult clothing or footwear are you bringing into the UK?
 select_products.heading.other-goods.carpets-fabric = What items of carpet or fabric are you bringing into the UK?
 select_products.heading.other-goods.childrens-clothing = What children’s clothing or footwear are you bringing into the UK?
+select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
+select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
+
 head.error.required.other-goods.glassware-ornaments = Select glassware or ornaments or both
 error.required.other-goods.glassware-ornaments = Select glassware or ornaments or both
 
@@ -175,6 +174,19 @@ error.required.other-goods.electronic-devices = Select televisions or all other 
 label.what_is_the_volume_of_ = What is the volume of the {0} you are bringing into the UK?
 label.volume_in_litres = Volume in litres
 
+label.litre = litre
+label.litres = litres
+
+label.what_is_the_volume_of_.alcohol.beer = What volume of beer are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.cider.non-sparkling-cider = What volume of non-sparkling cider are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.cider.sparkling-cider = What volume of sparkling cider (1.3% to 5.5% alcohol) are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.cider.sparkling-cider-up = What volume of sparkling cider (5.6% to 8.4% alcohol) are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.sparkling = What volume of sparkling wine are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.spirits = What volume of spirits are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.wine = What volume of wine are you bringing into the UK?
+label.what_is_the_volume_of_.alcohol.other = What volume of alcoholic drinks up to 22% alcohol are you bringing into the UK?
+
+
 alcohol.volume_input.panel.beer.1 = You can bring in up to 16 litres of beer without paying duty or tax.
 alcohol.volume_input.panel.beer.2 = If you bring in more than 16 litres of beer, you will pay tax and duty on the entire amount of your beer.
 
@@ -197,17 +209,71 @@ alcohol.volume_input.panel.other.2 = If you bring in any other alcohol, tell us 
 label.alcohol.where_did_you_buy_the_ = Where did you buy the {0} litres of {1}?
 text.if_you_have_bought_goods_from_more_ = If you have bought goods from more than one country, you can add those purchases later.
 
+label.where_did_you_buy_the_.alcohol.beer = Where did you buy the {0} {1} of beer?
+label.where_did_you_buy_the_.alcohol.cider.non-sparkling-cider = Where did you buy the {0} {1} of non-sparkling cider?
+label.where_did_you_buy_the_.alcohol.cider.sparkling-cider = Where did you buy the {0} {1} of sparkling cider?
+label.where_did_you_buy_the_.alcohol.cider.sparkling-cider-up = Where did you buy the {0} {1} of sparkling cider?
+label.where_did_you_buy_the_.alcohol.sparkling = Where did you buy the {0} {1} sparkling wine?
+label.where_did_you_buy_the_.alcohol.spirits = Where did you buy the {0} {1} spirits?
+label.where_did_you_buy_the_.alcohol.wine = Where did you buy the {0} {1} of wine?
+label.where_did_you_buy_the_.alcohol.other = Where did you buy the {0} {1} alcoholic drink up to 22% alcohol?
+
+label.page_title.where_did_you_buy_.alcohol.beer = Where did you buy the beer?
+label.page_title.where_did_you_buy_.alcohol.cider.non-sparkling-cider = Where did you buy the non-sparkling cider?
+label.page_title.where_did_you_buy_.alcohol.cider.sparkling-cider = Where did you buy the sparkling cider?
+label.page_title.where_did_you_buy_.alcohol.cider.sparkling-cider-up = Where did you buy the sparkling cider?
+label.page_title.where_did_you_buy_.alcohol.sparkling = Where did you buy the sparkling wine?
+label.page_title.where_did_you_buy_.alcohol.spirits = Where did you buy the spirits?
+label.page_title.where_did_you_buy_.alcohol.wine = Where did you buy the wine?
+label.page_title.where_did_you_buy_.alcohol.other = Where did you buy the alcoholic drink up to 22% alcohol?
+
 ## Currency Input Page
 label.alcohol.what_currency_did_you_use_ = What currency did you use to pay for the {0} litres of {1}?
 
+label.what_currency_did_you_use_.alcohol.beer = What currency did you use to pay for the {0} {1} of beer?
+label.what_currency_did_you_use_.alcohol.cider.non-sparkling-cider = What currency did you use to pay for the {0} {1} of non-sparkling cider?
+label.what_currency_did_you_use_.alcohol.cider.sparkling-cider = What currency did you use to pay for the {0} {1} of sparkling cider?
+label.what_currency_did_you_use_.alcohol.cider.sparkling-cider-up = What currency did you use to pay for the {0} {1} of sparkling cider?
+label.what_currency_did_you_use_.alcohol.sparkling = What currency did you use to pay for the {0} {1} of sparkling wine?
+label.what_currency_did_you_use_.alcohol.spirits = What currency did you use to pay for the {0} {1} of spirits?
+label.what_currency_did_you_use_.alcohol.wine = What currency did you use to pay for the {0} {1} of wine?
+label.what_currency_did_you_use_.alcohol.other = What currency did you use to pay for the {0} {1} of alcoholic drink up to 22% alcohol?
+
+label.page_title.what_currency_did_you_use_.alcohol.beer = What currency did you use to pay for the beer?
+label.page_title.what_currency_did_you_use_.alcohol.cider.non-sparkling-cider = What currency did you use to pay for the non-sparkling cider?
+label.page_title.what_currency_did_you_use_.alcohol.cider.sparkling-cider = What currency did you use to pay for the sparkling cider?
+label.page_title.what_currency_did_you_use_.alcohol.cider.sparkling-cider-up = What currency did you use to pay for the sparkling cider?
+label.page_title.what_currency_did_you_use_.alcohol.sparkling = What currency did you use to pay for the sparkling wine?
+label.page_title.what_currency_did_you_use_.alcohol.spirits = What currency did you use to pay for the spirits?
+label.page_title.what_currency_did_you_use_.alcohol.wine = What currency did you use to pay for the wine?
+label.page_title.what_currency_did_you_use_.alcohol.other = What currency did you use to pay for the alcoholic drink up to 22% alcohol?
+
 ## Cost Input Page
 label.alcohol.how_much_did_you_pay_ = How much did you pay for the {0} litres of {1}?
+
+label.how_much_did_you_pay_for_the_.alcohol.beer = How much did you pay for the {0} {1} of beer?
+label.how_much_did_you_pay_for_the_.alcohol.cider.non-sparkling-cider = How much did you pay for the {0} {1} of non-sparkling cider?
+label.how_much_did_you_pay_for_the_.alcohol.cider.sparkling-cider = How much did you pay for the {0} {1} of sparkling cider?
+label.how_much_did_you_pay_for_the_.alcohol.cider.sparkling-cider-up = How much did you pay for the {0} {1} of sparkling cider?
+label.how_much_did_you_pay_for_the_.alcohol.sparkling = How much did you pay for the {0} {1} of sparkling wine?
+label.how_much_did_you_pay_for_the_.alcohol.spirits = How much did you pay for the {0} {1} of spirits?
+label.how_much_did_you_pay_for_the_.alcohol.wine = How much did you pay for the {0} {1} of wine?
+label.how_much_did_you_pay_for_the_.alcohol.other = How much did you pay for the {0} {1} alcoholic drink up to 22% alcohol?
+
+label.page_title.how_much_did_you_pay_.alcohol.beer = How much did you pay for the beer?
+label.page_title.how_much_did_you_pay_.alcohol.cider.non-sparkling-cider = How much did you pay for the non-sparkling cider?
+label.page_title.how_much_did_you_pay_.alcohol.cider.sparkling-cider = How much did you pay for the sparkling cider?
+label.page_title.how_much_did_you_pay_.alcohol.cider.sparkling-cider-up = How much did you pay for the sparkling cider?
+label.page_title.how_much_did_you_pay_.alcohol.sparkling = How much did you pay for the sparkling wine?
+label.page_title.how_much_did_you_pay_.alcohol.spirits = How much did you pay for the spirits?
+label.page_title.how_much_did_you_pay_.alcohol.wine = How much did you pay for the wine?
+label.page_title.how_much_did_you_pay_.alcohol.other = How much did you pay for the alcoholic drink up to 22% alcohol?
 
 # Tobacco Inputs
 
 ## No of Sticks Input Page
 
-label.what_is_the_quantity_of_ = What is the quantity of the {0} you are bringing into the UK?
+label.how_many_ = How many {0} you are bringing into the UK?
 
 label.number_of_ = Number of {0}
 label.weight_of_ = Weight of {0}
@@ -224,7 +290,7 @@ tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = You can bring in up to 10
 tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
 
 ## Weight Input Page
-label.what_is_the_weight_of_ = What is the weight of the {0} you are bringing into the UK?
+label.how_much_ = How much {0} you are bringing into the UK?
 
 tobacco.weight_input.panel.rolling.1 = You can bring in up to 250g of hand-rolling tobacco without paying duty or tax.
 tobacco.weight_input.panel.rolling.2 = If you bring in more than 250g of hand-rolling tobacco, you will pay tax and duty on the entire amount of your hand-rolling tobacco.
@@ -234,15 +300,58 @@ tobacco.weight_input.panel.chewing.2 = If you are bringing in any other tobacco 
 
 ## Country Input Page
 label.tobacco.where_did_you_buy_the_ = Where did you buy the {0}?
+label.page_title.where_did_you_buy_.tobacco.cigarettes = Where did you buy the cigarettes?
+label.page_title.where_did_you_buy_.tobacco.cigarillos = Where did you buy the cigarillos?
+label.page_title.where_did_you_buy_.tobacco.cigars = Where did you buy the cigars?
+label.page_title.where_did_you_buy_.tobacco.chewing = Where did you buy the pipe or chewing tobacco?
+label.page_title.where_did_you_buy_.tobacco.rolling = Where did you buy the rolling tobacco?
 
 ## Currency Input Page
 label.what_currency_did_you_use_to_pay_for_the_ = What currency did you use to pay for the {0}?
 
+label.page_title.what_currency_did_you_use_.tobacco.cigarettes = What currency did you use to pay for the cigarettes?
+label.page_title.what_currency_did_you_use_.tobacco.cigarillos = What currency did you use to pay for the cigarillos?
+label.page_title.what_currency_did_you_use_.tobacco.cigars = What currency did you use to pay for the cigars?
+label.page_title.what_currency_did_you_use_.tobacco.chewing = What currency did you use to pay for the pipe or chewing tobacco?
+label.page_title.what_currency_did_you_use_.tobacco.rolling = What currency did you use to pay for the rolling tobacco?
+
+
 ## Cost Input Page
 label.how_much_did_you_pay_for_the_ = How much did you pay for the {0}?
 
+label.page_title.how_much_did_you_pay_.tobacco.cigarettes = How much did you pay for the cigarettes?
+label.page_title.how_much_did_you_pay_.tobacco.cigarillos = How much did you pay for the cigarillos?
+label.page_title.how_much_did_you_pay_.tobacco.cigars = How much did you pay for the cigars?
+label.page_title.how_much_did_you_pay_.tobacco.chewing = How much did you pay for the pipe or chewing tobacco?
+label.page_title.how_much_did_you_pay_.tobacco.rolling = How much did you pay for the rolling tobacco?
+
 # Other Goods Inputs
 other-goods.quantity_input.heading = How many {0} are you bringing into the UK?
+label.how_many_.other-goods.adult.adult-clothing = How many items of adult clothing are you bringing into the UK?
+label.how_many_.other-goods.adult.adult-footwear = How many pairs of adult footwear are you bring into the UK?
+label.how_many_.other-goods.antiques = How many antiques or works of art are you bringing into the UK?
+label.how_many_.other-goods.books = How many books or publications are you bringing into the UK?
+label.how_many_.other-goods.carpets-fabric.carpets = How many carpets are you bringing into the UK?
+label.how_many_.other-goods.carpets-fabric.fabrics = How many items of fabric are you bringing into the UK?
+label.how_many_.other-goods.car-seats = How many children’s car seats are you bringing into the UK?
+label.how_many_.other-goods.childrens-clothing.childrens = How many items of children’s clothing are you bringing into the UK?
+label.how_many_.other-goods.childrens-clothing.footwear = How many pairs of children’s footwear are you bringing into the UK?
+label.how_many_.other-goods.disability = How many items of disability equipment are you bringing into the UK?
+label.how_many_.other-goods.electronic-devices.televisions = How many televisions are you bringing into the UK?
+label.how_many_.other-goods.electronic-devices.other = How many electronic devices are you bringing into the UK?
+label.how_many_.other-goods.furniture = How many items of furniture are you bringing into the UK?
+label.how_many_.other-goods.glassware-ornaments.glassware = How many items of glassware are you bringing into the UK?
+label.how_many_.other-goods.glassware-ornaments.ornaments = How many ornaments are you bringing into the UK?
+label.how_many_.other-goods.jewellery = How many items of jewellery are you bringing into the UK?
+label.how_many_.other-goods.mobility = How many mobility aids are you bringing into the UK?
+label.how_many_.other-goods.perfumes-cosmetics = How many items of perfume or cosmetics are you bringing into the UK?
+label.how_many_.other-goods.protective-helmets = How many protective helments are you bringing into the UK?
+label.how_many_.other-goods.sanitary-products = How many sanitary products are you bringing into the UK?
+label.how_many_.other-goods.stop-smoking = How many stop smoking products are you bringing into the UK?
+label.how_many_.other-goods.tableware = How many items of tableware or kitchenware are you bringing into the UK?
+label.how_many_.other-goods.watches-clocks = How many watches or clocks are you bringing into the UK?
+label.how_many_.other-goods.other = How many other items are you bringing into the UK?
+
 
 label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.
 label.if_your_goods_are_worth_more_than_ = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
@@ -252,14 +361,88 @@ other-goods.volume_input.panel.2 = If your other goods total more than £270 bec
 
 ## Country Input Page
 label.other-goods.where_did_you_buy_this_ = Where did you buy this {0}?
+label.where_did_you_buy_.other-goods.adult.adult-clothing = Where did you buy the adult clothing?
+label.where_did_you_buy_.other-goods.adult.adult-footwear = Where did you buy the adult footwear?
+label.where_did_you_buy_.other-goods.antiques = Where did you buy the antique or work of art?
+label.where_did_you_buy_.other-goods.books = Where did you buy the book or publication?
+label.where_did_you_buy_.other-goods.carpets-fabric.carpets = Where did you buy the carpet?
+label.where_did_you_buy_.other-goods.carpets-fabric.fabrics = Where did you buy the fabric?
+label.where_did_you_buy_.other-goods.car-seats = Where did you buy the children’s car seat?
+label.where_did_you_buy_.other-goods.childrens-clothing.childrens = Where did you buy the children’s clothing?
+label.where_did_you_buy_.other-goods.childrens-clothing.footwear = Where did you buy the children’s footwear?
+label.where_did_you_buy_.other-goods.disability = Where did you buy the item of disability equipment?
+label.where_did_you_buy_.other-goods.electronic-devices.televisions = Where did you buy the television?
+label.where_did_you_buy_.other-goods.electronic-devices.other = Where did you buy the electronic device?
+label.where_did_you_buy_.other-goods.furniture = Where did you buy the furniture?
+label.where_did_you_buy_.other-goods.glassware-ornaments.glassware = Where did you buy the glassware?
+label.where_did_you_buy_.other-goods.glassware-ornaments.ornaments = Where did you buy the ornament?
+label.where_did_you_buy_.other-goods.jewellery = Where did you buy the jewellery?
+label.where_did_you_buy_.other-goods.mobility = Where did you buy the mobility aid?
+label.where_did_you_buy_.other-goods.perfumes-cosmetics = Where did you buy the perfume or cosmetics?
+label.where_did_you_buy_.other-goods.protective-helmets = Where did you buy the protective helmet?
+label.where_did_you_buy_.other-goods.sanitary-products = Where did you buy the sanitary product?
+label.where_did_you_buy_.other-goods.stop-smoking = Where did you buy the stop smoking product?
+label.where_did_you_buy_.other-goods.tableware = Where did you buy the tableware or kitchenware?
+label.where_did_you_buy_.other-goods.watches-clocks = Where did you buy the watch or clock?
+label.where_did_you_buy_.other-goods.other = Where did you buy the item?
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
 label.enter_currency = Enter currency
 
+label.what_currency_did_you_use_.other-goods.adult.adult-clothing = What currency did you use to pay for the adult clothing?
+label.what_currency_did_you_use_.other-goods.adult.adult-footwear = What currency did you use to pay for the pair of adult footwear?
+label.what_currency_did_you_use_.other-goods.antiques = What currency did you use to pay for the antique or work of art?
+label.what_currency_did_you_use_.other-goods.books = What currency did you use to pay for the book or publication?
+label.what_currency_did_you_use_.other-goods.carpets-fabric.carpets = What currency did you use to pay for the carpet?
+label.what_currency_did_you_use_.other-goods.carpets-fabric.fabrics = What currency did you use to pay for the fabric?
+label.what_currency_did_you_use_.other-goods.car-seats = What currency did you use to pay for the children’s car seat?
+label.what_currency_did_you_use_.other-goods.childrens-clothing.childrens = What currency did you use to pay for the children’s clothing?
+label.what_currency_did_you_use_.other-goods.childrens-clothing.footwear = What currency did you use to pay for the pair of children’s footwear?
+label.what_currency_did_you_use_.other-goods.disability = What currency did you use to pay for the disability equipment?
+label.what_currency_did_you_use_.other-goods.electronic-devices.televisions = What currency did you use to pay for the television?
+label.what_currency_did_you_use_.other-goods.electronic-devices.other = What currency did you use to pay for the electronic device?
+label.what_currency_did_you_use_.other-goods.furniture = What currency did you use to pay for the furniture?
+label.what_currency_did_you_use_.other-goods.glassware-ornaments.glassware = What currency did you use to pay for the glassware?
+label.what_currency_did_you_use_.other-goods.glassware-ornaments.ornaments = What currency did you use to pay for the ornament?
+label.what_currency_did_you_use_.other-goods.jewellery = What currency did you use to pay for the jewellery?
+label.what_currency_did_you_use_.other-goods.mobility = What currency did you use to pay for the mobility aid?
+label.what_currency_did_you_use_.other-goods.perfumes-cosmetics = What currency did you use to pay for the perfume or cosmetics?
+label.what_currency_did_you_use_.other-goods.protective-helmets = What currency did you use to pay for the protective helmet?
+label.what_currency_did_you_use_.other-goods.sanitary-products = What currency did you use to pay for the sanitary product?
+label.what_currency_did_you_use_.other-goods.stop-smoking = What currency did you use to pay for the stop smoking product?
+label.what_currency_did_you_use_.other-goods.tableware = What currency did you use to pay for the tableware or kitchenware?
+label.what_currency_did_you_use_.other-goods.watches-clocks = What currency did you use to pay for the watch or clock?
+label.what_currency_did_you_use_.other-goods.other = What currency did you use to pay for the item?
+
 ## Cost Input
 label.how_much_did_you_pay_for_this_ = How much did you pay for this {0}?
 label.price_in = Price in {0}
+
+label.how_much_did_you_pay_.other-goods.adult.adult-clothing = How much did you pay for the adult clothing?
+label.how_much_did_you_pay_.other-goods.adult.adult-footwear = How much did you pay for the pair of adult footwear?
+label.how_much_did_you_pay_.other-goods.antiques = How much did you pay for the antique or work of art?
+label.how_much_did_you_pay_.other-goods.books = How much did you pay for the book or publication?
+label.how_much_did_you_pay_.other-goods.carpets-fabric.carpets = How much did you pay for the carpet?
+label.how_much_did_you_pay_.other-goods.carpets-fabric.fabrics = How much did you pay for the fabric?
+label.how_much_did_you_pay_.other-goods.car-seats = How much did you pay for the children’s car seat?
+label.how_much_did_you_pay_.other-goods.childrens-clothing.childrens = How much did you pay for the children’s clothing?
+label.how_much_did_you_pay_.other-goods.childrens-clothing.footwear = How much did you pay for the pair of children’s footwear?
+label.how_much_did_you_pay_.other-goods.disability = How much did you pay for the disability equipment?
+label.how_much_did_you_pay_.other-goods.electronic-devices.televisions = How much did you pay for the television?
+label.how_much_did_you_pay_.other-goods.electronic-devices.other = How much did you pay for the electronic device?
+label.how_much_did_you_pay_.other-goods.furniture = How much did you pay for the furniture?
+label.how_much_did_you_pay_.other-goods.glassware-ornaments.glassware = How much did you pay for the glassware?
+label.how_much_did_you_pay_.other-goods.glassware-ornaments.ornaments = How much did you pay for the ornament?
+label.how_much_did_you_pay_.other-goods.jewellery = How much did you pay for the jewellery?
+label.how_much_did_you_pay_.other-goods.mobility = How much did you pay for the mobility aid?
+label.how_much_did_you_pay_.other-goods.perfumes-cosmetics = How much did you pay for the perfume or cosmetics?
+label.how_much_did_you_pay_.other-goods.protective-helmets = How much did you pay for the protective helmet?
+label.how_much_did_you_pay_.other-goods.sanitary-products = How much did you pay for the sanitary product?
+label.how_much_did_you_pay_.other-goods.stop-smoking = How much did you pay for the stop smoking product?
+label.how_much_did_you_pay_.other-goods.tableware = How much did you pay for the tableware or kitchenware?
+label.how_much_did_you_pay_.other-goods.watches-clocks = How much did you pay for the watch or clock?
+label.how_much_did_you_pay_.other-goods.other = How much did you pay for the item?
 
 # Hidden Text
 label.if_you_do_not_know_the_volume = If you do not know the volume
@@ -309,3 +492,43 @@ label.for_example_31_10_2018 = For example, 31 10 2018
 # Remove Page
 label.remove_this_item = Remove this item
 label.do_you_want_to_remove_this = Do you want to remove this {0}?
+
+label.do_you_want_to_remove_.other-goods.adult.adult-clothing = Do you want to remove this item of adult clothing?
+label.do_you_want_to_remove_.other-goods.adult.adult-footwear = Do you want to remove this pair of adult footwear?
+label.do_you_want_to_remove_.other-goods.antiques = Do you want to remove this antique or work of art?
+label.do_you_want_to_remove_.other-goods.books = Do you want to remove this book or publication?
+label.do_you_want_to_remove_.other-goods.carpets-fabric.carpets = Do you want to remove this carpet?
+label.do_you_want_to_remove_.other-goods.carpets-fabric.fabrics = Do you want to remove this fabric?
+label.do_you_want_to_remove_.other-goods.car-seats = Do you want to remove this children’s car seat?
+label.do_you_want_to_remove_.other-goods.childrens-clothing.childrens = Do you want to remove this item of children’s clothing?
+label.do_you_want_to_remove_.other-goods.childrens-clothing.footwear = Do you want to remove this pair of children’s footwear?
+label.do_you_want_to_remove_.other-goods.disability = Do you want to remove this item of disability equipment?
+label.do_you_want_to_remove_.other-goods.electronic-devices.televisions = Do you want to remove this television?
+label.do_you_want_to_remove_.other-goods.electronic-devices.other = Do you want to remove this electronic device?
+label.do_you_want_to_remove_.other-goods.furniture = Do you want to remove this furniture?
+label.do_you_want_to_remove_.other-goods.glassware-ornaments.glassware = Do you want to remove this glassware?
+label.do_you_want_to_remove_.other-goods.glassware-ornaments.ornaments = Do you want to remove this ornament?
+label.do_you_want_to_remove_.other-goods.jewellery = Do you want to remove this jewellery?
+label.do_you_want_to_remove_.other-goods.mobility = Do you want to remove this mobility aid?
+label.do_you_want_to_remove_.other-goods.perfumes-cosmetics = Do you want to remove this perfume or cosmetics?
+label.do_you_want_to_remove_.other-goods.protective-helmets = Do you want to remove this protective helmet?
+label.do_you_want_to_remove_.other-goods.sanitary-products = Do you want to remove this sanitary product?
+label.do_you_want_to_remove_.other-goods.stop-smoking = Do you want to remove this stop smoking product?
+label.do_you_want_to_remove_.other-goods.tableware = Do you want to remove this tableware or kitchenware?
+label.do_you_want_to_remove_.other-goods.watches-clocks = Do you want to remove this watch or clock?
+label.do_you_want_to_remove_.other-goods.other = Do you want to remove this item?
+
+label.do_you_want_to_remove_.tobacco.cigarettes = Do you want to remove these cigarettes?
+label.do_you_want_to_remove_.tobacco.cigarillos = Do you want to remove these cigarillos?
+label.do_you_want_to_remove_.tobacco.cigars = Do you want to remove these cigars?
+label.do_you_want_to_remove_.tobacco.chewing = Do you want to remove this pipe or chewing tobacco?
+label.do_you_want_to_remove_.tobacco.rolling = Do you want to remove this rolling tobacco?
+
+label.do_you_want_to_remove_.alcohol.beer = Do you want to remove this beer?
+label.do_you_want_to_remove_.alcohol.cider.non-sparkling-cider = Do you want to remove this cider?
+label.do_you_want_to_remove_.alcohol.cider.sparkling-cider = Do you want to remove this cider?
+label.do_you_want_to_remove_.alcohol.cider.sparkling-cider-up = Do you want to remove this cider?
+label.do_you_want_to_remove_.alcohol.sparkling = Do you want to remove this sparkling wine?
+label.do_you_want_to_remove_.alcohol.spirits = Do you want to remove this spirits?
+label.do_you_want_to_remove_.alcohol.wine = Do you want to remove this wine?
+label.do_you_want_to_remove_.alcohol.other = Do you want to remove this alcoholic drink up to 22% alcohol?

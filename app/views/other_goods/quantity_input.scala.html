@@ -2,14 +2,18 @@
 
 @import uk.gov.hmrc.play.views.html._
 
-@main_template(title = messages("other-goods.quantity_input.heading", productName.toLowerCase()), bodyClasses = None) {
+@title = {
+  @messages(s"label.how_many_.${path.toMessageKey}")
+}
+
+@main_template(title = title.toString, bodyClasses = None) {
 
 
   @helpers.form(action = routes.OtherGoodsInputController.processQuantityInput(path)) {
 
     <fieldset>
       <legend>
-          <h1 class="heading-xlarge">@messages("other-goods.quantity_input.heading", productName.toLowerCase())</h1>
+          <h1 class="heading-xlarge">@title.toString</h1>
       </legend>
 
       <div class="form-group">

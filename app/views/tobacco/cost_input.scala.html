@@ -2,11 +2,15 @@
 
 @import uk.gov.hmrc.play.views.html._
 
+@pageTitle = {
+    @messages(s"label.page_title.how_much_did_you_pay_.${path.toMessageKey}")
+}
+
 @title = {
     @messages("label.how_much_did_you_pay_for_the_", description)
 }
 
-@main_template(title = title.toString) {
+@main_template(title = pageTitle.toString) {
 
     <h1 class="heading-xlarge">@title.toString</h1>
 
