@@ -1,7 +1,8 @@
 package services
 
 import models.{JourneyData, ProductPath, PurchasedProductInstance, UserInformation}
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -45,10 +46,10 @@ class UserInformationServiceSpec extends BaseSpec {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      await(s.storeUserInformation(JourneyData(), UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"))))
+      await(s.storeUserInformation(JourneyData(), UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(userInformation = Some(UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31")))))
+        meq(JourneyData(userInformation = Some(UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))))))
       )(any())
 
     }

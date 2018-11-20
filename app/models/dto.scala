@@ -1,7 +1,8 @@
 package models
 
-import org.joda.time.LocalDate
-import play.api.data.Form
+import org.joda.time._
+import org.joda.time.format.DateTimeFormat
+import play.api.data.{Form, Mapping}
 import play.api.data.Forms._
 import play.api.data.validation._
 import services.{CountriesService, CurrencyService}
@@ -9,6 +10,8 @@ import services.{CountriesService, CurrencyService}
 import scala.math.BigDecimal.RoundingMode
 import util._
 import uk.gov.hmrc.play.mappers.DateTuple._
+
+import scala.util.Try
 
 
 
@@ -146,14 +149,92 @@ case class CostDto(cost: BigDecimal, itemsRemaining: Int)
 case class CalculatorResponseDto(bands: Map[String, List[Item]], calculation: Calculation, hasOnlyGBP: Boolean)
 
 object EnterYourDetailsDto {
-  val form: Form[EnterYourDetailsDto] = Form(
+
+  private def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
+    text =>
+      if (text.isEmpty) Invalid(ValidationError(s"error.required.$fieldName"))
+      else if (text.length > maxLength) Invalid(ValidationError(s"error.max-length.$fieldName"))
+      else Valid
+  }
+
+
+  private def mantatoryDate(error: String) = tuple(
+    "day" -> optional(text),
+    "month" -> optional(text),
+    "year" -> optional(text)
+  )
+    .verifying("error.enter_a_date", dateParts => {
+      val definedParts: Int = dateParts.productIterator.collect { case o@Some(_) => o }.size
+      definedParts > 0
+    })
+    .verifying("error.include_day_month_and_year", dateParts => {
+      val definedParts: Int = dateParts.productIterator.collect { case o@Some(_) => o }.size
+      definedParts < 1 || definedParts > 2
+    })
+    .transform[(String, String, String)](
+    maybeDateString =>
+      (maybeDateString._1.get, maybeDateString._2.get, maybeDateString._3.get),
+    dateString =>
+      (Some(dateString._1), Some(dateString._2), Some(dateString._3))
+  )
+    .verifying("error.only_whole_numbers", dateString => dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit))
+    .transform[(Int, Int, Int)](dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt), dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString))
+    .verifying("error.enter_a_real_date",
+      dateInt => Try(new LocalDate(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess
+    )
+    .transform[LocalDate](
+    dateInt =>
+      LocalDate.parse(s"${dateInt._3.toString}-${dateInt._2.toString}-${dateInt._1.toString}"),
+    localDate =>
+      (localDate.getDayOfMonth, localDate.getMonthOfYear, localDate.getDayOfYear)
+  )
+
+
+  private def mandatoryTime(error: String): Mapping[LocalTime] = tuple(
+    "hour" -> optional(text),
+    "minute" -> optional(text),
+    "halfday" -> optional(text)
+  )
+    .verifying(error, maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty && maybeTimeString._3.nonEmpty)
+    .transform[(String, String, String)](
+    maybeTimeString =>
+      (maybeTimeString._1.get, maybeTimeString._2.get, maybeTimeString._3.get),
+    timeString =>
+      (Some(timeString._1), Some(timeString._2), Some(timeString._3)))
+    .verifying("error.enter_a_real_time", timeString => timeString._1.forall(_.isDigit) && timeString._2.forall(_.isDigit))
+    .transform[(Int, Int, String)](
+    timeString =>
+      (timeString._1.toInt, timeString._2.toInt, timeString._3),
+    time =>
+      (time._1.toString, time._2.toString, time._3))
+    .verifying("error.enter_a_real_time", time => time._1>= 1 && time._1 <= 12 && time._2 >= 0 && time._2<= 60)
+    .verifying("error.enter_a_real_time", time => time._3.toLowerCase == "am" || time._3.toLowerCase == "pm")
+    .transform[LocalTime](
+    time =>
+      LocalTime.parse(s"${time._1}:${time._2} ${time._3}", DateTimeFormat.forPattern("hh:mm aa")),
+    localTime =>
+      (localTime.getHourOfDay, localTime.getMinuteOfHour, if (localTime.getHourOfDay > 12) "pm" else "am"))
+
+  def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
-      "firstName" -> nonEmptyText(1,35),
-      "lastName" -> nonEmptyText(1,35),
-      "passportNumber" -> nonEmptyText(1,40),
-      "placeOfArrival" -> nonEmptyText(1,40),
-      "dateOfArrival" -> mandatoryDateTuple("error.enter_a_date")
+      "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")),
+      "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")),
+      "passportNumber" -> text.verifying(nonEmptyMaxLength(40, "passport_number")),
+      "placeOfArrival" -> text.verifying(nonEmptyMaxLength(40, "place_of_arrival")),
+      "dateTimeOfArrival" -> mapping(
+        "dateOfArrival" -> mantatoryDate("error.enter_a_date"),
+        "timeOfArrival" -> mandatoryTime("error.enter_a_time")
+      )(DateTimeOfArrival.apply)(DateTimeOfArrival.unapply)
+        .verifying("error.not_in_past", dto => dto.dateOfArrival.toDateTime(dto.timeOfArrival).isAfter(declarationTime.minus(Hours.THREE)))
+        .verifying("error.72_hours", dto => dto.dateOfArrival.toDateTime(dto.timeOfArrival).isBefore(declarationTime.plus(Days.THREE)))
     )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
   )
 }
-case class EnterYourDetailsDto(firstName: String, lastName: String, passportNumber: String, placeOfArrival: String, dateOfArrival: LocalDate)
+
+case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
+
+case class EnterYourDetailsDto(firstName: String, lastName: String, passportNumber: String, placeOfArrival: String, dateTimeOfArrival: DateTimeOfArrival)
+
+
+
+

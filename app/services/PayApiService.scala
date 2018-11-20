@@ -36,7 +36,7 @@ class PayApiService @Inject()(
     val requestBody = Json.obj(
       "chargeReference" -> chargeReference.value,
       "taxToPayInPence" -> amountPence,
-      "dateOfArrival" -> (userInformation.dateOfArrival + "T00:00:00"),
+      "dateOfArrival" -> userInformation.dateOfArrival.toDateTime(userInformation.timeOfArrival).toString("yyyy-MM-dd'T'HH:mm:ss"),
       "passengerName" -> s"${userInformation.firstName} ${userInformation.lastName}",
       "placeOfArrival" -> userInformation.placeOfArrival,
       "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>

@@ -1,7 +1,8 @@
 package services
 
 import models._
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => meq, _}
 import org.scalatest.mockito.MockitoSugar
@@ -39,7 +40,39 @@ class PayApiServiceSpec extends BaseSpec {
     s"""{
        |    "chargeReference": "XYPRRVWV52PVDI",
        |    "taxToPayInPence": 9700000,
-       |    "dateOfArrival": "2018-11-13T00:00:00",
+       |    "dateOfArrival": "2018-11-12T12:20:00",
+       |    "passengerName": "Harry Potter",
+       |    "placeOfArrival": "Heathrow",
+       |    "items": [
+       |        {
+       |            "name": "5 litres cider",
+       |            "costInCurrency": "USA Dollar (USD)",
+       |            "costInGbp": "120.00"
+       |        },
+       |        {
+       |            "name": "250 cigarettes",
+       |            "costInCurrency": "USA Dollar (USD)",
+       |            "costInGbp": "400.00"
+       |        },
+       |        {
+       |            "name": "120g rolling tobacco",
+       |            "costInCurrency": "USA Dollar (USD)",
+       |            "costInGbp": "200.00"
+       |        },
+       |        {
+       |            "name": "Televisions",
+       |            "costInCurrency": "British Pound (GBP)",
+       |            "costInGbp": "1300.00"
+       |        }
+       |    ]
+       |}
+    """.stripMargin)
+
+  val exampleJsonForBstArrival = Json.parse(
+    s"""{
+       |    "chargeReference": "XYPRRVWV52PVDI",
+       |    "taxToPayInPence": 9700000,
+       |    "dateOfArrival": "2018-07-12T12:20:00",
        |    "passengerName": "Harry Potter",
        |    "placeOfArrival": "Heathrow",
        |    "items": [
@@ -69,10 +102,9 @@ class PayApiServiceSpec extends BaseSpec {
 
   trait LocalSetup {
     def httpResponse: HttpResponse
-
-    val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-13"))
+    val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
     val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
-      Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Ciagerettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
+      Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
       Some(OtherGoods(List(Band("C",List(Item("OGD/DIGI/TV","1140.42",None,None,
         Calculation("0.00","0.00","0.00","0.00"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("OGD/DIGI/TV","1300.00",None,None,
         Calculation("0.00","182.00","296.40","478.40"),Metadata("Televisions", "Televisions","1300.00",Currency("GBP", "British Pound (GBP)", None), Country("United Kingdom of Great Britain and Northern Ireland (the)", "GB", isEu = true, None), ExchangeRate("1.20", "2018-10-29")))),
@@ -116,6 +148,19 @@ class PayApiServiceSpec extends BaseSpec {
       val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
+    }
+
+    "return a PayApiServiceSuccessResponse with a payment url when http client returns 201 (when in BST)" in new LocalSetup {
+
+      val uiWithBstArrival = userInformation.copy(dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+
+      override lazy val httpResponse = HttpResponse(CREATED, Some(
+        Json.obj("nextUrl" -> "https://example.com")
+      ))
+
+      val r = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, receiptDateTime))
+      r shouldBe PayApiServiceSuccessResponse("https://example.com")
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJsonForBstArrival),any())(any(),any(),any(),any())
     }
   }
 

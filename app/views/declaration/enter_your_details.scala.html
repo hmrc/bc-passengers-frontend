@@ -9,50 +9,64 @@
 
   @helpers.form(action = routes.UserInformationController.processEnterYourDetails) {
 
+    @views.html.tags.errors(form)
+
     <fieldset>
       <legend><h1 class="heading-xlarge">@messages("label.enter_your_details")</h1></legend>
 
-      <div class="form-group">
-        @helpers.input(
-          form("firstName"),
-          '_label -> messages("label.first_name"),
-          '_labelTextClass -> "form-label-bold",
-          '_inputClass -> "form-control-3-4"
-        )
-      </div>
-      <div class="form-group">
-        @helpers.input(
-          form("lastName"),
-          '_label -> messages("label.last_name"),
-          '_labelTextClass -> "form-label-bold",
-          '_inputClass -> "form-control-3-4"
-        )
-      </div>
-      <div class="form-group">
-        @helpers.input(
-          form("passportNumber"),
-          '_label -> messages("label.passport_number"),
-          '_labelTextClass -> "form-label-bold",
-          '_inputClass -> "form-control-3-4"
-        )
-      </div>
-      <div class="form-group">
-        @helpers.input(
-          form("placeOfArrival"),
-          '_label -> messages("label.place_of_arrival"),
-          '_labelTextClass -> "form-label-bold",
-          '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
-          '_inputClass -> "form-control-3-4"
-        )
-      </div>
 
-      @helpers.dateFieldsFreeInlineLegend(
-        form,
-        "dateOfArrival",
-        '_inputHint -> messages("label.for_example_31_10_2018"),
-        '_legendSpanClass -> "form-label-bold",
-        '_legend -> messages("label.date_of_arrival")
+      @components.input(
+        form("firstName"),
+        '_label -> messages("label.first_name"),
+        '_labelTextClass -> "form-label-bold",
+        '_inputClass -> "form-control-3-4"
       )
+
+      @components.input(
+        form("lastName"),
+        '_label -> messages("label.last_name"),
+        '_labelTextClass -> "form-label-bold",
+        '_inputClass -> "form-control-3-4"
+      )
+
+      @components.input(
+        form("passportNumber"),
+        '_label -> messages("label.passport_number"),
+        '_labelTextClass -> "form-label-bold",
+        '_inputClass -> "form-control-3-4"
+      )
+
+      @components.input(
+        form("placeOfArrival"),
+        '_label -> messages("label.place_of_arrival"),
+        '_labelTextClass -> "form-label-bold",
+        '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
+        '_inputClass -> "form-control-3-4"
+      )
+
+    <div class="form-group @{if(form("dateTimeOfArrival").hasErrors) "form-group-error" else "" }">
+        <fieldset id="dateTimeOfArrival">
+
+            @form.errors.filter(_.key == "dateTimeOfArrival").map { error => <span class="error-message">@messages(error.message)</span>}
+
+            @helpers.dateFieldsFreeInlineLegend(
+            form,
+            "dateTimeOfArrival.dateOfArrival",
+            '_inputHint -> messages("label.for_example_31_10_2018"),
+            '_legendSpanClass -> "form-label-bold",
+            '_legend -> messages("label.date_of_arrival")
+            )
+
+            @components.timeFieldsFreeInlineLegend(
+            form,
+            "dateTimeOfArrival.timeOfArrival",
+            '_inputHint -> messages("label.for_example_930"),
+            '_legendSpanClass -> "form-label-bold",
+            '_legend -> messages("label.time_of_arrival")
+            )
+
+        </fieldset>
+    </div>
 
       <div class="form-group">
         <button type="submit" class="button">@messages("label.continue")</button>

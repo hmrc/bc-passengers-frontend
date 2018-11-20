@@ -2,7 +2,8 @@ package controllers
 
 import util.BaseSpec
 import models._
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -31,12 +32,13 @@ class UserInformationControllerSpec extends BaseSpec {
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
     .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
+    .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
     .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {
     reset(injected[TravelDetailsService], injected[PurchasedProductService], injected[UserInformationService],
-      injected[PayApiService], injected[DeclarationService])
+      injected[PayApiService], injected[DeclarationService], injected[DateTimeProviderService])
   }
 
   trait LocalSetup {
@@ -64,9 +66,10 @@ class UserInformationControllerSpec extends BaseSpec {
       Calculation("0.00", "0.00", "0.00", "0.00")
     )
 
-    lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"))
-
-
+    lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+    
+    lazy val dt = DateTime.parse("2018-11-23T06:21:00Z")
+    
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
@@ -74,7 +77,7 @@ class UserInformationControllerSpec extends BaseSpec {
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any(),any())) thenReturn Future.successful(payApiResponse)
       when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any())(any(),any())) thenReturn Future.successful(declarationServiceResponse)
-
+      when(injected[DateTimeProviderService].now) thenReturn dt
       rt(app, req)
     }
   }
@@ -110,11 +113,14 @@ class UserInformationControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "",
           "lastName" -> "Potter",
-          "passportNumber" -> "801375812",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
@@ -129,13 +135,16 @@ class UserInformationControllerSpec extends BaseSpec {
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
-          "firstName" -> "123456789012345678901234567890123456",
+          "firstName" -> "123456789012345678901234567890123451234",
           "lastName" -> "Potter",
-          "passportNumber" -> "801375812",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
@@ -151,12 +160,15 @@ class UserInformationControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
-          "lastName" -> "123456789012345678901234567890123456",
-          "passportNumber" -> "801375812",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "lastName" -> "123456789012345678901234567890123451234",
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
@@ -173,11 +185,14 @@ class UserInformationControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "12345678901234567890123456789012345678901",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "12345678901234567890123456789012345612345",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
@@ -194,11 +209,14 @@ class UserInformationControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "12345678",
-          "placeOfArrival" -> "12345678901234567890123456789012345678901",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "123456789012345678901234567890123456123456",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
@@ -207,7 +225,7 @@ class UserInformationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -215,55 +233,38 @@ class UserInformationControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "12345678",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "abc",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "abc",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return INTERNAL_SERVER_ERROR but still store valid user information, when the declaration service request fails" in new LocalSetup {
+    "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
-      override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "801375812",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
-        )
-      ).get
-
-      status(response) shouldBe INTERNAL_SERVER_ERROR
-
-      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
-    }
-
-    "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
-        .withFormUrlEncodedBody(
-          "firstName" -> "Harry",
-          "lastName" -> "Potter",
-          "passportNumber" -> "801375812",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
@@ -282,11 +283,14 @@ class UserInformationControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "801375812",
-          "placeOfArrival" -> "Newcastle airport",
-          "dateOfArrival.day" -> "01",
-          "dateOfArrival.month" -> "02",
-          "dateOfArrival.year" -> "2018"
+          "passportNumber" -> "123456789",
+          "placeOfArrival" -> "Heathrow",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
         )
       ).get
 
