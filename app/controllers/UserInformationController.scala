@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.UUID
+
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
@@ -18,7 +20,8 @@ class UserInformationController @Inject()(
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val userInformationService: UserInformationService,
-  val payApiService: PayApiService
+  val payApiService: PayApiService,
+  val declarationService: DeclarationService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def enterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
@@ -34,22 +37,30 @@ class UserInformationController @Inject()(
       },
       enterYourDetailsDto => {
 
-        val chargeReference = ChargeReference.generate
         val receiptDateTime = DateTime.now()
+        val userInformation = UserInformation.build(enterYourDetailsDto)
 
-        val userInformation = UserInformation.build(enterYourDetailsDto, chargeReference, receiptDateTime)
+        val correlationId = context.sessionId
 
         userInformationService.storeUserInformation(context.getJourneyData, userInformation) flatMap { _ =>
 
           requireCalculatorResponse { calculatorResponse =>
 
-            payApiService.requestPaymentUrl(chargeReference, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt, receiptDateTime) map {
+            declarationService.submitDeclaration(userInformation, calculatorResponse, receiptDateTime, correlationId) flatMap {
 
-              case PayApiServiceFailureResponse =>
-                InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+              case DeclarationServiceFailureResponse =>
+                Future.successful(InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
 
-              case PayApiServiceSuccessResponse(url) =>
-                Redirect(url)
+              case DeclarationServiceSuccessResponse(cr) =>
+
+                payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt, receiptDateTime) map {
+
+                  case PayApiServiceFailureResponse =>
+                    InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+
+                  case PayApiServiceSuccessResponse(url) =>
+                    Redirect(url)
+                }
             }
           }
         }

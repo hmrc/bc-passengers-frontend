@@ -20,17 +20,15 @@ case class PurchasedProductInstance(
 object UserInformation {
   implicit val formats = Json.format[UserInformation]
 
-  def build(dto: EnterYourDetailsDto, temporaryChargeReference: ChargeReference, temporaryReceiptDateTime: DateTime): UserInformation =
-    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival, temporaryChargeReference.value, temporaryReceiptDateTime)
+  def build(dto: EnterYourDetailsDto): UserInformation =
+    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival)
 }
 case class UserInformation(
   firstName: String,
   lastName: String,
   passportNumber: String,
   placeOfArrival: String,
-  dateOfArrival: LocalDate,
-  temporaryChargeReference: String,
-  temporaryReceiptDateTime: DateTime
+  dateOfArrival: LocalDate
 )
 
 

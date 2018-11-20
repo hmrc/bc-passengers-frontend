@@ -31,7 +31,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
         request.session.get(SessionKeys.sessionId) match {
           case Some(s) =>
-            block(LocalContext(request))
+            block(LocalContext(request, s))
           case None =>
             Future.successful(Redirect(routes.TravelDetailsController.newSession()))
         }

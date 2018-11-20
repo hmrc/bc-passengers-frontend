@@ -9,7 +9,7 @@ import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAc
 
 import scala.concurrent.Future
 
-case class LocalContext(request: Request[AnyContent], journeyData: Option[JourneyData] = None)  extends Request[AnyContent] {
+case class LocalContext(request: Request[AnyContent], sessionId: String, journeyData: Option[JourneyData] = None)  extends Request[AnyContent] {
   override def body: AnyContent = request.body
   override def id: Long = request.id
   override def tags: Map[String, String] = request.tags
@@ -23,7 +23,7 @@ case class LocalContext(request: Request[AnyContent], journeyData: Option[Journe
   override def secure: Boolean = request.secure
   override def clientCertificateChain: Option[Seq[X509Certificate]] = request.clientCertificateChain
 
-  def withJourneyData(journeyData: JourneyData) = LocalContext(request, Some(journeyData))
+  def withJourneyData(journeyData: JourneyData) = LocalContext(request, sessionId, Some(journeyData))
 
   def getJourneyData: JourneyData = journeyData.getOrElse(throw new RuntimeException("no journey data."))
 }
