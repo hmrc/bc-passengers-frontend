@@ -37,44 +37,40 @@ class PayApiServiceSpec extends BaseSpec {
 
   val exampleJson = Json.parse(
     s"""{
-       |    "reference": "XYPRRVWV52PVDI",
-       |    "amountInPence": 9700000,
-       |    "taxType": "pngr",
-       |    "showCAWPTPage": false,
-       |    "isWelshSupported": false,
-       |    "emailTemplateId": "passengers_payment_confirmation",
-       |    "emailTemplateData": {
-       |        "NAME": "Harry Potter",
-       |        "DATE": "12 November 2018 13:56:01 UTC",
-       |        "PLACEOFARRIVAL": "Heathrow",
-       |        "DATEOFARRIVAL": "2018-11-12",
-       |        "REFERENCE": "XYPRRVWV52PVDI",
-       |        "TOTAL": "1362.46",
-       |        "NAME_0": "5 litres cider",
-       |        "CURRENCY_0": "USA Dollar (USD)",
-       |        "COSTGBP_0": "120.00",
-       |        "NAME_1": "250 cigarettes",
-       |        "CURRENCY_1": "USA Dollar (USD)",
-       |        "COSTGBP_1": "400.00",
-       |        "NAME_2": "120g rolling tobacco",
-       |        "CURRENCY_2": "USA Dollar (USD)",
-       |        "COSTGBP_2": "200.00",
-       |        "NAME_3": "Televisions",
-       |        "CURRENCY_3": "British Pound (GBP)",
-       |        "COSTGBP_3": "1300.00"
-       |    },
-       |    "description": "Customs Declaration Payment",
-       |    "searchScope": "pngr",
-       |    "searchTag": "XYPRRVWV52PVDI",
-       |    "title": "Check tax on goods you bring into the UK",
-       |    "returnUrl": "http://localhost:9008/bc-passengers-frontend/check-declare-goods-start-page"
+       |    "chargeReference": "XYPRRVWV52PVDI",
+       |    "taxToPayInPence": 9700000,
+       |    "dateOfArrival": "2018-11-13T00:00:00",
+       |    "passengerName": "Harry Potter",
+       |    "placeOfArrival": "Heathrow",
+       |    "items": [
+       |        {
+       |            "name": "5 litres cider",
+       |            "costInCurrency": "USA Dollar (USD)",
+       |            "costInGbp": "120.00"
+       |        },
+       |        {
+       |            "name": "250 cigarettes",
+       |            "costInCurrency": "USA Dollar (USD)",
+       |            "costInGbp": "400.00"
+       |        },
+       |        {
+       |            "name": "120g rolling tobacco",
+       |            "costInCurrency": "USA Dollar (USD)",
+       |            "costInGbp": "200.00"
+       |        },
+       |        {
+       |            "name": "Televisions",
+       |            "costInCurrency": "British Pound (GBP)",
+       |            "costInGbp": "1300.00"
+       |        }
+       |    ]
        |}
     """.stripMargin)
 
   trait LocalSetup {
     def httpResponse: HttpResponse
 
-    val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"))
+    val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-13"))
     val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
       Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Ciagerettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
       Some(OtherGoods(List(Band("C",List(Item("OGD/DIGI/TV","1140.42",None,None,
@@ -99,7 +95,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceFailureResponse
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/payment"),meq(exampleJson),any())(any(),any(),any(),any())
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return PayApiServiceFailureResponse when client returns 500" in new LocalSetup {
@@ -108,18 +104,18 @@ class PayApiServiceSpec extends BaseSpec {
 
       val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceFailureResponse
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/payment"),meq(exampleJson),any())(any(),any(),any(),any())
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return a PayApiServiceSuccessResponse with a payment url when http client returns 201" in new LocalSetup {
 
       override lazy val httpResponse = HttpResponse(CREATED, Some(
-        Json.obj("links" -> Json.obj("nextUrl" -> "https://example.com"))
+        Json.obj("nextUrl" -> "https://example.com")
       ))
 
       val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/payment"),meq(exampleJson),any())(any(),any(),any(),any())
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
   }
 

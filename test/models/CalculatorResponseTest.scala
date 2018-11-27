@@ -4,6 +4,39 @@ import util.BaseSpec
 
 class CalculatorResponseTest extends BaseSpec {
 
+  "Calling CalculatorResponse.getItemsWithTaxToPay" should {
+
+    trait LocalSetup {
+
+      lazy val cr = CalculatorResponse(
+        Some(Alcohol(List(
+          Band("A", List(
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("100.00", "0.00", "0.00", "100.00"))
+        ), Calculation("100.00", "0.00", "0.00", "100.00"))),
+        Some(Tobacco(List(
+          Band("A", List(
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(OtherGoods(List(
+          Band("A", List(
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Calculation("100.00", "0.00", "0.00", "100.00")
+      )
+    }
+
+    "return a list of only items chere tax is payable" in new LocalSetup {
+
+      cr.getItemsWithTaxToPay shouldBe List(
+
+        Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+      )
+    }
+  }
+
   "Calling CalculatorResponse.onlyGBP" should {
 
     trait LocalSetup {
