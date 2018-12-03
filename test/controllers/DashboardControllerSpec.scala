@@ -51,10 +51,10 @@ class DashboardControllerSpec extends BaseSpec {
 
       override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/dashboard")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
 
       verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
@@ -65,7 +65,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
 
-    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/dashboard").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/dashboard").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
 
     status(result) shouldBe OK
 
@@ -91,7 +91,7 @@ class DashboardControllerSpec extends BaseSpec {
         Calculation("1.00", "1.00", "1.00", "3.00")
       ))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/calculation")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
 
       status(result) shouldBe OK
 
@@ -115,7 +115,7 @@ class DashboardControllerSpec extends BaseSpec {
         Calculation("0.00", "0.00", "0.00", "0.00")
       ))))
 
-    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/calculation")).get
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
 
     status(result) shouldBe OK
 

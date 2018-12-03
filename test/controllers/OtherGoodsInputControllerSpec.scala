@@ -58,7 +58,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0?ir=0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/jewellery/currency/iid0?ir=0")).get
 
       status(result) shouldBe OK
 
@@ -77,11 +77,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("other-goods/jewellery"), iid = "iid0", currency = Some("JMD"))))
       )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/jewellery/currency/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
 
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/jewellery/currency/iid0?ir=0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/jewellery/currency/iid0?ir=0")
 
       verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
     }
@@ -93,7 +93,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/jewellery/country/iid0?ir=0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/jewellery/country/iid0?ir=0")).get
 
       status(result) shouldBe OK
 
@@ -112,10 +112,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD")))))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/country/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/country/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/country/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/country/iid0")
 
       verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
     }
@@ -128,7 +128,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity") ).get
 
       status(result) shouldBe OK
     }
@@ -140,7 +140,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN") ).get
 
       status(result) shouldBe BAD_REQUEST
     }
@@ -149,11 +149,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
 
-      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2") ).get
+      val result: Future[Result]= route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2") ).get
 
       status(result) shouldBe SEE_OTHER
 
-      redirectLocation(result).get should fullyMatch regex """^/bc-passengers-frontend/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=2$""".r
+      redirectLocation(result).get should fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=2$""".r
     }
   }
 }

@@ -19,20 +19,20 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
-      redirectLocation(route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/start")).get).get should
-        fullyMatch regex """^/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/[a-zA-Z0-9]{6}$""".r
+      redirectLocation(route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/start")).get).get should
+        fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/[a-zA-Z0-9]{6}$""".r
 
-      redirectLocation(route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/start")).get).get should
-        fullyMatch regex """^/bc-passengers-frontend/products/tobacco/cigars/no-of-sticks-weight/[a-zA-Z0-9]{6}$""".r
+      redirectLocation(route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/start")).get).get should
+        fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/[a-zA-Z0-9]{6}$""".r
 
-      redirectLocation(route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarillos/start")).get).get should
-        fullyMatch regex """^/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/[a-zA-Z0-9]{6}$""".r
+      redirectLocation(route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/start")).get).get should
+        fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/no-of-sticks-weight/[a-zA-Z0-9]{6}$""".r
 
-      redirectLocation(route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/start")).get).get should
-        fullyMatch regex """^/bc-passengers-frontend/products/tobacco/rolling/weight/[a-zA-Z0-9]{6}$""".r
+      redirectLocation(route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/start")).get).get should
+        fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/[a-zA-Z0-9]{6}$""".r
 
-      redirectLocation(route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/chewing/start")).get).get should
-        fullyMatch regex """^/bc-passengers-frontend/products/tobacco/chewing/weight/[a-zA-Z0-9]{6}$""".r
+      redirectLocation(route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/chewing/start")).get).get should
+        fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/chewing/weight/[a-zA-Z0-9]{6}$""".r
 
       verify(injected[LocalSessionCache], times(5)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -44,7 +44,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
     "return a 200" in new LocalSetup {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
 
       status(result) shouldBe OK
 
@@ -58,7 +58,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
     "return a 200" in new LocalSetup {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")).get
 
       status(result) shouldBe OK
 
@@ -73,7 +73,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")).get
 
       status(result) shouldBe OK
 
@@ -89,7 +89,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")
         .withFormUrlEncodedBody("noOfSticks" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -102,11 +102,11 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")
         .withFormUrlEncodedBody("noOfSticks" -> "5")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/country/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -121,7 +121,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
       
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/no-of-sticks-weight/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")
         .withFormUrlEncodedBody("noOfSticks" -> "NaN", "weight" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -134,11 +134,11 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/no-of-sticks-weight/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")
         .withFormUrlEncodedBody("noOfSticks" -> "5", "weight" -> "30.2")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/country/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -153,7 +153,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
       
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")
         .withFormUrlEncodedBody("weight" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -166,11 +166,11 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
       
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")
         .withFormUrlEncodedBody("weight" -> "30.2")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/country/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/country/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -183,7 +183,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 404 when the product path is invalid" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/not/a/real/product/country/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/not/a/real/product/country/iid0")).get
 
       status(result) shouldBe NOT_FOUND
 
@@ -195,7 +195,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/country/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/country/iid0")).get
 
       status(result) shouldBe OK
 
@@ -211,7 +211,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe BAD_REQUEST
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
@@ -221,10 +221,10 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
     "store the country in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/currency/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -238,7 +238,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/not/a/real/product/currency/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/not/a/real/product/currency/iid0")).get
 
       status(result) shouldBe NOT_FOUND
 
@@ -251,7 +251,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/currency/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/currency/iid0")).get
 
       status(result) shouldBe OK
 
@@ -267,7 +267,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/currency/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/currency/iid0")
         .withFormUrlEncodedBody("currency" -> "Not a currency code")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -281,11 +281,11 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/currency/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/currency/iid0")
         .withFormUrlEncodedBody("currency" -> "USD", "itemsRemaining" -> "5")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -299,10 +299,10 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
     "start new sesison when there is no cached journey data" in new LocalSetup {
 
       override lazy val cachedJourneyData  = None
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -313,10 +313,10 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -327,7 +327,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD")))))
 
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")).get
 
       status(result) shouldBe OK
 
@@ -342,11 +342,11 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData  = None
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -357,12 +357,12 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
 
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -373,7 +373,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD")))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
@@ -387,7 +387,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD")))))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigars/cost/iid0")
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "9.99")).get
 
       status(result) shouldBe SEE_OTHER

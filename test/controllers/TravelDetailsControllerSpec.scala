@@ -37,7 +37,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return the check declare goods start page" in {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/check-declare-goods-start-page")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-declare-goods-start-page")).get
 
       status(response) shouldBe OK
 
@@ -56,7 +56,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(euCountryCheck = Some("nonEuOnly"))) )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/eu-country-check")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")).get
 
       status(response) shouldBe OK
 
@@ -73,7 +73,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/eu-country-check")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -96,10 +96,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/eu-done")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-done")
 
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("euOnly"))(any())
@@ -111,10 +111,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
 
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/arrivals-from-outside-the-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("nonEuOnly"))(any())
     }
@@ -126,16 +126,16 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"))))
 
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/arrivals-from-both")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("both"))(any())
     }
 
     "return bad request when given invalid data" in {
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/eu-country-check").withFormUrlEncodedBody("value" -> "badValue")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -147,7 +147,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling GET ../arrivals-from-outside-the-eu" should {
     "return the interrupt page without the added rest of world guidance" in {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/arrivals-from-outside-the-eu")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -160,17 +160,17 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling POST ../arrivals-from-outside-the-eu" should {
     "redirect to the private craft page" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/arrivals-from-outside-the-eu")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")).get
       status(response) shouldBe SEE_OTHER
 
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/private-travel")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
     }
   }
 
   "calling GET ../arrivals-from-both" should {
     "return the interrupt page without the added rest of world guidance" in {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/arrivals-from-both")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -183,17 +183,17 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling POST ../arrivals-from-both" should {
     "redirect to the private craft page" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/arrivals-from-both")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")).get
       status(response) shouldBe SEE_OTHER
 
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/private-travel")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
     }
   }
 
   "calling GET ../eu-done" should {
     "return the interrupt page without the added rest of world guidance" in {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/arrivals-from-both")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -209,7 +209,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/confirm-age")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe OK
 
@@ -226,7 +226,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(true), ageOver17 = Some(true))) )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/confirm-age")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe OK
 
@@ -243,7 +243,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(false), ageOver17 = Some(false))) )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/confirm-age")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe OK
 
@@ -260,21 +260,21 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "Invoking confirmAgePost" should {
 
-    "redirect to /bc-passengers-frontend/dashboard when subsequent journey data is present" in {
+    "redirect to /check-tax-on-goods-you-bring-into-the-uk/dashboard when subsequent journey data is present" in {
 
       when(controller.travelDetailsService.storeAgeOver17(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(false), privateCraft = Some(false))) )
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(controller.travelDetailsService, times(1)).storeAgeOver17(meq(true))(any())
     }
 
     "return bad request when given invalid data" in {
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age").withFormUrlEncodedBody("value" -> "badValue")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -284,7 +284,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return top error summary box when trying to submit a blank form" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -300,7 +300,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the control when trying to submit a blank form" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/confirm-age")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -319,7 +319,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/private-travel")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe OK
       val doc = Jsoup.parse(contentAsString(response))
@@ -334,7 +334,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(false))) )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/private-travel")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe OK
       val doc = Jsoup.parse(contentAsString(response))
@@ -349,7 +349,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(privateCraft = Some(true))) )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/private-travel")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe OK
       val doc = Jsoup.parse(contentAsString(response))
@@ -368,23 +368,23 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.storePrivateCraft(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), privateCraft = Some(true), ageOver17 = Some(true))))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(controller.travelDetailsService, times(1)).storePrivateCraft(meq(true))(any())
     }
 
-    "redirect to /bc-passengers-frontend/confirm-age when only private craft journey data is present" in {
+    "redirect to /check-tax-on-goods-you-bring-into-the-uk/confirm-age when only private craft journey data is present" in {
 
       when(controller.travelDetailsService.storePrivateCraft(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(privateCraft = Some(true))))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/confirm-age")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/confirm-age")
 
       verify(controller.travelDetailsService, times(1)).storePrivateCraft(meq(true))(any())
     }
@@ -392,7 +392,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return bad request when given invalid data" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel").withFormUrlEncodedBody("value" -> "bad_value")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("value" -> "bad_value")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -402,7 +402,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return error summary box on the page head when trying to submit a blank form" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -418,7 +418,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the control when trying to submit a blank form" in {
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/private-travel")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -436,12 +436,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to select country when selecting start again on the dashboard page" in {
 
-      val fakeRequest = EnhancedFakeRequest("GET","/bc-passengers-frontend/new-session").withSession("test" -> "testValue")
+      val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk/new-session").withSession("test" -> "testValue")
       val sessionId = fakeRequest.session.get("sessionId")
       val response = route(app, fakeRequest).get
 
       status(response) shouldBe  SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/eu-country-check")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")
       session(response).data.get("test") shouldBe None
       session(response).data.get("sessionId") should not be sessionId
 
