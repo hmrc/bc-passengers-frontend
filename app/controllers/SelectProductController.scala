@@ -37,11 +37,11 @@ class   SelectProductController @Inject()(
             case ProductTreeLeaf(_, _, _, templateId) =>
 
               templateId match {
-                case "alcohol" => Future.successful(Redirect("/bc-passengers-frontend/products/"+productPath+"/start"))
-                case "cigarettes" => Future.successful(Redirect("/bc-passengers-frontend/products/"+productPath+"/start"))
-                case "cigars" => Future.successful(Redirect("/bc-passengers-frontend/products/"+productPath+"/start"))
-                case "tobacco" => Future.successful(Redirect("/bc-passengers-frontend/products/"+productPath+"/start"))
-                case "other-goods" => Future.successful(Redirect("/bc-passengers-frontend/products/"+productPath+"/quantity"))
+                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
+                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
+                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
+                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
+                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/quantity"))
               }
 
           }

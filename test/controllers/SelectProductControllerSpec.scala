@@ -73,7 +73,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What alcohol are you bringing into the UK?"
@@ -88,7 +88,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What tobacco are you bringing into the UK?"
@@ -103,7 +103,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What items are you bringing into the UK?"
@@ -114,7 +114,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/carpets-fabric")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/carpets-fabric")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What items of carpet or fabric are you bringing into the UK?"
@@ -127,7 +127,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/invalid/path")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/invalid/path")).get
 
       status(result) shouldBe NOT_FOUND
       h1 shouldBe "Technical problem"
@@ -137,7 +137,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/alcohol/beer")).get
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
       h1 shouldBe "Technical problem"
@@ -150,7 +150,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol").withFormUrlEncodedBody("value" -> "bad_value")).get
+      override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol").withFormUrlEncodedBody("value" -> "bad_value")).get
       status(result) shouldBe BAD_REQUEST
     }
 
@@ -160,10 +160,10 @@ class SelectProductControllerSpec extends BaseSpec {
         List("alcohol/beer"),List("alcohol/cider")
       )))
 
-      override val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
+      override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/next-step")
 
       verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(cachedJourneyData.get), meq(List(ProductPath("alcohol/beer"))))(any(),any())
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
@@ -187,7 +187,7 @@ class SelectProductControllerSpec extends BaseSpec {
           Future.successful(CacheMap("dummy", Map.empty))
         }
 
-        route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/next-step")).get
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/next-step")).get
       }
 
 
@@ -198,7 +198,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val selectedProducts = Nil
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
       verify(injected[SelectProductService], times(0)).removeSelectedProduct()(any(),any())
     }
@@ -217,7 +217,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val selectedProducts = List(List("other-goods", "books"))
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/quantity")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
       verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any(),any())
     }
@@ -227,7 +227,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val selectedProducts = List(List("alcohol"))
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/bc-passengers-frontend/products/alcohol")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/alcohol")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
       verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any(),any())
     }

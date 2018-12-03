@@ -18,7 +18,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 200" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/quantity")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity")).get
 
       status(result) shouldBe OK
 
@@ -32,7 +32,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 400 given bad form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "NaN")).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -43,11 +43,11 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "redirect the user to the country input with ir set, given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity").withFormUrlEncodedBody("quantity" -> "2")).get
 
       status(result) shouldBe SEE_OTHER
 
-      redirectLocation(result).get should fullyMatch regex """^/bc-passengers-frontend/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=2$""".r
+      redirectLocation(result).get should fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=2$""".r
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -58,7 +58,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 404 when the product path is invalid" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/not/a/real/product/country/iid0?ir=1")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/not/a/real/product/country/iid0?ir=1")).get
 
       status(result) shouldBe NOT_FOUND
 
@@ -68,7 +68,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when the product path is valid" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/country/iid0?ir=1")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/iid0?ir=1")).get
 
       status(result) shouldBe OK
 
@@ -82,7 +82,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 400 given bad form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("someWrongKey" -> "someWrongValue", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -93,10 +93,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "store the country in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/currency/iid0?ir=1")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/currency/iid0?ir=1")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -110,10 +110,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))), currency = Some("JMD"), cost = Some(20.0)))
       ))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(
@@ -128,7 +128,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 404 when the product path is invalid" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/not/a/real/product/currency/iid0?ir=1")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/not/a/real/product/currency/iid0?ir=1")).get
 
       status(result) shouldBe NOT_FOUND
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
@@ -138,7 +138,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 200 when cached JourneyData exists" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/currency/iid0?ir=1")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/currency/iid0?ir=1")).get
 
       status(result) shouldBe OK
 
@@ -152,7 +152,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 400 given bad form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/currency/iid0").withFormUrlEncodedBody("currency" -> "Not a currency code")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/currency/iid0").withFormUrlEncodedBody("currency" -> "Not a currency code")).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -163,10 +163,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "store the currency in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/currency/iid0").withFormUrlEncodedBody("currency" -> "USD", "itemsRemaining" -> "6")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/currency/iid0").withFormUrlEncodedBody("currency" -> "USD", "itemsRemaining" -> "6")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/other-goods/books/cost/iid0?ir=6")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0?ir=6")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
@@ -179,10 +179,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "start new session when there is no cached journey data" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = None
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/iid0?ir=1")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0?ir=1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -193,10 +193,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = None))
       ))
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/iid0?ir=1")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0?ir=1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -207,7 +207,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD")))
       ))
-      val result = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/other-goods/books/cost/iid0?ir=1")).get
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0?ir=1")).get
 
       status(result) shouldBe OK
 
@@ -221,10 +221,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
     "return a 500 when given bad form input and there is no cached journey data" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = None
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -235,10 +235,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = None))
       ))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
@@ -250,7 +250,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD")))
       ))
 
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0")).get
 
       status(result) shouldBe BAD_REQUEST
 
@@ -262,10 +262,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD")))))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "2")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "2")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get should fullyMatch regex """^/bc-passengers-frontend/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=1$""".r
+      redirectLocation(result).get should fullyMatch regex """^/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/[a-zA-Z0-9]{6}[?]ir=1$""".r
 
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
@@ -277,10 +277,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD")))))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))))(any())
@@ -293,10 +293,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
         purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")))),
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD")))
       ))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")))))))(any())
@@ -313,10 +313,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
         ),
         workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid1", currency = Some("USD")))
       ))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid1").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid1").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
@@ -331,10 +331,10 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0"))))
-      val result = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/next-step")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/next-step")
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())

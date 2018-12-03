@@ -63,7 +63,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -77,7 +77,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", noOfSticks = Some(5)))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -93,7 +93,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -107,7 +107,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), noOfSticks = Some(5)))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -124,7 +124,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -138,7 +138,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5))))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -155,7 +155,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/country/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/country/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -176,10 +176,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("20")), country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD")))))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigars/country/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/country/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigars/country/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/country/iid0")
 
       verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
     }
@@ -191,10 +191,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
     "redirect to the dashboard if there is no working instance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/currency/iid0")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
     }
 
     "return a 200 with the currency value populated if there is a working instance currency" in new LocalSetup {
@@ -203,7 +203,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", currency = Some("JMD")))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/currency/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -224,10 +224,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", currency = Some("JMD"))))
       )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/currency/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/currency/iid0")
 
       verify(injected[PurchasedProductService], times(1)).makeWorkingInstance(any(), any())(any(), any())
     }
@@ -239,13 +239,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/currency/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/currency/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
 
-      Some("/bc-passengers-frontend/dashboard")
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
     }
 
     "return a 200 with the cost value populated if there is a working instance" in new LocalSetup {
@@ -254,7 +254,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
         )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/cost/iid0")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/cost/iid0")).get
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
@@ -272,10 +272,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
         )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarettes/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")
     }
     "redirect to the noOfSticksWeight input page when changing cigarillos or cigars" in new LocalSetup {
 
@@ -283,10 +283,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
         )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/cigarillos/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/no-of-sticks-weight/iid0")
     }
     "redirect to the weight input page when changing rolling or pipe/rolling tobacco" in new LocalSetup {
 
@@ -294,10 +294,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
         )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/products/tobacco/rolling/iid0/update")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/iid0/update")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/weight/iid0")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")
     }
   }
 
@@ -308,11 +308,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", None, Some(100), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid1")
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid1")
       .withFormUrlEncodedBody("noOfSticks" -> "200")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
     }
 
     "redirect to the currency input when the iid does not match the working instance" in new LocalSetup {
@@ -320,11 +320,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarettes/no-of-sticks/iid1")
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid1")
         .withFormUrlEncodedBody("noOfSticks" -> "200")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarettes/country/iid1")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/country/iid1")
     }
   }
 
@@ -335,11 +335,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("500")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid1")
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid1")
         .withFormUrlEncodedBody("weight" -> "1000")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
     }
 
@@ -349,11 +349,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("250")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/rolling/weight/iid2")
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid2")
         .withFormUrlEncodedBody("weight" -> "600")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/rolling/country/iid2")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/country/iid2")
     }
   }
 
@@ -364,11 +364,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("500")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid1")
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/no-of-sticks-weight/iid1")
         .withFormUrlEncodedBody("noOfSticks" -> "500", "weight" -> "125")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/dashboard")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
 
     }
 
@@ -378,11 +378,11 @@ class TobaccoInputControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("250")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/products/tobacco/cigarillos/no-of-sticks-weight/iid2")
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/no-of-sticks-weight/iid2")
         .withFormUrlEncodedBody("noOfSticks" -> "500", "weight" -> "125")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/bc-passengers-frontend/products/tobacco/cigarillos/country/iid2")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/country/iid2")
     }
   }
 }

@@ -79,7 +79,7 @@ class UserInformationControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /bc-passengers-frontend/enter-details" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/enter-details" should {
 
     "Display the user information page" in new LocalSetup {
 
@@ -87,7 +87,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/bc-passengers-frontend/user-information")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
       status(response) shouldBe OK
 
@@ -98,7 +98,7 @@ class UserInformationControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling POST /bc-passengers-frontend/enter-details" should {
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/enter-details" should {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
@@ -106,7 +106,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "",
           "lastName" -> "Potter",
@@ -127,7 +127,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "123456789012345678901234567890123456",
           "lastName" -> "Potter",
@@ -148,7 +148,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "123456789012345678901234567890123456",
@@ -169,7 +169,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -190,7 +190,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -211,7 +211,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -232,7 +232,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
       override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -255,7 +255,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -278,7 +278,7 @@ class UserInformationControllerSpec extends BaseSpec {
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/bc-passengers-frontend/user-information")
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
