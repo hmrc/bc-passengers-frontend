@@ -17,8 +17,8 @@
 @(form: Form[_], path: Option[ProductPath] = None)(implicit messages: play.api.i18n.Messages)
 
 @if(form.hasErrors) {
-    <div id="errors" tabindex="-1" role="group" aria-labelledby="error-heading" class="error-summary">
-        <h2 class="heading-medium error-summary-heading">
+    <div id="errors" tabindex="-1" role="alert" aria-labelledby="error-heading" class="error-summary">
+        <h2 class="heading-medium error-summary-heading" id="error-heading">
             @Messages("label.there_is_a_problem")
         </h2>
 

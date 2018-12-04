@@ -1,7 +1,5 @@
 package controllers
 
-import java.util.UUID
-
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
@@ -21,23 +19,25 @@ class UserInformationController @Inject()(
   val countriesService: CountriesService,
   val userInformationService: UserInformationService,
   val payApiService: PayApiService,
-  val declarationService: DeclarationService
+  val declarationService: DeclarationService,
+  val dateTimeProviderService: DateTimeProviderService
 )(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
 
+  def receiptDateTime: DateTime = dateTimeProviderService.now
+
   def enterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
-    Future.successful(Ok(views.html.declaration.enter_your_details(EnterYourDetailsDto.form)))
+    Future.successful(Ok(views.html.declaration.enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))
   }
 
   def processEnterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
 
-    EnterYourDetailsDto.form.bindFromRequest.fold(
+    EnterYourDetailsDto.form(receiptDateTime).bindFromRequest.fold(
 
       formWithErrors => {
         Future.successful(BadRequest(views.html.declaration.enter_your_details(formWithErrors)))
       },
       enterYourDetailsDto => {
 
-        val receiptDateTime = DateTime.now()
         val userInformation = UserInformation.build(enterYourDetailsDto)
 
         val correlationId = context.sessionId

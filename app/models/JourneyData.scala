@@ -1,6 +1,6 @@
 package models
 
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.{DateTime, LocalDate, LocalTime}
 import play.api.libs.json.Json
 
 
@@ -21,14 +21,15 @@ object UserInformation {
   implicit val formats = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
-    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateOfArrival)
+    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
 }
 case class UserInformation(
   firstName: String,
   lastName: String,
   passportNumber: String,
   placeOfArrival: String,
-  dateOfArrival: LocalDate
+  dateOfArrival: LocalDate,
+  timeOfArrival: LocalTime
 )
 
 

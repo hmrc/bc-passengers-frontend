@@ -13,9 +13,5 @@ $(window).load(function () {
     // If there is an error summary, set focus to the summary
     if ($('.error-summary').length) {
         $('.error-summary').focus()
-        $('.error-summary a').click(function (e) {
-            e.preventDefault()
-            $('.form-group-error input:first').focus()
-        })
     }
 })

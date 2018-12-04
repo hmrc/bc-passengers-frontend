@@ -5,7 +5,8 @@ import java.util.UUID
 import util._
 import helpers.Helpers.{SchemaValidator, _}
 import models._
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.mockito.Mockito._
@@ -40,7 +41,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   val declarationService: DeclarationService = app.injector.instanceOf[DeclarationService]
 
-  val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))
+  val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
   val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
     Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Ciagerettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
@@ -237,7 +238,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "truncate a product description to 40 characters if the product description is too big in the metadata." in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))
+      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -308,7 +309,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"))
+      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
