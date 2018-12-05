@@ -20,7 +20,8 @@ class DeclarationService @Inject()(
   val localSessionCache: LocalSessionCache,
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
-  environment: Environment
+  environment: Environment,
+  implicit val ec: ExecutionContext
 ) extends ServicesConfig with UsesJourneyData {
 
   override protected def mode: Mode = environment.mode
@@ -29,7 +30,7 @@ class DeclarationService @Inject()(
   lazy val passengersDeclarationsBaseUrl = baseUrl("bc-passengers-declarations")
 
 
-  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeclarationServiceResponse] = {
+  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 

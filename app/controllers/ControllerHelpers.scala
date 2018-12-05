@@ -9,7 +9,7 @@ import services.{CountriesService, CurrencyService, ProductTreeService, TravelDe
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
 trait ControllerHelpers extends FrontendController with I18nSupport {
@@ -21,6 +21,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
   implicit def appConfig: AppConfig
   implicit def messagesApi: play.api.i18n.MessagesApi
+  implicit def ec: ExecutionContext
 
 
   def PublicAction(block: LocalContext => Future[Result]): Action[AnyContent] = {

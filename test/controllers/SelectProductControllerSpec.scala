@@ -54,7 +54,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
-      when(injected[SelectProductService].addSelectedProducts(any(),any())(any(),any())) thenReturn {
+      when(injected[SelectProductService].addSelectedProducts(any(),any())(any())) thenReturn {
         Future.successful(JourneyData())
       }
 
@@ -165,7 +165,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/next-step")
 
-      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(cachedJourneyData.get), meq(List(ProductPath("alcohol/beer"))))(any(),any())
+      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(cachedJourneyData.get), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
 
     }
@@ -183,7 +183,7 @@ class SelectProductControllerSpec extends BaseSpec {
         when(injected[TravelDetailsService].getJourneyData(any())) thenReturn{
           Future.successful(Some(JourneyData(ageOver17 = Some(true), privateCraft = Some(false), selectedProducts = selectedProducts)))
         }
-        when(injected[SelectProductService].removeSelectedProduct()(any(),any())) thenReturn{
+        when(injected[SelectProductService].removeSelectedProduct()(any())) thenReturn{
           Future.successful(CacheMap("dummy", Map.empty))
         }
 
@@ -200,7 +200,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
-      verify(injected[SelectProductService], times(0)).removeSelectedProduct()(any(),any())
+      verify(injected[SelectProductService], times(0)).removeSelectedProduct()(any())
     }
 
     "inform the user the item is not found when journeyData.selectedProducts contains an invalid path" in new NextStepSetup {
@@ -209,7 +209,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       status(response) shouldBe NOT_FOUND
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
-      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any(),any())
+      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any())
     }
 
     "go to purchase input form when journeyData.selectedProducts contains a leaf" in new NextStepSetup {
@@ -219,7 +219,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/quantity")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
-      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any(),any())
+      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any())
     }
 
     "redirect to selectProducts when journeyData.selectedProducts contains a branch" in new NextStepSetup {
@@ -229,7 +229,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/alcohol")
       verify(injected[TravelDetailsService], times(1)).getJourneyData(any())
-      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any(),any())
+      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any())
     }
   }
 }

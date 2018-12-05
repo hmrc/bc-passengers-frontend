@@ -1,12 +1,11 @@
 package services.http
 
+import com.typesafe.config.Config
 import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.HttpAuditing
-import uk.gov.hmrc.play.audit.http.config.AuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.bootstrap.config.LoadAuditingConfig
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.http.ws._
 
@@ -24,4 +23,6 @@ class WsAllMethods @Inject() (
   override val mode = environment.mode
   override protected val appNameConfiguration = config
   override protected val runModeConfiguration = config
+
+  override protected val configuration: Option[Config] = None
 }

@@ -10,7 +10,7 @@ import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class OtherGoodsInputController @Inject() (
   val countriesService: CountriesService,
@@ -18,7 +18,7 @@ class OtherGoodsInputController @Inject() (
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def displayQuantityInput(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
 

@@ -9,10 +9,10 @@ import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{Action, AnyContent}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import Console._
 
+import Console._
 import scala.collection.immutable
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 
@@ -24,7 +24,7 @@ class DashboardController @Inject() (
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers  {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers  {
 
   def showDashboard: Action[AnyContent] = DashboardAction { implicit context =>
 

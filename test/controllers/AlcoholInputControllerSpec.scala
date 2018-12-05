@@ -135,7 +135,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      doc.getElementById("country-Jamaica").outerHtml should include("""<option id="country-Jamaica" value="Jamaica" selected="selected">Jamaica</option>""")
+      doc.getElementById("country-Jamaica").outerHtml should include("""<option id="country-Jamaica" value="Jamaica" selected>Jamaica</option>""")
     }
 
   }
@@ -191,7 +191,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      doc.getElementById("currency-JMD").outerHtml should include("""<option id="currency-JMD" value="JMD" selected>Jamaica Dollar (JMD)</option>""")
     }
   }
 

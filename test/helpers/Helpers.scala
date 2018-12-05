@@ -52,7 +52,7 @@ object Helpers {
 
     private lazy val schema: JsonSchema = {
       val schemaJson = Helpers.resourceAsJsonNode(schemaResourcePath).getOrElse(throw new RuntimeException("Missing schema: " + schemaResourcePath))
-      (new JsonSchemaFactory).getSchema(schemaJson)
+      JsonSchemaFactory.getInstance().getSchema(schemaJson)
     }
 
 

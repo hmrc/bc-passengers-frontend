@@ -8,7 +8,7 @@ import play.api.mvc.{Action, AnyContent}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AlterProductsController @Inject() (
   val travelDetailsService: TravelDetailsService,
@@ -16,7 +16,7 @@ class AlterProductsController @Inject() (
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def confirmRemove(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 

@@ -4,12 +4,14 @@ import javax.inject.Inject
 import models.JourneyData
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
-class TravelDetailsService @Inject() (val localSessionCache: LocalSessionCache) extends UsesJourneyData {
+class TravelDetailsService @Inject() (
+  val localSessionCache: LocalSessionCache,
+  implicit val ec: ExecutionContext
+) extends UsesJourneyData {
 
   def storeEuCountryCheck(countryChoice: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 

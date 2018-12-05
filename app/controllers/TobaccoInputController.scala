@@ -9,8 +9,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class TobaccoInputController @Inject()(
   val countriesService: CountriesService,
@@ -18,7 +17,7 @@ class TobaccoInputController @Inject()(
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def loadTobaccoInputPage(path: ProductPath, iid: String): Future[Result] = {
     Future.successful {
