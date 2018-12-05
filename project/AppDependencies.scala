@@ -24,3 +24,4 @@ object AppDependencies {
     "com.networknt" % "json-schema-validator" % "0.1.24" exclude("org.slf4j", "slf4j-nop")
   )
 }
+
