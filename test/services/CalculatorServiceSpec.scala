@@ -13,7 +13,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import util.BaseSpec
 
 import scala.concurrent.Future

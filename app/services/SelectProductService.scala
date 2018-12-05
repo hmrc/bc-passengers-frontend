@@ -11,10 +11,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class SelectProductService @Inject()(
   val localSessionCache: LocalSessionCache,
   val productTreeService: ProductTreeService,
-  val currencyService: CurrencyService
+  val currencyService: CurrencyService,
+  implicit val ec: ExecutionContext
 ) extends UsesJourneyData {
 
-  def addSelectedProducts(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier, ec: ExecutionContext) = {
+  def addSelectedProducts(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier) = {
 
     val truncatedCurrentSelectedProducts = journeyData.selectedProducts.foldLeft[List[List[String]]](List[List[String]]()) { (acc, ele) =>
       val cat = ele.dropRight(1)
@@ -28,7 +29,7 @@ class SelectProductService @Inject()(
     }
   }
 
-  def removeSelectedProduct()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CacheMap] = {
+  def removeSelectedProduct()(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
     localSessionCache.fetchAndGetJourneyData flatMap {
       case Some(journeyData) => {

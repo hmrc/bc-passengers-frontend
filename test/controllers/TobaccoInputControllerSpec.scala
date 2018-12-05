@@ -209,7 +209,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      doc.getElementById("currency-JMD").outerHtml should include ("""<option id="currency-JMD" value="JMD" selected="selected">Jamaica Dollar (JMD)</option>""")
+      doc.getElementById("currency-JMD").outerHtml should include ("""<option id="currency-JMD" value="JMD" selected>Jamaica Dollar (JMD)</option>""")
     }
   }
 

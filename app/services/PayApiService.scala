@@ -22,7 +22,8 @@ class PayApiService @Inject()(
   configuration: Configuration,
   environment: Environment,
   productTreeService: ProductTreeService,
-  currencyService: CurrencyService
+  currencyService: CurrencyService,
+  implicit val ec: ExecutionContext
 ) extends ServicesConfig with UsesJourneyData {
 
   override protected def mode: Mode = environment.mode
@@ -31,7 +32,7 @@ class PayApiService @Inject()(
   lazy val payApiBaseUrl = baseUrl("pay-api")
   lazy val redirectUrl = configuration.getString("bc-passengers-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage().url
 
-  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier): Future[PayApiServiceResponse] = {
 
     val requestBody = Json.obj(
       "chargeReference" -> chargeReference.value,

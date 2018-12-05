@@ -31,7 +31,8 @@ class CalculatorService @Inject() (
   configuration: Configuration,
   environment: Environment,
   productTreeService: ProductTreeService,
-  currencyService: CurrencyService
+  currencyService: CurrencyService,
+  implicit val ec: ExecutionContext
 ) extends ServicesConfig with UsesJourneyData {
 
   override protected def mode: Mode = environment.mode
@@ -42,7 +43,7 @@ class CalculatorService @Inject() (
 
   def todaysDate: String = LocalDate.now.format(DateTimeFormatter.ISO_DATE)
 
-  def calculate()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculatorServiceResponse] = {
+  def calculate()(implicit hc: HeaderCarrier): Future[CalculatorServiceResponse] = {
 
     getJourneyData flatMap {
 
@@ -66,7 +67,7 @@ class CalculatorService @Inject() (
   }
 
 
-  def doCalculation(calculatorRequest: CalculatorRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculatorResponse] = {
+  def doCalculation(calculatorRequest: CalculatorRequest)(implicit hc: HeaderCarrier): Future[CalculatorResponse] = {
 
     wsAllMethods.POST[CalculatorRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { calculatorResponse =>
 
@@ -74,14 +75,14 @@ class CalculatorService @Inject() (
     }
   }
 
-  def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+  def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier): Future[JourneyData] = {
 
     val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse))
 
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
-  def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[CalculatorRequest]] = {
+  def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorRequest]] = {
 
     getCurrencyConversionRates(journeyData) map { ratesMap =>
 
@@ -110,7 +111,7 @@ class CalculatorService @Inject() (
   }
 
 
-  private def getCurrencyConversionRates(journeyData: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[String, BigDecimal]] = {
+  private def getCurrencyConversionRates(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Map[String, BigDecimal]] = {
 
     val allCurrencies: Set[Currency] = journeyData.allCurrencyCodes.flatMap(currencyService.getCurrencyByCode)
 

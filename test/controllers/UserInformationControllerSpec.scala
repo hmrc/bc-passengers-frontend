@@ -75,8 +75,8 @@ class UserInformationControllerSpec extends BaseSpec {
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
-      when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any(),any())) thenReturn Future.successful(payApiResponse)
-      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any())(any(),any())) thenReturn Future.successful(declarationServiceResponse)
+      when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any())) thenReturn Future.successful(payApiResponse)
+      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any())(any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
       rt(app, req)
     }

@@ -7,11 +7,13 @@ import services.http.WsAllMethods
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
+import scala.concurrent.ExecutionContext
+
 
 
 @Singleton
-class LocalSessionCache @Inject() (override val http: WsAllMethods, environment: Environment, config: Configuration) extends SessionCache with AppName with ServicesConfig {
+class LocalSessionCache @Inject() (override val http: WsAllMethods, environment: Environment, config: Configuration, implicit val ec: ExecutionContext) extends SessionCache with AppName with ServicesConfig {
   override lazy val defaultSource = appName
   override lazy val baseUri = baseUrl("cachable.session-cache")
   override lazy val domain = getConfString("cachable.session-cache.domain", "keystore")

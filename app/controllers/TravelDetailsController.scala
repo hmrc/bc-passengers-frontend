@@ -12,7 +12,7 @@ import services.{CountriesService, CurrencyService, ProductTreeService, TravelDe
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
@@ -22,7 +22,7 @@ class TravelDetailsController @Inject() (
   val productsService: ProductTreeService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Redirect(routes.TravelDetailsController.euCountryCheck()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))

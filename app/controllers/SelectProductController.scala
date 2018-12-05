@@ -2,13 +2,13 @@ package controllers
 
 import config.AppConfig
 import javax.inject.Inject
-import models.{ProductTreeBranch, ProductTreeLeaf, ProductPath, SelectProductsDto}
+import models.{ProductPath, ProductTreeBranch, ProductTreeLeaf, SelectProductsDto}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class   SelectProductController @Inject()(
   val productTreeService: ProductTreeService,
@@ -17,7 +17,7 @@ class   SelectProductController @Inject()(
   val countriesService: CountriesService,
   val selectProductService: SelectProductService,
   val purchasedProductService: PurchasedProductService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi) extends FrontendController with I18nSupport with ControllerHelpers {
+)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
 
   def nextStep(): Action[AnyContent] = DashboardAction { implicit context =>
 
