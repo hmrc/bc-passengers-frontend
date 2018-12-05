@@ -207,7 +207,7 @@ object EnterYourDetailsDto {
       (timeString._1.toInt, timeString._2.toInt, timeString._3),
     time =>
       (time._1.toString, time._2.toString, time._3))
-    .verifying("error.enter_a_real_time", time => time._1>= 1 && time._1 <= 12 && time._2 >= 0 && time._2<= 60)
+    .verifying("error.enter_a_real_time", time => time._1>= 1 && time._1 <= 12 && time._2 >= 0 && time._2<= 59)
     .verifying("error.enter_a_real_time", time => time._3.toLowerCase == "am" || time._3.toLowerCase == "pm")
     .transform[LocalTime](
     time =>
