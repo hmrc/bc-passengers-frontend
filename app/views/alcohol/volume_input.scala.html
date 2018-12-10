@@ -1,4 +1,5 @@
-@(volumeInput: Form[VolumeDto], productName: String, token: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(volumeInput: Form[VolumeDto], productName: String, token: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -9,7 +10,7 @@
 
 @main_template(title = title.toString, bodyClasses = None) {
 
-  @helpers.form(action = routes.AlcoholInputController.processVolumeInput(path, iid)){
+  @form(action = routes.AlcoholInputController.processVolumeInput(path, iid)){
 
     <h1 class="heading-xlarge">@title.toString</h1>
 
@@ -22,7 +23,7 @@
       }
 
     <div class="form-group">
-      @helpers.input(
+      @input(
         volumeInput("volume"),
         '_label -> messages("label.volume_in_litres"),
         '_labelTextClass -> "form-label",

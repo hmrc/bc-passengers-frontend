@@ -5,7 +5,7 @@ import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -16,8 +16,19 @@ class TobaccoInputController @Inject()(
   val travelDetailsService: TravelDetailsService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
-  val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
+  val productTreeService: ProductTreeService,
+  val cost_input: views.html.tobacco.cost_input,
+  val country_of_purchase: views.html.tobacco.country_of_purchase,
+  val currency_input: views.html.tobacco.currency_input,
+  val no_of_sticks_input: views.html.tobacco.no_of_sticks_input,
+  val no_of_sticks_weight_input: views.html.tobacco.no_of_sticks_weight_input,
+  val weight_input: views.html.tobacco.weight_input,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def loadTobaccoInputPage(path: ProductPath, iid: String): Future[Result] = {
     Future.successful {
@@ -53,7 +64,7 @@ class TobaccoInputController @Inject()(
     }
 
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.tobacco.no_of_sticks_input(form, product.token, product.name, path, iid)))
+      Future.successful(Ok(no_of_sticks_input(form, product.token, product.name, path, iid)))
     }
   }
 
@@ -62,7 +73,7 @@ class TobaccoInputController @Inject()(
     NoOfSticksDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.tobacco.no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
+          Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
         }
       },
       dto => {
@@ -89,7 +100,7 @@ class TobaccoInputController @Inject()(
       }
     }
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.tobacco.no_of_sticks_weight_input(form, product.token, product.name, path, iid)))
+      Future.successful(Ok(no_of_sticks_weight_input(form, product.token, product.name, path, iid)))
     }
   }
 
@@ -98,7 +109,7 @@ class TobaccoInputController @Inject()(
     NoOfSticksAndWeightDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.tobacco.no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
+          Future.successful(BadRequest(no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
         }
       },
       dto => {
@@ -126,7 +137,7 @@ class TobaccoInputController @Inject()(
     }
 
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.tobacco.weight_input(form, product.token, product.name, path, iid)))
+      Future.successful(Ok(weight_input(form, product.token, product.name, path, iid)))
     }
   }
 
@@ -135,7 +146,7 @@ class TobaccoInputController @Inject()(
     WeightDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.tobacco.weight_input(formWithErrors, product.token, product.name, path, iid)))
+          Future.successful(BadRequest(weight_input(formWithErrors, product.token, product.name, path, iid)))
         }
       },
       dto => {
@@ -163,7 +174,7 @@ class TobaccoInputController @Inject()(
 
     requireProduct(path) { product =>
       requireWorkingInstanceDescription(product) { description =>
-        Future.successful(Ok(views.html.tobacco.country_of_purchase(form, product, path, iid, countriesService.getAllCountries, description)))
+        Future.successful(Ok(country_of_purchase(form, product, path, iid, countriesService.getAllCountries, description)))
       }
     }
   }
@@ -182,7 +193,7 @@ class TobaccoInputController @Inject()(
       formWithErrors => {
         requireProduct(path) { product =>
           requireWorkingInstanceDescription(product) { description =>
-            Future.successful(BadRequest(views.html.tobacco.country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, description)))
+            Future.successful(BadRequest(country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, description)))
           }
         }
       },
@@ -213,7 +224,7 @@ class TobaccoInputController @Inject()(
 
     requireProduct(path) { product =>
       requireWorkingInstanceDescription(product) { description =>
-        Future.successful(Ok(views.html.tobacco.currency_input(form, product, currencyService.getAllCurrencies, description, path, iid)))
+        Future.successful(Ok(currency_input(form, product, currencyService.getAllCurrencies, description, path, iid)))
       }
     }
   }
@@ -233,7 +244,7 @@ class TobaccoInputController @Inject()(
       formWithErrors => {
         requireProduct(path) { product =>
           requireWorkingInstanceDescription(product) { description =>
-            Future.successful(BadRequest(views.html.tobacco.currency_input(formWithErrors, product, currencyService.getAllCurrencies, description, path, iid)))
+            Future.successful(BadRequest(currency_input(formWithErrors, product, currencyService.getAllCurrencies, description, path, iid)))
           }
         }
       },
@@ -258,7 +269,7 @@ class TobaccoInputController @Inject()(
     requireProduct(path) { product =>
       requireWorkingInstanceDescription(product) { description =>
         requireWorkingInstanceCurrency { currency =>
-            Future.successful(Ok(views.html.tobacco.cost_input(form, product, path, iid, description, currency.displayName)))
+            Future.successful(Ok(cost_input(form, product, path, iid, description, currency.displayName)))
         }
       }
     }
@@ -273,7 +284,7 @@ class TobaccoInputController @Inject()(
           requireWorkingInstanceDescription(product) { description =>
             requireWorkingInstanceCurrency { currency =>
               requireProduct(path) { product =>
-                Future.successful(BadRequest(views.html.tobacco.cost_input(formWithErrors, product, path, iid, description, currency.displayName)))
+                Future.successful(BadRequest(cost_input(formWithErrors, product, path, iid, description, currency.displayName)))
               }
             }
           }

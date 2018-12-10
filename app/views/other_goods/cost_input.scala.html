@@ -1,4 +1,5 @@
-@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, iid: String, currency: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(costForm: Form[CostDto], product: ProductTreeLeaf, path: ProductPath, iid: String, currency: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -11,12 +12,12 @@
 
     <h1 class="heading-xlarge">@title.toString</h1>
 
-    @helpers.form(action = routes.OtherGoodsInputController.processCostInput(path, iid)) {
+    @form(action = routes.OtherGoodsInputController.processCostInput(path, iid)) {
 
         <input type="hidden" name="itemsRemaining" value="@costForm("itemsRemaining").value">
 
         <div class="form-group">
-            @helpers.input(
+            @input(
                 costForm("cost"),
                 '_label -> messages("label.price_in", currency),
                 '_labelTextClass -> "form-label",

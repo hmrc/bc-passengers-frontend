@@ -2,7 +2,8 @@ package models
 
 import org.joda.time.{DateTime, LocalDate, LocalTime}
 import play.api.libs.json.Json
-
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 object PurchasedProductInstance {
   implicit val formats = Json.format[PurchasedProductInstance]
@@ -36,6 +37,7 @@ case class UserInformation(
 object JourneyData {
   implicit val formats = Json.format[JourneyData]
 }
+
 case class JourneyData(
   euCountryCheck: Option[String] = None,
   privateCraft: Option[Boolean] = None,

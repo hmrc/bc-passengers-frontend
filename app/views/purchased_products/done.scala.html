@@ -1,4 +1,5 @@
-@(calculatorResponseDto: CalculatorResponseDto, showExchangeRateInfo: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template)
+@(calculatorResponseDto: CalculatorResponseDto, showExchangeRateInfo: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("done.page_title", calculatorResponseDto.calculation.allTax)) {
 

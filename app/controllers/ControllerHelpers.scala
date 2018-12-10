@@ -7,7 +7,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
@@ -19,6 +19,8 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
   def currencyService: CurrencyService
   def countriesService: CountriesService
 
+  def error_template: views.html.error_template
+
   implicit def appConfig: AppConfig
   implicit def messagesApi: play.api.i18n.MessagesApi
   implicit def ec: ExecutionContext
@@ -26,7 +28,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
   def PublicAction(block: LocalContext => Future[Result]): Action[AnyContent] = {
 
-    UnauthorisedAction.async { implicit request =>
+    Action.async { implicit request =>
 
       trimmingFormUrlEncodedData { implicit request =>
 
@@ -69,8 +71,10 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
     }
   }
 
+  implicit def contextToRequest(implicit localContext: LocalContext)= localContext.request
+
   def logAndRenderError(logMessage: String, status: Status = InternalServerError)(implicit context: LocalContext): Future[Result] = {
-    Future.successful(status(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+    Future.successful(status(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
   }
 
   def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {

@@ -13,13 +13,11 @@ import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{route => rt, _}
 import services.{LocalSessionCache, PurchasedProductService, SelectProductService, TravelDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
-import util.{BaseSpec, FakeCookieCryptoFilter}
-import play.api.test.Helpers.{route => rt}
-
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.concurrent.Future
 import scala.language.postfixOps
@@ -34,7 +32,7 @@ class SelectProductControllerSpec extends BaseSpec {
     .overrides(bind[SelectProductService].toInstance(MockitoSugar.mock[SelectProductService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
-    .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
+    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {
@@ -179,6 +177,8 @@ class SelectProductControllerSpec extends BaseSpec {
       def selectedProducts: List[List[String]]
 
       lazy val response = {
+
+        import play.api.test.Helpers.route
 
         when(injected[TravelDetailsService].getJourneyData(any())) thenReturn{
           Future.successful(Some(JourneyData(ageOver17 = Some(true), privateCraft = Some(false), selectedProducts = selectedProducts)))

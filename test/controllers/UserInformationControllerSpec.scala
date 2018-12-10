@@ -1,11 +1,10 @@
 package controllers
 
-import util.BaseSpec
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.jsoup.Jsoup
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
@@ -15,13 +14,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import services._
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
-import util.{BaseSpec, FakeCookieCryptoFilter}
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.concurrent.Future
 import scala.language.postfixOps
-import scala.collection.JavaConversions._
-import play.api.test.Helpers.{route => rt, _}
 
 
 class UserInformationControllerSpec extends BaseSpec {
@@ -33,7 +30,7 @@ class UserInformationControllerSpec extends BaseSpec {
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
     .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
     .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
-    .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
+    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {

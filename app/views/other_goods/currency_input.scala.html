@@ -1,4 +1,5 @@
-@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, path: ProductPath, currencies: List[Currency], iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, path: ProductPath, currencies: List[Currency], iid: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.mvc.Call
@@ -29,7 +30,7 @@
 
     <h1 class="heading-xlarge">@title.toString</h1>
 
-    @helpers.form(action = routes.OtherGoodsInputController.processCurrencyInput(path, iid)){
+    @form(action = routes.OtherGoodsInputController.processCurrencyInput(path, iid)){
         <input type="hidden" name="itemsRemaining" value="@currencyForm("itemsRemaining").value">
 
         @components.select(

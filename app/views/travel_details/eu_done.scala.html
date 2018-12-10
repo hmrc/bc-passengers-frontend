@@ -1,4 +1,5 @@
-@()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("heading.you_do_not_need_to_tell_us_about_goods_"), bodyClasses = None) {
 

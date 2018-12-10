@@ -1,4 +1,5 @@
-@(mixEuRow: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, main_template: views.html.main_template)
+@(mixEuRow: Boolean)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -49,7 +50,7 @@
     </ul>
     <br>
 
-    @helpers.form(action = routes.TravelDetailsController.interruptPost()) {
+    @form(action = routes.TravelDetailsController.interruptPost()) {
         <div class="form-group">
             <button class="button" type="submit">@messages("label.continue_to_tell_us_about_your_non_eu_goods")</button>
         </div>

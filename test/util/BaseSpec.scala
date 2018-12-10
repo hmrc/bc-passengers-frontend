@@ -21,11 +21,12 @@ trait BaseSpec extends WordSpecLike with Matchers with GuiceOneAppPerSuite with 
     val csrfFilter     = app.injector.instanceOf[CSRFFilter]
     val token          = csrfFilter.tokenProvider.generateToken
 
-    fakeRequest.copyFakeRequest(tags = fakeRequest.tags ++ Map(
-      Token.NameRequestTag  -> csrfConfig.tokenName,
-      Token.RequestTag      -> token
-    )).withHeaders((csrfConfig.headerName, token)).withSession(SessionKeys.sessionId -> "fakesessionid")
+    fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
 
+//    (tags = fakeRequest.tags ++ Map(
+//      Token.NameRequestTag  -> csrfConfig.tokenName,
+//      Token.RequestTag      -> token
+//    )).withHeaders((csrfConfig.headerName, token))
   }
 
   def injected[T](c: Class[T]): T = app.injector.instanceOf(c)

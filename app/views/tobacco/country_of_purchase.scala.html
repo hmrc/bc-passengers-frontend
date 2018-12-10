@@ -1,4 +1,5 @@
-@(countryForm: Form[SelectedCountryDto], product: ProductTreeLeaf, path: ProductPath, iid: String, countries: List[Country], description: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(countryForm: Form[SelectedCountryDto], product: ProductTreeLeaf, path: ProductPath, iid: String, countries: List[Country], description: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -34,7 +35,7 @@
 
     <h1 class="heading-xlarge">@messages("label.tobacco.where_did_you_buy_the_", description)</h1>
 
-    @helpers.form(action = routes.TobaccoInputController.processCountryInput(path, iid)){
+    @form(action = routes.TobaccoInputController.processCountryInput(path, iid)){
 
             @components.select(
                 field = countryForm("country"),
