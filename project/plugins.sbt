@@ -7,7 +7,7 @@ addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "1.15.0")
 
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.8.3")
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.19")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.20")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-settings" % "3.9.0")
 
@@ -19,4 +19,4 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.1.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "0.14.0")
 
-addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.8")
+addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.12")

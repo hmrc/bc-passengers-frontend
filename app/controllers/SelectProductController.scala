@@ -4,7 +4,7 @@ import config.AppConfig
 import javax.inject.Inject
 import models.{ProductPath, ProductTreeBranch, ProductTreeLeaf, SelectProductsDto}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -16,8 +16,14 @@ class   SelectProductController @Inject()(
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val selectProductService: SelectProductService,
-  val purchasedProductService: PurchasedProductService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
+  val purchasedProductService: PurchasedProductService,
+  val select_products: views.html.purchased_products.select_products,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def nextStep(): Action[AnyContent] = DashboardAction { implicit context =>
 
@@ -54,9 +60,9 @@ class   SelectProductController @Inject()(
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
-        Future.successful(Ok(views.html.purchased_products.select_products(SelectProductsDto.form, children.map( i => ( i.name, i.token ) ), path)))
+        Future.successful(Ok(select_products(SelectProductsDto.form, children.map( i => ( i.name, i.token ) ), path)))
       case _ =>
-        Future.successful(InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+        Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
 
     }
   }
@@ -69,7 +75,7 @@ class   SelectProductController @Inject()(
       SelectProductsDto.form.bindFromRequest.fold(
         formWithErrors => {
           Future.successful {
-            BadRequest(views.html.purchased_products.select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
+            BadRequest(select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
           }
         },
         success = selectProductsDto => {

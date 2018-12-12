@@ -5,12 +5,11 @@ import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
 import models._
-import play.api.Mode.Mode
 import play.api.libs.json.{Json, Reads}
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
@@ -32,14 +31,12 @@ class CalculatorService @Inject() (
   environment: Environment,
   productTreeService: ProductTreeService,
   currencyService: CurrencyService,
+  servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
-) extends ServicesConfig with UsesJourneyData {
+) extends UsesJourneyData {
 
-  override protected def mode: Mode = environment.mode
-  override protected def runModeConfiguration: Configuration = configuration
-
-  lazy val currencyConversionBaseUrl: String = baseUrl("currency-conversion")
-  lazy val passengersDutyCalculatorBaseUrl: String = baseUrl("passengers-duty-calculator")
+  lazy val currencyConversionBaseUrl: String = servicesConfig.baseUrl("currency-conversion")
+  lazy val passengersDutyCalculatorBaseUrl: String = servicesConfig.baseUrl("passengers-duty-calculator")
 
   def todaysDate: String = LocalDate.now.format(DateTimeFormatter.ISO_DATE)
 

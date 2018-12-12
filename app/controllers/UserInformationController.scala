@@ -5,7 +5,7 @@ import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -20,13 +20,19 @@ class UserInformationController @Inject()(
   val userInformationService: UserInformationService,
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
-  val dateTimeProviderService: DateTimeProviderService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
+  val dateTimeProviderService: DateTimeProviderService,
+  val enter_your_details: views.html.declaration.enter_your_details,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def receiptDateTime: DateTime = dateTimeProviderService.now
 
   def enterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
-    Future.successful(Ok(views.html.declaration.enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))
+    Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))
   }
 
   def processEnterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
@@ -34,7 +40,7 @@ class UserInformationController @Inject()(
     EnterYourDetailsDto.form(receiptDateTime).bindFromRequest.fold(
 
       formWithErrors => {
-        Future.successful(BadRequest(views.html.declaration.enter_your_details(formWithErrors)))
+        Future.successful(BadRequest(enter_your_details(formWithErrors)))
       },
       enterYourDetailsDto => {
 
@@ -49,14 +55,14 @@ class UserInformationController @Inject()(
             declarationService.submitDeclaration(userInformation, calculatorResponse, receiptDateTime, correlationId) flatMap {
 
               case DeclarationServiceFailureResponse =>
-                Future.successful(InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+                Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
 
               case DeclarationServiceSuccessResponse(cr) =>
 
                 payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt, receiptDateTime) map {
 
                   case PayApiServiceFailureResponse =>
-                    InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+                    InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
 
                   case PayApiServiceSuccessResponse(url) =>
                     Redirect(url)

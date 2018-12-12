@@ -5,7 +5,7 @@ import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -16,8 +16,17 @@ class AlcoholInputController @Inject() (
   val travelDetailsService: TravelDetailsService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
-  val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
+  val productTreeService: ProductTreeService,
+  val volume_input: views.html.alcohol.volume_input,
+  val country_of_purchase: views.html.alcohol.country_of_purchase,
+  val currency_input: views.html.alcohol.currency_input,
+  val cost_input: views.html.alcohol.cost_input,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
 
   def startInputJourney(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
@@ -34,7 +43,7 @@ class AlcoholInputController @Inject() (
       }
     }
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.alcohol.volume_input(form, product.name, product.token, path, iid)))
+      Future.successful(Ok(volume_input(form, product.name, product.token, path, iid)))
     }
   }
 
@@ -51,7 +60,7 @@ class AlcoholInputController @Inject() (
     VolumeDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.alcohol.volume_input(formWithErrors, product.name, product.token, path, iid)))
+          Future.successful(BadRequest(volume_input(formWithErrors, product.name, product.token, path, iid)))
         }
       },
       dto => {
@@ -78,7 +87,7 @@ class AlcoholInputController @Inject() (
 
     requireProduct(path) { product =>
       requireWorkingInstanceWeightOrVolume { volume =>
-        Future.successful(Ok(views.html.alcohol.country_of_purchase(form, product, path, iid, countriesService.getAllCountries, volume)))
+        Future.successful(Ok(country_of_purchase(form, product, path, iid, countriesService.getAllCountries, volume)))
       }
     }
   }
@@ -97,7 +106,7 @@ class AlcoholInputController @Inject() (
       formWithErrors => {
         requireProduct(path) { product =>
           requireWorkingInstanceWeightOrVolume { volume =>
-            Future.successful(BadRequest(views.html.alcohol.country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, volume)))
+            Future.successful(BadRequest(country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, volume)))
           }
         }
       },
@@ -137,7 +146,7 @@ class AlcoholInputController @Inject() (
 
     requireWorkingInstanceWeightOrVolume { volume =>
       requireProduct(path) { product =>
-        Future.successful(Ok(views.html.alcohol.currency_input(form, product, path, iid, currencyService.getAllCurrencies, volume)))
+        Future.successful(Ok(currency_input(form, product, path, iid, currencyService.getAllCurrencies, volume)))
       }
     }
   }
@@ -148,7 +157,7 @@ class AlcoholInputController @Inject() (
       formWithErrors => {
         requireWorkingInstanceWeightOrVolume { volume =>
           requireProduct(path) { product =>
-            Future.successful(BadRequest(views.html.alcohol.currency_input(formWithErrors, product, path, iid, currencyService.getAllCurrencies, volume)))
+            Future.successful(BadRequest(currency_input(formWithErrors, product, path, iid, currencyService.getAllCurrencies, volume)))
           }
         }
       },
@@ -172,7 +181,7 @@ class AlcoholInputController @Inject() (
     requireWorkingInstanceWeightOrVolume { volume =>
       requireWorkingInstanceCurrency { currency: Currency =>
         requireProduct(path) { product =>
-          Future.successful(Ok(views.html.alcohol.cost_input(form, product, path, iid, volume, currency.displayName)))
+          Future.successful(Ok(cost_input(form, product, path, iid, volume, currency.displayName)))
         }
       }
     }
@@ -185,7 +194,7 @@ class AlcoholInputController @Inject() (
         requireWorkingInstanceWeightOrVolume { volume =>
           requireWorkingInstanceCurrency { currency: Currency =>
             requireProduct(path) { product =>
-              Future.successful(BadRequest(views.html.alcohol.cost_input(formWithErrors, product, path, iid, volume, currency.displayName)))
+              Future.successful(BadRequest(cost_input(formWithErrors, product, path, iid, volume, currency.displayName)))
             }
           }
         }

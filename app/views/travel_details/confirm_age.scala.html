@@ -1,10 +1,11 @@
-@(ageOver17Form: Form[AgeOver17Dto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(ageOver17Form: Form[AgeOver17Dto])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
 @main_template(title = messages("label.are_you_17_or_over")) {
 
-    @helpers.form(action = routes.TravelDetailsController.confirmAgePost()){
+    @form(action = routes.TravelDetailsController.confirmAgePost()){
 
         @views.html.tags.errors(ageOver17Form)
 

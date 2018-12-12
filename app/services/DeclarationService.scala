@@ -1,16 +1,18 @@
 package services
 
-import util._
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Mode.Mode
+import play.api.http.Status._
+import util._
 import play.api.libs.json._
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.config.ServicesConfig
-import play.api.http.Status._
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -21,13 +23,11 @@ class DeclarationService @Inject()(
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
   environment: Environment,
+  servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
-) extends ServicesConfig with UsesJourneyData {
+) extends UsesJourneyData {
 
-  override protected def mode: Mode = environment.mode
-  override protected def runModeConfiguration = configuration
-
-  lazy val passengersDeclarationsBaseUrl = baseUrl("bc-passengers-declarations")
+  lazy val passengersDeclarationsBaseUrl = servicesConfig.baseUrl("bc-passengers-declarations")
 
 
   def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {

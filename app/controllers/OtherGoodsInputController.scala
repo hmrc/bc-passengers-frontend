@@ -5,7 +5,7 @@ import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -17,13 +17,22 @@ class OtherGoodsInputController @Inject() (
   val travelDetailsService: TravelDetailsService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
-  val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
+  val productTreeService: ProductTreeService,
+  val quantity_input: views.html.other_goods.quantity_input,
+  val country_of_purchase: views.html.other_goods.country_of_purchase,
+  val currency_input: views.html.other_goods.currency_input,
+  val cost_input: views.html.other_goods.cost_input,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def displayQuantityInput(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.other_goods.quantity_input(QuantityDto.form, product.name, product.token, path)))
+      Future.successful(Ok(quantity_input(QuantityDto.form, product.name, product.token, path)))
     }
   }
 
@@ -32,7 +41,7 @@ class OtherGoodsInputController @Inject() (
     QuantityDto.form.bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.other_goods.quantity_input(formWithErrors, product.name, product.token, path)))
+          Future.successful(BadRequest(quantity_input(formWithErrors, product.name, product.token, path)))
         }
       },
       quantityDto => {
@@ -51,7 +60,7 @@ class OtherGoodsInputController @Inject() (
     }
 
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.other_goods.country_of_purchase(form, product, path, iid, countriesService.getAllCountries)))
+      Future.successful(Ok(country_of_purchase(form, product, path, iid, countriesService.getAllCountries)))
     }
   }
 
@@ -69,7 +78,7 @@ class OtherGoodsInputController @Inject() (
     SelectedCountryDto.form(countriesService, optionalItemsRemaining = false).bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.other_goods.country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries)))
+          Future.successful(BadRequest(country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries)))
         }
       },
       selectedCountryDto => {
@@ -97,7 +106,7 @@ class OtherGoodsInputController @Inject() (
     }
 
     requireProduct(path) { product =>
-      Future.successful(Ok(views.html.other_goods.currency_input(form, product, path, currencyService.getAllCurrencies, iid)))
+      Future.successful(Ok(currency_input(form, product, path, currencyService.getAllCurrencies, iid)))
     }
   }
 
@@ -116,7 +125,7 @@ class OtherGoodsInputController @Inject() (
     CurrencyDto.form(currencyService).bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          Future.successful(BadRequest(views.html.other_goods.currency_input(formWithErrors, product, path, currencyService.getAllCurrencies, iid)))
+          Future.successful(BadRequest(currency_input(formWithErrors, product, path, currencyService.getAllCurrencies, iid)))
         }
       },
       currencyDto => {
@@ -141,7 +150,7 @@ class OtherGoodsInputController @Inject() (
     requireWorkingInstanceCurrency { currency =>
 
       requireProduct(path) { product =>
-        Future.successful(Ok(views.html.other_goods.cost_input(form, product, path, iid, currency.displayName)))
+        Future.successful(Ok(cost_input(form, product, path, iid, currency.displayName)))
       }
     }
   }
@@ -154,7 +163,7 @@ class OtherGoodsInputController @Inject() (
 
         requireWorkingInstanceCurrency { currency =>
           requireProduct(path) { product =>
-            Future.successful(BadRequest(views.html.other_goods.cost_input(formWithErrors, product, path, iid, currency.displayName)))
+            Future.successful(BadRequest(cost_input(formWithErrors, product, path, iid, currency.displayName)))
           }
         }
       },

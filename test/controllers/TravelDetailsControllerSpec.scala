@@ -12,19 +12,19 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import services.TravelDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
-import util.{BaseSpec, FakeCookieCryptoFilter}
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
+import scala.collection.JavaConversions._
 import scala.concurrent.Future
 import scala.language.postfixOps
-import scala.collection.JavaConversions._
 
 
 class TravelDetailsControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
-    .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
+    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {

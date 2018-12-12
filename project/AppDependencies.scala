@@ -6,11 +6,12 @@ import sbt._
 object AppDependencies {
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-25",
-    "uk.gov.hmrc" %% "play-ui" % "7.27.0-play-25",
+    "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-26",
+    "uk.gov.hmrc" %% "play-ui" % "7.27.0-play-26",
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-25" % "4.2.0",
-    "uk.gov.hmrc" %% "http-caching-client" % "8.0.0"
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "0.32.0",
+    "uk.gov.hmrc" %% "http-caching-client" % "8.0.0",
+    "com.typesafe.play" %% "play-json-joda" % "2.6.0"
   )
 
   val test = Seq(

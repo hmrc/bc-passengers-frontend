@@ -1,4 +1,5 @@
-@(weightForm: Form[WeightDto], token: String, productName: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(weightForm: Form[WeightDto], token: String, productName: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -6,7 +7,7 @@
 
   <h1 class="heading-xlarge">@messages("label.how_much_", productName.toLowerCase())</h1>
 
-  @helpers.form(action = routes.TobaccoInputController.processWeightInput(path, iid)){
+  @form(action = routes.TobaccoInputController.processWeightInput(path, iid)){
 
     <div class="panel panel-border-wide" id="panel">
         <p>@messages(s"tobacco.weight_input.panel.${token}.1")</p>
@@ -14,7 +15,7 @@
     </div>
 
       <div class="form-group">
-          @helpers.input( weightForm("weight"),
+          @input( weightForm("weight"),
           '_label -> messages("label.weight_of_", productName.toLowerCase()),
           '_labelClass -> "inline",
           '_labelTextClass -> "form-label",

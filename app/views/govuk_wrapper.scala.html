@@ -1,19 +1,26 @@
-@(appConfig: config.AppConfig,
-  title: String,
+@this(appConfig: config.AppConfig,
+  layoutHead: uk.gov.hmrc.play.views.html.layouts.Head,
+  layoutHeaderNav: uk.gov.hmrc.play.views.html.layouts.HeaderNav,
+  layoutFooter: uk.gov.hmrc.play.views.html.layouts.Footer,
+  layoutBetaBanner: uk.gov.hmrc.play.views.html.layouts.BetaBanner,
+  layoutServiceInfo: uk.gov.hmrc.play.views.html.layouts.ServiceInfo,
+  layoutMainContentHeader: uk.gov.hmrc.play.views.html.layouts.MainContentHeader,
+  layoutMainContent: uk.gov.hmrc.play.views.html.layouts.MainContent,
+  reportAProblemLink: uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink,
+  footerLinks: uk.gov.hmrc.play.views.html.layouts.FooterLinks,
+  govUkTemplate: views.html.layouts.GovUkTemplate
+)
+
+@(title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
   linkElem: Option[Html] = None,
-  sidebar: Html = HtmlFormat.empty,
+  sidebar: Html = Html(""),
   contentHeader: Option[Html] = None,
-  mainContent: Html = HtmlFormat.empty,
-  serviceInfoContent: Html = HtmlFormat.empty,
+  mainContent: Html = Html(""),
+  serviceInfoContent: Html = Html(""),
   scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
-
-@import layouts.{govuk_template => hmrcGovUkTemplate}
-@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
-@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
-
 
 @head = {
 
@@ -27,7 +34,7 @@
     <!-- End Google Tag Manager -->
   }
 
-  @uiLayouts.head(
+  @layoutHead(
     linkElem = linkElem,
     headScripts = None)
   <meta name="format-detection" content="telephone=no" />
@@ -38,7 +45,7 @@
 }
 
 @insideHeader = {
-    @uiLayouts.header_nav(
+    @layoutHeaderNav(
       navTitle = Some("Passengers"),
       navTitleLink = None,
       showBetaLink = false,
@@ -55,7 +62,7 @@
 }
 
 @bodyEnd = {
-    @uiLayouts.footer(
+    @layoutFooter(
       analyticsToken = Some(appConfig.analyticsToken),
       analyticsHost = appConfig.analyticsHost,
       ssoUrl = None,
@@ -64,19 +71,18 @@
 }
 
 @footerTop = {}
-@footerLinks = {}
 
 @betaBanner = {
-    @uiLayouts.betaBanner(
-    userLoggedIn = false,
-    betaFeedbackUrl = appConfig.betaFeedbackUrl,
-    betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUrl,
-    showFeedbackLinkInBetaBanner = true
+    @layoutBetaBanner(
+        userLoggedIn = false,
+        betaFeedbackUrl = appConfig.betaFeedbackUrl,
+        betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUrl,
+        showFeedbackLinkInBetaBanner = true
     )
 }
 
 @serviceInfo = {
-    @uiLayouts.serviceInfo(
+    @layoutServiceInfo(
       betaBanner = betaBanner,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent),
@@ -85,14 +91,14 @@
 
 @mainContentHeader = {
     @if(contentHeader.isDefined) {
-        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
+        @layoutMainContentHeader(contentHeader = contentHeader.get)
     }
 }
 
-@getHelpForm = @{uiHelpers.reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
+@getHelpForm = @{reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
 
 @content = {
-    @uiLayouts.main_content(
+    @layoutMainContent(
       article = mainContent,
       mainClass = mainClass,
       mainDataAttributes = mainDataAttributes,
@@ -102,4 +108,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title + " - Check tax on goods you bring into the UK - GOV.UK"), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@govUkTemplate(Some(title + " - Check tax on goods you bring into the UK - GOV.UK"), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(footerLinks()), true)(content)

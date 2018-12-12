@@ -1,10 +1,9 @@
-@(privateCraftForm: Form[PrivateCraftDto])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
-
-@import uk.gov.hmrc.play.views.html._
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(privateCraftForm: Form[PrivateCraftDto])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("label.did_you_arrive_in_the_uk_by_private_boat_")) {
 
-    @helpers.form(action = routes.TravelDetailsController.privateCraftPost()){
+    @form(action = routes.TravelDetailsController.privateCraftPost()){
 
         @views.html.tags.errors(privateCraftForm)
 

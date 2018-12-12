@@ -1,4 +1,5 @@
-@(countryForm: Form[SelectedCountryDto], product: ProductTreeLeaf, path: ProductPath, iid: String, countries: List[Country], volume: BigDecimal)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(countryForm: Form[SelectedCountryDto], product: ProductTreeLeaf, path: ProductPath, iid: String, countries: List[Country], volume: BigDecimal)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -44,7 +45,7 @@
 
     <h1 class="heading-xlarge">@title</h1>
 
-    @helpers.form(action = routes.AlcoholInputController.processCountryInput(path, iid)){
+    @form(action = routes.AlcoholInputController.processCountryInput(path, iid)){
 
         @components.select(
             field = countryForm("country"),

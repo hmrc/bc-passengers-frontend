@@ -10,7 +10,7 @@ import play.api.{Configuration, Environment}
 import play.mvc.Http.Status._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -23,14 +23,13 @@ class PayApiService @Inject()(
   environment: Environment,
   productTreeService: ProductTreeService,
   currencyService: CurrencyService,
+  servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
-) extends ServicesConfig with UsesJourneyData {
+) extends UsesJourneyData {
 
-  override protected def mode: Mode = environment.mode
-  override protected def runModeConfiguration = configuration
 
-  lazy val payApiBaseUrl = baseUrl("pay-api")
-  lazy val redirectUrl = configuration.getString("bc-passengers-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage().url
+  lazy val payApiBaseUrl = servicesConfig.baseUrl("pay-api")
+  lazy val redirectUrl = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage().url
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier): Future[PayApiServiceResponse] = {
 

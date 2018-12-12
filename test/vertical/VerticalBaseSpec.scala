@@ -12,8 +12,8 @@ import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt}
 import services.LocalSessionCache
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.CookieCryptoFilter
-import util.{BaseSpec, FakeCookieCryptoFilter}
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.concurrent.Future
 
@@ -21,7 +21,7 @@ trait VerticalBaseSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
-    .overrides(bind[CookieCryptoFilter].to[FakeCookieCryptoFilter])
+    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
   trait LocalSetup {

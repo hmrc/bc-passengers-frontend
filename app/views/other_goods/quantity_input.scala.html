@@ -1,4 +1,5 @@
-@(quantityForm: Form[QuantityDto], token: String, productName: String, path: ProductPath)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(quantityForm: Form[QuantityDto], token: String, productName: String, path: ProductPath)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -9,7 +10,7 @@
 @main_template(title = title.toString, bodyClasses = None) {
 
 
-  @helpers.form(action = routes.OtherGoodsInputController.processQuantityInput(path)) {
+  @form(action = routes.OtherGoodsInputController.processQuantityInput(path)) {
 
     <fieldset>
       <legend>
@@ -17,7 +18,7 @@
       </legend>
 
       <div class="form-group">
-        @helpers.input(
+        @input(
             quantityForm("quantity"),
             '_inputClass -> "form-control-1-8",
             '_label -> messages("other-goods.quantity_input.heading", productName.toLowerCase()),

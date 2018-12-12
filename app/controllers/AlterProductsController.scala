@@ -4,7 +4,7 @@ import config.AppConfig
 import javax.inject.Inject
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, ControllerComponents, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -15,15 +15,21 @@ class AlterProductsController @Inject() (
   val purhasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
-  val productTreeService: ProductTreeService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers {
+  val productTreeService: ProductTreeService,
+  val remove: views.html.purchased_products.remove,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def confirmRemove(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProduct(path) { product =>
       requirePurchasedProductInstanceDescription(product, path, iid) { description =>
 
-        Future.successful(Ok(views.html.purchased_products.remove(ConfirmRemoveDto.form, description, path, iid)))
+        Future.successful(Ok(remove(ConfirmRemoveDto.form, description, path, iid)))
       }
     }
   }
@@ -34,7 +40,7 @@ class AlterProductsController @Inject() (
       formWithErrors => {
         requireProduct(path) { product =>
           requirePurchasedProductInstanceDescription(product, path, iid) { description =>
-            Future.successful(BadRequest(views.html.purchased_products.remove(formWithErrors, description, path, iid)))
+            Future.successful(BadRequest(remove(formWithErrors, description, path, iid)))
           }
         }
       },

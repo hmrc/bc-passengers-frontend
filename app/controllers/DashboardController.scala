@@ -3,15 +3,11 @@ package controllers
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.{ProductTreeLeaf, _}
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsValue, Json, Writes}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import Console._
-import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -23,8 +19,16 @@ class DashboardController @Inject() (
   val purhasedProductService: PurchasedProductService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
-  val calculatorService: CalculatorService
-)(implicit val appConfig: AppConfig, val messagesApi: MessagesApi, val ec: ExecutionContext) extends FrontendController with I18nSupport with ControllerHelpers  {
+  val calculatorService: CalculatorService,
+  val dashboard: views.html.purchased_products.dashboard,
+  val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
+  val done: views.html.purchased_products.done,
+  val error_template: views.html.error_template,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def showDashboard: Action[AnyContent] = DashboardAction { implicit context =>
 
@@ -49,7 +53,7 @@ class DashboardController @Inject() (
 
         val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
-        Ok(views.html.purchased_products.dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate))
+        Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate))
       }
     }
   }
@@ -67,7 +71,7 @@ class DashboardController @Inject() (
 
       case _ =>
         Future.successful {
-          InternalServerError(views.html.error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+          InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
         }
     }
   }
@@ -76,9 +80,9 @@ class DashboardController @Inject() (
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
         if (BigDecimal(calculatorResponse.calculation.allTax)==0)
-          Ok(views.html.purchased_products.nothing_to_declare(calculatorResponse.asDto))
+          Ok(nothing_to_declare(calculatorResponse.asDto))
         else
-          Ok(views.html.purchased_products.done(calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+          Ok(done(calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
       }
     }
   }

@@ -26,7 +26,6 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
 
   trait LocalSetup {
-
     def journeyDataInCache: Option[JourneyData]
 
     lazy val s = {
