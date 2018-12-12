@@ -21,8 +21,7 @@
 @import play.api.i18n._
 @import uk.gov.hmrc.play.mappers.DateFormatSymbols._
 
-@formItem = @{form(fieldName)}
-@fieldsetClasses = @{if(formItem.hasErrors) "form-group-error" else "" }
+@fieldsetClasses = @{if(form(fieldName).hasErrors) "form-group-error" else "" }
 
 @field = @{form(s"${fieldName}.halfday")}
 @halfdayValue = @{ field.value match { case Some(x) => x case None => "" case x => x }}

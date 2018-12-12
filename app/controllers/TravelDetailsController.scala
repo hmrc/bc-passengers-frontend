@@ -80,7 +80,7 @@ class TravelDetailsController @Inject() (
   }
 
   val nonEuInterrupt: Action[AnyContent] = PublicAction { implicit request =>
-    
+
     Future.successful(Ok(interrupt_page(mixEuRow = false)))
   }
 

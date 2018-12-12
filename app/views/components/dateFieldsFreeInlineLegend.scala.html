@@ -20,8 +20,7 @@
 @import play.api.i18n._
 @import uk.gov.hmrc.play.mappers.DateFormatSymbols._
 
-@formItem = @{form(fieldName)}
-@fieldsetClasses = @{if(formItem.hasErrors) "form-group-error" else "" }
+@fieldsetClasses = @{if(form(fieldName).hasErrors) "form-group-error" else "" }
 
 <div class="form-group @fieldsetClasses soft--ends">
   <fieldset class="form-date" id="@fieldName">
@@ -39,7 +38,7 @@
     </legend>
 
     @input(
-      formItem(s"${fieldName}.day"),
+      form(s"${fieldName}.day"),
       '_label -> Messages("date.fields.day"),
       '_labelClass -> "form-group form-group-day",
       '_inputClass -> "form-control input--xsmall",
@@ -51,7 +50,7 @@
     )
 
     @input(
-      formItem(s"${fieldName}.month"),
+      form(s"${fieldName}.month"),
       '_label -> Messages("date.fields.month"),
       '_labelClass -> "form-group form-group-month",
       '_inputClass -> "form-control input--xsmall",
@@ -63,7 +62,7 @@
     )
 
     @input(
-      formItem(s"${fieldName}.year"),
+      form(s"${fieldName}.year"),
       '_label -> Messages("date.fields.year"),
       '_labelClass -> "form-group form-group-year",
       '_inputClass -> "form-control input--xsmall",
