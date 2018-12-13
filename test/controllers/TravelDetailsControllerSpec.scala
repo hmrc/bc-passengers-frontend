@@ -157,15 +157,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling POST ../arrivals-from-outside-the-eu" should {
-    "redirect to the private craft page" in {
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")).get
-      status(response) shouldBe SEE_OTHER
-
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
-    }
-  }
 
   "calling GET ../arrivals-from-both" should {
     "return the interrupt page without the added rest of world guidance" in {
@@ -177,16 +168,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       content should include ("You do not need to tell us about goods bought from countries inside the EU.")
-    }
-  }
-
-  "calling POST ../arrivals-from-both" should {
-    "redirect to the private craft page" in {
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")).get
-      status(response) shouldBe SEE_OTHER
-
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
     }
   }
 

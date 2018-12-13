@@ -9,25 +9,25 @@
 
         @views.html.tags.errors(ageOver17Form)
 
-        <div class="form-group inline">
 
-            <fieldset>
-                <legend>
-                    <h1 class="heading-xlarge">@messages("label.are_you_17_or_over")</h1>
-                </legend>
+        <fieldset>
+            <legend>
+                <h1 class="heading-xlarge">@messages("label.are_you_17_or_over")</h1>
+            </legend>
 
             @components.input_radio_group(
                 ageOver17Form("ageOver17"),
                 Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-                '_labelClass -> "block-label inputLabelBeforeError"
+                '_labelClass -> "block-label inputLabelBeforeError",
+                '_inline -> true
             )
-            </fieldset>
 
-        </div>
+            <div class="form-group">
+                <button class="button" type="submit">@messages("label.continue")</button>
+            </div>
 
-        <div class="form-group">
-            <button class="button" type="submit">@messages("label.continue")</button>
-        </div>
+        </fieldset>
+
     }
 
 }
