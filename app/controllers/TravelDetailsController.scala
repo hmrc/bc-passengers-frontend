@@ -84,10 +84,6 @@ class TravelDetailsController @Inject() (
     Future.successful(Ok(interrupt_page(mixEuRow = false)))
   }
 
-  def interruptPost: Action[AnyContent] = PublicAction { implicit request =>
-    Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
-  }
-
   val bothInterrupt: Action[AnyContent] = PublicAction { implicit request =>
     Future.successful(Ok(interrupt_page(mixEuRow = true)))
   }

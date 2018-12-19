@@ -3,66 +3,66 @@
 
 @main_template(title = messages("heading.you_do_not_need_to_tell_us_about_goods_"), bodyClasses = None) {
 
-    <h1 class="heading-xlarge">@messages("heading.you_do_not_need_to_tell_us_about_goods_")</h1>
+  <h1 class="heading-xlarge">@messages("heading.you_do_not_need_to_tell_us_about_goods_")</h1>
 
-    <p>@messages("text.you_do_not_pay_duty_or_tax_")</p>
+  <p>@messages("text.you_do_not_pay_duty_or_tax_")</p>
 
-    <ul class="list list-bullet">
-        <li>@messages("text.transport_them_yourself")</li>
-        <li>@messages("text.will_use_them_yourself_or_give_")</li>
-        <li>@messages("text.paid_duty_and_tax_")</li>
-    </ul>
+  <ul class="list list-bullet">
+    <li>@messages("text.transport_them_yourself")</li>
+    <li>@messages("text.will_use_them_yourself_or_give_")</li>
+    <li>@messages("text.paid_duty_and_tax_")</li>
+  </ul>
 
-    <h1 class="heading-medium">@messages("label.customs_checks")</h1>
-    <p>@messages("text.you_are_more_likely_to_be_stopped_")</p>
-    <table class="guidance">
-        <thead>
-        <tr>
-            <th>@messages("label.type_of_goods")</th>
-            <th>@messages("label.amount")</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>@messages("label.cigarettes")</td>
-            <td>@messages("label.800")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.cigars")</td>
-            <td>@messages("label.200")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.cigarillos")</td>
-            <td>@messages("label.400")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.hand_rolling_tobacco")</td>
-            <td>@messages("label.1_kg")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.beer")</td>
-            <td>@messages("label.110_litres")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.wine_not_sparkling")</td>
-            <td>@messages("label.90_litres")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.spirits")</td>
-            <td>@messages("label.10_litres")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.fortified_wine")</td>
-            <td>@messages("label.20_litres")</td>
-        </tr>
-        <tr>
-            <td>@messages("label.sparkling_wine")</td>
-            <td>@messages("label.20_litres")</td>
-        </tr>
-        </tbody>
-    </table>
-    <br>
-    <p>
-        <a href="https://www.gov.uk/duty-free-goods">@messages("text.more_info_about_bringing_goods_into_the_uk_")</a>
-    </p>
+  <h2 class="heading-medium">@messages("label.customs_checks")</h2>
+
+  <p>@messages("text.you_are_more_likely_to_be_stopped_")</p>
+
+  <table class="guidance">
+    <thead>
+      <tr>
+        <th>@messages("label.type_of_goods")</th>
+        <th>@messages("label.amount")</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>@messages("label.cigarettes")</td>
+        <td>@messages("label.800")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.cigars")</td>
+        <td>@messages("label.200")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.cigarillos")</td>
+        <td>@messages("label.400")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.hand_rolling_tobacco")</td>
+        <td>@messages("label.1_kg")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.beer")</td>
+        <td>@messages("label.110_litres")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.wine_not_sparkling")</td>
+        <td>@messages("label.90_litres")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.spirits")</td>
+        <td>@messages("label.10_litres")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.fortified_wine")</td>
+        <td>@messages("label.20_litres")</td>
+      </tr>
+      <tr>
+        <td>@messages("label.sparkling_wine")</td>
+        <td>@messages("label.20_litres")</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="margin-top-30"><a href="https://www.gov.uk/duty-free-goods">@messages("text.more_info_about_bringing_goods_into_the_uk_")</a></p>
 }
