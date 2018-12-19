@@ -169,7 +169,8 @@ class CalculatorServiceSpec extends BaseSpec {
             Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-            Calculation("0.00", "0.00", "0.00", "0.00")
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = false
           ))
         }
 
@@ -192,7 +193,8 @@ class CalculatorServiceSpec extends BaseSpec {
       val response: CalculatorServiceResponse = await(service.calculate())
 
       response.asInstanceOf[CalculatorServiceSuccessResponse].calculatorResponse shouldBe
-        CalculatorResponse(Some(Alcohol(List(),Calculation("0.00","0.00","0.00","0.00"))),Some(Tobacco(List(),Calculation("0.00","0.00","0.00","0.00"))),Some(OtherGoods(List(),Calculation("0.00","0.00","0.00","0.00"))),Calculation("0.00","0.00","0.00","0.00"))
+        CalculatorResponse(Some(Alcohol(List(),Calculation("0.00","0.00","0.00","0.00"))),Some(Tobacco(List(),Calculation("0.00","0.00","0.00","0.00"))),Some(OtherGoods(List(),Calculation("0.00","0.00","0.00","0.00"))),
+          Calculation("0.00","0.00","0.00","0.00"), withinFreeAllowance = false)
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
 
@@ -222,10 +224,10 @@ class CalculatorServiceSpec extends BaseSpec {
         service
       }
 
-      await(s.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"))))
+      await(s.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true)))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00")))))
+        meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true))))
       )(any())
 
     }

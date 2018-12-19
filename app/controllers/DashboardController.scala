@@ -23,6 +23,7 @@ class DashboardController @Inject() (
   val dashboard: views.html.purchased_products.dashboard,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
   val done: views.html.purchased_products.done,
+  val under_nine_pounds: views.html.purchased_products.under_nine_pounds,
   val error_template: views.html.error_template,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -79,10 +80,15 @@ class DashboardController @Inject() (
   def showCalculation: Action[AnyContent] = DashboardAction { implicit context =>
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
-        if (BigDecimal(calculatorResponse.calculation.allTax)==0)
-          Ok(nothing_to_declare(calculatorResponse.asDto))
-        else
-          Ok(done(calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+        BigDecimal(calculatorResponse.calculation.allTax) match {
+          case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
+            Ok (nothing_to_declare (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+
+          case allTax if allTax > 0 && allTax < 9 || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
+            Ok (under_nine_pounds (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+
+          case _ => Ok (done (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP) )
+        }
       }
     }
   }

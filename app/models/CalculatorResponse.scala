@@ -46,24 +46,15 @@ case class Band(code: String, items: List[Item], calculation: Calculation)
 case class Alcohol(bands: List[Band], calculation: Calculation)
 case class Tobacco(bands: List[Band], calculation: Calculation)
 case class OtherGoods(bands: List[Band], calculation: Calculation)
-case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco], otherGoods: Option[OtherGoods], calculation: Calculation) {
+case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco], otherGoods: Option[OtherGoods], calculation: Calculation, withinFreeAllowance: Boolean) {
 
 
   def hasOnlyGBP: Boolean = {
-    val currencies = for {
-      alcohol <- alcohol.toList
-      tobacco <- tobacco.toList
-      otherGoods <- otherGoods.toList
-      ab <- alcohol.bands
-      tb <- tobacco.bands
-      ob <- otherGoods.bands
-    } yield {
-      ab.items.map(_.metadata.currency) ++
-        tb.items.map(_.metadata.currency) ++
-        ob.items.map(_.metadata.currency)
-    }
+    val currencies = alcohol.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
+      tobacco.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
+      otherGoods.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code)
 
-    !currencies.flatten.exists(_.code !="GBP")
+    currencies.forall(_ == "GBP")
   }
 
   def getItemsWithTaxToPay: List[Item] = {

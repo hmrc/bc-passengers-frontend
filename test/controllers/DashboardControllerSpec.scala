@@ -79,7 +79,7 @@ class DashboardControllerSpec extends BaseSpec {
 
 
   "Calling GET .../calculation" should {
-    "redirect to the declaration done page if there is something to declare" in new LocalSetup {
+    "redirect to the under nine pounds page if the total to declare is under nine pounds" in new LocalSetup {
 
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
@@ -88,7 +88,7 @@ class DashboardControllerSpec extends BaseSpec {
           ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "1.00", "1.00", "3.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-        Calculation("1.00", "1.00", "1.00", "3.00")
+        Calculation("1.00", "1.00", "1.00", "3.00"), withinFreeAllowance = false
       ))))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
@@ -98,12 +98,60 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "You will need to pay £3.00for goods purchased outside of the EU"
+      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+    }
+  }
+
+  "Calling GET .../calculation" should {
+    "redirect to the calculation done page with exchange rate message not includes if response only includes GBP currency" in new LocalSetup {
+
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        calculatorResponse = Some(CalculatorResponse(
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP")), Country("UK", "UK", isEu = false, Some("USD")),
+            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
+          Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Calculation("1.00", "1.00", "1.00", "300.00"), withinFreeAllowance = false
+        ))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
+
+      content should not include "We use <a href=\"http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm\" target=\"_blank\">HMRC’s exchange rates"
+      doc.title shouldBe  "You will need to pay £300.00 for goods purchased outside of the EU - Check tax on goods you bring into the UK - GOV.UK"
+    }
+
+    "redirect to the calculation done page with exchange rate message if response includes non GBP currency" in new LocalSetup {
+
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        calculatorResponse = Some(CalculatorResponse(
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")),
+            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
+          Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Calculation("1.00", "1.00", "1.00", "300.00"), withinFreeAllowance = false
+        ))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
+
+      content should include ("We use <a href=\"http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm\" target=\"_blank\">HMRC’s exchange rates")
+      doc.title shouldBe  "You will need to pay £300.00 for goods purchased outside of the EU - Check tax on goods you bring into the UK - GOV.UK"
     }
   }
 
 
-  "redirect to the nothing to declare done page if there is nothing to declare" in new LocalSetup {
+  "redirect to the nothing to declare done page if the total tax to pay was 0 and all of the items were within the free allowance" in new LocalSetup {
 
 
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
@@ -112,7 +160,8 @@ class DashboardControllerSpec extends BaseSpec {
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-        Calculation("0.00", "0.00", "0.00", "0.00")
+        Calculation("0.00", "0.00", "0.00", "0.00"),
+        withinFreeAllowance = true
       ))))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
@@ -122,6 +171,52 @@ class DashboardControllerSpec extends BaseSpec {
     val content: String = contentAsString(result)
     val doc: Document = Jsoup.parse(content)
 
-    doc.getElementsByTag("h1").text shouldBe "You have nothing to declare"
+    doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+  }
+
+  "redirect to the under nine pound page if the total tax to pay was 0 but items were not within the free allowance (0 rated)" in new LocalSetup {
+
+    override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+      calculatorResponse = Some(CalculatorResponse(
+        Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP")), Country("Barbados", "GBP", isEu = false, Some("GBP")),
+          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Calculation("0.00", "0.00", "0.00", "0.00"),
+        withinFreeAllowance = false
+      ))))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+
+    status(result) shouldBe OK
+
+    val content: String = contentAsString(result)
+    val doc: Document = Jsoup.parse(content)
+
+    doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+  }
+
+
+  "redirect to the done page with a response containing a mixture of 0 rated and non-0 rated items" in new LocalSetup {
+
+    override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+      calculatorResponse = Some(CalculatorResponse(
+        Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP")), Country("UK", "UK", isEu = false, Some("USD")),
+          ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
+        Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP")), Country("Barbados", "GBP", isEu = false, Some("GBP")),
+          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Calculation("1.00", "1.00", "1.00", "300.00"),
+        withinFreeAllowance = false
+      ))))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+
+    status(result) shouldBe OK
+
+    val content: String = contentAsString(result)
+    val doc: Document = Jsoup.parse(content)
+
+    doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £300.00"
   }
 }
