@@ -29,6 +29,8 @@
 
 @main_template(title = pageTitle.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
+    @views.html.tags.errors(currencyForm)
+
     <h1 class="heading-xlarge">@messages("label.what_currency_did_you_use_to_pay_for_the_", description)</h1>
 
     @form(action = routes.TobaccoInputController.processCurrencyInput(path, iid)){

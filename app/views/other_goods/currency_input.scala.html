@@ -28,6 +28,8 @@
 
 @main_template(title = title.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
+    @views.html.tags.errors(currencyForm)
+
     <h1 class="heading-xlarge">@title.toString</h1>
 
     @form(action = routes.OtherGoodsInputController.processCurrencyInput(path, iid)){

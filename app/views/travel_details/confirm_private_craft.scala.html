@@ -3,14 +3,14 @@
 
 @main_template(title = messages("label.did_you_arrive_in_the_uk_by_private_boat_")) {
 
+    @views.html.tags.errors(privateCraftForm)
+
+    <h1 class="heading-xlarge">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</h1>
+
     @form(action = routes.TravelDetailsController.privateCraftPost()){
 
-        @views.html.tags.errors(privateCraftForm)
-
         <fieldset>
-            <legend>
-                <h1 class="heading-xlarge">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</h1>
-            </legend>
+            <legend class="visually-hidden">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</legend>
 
             @components.input_radio_group(
                 privateCraftForm("privateCraft"),

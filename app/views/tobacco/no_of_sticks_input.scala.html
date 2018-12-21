@@ -5,10 +5,11 @@
 
 @main_template(title = messages("label.how_many_", productName.toLowerCase()), bodyClasses = None) {
 
+  @views.html.tags.errors(noOfSticksForm, Some(path))
+
+  <h1 class="heading-xlarge">@messages("label.how_many_", productName.toLowerCase())</h1>
 
   @form(action = routes.TobaccoInputController.processNoOfSticksInput(path, iid)) {
-
-    <h1 class="heading-xlarge">@messages("label.how_many_", productName.toLowerCase())</h1>
 
     <div class="panel panel-border-wide" id="panel">
         <p>@messages(s"tobacco.no_of_sticks_input.panel.${token}.1")</p>
@@ -16,12 +17,13 @@
     </div>
 
     <div class="form-group">
-        @input(
-            noOfSticksForm("noOfSticks"),
-            '_label -> messages("label.number_of_", productName.toLowerCase()),
-            '_labelTextClass -> "form-label",
-            '_inputClass -> "form-control-1-8"
-        )
+      @components.input(
+        noOfSticksForm("noOfSticks"),
+        '_label -> messages("label.number_of_", productName.toLowerCase()),
+        '_labelTextClass -> "form-label",
+        '_inputClass -> "form-control-1-8",
+        '_productName -> path.toMessageKey
+      )
     </div>
 
     <details class="form-group">

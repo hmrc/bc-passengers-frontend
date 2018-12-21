@@ -23,7 +23,7 @@
     @fieldsetClass = {@elements.args.get('_groupClass)}
     @labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
 
-    <div class="form-group @if(elements.hasErrors){ form-group-error} @if(elements.args.contains('_inline)){inline}">
+    <div id="@elements.field.name" class="form-group @if(elements.hasErrors){ form-group-error} @if(elements.args.contains('_inline)){inline}">
 
         @elements.errors.map{error => <span class="error-message">@Messages(error)</span>}
 

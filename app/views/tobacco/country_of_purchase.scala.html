@@ -37,13 +37,13 @@
 
     @form(action = routes.TobaccoInputController.processCountryInput(path, iid)){
 
-            @components.select(
-                field = countryForm("country"),
-                elementOptions = ("","") :: countries.map(c => (c.countryName,c.countryName)),
-                displayEmptyValue = true,
-                '_label -> Messages("label.enter_country"),
-                '_errorsAboveInput -> true
-            )
+        @components.select(
+            field = countryForm("country"),
+            elementOptions = ("","") :: countries.map(c => (c.countryName,c.countryName)),
+            displayEmptyValue = true,
+            '_label -> Messages("label.enter_country"),
+            '_errorsAboveInput -> true
+        )
 
         <div class="form-group">
             <input type="submit" class="button" value="Continue">

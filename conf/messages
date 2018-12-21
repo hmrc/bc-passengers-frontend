@@ -87,7 +87,8 @@ error.remove_product = Select yes if you want to remove this item
 head.error.remove_product = Select yes if you want to remove this item
 
 ## Currency Input
-error.invalid_currency = Invalid currency
+head.error.currency.invalid = Enter the currency used
+error.currency.invalid = Enter the currency used
 
 # Start page
 label.check_tax_on_goods_you_bring_ = Check tax on goods you bring into the UK
@@ -173,6 +174,60 @@ error.required.other-goods.electronic-devices = Select televisions or all other 
 ## Volume Input Page
 label.what_is_the_volume_of_ = What is the volume of the {0} you are bringing into the UK?
 label.volume_in_litres = Volume in litres
+
+head.error.required.volume.alcohol.beer = Enter the volume of beer
+head.error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
+head.error.required.volume.alcohol.cider.sparkling-cider = Enter the volume of cider
+head.error.required.volume.alcohol.cider.sparkling-cider-up = Enter the volume of cider
+head.error.required.volume.alcohol.sparkling = Enter the volume of sparkling wine
+head.error.required.volume.alcohol.spirits = Enter the volume of spirits
+head.error.required.volume.alcohol.wine = Enter the volume of wine
+head.error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
+
+error.required.volume.alcohol.beer = Enter the volume of beer
+error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
+error.required.volume.alcohol.cider.sparkling-cider = Enter the volume of cider
+error.required.volume.alcohol.cider.sparkling-cider-up = Enter the volume of cider
+error.required.volume.alcohol.sparkling = Enter the volume of sparkling wine
+error.required.volume.alcohol.spirits = Enter the volume of spirits
+error.required.volume.alcohol.wine = Enter the volume of wine
+error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
+
+head.error.invalid.characters.volume.alcohol.beer = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.cider.non-sparkling-cider = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.cider.sparkling-cider = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.cider.sparkling-cider-up = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.sparkling = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.spirits = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.wine = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume.alcohol.other = Volume must only include numbers, such as 12 or 6.55
+
+error.invalid.characters.volume.alcohol.beer = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.cider.non-sparkling-cider = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.cider.sparkling-cider = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.cider.sparkling-cider-up = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.sparkling = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.spirits = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.wine = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume.alcohol.other = Volume must only include numbers, such as 12 or 6.55
+
+head.error.invalid.format.volume.alcohol.beer = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.cider.non-sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.cider.sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.cider.sparkling-cider-up = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.sparkling = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.spirits = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.wine = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+head.error.invalid.format.volume.alcohol.other = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+
+error.invalid.format.volume.alcohol.beer = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.cider.non-sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.cider.sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.cider.sparkling-cider-up = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.sparkling = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.spirits = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.wine = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+error.invalid.format.volume.alcohol.other = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
 
 label.litre = litre
 label.litres = litres
@@ -269,6 +324,78 @@ label.page_title.how_much_did_you_pay_.alcohol.spirits = How much did you pay fo
 label.page_title.how_much_did_you_pay_.alcohol.wine = How much did you pay for the wine?
 label.page_title.how_much_did_you_pay_.alcohol.other = How much did you pay for the alcoholic drink up to 22% alcohol?
 
+head.error.required.cost.alcohol.beer = Enter the price of the beer
+head.error.required.cost.alcohol.cider.non-sparkling-cider = Enter the price of the cider
+head.error.required.cost.alcohol.cider.sparkling-cider = Enter the price of the cider
+head.error.required.cost.alcohol.cider.sparkling-cider-up = Enter the price of the cider
+head.error.required.cost.alcohol.sparkling = Enter the price of the sparkling wine
+head.error.required.cost.alcohol.spirits = Enter the price of the spirits
+head.error.required.cost.alcohol.wine = Enter the price of the wine
+head.error.required.cost.alcohol.other = Enter the price of the other alcoholic drinks
+
+error.required.cost.alcohol.beer = Enter the price of the beer
+error.required.cost.alcohol.cider.non-sparkling-cider = Enter the price of the cider
+error.required.cost.alcohol.cider.sparkling-cider = Enter the price of the cider
+error.required.cost.alcohol.cider.sparkling-cider-up = Enter the price of the cider
+error.required.cost.alcohol.sparkling = Enter the price of the sparkling wine
+error.required.cost.alcohol.spirits = Enter the price of the spirits
+error.required.cost.alcohol.wine = Enter the price of the wine
+error.required.cost.alcohol.other = Enter the price of the other alcoholic drinks
+
+head.error.invalid.characters.cost.alcohol.beer = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.cider.non-sparkling-cider = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.cider.sparkling-cider = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.cider.sparkling-cider-up = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.sparkling = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.spirits = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.wine = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.alcohol.other = Price must only include numbers, such as 12 or 6.58
+
+error.invalid.characters.cost.alcohol.beer = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.cider.non-sparkling-cider = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.cider.sparkling-cider = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.cider.sparkling-cider-up = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.sparkling = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.spirits = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.wine = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.alcohol.other = Price must only include numbers, such as 12 or 6.58
+
+head.error.invalid.format.cost.alcohol.beer = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.cider.non-sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.cider.sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.cider.sparkling-cider-up = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.sparkling = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.spirits = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.wine = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.alcohol.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+error.invalid.format.cost.alcohol.beer = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.cider.non-sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.cider.sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.cider.sparkling-cider-up = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.sparkling = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.spirits = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.wine = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.alcohol.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+head.error.exceeded.max.cost.alcohol.beer = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.cider.non-sparkling-cider = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.cider.sparkling-cider = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.cider.sparkling-cider-up = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.sparkling = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.spirits = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.wine = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.alcohol.other = Price must be no more than 9,999,999,999
+
+error.exceeded.max.cost.alcohol.beer = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.cider.non-sparkling-cider = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.cider.sparkling-cider = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.cider.sparkling-cider-up = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.sparkling = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.spirits = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.wine = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.alcohol.other = Price must be no more than 9,999,999,999
+
 # Tobacco Inputs
 
 ## No of Sticks Input Page
@@ -289,6 +416,22 @@ tobacco.no_of_sticks_weight_input.panel.cigars.2 = If you are bringing in other 
 tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = You can bring in up to 100 cigarillos without paying duty or tax.
 tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
 
+head.error.required.noofsticks.tobacco.cigarettes = Enter the number of cigarettes
+head.error.required.noofsticks.tobacco.cigarillos = Enter the number of cigarillos
+head.error.required.noofsticks.tobacco.cigars = Enter the number of cigars
+
+error.required.noofsticks.tobacco.cigarettes = Enter the number of cigarettes
+error.required.noofsticks.tobacco.cigarillos = Enter the number of cigarillos
+error.required.noofsticks.tobacco.cigars = Enter the number of cigars
+
+head.error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
+head.error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
+head.error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
+
+error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
+error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
+error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
+
 ## Weight Input Page
 label.how_much_ = How much {0} you are bringing into the UK?
 
@@ -297,6 +440,36 @@ tobacco.weight_input.panel.rolling.2 = If you bring in more than 250g of hand-ro
 
 tobacco.weight_input.panel.chewing.1 = You can bring in up to 250g of pipe or chewing tobacco without paying duty or tax.
 tobacco.weight_input.panel.chewing.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
+
+head.error.required.weight.tobacco.cigarillos = Enter the weight of the cigarillos
+head.error.required.weight.tobacco.cigars = Enter the weight of the cigars
+head.error.required.weight.tobacco.chewing = Enter the weight of the pipe or chewing tobacco
+head.error.required.weight.tobacco.rolling = Enter the weight of the rolling tobacco
+
+error.required.weight.tobacco.cigarillos = Enter the weight of the cigarillos
+error.required.weight.tobacco.cigars = Enter the weight of the cigars
+error.required.weight.tobacco.chewing = Enter the weight of the pipe or chewing tobacco
+error.required.weight.tobacco.rolling = Enter the weight of the rolling tobacco
+
+head.error.invalid.characters.weight.tobacco.cigarillos = Weight must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.weight.tobacco.cigars = Weight must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.weight.tobacco.chewing = Weight must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.weight.tobacco.rolling = Weight must only include numbers, such as 12 or 6.58
+
+error.invalid.characters.weight.tobacco.cigarillos = Weight must only include numbers, such as 12 or 6.58
+error.invalid.characters.weight.tobacco.cigars = Weight must only include numbers, such as 12 or 6.58
+error.invalid.characters.weight.tobacco.chewing = Weight must only include numbers, such as 12 or 6.58
+error.invalid.characters.weight.tobacco.rolling = Weight must only include numbers, such as 12 or 6.58
+
+head.error.invalid.format.weight.tobacco.cigarillos = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+head.error.invalid.format.weight.tobacco.cigars = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+head.error.invalid.format.weight.tobacco.chewing = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+head.error.invalid.format.weight.tobacco.rolling = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+
+error.invalid.format.weight.tobacco.cigarillos = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+error.invalid.format.weight.tobacco.cigars = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+error.invalid.format.weight.tobacco.chewing = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+error.invalid.format.weight.tobacco.rolling = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
 
 ## Country Input Page
 label.tobacco.where_did_you_buy_the_ = Where did you buy the {0}?
@@ -325,6 +498,54 @@ label.page_title.how_much_did_you_pay_.tobacco.cigars = How much did you pay for
 label.page_title.how_much_did_you_pay_.tobacco.chewing = How much did you pay for the pipe or chewing tobacco?
 label.page_title.how_much_did_you_pay_.tobacco.rolling = How much did you pay for the rolling tobacco?
 
+head.error.required.cost.tobacco.cigarettes = Enter the price of the cigarettes
+head.error.required.cost.tobacco.cigarillos = Enter the price of the cigarillos
+head.error.required.cost.tobacco.cigars = Enter the price of the cigars
+head.error.required.cost.tobacco.chewing = Enter the price of the pipe or chewing tobacco
+head.error.required.cost.tobacco.rolling = Enter the price of the rolling tobacco
+
+error.required.cost.tobacco.cigarettes = Enter the price of the cigarettes
+error.required.cost.tobacco.cigarillos = Enter the price of the cigarillos
+error.required.cost.tobacco.cigars = Enter the price of the cigars
+error.required.cost.tobacco.chewing = Enter the price of the pipe or chewing tobacco
+error.required.cost.tobacco.rolling = Enter the price of the rolling tobacco
+
+head.error.invalid.characters.cost.tobacco.cigarettes = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.tobacco.cigarillos = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.tobacco.cigars = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.tobacco.chewing = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.tobacco.rolling = Price must only include numbers, such as 12 or 6.58
+
+error.invalid.characters.cost.tobacco.cigarettes = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.tobacco.cigarillos = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.tobacco.cigars = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.tobacco.chewing = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.tobacco.rolling = Price must only include numbers, such as 12 or 6.58
+
+head.error.invalid.format.cost.tobacco.cigarettes = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.tobacco.cigarillos = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.tobacco.cigars = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.tobacco.chewing = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.tobacco.rolling = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+error.invalid.format.cost.tobacco.cigarettes = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.tobacco.cigarillos = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.tobacco.cigars = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.tobacco.chewing = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.tobacco.rolling = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+head.error.exceeded.max.cost.tobacco.cigarettes = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.tobacco.cigarillos = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.tobacco.cigars = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.tobacco.chewing = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.tobacco.rolling = Price must be no more than 9,999,999,999
+
+error.exceeded.max.cost.tobacco.cigarettes = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.tobacco.cigarillos = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.tobacco.cigars = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.tobacco.chewing = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.tobacco.rolling = Price must be no more than 9,999,999,999
+
 # Other Goods Inputs
 other-goods.quantity_input.heading = How many {0} are you bringing into the UK?
 label.how_many_.other-goods.adult.adult-clothing = How many items of adult clothing are you bringing into the UK?
@@ -351,6 +572,103 @@ label.how_many_.other-goods.tableware = How many items of tableware or kitchenwa
 label.how_many_.other-goods.watches-clocks = How many watches or clocks are you bringing into the UK?
 label.how_many_.other-goods.other = How many other items are you bringing into the UK?
 
+head.error.required.quantity.other-goods.adult.adult-clothing = Enter the number of items of adult clothing
+head.error.required.quantity.other-goods.adult.adult-footwear = Enter the number of pairs of adult footwear
+head.error.required.quantity.other-goods.antiques = Enter the number of antiques, collector’s pieces or works of arts
+head.error.required.quantity.other-goods.books = Enter the number of books or publications
+head.error.required.quantity.other-goods.carpets-fabric.carpets = Enter the number of carpets
+head.error.required.quantity.other-goods.carpets-fabric.fabrics = Enter the number of items of fabric
+head.error.required.quantity.other-goods.car-seats = Enter the number of children’s car seats
+head.error.required.quantity.other-goods.childrens-clothing.childrens = Enter the number of items of children’s clothing
+head.error.required.quantity.other-goods.childrens-clothing.footwear = Enter the number of pairs of children’s footwear
+head.error.required.quantity.other-goods.disability = Enter the number of items of disability equipment
+head.error.required.quantity.other-goods.electronic-devices.televisions = Enter the number of televisions
+head.error.required.quantity.other-goods.electronic-devices.other = Enter the number of electronic devices
+head.error.required.quantity.other-goods.furniture = Enter the number of items of furniture
+head.error.required.quantity.other-goods.glassware = Enter the number of items of glassware
+head.error.required.quantity.other-goods.jewellery = Enter the number of items of jewellery
+head.error.required.quantity.other-goods.mobility = Enter the number of mobility aids
+head.error.required.quantity.other-goods.perfumes-cosmetics = Enter the number of items of perfume or cosmetics
+head.error.required.quantity.other-goods.protective-helmets = Enter the number of protective helmets
+head.error.required.quantity.other-goods.sanitary-products = Enter the number of sanitary products
+head.error.required.quantity.other-goods.stop-smoking = Enter the number of stop smoking products
+head.error.required.quantity.other-goods.tableware = Enter the number of items of tableware and kitchenware
+head.error.required.quantity.other-goods.watches-clocks = Enter the number of watches or clocks
+head.error.required.quantity.other-goods.other = Enter the number of items
+
+error.required.quantity.other-goods.adult.adult-clothing = Enter the number of items of adult clothing
+error.required.quantity.other-goods.adult.adult-footwear = Enter the number of pairs of adult footwear
+error.required.quantity.other-goods.antiques = Enter the number of antiques, collector’s pieces or works of arts
+error.required.quantity.other-goods.books = Enter the number of books or publications
+error.required.quantity.other-goods.carpets-fabric.carpets = Enter the number of carpets
+error.required.quantity.other-goods.carpets-fabric.fabrics = Enter the number of items of fabric
+error.required.quantity.other-goods.car-seats = Enter the number of children’s car seats
+error.required.quantity.other-goods.childrens-clothing.childrens = Enter the number of items of children’s clothing
+error.required.quantity.other-goods.childrens-clothing.footwear = Enter the number of pairs of children’s footwear
+error.required.quantity.other-goods.disability = Enter the number of items of disability equipment
+error.required.quantity.other-goods.electronic-devices.televisions = Enter the number of televisions
+error.required.quantity.other-goods.electronic-devices.other = Enter the number of electronic devices
+error.required.quantity.other-goods.furniture = Enter the number of items of furniture
+error.required.quantity.other-goods.glassware = Enter the number of items of glassware
+error.required.quantity.other-goods.jewellery = Enter the number of items of jewellery
+error.required.quantity.other-goods.mobility = Enter the number of mobility aids
+error.required.quantity.other-goods.perfumes-cosmetics = Enter the number of items of perfume or cosmetics
+error.required.quantity.other-goods.protective-helmets = Enter the number of protective helmets
+error.required.quantity.other-goods.sanitary-products = Enter the number of sanitary products
+error.required.quantity.other-goods.stop-smoking = Enter the number of stop smoking products
+error.required.quantity.other-goods.tableware = Enter the number of items of tableware and kitchenware
+error.required.quantity.other-goods.watches-clocks = Enter the number of watches or clocks
+error.required.quantity.other-goods.other = Enter the number of items
+
+head.error.invalid.characters.quantity.other-goods.adult.adult-clothing = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.adult.adult-footwear = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.antiques = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.books = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.carpets-fabric.carpets = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.carpets-fabric.fabrics = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.car-seats = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.childrens-clothing.childrens = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.childrens-clothing.footwear = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.disability = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.electronic-devices.televisions = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.electronic-devices.other = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.furniture = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.glassware = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.jewellery = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.mobility = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.perfumes-cosmetics = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.protective-helmets = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.sanitary-products = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.stop-smoking = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.tableware = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.watches-clocks = Quantity must only include whole numbers, such as 3 or 8
+head.error.invalid.characters.quantity.other-goods.other = Quantity must only include whole numbers, such as 3 or 8
+
+error.invalid.characters.quantity.other-goods.adult.adult-clothing = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.adult.adult-footwear = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.antiques = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.books = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.carpets-fabric.carpets = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.carpets-fabric.fabrics = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.car-seats = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.childrens-clothing.childrens = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.childrens-clothing.footwear = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.disability = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.electronic-devices.televisions = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.electronic-devices.other = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.furniture = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.glassware = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.jewellery = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.mobility = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.perfumes-cosmetics = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.protective-helmets = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.sanitary-products = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.stop-smoking = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.tableware = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.watches-clocks = Quantity must only include whole numbers, such as 3 or 8
+error.invalid.characters.quantity.other-goods.other = Quantity must only include whole numbers, such as 3 or 8
+
+# Other Goods Currency
 
 label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.
 label.if_your_goods_are_worth_more_than_ = If your goods are worth more than £390 in total (£270 if you arrived by private aircraft or private boat), you will pay tax and duty on the amount over. This is separate to your allowances for tobacco and alcohol.
@@ -439,6 +757,198 @@ label.how_much_did_you_pay_.other-goods.stop-smoking = How much did you pay for 
 label.how_much_did_you_pay_.other-goods.tableware = How much did you pay for the tableware or kitchenware?
 label.how_much_did_you_pay_.other-goods.watches-clocks = How much did you pay for the watch or clock?
 label.how_much_did_you_pay_.other-goods.other = How much did you pay for the item?
+
+head.error.required.cost.other-goods.adult.adult-clothing = Enter the price of the adult clothing
+head.error.required.cost.other-goods.adult.adult-footwear = Enter the price of the pair of adult footwear
+head.error.required.cost.other-goods.antiques = Enter the price of the antiques, collector’s pieces or works of arts
+head.error.required.cost.other-goods.books = Enter the price of the books or publications
+head.error.required.cost.other-goods.carpets-fabric.carpets = Enter the price of the carpet
+head.error.required.cost.other-goods.carpets-fabric.fabrics = Enter the price of the fabric
+head.error.required.cost.other-goods.car-seats = Enter the price of the children’s car seats
+head.error.required.cost.other-goods.childrens-clothing.childrens = Enter the price of the children’s clothing
+head.error.required.cost.other-goods.childrens-clothing.footwear = Enter the price of the pair of children’s footwear
+head.error.required.cost.other-goods.disability = Enter the price of the disability equipment
+head.error.required.cost.other-goods.electronic-devices.televisions = Enter the price of the television
+head.error.required.cost.other-goods.electronic-devices.other = Enter the price of the electronic device
+head.error.required.cost.other-goods.furniture = Enter the price of the furniture
+head.error.required.cost.other-goods.glassware = Enter the price of the item of glassware
+head.error.required.cost.other-goods.jewellery = Enter the price of the jewellery
+head.error.required.cost.other-goods.mobility = Enter the price of the mobility aids
+head.error.required.cost.other-goods.perfumes-cosmetics = Enter the price of the perfume or cosmetics
+head.error.required.cost.other-goods.protective-helmets = Enter the price of the protective helmets
+head.error.required.cost.other-goods.sanitary-products = Enter the price of the sanitary products
+head.error.required.cost.other-goods.stop-smoking = Enter the price of the stop smoking products
+head.error.required.cost.other-goods.tableware = Enter the price of the tableware and kitchenware
+head.error.required.cost.other-goods.watches-clocks = Enter the price of the watches or clocks
+head.error.required.cost.other-goods.other = Eneter the price of the items
+
+error.required.cost.other-goods.adult.adult-clothing = Enter the price of the adult clothing
+error.required.cost.other-goods.adult.adult-footwear = Enter the price of the pair of adult footwear
+error.required.cost.other-goods.antiques = Enter the price of the antiques, collector’s pieces or works of arts
+error.required.cost.other-goods.books = Enter the price of the books or publications
+error.required.cost.other-goods.carpets-fabric.carpets = Enter the price of the carpet
+error.required.cost.other-goods.carpets-fabric.fabrics = Enter the price of the fabric
+error.required.cost.other-goods.car-seats = Enter the price of the children’s car seats
+error.required.cost.other-goods.childrens-clothing.childrens = Enter the price of the children’s clothing
+error.required.cost.other-goods.childrens-clothing.footwear = Enter the price of the pair of children’s footwear
+error.required.cost.other-goods.disability = Enter the price of the disability equipment
+error.required.cost.other-goods.electronic-devices.televisions = Enter the price of the television
+error.required.cost.other-goods.electronic-devices.other = Enter the price of the electronic device
+error.required.cost.other-goods.furniture = Enter the price of the furniture
+error.required.cost.other-goods.glassware = Enter the price of the item of glassware
+error.required.cost.other-goods.jewellery = Enter the price of the jewellery
+error.required.cost.other-goods.mobility = Enter the price of the mobility aids
+error.required.cost.other-goods.perfumes-cosmetics = Enter the price of the perfume or cosmetics
+error.required.cost.other-goods.protective-helmets = Enter the price of the protective helmets
+error.required.cost.other-goods.sanitary-products = Enter the price of the sanitary products
+error.required.cost.other-goods.stop-smoking = Enter the price of the stop smoking products
+error.required.cost.other-goods.tableware = Enter the price of the tableware and kitchenware
+error.required.cost.other-goods.watches-clocks = Enter the price of the watches or clocks
+error.required.cost.other-goods.other = Enter the price of the items
+
+head.error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.antiques = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.books = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.carpets-fabric.carpets = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.carpets-fabric.fabrics = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.car-seats = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.childrens-clothing.childrens = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.childrens-clothing.footwear = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.disability = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.electronic-devices.televisions = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.electronic-devices.other = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.furniture = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.glassware = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.jewellery = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.mobility = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.perfumes-cosmetics = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.protective-helmets = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.sanitary-products = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.stop-smoking = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.tableware = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.watches-clocks = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.cost.other-goods.other = Price must only include numbers, such as 12 or 6.58
+
+error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.antiques = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.books = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.carpets-fabric.carpets = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.carpets-fabric.fabrics = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.car-seats = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.childrens-clothing.childrens = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.childrens-clothing.footwear = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.disability = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.electronic-devices.televisions = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.electronic-devices.other = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.furniture = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.glassware = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.jewellery = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.mobility = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.perfumes-cosmetics = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.protective-helmets = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.sanitary-products = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.stop-smoking = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.tableware = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.watches-clocks = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.other = Price must only include numbers, such as 12 or 6.58
+
+head.error.invalid.format.cost.other-goods.adult.adult-clothing = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.adult.adult-footwear = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.antiques = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.books = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.carpets-fabric.carpets = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.carpets-fabric.fabrics = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.car-seats = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.childrens-clothing.childrens = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.childrens-clothing.footwear = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.disability = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.electronic-devices.televisions = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.electronic-devices.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.furniture = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.glassware = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.jewellery = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.mobility = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.perfumes-cosmetics = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.protective-helmets = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.sanitary-products = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.stop-smoking = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.tableware = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.watches-clocks = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.invalid.format.cost.other-goods.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+error.invalid.format.cost.other-goods.adult.adult-clothing = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.adult.adult-footwear = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.antiques = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.books = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.carpets-fabric.carpets = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.carpets-fabric.fabrics = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.car-seats = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.childrens-clothing.childrens = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.childrens-clothing.footwear = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.disability = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.electronic-devices.televisions = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.electronic-devices.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.furniture = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.glassware = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.jewellery = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.mobility = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.perfumes-cosmetics = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.protective-helmets = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.sanitary-products = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.stop-smoking = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.tableware = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.watches-clocks = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-goods.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+head.error.exceeded.max.cost.other-goods.adult.adult-clothing = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.adult.adult-footwear = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.antiques = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.books = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.carpets-fabric.carpets = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.carpets-fabric.fabrics = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.car-seats = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.childrens-clothing.childrens = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.childrens-clothing.footwear = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.disability = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.electronic-devices.televisions = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.electronic-devices.other = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.furniture = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.glassware = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.jewellery = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.mobility = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.perfumes-cosmetics = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.protective-helmets = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.sanitary-products = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.stop-smoking = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.tableware = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.watches-clocks = Price must be no more than 9,999,999,999
+head.error.exceeded.max.cost.other-goods.other = Price must be no more than 9,999,999,999
+
+error.exceeded.max.cost.other-goods.adult.adult-clothing = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.adult.adult-footwear = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.antiques = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.books = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.carpets-fabric.carpets = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.carpets-fabric.fabrics = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.car-seats = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.childrens-clothing.childrens = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.childrens-clothing.footwear = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.disability = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.electronic-devices.televisions = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.electronic-devices.other = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.furniture = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.glassware = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.jewellery = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.mobility = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.perfumes-cosmetics = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.protective-helmets = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.sanitary-products = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.stop-smoking = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.tableware = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.watches-clocks = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-goods.other = Price must be no more than 9,999,999,999
 
 # Hidden Text
 label.if_you_do_not_know_the_volume = If you do not know the volume
