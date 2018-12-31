@@ -11,7 +11,8 @@ object AppDependencies {
     ws,
     "uk.gov.hmrc" %% "bootstrap-play-26" % "0.32.0",
     "uk.gov.hmrc" %% "http-caching-client" % "8.0.0",
-    "com.typesafe.play" %% "play-json-joda" % "2.6.0"
+    "com.typesafe.play" %% "play-json-joda" % "2.6.0",
+    "org.mindrot" % "jbcrypt" % "0.4"
   )
 
   val test = Seq(
