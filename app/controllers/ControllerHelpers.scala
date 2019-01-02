@@ -1,18 +1,26 @@
 package controllers
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import config.AppConfig
 import models._
+import org.mindrot.jbcrypt.BCrypt
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
-trait ControllerHelpers extends FrontendController with I18nSupport {
+
+trait ControllerHelpers extends  MessagesBaseController
+  with Utf8MimeTypes
+  with WithJsonBody
+  with FrontendHeaderCarrierProvider with I18nSupport {
 
   def travelDetailsService: TravelDetailsService
   def productTreeService: ProductTreeService
@@ -47,7 +55,7 @@ trait ControllerHelpers extends FrontendController with I18nSupport {
 
     PublicAction { implicit context =>
 
-      travelDetailsService.getJourneyData flatMap {
+      travelDetailsService.getJourneyData(hc(context.request)) flatMap {
         case Some(journeyData) =>
           implicit val ctxWithJd = context.withJourneyData(journeyData)
           requireTravelDetails {
