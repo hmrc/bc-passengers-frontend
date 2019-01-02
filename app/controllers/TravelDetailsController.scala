@@ -37,7 +37,11 @@ class TravelDetailsController @Inject() (
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Redirect(routes.TravelDetailsController.euCountryCheck()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
+
+    Future.successful {
+      val r = Redirect(routes.TravelDetailsController.euCountryCheck()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
+      request.session.get("bcpaccess").fold(r)(v => r.addingToSession("bcpaccess" -> v))
+    }
   }
 
   val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
