@@ -63,7 +63,7 @@ class ValidateAccessCodeFilter @Inject() (
 
   override def apply(nextFilter: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {
 
-    if (!enabled) {
+    if ( ! (enabled && requestHeader.uri.startsWith("/check-tax-on-goods-you-bring-into-the-uk")) ) {
       nextFilter(requestHeader)
     }
     else if (requestHeader.session.get("bcpaccess").fold(false)(_=="true")) {

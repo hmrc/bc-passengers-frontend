@@ -114,7 +114,18 @@ class ValidateAccessCodeFilterSpec extends BaseSpec {
       val mockResult =  Result(ResponseHeader(OK), HttpEntity.NoEntity)
       val nextFilter: RequestHeader => Future[Result] = (_: RequestHeader) => Future.successful(mockResult)
 
-      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/test"))
+      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk"))
+      status(r) shouldBe OK
+    }
+
+    "Return 200 if neither ac querystring is valid or bcpaccess is true, enabled is true, but path does not begin with /check-tax-on-goods-you-bring-into-the-uk" in new LocalSetup {
+
+      override val enabled: String = "true"
+
+      val mockResult =  Result(ResponseHeader(OK), HttpEntity.NoEntity)
+      val nextFilter: RequestHeader => Future[Result] = (_: RequestHeader) => Future.successful(mockResult)
+
+      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/ping/ping"))
       status(r) shouldBe OK
     }
 
@@ -123,7 +134,7 @@ class ValidateAccessCodeFilterSpec extends BaseSpec {
       override val enabled: String = "true"
 
       val nextFilter = MockitoSugar.mock[Function[RequestHeader, Future[mvc.Results.Status]]]
-      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/test"))
+      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk"))
       status(r) shouldBe UNAUTHORIZED
     }
 
@@ -134,7 +145,7 @@ class ValidateAccessCodeFilterSpec extends BaseSpec {
       val mockResult =  Result(ResponseHeader(OK), HttpEntity.NoEntity)
       val nextFilter: RequestHeader => Future[Result] = (_: RequestHeader) => Future.successful(mockResult)
 
-      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/test").withSession("bcpaccess" -> "true"))
+      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true"))
       status(r) shouldBe OK
     }
 
@@ -145,7 +156,7 @@ class ValidateAccessCodeFilterSpec extends BaseSpec {
       val mockResult =  Result(ResponseHeader(OK), HttpEntity.NoEntity)
       val nextFilter: RequestHeader => Future[Result] = (_: RequestHeader) => Future.successful(mockResult)
 
-      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/test?ac=JDJhJDEwJEFaSjBNdDZFU25LME8ub3kzTWIxUHVQNHhBaVYuVG9VSlA4TDcxMzNxUUE4QXh1S1hVSFA2"))
+      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk?ac=JDJhJDEwJEFaSjBNdDZFU25LME8ub3kzTWIxUHVQNHhBaVYuVG9VSlA4TDcxMzNxUUE4QXh1S1hVSFA2"))
       status(r) shouldBe OK
 
       session(r).get("bcpaccess") shouldBe Some("true")
@@ -158,7 +169,7 @@ class ValidateAccessCodeFilterSpec extends BaseSpec {
       val mockResult =  Result(ResponseHeader(OK), HttpEntity.NoEntity)
       val nextFilter: RequestHeader => Future[Result] = (_: RequestHeader) => Future.successful(mockResult)
 
-      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/test?ac=MADE-UP-CODE"))
+      val r = vacf.apply(nextFilter)(FakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk?ac=MADE-UP-CODE"))
       status(r) shouldBe UNAUTHORIZED
 
       session(r).get("bcpaccess") shouldBe None
