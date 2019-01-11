@@ -1,4 +1,5 @@
 # Travel Details
+
 GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
 
 GET        /eu-country-check                                 controllers.TravelDetailsController.euCountryCheck

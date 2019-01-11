@@ -413,22 +413,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
-  "Invoking redirectWithNewSession" should {
+  "Invoking newSession" should {
 
-    "redirect to select country when selecting start again on the dashboard page" in {
-
-      val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk/new-session").withSession("test" -> "testValue")
-      val sessionId = fakeRequest.session.get("sessionId")
-      val response = route(app, fakeRequest).get
-
-      status(response) shouldBe  SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")
-      session(response).data.get("test") shouldBe None
-      session(response).data.get("sessionId") should not be sessionId
-
-    }
-
-    "keep any session data for bcpaccess when redirecting" in {
+    "redirect to select country, changing session id, keep any session data for bcpaccess when redirecting" in {
 
       val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk/new-session").withSession("bcpaccess" -> "true")
       val sessionId = fakeRequest.session.get("sessionId")
@@ -437,6 +424,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe  SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")
       session(response).data.get("bcpaccess") shouldBe Some("true")
+      session(response).data.get("sessionId") should not be sessionId
 
     }
 

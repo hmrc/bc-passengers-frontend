@@ -5,16 +5,14 @@ import java.util.UUID
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.PrivateCraftDto._
-import models.{SelectedCountryDto, _}
+import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 @Singleton
 class TravelDetailsController @Inject() (
@@ -39,8 +37,7 @@ class TravelDetailsController @Inject() (
   val newSession: Action[AnyContent] = Action.async { implicit request =>
 
     Future.successful {
-      val r = Redirect(routes.TravelDetailsController.euCountryCheck()).withSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
-      request.session.get("bcpaccess").fold(r)(v => r.addingToSession("bcpaccess" -> v))
+      Redirect(routes.TravelDetailsController.euCountryCheck()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
     }
   }
 
@@ -115,7 +112,6 @@ class TravelDetailsController @Inject() (
     )
   }
 
-
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
 
     travelDetailsService.getJourneyData map {
@@ -144,8 +140,8 @@ class TravelDetailsController @Inject() (
     )
   }
 
-
   val euDone: Action[AnyContent] = PublicAction { implicit request =>
     Future.successful(Ok(eu_done()))
   }
+
 }
