@@ -43,7 +43,7 @@ class ProductTreeService {
                 ProductTreeLeaf("adult-footwear", "Adult footwear", "OGD/FOOTW", "other-goods")
               )
             ),
-            ProductTreeLeaf("antiques", "Antiques and works of art", "OGD/ART", "other-goods"),
+            ProductTreeLeaf("antiques", "Antiques, collector’s pieces and works of art", "OGD/ART", "other-goods"),
             ProductTreeLeaf("books", "Books and publications", "OGD/BKS/MISC", "other-goods"),
             ProductTreeBranch("carpets-fabric",
               "Carpets and fabrics", List(
@@ -67,12 +67,7 @@ class ProductTreeService {
               )
             ),
             ProductTreeLeaf("furniture", "Furniture", "OGD/ORN/MISC", "other-goods"),
-            ProductTreeBranch("glassware-ornaments",
-              "Glassware and ornaments", List(
-                ProductTreeLeaf("glassware", "Glassware", "OGD/GLASS", "other-goods"),
-                ProductTreeLeaf("ornaments", "Ornaments", "OGD/ART", "other-goods")
-              )
-            ),
+            ProductTreeLeaf("glassware", "Glassware", "OGD/GLASS", "other-goods"),
             ProductTreeLeaf("jewellery", "Jewellery","OGD/ORN/MISC","other-goods"),
             ProductTreeLeaf("mobility", "Mobility aids", "OGD/MOB/MISC", "other-goods"),
             ProductTreeLeaf("perfumes-cosmetics", "Perfumes and cosmetics", "OGD/COSMT", "other-goods"),
