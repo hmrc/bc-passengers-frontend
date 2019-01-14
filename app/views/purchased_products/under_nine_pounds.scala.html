@@ -1,0 +1,135 @@
+@this(main_template: views.html.main_template)
+@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean)(implicit request: Request[_], messages: Messages)
+
+@main_template(title = messages("label.tax_due_on_these_goods")){
+
+<h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", "0.00"))</h1>
+
+<table class="responsive-table" role="grid">
+
+    <thead>
+    <tr role="row">
+        <th scope="col">@messages("label.item")</th>
+        <th scope="col">@messages("label.price")</th>
+        <th class="numeric" scope="col">@messages("label.tax_due")</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr class="total-row" role="row">
+        <th class="total" role="gridcell" colspan="2" style="font-weight:700">@messages("label.total")</th>
+        <td class="total-value numeric" role="gridcell" style="font-weight:700">&pound;0.00</td>
+    </tr>
+    </tfoot>
+    <tbody>
+    @calculatorResponseDto.bands.get("A").map { band =>
+      @band.map { item =>
+        <tr role="row">
+            <th scope="row" role="gridcell">
+                <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
+                @item.metadata.description
+          <td role="gridcell">
+                <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
+                @item.metadata.cost @item.metadata.currency.displayName
+            </td>
+            <td role="gridcell" class="numeric">
+                <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
+                &pound;0.00
+            </td>
+        </tr>
+      }
+    }
+    @calculatorResponseDto.bands.get("B").map { band =>
+      @band.map { item =>
+        <tr role="row">
+            <th scope="row" role="gridcell">
+                <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
+                @item.metadata.description
+          <td role="gridcell">
+                <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
+                @item.metadata.cost @item.metadata.currency.displayName
+            </td>
+            <td role="gridcell" class="numeric">
+                <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
+                &pound;0.00
+            </td>
+        </tr>
+      }
+    }
+    @calculatorResponseDto.bands.get("C").map { band =>
+      @band.map { item =>
+        <tr role="row">
+            <th scope="row" role="gridcell">
+                <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
+                @item.metadata.description
+          <td role="gridcell">
+                <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
+                @item.metadata.cost @item.metadata.currency.displayName
+            </td>
+            <td role="gridcell" class="numeric">
+                <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
+                &pound;0.00
+            </td>
+        </tr>
+      }
+    }
+    </tbody>
+</table>
+
+<details style="padding-top:2em;" ; role="group">
+    <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+        <span class="summary">How the tax was calculated</span>
+    </summary>
+    <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
+
+        <table>
+            <thead>
+            <tr role="row">
+                <th scope="col"></th>
+                <th class="numeric" scope="col">@messages("label.tax_due")</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>@messages("label.customs")</td>
+                <td class="numeric">&pound;0.00</td>
+            </tr>
+
+            <tr>
+                <td>@messages("label.excise")</td>
+                <td class="numeric">&pound;0.00</td>
+            </tr>
+
+            <tr>
+                <td>@messages("label.vat")</td>
+                <td class="numeric">&pound;0.00</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="table-foot">
+            <span class="total">@messages("label.total")</span>
+            <span class="total-value numeric">&pound;0.00</span>
+        </div>
+      @if(!hideExchangeRateInfo) {
+      <br>
+        <p class="margin-top-30">@Html(messages("label.exchange_rates"))</p>
+        }
+    </div>
+</details>
+
+<h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
+
+<p>@messages("label.green_channel")
+</p>
+<p>
+    @messages("label.fire_arms")
+</p>
+
+<p>
+    <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
+    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again").toLowerCase()</a>.
+</p>
+
+
+}

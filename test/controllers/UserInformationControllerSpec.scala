@@ -60,7 +60,8 @@ class UserInformationControllerSpec extends BaseSpec {
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
-      Calculation("0.00", "0.00", "0.00", "0.00")
+      Calculation("0.00", "0.00", "0.00", "0.00"),
+      withinFreeAllowance = true
     )
 
     lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))

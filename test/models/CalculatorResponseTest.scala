@@ -24,7 +24,8 @@ class CalculatorResponseTest extends BaseSpec {
             Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
-        Calculation("100.00", "0.00", "0.00", "100.00")
+        Calculation("100.00", "0.00", "0.00", "100.00"),
+        withinFreeAllowance = false
       )
     }
 
@@ -60,7 +61,8 @@ class CalculatorResponseTest extends BaseSpec {
             Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", otherGoodsCurrency, Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
-        Calculation("0.00", "0.00", "0.00", "0.00")
+        Calculation("0.00", "0.00", "0.00", "0.00"),
+        withinFreeAllowance = false
       )
     }
 
