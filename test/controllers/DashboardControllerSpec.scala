@@ -103,6 +103,32 @@ class DashboardControllerSpec extends BaseSpec {
   }
 
   "Calling GET .../calculation" should {
+    "redirect to the over ninty seven thousand pounds page if the total to declare is over ninty seven thousand pounds" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        calculatorResponse = Some(CalculatorResponse(
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")),
+            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
+          Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Calculation("1.00", "7.00", "90000.00", "98000.00"), withinFreeAllowance = false
+        ))))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98000.00"
+      content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
+
+    }
+  }
+
+
+  "Calling GET .../calculation" should {
     "redirect to the calculation done page with exchange rate message not includes if response only includes GBP currency" in new LocalSetup {
 
 
