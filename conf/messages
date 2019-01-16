@@ -477,6 +477,12 @@ label.personal_allowances = All the items you entered are included within your p
 label.green_channel = Go to the green channel at customs if these are the only goods you are bringing into the UK from abroad.
 label.fire_arms = Go to the red channel or red-point phone at customs if you have something else to declare or are carrying restricted items such as firearms or ammunition.
 
+# Done page - Over 97 Thousand pound
+label.declaring_these_goods = Declaring these goods
+label.cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
+label.declare_these_goods = When you arrive in the UK go to the red channel or red-point phone at customs and declare these goods to a member of Border Force.
+label.tax_is_due = Tax is due because you have gone over your other goods allowance.
+
 # Declaration Page
 label.enter_your_details = Enter your details
 label.first_name = First name
