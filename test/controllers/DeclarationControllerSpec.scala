@@ -21,7 +21,7 @@ import scala.concurrent.Future
 import scala.language.postfixOps
 
 
-class UserInformationControllerSpec extends BaseSpec {
+class DeclarationControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
@@ -77,6 +77,24 @@ class UserInformationControllerSpec extends BaseSpec {
       when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any())(any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
       rt(app, req)
+    }
+  }
+
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/you-need-to-declare" should {
+
+    "Display the you need to declare informational page" in new LocalSetup {
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/you-need-to-declare")).get
+
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
     }
   }
 

@@ -12,7 +12,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserInformationController @Inject()(
+class DeclarationController @Inject()(
   val travelDetailsService: TravelDetailsService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
@@ -21,6 +21,7 @@ class UserInformationController @Inject()(
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
   val dateTimeProviderService: DateTimeProviderService,
+  val you_need_to_declare: views.html.declaration.you_need_to_declare,
   val enter_your_details: views.html.declaration.enter_your_details,
   val error_template: views.html.error_template,
   override val controllerComponents: MessagesControllerComponents,
@@ -30,6 +31,10 @@ class UserInformationController @Inject()(
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def receiptDateTime: DateTime = dateTimeProviderService.now
+
+  def youNeedToDeclare: Action[AnyContent] = DashboardAction { implicit context =>
+    Future.successful(Ok(you_need_to_declare()))
+  }
 
   def enterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
     Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))

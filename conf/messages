@@ -483,7 +483,20 @@ label.cannot_make_payments = You cannot make payments for tax and duty above £9
 label.declare_these_goods = When you arrive in the UK go to the red channel or red-point phone at customs and declare these goods to a member of Border Force.
 label.tax_is_due = Tax is due because you have gone over your other goods allowance.
 
-# Declaration Page
+# Declaration page
+label.declare_your_goods = Declare your goods
+label.you_will_need_to_declare_your_goods = You will need to declare your goods
+label.declare_your_goods_and_pay_online = Declare your goods and pay online
+text.you_must_pay_duty_ = You must pay duty and tax on these goods if you bring them into the UK.
+text.you_can_only_declare_your_goods_online_  = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go through the red channel at customs.
+text.the_goods_are_for_your_own_ = the goods are for your own use or to give away as a gift
+text.you_are_not_intending_ = you are not intending to sell the goods
+text.you_are_arriving_in_ =  you are arriving in the UK within the next 72 hours
+text.this_is_your_only_online_ = this is your only online declaration for this journey
+text.by_making_this_declaration_you_ = By making this declaration you are confirming that:
+
+
+# User Details Page
 label.enter_your_details = Enter your details
 label.first_name = First name
 label.last_name = Last name

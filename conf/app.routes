@@ -23,14 +23,16 @@ GET        /new-session                                      controllers.TravelD
 GET        /dashboard                                        controllers.DashboardController.showDashboard
 POST       /dashboard                                        controllers.DashboardController.calculate
 
-GET        /calculation                                      controllers.DashboardController.showCalculation
-
-GET        /user-information                                 controllers.UserInformationController.enterYourDetails
-POST       /user-information                                 controllers.UserInformationController.processEnterYourDetails
-
 GET        /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /products/$path<.+>/:iid/remove                   controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
+GET        /calculation                                      controllers.DashboardController.showCalculation
+
+# Declaration
+GET        /you-need-to-declare                              controllers.DeclarationController.youNeedToDeclare
+
+GET        /user-information                                 controllers.DeclarationController.enterYourDetails
+POST       /user-information                                 controllers.DeclarationController.processEnterYourDetails
 
 # Alcohol Input/Update
 GET        /products/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
