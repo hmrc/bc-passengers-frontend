@@ -77,7 +77,7 @@
     <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
   </div>
 
-<details style="padding-top:2em;" role="group">
+<details style="padding-top:2em; padding-bottom:1em;" role="group">
   <summary role="button" aria-controls="details-content-0" aria-expanded="false">
     <span class="summary">How the tax was calculated</span>
   </summary>
@@ -120,14 +120,7 @@
     }
   </div>
 </details>
-
-  <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
-
-  <p>@messages("label.you_must_pay_duty_and_tax_")</p>
-  <p>@messages("label.you_can_declare_these_goods_")</p>
-  <p>@messages("label.declare_once")</p>
-
-  <a class="button margin-bottom-30" href="@controllers.routes.UserInformationController.enterYourDetails()">
+  <a class="button margin-bottom-30" href="@controllers.routes.DeclarationController.youNeedToDeclare()">
     @messages("label.declare_your_goods_and_pay_online")
   </a>
 
