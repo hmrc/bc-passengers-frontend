@@ -9,7 +9,8 @@
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   inlineScript: Option[Html] = None,
-  inlineLinkElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  inlineLinkElem: Option[Html] = None,
+  gtmEmbedded: Option[Boolean] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @scriptElem={
     @inlineScript
@@ -47,5 +48,6 @@
                mainContent = main,
                serviceInfoContent = serviceInfoContent,
                scriptElem = Some(scriptElem),
-               linkElem = Some(linkElem)
+               linkElem = Some(linkElem),
+               gtmEmbedded = gtmEmbedded
 )
