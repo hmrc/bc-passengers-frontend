@@ -16,6 +16,7 @@ import services.{PurchasedProductService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
+
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends BaseSpec {
