@@ -9,11 +9,11 @@
 
 @main_template(title = title.toString, bodyClasses = None) {
 
+    @views.html.tags.errors(selectProductsForm, Some(path))
+
+    <h1 class="heading-xlarge">@title.toString</h1>
+
     @form(action = routes.SelectProductController.processProductSelection(path)){
-
-        @views.html.tags.errors(selectProductsForm, Some(path))
-
-        <h1 class="heading-xlarge">@title.toString</h1>
 
         @if(path.toString contains "cider"){
         <div class="panel panel-border-wide" id="panel">

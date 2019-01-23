@@ -10,24 +10,26 @@
 
 @main_template(title = title.toString, bodyClasses = None) {
 
+  @views.html.tags.errors(volumeInput, Some(path))
+
+  <h1 class="heading-xlarge">@title.toString</h1>
+
+  @if(!(token contains "cider")){
+  <div class="panel panel-border-wide" id="panel">
+    <p>@messages(s"alcohol.volume_input.panel.${token}.1")</p>
+    <p>@messages(s"alcohol.volume_input.panel.${token}.2")</p>
+  </div>
+  }
+
   @form(action = routes.AlcoholInputController.processVolumeInput(path, iid)){
 
-    <h1 class="heading-xlarge">@title.toString</h1>
-
-
-      @if(!(token contains "cider")){
-      <div class="panel panel-border-wide" id="panel">
-        <p>@messages(s"alcohol.volume_input.panel.${token}.1")</p>
-        <p>@messages(s"alcohol.volume_input.panel.${token}.2")</p>
-      </div>
-      }
-
     <div class="form-group">
-      @input(
+      @components.input(
         volumeInput("volume"),
         '_label -> messages("label.volume_in_litres"),
         '_labelTextClass -> "form-label",
-        '_inputClass -> "form-control-1-8"
+        '_inputClass -> "form-control-1-8",
+        '_productName -> path.toMessageKey
       )
     </div>
 

@@ -18,16 +18,19 @@
 
 @main_template(title = pageTitle.toString) {
 
+    @views.html.tags.errors(costForm, Some(path))
+
     <h1 class="heading-xlarge">@title.toString</h1>
 
     @form(action = routes.AlcoholInputController.processCostInput(path, iid)) {
 
         <div class="form-group">
-            @input(
+            @components.input(
                 costForm("cost"),
                 '_label -> messages("label.price_in", currency),
                 '_labelTextClass -> "form-label",
-                '_inputClass -> "form-control-1-8"
+                '_inputClass -> "form-control-1-8",
+                '_productName -> path.toMessageKey
             )
         </div>
 

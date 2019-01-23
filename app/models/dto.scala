@@ -3,16 +3,13 @@ package models
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
 import play.api.data.{Form, Mapping}
-import play.api.data.Forms._
+import play.api.data.Forms.{optional, _}
 import play.api.data.validation._
 import services.{CountriesService, CurrencyService}
 
-import scala.math.BigDecimal.RoundingMode
 import util._
-import uk.gov.hmrc.play.mappers.DateTuple._
 
 import scala.util.Try
-
 
 
 object EuCountryCheckDto {
@@ -82,7 +79,11 @@ object VolumeDto {
 
   val form: Form[VolumeDto] = Form(
     mapping(
-      "volume" -> bigDecimal
+      "volume" -> text
+        .transform[String](s => if(s.headOption == Some('.')) "0"+s else s, s => s)
+        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .verifying(bigDecimalCheckConstraint("volume", 3))
+        .transform[BigDecimal](volume => BigDecimal(volume), bd => bd.toString())
     )(VolumeDto.apply)(VolumeDto.unapply)
   )
 
@@ -90,18 +91,19 @@ object VolumeDto {
 case class VolumeDto(volume: BigDecimal)
 
 object QuantityDto {
+
   val form: Form[QuantityDto] = Form(
     mapping(
-      "quantity" -> number
-    )(QuantityDto.apply)(QuantityDto.unapply)
+      "quantity" -> text.verifying(quantityConstraint("quantity")).transform[Int](qty => qty.toInt, int => int.toString()))(QuantityDto.apply)(QuantityDto.unapply)
   )
 }
 case class QuantityDto(quantity: Int)
 
 object NoOfSticksDto {
+
   val form: Form[NoOfSticksDto] = Form(
     mapping(
-      "noOfSticks" -> number
+      "noOfSticks" -> text.verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
     )(NoOfSticksDto.apply)(NoOfSticksDto.unapply)
   )
 }
@@ -110,8 +112,12 @@ case class NoOfSticksDto(noOfSticks: Int)
 object NoOfSticksAndWeightDto {
   val form: Form[NoOfSticksAndWeightDto] = Form(
     mapping(
-      "noOfSticks" -> number,
-      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format(kilos * 1000)))
+      "noOfSticks" -> text.verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString),
+      "weight" -> text
+        .transform[String](s => if(s.headOption == Some('.')) "0"+s else s, s => s)
+        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .verifying(bigDecimalCheckConstraint("weight", 2))
+        .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
     )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
   )
 }
@@ -120,7 +126,11 @@ case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: BigDecimal)
 object WeightDto {
   val form: Form[WeightDto] = Form(
     mapping(
-      "weight" -> bigDecimal.transform[BigDecimal](grams => grams/1000, kilos => BigDecimal(decimalFormat10.format(kilos * 1000)))
+      "weight" -> text
+        .transform[String](s => if(s.headOption == Some('.')) "0"+s else s, s => s)
+        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .verifying(bigDecimalCheckConstraint("weight", 2))
+        .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
     )(WeightDto.apply)(WeightDto.unapply)
   )
 }
@@ -129,7 +139,7 @@ case class WeightDto(weight: BigDecimal)
 object CurrencyDto {
   def form(currencyService: CurrencyService, optionalItemsRemaining: Boolean = true): Form[CurrencyDto] = Form(
     mapping(
-      "currency" -> text.verifying("error.invalid_currency", code => currencyService.isValidCurrencyCode(code)),
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CurrencyDto.apply)(CurrencyDto.unapply)
   )
@@ -139,7 +149,10 @@ case class CurrencyDto(currency: String, itemsRemaining: Int)
 object CostDto {
   def form(optionalItemsRemaining: Boolean = true): Form[CostDto] = Form(
     mapping(
-      "cost" -> bigDecimal,
+      "cost" -> text
+        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .verifying(bigDecimalCostCheckConstraint("cost"))
+        .transform[BigDecimal](cost => BigDecimal(cost), bd => bd.toString()),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CostDto.apply)(CostDto.unapply)
   )

@@ -37,19 +37,19 @@
 
 @main_template(title = pageTitle.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
+    @views.html.tags.errors(currencyForm)
 
     <h1 class="heading-xlarge">@title.toString</h1>
 
     @form(action = routes.AlcoholInputController.processCurrencyInput(path, iid)){
 
-
-    @components.select(
-        field = currencyForm("currency"),
-        elementOptions = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
-        displayEmptyValue = true,
-        '_label -> Messages("label.enter_currency"),
-        '_errorsAboveInput -> true
-    )
+        @components.select(
+            field = currencyForm("currency"),
+            elementOptions = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
+            displayEmptyValue = true,
+            '_label -> Messages("label.enter_currency"),
+            '_errorsAboveInput -> true
+        )
 
         <details class="form-group">
             <summary><span class="summary">@messages("label.if_the_currency_you_used_is_not_shown")</span></summary>

@@ -5,34 +5,39 @@
 
 @main_template(title = messages("tobacco.no_of_sticks_weight_input.heading", productName.toLowerCase()), bodyClasses = None) {
 
+  @views.html.tags.errors(noOfSticksWeightForm, Some(path))
+
+  <h1 class="heading-xlarge">@messages("tobacco.no_of_sticks_weight_input.heading", productName.toLowerCase())</h1>
+
+  <div class="panel panel-border-wide" id="panel">
+    <p>@messages(s"tobacco.no_of_sticks_weight_input.panel.${token}.1")</p>
+    <p>@messages(s"tobacco.no_of_sticks_weight_input.panel.${token}.2")</p>
+  </div>
+
   @form(action = routes.TobaccoInputController.processNoOfSticksWeightInput(path, iid)){
 
     <fieldset>
-      <legend><h1 class="heading-xlarge">@messages("tobacco.no_of_sticks_weight_input.heading", productName.toLowerCase())</h1></legend>
-
-        <div class="panel panel-border-wide" id="panel">
-            <p>@messages(s"tobacco.no_of_sticks_weight_input.panel.${token}.1")</p>
-            <p>@messages(s"tobacco.no_of_sticks_weight_input.panel.${token}.2")</p>
-        </div>
+      <legend class="visually-hidden">@messages("tobacco.no_of_sticks_weight_input.heading", productName.toLowerCase())</legend>
 
         <div class="form-group">
-          @input(
+          @components.input(
             noOfSticksWeightForm("noOfSticks"),
             '_label -> messages("label.number_of_", productName.toLowerCase()),
             '_labelTextClass -> "form-label",
-            '_inputClass -> "form-control-1-8"
+            '_inputClass -> "form-control-1-8",
+            '_productName -> path.toMessageKey
           )
         </div>
 
         <div class="form-group">
-          @input(
-          noOfSticksWeightForm("weight"),
-          '_label -> messages("label.weight_of_", productName.toLowerCase()),
-          '_labelClass -> "inline",
-          '_labelTextClass -> "form-label",
-          '_inputClass -> "form-control-1-8"
+          @components.input(
+            noOfSticksWeightForm("weight"),
+            '_label -> messages("label.weight_of_", productName.toLowerCase()),
+            '_labelTextClass -> "form-label",
+            '_inputClass -> "form-control-1-8",
+            '_productName -> path.toMessageKey,
+            '_inputSuffix -> "g"
           )
-          <span>g</span>
         </div>
 
         <details class="form-group">

@@ -3,16 +3,16 @@
 
 @main_template(title = messages("heading.did_you_buy_your_goods_from_"), gtmEmbedded = Some(true)) {
 
-  @form(action = routes.TravelDetailsController.euCountryCheckPost()) {
+  @views.html.tags.errors(f)
 
-    @views.html.tags.errors(f)
+  <h1 class="heading-xlarge">@messages("heading.did_you_buy_your_goods_from_")</h1>
+
+  @form(action = routes.TravelDetailsController.euCountryCheckPost()) {
 
     <div class="form-group">
 
       <fieldset>
-        <legend>
-          <h1 class="heading-xlarge">@messages("heading.did_you_buy_your_goods_from_")</h1>
-        </legend>
+        <legend class="visually-hidden">@messages("heading.did_you_buy_your_goods_from_")</legend>
 
         <h2 class="heading-medium margin-top-0">@messages("heading.eu_countries")</h2>
         <p style="padding-bottom:1em">
