@@ -43,13 +43,15 @@ case class ExchangeRate(rate: String, date: String)
 case class Metadata(description: String, declarationMessageDescription: String, cost: String, currency: Currency, country: Country, exchangeRate: ExchangeRate)
 case class Item(rateId: String, purchaseCost: String, noOfUnits: Option[Int], weightOrVolume: Option[BigDecimal], calculation: Calculation, metadata: Metadata)
 case class Band(code: String, items: List[Item], calculation: Calculation)
+
 case class Alcohol(bands: List[Band], calculation: Calculation)
 case class Tobacco(bands: List[Band], calculation: Calculation)
 case class OtherGoods(bands: List[Band], calculation: Calculation)
+
 case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco], otherGoods: Option[OtherGoods], calculation: Calculation, withinFreeAllowance: Boolean) {
 
 
-  def hasOnlyGBP: Boolean = {
+  def allItemsUseGBP: Boolean = {
     val currencies = alcohol.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
       tobacco.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
       otherGoods.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code)
@@ -66,18 +68,22 @@ case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco]
     val allItems = alcoholItems ++ tobaccoItems ++ otherGoodsItems
 
     allItems.filter(item => BigDecimal(item.calculation.allTax) > 0)
-
   }
 
 
-  def asDto: CalculatorResponseDto = {
+  def asDto(applySorting: Boolean): CalculatorResponseDto = {
 
-    val alcoholItems = this.alcohol.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
-    val tobaccoItems = this.tobacco.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
-    val otherGoodsItems = this.otherGoods.map(_.bands.flatMap(b => b.items.map(i => (b.code, i)))).getOrElse(Nil)
+    val alcoholItems = this.alcohol.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
+    val tobaccoItems = this.tobacco.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
+    val otherGoodsItems = this.otherGoods.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
 
-    val bands = (alcoholItems ++ tobaccoItems ++ otherGoodsItems).groupBy(_._1).map { case (key, list) => (key, list.map( _._2 )) }
 
-    CalculatorResponseDto(bands, this.calculation, hasOnlyGBP)
+    val items = if (applySorting) {
+      (alcoholItems ++ tobaccoItems ++ otherGoodsItems).sortBy(item => BigDecimal(item.calculation.allTax) != BigDecimal(0.00))
+    } else {
+      alcoholItems ++ tobaccoItems ++ otherGoodsItems
+    }
+
+    CalculatorResponseDto(items, this.calculation, allItemsUseGBP)
   }
 }

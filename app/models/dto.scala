@@ -159,7 +159,7 @@ object CostDto {
 }
 case class CostDto(cost: BigDecimal, itemsRemaining: Int)
 
-case class CalculatorResponseDto(bands: Map[String, List[Item]], calculation: Calculation, hasOnlyGBP: Boolean)
+case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 
 object EnterYourDetailsDto {
 

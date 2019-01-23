@@ -80,18 +80,19 @@ class DashboardController @Inject() (
 
   def showCalculation: Action[AnyContent] = DashboardAction { implicit context =>
     requireCalculatorResponse { calculatorResponse =>
+
       Future.successful {
         BigDecimal(calculatorResponse.calculation.allTax) match {
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-            Ok (nothing_to_declare (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+            Ok (nothing_to_declare (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP))
 
           case allTax if allTax > 0 && allTax < 9 || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-            Ok (under_nine_pounds (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+            Ok (under_nine_pounds (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP))
 
           case allTax if allTax > 97000  =>
-            Ok (over_ninty_seven_thousand_pounds (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP))
+            Ok (over_ninty_seven_thousand_pounds (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP))
 
-          case _ => Ok (done (calculatorResponse.asDto, calculatorResponse.hasOnlyGBP) )
+          case _ => Ok (done (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP) )
         }
       }
     }

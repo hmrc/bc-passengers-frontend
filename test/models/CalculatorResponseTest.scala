@@ -66,41 +66,143 @@ class CalculatorResponseTest extends BaseSpec {
       )
     }
 
-    "Work with alcohol not GBP" in new LocalSetup {
+    "work with alcohol not GBP" in new LocalSetup {
 
       override lazy val alcoholCurrency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"))
       override lazy val tobaccoCurrency = Currency("GBP", "British Pound (GBP)", None)
       override lazy val otherGoodsCurrency = Currency("GBP", "British Pound (GBP)", None)
 
-      cr.hasOnlyGBP shouldBe false
+      cr.allItemsUseGBP shouldBe false
     }
 
-    "Work with tobacco not GBP" in new LocalSetup {
+    "work with tobacco not GBP" in new LocalSetup {
 
       override lazy val alcoholCurrency = Currency("GBP", "British Pound (GBP)", None)
       override lazy val tobaccoCurrency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"))
       override lazy val otherGoodsCurrency = Currency("GBP", "British Pound (GBP)", None)
 
-      cr.hasOnlyGBP shouldBe false
+      cr.allItemsUseGBP shouldBe false
     }
 
-    "Work with other goods not GBP" in new LocalSetup {
+    "work with other goods not GBP" in new LocalSetup {
 
       override lazy val alcoholCurrency = Currency("GBP", "British Pound (GBP)", None)
       override lazy val tobaccoCurrency = Currency("GBP", "British Pound (GBP)", None)
       override lazy val otherGoodsCurrency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"))
 
-      cr.hasOnlyGBP shouldBe false
+      cr.allItemsUseGBP shouldBe false
     }
 
-    "Work when all GBP" in new LocalSetup {
+    "work when all GBP" in new LocalSetup {
 
       override lazy val alcoholCurrency = Currency("GBP", "British Pound (GBP)", None)
       override lazy val tobaccoCurrency = Currency("GBP", "British Pound (GBP)", None)
       override lazy val otherGoodsCurrency = Currency("GBP", "British Pound (GBP)", None)
 
-      cr.hasOnlyGBP shouldBe true
+      cr.allItemsUseGBP shouldBe true
+    }
+  }
+
+  "Calling CalculatorResponse.asDto" should {
+
+    "order products correctly when no tax is due" in {
+
+      val calculatorResponseDto = CalculatorResponse(
+        Some(Alcohol(List(
+          Band("A", List(
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))),
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("another alcohol item", "another alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(Tobacco(List(
+          Band("A", List(
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(OtherGoods(List(
+          Band("A", List(
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Calculation("0.00", "0.00", "0.00", "100.00"),
+        withinFreeAllowance = false
+      ).asDto(applySorting = true)
+
+
+      calculatorResponseDto.items.map(_.metadata.description) shouldBe List(
+        "an alcohol item",
+        "another alcohol item",
+        "a tobacco item",
+        "an other-goods item"
+      )
     }
 
+    "order products with no tax due first" in {
+
+      val calculatorResponseDto = CalculatorResponse(
+        Some(Alcohol(List(
+          Band("A", List(
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))),
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an alcohol item with duty", "an alcohol item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "100.00"))
+        ), Calculation("0.00", "0.00", "0.00", "100.00"))),
+        Some(Tobacco(List(
+          Band("A", List(
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(OtherGoods(List(
+          Band("A", List(
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "0.00"))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Calculation("0.00", "0.00", "0.00", "100.00"),
+        withinFreeAllowance = false
+      ).asDto(applySorting = true)
+
+      calculatorResponseDto.items.map(_.metadata.description) shouldBe List(
+        "an alcohol item",
+        "a tobacco item",
+        "an other-goods item",
+        "an alcohol item with duty"
+      )
+    }
+
+    "order products with a mixture of tax due and no tax due" in {
+
+      val calculatorResponseDto = CalculatorResponse(
+        Some(Alcohol(List(
+          Band("A", List(
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))),
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an alcohol item with duty", "an alcohol item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "100.00"))
+        ), Calculation("0.00", "0.00", "0.00", "100.00"))),
+        Some(Tobacco(List(
+          Band("A", List(
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))),
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("a tobacco item with duty", "a tobacco item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "100.00"))
+        ), Calculation("0.00", "0.00", "0.00", "100.00"))),
+        Some(OtherGoods(List(
+          Band("A", List(
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))),
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an other-goods item with duty", "an other-goods item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))
+          ), Calculation("0.00", "0.00", "0.00", "100.00"))
+        ), Calculation("0.00", "0.00", "0.00", "100.00"))),
+        Calculation("0.00", "0.00", "0.00", "300.00"),
+        withinFreeAllowance = false
+      ).asDto(applySorting = true)
+
+
+      calculatorResponseDto.items.map(_.metadata.description) shouldBe List(
+        "an alcohol item",
+        "a tobacco item",
+        "an other-goods item",
+        "an alcohol item with duty",
+        "a tobacco item with duty",
+        "an other-goods item with duty"
+      )
+    }
   }
 }
+

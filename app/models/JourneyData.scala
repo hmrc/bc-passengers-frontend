@@ -33,7 +33,6 @@ case class UserInformation(
   timeOfArrival: LocalTime
 )
 
-
 object JourneyData {
   implicit val formats = Json.format[JourneyData]
 }
