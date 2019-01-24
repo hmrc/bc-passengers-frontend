@@ -1,30 +1,26 @@
 package services
 
-import java.util.UUID
-
-import util._
-import helpers.Helpers.{SchemaValidator, _}
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
+import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-import org.mockito.Mockito._
-import org.mockito.Matchers.{eq => meq, _}
+import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
-import services.http.WsAllMethods
-import util.BaseSpec
 import play.api.test.Helpers._
+import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
+import util.{BaseSpec, _}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
-  override lazy val app = GuiceApplicationBuilder()
+  override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
     .configure(
@@ -41,7 +37,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   val declarationService: DeclarationService = app.injector.instanceOf[DeclarationService]
 
-  val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+  val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
   val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
     Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Ciagerettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
@@ -55,7 +51,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     withinFreeAllowance = false
   )
 
-  val expectedJsObj = Json.obj(
+  val expectedJsObj: JsObject = Json.obj(
     "simpleDeclarationRequest" -> Json.obj(
       "requestCommon" -> Json.obj(
         "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -71,7 +67,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "customerReference" -> Json.obj("passport" -> "123456789"),
         "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
         "contactDetails" -> Json.obj(),
-        "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
+        "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
         "declarationTobacco" -> Json.obj(
           "totalExciseTobacco" -> "100.54",
           "totalCustomsTobacco" -> "192.94",
@@ -85,7 +81,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               "originCountry" -> "US",
               "exchangeRate" -> "1.20",
               "exchangeRateDate" -> "2018-10-29",
-              "customsValueGBP" -> "304.11",
+              "goodsValueGBP" -> "304.11",
               "VATRESClaimed" -> false,
               "exciseGBP" -> "74.00",
               "customsGBP" -> "79.06",
@@ -99,7 +95,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               "originCountry" -> "US",
               "exchangeRate" -> "1.20",
               "exchangeRateDate" -> "2018-10-29",
-              "customsValueGBP" -> "152.05",
+              "goodsValueGBP" -> "152.05",
               "VATRESClaimed" -> false,
               "exciseGBP" -> "26.54",
               "customsGBP" -> "113.88",
@@ -120,7 +116,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               "originCountry" -> "US",
               "exchangeRate" -> "1.20",
               "exchangeRateDate" -> "2018-10-29",
-              "customsValueGBP" -> "91.23",
+              "goodsValueGBP" -> "91.23",
               "VATRESClaimed" -> false,
               "exciseGBP" -> "2.00",
               "customsGBP" -> "0.30",
@@ -141,7 +137,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               "originCountry" -> "US",
               "exchangeRate" -> "1.20",
               "exchangeRateDate" -> "2018-10-29",
-              "customsValueGBP" -> "1140.42",
+              "goodsValueGBP" -> "1140.42",
               "VATRESClaimed" -> false,
               "exciseGBP" -> "0.00",
               "customsGBP" -> "159.65",
@@ -155,7 +151,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               "originCountry" -> "GB",
               "exchangeRate" -> "1.20",
               "exchangeRateDate" -> "2018-10-29",
-              "customsValueGBP" -> "1300.00",
+              "goodsValueGBP" -> "1300.00",
               "VATRESClaimed" -> false,
               "exciseGBP" -> "0.00",
               "customsGBP" -> "182.00",
@@ -173,7 +169,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     )
   )
 
-  val expectedSendJson = expectedJsObj.alterFields {
+  val expectedSendJson: JsObject = expectedJsObj.alterFields {
     case ("chargeReference", _) => None
     case ("acknowledgementReference", _) => None
   }
@@ -182,7 +178,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
   "Calling DeclarationService.submitDeclaration" should {
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in {
-
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse(BAD_REQUEST))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
@@ -239,7 +234,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "truncate a product description to 40 characters if the product description is too big in the metadata." in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -276,7 +271,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
             "contactDetails" -> Json.obj(),
-            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
+            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
             "declarationAlcohol" -> Json.obj(
               "totalExciseAlcohol" -> "100.54",
               "totalCustomsAlcohol" -> "192.94",
@@ -290,7 +285,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "250.10",
+                  "goodsValueGBP" -> "250.10",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "0.00",
                   "customsGBP" -> "0.00",
@@ -311,7 +306,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -390,7 +385,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             "customerReference" -> Json.obj("passport" -> "123456789"),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
             "contactDetails" -> Json.obj(),
-            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31"),
+            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
               "totalCustomsTobacco" -> "192.94",
@@ -404,7 +399,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "250.10",
+                  "goodsValueGBP" -> "250.10",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "0.00",
                   "customsGBP" -> "0.00",
@@ -418,7 +413,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "304.11",
+                  "goodsValueGBP" -> "304.11",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "74.00",
                   "customsGBP" -> "79.06",
@@ -432,7 +427,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "152.05",
+                  "goodsValueGBP" -> "152.05",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "26.54",
                   "customsGBP" -> "113.88",
@@ -453,7 +448,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "250.10",
+                  "goodsValueGBP" -> "250.10",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "0.00",
                   "customsGBP" -> "0.00",
@@ -467,7 +462,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "304.11",
+                  "goodsValueGBP" -> "304.11",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "74.00",
                   "customsGBP" -> "79.06",
@@ -481,7 +476,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "152.05",
+                  "goodsValueGBP" -> "152.05",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "26.54",
                   "customsGBP" -> "113.88",
@@ -502,7 +497,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "250.10",
+                  "goodsValueGBP" -> "250.10",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "0.00",
                   "customsGBP" -> "0.00",
@@ -516,7 +511,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "304.11",
+                  "goodsValueGBP" -> "304.11",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "74.00",
                   "customsGBP" -> "79.06",
@@ -530,7 +525,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   "originCountry" -> "US",
                   "exchangeRate" -> "1.20",
                   "exchangeRateDate" -> "2018-10-29",
-                  "customsValueGBP" -> "152.05",
+                  "goodsValueGBP" -> "152.05",
                   "VATRESClaimed" -> false,
                   "exciseGBP" -> "26.54",
                   "customsGBP" -> "113.88",
