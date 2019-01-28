@@ -149,7 +149,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      content should not include "We use <a href=\"http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm\" target=\"_blank\">HMRC’s exchange rates"
+      content should not include "We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\" target=\"_blank\">HMRC’s exchange rates"
       doc.title shouldBe  "You will need to pay £300.00 for goods purchased outside of the EU - Check tax on goods you bring into the UK - GOV.UK"
     }
 
@@ -172,7 +172,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      content should include ("We use <a href=\"http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm\" target=\"_blank\">HMRC’s exchange rates")
+      content should include ("We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\" target=\"_blank\">HMRC’s exchange rates")
       doc.title shouldBe  "You will need to pay £300.00 for goods purchased outside of the EU - Check tax on goods you bring into the UK - GOV.UK"
     }
   }

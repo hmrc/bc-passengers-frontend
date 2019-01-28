@@ -973,7 +973,7 @@ label.total = Total
 label.customs = Customs
 label.excise = Excise (alcohol and tobacco only)
 label.vat = VAT
-label.exchange_rates = We use <a href="http://www.hmrc.gov.uk/softwaredevelopers/2018-exrates.htm" target="_blank">HMRC’s exchange rates for customs and VAT (opens in a new window or tab)</a> to make this calculation. We use the rates for the month in which you are declaring.
+label.exchange_rates = We use <a href="https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly" target="_blank">HMRC’s exchange rates for customs and VAT (opens in a new window or tab)</a> to make this calculation. We use the rates for the month in which you are declaring.
 label.you_must_pay_duty_and_tax_ = You must pay duty and tax on these goods if you bring them into the UK.
 label.you_can_declare_these_goods_ = You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
 label.declare_once = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go through the red channel at customs.
