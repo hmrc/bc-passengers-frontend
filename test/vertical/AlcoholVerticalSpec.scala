@@ -180,7 +180,7 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))))))))(any())
+        Some(PurchasedProductInstance(ProductPath("alcohol/wine"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)))))))(any())
     }
   }
 
@@ -356,7 +356,7 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA")))))
+        Some(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))
       ))
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer/cost/iid0")
@@ -367,7 +367,7 @@ class AlcoholVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(
-        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"))), cost = Some(BigDecimal("5.99"))))))
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal("2.5")), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil)), cost = Some(BigDecimal("5.99"))))))
       )(any())
     }
   }

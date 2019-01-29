@@ -286,7 +286,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))))))))(any())
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)))))))(any())
     }
   }
 
@@ -454,7 +454,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA")))))))
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))))
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "9.99")).get
@@ -463,7 +463,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"))), cost = Some(BigDecimal("9.99")))))))(any())
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil)), cost = Some(BigDecimal("9.99")))))))(any())
     }
   }
 }

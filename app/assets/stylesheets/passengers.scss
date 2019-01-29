@@ -1,4 +1,6 @@
-@import "utils/responsive-table";
+@import "partials/responsive-table";
+@import "partials/vertical-spacing";
+@import "partials/form-errors";
 
 input[type="text"].autocomplete__input {
   width: 100%;
@@ -21,61 +23,4 @@ h1 span.heading-medium {
 .border-bottom {
   padding: .63158em 1.05263em .47368em 0;
   border-bottom: 1px solid #bfc1c3;
-}
-
-/*
- * Vertical Spacing
- * Eventually move to using https://design-system.service.gov.uk/styles/spacing/
- */
-
-.margin-top-0 {
-  margin-top: 0px;
-}
-
-.margin-top-30 {
-  margin-top: 30px;
-}
-
-.margin-bottom-15 {
-  margin-bottom: 15px;
-}
-
-.margin-bottom-30 {
-  margin-bottom: 30px;
-}
-
-.margin-bottom-20 {
-  margin-bottom: 20px;
-}
-
-.margin-bottom-50 {
-  margin-bottom: 50px;
-}
-
-.form-hint {
-  margin-bottom: 10px;
-}
-
-/*
- * Form Errors
- *
- */
-
-.form-field--error {
-  border-left: 5px solid #b10e1e;
-  padding: 0px 0px 0px 15px;
-}
-
-.form-field--error .error-notification {
-  font-size: 19px;
-  line-height: 1.31579;
-  font-weight: 700;
-}
-
-.form-date .form-group-time-am-pm {
-  width: 110px;
-}
-
-.form-date .form-group-time-am-pm .form-control{
-  width: 100px;
 }
