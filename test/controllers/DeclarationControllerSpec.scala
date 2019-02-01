@@ -61,7 +61,8 @@ class DeclarationControllerSpec extends BaseSpec {
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "0.00"),
-      withinFreeAllowance = true
+      withinFreeAllowance = true,
+      limits = Map.empty
     )
 
     lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))

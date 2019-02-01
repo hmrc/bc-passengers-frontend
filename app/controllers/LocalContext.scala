@@ -1,7 +1,5 @@
 package controllers
 
-import java.security.cert.X509Certificate
-
 import models.JourneyData
 import play.api.mvc._
 

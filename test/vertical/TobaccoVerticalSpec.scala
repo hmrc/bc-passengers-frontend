@@ -5,7 +5,7 @@ import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.LocalSessionCache
+import services.{LimitUsageSuccessResponse, LocalSessionCache}
 
 import scala.concurrent.Future
 
@@ -17,6 +17,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "redirect the user to the relevant start form" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
       redirectLocation(route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/start")).get).get should
@@ -43,6 +44,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")).get
 
@@ -57,6 +59,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")).get
 
@@ -71,6 +74,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")).get
@@ -87,6 +91,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")
@@ -98,8 +103,23 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
+    "return 400 when the calculator limit is exceeded" in new LocalSetup {
+
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map("L-CIGRT" -> "1.01"))
+      override lazy val cachedJourneyData = Some(requiredJourneyData)
+
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")
+        .withFormUrlEncodedBody("noOfSticks" -> "801")).get
+
+      status(result) shouldBe BAD_REQUEST
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
     "redirect the user to the country input page given valid form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid0")
@@ -119,6 +139,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
       
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")
@@ -130,8 +151,23 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
+    "return 400 when the calculator limit is exceeded" in new LocalSetup {
+
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map("L-CIGAR" -> "1.02"))
+      override lazy val cachedJourneyData  = Some(requiredJourneyData)
+
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")
+        .withFormUrlEncodedBody("noOfSticks" -> "51", "weight" -> "30.2")).get
+
+      status(result) shouldBe BAD_REQUEST
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
     "redirect the user to the country input page given valid form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/no-of-sticks-weight/iid0")
@@ -151,6 +187,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = Some(requiredJourneyData)
       
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")
@@ -162,8 +199,23 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
       verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
     }
 
+    "return 400 when the calculator limit is exceeded" in new LocalSetup {
+
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map("L-LOOSE" -> "1.001"))
+      override lazy val cachedJourneyData = Some(requiredJourneyData)
+
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")
+        .withFormUrlEncodedBody("weight" -> "1001")).get
+
+      status(result) shouldBe BAD_REQUEST
+
+      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[LocalSessionCache], times(0)).cacheJourneyData(any())(any())
+    }
+
     "redirect the user to the country input page given valid form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData)
       
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid0")
@@ -182,6 +234,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
   "Calling GET /products/tobacco/.../country/iid0" should {
 
     "return a 404 when the product path is invalid" in new LocalSetup {
+
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/not/a/real/product/country/iid0")).get
 
@@ -192,6 +246,8 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
     }
 
     "return a 200 when the product path is valid" in new LocalSetup {
+
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
 
@@ -208,6 +264,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal(10.00))))))
 
@@ -220,6 +277,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "store the country in the working product, and redirect to the cost input page given valid form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/country/iid0").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
 
@@ -236,6 +294,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 404 when the product path is not found" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData)
 
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/not/a/real/product/currency/iid0")).get
@@ -248,6 +307,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when cached JourneyData exists" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
@@ -264,6 +324,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 given bad form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
@@ -278,6 +339,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 given valid form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
@@ -298,6 +360,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "start new sesison when there is no cached journey data" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = None
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")).get
 
@@ -310,6 +373,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "redirect to dashboard when there is no currency in the cached journey data" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
@@ -324,6 +388,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 200 when there is a currency in the cached journey data for this product instance" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD")))))
 
@@ -340,6 +405,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "start new session when given a bad form input and there is no cached journey data" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData  = None
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
@@ -354,6 +420,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "redirect to dashboard when given bad form input and there is no currency in the cached journey data" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
@@ -370,6 +437,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 400 when given bad form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD")))))
 
@@ -384,8 +452,9 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
     "return a 303 when given valid form input" in new LocalSetup {
 
+      override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD")))))
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA")))))))
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "9.99")).get
@@ -394,7 +463,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), cost = Some(BigDecimal("9.99")))))))(any())
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"))), cost = Some(BigDecimal("9.99")))))))(any())
     }
   }
 }

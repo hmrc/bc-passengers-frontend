@@ -25,7 +25,8 @@ class CalculatorResponseTest extends BaseSpec {
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("100.00", "0.00", "0.00", "100.00"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       )
     }
 
@@ -62,7 +63,8 @@ class CalculatorResponseTest extends BaseSpec {
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       )
     }
 
@@ -125,7 +127,8 @@ class CalculatorResponseTest extends BaseSpec {
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "100.00"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       ).asDto(applySorting = true)
 
 
@@ -157,7 +160,8 @@ class CalculatorResponseTest extends BaseSpec {
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "100.00"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       ).asDto(applySorting = true)
 
       calculatorResponseDto.items.map(_.metadata.description) shouldBe List(
@@ -190,7 +194,8 @@ class CalculatorResponseTest extends BaseSpec {
           ), Calculation("0.00", "0.00", "0.00", "100.00"))
         ), Calculation("0.00", "0.00", "0.00", "100.00"))),
         Calculation("0.00", "0.00", "0.00", "300.00"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       ).asDto(applySorting = true)
 
 

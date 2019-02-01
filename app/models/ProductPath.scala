@@ -3,11 +3,11 @@ package models
 import play.api.libs.json._
 
 case class ProductPath(components: List[String]) {
-  override def toString = components.mkString("/")
-  def addingComponent(component: String) = ProductPath(components :+ component)
+  override def toString: String = components.mkString("/")
+  def addingComponent(component: String): ProductPath = ProductPath(components :+ component)
 
-  def categoryComponent = components.dropRight(1)
-  def toMessageKey = components.mkString(".")
+  def categoryComponent: List[String] = components.dropRight(1)
+  def toMessageKey: String = components.mkString(".")
 }
 
 object ProductPath {

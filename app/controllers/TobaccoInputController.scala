@@ -14,6 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TobaccoInputController @Inject()(
   val countriesService: CountriesService,
   val travelDetailsService: TravelDetailsService,
+  val calculatorService: CalculatorService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
@@ -58,8 +59,8 @@ class TobaccoInputController @Inject()(
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, workingIid, _, Some(qty), _,  _, _)) if workingIid == iid => NoOfSticksDto.form.fill(NoOfSticksDto(qty))
-        case _ => NoOfSticksDto.form
+        case Some(PurchasedProductInstance(_, workingIid, _, Some(qty), _,  _, _)) if workingIid == iid => NoOfSticksDto.form().fill(NoOfSticksDto(qty))
+        case _ => NoOfSticksDto.form()
       }
     }
 
@@ -70,24 +71,35 @@ class TobaccoInputController @Inject()(
 
   def processNoOfSticksInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    NoOfSticksDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        requireProduct(path) { product =>
-          Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
-        }
-      },
-      dto => {
+    val journeyData = addingNoOfSticksToWorkingInstance(context.getJourneyData, path, iid, NoOfSticksDto.form().bindFromRequest.value.map(_.noOfSticks))
 
-        context.getJourneyData.workingInstance match {
-          case Some(wi@PurchasedProductInstance(_, _, _, Some(_), Some(_), Some(_), Some(_))) if wi.iid == iid => purchasedProductService.updateNoOfSticks(context.getJourneyData, path, iid, dto.noOfSticks) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
+    requireLimitUsage(journeyData) { limits =>
+
+      requireProduct(path) { product =>
+
+        NoOfSticksDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+          formWithErrors => {
+            requireProduct(path) { product =>
+              Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
+            }
+          },
+          _ => {
+
+            acceptingValidWorkingInstance(journeyData.workingInstance, product) {
+              case Some(updatedJourneyData) =>
+                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                  Redirect(routes.DashboardController.showDashboard())
+                }
+              case None =>
+                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                  Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
+                }
+            }
           }
-          case _ => purchasedProductService.storeNoOfSticks(context.getJourneyData, path, iid, dto.noOfSticks) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
-          }
-        }
+        )
       }
-    )
+    }
+
   }
 
 
@@ -95,8 +107,8 @@ class TobaccoInputController @Inject()(
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, workingIid, Some(weight), Some(qty), _, _, _)) if workingIid == iid => NoOfSticksAndWeightDto.form.fill(NoOfSticksAndWeightDto(qty, weight))
-        case _ => NoOfSticksAndWeightDto.form
+        case Some(PurchasedProductInstance(_, workingIid, Some(weight), Some(qty), _, _, _)) if workingIid == iid => NoOfSticksAndWeightDto.form().fill(NoOfSticksAndWeightDto(qty, weight))
+        case _ => NoOfSticksAndWeightDto.form()
       }
     }
     requireProduct(path) { product =>
@@ -106,24 +118,34 @@ class TobaccoInputController @Inject()(
 
   def processNoOfSticksWeightInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    NoOfSticksAndWeightDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        requireProduct(path) { product =>
-          Future.successful(BadRequest(no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
-        }
-      },
-      dto => {
+    val dto = NoOfSticksAndWeightDto.form().bindFromRequest.value
+    val journeyData = addingNoOfSticksAndWeightOrVolumeToWorkingInstance(context.getJourneyData, path, iid, dto.map(_.noOfSticks), dto.map(_.weight))
 
-        context.getJourneyData.workingInstance match {
-          case Some(PurchasedProductInstance(_, workingIid, Some(_), Some(_), Some(_), Some(_), Some(_))) if workingIid == iid => purchasedProductService.updateNoOfSticksAndWeightOrVolume(context.getJourneyData, path, iid, dto.noOfSticks, dto.weight) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
+    requireLimitUsage(journeyData) { limits =>
+
+      requireProduct(path) { product =>
+        NoOfSticksAndWeightDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+          formWithErrors => {
+            requireProduct(path) { product =>
+              Future.successful(BadRequest(no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
+            }
+          },
+          _ => {
+
+            acceptingValidWorkingInstance(journeyData.workingInstance, product) {
+              case Some(updatedJourneyData) =>
+                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                  Redirect(routes.DashboardController.showDashboard())
+                }
+              case None =>
+                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                  Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
+                }
+            }
           }
-          case _ => purchasedProductService.storeNoOfSticksAndWeightOrVolume(context.getJourneyData, path, iid, dto.noOfSticks, dto.weight) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
-          }
-        }
+        )
       }
-    )
+    }
   }
 
 
@@ -131,8 +153,8 @@ class TobaccoInputController @Inject()(
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, workingIid, Some(weight), _, _, _, _)) if workingIid == iid => WeightDto.form.fill(WeightDto(weight))
-        case _ => WeightDto.form
+        case Some(PurchasedProductInstance(_, workingIid, Some(weight), _, _, _, _)) if workingIid == iid => WeightDto.form().fill(WeightDto(weight))
+        case _ => WeightDto.form()
       }
     }
 
@@ -143,24 +165,33 @@ class TobaccoInputController @Inject()(
 
   def processWeightInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    WeightDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        requireProduct(path) { product =>
-          Future.successful(BadRequest(weight_input(formWithErrors, product.token, product.name, path, iid)))
-        }
-      },
-      dto => {
+    val journeyData = addingWeightOrVolumeToWorkingInstance(context.getJourneyData, path, iid, WeightDto.form().bindFromRequest.value.map(_.weight))
 
-        context.getJourneyData.workingInstance match {
-          case Some(PurchasedProductInstance(_, workingIid, Some(_), _, Some(_), Some(_), Some(_))) if workingIid == iid => purchasedProductService.updateWeightOrVolume(context.getJourneyData, path, iid, dto.weight) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
+    requireLimitUsage(journeyData) { limits =>
+
+      requireProduct(path) { product =>
+        WeightDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+          formWithErrors => {
+            requireProduct(path) { product =>
+              Future.successful(BadRequest(weight_input(formWithErrors, product.token, product.name, path, iid)))
+            }
+          },
+          _ => {
+
+            acceptingValidWorkingInstance(journeyData.workingInstance, product) {
+              case Some(updatedJourneyData) =>
+                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                  Redirect(routes.DashboardController.showDashboard())
+                }
+              case None =>
+                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                  Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
+                }
+            }
           }
-          case _ => purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, dto.weight) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
-          }
-        }
+        )
       }
-    )
+    }
   }
 
   def displayCountryInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
@@ -298,7 +329,7 @@ class TobaccoInputController @Inject()(
 
             val wi = workingInstance.copy(cost = Some(dto.cost))
 
-            movingValidWorkingInstance(wi, product) {
+            acceptingValidWorkingInstance(Some(wi), product) {
               case Some(updatedJourneyData) =>
                 purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
                   Redirect(routes.SelectProductController.nextStep())

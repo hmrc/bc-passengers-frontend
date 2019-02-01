@@ -10,8 +10,9 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class   SelectProductController @Inject()(
+class SelectProductController @Inject()(
   val productTreeService: ProductTreeService,
+  val calculatorService: CalculatorService,
   val travelDetailsService: TravelDetailsService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
@@ -40,7 +41,7 @@ class   SelectProductController @Inject()(
             case ProductTreeBranch(_, _, children) =>
               Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
 
-            case ProductTreeLeaf(_, _, _, templateId) =>
+            case ProductTreeLeaf(_, _, _, templateId, _) =>
 
               templateId match {
                 case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))

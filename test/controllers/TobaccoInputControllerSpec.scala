@@ -12,7 +12,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
-import services.{PurchasedProductService, TravelDetailsService}
+import services.{CalculatorService, LimitUsageSuccessResponse, PurchasedProductService, TravelDetailsService}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -24,6 +25,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
+    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
@@ -41,17 +43,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-
-      when(injected[PurchasedProductService].storeNoOfSticks(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-      when(injected[PurchasedProductService].updateNoOfSticks(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-
-      when(injected[PurchasedProductService].storeWeightOrVolume(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-      when(injected[PurchasedProductService].updateWeightOrVolume(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-
-      when(injected[PurchasedProductService].storeNoOfSticksAndWeightOrVolume(any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-      when(injected[PurchasedProductService].updateNoOfSticksAndWeightOrVolume(any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-
+      when(injected[PurchasedProductService].cacheJourneyData(any())(any())) thenReturn Future.successful(CacheMap("fakeId", Map.empty))
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(Map.empty))
 
       rt(app, req)
     }
@@ -315,9 +309,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
     }
 
-    "redirect to the currency input when the iid does not match the working instance" in new LocalSetup {
+    "redirect to the country input when the iid does not match the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid2", Some(BigDecimal("4.0")), None)
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarettes/no-of-sticks/iid1")
@@ -332,7 +326,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("500")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("0.50")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid1")
@@ -343,10 +337,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
+    "redirect to the country input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("250")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/rolling"), "iid1", Some(BigDecimal("0.25")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/rolling/weight/iid2")
@@ -361,7 +355,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to the dashboard when the iid already exists in the working instance" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("500")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("0.50")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/no-of-sticks-weight/iid1")
@@ -372,10 +366,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to the currency input when the iid is not in the cached journey data" in new LocalSetup {
+    "redirect to the country input when the iid is not in the cached journey data" in new LocalSetup {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/jewellery"), "iid0", None, None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("250")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarillos"), "iid1", Some(BigDecimal("0.25")), Some(1000), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99")))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigarillos/no-of-sticks-weight/iid2")

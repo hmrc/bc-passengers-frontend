@@ -109,7 +109,12 @@ class PayApiServiceSpec extends BaseSpec {
         Calculation("0.00","0.00","0.00","0.00"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA Dollar (USD)", Some("USD")), Country("United States of America (the)", "US", isEu = false, Some("USD")), ExchangeRate("1.20", "2018-10-29"))), Item("OGD/DIGI/TV","1300.00",None,None,
         Calculation("0.00","182.00","296.40","478.40"),Metadata("Televisions", "Televisions","1300.00",Currency("GBP", "British Pound (GBP)", None), Country("United Kingdom of Great Britain and Northern Ireland (the)", "GB", isEu = true, None), ExchangeRate("1.20", "2018-10-29")))),
         Calculation("0.00","341.65","556.41","898.06"))),
-        Calculation("0.00","341.65","556.41","898.06"))),Calculation("102.54","534.89","725.03","1362.46"), withinFreeAllowance = false)
+        Calculation("0.00","341.65","556.41","898.06"))
+      ),
+      Calculation("102.54","534.89","725.03","1362.46"),
+      withinFreeAllowance = false,
+      limits = Map.empty
+    )
 
     val receiptDateTime = DateTime.parse("2018-11-12T13:56:01+0000")
     lazy val s = {

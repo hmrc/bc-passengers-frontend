@@ -66,8 +66,8 @@ case class JourneyData(
   }
 
   def withUpdatedWorkingInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance): JourneyData = {
-    val purchasedProductInstance = block(this.workingInstance.getOrElse(PurchasedProductInstance(path, iid)))
-    this.copy(workingInstance = Some(purchasedProductInstance))
+    val workingInstance = block(this.workingInstance.getOrElse(PurchasedProductInstance(path, iid)))
+    this.copy(workingInstance = Some(workingInstance))
   }
 
   def clearingWorking: JourneyData = this.copy(workingInstance = None)

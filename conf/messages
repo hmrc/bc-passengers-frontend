@@ -668,6 +668,38 @@ error.invalid.characters.quantity.other-goods.tableware = Quantity must only inc
 error.invalid.characters.quantity.other-goods.watches-clocks = Quantity must only include whole numbers, such as 3 or 8
 error.invalid.characters.quantity.other-goods.other = Quantity must only include whole numbers, such as 3 or 8
 
+
+head.error.l-beer.limit-exceeded.alcohol.beer=You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
+head.error.l-spirit.limit-exceeded.alcohol.spirits=You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
+head.error.l-alcoth.limit-exceeded.alcohol.other=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+head.error.l-alcoth.limit-exceeded.alcohol.cider.non-sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+head.error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+head.error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider-up=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+head.error.l-wine.limit-exceeded.alcohol.sparkling=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
+head.error.l-winesp.limit-exceeded.alcohol.sparkling=You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
+head.error.l-wine.limit-exceeded.alcohol.wine=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
+head.error.l-cigrt.limit-exceeded.tobacco.cigarettes=You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
+head.error.l-crilo.limit-exceeded.tobacco.cigarillos=You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
+head.error.l-cigar.limit-exceeded.tobacco.cigars=You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
+head.error.l-loose.limit-exceeded.tobacco.chewing=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
+head.error.l-loose.limit-exceeded.tobacco.rolling=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
+
+error.l-beer.limit-exceeded.alcohol.beer=You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
+error.l-spirit.limit-exceeded.alcohol.spirits=You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
+error.l-alcoth.limit-exceeded.alcohol.other=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+error.l-alcoth.limit-exceeded.alcohol.cider.non-sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider-up=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+error.l-wine.limit-exceeded.alcohol.sparkling=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
+error.l-winesp.limit-exceeded.alcohol.sparkling=You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
+error.l-wine.limit-exceeded.alcohol.wine=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
+error.l-cigrt.limit-exceeded.tobacco.cigarettes=You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
+error.l-crilo.limit-exceeded.tobacco.cigarillos=You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
+error.l-cigar.limit-exceeded.tobacco.cigars=You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
+error.l-loose.limit-exceeded.tobacco.chewing=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
+error.l-loose.limit-exceeded.tobacco.rolling=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
+
+
 # Other Goods Currency
 
 label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.

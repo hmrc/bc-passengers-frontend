@@ -4,15 +4,19 @@ import config.AppConfig
 import javax.inject.Inject
 import models._
 import play.api.Logger
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class AlcoholInputController @Inject() (
   val countriesService: CountriesService,
+  val calculatorService: CalculatorService,
   val travelDetailsService: TravelDetailsService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
@@ -38,8 +42,9 @@ class AlcoholInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, workingIid, Some(volume), _,  _, _, _)) if workingIid == iid => VolumeDto.form.fill(VolumeDto(volume))
-        case _ => VolumeDto.form
+        case Some(PurchasedProductInstance(_, workingIid, Some(volume), _,  _, _, _)) if workingIid == iid =>
+          VolumeDto.form().fill(VolumeDto(volume))
+        case _ => VolumeDto.form()
       }
     }
     requireProduct(path) { product =>
@@ -57,23 +62,35 @@ class AlcoholInputController @Inject() (
 
   def processVolumeInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    VolumeDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        requireProduct(path) { product =>
-          Future.successful(BadRequest(volume_input(formWithErrors, product.name, product.token, path, iid)))
-        }
-      },
-      dto => {
-        context.getJourneyData.workingInstance match {
-          case Some(wi@PurchasedProductInstance(_, _, Some(_), _, Some(_), Some(_), Some(_))) if wi.iid == iid => purchasedProductService.updateWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
+    val journeyData = addingWeightOrVolumeToWorkingInstance(context.getJourneyData, path, iid, VolumeDto.form().bindFromRequest.value.map(_.volume))
+
+    requireLimitUsage(journeyData) { limits =>
+
+      requireProduct(path) { product =>
+
+        VolumeDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+          formWithErrors => {
+            requireProduct(path) { product =>
+              Future.successful(BadRequest(volume_input(formWithErrors, product.name, product.token, path, iid)))
+            }
+          },
+          _ => {
+
+            acceptingValidWorkingInstance(journeyData.workingInstance, product) {
+              case Some(updatedJourneyData) =>
+                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                  Redirect(routes.DashboardController.showDashboard())
+                }
+              case None =>
+                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                  Redirect(routes.AlcoholInputController.displayCountryInput(path, iid))
+                }
+            }
+
           }
-          case _ => purchasedProductService.storeWeightOrVolume(context.getJourneyData, path, iid, dto.volume) map { _ =>
-            Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
-          }
-        }
+        )
       }
-    )
+    }
   }
 
   def displayCountryInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
@@ -207,7 +224,7 @@ class AlcoholInputController @Inject() (
 
             val wi = workingInstance.copy(cost = Some(dto.cost))
 
-            movingValidWorkingInstance(wi, product) {
+            acceptingValidWorkingInstance(Some(wi), product) {
               case Some(updatedJourneyData) =>
                 purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
                   Redirect(routes.SelectProductController.nextStep())

@@ -14,6 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeclarationController @Inject()(
   val travelDetailsService: TravelDetailsService,
+  val calculatorService: CalculatorService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,

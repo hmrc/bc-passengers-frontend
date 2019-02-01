@@ -1,17 +1,13 @@
 package controllers
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import config.AppConfig
 import models._
-import org.mindrot.jbcrypt.BCrypt
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
-import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
+import services._
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
@@ -26,6 +22,7 @@ trait ControllerHelpers extends  MessagesBaseController
   def productTreeService: ProductTreeService
   def currencyService: CurrencyService
   def countriesService: CountriesService
+  def calculatorService: CalculatorService
 
   def error_template: views.html.error_template
 
@@ -56,9 +53,13 @@ trait ControllerHelpers extends  MessagesBaseController
     PublicAction { implicit context =>
 
       travelDetailsService.getJourneyData(hc(context.request)) flatMap {
+
         case Some(journeyData) =>
+
           implicit val ctxWithJd = context.withJourneyData(journeyData)
+
           requireTravelDetails {
+
             block(ctxWithJd)
           }(ctxWithJd, implicitly)
         case None =>
@@ -82,12 +83,27 @@ trait ControllerHelpers extends  MessagesBaseController
   implicit def contextToRequest(implicit localContext: LocalContext)= localContext.request
 
   def logAndRenderError(logMessage: String, status: Status = InternalServerError)(implicit context: LocalContext): Future[Result] = {
+    Logger.warn(logMessage)
     Future.successful(status(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
   }
 
   def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {
     Logger.warn(logMessage)
     Future.successful(Redirect(redirectLocation))
+  }
+
+  def requireLimitUsage(journeyData: JourneyData)(block: Map[String, BigDecimal] => Future[Result])(implicit context: LocalContext, hc: HeaderCarrier) = {
+
+    calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
+
+      response match {
+        case LimitUsageSuccessResponse(r) =>
+          block(r.map( x => (x._1, BigDecimal(x._2)) ))
+        case _ =>
+          logAndRenderError("Fetching limits was unsuccessful")
+      }
+
+    }
   }
 
   def requireJourneyData(block: JourneyData => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
@@ -229,14 +245,15 @@ trait ControllerHelpers extends  MessagesBaseController
     }
   }
 
-  def movingValidWorkingInstance(workingInstance: PurchasedProductInstance, product: ProductTreeLeaf)(block: Option[JourneyData] => Future[Result])(implicit context: LocalContext): Future[Result] = {
+  def acceptingValidWorkingInstance(workingInstance: Option[PurchasedProductInstance], product: ProductTreeLeaf)(block: Option[JourneyData] => Future[Result])(implicit context: LocalContext): Future[Result] = {
 
-    if (product.isValid(workingInstance)) {
-      val updatedPurchasedProductInstances = replaceProductInPlace(context.getJourneyData.purchasedProductInstances, workingInstance)
-      block(Some(context.getJourneyData.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None)))
-    } else {
-      Logger.warn("Working instance was not valid")
-      block(None)
+    workingInstance match {
+      case Some(workingInstance) if product.isValid(workingInstance) =>
+        val updatedPurchasedProductInstances = replaceProductInPlace(context.getJourneyData.purchasedProductInstances, workingInstance)
+        block(Some(context.getJourneyData.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None)))
+      case _ =>
+        Logger.warn("Working instance was not valid")
+        block(None)
     }
   }
 
@@ -245,6 +262,31 @@ trait ControllerHelpers extends  MessagesBaseController
       case (x, Nil) => productToReplace :: x  //Prepend
       case (x, y) => x ++ (productToReplace :: y.tail)  //Replace in place
     }
+  }
+
+
+  def addingWeightOrVolumeToWorkingInstance(journeyData: JourneyData, path: ProductPath, iid: String, weightOrVolume: Option[BigDecimal])(implicit hc: HeaderCarrier, ex: ExecutionContext): JourneyData = {
+
+    journeyData.withUpdatedWorkingInstance(path, iid) { workingInstance =>
+      workingInstance.copy(path = path, iid = iid, weightOrVolume = weightOrVolume)
+    }
+
+  }
+
+  def addingNoOfSticksToWorkingInstance(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Option[Int])(implicit hc: HeaderCarrier, ex: ExecutionContext): JourneyData = {
+
+    journeyData.withUpdatedWorkingInstance(path, iid) { workingInstance =>
+      workingInstance.copy(path = path, iid = iid, noOfSticks = noOfSticks)
+    }
+
+  }
+
+  def addingNoOfSticksAndWeightOrVolumeToWorkingInstance(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Option[Int], weightOrVolume: Option[BigDecimal])(implicit hc: HeaderCarrier, ex: ExecutionContext): JourneyData = {
+
+    journeyData.withUpdatedWorkingInstance(path, iid) { workingInstance =>
+      workingInstance.copy(path = path, iid = iid, noOfSticks = noOfSticks, weightOrVolume = weightOrVolume)
+    }
+
   }
 
   def generateIid: String = Random.alphanumeric.take(6).mkString
