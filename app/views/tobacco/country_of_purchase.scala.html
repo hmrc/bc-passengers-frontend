@@ -2,18 +2,15 @@
 @(countryForm: Form[SelectedCountryDto], product: ProductTreeLeaf, path: ProductPath, iid: String, countries: List[Country], description: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
-
+@import play.api.libs.json.{JsObject, Json}
 
 @scriptElem={
     <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
     <script>
-        document.onreadystatechange = function () {
-            if (document.readyState == "interactive") {
-                accessibleAutocomplete.enhanceSelectElement({
-                  selectElement: document.querySelector('#country')
-                })
-            }
-        }
+        $(document).ready(function () {
+            var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
+            enhanceSelectIntoAutoComplete("country", countrySynonymsData)
+        })
     </script>
 }
 

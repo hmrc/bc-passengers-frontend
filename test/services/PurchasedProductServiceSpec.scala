@@ -59,17 +59,17 @@ class PurchasedProductServiceSpec extends BaseSpec {
     "make the provided purchased product instance the working product" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0",  country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), currency = Some("USD")),
-        PurchasedProductInstance(ProductPath("some/other/item"), iid = "iid1", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))), currency = Some("JMD"))),
+        PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0",  country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), currency = Some("USD")),
+        PurchasedProductInstance(ProductPath("some/other/item"), iid = "iid1", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil)), currency = Some("JMD"))),
         workingInstance = None))
 
-      val productToMakeWorkingInstance = PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), currency = Some("USD"))
+      val productToMakeWorkingInstance = PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), currency = Some("USD"))
 
       await(s.makeWorkingInstance(journeyDataInCache.get, productToMakeWorkingInstance))
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("some/item/path"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"))),Some("USD"),None),
-          PurchasedProductInstance(ProductPath("some/other/item"),"iid1",None,None,Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))),Some("JMD"),None)),
-          workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), currency = Some("USD")))))
+        meq(JourneyData(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("some/item/path"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("USD"),None),
+          PurchasedProductInstance(ProductPath("some/other/item"),"iid1",None,None,Some(Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil)),Some("JMD"),None)),
+          workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), currency = Some("USD")))))
       )(any())
 
     }
@@ -81,17 +81,17 @@ class PurchasedProductServiceSpec extends BaseSpec {
     "remove the working instance" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = Some(JourneyData( purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("4.99"))),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
       await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
         meq(JourneyData( purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("12.99"))),
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("12.99"))),
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("24.99")))
         )))
       )(any())
 
@@ -121,10 +121,10 @@ class PurchasedProductServiceSpec extends BaseSpec {
       override def journeyDataInCache: Option[JourneyData] = None
 
       await(s.storeCountry(
-        JourneyData(), ProductPath("some/item/path"), "iid0", Country("United States of America (the)", "US", isEu = false, Some("USD"))))
+        JourneyData(), ProductPath("some/item/path"), "iid0", Country("United States of America (the)", "US", isEu = false, Some("USD"), Nil)))
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
-        meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("United States of America (the)", "US", isEu = false, Some("USD")))))))
+        meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("United States of America (the)", "US", isEu = false, Some("USD"), Nil))))))
       )(any())
 
     }
@@ -135,17 +135,17 @@ class PurchasedProductServiceSpec extends BaseSpec {
     "update a current selected product, containing the updated country and the updated weightOrVolume" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("15.50"))),
-        PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
+        PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("15.50"))),
+        PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
-      await(s.updateCountry(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", Country("Jamaica", "JM", isEu = false, Some("JMD")))
+      await(s.updateCountry(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil))
       )
 
       verify(s.localSessionCache, times(1)).cacheJourneyData(
         meq(JourneyData(purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Jamaica", "JM", isEu = false, Some("JMD"))), Some("USD"), Some(BigDecimal("15.50"))),
-          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"))), Some("USD"), Some(BigDecimal("24.99")))
+          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil)), Some("USD"), Some(BigDecimal("15.50"))),
+          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), Some("USD"), Some(BigDecimal("24.99")))
         ))
         ))(any())
     }
