@@ -42,20 +42,21 @@ class DashboardController @Inject() (
         val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
         val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid), _, _, _) if tid == "alcohol" => item
+          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "alcohol" => item
         }
 
         val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid), _, _, _) if tid == "cigarettes" | tid == "cigars" | tid == "tobacco" => item
+          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "cigarettes" | tid == "cigars" | tid == "tobacco" => item
         }
 
         val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid), _, _, _) if tid == "other-goods" => item
+          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "other-goods" => item
         }
 
         val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
         Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate))
+
       }
     }
   }
@@ -66,7 +67,7 @@ class DashboardController @Inject() (
 
       case CalculatorServiceSuccessResponse(calculatorResponse) =>
 
-        calculatorService.storeCalculatorResponse(context.getJourneyData, calculatorResponse) map { jd =>
+        calculatorService.storeCalculatorResponse(context.getJourneyData, calculatorResponse) map { _ =>
           Redirect(routes.DashboardController.showCalculation())
         }
 

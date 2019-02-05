@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
 import models._
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{JsObject, Json, Reads}
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HeaderCarrier
@@ -19,6 +19,12 @@ trait CalculatorServiceResponse
 case object CalculatorServiceNoJourneyDataResponse extends CalculatorServiceResponse
 case object CalculatorServiceCantBuildCalcReqResponse extends CalculatorServiceResponse
 case class CalculatorServiceSuccessResponse(calculatorResponse: CalculatorResponse) extends CalculatorServiceResponse
+
+
+
+trait LimitUsageResponse
+case object LimitUsageCantBuildCalcReqResponse extends LimitUsageResponse
+case class LimitUsageSuccessResponse(limits: Map[String, String]) extends LimitUsageResponse
 
 case class CurrencyConversionRate(startDate: LocalDate, endDate: LocalDate, currencyCode: String, rate: Option[String])
 
@@ -40,6 +46,21 @@ class CalculatorService @Inject() (
 
   def todaysDate: String = LocalDate.now.format(DateTimeFormatter.ISO_DATE)
 
+  def limitUsage(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[LimitUsageResponse] = {
+
+    journeyDataToLimitsRequest(journeyData) match {
+
+      case Some(limitRequest) =>
+        wsAllMethods.POST[LimitRequest, JsObject](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/limits", limitRequest) map { r =>
+          LimitUsageSuccessResponse(  (r \ "limits").as[Map[String,String]]  )
+        }
+
+      case None =>
+        Logger.debug("No items available for limits request")
+        Future.successful(LimitUsageCantBuildCalcReqResponse)
+    }
+  }
+
   def calculate()(implicit hc: HeaderCarrier): Future[CalculatorServiceResponse] = {
 
     getJourneyData flatMap {
@@ -49,7 +70,7 @@ class CalculatorService @Inject() (
         journeyDataToCalculatorRequest(journeyData) flatMap {
           case Some(calculatorRequest) =>
 
-            doCalculation(calculatorRequest) map { r =>
+            wsAllMethods.POST[CalculatorRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { r =>
               CalculatorServiceSuccessResponse(r)
             }
 
@@ -64,19 +85,31 @@ class CalculatorService @Inject() (
   }
 
 
-  def doCalculation(calculatorRequest: CalculatorRequest)(implicit hc: HeaderCarrier): Future[CalculatorResponse] = {
-
-    wsAllMethods.POST[CalculatorRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { calculatorResponse =>
-
-      calculatorResponse
-    }
-  }
-
   def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier): Future[JourneyData] = {
 
     val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse))
 
     cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
+  def journeyDataToLimitsRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Option[LimitRequest] = {
+
+      val speculativeItems: List[SpeculativeItem] = for {
+        purchasedProductInstance <- journeyData.workingInstance.fold(journeyData.purchasedProductInstances)(wi => wi :: journeyData.purchasedProductInstances.filter(_.iid != wi.iid))
+        productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
+      } yield SpeculativeItem(purchasedProductInstance, productTreeLeaf, 0)
+
+
+      if(speculativeItems.isEmpty) {
+        None
+      }
+      else {
+        for {
+          isAgeOver17 <- journeyData.ageOver17
+          isPrivateCraft <- journeyData.privateCraft
+        } yield LimitRequest(isPrivateCraft, isAgeOver17, speculativeItems)
+      }
+
   }
 
   def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorRequest]] = {
@@ -89,7 +122,6 @@ class CalculatorService @Inject() (
         curCode <- purchasedProductInstance.currency
         currency <- currencyService.getCurrencyByCode(curCode)
         cost <- purchasedProductInstance.cost
-        country <- purchasedProductInstance.country
         rate <- ratesMap.get(curCode)
       } yield PurchasedItem(purchasedProductInstance, productTreeLeaf, currency, (cost / rate).setScale(2, RoundingMode.DOWN), ExchangeRate(rate.toString, todaysDate))
 

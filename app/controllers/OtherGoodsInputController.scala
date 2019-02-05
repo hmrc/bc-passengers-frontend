@@ -14,6 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OtherGoodsInputController @Inject() (
   val countriesService: CountriesService,
+  val calculatorService: CalculatorService,
   val travelDetailsService: TravelDetailsService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
@@ -177,7 +178,7 @@ class OtherGoodsInputController @Inject() (
 
             val wi = workingInstance.copy(cost = Some(costDto.cost))
 
-            movingValidWorkingInstance(wi, product) {
+            acceptingValidWorkingInstance(Some(wi), product) {
               case Some(updatedJourneyData) =>
                 purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
                   if (itemsRemaining > 0) {

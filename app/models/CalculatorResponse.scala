@@ -48,7 +48,14 @@ case class Alcohol(bands: List[Band], calculation: Calculation)
 case class Tobacco(bands: List[Band], calculation: Calculation)
 case class OtherGoods(bands: List[Band], calculation: Calculation)
 
-case class CalculatorResponse(alcohol: Option[Alcohol], tobacco: Option[Tobacco], otherGoods: Option[OtherGoods], calculation: Calculation, withinFreeAllowance: Boolean) {
+case class CalculatorResponse(
+  alcohol: Option[Alcohol],
+  tobacco: Option[Tobacco],
+  otherGoods: Option[OtherGoods],
+  calculation: Calculation,
+  withinFreeAllowance: Boolean,
+  limits: Map[String, String]
+) {
 
 
   def allItemsUseGBP: Boolean = {

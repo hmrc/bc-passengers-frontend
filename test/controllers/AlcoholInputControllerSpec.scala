@@ -12,7 +12,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
-import services.{PurchasedProductService, TravelDetailsService}
+import services.{CalculatorService, LimitUsageSuccessResponse, PurchasedProductService, TravelDetailsService}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -25,6 +26,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
+    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
@@ -41,15 +43,11 @@ class AlcoholInputControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
 
-      when(injected[PurchasedProductService].updateWeightOrVolume(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-      when(injected[PurchasedProductService].storeWeightOrVolume(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-
+      when(injected[PurchasedProductService].cacheJourneyData(any())(any())) thenReturn Future.successful(CacheMap("fakeId", Map.empty))
       when(injected[PurchasedProductService].storeCountry(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
       when(injected[PurchasedProductService].updateCountry(any(), any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-
-      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn {
-        Future.successful(cachedJourneyData)
-      }
+      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(Map.empty))
 
       rt(app, req)
     }

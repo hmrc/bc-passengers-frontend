@@ -7,7 +7,7 @@ sealed trait ProductTreeNode {
   val token: String
 }
 
-case class ProductTreeLeaf(token: String, name: String, rateID: String, templateId: String) extends ProductTreeNode {
+case class ProductTreeLeaf(token: String, name: String, rateID: String, templateId: String, applicableLimits: List[String]) extends ProductTreeNode {
 
   def getDescription(purchasedProductInstance: PurchasedProductInstance): Option[String] = {
     templateId match {
@@ -34,22 +34,27 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
       case "cigarettes" =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.noOfSticks.isDefined
       case "cigars" =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined &&
         purchasedProductInstance.noOfSticks.isDefined
       case "tobacco" =>
         purchasedProductInstance.currency.isDefined &&
-          purchasedProductInstance.cost.isDefined &&
-          purchasedProductInstance.weightOrVolume.isDefined
+        purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.country.isDefined &&
+        purchasedProductInstance.weightOrVolume.isDefined
       case "alcohol" =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined
       case "other-goods" =>
         purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.cost.isDefined
       case _ => false
     }

@@ -8,7 +8,7 @@ import models.PrivateCraftDto._
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CountriesService, CurrencyService, ProductTreeService, TravelDetailsService}
+import services._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -17,6 +17,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TravelDetailsController @Inject() (
   val countriesService: CountriesService,
+  val calculatorService: CalculatorService,
   val travelDetailsService: TravelDetailsService,
   val productsService: ProductTreeService,
   val currencyService: CurrencyService,

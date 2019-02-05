@@ -34,3 +34,28 @@ object CalculatorRequest {
 }
 
 case class CalculatorRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, items: List[PurchasedItem])
+
+
+object LimitRequest {
+
+  implicit val writes: OWrites[LimitRequest] = {
+
+    implicit val piw: Writes[SpeculativeItem] = new Writes[SpeculativeItem] {
+
+      override def writes(item: SpeculativeItem): JsValue = {
+
+        Json.obj(
+          "purchaseCost" -> item.gbpCost.setScale(2, RoundingMode.DOWN).toString,
+          "rateId" -> item.productTreeLeaf.rateID,
+          "weightOrVolume" -> item.purchasedProductInstance.weightOrVolume,
+          "noOfUnits" -> item.purchasedProductInstance.noOfSticks,
+          "metadata" -> Json.obj()
+        ).stripNulls
+      }
+    }
+    Json.writes[LimitRequest]
+  }
+}
+
+case class LimitRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, items: List[SpeculativeItem])
+

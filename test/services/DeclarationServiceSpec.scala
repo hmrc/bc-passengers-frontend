@@ -52,7 +52,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       Calculation("0.00","341.65","556.41","898.06"))
     ),
     Calculation("102.54","534.89","725.03","1362.46"),
-    withinFreeAllowance = false
+    withinFreeAllowance = false,
+    Map.empty
   )
 
   val expectedJsObj = Json.obj(
@@ -256,7 +257,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         otherGoods = None,
         tobacco = None,
         calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       )
 
       val dm = declarationService.buildPartialDeclarationMessage(
@@ -369,7 +371,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           Calculation("100.54","192.94","149.92","443.40")
         )),
         calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
-        withinFreeAllowance = false
+        withinFreeAllowance = false,
+        limits = Map.empty
       )
 
 

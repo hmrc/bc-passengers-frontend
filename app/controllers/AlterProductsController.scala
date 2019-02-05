@@ -12,6 +12,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AlterProductsController @Inject() (
   val travelDetailsService: TravelDetailsService,
+  val calculatorService: CalculatorService,
   val purhasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
