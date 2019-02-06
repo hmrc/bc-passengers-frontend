@@ -106,7 +106,10 @@ class DeclarationService @Inject()(
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
                 "originCountry" -> item.metadata.country.alphaTwoCode,
-                "exchangeRate" -> item.metadata.exchangeRate.rate,
+                "exchangeRate" -> {
+                  val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
+                  if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
+                },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
                 "VATRESClaimed" -> false,
@@ -136,7 +139,10 @@ class DeclarationService @Inject()(
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
                 "originCountry" -> item.metadata.country.alphaTwoCode,
-                "exchangeRate" -> item.metadata.exchangeRate.rate,
+                "exchangeRate" -> {
+                  val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
+                  if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
+                },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
                 "VATRESClaimed" -> false,
@@ -166,7 +172,10 @@ class DeclarationService @Inject()(
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
                 "originCountry" -> item.metadata.country.alphaTwoCode,
-                "exchangeRate" -> item.metadata.exchangeRate.rate,
+                "exchangeRate" -> {
+                  val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
+                  if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
+                },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
                 "VATRESClaimed" -> false,
