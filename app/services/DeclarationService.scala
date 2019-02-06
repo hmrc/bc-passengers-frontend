@@ -2,6 +2,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 import models._
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Mode.Mode
 import play.api.http.Status._
@@ -67,7 +68,17 @@ class DeclarationService @Inject()(
     })
 
     val declarationHeader = Json.toJson(userInformation)(new Writes[UserInformation] {
-      override def writes(o: UserInformation): JsValue = Json.obj("portOfEntry" -> o.placeOfArrival, "expectedDateOfArrival" -> o.dateOfArrival)
+      override def writes(o: UserInformation): JsValue = {
+
+        def formattedTwoDecimals (timeSegment: Int) = {
+          timeSegment match {
+            case ts if ts < 10 => "0" + ts
+            case ts => ts.toString
+          }
+        }
+        
+        Json.obj("portOfEntry" -> o.placeOfArrival, "expectedDateOfArrival" -> o.dateOfArrival, "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}")
+      }
     })
 
     val liabilityDetails = Json.toJson(calculatorResponse.calculation)(new Writes[Calculation] {
@@ -97,7 +108,7 @@ class DeclarationService @Inject()(
                 "originCountry" -> item.metadata.country.alphaTwoCode,
                 "exchangeRate" -> item.metadata.exchangeRate.rate,
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
-                "customsValueGBP" -> item.purchaseCost,
+                "goodsValueGBP" -> item.purchaseCost,
                 "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
@@ -127,7 +138,7 @@ class DeclarationService @Inject()(
                 "originCountry" -> item.metadata.country.alphaTwoCode,
                 "exchangeRate" -> item.metadata.exchangeRate.rate,
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
-                "customsValueGBP" -> item.purchaseCost,
+                "goodsValueGBP" -> item.purchaseCost,
                 "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
@@ -157,7 +168,7 @@ class DeclarationService @Inject()(
                 "originCountry" -> item.metadata.country.alphaTwoCode,
                 "exchangeRate" -> item.metadata.exchangeRate.rate,
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
-                "customsValueGBP" -> item.purchaseCost,
+                "goodsValueGBP" -> item.purchaseCost,
                 "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
