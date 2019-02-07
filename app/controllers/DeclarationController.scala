@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.UUID
+
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
@@ -52,7 +54,7 @@ class DeclarationController @Inject()(
 
         val userInformation = UserInformation.build(enterYourDetailsDto)
 
-        val correlationId = context.sessionId
+        val correlationId = UUID.randomUUID.toString
 
         userInformationService.storeUserInformation(context.getJourneyData, userInformation) flatMap { _ =>
 
