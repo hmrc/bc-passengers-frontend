@@ -39,6 +39,8 @@ object JourneyData {
 
 case class JourneyData(
   euCountryCheck: Option[String] = None,
+  isVatResClaimed: Option[Boolean] = None,
+  bringingDutyFree: Option[Boolean] = None,
   privateCraft: Option[Boolean] = None,
   ageOver17: Option[Boolean] = None,
   selectedProducts: List[List[String]] = Nil,

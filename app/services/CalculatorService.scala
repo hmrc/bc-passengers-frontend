@@ -107,7 +107,7 @@ class CalculatorService @Inject() (
         for {
           isAgeOver17 <- journeyData.ageOver17
           isPrivateCraft <- journeyData.privateCraft
-        } yield LimitRequest(isPrivateCraft, isAgeOver17, speculativeItems)
+        } yield LimitRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, speculativeItems)
       }
 
   }
@@ -133,7 +133,7 @@ class CalculatorService @Inject() (
         for {
           isAgeOver17 <- journeyData.ageOver17
           isPrivateCraft <- journeyData.privateCraft
-        } yield CalculatorRequest(isPrivateCraft, isAgeOver17, purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
+        } yield CalculatorRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
     }
 

@@ -33,7 +33,7 @@ object CalculatorRequest {
   }
 }
 
-case class CalculatorRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, items: List[PurchasedItem])
+case class CalculatorRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, isVatResClaimed: Option[Boolean], items: List[PurchasedItem])
 
 
 object LimitRequest {
@@ -57,5 +57,5 @@ object LimitRequest {
   }
 }
 
-case class LimitRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, items: List[SpeculativeItem])
+case class LimitRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, isVatResClaimed: Option[Boolean], items: List[SpeculativeItem])
 

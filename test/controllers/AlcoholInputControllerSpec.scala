@@ -21,8 +21,6 @@ import scala.concurrent.Future
 
 class AlcoholInputControllerSpec extends BaseSpec {
 
-  val requiredJourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
-
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
@@ -38,7 +36,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Option[JourneyData]
 
-    val requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
+    val requiredJourneyData: JourneyData = JourneyData(Some("nonEuOnly"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[PurchasedProductService].makeWorkingInstance(any(), any())(any(), any())) thenReturn Future.successful(JourneyData())

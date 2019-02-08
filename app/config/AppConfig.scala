@@ -23,4 +23,6 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
 
   lazy val betaFeedbackUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$contactFormServiceIdentifier"
 
+  // Feature Flags
+  lazy val usingVatResJourney: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
 }

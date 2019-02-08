@@ -21,7 +21,7 @@ import scala.math.BigDecimal.RoundingMode
 
 class CalculatorServiceSpec extends BaseSpec {
 
-  override lazy val app = GuiceApplicationBuilder()
+  override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
     .configure(
@@ -44,6 +44,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val missingRateJourneyData = JourneyData(
       Some("nonEuOnly"),
+      None,
+      None,
       Some(false),
       Some(true),
       Nil,
@@ -52,6 +54,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val goodJourneyData = JourneyData(
       Some("nonEuOnly"),
+      None,
+      None,
       Some(false),
       Some(true),
       Nil,
@@ -68,6 +72,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val imperfectJourneyData = JourneyData(
       Some("nonEuOnly"),
+      None,
+      None,
       Some(false),
       Some(true),
       Nil,
@@ -83,7 +89,7 @@ class CalculatorServiceSpec extends BaseSpec {
     )
 
 
-    val calcRequest = CalculatorRequest(false,true,List(
+    val calcRequest = CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","Children’s car seats","OGD/MOB/MISC","other-goods", Nil),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CHF","Swiss francs (CHF)",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
@@ -95,7 +101,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     trait LocalSetup {
 
-      lazy val service = {
+      lazy val service: CalculatorService = {
 
         when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(),any(),any())) thenReturn {
           Future.successful(List(
@@ -116,7 +122,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "return None if there was a missing rate, making a call to the currency-conversion service" in new LocalSetup {
 
-      val response = await(service.journeyDataToCalculatorRequest(missingRateJourneyData))
+      val response: Option[CalculatorRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData))
 
       verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(),any(),any())
@@ -142,6 +148,36 @@ class CalculatorServiceSpec extends BaseSpec {
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
 
       response shouldBe calcRequest
+    }
+
+    "transform journey data with vat res = Some(true) to a calculator request with the vat res parameter included as true" in new LocalSetup {
+
+      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(true)))).get
+
+      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+
+      response shouldBe calcRequest.copy(isVatResClaimed = Some(true))
+    }
+
+    "transform journey data with vat res = Some(false) to a calculator request with the vat res parameter included as false" in new LocalSetup {
+
+      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(false)))).get
+
+      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+
+      response shouldBe calcRequest.copy(isVatResClaimed = Some(false))
+    }
+
+    "transform journey data with vat res = None to a calculator request with the vat res parameter not included" in new LocalSetup {
+
+      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = None))).get
+
+      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+
+      response shouldBe calcRequest.copy(isVatResClaimed = None)
     }
   }
 
@@ -209,7 +245,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorRequest(false, true, List(
+        meq(CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CAD","Canadian dollars (CAD)",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any())(any(),any(),any(),any())

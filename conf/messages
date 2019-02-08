@@ -40,6 +40,19 @@ text.4_litres_of_still_wine = 4 litres of still wine
 text.a_total_of_390_worth_of_ = A total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
 text.more_info_about_bringing_goods_into_the_uk_and_splitting_allowances_ = More information about bringing goods into the UK and splitting allowances (opens in a new window or tab)
 
+## VAT Res Page
+heading.did_you_claim_tax_back_on_ = Did you claim tax back on any goods you bought in the EU?
+error.claimed_vat_res = Select if you claimed tax back on any goods you bought in the EU
+head.error.claimed_vat_res = Select if you claimed tax back on any goods you bought in the EU
+label.select_yes_if_the_tax_was_refunded_ = Select yes if the tax was refunded immediately or if you filled in a form to claim the tax back later.
+
+## Duty Free Page
+heading.are_you_bringing_in_duty_free_ = Are you bringing in duty-free alcohol or tobacco bought in EU shops?
+error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the EU
+head.error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the EU
+label.select_yes_any_any_alcohol_or_tobacco_ = Select yes if any alcohol or tobacco was bought in a 'tax-free' or 'duty-free' shop, such as at an airport or ferry port.
+
+
 ## EU Done Page
 label.alcohol = Alcohol
 label.beer = Beer
