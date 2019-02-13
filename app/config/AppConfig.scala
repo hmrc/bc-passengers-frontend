@@ -15,8 +15,6 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
   private val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = loadConfig("appName")
 
-  lazy val analyticsToken = loadConfig("google-analytics.token")
-  lazy val analyticsHost = loadConfig("google-analytics.host")
   lazy val googleTagManagerId: String = loadConfig("google-tag-manager.id")
   lazy val reportAProblemPartialUrl = runMode.envPath(s"contact/problem_reports_ajax?service=$contactFormServiceIdentifier")(other = contactHost)
   lazy val reportAProblemNonJSUrl = runMode.envPath(s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier")(other = contactHost)

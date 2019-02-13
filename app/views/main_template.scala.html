@@ -9,8 +9,8 @@
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   inlineScript: Option[Html] = None,
-  inlineLinkElem: Option[Html] = None,
-  gtmEmbedded: Option[Boolean] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  inlineLinkElem: Option[Html] = None
+)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @scriptElem={
   <script src="@routes.Assets.at("javascripts/application.js")"></script>
@@ -48,6 +48,5 @@
                mainContent = main,
                serviceInfoContent = serviceInfoContent,
                scriptElem = Some(scriptElem),
-               linkElem = Some(linkElem),
-               gtmEmbedded = gtmEmbedded
+               linkElem = Some(linkElem)
 )
