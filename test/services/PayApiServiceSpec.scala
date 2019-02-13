@@ -43,6 +43,10 @@ class PayApiServiceSpec extends BaseSpec {
        |    "dateOfArrival": "2018-11-12T12:20:00",
        |    "passengerName": "Harry Potter",
        |    "placeOfArrival": "Heathrow",
+       |    "returnUrl": "http://localhost:9514/feedback/passengers",
+       |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
+       |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
+       |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information",
        |    "items": [
        |        {
        |            "name": "5 litres cider",
@@ -75,6 +79,10 @@ class PayApiServiceSpec extends BaseSpec {
        |    "dateOfArrival": "2018-07-12T12:20:00",
        |    "passengerName": "Harry Potter",
        |    "placeOfArrival": "Heathrow",
+       |    "returnUrl": "http://localhost:9514/feedback/passengers",
+       |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
+       |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
+       |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information",
        |    "items": [
        |        {
        |            "name": "5 litres cider",
