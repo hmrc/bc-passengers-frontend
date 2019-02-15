@@ -109,15 +109,15 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)))))))(any())
+        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)))))))(any())
     }
 
     "redirect dashboard given existing journey data for an item and valid form input" in new LocalSetup {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
-        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil)), currency = Some("JMD"), cost = Some(20.0))),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil)), currency = Some("JMD"), cost = Some(20.0)))
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Nil)), currency = Some("JMD"), cost = Some(20.0))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Nil)), currency = Some("JMD"), cost = Some(20.0)))
       ))
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/country/iid0?ir=1").withFormUrlEncodedBody("country" -> "Egypt", "itemsRemaining" -> "1")).get
@@ -127,8 +127,8 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(
-        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), currency = Some("JMD"), cost = Some(20.0))),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Some("JMD"), Nil)), currency = Some("JMD"), cost = Some(20.0))))))(any())
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("JMD"), cost = Some(20.0))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", country = Some(Country("Jamaica", "JM", isEu = false, Nil)), currency = Some("JMD"), cost = Some(20.0))))))(any())
     }
   }
 
@@ -177,7 +177,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData)
-      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/currency/iid0").withFormUrlEncodedBody("currency" -> "USD", "itemsRemaining" -> "6")).get
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/currency/iid0").withFormUrlEncodedBody("currency" -> "USA dollars (USD)", "itemsRemaining" -> "6")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0?ir=6")
@@ -282,7 +282,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))))
+        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Nil))))))
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "2")).get
 
       status(result) shouldBe SEE_OTHER
@@ -291,7 +291,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances =
-        List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil)), cost = Some(BigDecimal("2.99")))))))(any())
+        List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Nil)), cost = Some(BigDecimal("2.99")))))))(any())
 
     }
 
@@ -299,7 +299,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))))
+        Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Nil))))))
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
       status(result) shouldBe SEE_OTHER
@@ -307,7 +307,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances =
-        List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil)), cost = Some(BigDecimal("2.99")))))))(any())
+        List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Nil)), cost = Some(BigDecimal("2.99")))))))(any())
 
     }
 
@@ -315,8 +315,8 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
-        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil)))),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))
+        purchasedProductInstances = List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Nil)))),
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid0", currency = Some("USD"), country = Some(Country("USA", "US", false, Nil))))
       ))
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid0").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
@@ -325,7 +325,7 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances =
-        List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil)))))))(any())
+        List(PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("2.99")), country = Some(Country("USA", "US", false, Nil)))))))(any())
 
     }
 
@@ -334,11 +334,11 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData: Option[JourneyData]= Some(requiredJourneyData.copy(
         purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil))),
-          PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil))),
-          PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil)))
+          PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Nil))),
+          PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Nil))),
+          PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Nil)))
         ),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid1", currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))
+        workingInstance = Some(PurchasedProductInstance(ProductPath("other-goods/books"), iid = "iid1", currency = Some("USD"), country = Some(Country("USA", "US", false, Nil))))
       ))
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/other-goods/books/cost/iid1").withFormUrlEncodedBody("cost" -> "2.99", "itemsRemaining" -> "1")).get
 
@@ -347,9 +347,9 @@ class OtherGoodsVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil))),
-        PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("2.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil))),
-        PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Some("USA"), Nil)))
+        PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Nil))),
+        PurchasedProductInstance(ProductPath("other-goods/books"), "iid1", currency = Some("USD"), cost = Some(BigDecimal("2.99")), country = Some(Country("USA", "US", false, Nil))),
+        PurchasedProductInstance(ProductPath("other-goods/books"), "iid2", currency = Some("USD"), cost = Some(BigDecimal("0.99")), country = Some(Country("USA", "US", false, Nil)))
       ))))(any())
 
     }

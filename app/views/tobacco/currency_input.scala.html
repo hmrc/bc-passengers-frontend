@@ -4,17 +4,16 @@
 @import uk.gov.hmrc.play.views.html._
 @import play.api.mvc.Call
 @import models.{Currency, CurrencyDto}
+@import play.api.libs.json.{JsObject, Json}
+
 
 @scriptElem = {
     <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
     <script>
-        document.onreadystatechange = function () {
-            if (document.readyState == "interactive") {
-                accessibleAutocomplete.enhanceSelectElement({
-                  selectElement: document.querySelector('#currency')
-                })
-            }
-        }
+        $(document).ready(function () {
+            var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
+            enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+        })
     </script>
 }
 
@@ -37,7 +36,7 @@
 
         @components.select(
             field = currencyForm("currency"),
-            elementOptions = ("","") :: currencies.map(c => (c.value.getOrElse("GBP") ,c.displayName)),
+            elementOptions = ("","") :: currencies.map(c => (c.displayName ,c.displayName)),
             displayEmptyValue = true,
             '_label -> Messages("label.enter_currency"),
             '_errorsAboveInput -> true
