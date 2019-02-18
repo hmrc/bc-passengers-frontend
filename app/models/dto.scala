@@ -148,7 +148,9 @@ case class WeightDto(weight: BigDecimal)
 object CurrencyDto {
   def form(currencyService: CurrencyService, optionalItemsRemaining: Boolean = true): Form[CurrencyDto] = Form(
     mapping(
-      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
+      "currency" -> text
+        .transform[String](s => currencyService.getCodeByDisplayName(s).getOrElse(""), s => currencyService.getDisplayNameByCode(s).getOrElse(""))
+        .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CurrencyDto.apply)(CurrencyDto.unapply)
   )

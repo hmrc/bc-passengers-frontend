@@ -286,7 +286,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)))))))(any())
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)))))))(any())
     }
   }
 
@@ -344,7 +344,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
         Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5)))))
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/currency/iid0")
-        .withFormUrlEncodedBody("currency" -> "USD", "itemsRemaining" -> "5")).get
+        .withFormUrlEncodedBody("currency" -> "USA dollars (USD)", "itemsRemaining" -> "5")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
@@ -454,7 +454,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       override lazy val limitUsageResponse = LimitUsageSuccessResponse(Map.empty)
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil))))))
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Nil))))))
 
       val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/tobacco/cigars/cost/iid0")
         .withFormUrlEncodedBody("cost" -> "9.99")).get
@@ -463,7 +463,7 @@ class TobaccoVerticalSpec extends VerticalBaseSpec {
 
       verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
       verify(injected[LocalSessionCache], times(1)).cacheJourneyData(meq(requiredJourneyData.copy(purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Some("USA"), Nil)), cost = Some(BigDecimal("9.99")))))))(any())
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid0", weightOrVolume = Some(BigDecimal("30.2")), noOfSticks = Some(5), currency = Some("USD"), country = Some(Country("USA", "US", false, Nil)), cost = Some(BigDecimal("9.99")))))))(any())
     }
   }
 }

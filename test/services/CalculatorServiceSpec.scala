@@ -47,7 +47,7 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(false),
       Some(true),
       Nil,
-      List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("USD"),Some(123)))
+      List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("USD"),Some(123)))
     )
 
     val goodJourneyData = JourneyData(
@@ -56,13 +56,13 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(true),
       Nil,
       List(
-        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(74563)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(33)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CHF"),Some(43)),
-        PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(1234)),
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("GBP"),Some(60)),
-        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("GGP"),Some(123))
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123))
       )
     )
 
@@ -72,25 +72,25 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(true),
       Nil,
       List(
-        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(74563)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(33)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CHF"),Some(43)),
-        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(1234)), //Note weightOrVolume = None
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("GBP"),Some(60)),
-        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("GGP"),Some(123))
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)), //Note weightOrVolume = None
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123))
       )
     )
 
 
     val calcRequest = CalculatorRequest(false,true,List(
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","Children’s car seats","OGD/MOB/MISC","other-goods", Nil),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(33)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CHF","Switzerland Franc (CHF)",Some("CHF")), BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CHF"),Some(43)),ProductTreeLeaf("chewing","Pipe or chewing tobacco","TOB/A1/OTHER","tobacco", List("L-LOOSE")),Currency("CHF","Switzerland Franc (CHF)",Some("CHF")), BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("AUD"),Some(1234)),ProductTreeLeaf("cigars","Cigars","TOB/A1/CIGAR","cigars", List("L-CIGAR")),Currency("AUD","Australia Dollar (AUD)",Some("AUD")), BigDecimal(1234/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("GBP"),Some(60)),ProductTreeLeaf("cigarettes","Cigarettes","TOB/A1/CIGRT","cigarettes", List("L-CIGRT")),Currency("GBP","British Pound (GBP)",None), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("GGP"),Some(123)),ProductTreeLeaf("beer","Beer","ALC/A2/BEER","alcohol", List("L-BEER")),Currency("GGP","Guernsey Pound (GGP)",None), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","Children’s car seats","OGD/MOB/MISC","other-goods", Nil),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CHF","Swiss francs (CHF)",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),ProductTreeLeaf("chewing","Pipe or chewing tobacco","TOB/A1/OTHER","tobacco", List("L-LOOSE")),Currency("CHF","Swiss francs (CHF)",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)),ProductTreeLeaf("cigars","Cigars","TOB/A1/CIGAR","cigars", List("L-CIGAR")),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(1234/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),ProductTreeLeaf("cigarettes","Cigarettes","TOB/A1/CIGRT","cigarettes", List("L-CIGRT")),Currency("GBP","British pounds (GBP)",None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123)),ProductTreeLeaf("beer","Beer","ALC/A2/BEER","alcohol", List("L-BEER")),Currency("GGP","Guernsey pounds (GGP)",None, List("Channel Islands")), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
     ))
 
     trait LocalSetup {
@@ -186,8 +186,8 @@ class CalculatorServiceSpec extends BaseSpec {
         ageOver17 = Some(true),
         privateCraft = Some(false),
         purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
-          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", country = Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)), currency = Some("USD"), cost = Some(BigDecimal("4.00")))
+          PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("USD"), cost = Some(BigDecimal("4.00")))
         )
       ))
 
@@ -210,7 +210,7 @@ class CalculatorServiceSpec extends BaseSpec {
       verify(injected[WsAllMethods], times(1)).POST[CalculatorRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
         meq(CalculatorRequest(false, true, List(
-          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Some("EGP"), Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CAD","Canada Dollar (CAD)",Some("CAD")), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
+          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CAD","Canadian dollars (CAD)",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any())(any(),any(),any(),any())
 
