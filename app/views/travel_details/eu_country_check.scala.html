@@ -7,21 +7,18 @@
 
   <h1 class="heading-xlarge">@messages("heading.did_you_buy_your_goods_from_")</h1>
 
+  <h2 class="heading-medium margin-top-0">@messages("heading.eu_countries")</h2>
+  <p>@messages("text.eu_countries")</p>
+
+  <h2 class="heading-medium">@messages("heading.non_eu_countries")</h2>
+  <p>@messages("text.non_eu_countries")</p>
+
   @form(action = routes.TravelDetailsController.euCountryCheckPost()) {
 
     <div class="form-group">
 
       <fieldset>
         <legend class="visually-hidden">@messages("heading.did_you_buy_your_goods_from_")</legend>
-
-        <h2 class="heading-medium margin-top-0">@messages("heading.eu_countries")</h2>
-        <p style="padding-bottom:1em">
-          @messages("text.eu_countries")
-        </p>
-        <h2 class="heading-medium">@messages("heading.non_eu_countries")</h2>
-        <p style="padding-bottom:1em">
-          @messages("text.non_eu_countries")
-        </p>
 
         @components.input_radio_group(
           f("euCountryCheck"),

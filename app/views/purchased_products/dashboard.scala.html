@@ -18,12 +18,12 @@
     <div>
       <dt class="cya-question">@messages("label.private_aircraft_or_private_boat")</dt>
       <dd class="cya-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer cya-change"><a href="private-travel">@messages("label.change") <span class="visually-hidden">@messages("label.private_aircraft_or_private_boat")</span></a></dd>
+      <dd class="cya-answer cya-change"><a href="private-travel" role="text">@messages("label.change") <span class="visually-hidden">@messages("label.private_aircraft_or_private_boat")</span></a></dd>
     </div>
     <div>
       <dt class="cya-question">@messages("label.17_or_over")</dt>
       <dd class="cya-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer cya-change"><a href="confirm-age">@messages("label.change") <span class="visually-hidden">@messages("label.17_or_over")</span></a></dd>
+      <dd class="cya-answer cya-change"><a href="confirm-age" role="text">@messages("label.change") <span class="visually-hidden">@messages("label.17_or_over")</span></a></dd>
     </div>
   </dl>
 
@@ -51,21 +51,21 @@
           <div class="product-item">
             <dt class="cya-question">@messages("label.item")</dt>
             <dd class="cya-answer">@purchasedItem.description</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change") <span class="visually-hidden">@purchasedItem.description</span></a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description</span></a></dd>
           </div>
           <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
             <dd class="cya-answer">@purchasedItem.country</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.country")</span></a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.country")</span></a></dd>
           </div>
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
         </div>
       }
     }
@@ -97,7 +97,7 @@
                 @purchasedItem.description
               }
             </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change") <span class="visually-hidden">
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">
               @if(purchasedItem.displayWeight){
                 @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
               } else {
@@ -107,7 +107,7 @@
           <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
             <dd class="cya-answer">@purchasedItem.country</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")<span class="visually-hidden">
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change")<span class="visually-hidden">
               @if(purchasedItem.displayWeight){
                 @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
               } else {
@@ -118,7 +118,7 @@
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change")<span class="visually-hidden">
+            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change")<span class="visually-hidden">
               @if(purchasedItem.displayWeight){
                 @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
               } else {
@@ -127,7 +127,7 @@
           </div>
         </dl>
         <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">
               @if(purchasedItem.displayWeight){
                 @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
               } else {
@@ -162,7 +162,7 @@
           <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
             <dd class="cya-answer">@purchasedItem.country</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.country")</span></a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.country")</span></a></dd>
           </div>
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
@@ -170,11 +170,11 @@
               @purchasedItem.purchasedProductInstance.cost
               @purchasedItem.displayCurrency
             </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
+            <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
           </div>
         </dl>
         <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
         </div>
       }
     }
