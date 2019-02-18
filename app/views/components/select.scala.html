@@ -41,7 +41,7 @@
     }
     @for(option <- elementOptions) {
         <option
-                id="@elements.field.name-@option._1"
+                id="@elements.field.name-@(option._1.toLowerCase.map(x => if(x == ' ') '-' else x).filterNot(x => "()".contains(x)))"
                 value="@option._1"
         @if(value==option._1){selected="selected"}
         >@option._2</option>

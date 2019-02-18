@@ -147,9 +147,9 @@ class CalculatorService @Inject() (
 
     implicit val formats: Reads[CurrencyConversionRate] = Json.reads[CurrencyConversionRate]
 
-    val currenciesToFetch: Set[String] = allCurrencies.flatMap(_.value)
+    val currenciesToFetch: Set[String] = allCurrencies.flatMap(_.valueForConversion)
 
-    val gbpEquivCurrencies: Map[String, BigDecimal] = allCurrencies.filterNot(_.value.isDefined).map(c => (c.code, BigDecimal("1.00"))).toMap
+    val gbpEquivCurrencies: Map[String, BigDecimal] = allCurrencies.filterNot(_.valueForConversion.isDefined).map(c => (c.code, BigDecimal("1.00"))).toMap
 
     val queryString = currenciesToFetch.mkString("cc=", "&cc=", "")
 

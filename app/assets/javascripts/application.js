@@ -28,10 +28,10 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource) {
     source: customSuggest,
     templates: {
       inputValue: function(result) {
-        return result && result.countryName
+        return result && result.displayName
       },
       suggestion: function(result) {
-        return result.countryName
+        return result.displayName
       }
     }
   })
@@ -39,7 +39,7 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource) {
   function customSuggest (query, syncResults) {
     var results = dataSource
     syncResults(query ? results.filter(function (result) {
-      return (result.countrySynonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.countryName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+      return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
     }) : [])
   }
 }

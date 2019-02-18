@@ -234,7 +234,7 @@ class DtoTest extends BaseSpec {
     "allow itemsRemaining to be absent and set it to 0 if optionalItemsRemaining is true" in {
 
       val formData = Map(
-        "currency" -> "USD"
+        "currency" -> "USA dollars (USD)"
       )
 
       val form = CurrencyDto.form(injected[CurrencyService]).bind(formData)
@@ -244,7 +244,7 @@ class DtoTest extends BaseSpec {
     "not allow itemsRemaining to be absent if optionalItemsRemaining is false" in {
 
       val formData = Map(
-        "currency" -> "USD"
+        "currency" -> "USA dollars (USD)"
       )
 
       val form = CurrencyDto.form(injected[CurrencyService], optionalItemsRemaining = false).bind(formData)
@@ -254,7 +254,7 @@ class DtoTest extends BaseSpec {
     "bind if itemsRemaining is not absent and optionalItemsRemaining is false" in {
 
       val formData = Map(
-        "currency" -> "USD",
+        "currency" -> "USA dollars (USD)",
         "itemsRemaining" -> "1"
       )
 
