@@ -49,14 +49,14 @@ class TravelDetailsControllerSpec extends BaseSpec {
   }
 
 
-  "calling GET .../eu-country-check" should {
+  "calling GET .../where-goods-bought" should {
 
     "return the select eu country check page with the previous choice populated if there is one in the keystore" in {
 
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(euCountryCheck = Some("nonEuOnly"))) )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
 
       status(response) shouldBe OK
 
@@ -73,7 +73,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -88,7 +88,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling POST .../eu-country-check" should {
+  "calling POST .../where-goods-bought" should {
 
     "redirect to .../eu_done when user selects country in EU" in {
 
@@ -96,7 +96,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-done")
@@ -111,7 +111,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
 
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")
@@ -126,7 +126,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"))))
 
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")
@@ -135,7 +135,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return bad request when given invalid data" in {
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/eu-country-check").withFormUrlEncodedBody("value" -> "badValue")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -422,7 +422,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, fakeRequest).get
 
       status(response) shouldBe  SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-country-check")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
       session(response).data.get("bcpaccess") shouldBe Some("true")
       session(response).data.get("sessionId") should not be sessionId
 
