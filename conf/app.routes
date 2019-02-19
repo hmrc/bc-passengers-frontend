@@ -2,8 +2,8 @@
 
 GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
 
-GET        /eu-country-check                                 controllers.TravelDetailsController.euCountryCheck
-POST       /eu-country-check                                 controllers.TravelDetailsController.euCountryCheckPost
+GET        /where-goods-bought                               controllers.TravelDetailsController.euCountryCheck
+POST       /where-goods-bought                               controllers.TravelDetailsController.euCountryCheckPost
 
 GET        /eu-done                                          controllers.TravelDetailsController.euDone
 

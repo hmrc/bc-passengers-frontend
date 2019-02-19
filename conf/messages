@@ -12,15 +12,15 @@ head.error.country.invalid = Enter the country of purchase
 error.country.invalid = Enter the country of purchase
 
 ## EU Check Page
-heading.did_you_buy_your_goods_from_ = Did you buy goods from EU countries, non-EU countries or both?
+heading.are_you_bringing_in_goods_from_ = Are you bringing in goods from EU countries, non-EU countries or both?
 heading.eu_countries = EU countries
 heading.non_eu_countries = Non-EU countries
 label.eu_countries_only = EU countries only
 label.non_eu_countries_only = Non-EU countries only
 label.both_eu_and_non_eu_countries = Both EU and non-EU countries
 label.continue_to_tell_us_about_your_non_eu_goods = Continue to tell us about your non-EU goods
-text.eu_countries =Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden and Switzerland.
-text.non_eu_countries = Any other country (including the Canary Islands, Channel Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
+text.eu_countries= Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
+text.non_eu_countries = Any other country (including the Canary Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
 error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
 head.error.eu_check = Select if you bought goods from EU countries only, non-EU countries only or both
 

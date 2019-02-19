@@ -1,11 +1,11 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 @(f: Form[EuCountryCheckDto])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("heading.did_you_buy_your_goods_from_"), gtmEmbedded = Some(true)) {
+@main_template(title = messages("heading.are_you_bringing_in_goods_from_"), gtmEmbedded = Some(true)) {
 
   @views.html.tags.errors(f)
 
-  <h1 class="heading-xlarge">@messages("heading.did_you_buy_your_goods_from_")</h1>
+  <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_goods_from_")</h1>
 
   <h2 class="heading-medium margin-top-0">@messages("heading.eu_countries")</h2>
   <p>@messages("text.eu_countries")</p>
