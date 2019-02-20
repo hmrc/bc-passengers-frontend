@@ -27,15 +27,16 @@ class DashboardControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
+  
+
   override def beforeEach: Unit = {
     reset(injected[TravelDetailsService], injected[PurchasedProductService])
   }
 
-  val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
   trait LocalSetup {
 
-    def travelDetailsJourneyData: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), ageOver17 = Some(true), privateCraft = Some(false))
+    def travelDetailsJourneyData: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, bringingDutyFree = None,  ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
@@ -46,6 +47,8 @@ class DashboardControllerSpec extends BaseSpec {
       rt(app, req)
     }
   }
+
+  val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
   "Calling GET .../dashboard" should {
     "start a new session if any travel details are missing" in new LocalSetup {
@@ -60,7 +63,6 @@ class DashboardControllerSpec extends BaseSpec {
       verify(controller.travelDetailsService, times(1)).getJourneyData(any())
     }
   }
-
 
   "respond with 200 and display the page if all travel details exist" in new LocalSetup {
 

@@ -120,7 +120,7 @@ trait ControllerHelpers extends  MessagesBaseController
   def requireCalculatorResponse(block: CalculatorResponse => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, _, _, Some(calculatorResponse)) => block(calculatorResponse)
+      case JourneyData(_, _, _, _, _, _, _, _, _, Some(calculatorResponse)) => block(calculatorResponse)
       case _ =>
         logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
@@ -130,7 +130,7 @@ trait ControllerHelpers extends  MessagesBaseController
   def requireUserInformation(block: UserInformation => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, _, Some(userInformation), _) => block(userInformation)
+      case JourneyData(_, _, _, _, _, _, _, _, Some(userInformation), _) => block(userInformation)
       case _ =>
         logAndRedirect(s"Missing user info in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
@@ -155,7 +155,7 @@ trait ControllerHelpers extends  MessagesBaseController
   def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, Some(workingInstance), _, _) => block(workingInstance)
+      case JourneyData(_, _, _, _, _, _, _, Some(workingInstance), _, _) => block(workingInstance)
       case _ =>
         logAndRedirect(s"Missing working instance in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
@@ -164,7 +164,8 @@ trait ControllerHelpers extends  MessagesBaseController
   def requireTravelDetails(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, Some(ageOver17), Some(privateCraft), _, _, _, _, _) => block
+      case JourneyData(Some(_), _, _, Some(_), Some(_), _, _, _, _, _) if appConfig.usingVatResJourney => block
+      case JourneyData(Some(_), None, None, Some(_), Some(_), _, _, _, _, _) if !appConfig.usingVatResJourney => block
       case _ =>
         logAndRedirect(s"Incomplete or missing travel details found in journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
     }

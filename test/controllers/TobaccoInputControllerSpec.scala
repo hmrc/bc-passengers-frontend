@@ -37,7 +37,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), ageOver17 = Some(true), privateCraft = Some(false))
+    val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {

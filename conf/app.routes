@@ -17,6 +17,12 @@ POST       /private-travel                                   controllers.TravelD
 GET        /confirm-age                                      controllers.TravelDetailsController.confirmAge
 POST       /confirm-age                                      controllers.TravelDetailsController.confirmAgePost
 
+GET        /did-you-claim-tax-back                           controllers.TravelDetailsController.didYouClaimTaxBack
+POST       /did-you-claim-tax-back                           controllers.TravelDetailsController.didYouClaimTaxBackPost
+
+GET        /duty-free                                        controllers.TravelDetailsController.dutyFree
+POST       /duty-free                                        controllers.TravelDetailsController.dutyFreePost
+
 GET        /new-session                                      controllers.TravelDetailsController.newSession
 
 # Dashboard

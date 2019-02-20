@@ -22,6 +22,25 @@ object EuCountryCheckDto {
 
 case class EuCountryCheckDto(euCountryCheck: String)
 
+
+object ClaimedVatResDto {
+  val form: Form[ClaimedVatResDto] = Form(
+    mapping(
+      "claimedVatRes" -> optional(boolean).verifying("error.claimed_vat_res", _.isDefined).transform[Boolean](_.get, b => Option(b))
+    )(ClaimedVatResDto.apply)(ClaimedVatResDto.unapply)
+  )
+}
+case class ClaimedVatResDto(claimedVatRes: Boolean)
+
+object BringingDutyFreeDto {
+  val form: Form[BringingDutyFreeDto] = Form(
+    mapping(
+      "bringingDutyFree" -> optional(boolean).verifying("error.bringing_duty_free", _.isDefined).transform[Boolean](_.get, b => Option(b))
+    )(BringingDutyFreeDto.apply)(BringingDutyFreeDto.unapply)
+  )
+}
+case class BringingDutyFreeDto(bringingDutyFree: Boolean)
+
 object SelectedCountryDto {
   def form(countryService: CountriesService, optionalItemsRemaining: Boolean = true): Form[SelectedCountryDto] = Form(
     mapping(

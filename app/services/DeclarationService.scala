@@ -28,14 +28,14 @@ class DeclarationService @Inject()(
   implicit val ec: ExecutionContext
 ) extends UsesJourneyData {
 
-  lazy val passengersDeclarationsBaseUrl = servicesConfig.baseUrl("bc-passengers-declarations")
+  lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 
 
-  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
+  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-    val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, rd)
+    val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, isVatResClaimed, isBringingDutyFree, rd)
 
     val headers = Seq(
       "X-Correlation-ID" -> correlationId
@@ -57,7 +57,9 @@ class DeclarationService @Inject()(
     }
   }
 
-  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, rd: String): JsObject = {
+  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, rd: String): JsObject = {
+
+    val vatResFlag = isVatResClaimed || isBringingDutyFree
 
     val customerReference: JsValue = Json.toJson(userInformation)(new Writes[UserInformation] {
       override def writes(o: UserInformation): JsValue = Json.obj("passport" -> o.passportNumber)
@@ -112,7 +114,7 @@ class DeclarationService @Inject()(
                 },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
-                "VATRESClaimed" -> false,
+                "VATRESClaimed" -> vatResFlag,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
                 "vatGBP" -> item.calculation.vat
@@ -145,7 +147,7 @@ class DeclarationService @Inject()(
                 },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
-                "VATRESClaimed" -> false,
+                "VATRESClaimed" -> vatResFlag,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
                 "vatGBP" -> item.calculation.vat
@@ -178,7 +180,7 @@ class DeclarationService @Inject()(
                 },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
-                "VATRESClaimed" -> false,
+                "VATRESClaimed" -> vatResFlag,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
                 "vatGBP" -> item.calculation.vat

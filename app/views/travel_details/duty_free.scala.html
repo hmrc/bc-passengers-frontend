@@ -1,0 +1,36 @@
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(bringingDutyFreeForm: Form[BringingDutyFreeDto])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("heading.are_you_bringing_in_duty_free_")) {
+
+    @views.html.tags.errors(bringingDutyFreeForm)
+
+    <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_duty_free_")</h1>
+
+    @form(action = routes.TravelDetailsController.dutyFreePost()){
+
+        <fieldset>
+            <legend class="visually-hidden">@messages("heading.are_you_bringing_in_duty_free_")</legend>
+
+            <div class="panel panel-border-wide" id="panel">
+                <p>@messages("label.select_yes_any_any_alcohol_or_tobacco_")</p>
+            </div>
+
+            @components.input_radio_group(
+                bringingDutyFreeForm("bringingDutyFree"),
+                Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+                '_labelClass -> "block-label inputLabelBeforeError",
+                '_inline -> true
+            )
+
+            <div class="form-group">
+                <button class="button" type="submit">@messages("label.continue")</button>
+            </div>
+
+        </fieldset>
+
+    }
+
+}

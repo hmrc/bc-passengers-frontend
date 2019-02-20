@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 class AlcoholVerticalSpec extends VerticalBaseSpec {
 
-  val requiredJourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
+  val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), ageOver17 = Some(true), isVatResClaimed = None, bringingDutyFree = None,  privateCraft = Some(false))
 
   "Calling GET /products/alcohol/.../start" should {
 

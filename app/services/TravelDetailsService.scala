@@ -23,6 +23,27 @@ class TravelDetailsService @Inject() (
     }
   }
 
+  def storeVatResCheck(vatResCheck: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+
+    localSessionCache.fetchAndGetJourneyData flatMap {
+      case Some(journeyData) =>
+        localSessionCache.cacheJourneyData(journeyData.copy(isVatResClaimed = Some(vatResCheck)))
+      case None =>
+        localSessionCache.cacheJourneyData(JourneyData(isVatResClaimed = Some(vatResCheck)))
+    }
+  }
+
+  def storeDutyFreeCheck(dutyFreeCheck: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+
+    localSessionCache.fetchAndGetJourneyData flatMap {
+      case Some(journeyData) =>
+        localSessionCache.cacheJourneyData(journeyData.copy(bringingDutyFree = Some(dutyFreeCheck)))
+      case None =>
+        localSessionCache.cacheJourneyData(JourneyData(bringingDutyFree = Some(dutyFreeCheck)))
+    }
+  }
+
+
   def storeAgeOver17(ageOver17: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
     localSessionCache.fetchAndGetJourneyData flatMap {

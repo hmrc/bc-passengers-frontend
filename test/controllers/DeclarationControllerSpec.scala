@@ -64,7 +64,6 @@ class DeclarationControllerSpec extends BaseSpec {
       withinFreeAllowance = true,
       limits = Map.empty
     )
-
     lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
     
     lazy val dt = DateTime.parse("2018-11-23T06:21:00Z")
@@ -75,7 +74,7 @@ class DeclarationControllerSpec extends BaseSpec {
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any())) thenReturn Future.successful(payApiResponse)
-      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any())(any())) thenReturn Future.successful(declarationServiceResponse)
+      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any(), any())(any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
       rt(app, req)
     }
@@ -84,7 +83,7 @@ class DeclarationControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/you-need-to-declare" should {
 
     "Display the you need to declare informational page" in new LocalSetup {
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -103,7 +102,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Display the user information page" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -122,7 +121,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -146,7 +145,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when first name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -170,7 +169,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when last name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -194,7 +193,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when passport number is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -218,7 +217,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when place of arrival is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -242,7 +241,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -266,7 +265,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
 
@@ -292,7 +291,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
+      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 

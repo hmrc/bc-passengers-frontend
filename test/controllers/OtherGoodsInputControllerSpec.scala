@@ -33,7 +33,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    def requiredJourneyData: JourneyData = JourneyData(ageOver17 = Some(true), privateCraft = Some(false))
+    def requiredJourneyData: JourneyData = JourneyData(Some("nonEuOnly"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
     def result: Future[Result]
