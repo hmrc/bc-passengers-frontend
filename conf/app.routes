@@ -5,7 +5,7 @@ GET        /check-declare-goods-start-page                   controllers.TravelD
 GET        /where-goods-bought                               controllers.TravelDetailsController.euCountryCheck
 POST       /where-goods-bought                               controllers.TravelDetailsController.euCountryCheckPost
 
-GET        /eu-done                                          controllers.TravelDetailsController.euDone
+GET        /goods-bought-inside-eu                           controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /arrivals-from-outside-the-eu                     controllers.TravelDetailsController.nonEuInterrupt
 
