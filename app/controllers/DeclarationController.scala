@@ -24,7 +24,7 @@ class DeclarationController @Inject()(
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
   val dateTimeProviderService: DateTimeProviderService,
-  val you_need_to_declare: views.html.declaration.you_need_to_declare,
+  val you_need_to_declare: views.html.declaration.declare_your_goods,
   val enter_your_details: views.html.declaration.enter_your_details,
   val error_template: views.html.error_template,
   override val controllerComponents: MessagesControllerComponents,
@@ -35,7 +35,7 @@ class DeclarationController @Inject()(
 
   def receiptDateTime: DateTime = dateTimeProviderService.now
 
-  def youNeedToDeclare: Action[AnyContent] = DashboardAction { implicit context =>
+  def declareYourGoods: Action[AnyContent] = DashboardAction { implicit context =>
     Future.successful(Ok(you_need_to_declare()))
   }
 
