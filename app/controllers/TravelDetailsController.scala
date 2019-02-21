@@ -26,7 +26,7 @@ class TravelDetailsController @Inject() (
   val check_declare_goods_start_page: views.html.travel_details.check_declare_goods_start_page,
   val eu_country_check: views.html.travel_details.eu_country_check,
   val confirm_age: views.html.travel_details.confirm_age,
-  val eu_done: views.html.travel_details.eu_done,
+  val goods_bought_inside_eu: views.html.travel_details.goods_bought_inside_eu,
   val confirm_private_craft: views.html.travel_details.confirm_private_craft,
   val error_template: views.html.error_template,
   val vat_res: views.html.travel_details.vat_res,
@@ -80,7 +80,7 @@ class TravelDetailsController @Inject() (
                 }
               } else {
                 euCountryCheckDto.euCountryCheck match {
-                  case "euOnly" => Redirect(routes.TravelDetailsController.euDone())
+                  case "euOnly" => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
                   case "nonEuOnly" => Redirect(routes.TravelDetailsController.nonEuInterrupt())
                   case "both" =>Redirect(routes.TravelDetailsController.bothInterrupt())
                 }
@@ -136,7 +136,7 @@ class TravelDetailsController @Inject() (
           if (!bringingDutyFreeDto.bringingDutyFree) {
             travelDetailsService.getJourneyData map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
-                Redirect(routes.TravelDetailsController.euDone())
+                Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
               case Some(jd) if jd.euCountryCheck.contains("both") =>
                 Redirect(routes.TravelDetailsController.bothInterrupt())
               case _ =>
@@ -209,8 +209,8 @@ class TravelDetailsController @Inject() (
     )
   }
 
-  val euDone: Action[AnyContent] = PublicAction { implicit request =>
-    Future.successful(Ok(eu_done()))
+  val goodsBoughtInsideEu: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(goods_bought_inside_eu()))
   }
 
 }

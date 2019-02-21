@@ -90,7 +90,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "calling POST .../where-goods-bought" should {
 
-    "redirect to .../eu_done when user selects country in EU" in {
+    "redirect to .../goods-bought-inside-eu when user selects country in EU" in {
 
       when(controller.travelDetailsService.storeEuCountryCheck(meq("euOnly"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
@@ -99,7 +99,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/eu-done")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")
 
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("euOnly"))(any())
