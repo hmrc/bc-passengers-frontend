@@ -1035,13 +1035,12 @@ label.tax_is_due = Tax is due because you have gone over your other goods allowa
 
 # Declaration page
 label.declare_your_goods = Declare your goods
-label.you_will_need_to_declare_your_goods = You will need to declare your goods
 text.you_must_pay_duty_ = You must pay duty and tax on these goods if you bring them into the UK.
-text.you_can_only_declare_your_goods_online_  = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go through the red channel at customs.
+text.you_can_only_declare_your_goods_online_  = You can only declare your goods online once - this is to ensure you do not overpay tax on your goods.
+text.if_you_do_bring_in_ = If you do bring in more goods than the ones you declare online then you will need to go through the red channel at customs.
+text.you_may_have_your_goods_ = You may have your goods seized or face prosecution and imprisonment if you provide false information or use the online service to deliberately avoid paying tax and duties on the goods you bring into the UK.
 text.the_goods_are_for_your_own_ = the goods are for your own use or to give away as a gift
-text.you_are_not_intending_ = you are not intending to sell the goods
-text.you_are_arriving_in_ =  you are arriving in the UK within the next 72 hours
-text.this_is_your_only_online_ = this is your only online declaration for this journey
+text.all_the_information_ = all the information in the declaration is correct and complete
 text.by_making_this_declaration_you_ = By making this declaration you are confirming that:
 
 

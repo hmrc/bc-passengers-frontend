@@ -35,7 +35,7 @@ POST       /products/$path<.+>/:iid/remove                   controllers.AlterPr
 GET        /calculation                                      controllers.DashboardController.showCalculation
 
 # Declaration
-GET        /you-need-to-declare                              controllers.DeclarationController.youNeedToDeclare
+GET        /declare-your-goods                               controllers.DeclarationController.declareYourGoods
 
 GET        /user-information                                 controllers.DeclarationController.enterYourDetails
 POST       /user-information                                 controllers.DeclarationController.processEnterYourDetails

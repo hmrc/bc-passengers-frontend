@@ -80,14 +80,14 @@ class DeclarationControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/you-need-to-declare" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods" should {
 
-    "Display the you need to declare informational page" in new LocalSetup {
+    "Display the declaration informational page" in new LocalSetup {
       override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/you-need-to-declare")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
 
       status(response) shouldBe OK
 
