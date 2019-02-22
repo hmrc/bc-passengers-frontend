@@ -7,6 +7,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util._
 
 @main_template(title = messages("label.tell_us_about_your_purchases"), bodyClasses = None) {
 
@@ -60,7 +61,9 @@
           </div>
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
-            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
+            <dd class="cya-answer">
+              @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+            </dd>
             <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
           </div>
         </dl>
@@ -117,7 +120,9 @@
           </div>
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
-            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.cost @purchasedItem.displayCurrency</dd>
+            <dd class="cya-answer">
+              @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+            </dd>
             <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change")<span class="visually-hidden">
               @if(purchasedItem.displayWeight){
                 @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
@@ -167,8 +172,7 @@
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">
-              @purchasedItem.purchasedProductInstance.cost
-              @purchasedItem.displayCurrency
+              @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
             </dd>
             <dd class="cya-answer cya-change"><a href="@routes.OtherGoodsInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
           </div>

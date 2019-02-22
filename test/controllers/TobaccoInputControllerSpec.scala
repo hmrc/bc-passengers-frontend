@@ -254,7 +254,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      doc.select("input[name=cost]").attr("value") shouldBe "200.8"
+      doc.select("input[name=cost]").attr("value") shouldBe "200.80"
     }
   }
 

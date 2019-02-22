@@ -1,9 +1,11 @@
 @this(main_template: views.html.main_template)
 @(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("done.page_title", calculatorResponseDto.calculation.allTax)) {
+@import util._
 
-  <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", calculatorResponseDto.calculation.allTax))</h1>
+@main_template(title = messages("label.tax_due_on_these_goods")) {
+
+  <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", formatMonetaryValue(calculatorResponseDto.calculation.allTax)))</h1>
 
   <table class="responsive-table" role="grid">
 
@@ -23,11 +25,11 @@
           </th>
           <td role="gridcell">
             <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
-            @item.metadata.cost @item.metadata.currency.displayName
+            @formatMonetaryValue(item.metadata.cost) @item.metadata.currency.displayName
           </td>
           <td role="gridcell" class="numeric">
             <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
-            &pound;@item.calculation.allTax
+            &pound;@formatMonetaryValue(item.calculation.allTax)
           </td>
         </tr>
       }
@@ -36,7 +38,7 @@
 
   <div class="table-foot">
     <span class="total">@messages("label.total")</span>
-    <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
+    <span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span>
   </div>
 
 <details style="padding-top:2em; padding-bottom:1em;" role="group">
@@ -56,24 +58,24 @@
       <tbody>
       <tr>
         <td>@messages("label.customs")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.customs</td>
+        <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.customs)</td>
       </tr>
 
       <tr>
         <td>@messages("label.excise")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.excise</td>
+        <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.excise)</td>
       </tr>
 
       <tr>
         <td>@messages("label.vat")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.vat</td>
+        <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.vat)</td>
       </tr>
       </tbody>
     </table>
 
     <div class="table-foot">
       <span class="total">@messages("label.total")</span>
-      <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
+      <span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span>
     </div>
 
     @if(!hideExchangeRateInfo) {

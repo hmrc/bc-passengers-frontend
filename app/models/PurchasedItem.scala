@@ -1,5 +1,6 @@
 package models
 
+
 case class PurchasedItem(
   purchasedProductInstance: PurchasedProductInstance,
   productTreeLeaf: ProductTreeLeaf,

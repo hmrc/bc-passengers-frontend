@@ -20,6 +20,16 @@ package object util {
     df
   }
 
+  def formatMonetaryValue(value: String): String = {
+    val df = new DecimalFormat("#,###.00")
+    val monetaryValue = BigDecimal(value)
+    if (monetaryValue < 1) "0" + df.format(BigDecimal(value)) else df.format(BigDecimal(value))
+  }
+
+  def formatMonetaryValue(value: BigDecimal): String = {
+    val df = new DecimalFormat("#,###.00")
+    if (value < 1) "0" + df.format(value) else df.format(value)
+  }
 
   implicit class EnhancedJsObject(jsObject: JsObject) {
     def stripNulls: JsObject = {
@@ -31,11 +41,11 @@ package object util {
     def alterFields(customOperation: PartialFunction[(String, JsValue),Option[(String, JsValue)]]): JsObject = {
       val standardOperation: PartialFunction[(String, JsValue),Option[(String, JsValue)]] = {
         case (name, jso: JsObject) => Some((name, jso.alterFields(customOperation)))
-        case (name, jsa: JsArray) => Some((name, JsArray((jsa.value map {
+        case (name, jsa: JsArray) => Some((name, JsArray(jsa.value flatMap {
           case JsNull => None
           case o: JsObject => Some(o.alterFields(customOperation))
           case v: JsValue => Some(v)
-        }).flatten)))
+        })))
         case (name, jsv) => Some((name, jsv))
       }
       val executePartials: PartialFunction[(String, JsValue), Option[(String, JsValue)]] = customOperation orElse standardOperation
@@ -76,8 +86,8 @@ package object util {
     plainText =>
       val errors = plainText match {
         case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if !s.matches("[0-9]+(\\.[0-9]*)?$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
-        case s if !s.matches("^[0-9]+(\\.[0-9]{1,2})?$") => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
+        case s if !s.matches("^(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d*)?$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
+        case s if !s.matches("^(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d{1,2})?$") => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
         case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError(s"error.exceeded.max.${errorSubString}"))
         case _ => Nil
       }

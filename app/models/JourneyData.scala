@@ -1,9 +1,10 @@
 package models
 
-import org.joda.time.{DateTime, LocalDate, LocalTime}
+import org.joda.time.{LocalDate, LocalTime}
 import play.api.libs.json.Json
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
+
 
 object PurchasedProductInstance {
   implicit val formats = Json.format[PurchasedProductInstance]
