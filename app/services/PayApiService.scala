@@ -29,7 +29,13 @@ class PayApiService @Inject()(
 
 
   lazy val payApiBaseUrl = servicesConfig.baseUrl("pay-api")
-  lazy val redirectUrl = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage().url
+
+  lazy val returnUrl = configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
+
+  lazy val returnUrlFailed = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.DashboardController.showCalculation()
+  lazy val returnUrlCancelled = returnUrlFailed
+
+  lazy val backUrl = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.DeclarationController.enterYourDetails()
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier): Future[PayApiServiceResponse] = {
 
@@ -39,6 +45,10 @@ class PayApiService @Inject()(
       "dateOfArrival" -> userInformation.dateOfArrival.toDateTime(userInformation.timeOfArrival).toString("yyyy-MM-dd'T'HH:mm:ss"),
       "passengerName" -> s"${userInformation.firstName} ${userInformation.lastName}",
       "placeOfArrival" -> userInformation.placeOfArrival,
+      "returnUrl" -> returnUrl,
+      "returnUrlFailed" -> returnUrlFailed,
+      "returnUrlCancelled" -> returnUrlCancelled,
+      "backUrl" -> backUrl,
       "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
         Json.obj(
           "name" -> item.metadata.description,
