@@ -17,12 +17,6 @@
         <th class="numeric" scope="col">@messages("label.tax_due")</th>
       </tr>
     </thead>
-    <tfoot>
-    <tr class="total-row" role="row">
-      <th class="total" role="gridcell" colspan="2" style="font-weight:700">@messages("label.total")</th>
-      <td class="total-value numeric" role="gridcell" style="font-weight:700">&pound;0.00</td>
-    </tr>
-    </tfoot>
     <tbody>
       @calculatorResponseDto.items.map { item =>
         <tr role="row">
@@ -43,60 +37,62 @@
     </tbody>
   </table>
 
-<details style="padding-top:2em;" ; role="group">
-  <summary role="button" aria-controls="details-content-0" aria-expanded="false">
-    <span class="summary">How the tax was calculated</span>
-  </summary>
-  <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
-
-    <table>
-      <thead>
-      <tr role="row">
-        <th scope="col"></th>
-        <th class="numeric" scope="col">@messages("label.tax_due")</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <tr>
-        <td>@messages("label.customs")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.customs</td>
-      </tr>
-
-      <tr>
-        <td>@messages("label.excise")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.excise</td>
-      </tr>
-
-      <tr>
-        <td>@messages("label.vat")</td>
-        <td class="numeric">&pound;@calculatorResponseDto.calculation.vat</td>
-      </tr>
-      </tbody>
-    </table>
-
-    <div class="table-foot">
-      <span class="total">@messages("label.total")</span>
-      <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
-    </div>
-
-    @if(!hideExchangeRateInfo) {
-    <br>
-    <p class="margin-top-30">@Html(messages("label.exchange_rates"))</p>
-    }
-
+  <div class="table-foot">
+    <span class="total">@messages("label.total")</span>
+    <span class="total-value numeric">&pound;0.00</span>
   </div>
-</details>
+
+  <details class="margin-top-30" role="group">
+    <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+      <span class="summary">How the tax was calculated</span>
+    </summary>
+    <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
+
+      <table>
+        <thead>
+        <tr role="row">
+          <th scope="col"></th>
+          <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+          <td>@messages("label.customs")</td>
+          <td class="numeric">&pound;@calculatorResponseDto.calculation.customs</td>
+        </tr>
+
+        <tr>
+          <td>@messages("label.excise")</td>
+          <td class="numeric">&pound;@calculatorResponseDto.calculation.excise</td>
+        </tr>
+
+        <tr>
+          <td>@messages("label.vat")</td>
+          <td class="numeric">&pound;@calculatorResponseDto.calculation.vat</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="table-foot">
+        <span class="total">@messages("label.total")</span>
+        <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
+      </div>
+
+      @if(!hideExchangeRateInfo) {
+      <br>
+      <p class="margin-top-30">@Html(messages("label.exchange_rates"))</p>
+      }
+
+    </div>
+  </details>
 
 
 
-<h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
+  <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
 
-<p>@messages("label.green_channel")
-</p>
-<p>
-  @messages("label.fire_arms")
-</p>
+  <p>@messages("label.green_channel")</p>
+  <p>@messages("label.fire_arms")</p>
 
   <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
   <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again").toLowerCase()</a>.
