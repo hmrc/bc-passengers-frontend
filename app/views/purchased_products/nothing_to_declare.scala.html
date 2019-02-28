@@ -1,38 +1,40 @@
 @this(main_template: views.html.main_template)
 @(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean)(implicit request: Request[_], messages: Messages)
 
+@import util._
+
 @main_template(title = messages("label.tax_due_on_these_goods")){
 
 
-  <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", calculatorResponseDto.calculation.allTax))</h1>
+  <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", "0.00"))</h1>
 
   <p> @messages("label.personal_allowances")</p>
 
   <table class="responsive-table" role="grid">
 
     <thead>
-      <tr role="row">
-        <th scope="col">@messages("label.item")</th>
-        <th scope="col">@messages("label.price")</th>
-        <th class="numeric" scope="col">@messages("label.tax_due")</th>
-      </tr>
+    <tr role="row">
+      <th scope="col">@messages("label.item")</th>
+      <th scope="col">@messages("label.price")</th>
+      <th class="numeric" scope="col">@messages("label.tax_due")</th>
+    </tr>
     </thead>
     <tbody>
       @calculatorResponseDto.items.map { item =>
-        <tr role="row">
-          <th scope="row" role="gridcell">
-            <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
-            @item.metadata.description
-          </th>
-          <td role="gridcell">
-            <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
-            @item.metadata.cost @item.metadata.currency.displayName
-          </td>
-          <td role="gridcell" class="numeric">
-            <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
-            &pound;@item.calculation.allTax
-          </td>
-        </tr>
+      <tr role="row">
+        <th scope="row" role="gridcell">
+          <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
+          @item.metadata.description
+        </th>
+        <td role="gridcell">
+          <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
+          @formatMonetaryValue(item.metadata.cost) @item.metadata.currency.displayName
+        </td>
+        <td role="gridcell" class="numeric">
+          <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
+          &pound;0.00
+        </td>
+      </tr>
       }
     </tbody>
   </table>
@@ -44,7 +46,7 @@
 
   <details class="margin-top-30" role="group">
     <summary role="button" aria-controls="details-content-0" aria-expanded="false">
-      <span class="summary">How the tax was calculated</span>
+      <span class="summary">@messages("text.how_the_tax_was_calculated")</span>
     </summary>
     <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
 
@@ -59,24 +61,24 @@
         <tbody>
         <tr>
           <td>@messages("label.customs")</td>
-          <td class="numeric">&pound;@calculatorResponseDto.calculation.customs</td>
+          <td class="numeric">&pound;0.00</td>
         </tr>
 
         <tr>
           <td>@messages("label.excise")</td>
-          <td class="numeric">&pound;@calculatorResponseDto.calculation.excise</td>
+          <td class="numeric">&pound;0.00</td>
         </tr>
 
         <tr>
           <td>@messages("label.vat")</td>
-          <td class="numeric">&pound;@calculatorResponseDto.calculation.vat</td>
+          <td class="numeric">&pound;0.00</td>
         </tr>
         </tbody>
       </table>
 
       <div class="table-foot">
         <span class="total">@messages("label.total")</span>
-        <span class="total-value numeric">&pound;@calculatorResponseDto.calculation.allTax</span>
+        <span class="total-value numeric">&pound;0.00</span>
       </div>
 
       @if(!hideExchangeRateInfo) {

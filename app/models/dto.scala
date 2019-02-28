@@ -2,11 +2,10 @@ package models
 
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
-import play.api.data.{Form, Mapping}
 import play.api.data.Forms.{optional, _}
 import play.api.data.validation._
-import services.{CalculatorService, CountriesService, CurrencyService}
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.data.{Form, Mapping}
+import services.{CountriesService, CurrencyService}
 import util._
 
 import scala.util.Try
@@ -99,8 +98,8 @@ object VolumeDto {
   def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[VolumeDto] = Form(
     mapping(
       "volume" -> text
-        .transform[String](s => if(s.headOption == Some('.')) "0"+s else s, s => s)
-        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
+        .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
         .verifying(bigDecimalCheckConstraint("volume", 3))
         .transform[BigDecimal](volume => BigDecimal(volume), bd => bd.toString())
         .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
@@ -114,7 +113,7 @@ object QuantityDto {
 
   val form: Form[QuantityDto] = Form(
     mapping(
-      "quantity" -> text.verifying(quantityConstraint("quantity")).transform[Int](qty => qty.toInt, int => int.toString()))(QuantityDto.apply)(QuantityDto.unapply)
+      "quantity" -> text.verifying(quantityConstraint("quantity")).transform[Int](qty => qty.toInt, int => int.toString))(QuantityDto.apply)(QuantityDto.unapply)
   )
 }
 case class QuantityDto(quantity: Int)
@@ -139,8 +138,8 @@ object NoOfSticksAndWeightDto {
         .verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
         .verifying(calculatorLimitConstraintInt(limits, applicableLimits)),
       "weight" -> text
-        .transform[String](s => if(s.headOption == Some('.')) "0"+s else s, s => s)
-        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
+        .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
         .verifying(bigDecimalCheckConstraint("weight", 2))
         .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
     )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
@@ -153,8 +152,8 @@ object WeightDto {
   def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[WeightDto] = Form(
     mapping(
       "weight" -> text
-        .transform[String](s => if(s.headOption == Some('.')) "0"+s else s, s => s)
-        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
+        .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
         .verifying(bigDecimalCheckConstraint("weight", 2))
         .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
         .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
@@ -181,9 +180,9 @@ object CostDto {
   def form(optionalItemsRemaining: Boolean = true): Form[CostDto] = Form(
     mapping(
       "cost" -> text
-        .transform[String](s => if(s.lastOption == Some('.')) s+"0" else s, s => s)
+        .transform[String](s => if (s.lastOption.contains('.')) (s + "00").replace(",", "") else s.replace(",", ""), s => s)
         .verifying(bigDecimalCostCheckConstraint("cost"))
-        .transform[BigDecimal](cost => BigDecimal(cost), bd => bd.toString()),
+        .transform[BigDecimal](cost => BigDecimal(cost), bd => formatMonetaryValue(bd)),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CostDto.apply)(CostDto.unapply)
   )

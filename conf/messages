@@ -1025,6 +1025,7 @@ label.tax_due_on_these_goods = Tax due on these goods
 label.personal_allowances = All the items you entered are included within your personal allowances
 label.green_channel = Go to the green channel at customs if these are the only goods you are bringing into the UK from abroad.
 label.fire_arms = Go to the red channel or red-point phone at customs if you have something else to declare or are carrying restricted items such as firearms or ammunition.
+text.how_the_tax_was_calculated = How the tax was calculated
 
 # Done page - Over 97 Thousand pound
 label.declaring_these_goods = Declaring these goods

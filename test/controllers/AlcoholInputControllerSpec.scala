@@ -214,7 +214,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("alcohol/cider"), iid = "iid1", weightOrVolume = Some(BigDecimal(20.4)), currency = Some("USD"),  cost = Some(BigDecimal(200.40))),
         PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))),
-        workingInstance = Some(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
+        workingInstance = Some(PurchasedProductInstance(ProductPath("alcohol/beer"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(208080)))
       )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer/cost/iid0")).get
@@ -223,7 +223,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      doc.select("input[name=cost]").attr("value") shouldBe "200.8"
+      doc.select("input[name=cost]").attr("value") shouldBe "208,080.00"
     }
   }
 

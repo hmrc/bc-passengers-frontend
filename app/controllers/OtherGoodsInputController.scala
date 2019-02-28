@@ -143,13 +143,12 @@ class OtherGoodsInputController @Inject() (
 
     val form = {
       context.getJourneyData.workingInstance match {
-        case Some(PurchasedProductInstance(_, workingIid, _, _, _, _, Some(cost))) if workingIid == iid => CostDto.form(optionalItemsRemaining = false).bind(Map("cost" -> cost.toString, "itemsRemaining" -> itemsRemaining.toString)).discardingErrors
+        case Some(PurchasedProductInstance(_, workingIid, _, _, _, _, Some(cost))) if workingIid == iid => CostDto.form(optionalItemsRemaining = false).fill(CostDto(cost, itemsRemaining)).discardingErrors
         case _ => CostDto.form(optionalItemsRemaining = false).bind(Map("itemsRemaining" -> itemsRemaining.toString)).discardingErrors
       }
     }
 
     requireWorkingInstanceCurrency { currency =>
-
       requireProduct(path) { product =>
         Future.successful(Ok(cost_input(form, product, path, iid, currency.displayName)))
       }

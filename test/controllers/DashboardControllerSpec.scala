@@ -130,7 +130,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98000.00"
+      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98,000.00"
       content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
 
     }
@@ -160,7 +160,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       content should not include "We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\" target=\"_blank\">HMRC’s exchange rates"
-      doc.title shouldBe  "You will need to pay £300.00 for goods purchased outside of the EU - Check tax on goods you bring into the UK - GOV.UK"
+      doc.title shouldBe  "Tax due on these goods - Check tax on goods you bring into the UK - GOV.UK"
     }
 
     "redirect to the calculation done page with exchange rate message if response includes non GBP currency" in new LocalSetup {
@@ -185,7 +185,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       content should include ("We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\" target=\"_blank\">HMRC’s exchange rates")
-      doc.title shouldBe  "You will need to pay £300.00 for goods purchased outside of the EU - Check tax on goods you bring into the UK - GOV.UK"
+      doc.title shouldBe  "Tax due on these goods - Check tax on goods you bring into the UK - GOV.UK"
     }
   }
 
