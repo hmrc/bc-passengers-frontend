@@ -8,16 +8,16 @@
 
   <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", "0.00"))</h1>
 
-  <p> @messages("label.personal_allowances")</p>
+  <p>@messages("label.personal_allowances")</p>
 
   <table class="responsive-table" role="grid">
 
     <thead>
-    <tr role="row">
-      <th scope="col">@messages("label.item")</th>
-      <th scope="col">@messages("label.price")</th>
-      <th class="numeric" scope="col">@messages("label.tax_due")</th>
-    </tr>
+      <tr role="row">
+        <th scope="col">@messages("label.item")</th>
+        <th scope="col">@messages("label.price")</th>
+        <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
+      </tr>
     </thead>
     <tbody>
       @calculatorResponseDto.items.map { item =>
@@ -39,12 +39,12 @@
     </tbody>
   </table>
 
-  <div class="table-foot">
+  <div class="table-foot margin-bottom-30">
     <span class="total">@messages("label.total")</span>
     <span class="total-value numeric">&pound;0.00</span>
   </div>
 
-  <details class="margin-top-30" role="group">
+  <details role="group">
     <summary role="button" aria-controls="details-content-0" aria-expanded="false">
       <span class="summary">@messages("text.how_the_tax_was_calculated")</span>
     </summary>
@@ -88,8 +88,6 @@
 
     </div>
   </details>
-
-
 
   <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
 
