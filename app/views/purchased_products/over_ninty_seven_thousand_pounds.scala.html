@@ -13,7 +13,7 @@
       <tr role="row">
         <th scope="col">@messages("label.item")</th>
         <th scope="col">@messages("label.price")</th>
-        <th class="numeric" scope="col">@messages("label.tax_due")</th>
+        <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
       </tr>
     </thead>
     <tbody>
@@ -36,12 +36,12 @@
     </tbody>
   </table>
 
-  <div class="table-foot">
+  <div class="table-foot margin-bottom-30">
     <span class="total">@messages("label.total")</span>
     <span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span>
   </div>
 
-  <details style="padding-top:2em;" role="group">
+  <details role="group">
     <summary role="button" aria-controls="details-content-0" aria-expanded="false">
       <span class="summary">How the tax was calculated</span>
     </summary>
