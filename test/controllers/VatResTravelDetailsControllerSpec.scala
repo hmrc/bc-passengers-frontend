@@ -1,6 +1,7 @@
 package controllers
 
 
+import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
@@ -10,7 +11,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import services.{PurchasedProductService, TravelDetailsService}
+import services.TravelDetailsService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
@@ -23,6 +24,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .configure("features.vat-res" -> true)
@@ -30,7 +32,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
 
   override def beforeEach: Unit = {
-    reset(injected[TravelDetailsService])
+    reset(injected[Cache], injected[TravelDetailsService])
   }
 
   val controller: TravelDetailsController = app.injector.instanceOf[TravelDetailsController]
@@ -40,7 +42,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     "redirect to .../did-you-claim-tax-back when user selects country in EU" in {
 
       when(controller.travelDetailsService.storeEuCountryCheck(meq("euOnly"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
+      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
@@ -55,7 +57,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     "redirect to .../arrivals-from-outside-the-eu when user says they have only arrived from countries outside EU" in {
 
       when(controller.travelDetailsService.storeEuCountryCheck(meq("nonEuOnly"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
+      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
 
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
@@ -70,7 +72,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     "redirect to .../did-you-claim-tax-back when user says they have arrived from both EU and ROW countries" in {
 
       when(controller.travelDetailsService.storeEuCountryCheck(meq("both"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"))))
+      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"))))
 
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
@@ -85,7 +87,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
   "Invoking GET ../did-you-claim-tax-back" should {
     "return the did you claim tax back view unpopulated if there is no vat res answer in keystore?" in {
 
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
+      when(controller.cache.fetch(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
@@ -99,13 +101,13 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       content should include ("Did you claim tax back on any goods you bought in the EU?")
 
-      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
+      verify(controller.cache, times(1)).fetch(any())
 
     }
 
     "return the did you claim tax back view populated if there is a vat res answer already in keystore?" in {
 
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(isVatResClaimed = Some(true))) )
+      when(controller.cache.fetch(any())) thenReturn Future.successful( Some(JourneyData(isVatResClaimed = Some(true))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
@@ -119,7 +121,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       content should include ("Did you claim tax back on any goods you bought in the EU?")
 
-      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
+      verify(controller.cache, times(1)).fetch(any())
 
     }
   }
@@ -168,7 +170,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
   "Invoking GET ../duty-free" should {
     "return the duty free view unpopulated if there is no duty free answer in keystore?" in {
 
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( None )
+      when(controller.cache.fetch(any())) thenReturn Future.successful( None )
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -182,13 +184,13 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       content should include ("Are you bringing in duty-free alcohol or tobacco bought in EU shops?")
 
-      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
+      verify(controller.cache, times(1)).fetch(any())
 
     }
 
     "return the duty free view populated if there is a duty free answer already in keystore?" in {
 
-      when(controller.travelDetailsService.getJourneyData(any())) thenReturn Future.successful( Some(JourneyData(bringingDutyFree = Some(true))) )
+      when(controller.cache.fetch(any())) thenReturn Future.successful( Some(JourneyData(bringingDutyFree = Some(true))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -202,7 +204,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       content should include ("Are you bringing in duty-free alcohol or tobacco bought in EU shops?")
 
-      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
+      verify(controller.cache, times(1)).fetch(any())
 
     }
   }

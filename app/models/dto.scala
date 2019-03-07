@@ -2,14 +2,30 @@ package models
 
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
+import play.api.data.{Form, Mapping}
 import play.api.data.Forms.{optional, _}
 import play.api.data.validation._
-import play.api.data.{Form, Mapping}
-import services.{CountriesService, CurrencyService}
+import play.api.libs.json.Json
+import services.{CalculatorService, CountriesService, CurrencyService}
+import uk.gov.hmrc.http.HeaderCarrier
 import util._
 
-import scala.util.Try
+import scala.util.{Random, Try}
 
+object WorkingPurchaseDataDto {
+
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance) = for {
+    country <- purchasedProductInstance.country
+    currency <- purchasedProductInstance.currency
+  } yield WorkingPurchaseDataDto("", country.countryName, currency, purchasedProductInstance.cost.toList)
+}
+
+case class WorkingPurchaseDataDto(
+  action: String,
+  country: String,
+  currency: String,
+  costs: List[BigDecimal] = List()
+)
 
 object EuCountryCheckDto {
   val form: Form[EuCountryCheckDto] = Form(

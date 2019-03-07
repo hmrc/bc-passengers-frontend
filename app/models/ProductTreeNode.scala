@@ -59,7 +59,7 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
       case _ => false
     }
   }
-
+  
   def getDisplayWeight(purchasedProductInstance: PurchasedProductInstance): Option[String] = {
     templateId match {
       case "cigars" =>

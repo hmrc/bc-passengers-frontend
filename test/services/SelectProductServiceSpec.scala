@@ -1,5 +1,6 @@
 package services
 
+import connectors.Cache
 import models.{JourneyData, ProductPath}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -7,21 +8,20 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import util.BaseSpec
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
+import util.BaseSpec
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SelectProductServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
   override def beforeEach: Unit = {
-    reset(app.injector.instanceOf[LocalSessionCache])
+    reset(app.injector.instanceOf[Cache])
   }
 
 
@@ -31,13 +31,13 @@ class SelectProductServiceSpec extends BaseSpec {
 
     lazy val selectProductService = {
       val service = app.injector.instanceOf[SelectProductService]
-      val mock = service.localSessionCache
-      when(mock.fetchAndGetJourneyData(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.cacheJourneyData(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+      val mock = service.cache
+      when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
+      when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
       service
     }
 
-    lazy val localSessionCacheMock = selectProductService.localSessionCache
+    lazy val cacheMock = selectProductService.cache
 
   }
 
@@ -52,7 +52,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProducts(journeyDataInCache.get, selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(Some("euOnly"), Some(false), Some(false), Some(false), Some(false), List(List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("euOnly"), Some(false), Some(false), Some(false), Some(false), List(List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
     }
 
     "store selected products at the start the list in keystore when products already exist" in new LocalSetup {
@@ -63,7 +63,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProducts(journeyDataInCache.get, selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, None, None, List(List("alcohol", "beer"), List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, List(List("alcohol", "beer"), List("tobacco", "cigarettes"), List("tobacco", "cigars")) )) )(any())
     }
 
     "remove products of the same category before adding more selected products to keystore" in new LocalSetup {
@@ -79,7 +79,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProducts(journeyDataInCache.get, selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, None, None, List(
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, List(
         List("alcohol", "beer"),
         List("tobacco", "cigarettes"),
         List("tobacco", "cigars")
@@ -98,7 +98,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProducts(journeyDataInCache.get, selectedProducts))
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, None, None, List(
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, List(
         List("other-goods", "carpets-cotton-fabric", "fabrics"),
         List("other-goods", "electronic-devices", "televisions")
       ) )) )(any())
@@ -114,7 +114,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.removeSelectedProduct())
 
-      verify(localSessionCacheMock, times(1)).cacheJourneyData( meq(JourneyData(None, None, None, None, None, List(List("tobacco", "cigars")) )) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, List(List("tobacco", "cigars")) )) )(any())
     }
   }
 }

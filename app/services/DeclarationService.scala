@@ -1,32 +1,31 @@
 package services
 
+
+import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
-import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.Mode.Mode
 import play.api.http.Status._
+import play.api.libs.json.JodaWrites._
 import util._
 import play.api.libs.json._
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class DeclarationService @Inject()(
-  val localSessionCache: LocalSessionCache,
+  val cache: Cache,
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
   environment: Environment,
   servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
-) extends UsesJourneyData {
+) {
 
   lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 

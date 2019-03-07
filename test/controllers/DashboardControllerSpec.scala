@@ -1,5 +1,6 @@
 package controllers
 
+import connectors.Cache
 import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -12,17 +13,16 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
-import services.{PurchasedProductService, TravelDetailsService}
+import services.PurchasedProductService
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-
 
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
@@ -30,7 +30,7 @@ class DashboardControllerSpec extends BaseSpec {
   
 
   override def beforeEach: Unit = {
-    reset(injected[TravelDetailsService], injected[PurchasedProductService])
+    reset(injected[Cache], injected[PurchasedProductService])
   }
 
 
@@ -42,7 +42,7 @@ class DashboardControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
-      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
 
       rt(app, req)
     }
@@ -50,17 +50,17 @@ class DashboardControllerSpec extends BaseSpec {
 
   val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
-  "Calling GET .../dashboard" should {
+  "Calling GET .../tell-us" should {
     "start a new session if any travel details are missing" in new LocalSetup {
 
       override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/dashboard")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
 
-      verify(controller.travelDetailsService, times(1)).getJourneyData(any())
+      verify(controller.cache, times(1)).fetch(any())
     }
   }
 
@@ -68,14 +68,14 @@ class DashboardControllerSpec extends BaseSpec {
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
 
-    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/dashboard").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
 
     status(result) shouldBe OK
 
     val content: String = contentAsString(result)
     val doc: Document = Jsoup.parse(content)
 
-    doc.getElementsByTag("h1").text() shouldBe "Tell us about your purchases"
+    doc.getElementsByTag("h1").text() shouldBe "Tell us about the goods you are bringing into the UK"
     Option(doc.getElementById("start-again")) should not be None
 
   }

@@ -7,14 +7,11 @@
 
 @main_template(title = messages("label.enter_your_details"), bodyClasses = None) {
 
+  @views.html.tags.errors(f)
+
+  <h1 class="heading-xlarge">@messages("label.enter_your_details")</h1>
 
   @form(action = routes.DeclarationController.processEnterYourDetails) {
-
-    @views.html.tags.errors(f)
-
-    <fieldset>
-      <legend><h1 class="heading-xlarge">@messages("label.enter_your_details")</h1></legend>
-
 
       @components.input(
         f("firstName"),
@@ -46,7 +43,6 @@
       )
 
       <div class="form-group @{if(f("dateTimeOfArrival").hasErrors) "form-group-error" else "" }">
-        <fieldset id="dateTimeOfArrival">
 
           @f.errors.filter(_.key == "dateTimeOfArrival").map { error =>
             <span class="error-message">@messages(error.message)</span>
@@ -68,12 +64,11 @@
             '_legend -> messages("label.time_of_arrival")
           )
 
-        </fieldset>
       </div>
 
       <div class="form-group">
         <button type="submit" class="button">@messages("label.continue")</button>
       </div>
-    </fieldset>
+
   }
 }

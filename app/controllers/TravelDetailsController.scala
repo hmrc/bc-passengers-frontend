@@ -3,6 +3,7 @@ package controllers
 import java.util.UUID
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models.PrivateCraftDto._
 import models._
@@ -16,12 +17,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TravelDetailsController @Inject() (
+
   val countriesService: CountriesService,
   val calculatorService: CalculatorService,
   val travelDetailsService: TravelDetailsService,
+  val cache: Cache,
   val productsService: ProductTreeService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
+
   val interrupt_page: views.html.travel_details.interrupt_page,
   val check_declare_goods_start_page: views.html.travel_details.check_declare_goods_start_page,
   val eu_country_check: views.html.travel_details.eu_country_check,
@@ -31,6 +35,7 @@ class TravelDetailsController @Inject() (
   val error_template: views.html.error_template,
   val vat_res: views.html.travel_details.vat_res,
   val duty_free: views.html.travel_details.duty_free,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -51,7 +56,7 @@ class TravelDetailsController @Inject() (
   }
 
   val euCountryCheck: Action[AnyContent] = PublicAction { implicit request => {
-    travelDetailsService.getJourneyData map {
+    cache.fetch map {
       case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _, _, _)) =>
         Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck))))
       case _ =>
@@ -68,7 +73,7 @@ class TravelDetailsController @Inject() (
       },
       euCountryCheckDto => {
         travelDetailsService.storeEuCountryCheck(euCountryCheckDto.euCountryCheck) flatMap { _ =>
-          travelDetailsService.getJourneyData map {
+          cache.fetch map {
             case Some(JourneyData(Some(_), Some(_), Some(_), Some(_), Some(_), _, _, _, _, _)) =>
               Redirect(routes.DashboardController.showDashboard())
             case _ =>
@@ -92,7 +97,7 @@ class TravelDetailsController @Inject() (
   }
 
   def didYouClaimTaxBack: Action[AnyContent] = PublicAction { implicit request =>
-    travelDetailsService.getJourneyData map {
+    cache.fetch map {
       case Some(JourneyData(_, Some(claimedVatRes), _, _, _, _, _, _, _, _)) =>
         Ok(vat_res(ClaimedVatResDto.form.fill(ClaimedVatResDto(claimedVatRes))))
       case _ =>
@@ -118,7 +123,7 @@ class TravelDetailsController @Inject() (
   }
 
   def dutyFree: Action[AnyContent] = PublicAction { implicit request =>
-    travelDetailsService.getJourneyData map {
+    cache.fetch map {
       case Some(JourneyData(_, _, Some(bringingDutyFree), _, _, _, _, _, _, _)) =>
         Ok(duty_free(BringingDutyFreeDto.form.fill(BringingDutyFreeDto(bringingDutyFree))))
       case _ =>
@@ -134,7 +139,7 @@ class TravelDetailsController @Inject() (
       bringingDutyFreeDto => {
         travelDetailsService.storeDutyFreeCheck(bringingDutyFreeDto.bringingDutyFree) flatMap { _ =>
           if (!bringingDutyFreeDto.bringingDutyFree) {
-            travelDetailsService.getJourneyData map {
+            cache.fetch map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
                 Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
               case Some(jd) if jd.euCountryCheck.contains("both") =>
@@ -159,7 +164,7 @@ class TravelDetailsController @Inject() (
   }
 
   def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
-    travelDetailsService.getJourneyData map {
+    cache.fetch map {
       case Some(JourneyData(_, _, _, _, Some(ageOver17), _, _, _, _, _)) =>
         Ok(confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
@@ -183,7 +188,7 @@ class TravelDetailsController @Inject() (
 
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
 
-    travelDetailsService.getJourneyData map {
+    cache.fetch map {
       case Some(JourneyData(_, _, _, Some(pc), _, _, _, _, _, _)) =>
         Ok(confirm_private_craft(form.bind(Map("privateCraft" -> pc.toString))))
       case _ =>
@@ -198,7 +203,7 @@ class TravelDetailsController @Inject() (
       },
       privateCraftDto => {
         travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) flatMap { _ =>
-          travelDetailsService.getJourneyData map {
+          cache.fetch map {
             case Some(JourneyData(_, _, _, Some(_), Some(_), _, _, _, _, _)) =>
               Redirect(routes.DashboardController.showDashboard())
             case _ =>

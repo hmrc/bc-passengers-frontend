@@ -1,5 +1,6 @@
 package controllers
 
+import connectors.Cache
 import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -10,7 +11,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
-import services.{PurchasedProductService, TravelDetailsService}
+import services.PurchasedProductService
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -19,13 +20,13 @@ import scala.concurrent.Future
 class AlterProductsControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[TravelDetailsService], injected[PurchasedProductService])
+    reset(injected[Cache], injected[PurchasedProductService])
   }
 
   val controller: AlterProductsController = app.injector.instanceOf[AlterProductsController]
@@ -37,13 +38,13 @@ class AlterProductsControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
 
       rt(app, req)
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/dashboard/.../remove" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/tell-us/.../remove" should {
 
     "show the confirm page" in new LocalSetup {
 
@@ -53,7 +54,7 @@ class AlterProductsControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer/iid1/remove")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")).get
 
       status(response) shouldBe OK
 
@@ -62,7 +63,7 @@ class AlterProductsControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/dashboard/.../remove" should {
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/tell-us/.../remove" should {
 
     "remove the product from purchased products if true was submitted" in new LocalSetup {
 
@@ -72,10 +73,10 @@ class AlterProductsControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer/iid1/remove").withFormUrlEncodedBody("confirmRemove" -> "true")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove").withFormUrlEncodedBody("confirmRemove" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/dashboard")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
 
       verify(injected[PurchasedProductService], times(1)).removePurchasedProductInstance(any(), any(), any())(any(), any())
 
@@ -89,7 +90,7 @@ class AlterProductsControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer/iid1/remove").withFormUrlEncodedBody("confirmRemove" -> "false")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove").withFormUrlEncodedBody("confirmRemove" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
 
@@ -105,7 +106,7 @@ class AlterProductsControllerSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/products/alcohol/beer/iid1/remove")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")).get
 
       status(response) shouldBe BAD_REQUEST
 

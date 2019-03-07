@@ -3,6 +3,7 @@ package services
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.libs.json.{JsObject, Json, Reads}
@@ -31,7 +32,7 @@ case class CurrencyConversionRate(startDate: LocalDate, endDate: LocalDate, curr
 
 @Singleton
 class CalculatorService @Inject() (
-  val localSessionCache: LocalSessionCache,
+  val cache: Cache,
   wsAllMethods: WsAllMethods,
   configuration: Configuration,
   environment: Environment,
@@ -39,7 +40,7 @@ class CalculatorService @Inject() (
   currencyService: CurrencyService,
   servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
-) extends UsesJourneyData {
+) {
 
   lazy val currencyConversionBaseUrl: String = servicesConfig.baseUrl("currency-conversion")
   lazy val passengersDutyCalculatorBaseUrl: String = servicesConfig.baseUrl("passengers-duty-calculator")
@@ -63,7 +64,7 @@ class CalculatorService @Inject() (
 
   def calculate()(implicit hc: HeaderCarrier): Future[CalculatorServiceResponse] = {
 
-    getJourneyData flatMap {
+    cache.fetch flatMap {
 
       case Some(journeyData) =>
 
@@ -89,7 +90,7 @@ class CalculatorService @Inject() (
 
     val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse))
 
-    cacheJourneyData( updatedJourneyData ).map(_ => updatedJourneyData)
+    cache.store( updatedJourneyData ).map(_ => updatedJourneyData)
   }
 
   def journeyDataToLimitsRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Option[LimitRequest] = {

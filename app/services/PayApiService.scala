@@ -1,5 +1,7 @@
 package services
 
+
+import connectors.Cache
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.{CalculatorResponse, ChargeReference, Item, UserInformation}
@@ -17,7 +19,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PayApiService @Inject()(
-  val localSessionCache: LocalSessionCache,
+  cache: Cache,
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
   environment: Environment,
@@ -25,7 +27,7 @@ class PayApiService @Inject()(
   currencyService: CurrencyService,
   servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
-) extends UsesJourneyData {
+) {
 
 
   lazy val payApiBaseUrl = servicesConfig.baseUrl("pay-api")

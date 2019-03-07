@@ -1,0 +1,102 @@
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(dtoForm: Form[WorkingPurchaseDataDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], currencies: List[Currency])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import play.api.libs.json.{JsObject, Json}
+
+@scriptElem = {
+  <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
+  <script>
+    $(document).ready(function () {
+      var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
+              enhanceSelectIntoAutoComplete("country", countrySynonymsData)
+      var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
+              enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+    });
+  </script>
+}
+
+@linkElem = {
+  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
+}
+
+@main_template(
+    title = messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase(),
+    inlineScript = Some(scriptElem),
+    inlineLinkElem = Some(linkElem)) {
+
+  @views.html.tags.errors(dtoForm, None)
+
+  <h1 class="heading-xlarge">
+    <span class="heading-secondary">@messages("label.tell_us_about_the")</span>
+    @messages(s"label.${path.toMessageKey}")
+  </h1>
+
+  @form(action = iid.fold(routes.NewOtherGoodsInputController.processAddForm(path))(iid => routes.NewOtherGoodsInputController.processEditForm(iid)) ) {
+
+    @components.select(
+      field = dtoForm("country"),
+      elementOptions = ("","") :: countries.map(c => (c.countryName,c.countryName)),
+      displayEmptyValue = true,
+      '_label -> messages("label.country_the_item_was_bought_in"),
+      '_inputHint -> messages("label.if_you_bought_this_item_"),
+      '_errorsAboveInput -> true
+    )
+
+    @components.select(
+      field = dtoForm("currency"),
+      elementOptions = ("","") :: currencies.map(c => (c.displayName ,c.displayName)),
+      displayEmptyValue = true,
+      '_label -> messages("label.currency_used_to_buy_the_item"),
+      '_errorsAboveInput -> true
+    )
+
+    <div class="form-group @{if(dtoForm("costs").hasErrors) "form-group-error" else "" }">
+
+        @dtoForm("costs").errors.map { error =>
+          <span class="error-message">@messages(error.message)</span>
+        }
+
+        @if(dtoForm.data.keys.filter(_.startsWith("costs")).size <= 1) {
+
+          @components.input(
+            field = dtoForm("costs[0]"),
+            '_label -> messages(s"label.price_paid_for_this_item"),
+            '_labelTextClass -> "form-label"
+          )
+        } else {
+
+          @helper.repeatWithIndex(dtoForm("costs")) { (field, i) =>
+            @components.input(
+              field,
+             '_label -> messages(s"label.price_paid_for_the_${i+1}_item"),
+             '_labelTextClass -> "form-label"
+            )
+          }
+        }
+
+    </div>
+
+    @if(dtoForm.value.fold(0)(_.costs.size) >= 9) {
+      <div class="panel panel-border-wide">
+        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_9_other_goods_to_declare_")</p>
+      </div>
+    } else {
+      <div class="form-group">
+        @if(iid.isEmpty) {
+          <button type="submit" class="button btn-link" name="action" value="add-cost" data-ignore-double-submit="true">@messages(s"label.add_more.${path.toMessageKey}")</button>
+        }
+      </div>
+    }
+
+    <div class="form-group">
+      <button type="submit" class="button" name="action" value="continue" data-ignore-double-submit="true">@messages("label.continue")</button>
+    </div>
+
+    <div class="form-group">
+      <a href="@routes.SelectProductController.nextStep">@messages("label.cancel")</a>
+    </div>
+
+  }
+
+}
