@@ -1,9 +1,9 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.Inject
 import models._
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services._
@@ -13,11 +13,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TobaccoInputController @Inject()(
   val countriesService: CountriesService,
-  val travelDetailsService: TravelDetailsService,
+  val cache: Cache,
   val calculatorService: CalculatorService,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
+
   val cost_input: views.html.tobacco.cost_input,
   val country_of_purchase: views.html.tobacco.country_of_purchase,
   val currency_input: views.html.tobacco.currency_input,
@@ -25,6 +26,7 @@ class TobaccoInputController @Inject()(
   val no_of_sticks_weight_input: views.html.tobacco.no_of_sticks_weight_input,
   val weight_input: views.html.tobacco.weight_input,
   val error_template: views.html.error_template,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -36,7 +38,7 @@ class TobaccoInputController @Inject()(
       path.components.last match {
         case "cigarettes"            =>  Redirect(routes.TobaccoInputController.displayNoOfSticksInput(path, iid))
         case "cigars" | "cigarillos" =>  Redirect(routes.TobaccoInputController.displayNoOfSticksWeightInput(path, iid))
-        case "rolling" | "chewing"   =>  Redirect(routes.TobaccoInputController.displayWeightInput(path, iid))
+        case "rolling-tobacco" | "chewing-tobacco"   =>  Redirect(routes.TobaccoInputController.displayWeightInput(path, iid))
       }
     }
   }
@@ -87,11 +89,11 @@ class TobaccoInputController @Inject()(
 
             acceptingValidWorkingInstance(journeyData.workingInstance, product) {
               case Some(updatedJourneyData) =>
-                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                cache.store(updatedJourneyData).map { _ =>
                   Redirect(routes.DashboardController.showDashboard())
                 }
               case None =>
-                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                cache.store(journeyData).map { _ =>
                   Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
                 }
             }
@@ -134,11 +136,11 @@ class TobaccoInputController @Inject()(
 
             acceptingValidWorkingInstance(journeyData.workingInstance, product) {
               case Some(updatedJourneyData) =>
-                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                cache.store(updatedJourneyData).map { _ =>
                   Redirect(routes.DashboardController.showDashboard())
                 }
               case None =>
-                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                cache.store(journeyData).map { _ =>
                   Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
                 }
             }
@@ -180,11 +182,11 @@ class TobaccoInputController @Inject()(
 
             acceptingValidWorkingInstance(journeyData.workingInstance, product) {
               case Some(updatedJourneyData) =>
-                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                cache.store(updatedJourneyData).map { _ =>
                   Redirect(routes.DashboardController.showDashboard())
                 }
               case None =>
-                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                cache.store(journeyData).map { _ =>
                   Redirect(routes.TobaccoInputController.displayCountryInput(path, iid))
                 }
             }
@@ -331,7 +333,7 @@ class TobaccoInputController @Inject()(
 
             acceptingValidWorkingInstance(Some(wi), product) {
               case Some(updatedJourneyData) =>
-                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                cache.store(updatedJourneyData).map { _ =>
                   Redirect(routes.SelectProductController.nextStep())
                 }
               case None =>

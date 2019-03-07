@@ -1,19 +1,18 @@
-package services
+package connectors
 
 import javax.inject.{Inject, Singleton}
 import models.JourneyData
 import play.api.{Configuration, Environment}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.SessionCache
-
-import scala.concurrent.ExecutionContext
+import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.bootstrap.config.{AppName, ServicesConfig}
 
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class LocalSessionCache @Inject() (
+class Cache @Inject()(
   override val http: WsAllMethods,
   environment: Environment,
   config: Configuration,
@@ -25,7 +24,7 @@ class LocalSessionCache @Inject() (
   override lazy val baseUri = servicesConfig.baseUrl("cachable.session-cache")
   override lazy val domain = servicesConfig.getConfString("cachable.session-cache.domain", "keystore")
 
-  def cacheJourneyData(journeyData: JourneyData)(implicit hc: HeaderCarrier) = this.cache("journeyData", journeyData)
+  def store(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[CacheMap] = this.cache("journeyData", journeyData)
 
-  def fetchAndGetJourneyData(implicit hc: HeaderCarrier) = this.fetchAndGetEntry[JourneyData]("journeyData")
+  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = this.fetchAndGetEntry[JourneyData]("journeyData")
 }

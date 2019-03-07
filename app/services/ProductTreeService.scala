@@ -20,7 +20,7 @@ class ProductTreeService {
                 ProductTreeLeaf("sparkling-cider-up", "Sparkling cider (5.6% to 8.4% alcohol)", "ALC/A1/CIDERU8SP", "alcohol", List("L-ALCOTH"))
               )
             ),
-            ProductTreeLeaf("sparkling", "Sparkling wine (such as Champagne or Prosecco)", "ALC/A1/WINESP", "alcohol", List("L-WINE", "L-WINESP")),
+            ProductTreeLeaf("sparkling-wine", "Sparkling wine (such as Champagne or Prosecco)", "ALC/A1/WINESP", "alcohol", List("L-WINE", "L-WINESP")),
             ProductTreeLeaf("spirits", "Spirits (including gin, vodka and alcohol above 22%)", "ALC/A1/O22", "alcohol", List("L-SPIRIT")),
             ProductTreeLeaf("wine", "Wine","ALC/A3/WINE","alcohol", List("L-WINE")),
             ProductTreeLeaf("other", "All other alcoholic drinks (including port, sherry and alcohol up to 22%)", "ALC/A1/U22", "alcohol", List("L-ALCOTH"))
@@ -31,8 +31,8 @@ class ProductTreeService {
             ProductTreeLeaf("cigarettes", "Cigarettes", "TOB/A1/CIGRT", "cigarettes", List("L-CIGRT")),
             ProductTreeLeaf("cigarillos", "Cigarillos", "TOB/A1/CRILO", "cigars", List("L-CRILO")),
             ProductTreeLeaf("cigars", "Cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR")),
-            ProductTreeLeaf("chewing", "Pipe or chewing tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")),
-            ProductTreeLeaf("rolling", "Rolling tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE"))
+            ProductTreeLeaf("chewing-tobacco", "Pipe or chewing tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")),
+            ProductTreeLeaf("rolling-tobacco", "Rolling tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE"))
           )
         ),
         ProductTreeBranch("other-goods",
@@ -52,14 +52,14 @@ class ProductTreeService {
               )
             ),
             ProductTreeLeaf("car-seats", "Children’s car seats", "OGD/MOB/MISC", "other-goods", Nil),
-            ProductTreeBranch("childrens-clothing",
+            ProductTreeBranch("childrens",
               "Children's clothing and footwear", List(
-                ProductTreeLeaf("childrens", "Children’s clothing", "OGD/CLTHS/CHILD", "other-goods", Nil),
-                ProductTreeLeaf("footwear", "Children’s Footwear", "OGD/CLTHS/CHILD", "other-goods", Nil)
+                ProductTreeLeaf("childrens-clothing", "Children’s clothing", "OGD/CLTHS/CHILD", "other-goods", Nil),
+                ProductTreeLeaf("childrens-footwear", "Children’s Footwear", "OGD/CLTHS/CHILD", "other-goods", Nil)
 
               )
             ),
-            ProductTreeLeaf("disability", "Disability equipment", "OGD/BKS/MISC", "other-goods", Nil),
+            ProductTreeLeaf("disability-equipment", "Disability equipment", "OGD/BKS/MISC", "other-goods", Nil),
             ProductTreeBranch("electronic-devices",
               "Electronic devices", List(
                 ProductTreeLeaf("televisions", "Televisions", "OGD/DIGI/TV", "other-goods", Nil),
@@ -69,11 +69,11 @@ class ProductTreeService {
             ProductTreeLeaf("furniture", "Furniture", "OGD/ORN/MISC", "other-goods", Nil),
             ProductTreeLeaf("glassware", "Glassware", "OGD/GLASS", "other-goods", Nil),
             ProductTreeLeaf("jewellery", "Jewellery","OGD/ORN/MISC","other-goods", Nil),
-            ProductTreeLeaf("mobility", "Mobility aids", "OGD/MOB/MISC", "other-goods", Nil),
+            ProductTreeLeaf("mobility-aids", "Mobility aids", "OGD/MOB/MISC", "other-goods", Nil),
             ProductTreeLeaf("perfumes-cosmetics", "Perfumes and cosmetics", "OGD/COSMT", "other-goods", Nil),
             ProductTreeLeaf("protective-helmets", "Protective helmets", "OGD/BKS/MISC", "other-goods", Nil),
             ProductTreeLeaf("sanitary-products", "Sanitary products", "OGD/MOB/MISC", "other-goods", Nil),
-            ProductTreeLeaf("stop-smoking", "Stop smoking products", "OGD/MOB/MISC", "other-goods", Nil),
+            ProductTreeLeaf("stop-smoking-products", "Stop smoking products", "OGD/MOB/MISC", "other-goods", Nil),
             ProductTreeLeaf("tableware", "Tableware and kitchenware", "OGD/TABLE", "other-goods", Nil),
             ProductTreeLeaf("watches-clocks", "Watches and clocks", "OGD/ORN/MISC", "other-goods", Nil),
             ProductTreeLeaf("other", "Anything else", "OGD/OTHER", "other-goods", Nil)

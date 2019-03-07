@@ -1,5 +1,6 @@
 package services
 
+import connectors.Cache
 import javax.inject.Inject
 import models.JourneyData
 import uk.gov.hmrc.http.HeaderCarrier
@@ -9,58 +10,58 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 class TravelDetailsService @Inject() (
-  val localSessionCache: LocalSessionCache,
+  val cache: Cache,
   implicit val ec: ExecutionContext
-) extends UsesJourneyData {
+) {
 
   def storeEuCountryCheck(countryChoice: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
-    localSessionCache.fetchAndGetJourneyData flatMap {
+    cache.fetch flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData( journeyData.copy(euCountryCheck = Some(countryChoice), ageOver17 = None, privateCraft = None, selectedProducts = Nil) )
+        cache.store( journeyData.copy(euCountryCheck = Some(countryChoice), ageOver17 = None, privateCraft = None, selectedProducts = Nil) )
       case None =>
-        localSessionCache.cacheJourneyData( JourneyData(euCountryCheck = Some(countryChoice)) )
+        cache.store( JourneyData(euCountryCheck = Some(countryChoice)) )
     }
   }
 
   def storeVatResCheck(vatResCheck: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
-    localSessionCache.fetchAndGetJourneyData flatMap {
+    cache.fetch flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData(journeyData.copy(isVatResClaimed = Some(vatResCheck)))
+        cache.store(journeyData.copy(isVatResClaimed = Some(vatResCheck)))
       case None =>
-        localSessionCache.cacheJourneyData(JourneyData(isVatResClaimed = Some(vatResCheck)))
+        cache.store(JourneyData(isVatResClaimed = Some(vatResCheck)))
     }
   }
 
   def storeDutyFreeCheck(dutyFreeCheck: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
-    localSessionCache.fetchAndGetJourneyData flatMap {
+    cache.fetch flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData(journeyData.copy(bringingDutyFree = Some(dutyFreeCheck)))
+        cache.store(journeyData.copy(bringingDutyFree = Some(dutyFreeCheck)))
       case None =>
-        localSessionCache.cacheJourneyData(JourneyData(bringingDutyFree = Some(dutyFreeCheck)))
+        cache.store(JourneyData(bringingDutyFree = Some(dutyFreeCheck)))
     }
   }
 
 
   def storeAgeOver17(ageOver17: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
-    localSessionCache.fetchAndGetJourneyData flatMap {
+    cache.fetch flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData(journeyData.copy(ageOver17 = Some(ageOver17)))
+        cache.store(journeyData.copy(ageOver17 = Some(ageOver17)))
       case None =>
-        localSessionCache.cacheJourneyData( JourneyData(ageOver17 = Some(ageOver17)) )
+        cache.store( JourneyData(ageOver17 = Some(ageOver17)) )
     }
   }
 
   def storePrivateCraft(privateCraft: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
-    localSessionCache.fetchAndGetJourneyData flatMap {
+    cache.fetch flatMap {
       case Some(journeyData) =>
-        localSessionCache.cacheJourneyData(journeyData.copy(privateCraft = Some(privateCraft)) )
+        cache.store(journeyData.copy(privateCraft = Some(privateCraft)) )
       case None =>
-        localSessionCache.cacheJourneyData( JourneyData(privateCraft = Some(privateCraft)) )
+        cache.store( JourneyData(privateCraft = Some(privateCraft)) )
     }
   }
 }

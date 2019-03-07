@@ -1,5 +1,6 @@
 package services
 
+import connectors.Cache
 import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -17,11 +18,11 @@ import scala.concurrent.Future
 class PurchasedProductServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
   override def beforeEach: Unit = {
-    reset(app.injector.instanceOf[LocalSessionCache])
+    reset(app.injector.instanceOf[Cache])
   }
 
 
@@ -30,9 +31,9 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
     lazy val s = {
       val service = app.injector.instanceOf[PurchasedProductService]
-      val mock = service.localSessionCache
-      when(mock.fetchAndGetJourneyData(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.cacheJourneyData(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+      val mock = service.cache
+      when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
+      when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
       service
     }
   }
@@ -46,7 +47,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
       await(s.clearWorkingInstance(journeyDataInCache.get))
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(workingInstance = None))
       )(any())
 
@@ -66,7 +67,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
       val productToMakeWorkingInstance = PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("USD"))
 
       await(s.makeWorkingInstance(journeyDataInCache.get, productToMakeWorkingInstance))
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("some/item/path"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("USD"),None),
           PurchasedProductInstance(ProductPath("some/other/item"),"iid1",None,None,Some(Country("Jamaica", "JM", isEu = false, Nil)),Some("JMD"),None)),
           workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("USD")))))
@@ -88,7 +89,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
       await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData( purchasedProductInstances = List(
           PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("12.99"))),
           PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
@@ -107,7 +108,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
       await(s.storeCurrency(JourneyData(), ProductPath("some/item/path"), "iid0", "USD"))
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))))
       )(any())
 
@@ -123,7 +124,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
       await(s.storeCountry(
         JourneyData(), ProductPath("some/item/path"), "iid0", Country("United States of America (the)", "US", isEu = false, Nil)))
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("United States of America (the)", "US", isEu = false, Nil))))))
       )(any())
 
@@ -142,7 +143,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
       await(s.updateCountry(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", Country("Jamaica", "JM", isEu = false, Nil))
       )
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(purchasedProductInstances = List(
           PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Jamaica", "JM", isEu = false, Nil)), Some("USD"), Some(BigDecimal("15.50"))),
           PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))

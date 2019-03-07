@@ -3,6 +3,7 @@ package controllers
 import java.util.UUID
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -15,7 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationController @Inject()(
-  val travelDetailsService: TravelDetailsService,
+  val cache: Cache,
   val calculatorService: CalculatorService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
@@ -24,9 +25,11 @@ class DeclarationController @Inject()(
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
   val dateTimeProviderService: DateTimeProviderService,
+
   val you_need_to_declare: views.html.declaration.declare_your_goods,
   val enter_your_details: views.html.declaration.enter_your_details,
   val error_template: views.html.error_template,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,

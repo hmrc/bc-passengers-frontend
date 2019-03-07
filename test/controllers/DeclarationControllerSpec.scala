@@ -1,5 +1,6 @@
 package controllers
 
+import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
@@ -24,7 +25,7 @@ import scala.language.postfixOps
 class DeclarationControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
@@ -34,7 +35,7 @@ class DeclarationControllerSpec extends BaseSpec {
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[TravelDetailsService], injected[PurchasedProductService], injected[UserInformationService],
+    reset(injected[Cache], injected[PurchasedProductService], injected[UserInformationService],
       injected[PayApiService], injected[DeclarationService], injected[DateTimeProviderService])
   }
 
@@ -72,7 +73,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
-      when(injected[TravelDetailsService].getJourneyData(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any())) thenReturn Future.successful(payApiResponse)
       when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any(), any())(any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt

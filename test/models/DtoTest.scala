@@ -6,6 +6,8 @@ import services.CurrencyService
 import util.BaseSpec
 import play.api.data.Forms._
 
+import scala.util.Random
+
 
 class DtoTest extends BaseSpec {
 

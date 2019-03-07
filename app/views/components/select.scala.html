@@ -29,6 +29,12 @@
     <span class="label__text">
         @elements.label
     </span>
+
+    @if(elements.args.contains('_inputHint) ){
+        <span class="form-hint">
+        @elements.args.get('_inputHint)
+        </span>
+    }
 </label>
 
 @if(elements.args.contains('_additionalTitleText)){<p>@elements.args.get('_additionalTitleText)</p>}

@@ -1,32 +1,28 @@
 package services
 
-import java.util.UUID
-
-import util._
-import helpers.Helpers.{SchemaValidator, _}
+import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
+import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-import org.mockito.Mockito._
-import org.mockito.Matchers.{eq => meq, _}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
-import services.http.WsAllMethods
-import util.BaseSpec
 import play.api.test.Helpers._
+import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
+import util.{BaseSpec, _}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   override lazy val app = GuiceApplicationBuilder()
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
-    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .configure(
       "microservice.services.bc-passengers-declarations.host" -> "bc-passengers-declarations.service",
       "microservice.services.bc-passengers-declarations.port" -> "80"
@@ -35,7 +31,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   override def beforeEach(): Unit = {
     reset(app.injector.instanceOf[WsAllMethods])
-    reset(app.injector.instanceOf[LocalSessionCache])
+    reset(app.injector.instanceOf[Cache])
     super.beforeEach()
   }
 

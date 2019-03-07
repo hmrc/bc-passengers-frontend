@@ -5,6 +5,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 
+import scala.util.Random
 
 object PurchasedProductInstance {
   implicit val formats = Json.format[PurchasedProductInstance]
@@ -55,6 +56,9 @@ case class JourneyData(
     purchasedProductInstances <- purchasedProductInstances
     currencyCode <- purchasedProductInstances.currency
   } yield currencyCode).toSet
+
+  def getPurchasedProductInstance(iid: String): Option[PurchasedProductInstance] =
+    purchasedProductInstances.find(_.iid == iid)
 
   def getOrCreatePurchasedProductInstance(path: ProductPath, iid: String): PurchasedProductInstance
     = purchasedProductInstances.find(_.iid == iid).getOrElse(PurchasedProductInstance(path, iid))

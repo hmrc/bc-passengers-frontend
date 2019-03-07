@@ -86,8 +86,8 @@ package object util {
     plainText =>
       val errors = plainText match {
         case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if !s.matches("^(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d*)?$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
-        case s if !s.matches("^(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d{1,2})?$") => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
+        case s if Try(BigDecimal(s)).isFailure || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
+        case s if BigDecimal(s).scale > 2  => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
         case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError(s"error.exceeded.max.${errorSubString}"))
         case _ => Nil
       }
@@ -97,6 +97,24 @@ package object util {
         Invalid(errors)
       }
   })
+
+  def blankOkCostCheckConstraint(productPathMessageKey: String): Constraint[String] = Constraint("constraints.bigdecimalcostcheck") { plainText =>
+
+    val sanitizedText = plainText.filter(_!=',')
+
+    val errors = sanitizedText match {
+      case s if s == "" => Nil
+      case s if Try(BigDecimal(s)).isFailure || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.cost.$productPathMessageKey"))
+      case s if BigDecimal(s).scale > 2 => Seq(ValidationError(s"error.invalid.format.cost.$productPathMessageKey"))
+      case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError(s"error.exceeded.max.cost.$productPathMessageKey"))
+      case _ => Nil
+    }
+    if (errors.isEmpty) {
+      Valid
+    } else {
+      Invalid(errors)
+    }
+  }
 
   def noOfSticksConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.noofsticks")({
     plainText =>

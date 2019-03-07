@@ -7,4 +7,6 @@ case class LocalContext(request: Request[AnyContent], sessionId: String, journey
 
   def withJourneyData(journeyData: JourneyData) = LocalContext(request, sessionId, Some(journeyData))
   def getJourneyData: JourneyData = journeyData.getOrElse(throw new RuntimeException("no journey data."))
+
+  def getFormParam(key: String) = request.body.asFormUrlEncoded.flatMap(_.get(key).flatMap(_.headOption))
 }

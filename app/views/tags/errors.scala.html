@@ -17,20 +17,22 @@
 @(form: Form[_], path: Option[ProductPath] = None)(implicit messages: play.api.i18n.Messages)
 
 @if(form.hasErrors) {
-    <div id="errors" tabindex="-1" role="alert" aria-labelledby="error-heading" class="error-summary">
-        <h2 class="heading-medium error-summary-heading" id="error-heading">
-            @Messages("label.there_is_a_problem")
-        </h2>
+  <div id="errors" tabindex="-1" role="alert" aria-labelledby="error-heading" class="error-summary">
+    <h2 class="heading-medium error-summary-heading" id="error-heading">
+      @messages("label.there_is_a_problem")
+    </h2>
 
-        <ul class="error-summary-list">
-            @form.errors.map { error =>
-                <li><a href="#@error.key">
-                    @{path match {
-                        case Some(path) => Messages(s"head.${error.message}.${path.toMessageKey}")
-                        case None => Messages(s"head.${error.message}") }
-                    }
-                </a></li>
+    <ul class="error-summary-list">
+      @form.errors.map { error =>
+        <li>
+          <a href="#@error.key">
+            @{path match {
+              case Some(path) => messages(s"head.${error.message}.${path.toMessageKey}")
+              case None => messages(s"head.${error.message}") }
             }
-        </ul>
-    </div>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models.{ProductTreeLeaf, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -15,17 +16,19 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DashboardController @Inject() (
   val countriesService: CountriesService,
-  val travelDetailsService: TravelDetailsService,
+  val cache: Cache,
   val purhasedProductService: PurchasedProductService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+
   val dashboard: views.html.purchased_products.dashboard,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
   val done: views.html.purchased_products.done,
   val under_nine_pounds: views.html.purchased_products.under_nine_pounds,
   val over_ninty_seven_thousand_pounds: views.html.purchased_products.over_ninty_seven_thousand_pounds,
   val error_template: views.html.error_template,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -34,7 +37,7 @@ class DashboardController @Inject() (
 
   def showDashboard: Action[AnyContent] = DashboardAction { implicit context =>
 
-    travelDetailsService.getJourneyData flatMap { journeyData: Option[JourneyData] =>
+    cache.fetch flatMap { journeyData: Option[JourneyData] =>
 
       val jd = journeyData.getOrElse(JourneyData())
       calculatorService.journeyDataToCalculatorRequest(jd) map { maybeCalculatorRequest =>

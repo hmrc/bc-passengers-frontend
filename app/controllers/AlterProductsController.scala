@@ -1,6 +1,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.Inject
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -11,14 +12,16 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 class AlterProductsController @Inject() (
-  val travelDetailsService: TravelDetailsService,
+  val cache: Cache,
   val calculatorService: CalculatorService,
   val purhasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val productTreeService: ProductTreeService,
+
   val remove: views.html.purchased_products.remove,
   val error_template: views.html.error_template,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,

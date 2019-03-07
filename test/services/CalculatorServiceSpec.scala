@@ -3,6 +3,7 @@ package services
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import connectors.Cache
 import models._
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -13,7 +14,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.cache.client.CacheMap
-
 import util.BaseSpec
 
 import scala.concurrent.Future
@@ -23,7 +23,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
-    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .configure(
       "microservice.services.currency-conversion.host" -> "currency-conversion.service",
       "microservice.services.currency-conversion.port" -> "80",
@@ -34,7 +34,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     reset(app.injector.instanceOf[WsAllMethods])
-    reset(app.injector.instanceOf[LocalSessionCache])
+    reset(app.injector.instanceOf[Cache])
     super.beforeEach()
   }
 
@@ -63,7 +63,7 @@ class CalculatorServiceSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
         PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)),
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),
         PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123))
@@ -81,7 +81,7 @@ class CalculatorServiceSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
         PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)), //Note weightOrVolume = None
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),
         PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123))
@@ -93,7 +93,7 @@ class CalculatorServiceSpec extends BaseSpec {
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","Children’s car seats","OGD/MOB/MISC","other-goods", Nil),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","Antiques, collector’s pieces and works of art","OGD/ART","other-goods", Nil),Currency("CHF","Swiss francs (CHF)",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),ProductTreeLeaf("chewing","Pipe or chewing tobacco","TOB/A1/OTHER","tobacco", List("L-LOOSE")),Currency("CHF","Swiss francs (CHF)",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"),"iid0",Some(45),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),ProductTreeLeaf("chewing-tobacco","Pipe or chewing tobacco","TOB/A1/OTHER","tobacco", List("L-LOOSE")),Currency("CHF","Swiss francs (CHF)",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)),ProductTreeLeaf("cigars","Cigars","TOB/A1/CIGAR","cigars", List("L-CIGAR")),Currency("AUD","Australian dollars (AUD)",Some("AUD"), List("Australian", "Oz")), BigDecimal(1234/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),ProductTreeLeaf("cigarettes","Cigarettes","TOB/A1/CIGRT","cigarettes", List("L-CIGRT")),Currency("GBP","British pounds (GBP)",None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123)),ProductTreeLeaf("beer","Beer","ALC/A2/BEER","alcohol", List("L-BEER")),Currency("GGP","Guernsey pounds (GGP)",None, List("Channel Islands")), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
@@ -124,7 +124,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: Option[CalculatorRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData))
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(),any(),any())
 
       response shouldBe None
@@ -134,7 +134,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(imperfectJourneyData)).get
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
 
       response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token=="cigars"))
@@ -144,7 +144,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData)).get
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
 
       response shouldBe calcRequest
@@ -154,7 +154,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(true)))).get
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
 
       response shouldBe calcRequest.copy(isVatResClaimed = Some(true))
@@ -164,7 +164,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(false)))).get
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
 
       response shouldBe calcRequest.copy(isVatResClaimed = Some(false))
@@ -174,7 +174,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = None))).get
 
-      verify(injected[LocalSessionCache], times(0)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
 
       response shouldBe calcRequest.copy(isVatResClaimed = None)
@@ -189,7 +189,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       lazy val service = {
 
-        when(injected[LocalSessionCache].fetchAndGetJourneyData(any())) thenReturn {
+        when(injected[Cache].fetch(any())) thenReturn {
           Future.successful(cachedJourneyData)
         }
 
@@ -239,7 +239,7 @@ class CalculatorServiceSpec extends BaseSpec {
           limits = Map.empty
         )
 
-      verify(injected[LocalSessionCache], times(1)).fetchAndGetJourneyData(any())
+      verify(injected[Cache], times(1)).fetch(any())
 
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
 
@@ -261,15 +261,15 @@ class CalculatorServiceSpec extends BaseSpec {
 
       lazy val s = {
         val service = app.injector.instanceOf[CalculatorService]
-        val mock = service.localSessionCache
-        when(mock.fetchAndGetJourneyData(any())) thenReturn Future.successful( None )
-        when(mock.cacheJourneyData(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+        val mock = service.cache
+        when(mock.fetch(any())) thenReturn Future.successful( None )
+        when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
         service
       }
 
       await(s.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, limits = Map.empty)))
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, limits = Map.empty))))
       )(any())
 

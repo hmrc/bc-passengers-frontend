@@ -41,11 +41,11 @@
           @if(elements.args.contains('_productName)) {
             @{
               val productName = elements.args.get('_productName) match { case Some(prodName) => prodName }
-              Messages(s"${error.message}.${productName}")
+              messages(s"${error.message}.${productName}")
             }
 
           } else {
-            @Messages(error.message)
+            @messages(error.message)
           }
         </span>
       }

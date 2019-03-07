@@ -1,6 +1,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.Inject
 import models.{ProductPath, ProductTreeBranch, ProductTreeLeaf, SelectProductsDto}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -12,14 +13,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectProductController @Inject()(
   val productTreeService: ProductTreeService,
+  val cache: Cache,
   val calculatorService: CalculatorService,
-  val travelDetailsService: TravelDetailsService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val selectProductService: SelectProductService,
+
   val purchasedProductService: PurchasedProductService,
   val select_products: views.html.purchased_products.select_products,
   val error_template: views.html.error_template,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -44,11 +47,11 @@ class SelectProductController @Inject()(
             case ProductTreeLeaf(_, _, _, templateId, _) =>
 
               templateId match {
-                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
-                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
-                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
-                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/start"))
-                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/products/"+productPath+"/quantity"))
+                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
+                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
+                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
+                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
+                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
               }
 
           }

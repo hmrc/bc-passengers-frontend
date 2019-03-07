@@ -1,31 +1,30 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import javax.inject.Inject
 import models._
-import play.api.Logger
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class AlcoholInputController @Inject() (
   val countriesService: CountriesService,
   val calculatorService: CalculatorService,
-  val travelDetailsService: TravelDetailsService,
+  val cache: Cache,
   val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
+
   val volume_input: views.html.alcohol.volume_input,
   val country_of_purchase: views.html.alcohol.country_of_purchase,
   val currency_input: views.html.alcohol.currency_input,
   val cost_input: views.html.alcohol.cost_input,
   val error_template: views.html.error_template,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -78,11 +77,11 @@ class AlcoholInputController @Inject() (
 
             acceptingValidWorkingInstance(journeyData.workingInstance, product) {
               case Some(updatedJourneyData) =>
-                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                cache.store(updatedJourneyData).map { _ =>
                   Redirect(routes.DashboardController.showDashboard())
                 }
               case None =>
-                purchasedProductService.cacheJourneyData(journeyData).map { _ =>
+                cache.store(journeyData).map { _ =>
                   Redirect(routes.AlcoholInputController.displayCountryInput(path, iid))
                 }
             }
@@ -226,7 +225,7 @@ class AlcoholInputController @Inject() (
 
             acceptingValidWorkingInstance(Some(wi), product) {
               case Some(updatedJourneyData) =>
-                purchasedProductService.cacheJourneyData(updatedJourneyData).map { _ =>
+                cache.store(updatedJourneyData).map { _ =>
                   Redirect(routes.SelectProductController.nextStep())
                 }
               case None =>

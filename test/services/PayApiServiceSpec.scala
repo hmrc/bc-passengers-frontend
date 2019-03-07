@@ -1,27 +1,27 @@
 package services
 
+import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
-import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
+import play.api.test.Helpers._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
 import util.BaseSpec
-import play.api.test.Helpers._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {
 
   override lazy val app = GuiceApplicationBuilder()
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
-    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .configure(
       "microservice.services.pay-api.host" -> "pay-api.service",
       "microservice.services.pay-api.port" -> "80"
@@ -30,7 +30,7 @@ class PayApiServiceSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     reset(app.injector.instanceOf[WsAllMethods])
-    reset(app.injector.instanceOf[LocalSessionCache])
+    reset(app.injector.instanceOf[Cache])
     super.beforeEach()
   }
 

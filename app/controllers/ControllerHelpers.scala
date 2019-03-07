@@ -1,6 +1,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -13,12 +14,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
 
-trait ControllerHelpers extends  MessagesBaseController
+trait ControllerHelpers extends MessagesBaseController
   with Utf8MimeTypes
   with WithJsonBody
   with FrontendHeaderCarrierProvider with I18nSupport {
 
-  def travelDetailsService: TravelDetailsService
+  def cache: Cache
   def productTreeService: ProductTreeService
   def currencyService: CurrencyService
   def countriesService: CountriesService
@@ -52,7 +53,7 @@ trait ControllerHelpers extends  MessagesBaseController
 
     PublicAction { implicit context =>
 
-      travelDetailsService.getJourneyData(hc(context.request)) flatMap {
+      cache.fetch(hc(context.request)) flatMap {
 
         case Some(journeyData) =>
 

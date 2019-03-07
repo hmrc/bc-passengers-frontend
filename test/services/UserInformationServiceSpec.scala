@@ -1,8 +1,9 @@
 package services
 
-import models.{JourneyData, ProductPath, PurchasedProductInstance, UserInformation}
+import connectors.Cache
+import models.{JourneyData, UserInformation}
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, LocalDate, LocalTime}
+import org.joda.time.{LocalDate, LocalTime}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -19,11 +20,11 @@ import scala.concurrent.Future
 class UserInformationServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[LocalSessionCache].toInstance(MockitoSugar.mock[LocalSessionCache]))
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
   override def beforeEach: Unit = {
-    reset(app.injector.instanceOf[LocalSessionCache])
+    reset(app.injector.instanceOf[Cache])
   }
 
 
@@ -33,9 +34,9 @@ class UserInformationServiceSpec extends BaseSpec {
 
     lazy val s = {
       val service = app.injector.instanceOf[UserInformationService]
-      val mock = service.localSessionCache
-      when(mock.fetchAndGetJourneyData(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.cacheJourneyData(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+      val mock = service.cache
+      when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
+      when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
       service
     }
   }
@@ -48,7 +49,7 @@ class UserInformationServiceSpec extends BaseSpec {
 
       await(s.storeUserInformation(JourneyData(), UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))))
 
-      verify(s.localSessionCache, times(1)).cacheJourneyData(
+      verify(s.cache, times(1)).store(
         meq(JourneyData(userInformation = Some(UserInformation("Harry", "Potter", "12345678", "Newcastle Airport", LocalDate.parse("2018-08-31"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))))))
       )(any())
 
