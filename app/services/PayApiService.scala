@@ -54,8 +54,7 @@ class PayApiService @Inject()(
       "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
         Json.obj(
           "name" -> item.metadata.description,
-          "costInCurrency" -> item.metadata.currency.displayName,
-          "costInGbp" -> item.metadata.cost
+          "costInGbp" -> item.calculation.allTax
         )
       })
     )
