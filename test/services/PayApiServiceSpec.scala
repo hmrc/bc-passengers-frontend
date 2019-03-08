@@ -50,23 +50,19 @@ class PayApiServiceSpec extends BaseSpec {
        |    "items": [
        |        {
        |            "name": "5 litres cider",
-       |            "costInCurrency": "USA Dollar (USD)",
-       |            "costInGbp": "120.00"
+       |            "costInGbp": "21.00"
        |        },
        |        {
        |            "name": "250 cigarettes",
-       |            "costInCurrency": "USA Dollar (USD)",
-       |            "costInGbp": "400.00"
+       |            "costInGbp": "244.49"
        |        },
        |        {
        |            "name": "120g rolling tobacco",
-       |            "costInCurrency": "USA Dollar (USD)",
-       |            "costInGbp": "200.00"
+       |            "costInGbp": "198.91"
        |        },
        |        {
        |            "name": "Televisions",
-       |            "costInCurrency": "British Pound (GBP)",
-       |            "costInGbp": "1300.00"
+       |            "costInGbp": "478.40"
        |        }
        |    ]
        |}
@@ -86,23 +82,19 @@ class PayApiServiceSpec extends BaseSpec {
        |    "items": [
        |        {
        |            "name": "5 litres cider",
-       |            "costInCurrency": "USA Dollar (USD)",
-       |            "costInGbp": "120.00"
+       |            "costInGbp": "21.00"
        |        },
        |        {
        |            "name": "250 cigarettes",
-       |            "costInCurrency": "USA Dollar (USD)",
-       |            "costInGbp": "400.00"
+       |            "costInGbp": "244.49"
        |        },
        |        {
        |            "name": "120g rolling tobacco",
-       |            "costInCurrency": "USA Dollar (USD)",
-       |            "costInGbp": "200.00"
+       |            "costInGbp": "198.91"
        |        },
        |        {
        |            "name": "Televisions",
-       |            "costInCurrency": "British Pound (GBP)",
-       |            "costInGbp": "1300.00"
+       |            "costInGbp": "478.40"
        |        }
        |    ]
        |}
