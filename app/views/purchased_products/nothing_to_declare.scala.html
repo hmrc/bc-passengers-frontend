@@ -1,5 +1,5 @@
 @this(main_template: views.html.main_template)
-@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean)(implicit request: Request[_], messages: Messages)
+@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, underNinePounds: Boolean)(implicit request: Request[_], messages: Messages)
 
 @import util._
 
@@ -8,7 +8,9 @@
 
   <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", "0.00"))</h1>
 
-  <p>@messages("label.personal_allowances")</p>
+  @if(!underNinePounds){
+    <p>@messages("label.personal_allowances")</p>
+  }
 
   <table class="responsive-table" role="grid">
 

@@ -25,7 +25,6 @@ class DashboardController @Inject() (
   val dashboard: views.html.purchased_products.dashboard,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
   val done: views.html.purchased_products.done,
-  val under_nine_pounds: views.html.purchased_products.under_nine_pounds,
   val over_ninty_seven_thousand_pounds: views.html.purchased_products.over_ninty_seven_thousand_pounds,
   val error_template: views.html.error_template,
 
@@ -88,10 +87,10 @@ class DashboardController @Inject() (
       Future.successful {
         BigDecimal(calculatorResponse.calculation.allTax) match {
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-            Ok (nothing_to_declare (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP))
+            Ok (nothing_to_declare (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, false))
 
           case allTax if allTax > 0 && allTax < 9 || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-            Ok (under_nine_pounds (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP))
+            Ok (nothing_to_declare (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true))
 
           case allTax if allTax > 97000  =>
             Ok (over_ninty_seven_thousand_pounds (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP))
