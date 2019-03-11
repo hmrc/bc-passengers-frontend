@@ -111,12 +111,12 @@ case class SelectProductsDto(tokens: List[String])
 
 object VolumeDto {
 
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[VolumeDto] = Form(
+  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String = ""): Form[VolumeDto] = Form(
     mapping(
       "volume" -> text
         .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
         .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
-        .verifying(bigDecimalCheckConstraint("volume", 3))
+        .verifying(bigDecimalCheckConstraint("volume", 3, productPathMessageKey))
         .transform[BigDecimal](volume => BigDecimal(volume), bd => bd.toString())
         .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
     )(VolumeDto.apply)(VolumeDto.unapply)
@@ -136,10 +136,10 @@ case class QuantityDto(quantity: Int)
 
 object NoOfSticksDto {
 
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[NoOfSticksDto] = Form(
+  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String = ""): Form[NoOfSticksDto] = Form(
     mapping(
       "noOfSticks" -> text
-        .verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
+        .verifying(noOfSticksConstraint("noofsticks", productPathMessageKey)).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
         .verifying(calculatorLimitConstraintInt(limits, applicableLimits))
     )(NoOfSticksDto.apply)(NoOfSticksDto.unapply)
   )
@@ -148,15 +148,15 @@ case class NoOfSticksDto(noOfSticks: Int)
 
 object NoOfSticksAndWeightDto {
 
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[NoOfSticksAndWeightDto] = Form(
+  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String = ""): Form[NoOfSticksAndWeightDto] = Form(
     mapping(
       "noOfSticks" -> text
-        .verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
+        .verifying(noOfSticksConstraint("noofsticks", productPathMessageKey)).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
         .verifying(calculatorLimitConstraintInt(limits, applicableLimits)),
       "weight" -> text
         .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
         .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
-        .verifying(bigDecimalCheckConstraint("weight", 2))
+        .verifying(bigDecimalCheckConstraint("weight", 2, productPathMessageKey))
         .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
     )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
   )
@@ -165,12 +165,12 @@ case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: BigDecimal)
 
 object WeightDto {
 
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[WeightDto] = Form(
+  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String = ""): Form[WeightDto] = Form(
     mapping(
       "weight" -> text
         .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
         .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
-        .verifying(bigDecimalCheckConstraint("weight", 2))
+        .verifying(bigDecimalCheckConstraint("weight", 2, productPathMessageKey))
         .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
         .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
     )(WeightDto.apply)(WeightDto.unapply)
@@ -193,11 +193,11 @@ case class CurrencyDto(currency: String, itemsRemaining: Int)
 
 object CostDto {
 
-  def form(optionalItemsRemaining: Boolean = true): Form[CostDto] = Form(
+  def form(optionalItemsRemaining: Boolean = true, productPathMessageKey: String = ""): Form[CostDto] = Form(
     mapping(
       "cost" -> text
         .transform[String](s => if (s.lastOption.contains('.')) (s + "00").replace(",", "") else s.replace(",", ""), s => s)
-        .verifying(bigDecimalCostCheckConstraint("cost"))
+        .verifying(bigDecimalCostCheckConstraint("cost", productPathMessageKey))
         .transform[BigDecimal](cost => BigDecimal(cost), bd => formatMonetaryValue(bd)),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(CostDto.apply)(CostDto.unapply)

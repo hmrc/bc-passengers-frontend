@@ -37,17 +37,7 @@
 
     @if(field.errors) {
       @field.errors.map { error =>
-        <span class="error-message">
-          @if(elements.args.contains('_productName)) {
-            @{
-              val productName = elements.args.get('_productName) match { case Some(prodName) => prodName }
-              messages(s"${error.message}.${productName}")
-            }
-
-          } else {
-            @messages(error.message)
-          }
-        </span>
+        <span class="error-message">@messages(error.message)</span>
       }
     }
 

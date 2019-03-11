@@ -5,7 +5,7 @@
 
 @main_template(title = messages("label.how_much_", productName.toLowerCase()), bodyClasses = None) {
 
-  @views.html.tags.errors(weightForm, Some(path))
+  @views.html.tags.errors(weightForm)
 
   <h1 class="heading-xlarge">@messages("label.how_much_", productName.toLowerCase())</h1>
 
@@ -22,7 +22,6 @@
         '_label -> messages("label.weight_of_", productName.toLowerCase()),
         '_labelTextClass -> "form-label",
         '_inputClass -> "form-control-1-4 max-width-95",
-        '_productName -> path.toMessageKey,
         '_inputSuffix -> "g"
       )
     </div>

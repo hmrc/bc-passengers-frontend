@@ -10,7 +10,7 @@
 
 @main_template(title = title.toString, bodyClasses = None) {
 
-  @views.html.tags.errors(volumeInput, Some(path))
+  @views.html.tags.errors(volumeInput)
 
   <h1 class="heading-xlarge">@title.toString</h1>
 
@@ -28,8 +28,7 @@
         volumeInput("volume"),
         '_label -> messages("label.volume_in_litres"),
         '_labelTextClass -> "form-label",
-        '_inputClass -> "form-control-1-4",
-        '_productName -> path.toMessageKey
+        '_inputClass -> "form-control-1-4"
       )
     </div>
 

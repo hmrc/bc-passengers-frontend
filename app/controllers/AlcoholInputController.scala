@@ -67,7 +67,7 @@ class AlcoholInputController @Inject() (
 
       requireProduct(path) { product =>
 
-        VolumeDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+        VolumeDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
             requireProduct(path) { product =>
               Future.successful(BadRequest(volume_input(formWithErrors, product.name, product.token, path, iid)))
@@ -205,7 +205,7 @@ class AlcoholInputController @Inject() (
 
   def processCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    CostDto.form().bindFromRequest.fold(
+    CostDto.form(productPathMessageKey = path.toMessageKey).bindFromRequest.fold(
       formWithErrors => {
         requireWorkingInstanceWeightOrVolume { volume =>
           requireWorkingInstanceCurrency { currency: Currency =>

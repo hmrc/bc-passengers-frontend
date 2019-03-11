@@ -79,7 +79,7 @@ class TobaccoInputController @Inject()(
 
       requireProduct(path) { product =>
 
-        NoOfSticksDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+        NoOfSticksDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
             requireProduct(path) { product =>
               Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
@@ -126,7 +126,7 @@ class TobaccoInputController @Inject()(
     requireLimitUsage(journeyData) { limits =>
 
       requireProduct(path) { product =>
-        NoOfSticksAndWeightDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+        NoOfSticksAndWeightDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
             requireProduct(path) { product =>
               Future.successful(BadRequest(no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
@@ -172,7 +172,7 @@ class TobaccoInputController @Inject()(
     requireLimitUsage(journeyData) { limits =>
 
       requireProduct(path) { product =>
-        WeightDto.form(limits, product.applicableLimits).bindFromRequest.fold(
+        WeightDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
             requireProduct(path) { product =>
               Future.successful(BadRequest(weight_input(formWithErrors, product.token, product.name, path, iid)))
@@ -310,7 +310,7 @@ class TobaccoInputController @Inject()(
 
   def processCostInput(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    CostDto.form().bindFromRequest.fold(
+    CostDto.form(productPathMessageKey = path.toMessageKey).bindFromRequest.fold(
       formWithErrors => {
 
         requireProduct(path) { product =>
