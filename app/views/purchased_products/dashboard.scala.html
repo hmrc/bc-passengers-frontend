@@ -148,45 +148,51 @@
   <div class="other-goods">
     <h3 class="heading-medium">@messages("label.other_goods")</h3>
 
-    @if(otherGoodsPurchasedItemList.isEmpty){
+    @if(otherGoodsPurchasedItemList.isEmpty) {
       <p class="border-bottom">
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
       </p>
-    } else {
-
+    } else if(otherGoodsPurchasedItemList.size < 9) {
       <div class="add-more">
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
       </div>
-
-      @otherGoodsPurchasedItemList.map { purchasedItem =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div class="product-item">
-            <dt class="cya-question">@messages("label.item")</dt>
-            <dd class="cya-answer">@purchasedItem.description</dd>
-          </div>
-          <div class="product-country">
-            <dt class="cya-question">@messages("label.country")</dt>
-            <dd class="cya-answer">@purchasedItem.country</dd>
-          </div>
-          <div class="product-price">
-            <dt class="cya-question">@messages("label.price")</dt>
-            <dd class="cya-answer">
-              @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
-            </dd>
-          </div>
-        </dl>
-        <div class="margin-bottom-20">
-          <a href="@routes.NewOtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.edit_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
+    } else if(otherGoodsPurchasedItemList.size == 9) {
+      <div class="panel panel-border-wide">
+        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_9_other_goods_to_declare_")</p>
+      </div>
+    } else {
+      <div class="panel panel-border-wide">
+        <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_9_other_goods_or_fewer_")</p>
+      </div>
+    }
+    @otherGoodsPurchasedItemList.map { purchasedItem =>
+      <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
+        <div class="product-item">
+          <dt class="cya-question">@messages("label.item")</dt>
+          <dd class="cya-answer">@purchasedItem.description</dd>
         </div>
-        <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
+        <div class="product-country">
+          <dt class="cya-question">@messages("label.country")</dt>
+          <dd class="cya-answer">@purchasedItem.country</dd>
         </div>
-      }
+        <div class="product-price">
+          <dt class="cya-question">@messages("label.price")</dt>
+          <dd class="cya-answer">
+            @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+          </dd>
+        </div>
+      </dl>
+      <div class="margin-bottom-20">
+        <a href="@routes.NewOtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.edit_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
+      </div>
+      <div class="margin-bottom-50">
+        <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
+      </div>
     }
 
   </div>
 
-  @if(showCalculate) {
+  @if(showCalculate && otherGoodsPurchasedItemList.size <= 9) {
     @form(action = routes.DashboardController.calculate()) {
       <button type="submit" class="button margin-top-30">Calculate</button>
     }
