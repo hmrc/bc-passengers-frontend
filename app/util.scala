@@ -68,17 +68,17 @@ package object util {
       }
   })
 
-  def calculatorLimitConstraintInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Int] = Constraint("constraints.calclimit") {
+  def calculatorLimitConstraintInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String): Constraint[Int] = Constraint("constraints.calclimit") {
 
-    calculatorLimitConstraintBigDecimal( limits.mapValues(i => i), applicableLimits )(_)
+    calculatorLimitConstraintBigDecimal( limits.mapValues(i => i), applicableLimits, productPathMessageKey )(_)
   }
 
-  def calculatorLimitConstraintBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[BigDecimal] = Constraint("constraints.calclimit") { _ =>
+  def calculatorLimitConstraintBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String): Constraint[BigDecimal] = Constraint("constraints.calclimit") { _ =>
 
     val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
 
     if(errors.isEmpty) Valid
-    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
+    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded.$productPathMessageKey")))
 
   }
 
