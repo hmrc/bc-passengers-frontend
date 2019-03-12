@@ -53,12 +53,12 @@ package object util {
     }
   }
 
-  def bigDecimalCheckConstraint(errorSubString: String, decimalPlaces: Int): Constraint[String] = Constraint("constraints.bigdecimalcheck")({
+  def bigDecimalCheckConstraint(errorSubString: String, decimalPlaces: Int, productPathMessageKey: String): Constraint[String] = Constraint("constraints.bigdecimalcheck")({
     plainText =>
       val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if Try(s.toDouble).toOption.fold(true)(d => d <= 0.0) => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
-        case s if !s.matches(s"^[0-9]+(\\.[0-9]{1,${decimalPlaces}})?$$") => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
+        case s if s == "" => Seq(ValidationError(s"error.required.$errorSubString.$productPathMessageKey"))
+        case s if Try(s.toDouble).toOption.fold(true)(d => d <= 0.0) => Seq(ValidationError(s"error.invalid.characters.$errorSubString.$productPathMessageKey"))
+        case s if !s.matches(s"^[0-9]+(\\.[0-9]{1,$decimalPlaces})?$$") => Seq(ValidationError(s"error.invalid.format.$errorSubString.$productPathMessageKey"))
         case _ => Nil
       }
       if (errors.isEmpty) {
@@ -82,13 +82,13 @@ package object util {
 
   }
 
-  def bigDecimalCostCheckConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.bigdecimalcostcheck")({
+  def bigDecimalCostCheckConstraint(errorSubString: String, productPathMessageKey: String): Constraint[String] = Constraint("constraints.bigdecimalcostcheck")({
     plainText =>
       val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if Try(BigDecimal(s)).isFailure || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
-        case s if BigDecimal(s).scale > 2  => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
-        case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError(s"error.exceeded.max.${errorSubString}"))
+        case s if s == "" => Seq(ValidationError(s"error.required.$errorSubString.$productPathMessageKey"))
+        case s if Try(BigDecimal(s)).isFailure || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}.$productPathMessageKey"))
+        case s if BigDecimal(s).scale > 2  => Seq(ValidationError(s"error.invalid.format.$errorSubString.$productPathMessageKey"))
+        case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError(s"error.exceeded.max.$errorSubString.$productPathMessageKey"))
         case _ => Nil
       }
       if (errors.isEmpty) {
@@ -116,11 +116,11 @@ package object util {
     }
   }
 
-  def noOfSticksConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.noofsticks")({
+  def noOfSticksConstraint(errorSubString: String, productPathMessageKey: String): Constraint[String] = Constraint("constraints.noofsticks")({
     plainText =>
       val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if !s.matches("^[0-9]*$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
+        case s if s == "" => Seq(ValidationError(s"error.required.$errorSubString.$productPathMessageKey"))
+        case s if !s.matches("^[0-9]*$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.$errorSubString.$productPathMessageKey"))
         case _ => Nil
       }
       if (errors.isEmpty) {

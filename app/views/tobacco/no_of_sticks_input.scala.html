@@ -5,7 +5,7 @@
 
 @main_template(title = messages("label.how_many_", productName.toLowerCase()), bodyClasses = None) {
 
-  @views.html.tags.errors(noOfSticksForm, Some(path))
+  @views.html.tags.errors(noOfSticksForm)
 
   <h1 class="heading-xlarge">@messages("label.how_many_", productName.toLowerCase())</h1>
 
@@ -21,8 +21,7 @@
         noOfSticksForm("noOfSticks"),
         '_label -> messages("label.number_of_", productName.toLowerCase()),
         '_labelTextClass -> "form-label",
-        '_inputClass -> "form-control-1-4",
-        '_productName -> path.toMessageKey
+        '_inputClass -> "form-control-1-4"
       )
     </div>
 

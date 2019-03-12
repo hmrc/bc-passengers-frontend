@@ -18,7 +18,7 @@
 
 @main_template(title = pageTitle.toString) {
 
-    @views.html.tags.errors(costForm, Some(path))
+    @views.html.tags.errors(costForm)
 
     <h1 class="heading-xlarge">@title.toString</h1>
 
@@ -29,8 +29,7 @@
                 costForm("cost"),
                 '_label -> messages("label.price_in", currency),
                 '_labelTextClass -> "form-label",
-                '_inputClass -> "form-control-1-4",
-                '_productName -> path.toMessageKey
+                '_inputClass -> "form-control-1-4"
             )
         </div>
 
