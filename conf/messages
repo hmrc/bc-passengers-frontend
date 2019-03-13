@@ -1113,3 +1113,4 @@ label.do_you_want_to_remove_.alcohol.other = Do you want to remove this alcoholi
 
 
 label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_9_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 9 other goods to declare. If you do have more, you will need to declare all your goods, alcohol and tobacco at the red channel at customs.
+label.you_can_only_calculate_taxes_and_duties_on_9_other_goods_or_fewer_ = You can only calculate taxes and duties on 9 other goods or fewer - remove items from your duty estimate to continue. If you do have more, go through the red channel at customs.
