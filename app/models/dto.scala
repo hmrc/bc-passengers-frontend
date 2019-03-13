@@ -118,7 +118,7 @@ object VolumeDto {
         .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
         .verifying(bigDecimalCheckConstraint("volume", 3, productPathMessageKey))
         .transform[BigDecimal](volume => BigDecimal(volume), bd => bd.toString())
-        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
+        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits, productPathMessageKey))
     )(VolumeDto.apply)(VolumeDto.unapply)
   )
 
@@ -140,7 +140,7 @@ object NoOfSticksDto {
     mapping(
       "noOfSticks" -> text
         .verifying(noOfSticksConstraint("noofsticks", productPathMessageKey)).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
-        .verifying(calculatorLimitConstraintInt(limits, applicableLimits))
+        .verifying(calculatorLimitConstraintInt(limits, applicableLimits, productPathMessageKey))
     )(NoOfSticksDto.apply)(NoOfSticksDto.unapply)
   )
 }
@@ -152,7 +152,7 @@ object NoOfSticksAndWeightDto {
     mapping(
       "noOfSticks" -> text
         .verifying(noOfSticksConstraint("noofsticks", productPathMessageKey)).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
-        .verifying(calculatorLimitConstraintInt(limits, applicableLimits)),
+        .verifying(calculatorLimitConstraintInt(limits, applicableLimits, productPathMessageKey)),
       "weight" -> text
         .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
         .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
@@ -172,7 +172,7 @@ object WeightDto {
         .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
         .verifying(bigDecimalCheckConstraint("weight", 2, productPathMessageKey))
         .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
-        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
+        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits, productPathMessageKey))
     )(WeightDto.apply)(WeightDto.unapply)
   )
 
