@@ -49,27 +49,27 @@
 
       <table>
         <thead>
-        <tr role="row">
-          <th scope="col"></th>
-          <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
-        </tr>
+          <tr role="row">
+            <th scope="col"></th>
+            <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
+          </tr>
         </thead>
 
         <tbody>
-        <tr>
-          <td>@messages("label.customs")</td>
-          <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.customs)</td>
-        </tr>
+          <tr>
+            <td>@messages("label.customs")</td>
+            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.customs)</td>
+          </tr>
 
-        <tr>
-          <td>@messages("label.excise")</td>
-          <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.excise)</td>
-        </tr>
+          <tr>
+            <td>@messages("label.excise")</td>
+            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.excise)</td>
+          </tr>
 
-        <tr>
-          <td>@messages("label.vat")</td>
-          <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.vat)</td>
-        </tr>
+          <tr>
+            <td>@messages("label.vat")</td>
+            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.vat)</td>
+          </tr>
         </tbody>
       </table>
 
@@ -79,8 +79,8 @@
       </div>
 
       @if(!hideExchangeRateInfo) {
-      <br>
-      <p class="margin-top-30">@Html(messages("label.exchange_rates"))</p>
+        <br>
+        <p class="margin-top-30">@Html(messages("label.exchange_rates"))</p>
       }
     </div>
   </details>

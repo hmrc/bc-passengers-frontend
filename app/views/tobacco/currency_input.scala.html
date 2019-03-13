@@ -1,5 +1,5 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, currencies: List[Currency], description: String, path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+@(currencyForm: Form[CurrencyDto], product: ProductTreeLeaf, currencies: List[Currency], descriptionArgs: Option[(String, List[String])], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.mvc.Call
@@ -8,17 +8,17 @@
 
 
 @scriptElem = {
-    <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
-    <script>
-        $(document).ready(function () {
-            var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
-            enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
-        })
-    </script>
+  <script src="@routes.Assets.at("javascripts/accessible-autocomplete.min.js")"></script>
+  <script>
+    $(document).ready(function () {
+      var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
+      enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+    })
+  </script>
 }
 
 @linkElem = {
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
+  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accessible-autocomplete.min.css")" >
 }
 
 
@@ -28,30 +28,32 @@
 
 @main_template(title = pageTitle.toString, inlineScript = Some(scriptElem), inlineLinkElem = Some(linkElem)) {
 
-    @views.html.tags.errors(currencyForm)
+  @views.html.tags.errors(currencyForm)
 
-    <h1 class="heading-xlarge">@messages("label.what_currency_did_you_use_to_pay_for_the_", description)</h1>
+  @descriptionArgs.map { case (key, args) =>
+    <h1 class="heading-xlarge">@messages("label.what_currency_did_you_use_to_pay_for_the_", messages(key, args: _*))</h1>
+  }
 
-    @form(action = routes.TobaccoInputController.processCurrencyInput(path, iid)){
+  @form(action = routes.TobaccoInputController.processCurrencyInput(path, iid)){
 
-        @components.select(
-            field = currencyForm("currency"),
-            elementOptions = ("","") :: currencies.map(c => (c.displayName ,c.displayName)),
-            displayEmptyValue = true,
-            '_label -> Messages("label.enter_currency"),
-            '_errorsAboveInput -> true
-        )
+    @components.select(
+      field = currencyForm("currency"),
+      elementOptions = ("","") :: currencies.map(c => (c.displayName ,c.displayName)),
+      displayEmptyValue = true,
+      '_label -> Messages("label.enter_currency"),
+      '_errorsAboveInput -> true
+    )
 
-        <details class="form-group">
-            <summary><span class="summary">@messages("label.if_the_currency_you_used_is_not_shown")</span></summary>
-            <div class="panel panel-border-narrow">
-                <p>@messages("label.you_cannot_use_this_service_")</p>
-            </div>
-        </details>
+    <details class="form-group">
+      <summary><span class="summary">@messages("label.if_the_currency_you_used_is_not_shown")</span></summary>
+      <div class="panel panel-border-narrow">
+        <p>@messages("label.you_cannot_use_this_service_")</p>
+      </div>
+    </details>
 
-        <div class="form-group">
-            <input type="submit" class="button" value="Continue">
-        </div>
+    <div class="form-group">
+      <input type="submit" class="button" value="Continue">
+    </div>
 
-    }
+  }
 }

@@ -1,5 +1,6 @@
 package models
 
+
 import util._
 
 sealed trait ProductTreeNode {
@@ -9,22 +10,26 @@ sealed trait ProductTreeNode {
 
 case class ProductTreeLeaf(token: String, name: String, rateID: String, templateId: String, applicableLimits: List[String]) extends ProductTreeNode {
 
-  def getDescription(purchasedProductInstance: PurchasedProductInstance): Option[String] = {
+  def getDescriptionArgs(purchasedProductInstance: PurchasedProductInstance, long: Boolean): Option[(String, List[String])] = {
+
     templateId match {
+      case "cigars" if long =>
+        for(noOfSticks <- purchasedProductInstance.noOfSticks; weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
+          ("label.X_X_Xg", List(noOfSticks.toString, name.toLowerCase(), decimalFormat10.format(weightOrVolume*1000)))
       case "cigarettes" | "cigars" =>
-        purchasedProductInstance.noOfSticks map { noOfSticks =>
-          noOfSticks + " " + name.toLowerCase()
-        }
+        for(noOfSticks <- purchasedProductInstance.noOfSticks) yield
+          ("label.X_X", List(noOfSticks.toString, name.toLowerCase()))
       case "tobacco" =>
-        purchasedProductInstance.weightOrVolume.map { weightOrVolume =>
-          decimalFormat10.format( (weightOrVolume*1000) ) + "g of " + name.toLowerCase()
-        }
+        for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
+          ("label.Xg_of_X", List(decimalFormat10.format(weightOrVolume * 1000), name.toLowerCase()))
       case "alcohol" =>
-        purchasedProductInstance.weightOrVolume.map { weightOrVolume =>
-          weightOrVolume + " litres " + name.toLowerCase()
-        }
-      case "other-goods" => Some(name)
-      case _ => None
+        for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
+          if (weightOrVolume == BigDecimal(1))
+            ("label.X_litre_X", List(weightOrVolume.toString, name.toLowerCase()))
+          else
+            ("label.X_litres_X", List(weightOrVolume.toString, name.toLowerCase()))
+      case "other-goods" =>
+        Some( (name, Nil) )
     }
   }
 
@@ -57,16 +62,6 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.cost.isDefined
       case _ => false
-    }
-  }
-  
-  def getDisplayWeight(purchasedProductInstance: PurchasedProductInstance): Option[String] = {
-    templateId match {
-      case "cigars" =>
-        purchasedProductInstance.weightOrVolume map { weightOrVolume =>
-          decimalFormat10.format( (weightOrVolume*1000) ) + "g"
-        }
-      case _ => None
     }
   }
 

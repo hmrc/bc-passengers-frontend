@@ -81,9 +81,7 @@ class TobaccoInputController @Inject()(
 
         NoOfSticksDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
-            requireProduct(path) { product =>
-              Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
-            }
+            Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product.token, product.name, path, iid)))
           },
           _ => {
 
@@ -128,9 +126,7 @@ class TobaccoInputController @Inject()(
       requireProduct(path) { product =>
         NoOfSticksAndWeightDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
-            requireProduct(path) { product =>
-              Future.successful(BadRequest(no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
-            }
+            Future.successful(BadRequest(no_of_sticks_weight_input(formWithErrors, product.token, product.name, path, iid)))
           },
           _ => {
 
@@ -174,9 +170,7 @@ class TobaccoInputController @Inject()(
       requireProduct(path) { product =>
         WeightDto.form(limits, product.applicableLimits, path.toMessageKey).bindFromRequest.fold(
           formWithErrors => {
-            requireProduct(path) { product =>
-              Future.successful(BadRequest(weight_input(formWithErrors, product.token, product.name, path, iid)))
-            }
+            Future.successful(BadRequest(weight_input(formWithErrors, product.token, product.name, path, iid)))
           },
           _ => {
 
@@ -206,8 +200,8 @@ class TobaccoInputController @Inject()(
     }
 
     requireProduct(path) { product =>
-      requireWorkingInstanceDescription(product) { description =>
-        Future.successful(Ok(country_of_purchase(form, product, path, iid, countriesService.getAllCountries, description)))
+      requireWorkingInstance { wi =>
+        Future.successful(Ok(country_of_purchase(form, product, path, iid, countriesService.getAllCountries, product.getDescriptionArgs(wi, long = false))))
       }
     }
   }
@@ -225,8 +219,8 @@ class TobaccoInputController @Inject()(
     SelectedCountryDto.form(countriesService).bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          requireWorkingInstanceDescription(product) { description =>
-            Future.successful(BadRequest(country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, description)))
+          requireWorkingInstance { wi =>
+            Future.successful(BadRequest(country_of_purchase(formWithErrors, product, path, iid, countriesService.getAllCountries, product.getDescriptionArgs(wi, long = false))))
           }
         }
       },
@@ -256,8 +250,8 @@ class TobaccoInputController @Inject()(
     }
 
     requireProduct(path) { product =>
-      requireWorkingInstanceDescription(product) { description =>
-        Future.successful(Ok(currency_input(form, product, currencyService.getAllCurrencies, description, path, iid)))
+      requireWorkingInstance { wi =>
+        Future.successful(Ok(currency_input(form, product, currencyService.getAllCurrencies, product.getDescriptionArgs(wi, long = false), path, iid)))
       }
     }
   }
@@ -276,8 +270,8 @@ class TobaccoInputController @Inject()(
     CurrencyDto.form(currencyService).bindFromRequest.fold(
       formWithErrors => {
         requireProduct(path) { product =>
-          requireWorkingInstanceDescription(product) { description =>
-            Future.successful(BadRequest(currency_input(formWithErrors, product, currencyService.getAllCurrencies, description, path, iid)))
+          requireWorkingInstance { wi =>
+            Future.successful(BadRequest(currency_input(formWithErrors, product, currencyService.getAllCurrencies, product.getDescriptionArgs(wi, long = false), path, iid)))
           }
         }
       },
@@ -300,9 +294,9 @@ class TobaccoInputController @Inject()(
     }
 
     requireProduct(path) { product =>
-      requireWorkingInstanceDescription(product) { description =>
+      requireWorkingInstance { wi =>
         requireWorkingInstanceCurrency { currency =>
-            Future.successful(Ok(cost_input(form, product, path, iid, description, currency.displayName)))
+            Future.successful(Ok(cost_input(form, product, path, iid, product.getDescriptionArgs(wi, long = false), currency.displayName)))
         }
       }
     }
@@ -313,15 +307,14 @@ class TobaccoInputController @Inject()(
     CostDto.form(productPathMessageKey = path.toMessageKey).bindFromRequest.fold(
       formWithErrors => {
 
-        requireProduct(path) { product =>
-          requireWorkingInstanceDescription(product) { description =>
-            requireWorkingInstanceCurrency { currency =>
-              requireProduct(path) { product =>
-                Future.successful(BadRequest(cost_input(formWithErrors, product, path, iid, description, currency.displayName)))
-              }
+        requireWorkingInstance { wi =>
+          requireWorkingInstanceCurrency { currency =>
+            requireProduct(path) { product =>
+              Future.successful(BadRequest(cost_input(formWithErrors, product, path, iid, product.getDescriptionArgs(wi, long = false), currency.displayName)))
             }
           }
         }
+
       },
       dto => {
 

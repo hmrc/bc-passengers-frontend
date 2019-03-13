@@ -40,7 +40,7 @@ object CalculatorResponse {
 
 case class Calculation(excise: String, customs: String, vat: String, allTax: String)
 case class ExchangeRate(rate: String, date: String)
-case class Metadata(description: String, declarationMessageDescription: String, cost: String, currency: Currency, country: Country, exchangeRate: ExchangeRate)
+case class Metadata(description: String, name: String, cost: String, currency: Currency, country: Country, exchangeRate: ExchangeRate)
 case class Item(rateId: String, purchaseCost: String, noOfUnits: Option[Int], weightOrVolume: Option[BigDecimal], calculation: Calculation, metadata: Metadata)
 case class Band(code: String, items: List[Item], calculation: Calculation)
 
