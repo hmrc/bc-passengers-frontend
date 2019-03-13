@@ -25,17 +25,17 @@ class TravelDetailsController @Inject() (
   val productsService: ProductTreeService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
-
-  val interrupt_page: views.html.travel_details.interrupt_page,
   val check_declare_goods_start_page: views.html.travel_details.check_declare_goods_start_page,
   val eu_country_check: views.html.travel_details.eu_country_check,
-  val confirm_age: views.html.travel_details.confirm_age,
+  val no_need_to_use_service: views.html.travel_details.no_need_to_use_service,
+  val goods_bought_inside_and_outside_eu: views.html.travel_details.goods_bought_inside_and_outside_eu,
+  val goods_bought_outside_eu: views.html.travel_details.goods_bought_outside_eu,
   val goods_bought_inside_eu: views.html.travel_details.goods_bought_inside_eu,
+  val confirm_age: views.html.travel_details.confirm_age,
   val confirm_private_craft: views.html.travel_details.confirm_private_craft,
   val error_template: views.html.error_template,
   val vat_res: views.html.travel_details.vat_res,
   val duty_free: views.html.travel_details.duty_free,
-
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -80,14 +80,14 @@ class TravelDetailsController @Inject() (
               if (appConfig.usingVatResJourney) {
                 euCountryCheckDto.euCountryCheck match {
                   case "euOnly" => Redirect(routes.TravelDetailsController.didYouClaimTaxBack())
-                  case "nonEuOnly" => Redirect(routes.TravelDetailsController.nonEuInterrupt())
+                  case "nonEuOnly" => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
                   case "both" => Redirect(routes.TravelDetailsController.didYouClaimTaxBack())
                 }
               } else {
                 euCountryCheckDto.euCountryCheck match {
                   case "euOnly" => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
-                  case "nonEuOnly" => Redirect(routes.TravelDetailsController.nonEuInterrupt())
-                  case "both" =>Redirect(routes.TravelDetailsController.bothInterrupt())
+                  case "nonEuOnly" => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
+                  case "both" => Redirect(routes.TravelDetailsController.goodsBoughtInsideAndOutsideEu())
                 }
               }
           }
@@ -143,7 +143,7 @@ class TravelDetailsController @Inject() (
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
                 Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
               case Some(jd) if jd.euCountryCheck.contains("both") =>
-                Redirect(routes.TravelDetailsController.bothInterrupt())
+                Redirect(routes.TravelDetailsController.goodsBoughtInsideAndOutsideEu())
               case _ =>
                 Redirect(routes.TravelDetailsController.privateCraft())
             }
@@ -155,13 +155,52 @@ class TravelDetailsController @Inject() (
     )
   }
 
-  val nonEuInterrupt: Action[AnyContent] = PublicAction { implicit request =>
-    Future.successful(Ok(interrupt_page(mixEuRow = false)))
+  val goodsBoughtInsideEu: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(goods_bought_inside_eu()))
   }
 
-  val bothInterrupt: Action[AnyContent] = PublicAction { implicit request =>
-    Future.successful(Ok(interrupt_page(mixEuRow = true)))
+  val goodsBoughtOutsideEu: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(goods_bought_outside_eu(BringingOverAllowanceDto.form)))
   }
+
+  def goodsBoughtOutsideEuPost: Action[AnyContent] = PublicAction { implicit request =>
+    BringingOverAllowanceDto.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(BadRequest(goods_bought_outside_eu(formWithErrors)))
+      },
+      overAllowanceDto => {
+        if (overAllowanceDto.bringingOverAllowance) {
+          Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
+        } else {
+          Future.successful(Redirect(routes.TravelDetailsController.noNeedToUseService()))
+        }
+      }
+    )
+  }
+
+  val goodsBoughtInsideAndOutsideEu: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(goods_bought_inside_and_outside_eu(BringingOverAllowanceDto.form)))
+  }
+
+  def goodsBoughtInsideAndOutsideEuPost: Action[AnyContent] = PublicAction { implicit request =>
+    BringingOverAllowanceDto.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(BadRequest(goods_bought_inside_and_outside_eu(formWithErrors)))
+      },
+      overAllowanceDto => {
+        if (overAllowanceDto.bringingOverAllowance) {
+          Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
+        } else {
+          Future.successful(Redirect(routes.TravelDetailsController.noNeedToUseService()))
+        }
+      }
+    )
+  }
+
+  val noNeedToUseService: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(no_need_to_use_service()))
+  }
+
 
   def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     cache.fetch map {
@@ -187,7 +226,6 @@ class TravelDetailsController @Inject() (
   }
 
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
-
     cache.fetch map {
       case Some(JourneyData(_, _, _, Some(pc), _, _, _, _, _, _)) =>
         Ok(confirm_private_craft(form.bind(Map("privateCraft" -> pc.toString))))
@@ -213,9 +251,4 @@ class TravelDetailsController @Inject() (
       }
     )
   }
-
-  val goodsBoughtInsideEu: Action[AnyContent] = PublicAction { implicit request =>
-    Future.successful(Ok(goods_bought_inside_eu()))
-  }
-
 }

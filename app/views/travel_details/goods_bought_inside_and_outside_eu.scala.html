@@ -1,0 +1,71 @@
+@this(form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, main_template: views.html.main_template)
+@(bringingOverAllowance: Form[BringingOverAllowanceDto])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+
+@title = {
+  @messages("heading.goods_brought_in_from_non_eu_countries_")
+}
+
+@main_template(title = title.toString) {
+
+  @views.html.tags.errors(bringingOverAllowance)
+
+  <h1 class="heading-xlarge">@title</h1>
+
+  <p>@messages("text.you_do_not_need_to_tell_us_")</p>
+
+  <p>@messages("text.there_are_separate_allowances_")</p>
+
+  <div class="grid-row">
+    <div class="column-one-third">
+      <h2 class="heading-small">@messages("label.interrupt_alcohol")</h2>
+    </div>
+    <div class="column-two-thirds">
+      <ul class="list list-bullet">
+        <li>@messages("text.1_litre_of_spirits_or_")</li>
+        <li>@messages("text.16_litres_of_beer")</li>
+        <li>@messages("text.4_litres_of_still_wine")</li>
+      </ul>
+    </div>
+    <div class="column-one-third">
+      <h2 class="heading-small">@messages("label.interrupt_tobacco")</h2>
+    </div>
+    <div class="column-two-thirds">
+      <ul class="list list-bullet">
+        <li>@messages("text.your_allowance_is_200_")</li>
+      </ul>
+    </div>
+    <div class="column-one-third">
+      <h2 class="heading-small">@messages("label.interrupt_other_goods")</h2>
+    </div>
+    <div class="column-two-thirds">
+      <ul class="list list-bullet">
+        <li>@messages("text.your_allowance_is_a_total_of_")</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>@messages("text.if_you_bring_in_goods_over_")</p>
+  <p>@messages("text.our_online_calculator_accepts_")</p>
+
+  <h2 class="heading-medium">@messages("heading.are_you_bringing_in_goods_over_")</h2>
+
+  @form(action = routes.TravelDetailsController.goodsBoughtInsideAndOutsideEuPost()){
+    <fieldset>
+      <legend class="visually-hidden">@messages("heading.are_you_bringing_in_goods_over_")</legend>
+
+      @components.input_radio_group(
+      bringingOverAllowance("bringingOverAllowance"),
+      Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+      '_labelClass -> "block-label inputLabelBeforeError",
+      '_inline -> true
+      )
+
+    </fieldset>
+
+    <div class="form-group">
+      <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+  }
+}

@@ -7,9 +7,13 @@ POST       /where-goods-bought                               controllers.TravelD
 
 GET        /goods-bought-inside-eu                           controllers.TravelDetailsController.goodsBoughtInsideEu
 
-GET        /arrivals-from-outside-the-eu                     controllers.TravelDetailsController.nonEuInterrupt
+GET        /goods-bought-outside-eu                          controllers.TravelDetailsController.goodsBoughtOutsideEu
+POST       /goods-bought-outside-eu                          controllers.TravelDetailsController.goodsBoughtOutsideEuPost
 
-GET        /arrivals-from-both                               controllers.TravelDetailsController.bothInterrupt
+GET        /goods-bought-inside-and-outside-eu               controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEu
+POST       /goods-bought-inside-and-outside-eu               controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEuPost
+
+GET        /no-need-to-use-service                           controllers.TravelDetailsController.noNeedToUseService
 
 GET        /private-travel                                   controllers.TravelDetailsController.privateCraft
 POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
@@ -71,8 +75,8 @@ POST       /select-goods/$path<tobacco/cigarettes>/no-of-sticks/:iid            
 GET        /select-goods/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid   controllers.TobaccoInputController.displayNoOfSticksWeightInput(path: ProductPath, iid: String)
 POST       /select-goods/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid   controllers.TobaccoInputController.processNoOfSticksWeightInput(path: ProductPath, iid: String)
 
-GET        /select-goods/$path<tobacco/(rolling|chewing)-tobacco>/weight/:iid                  controllers.TobaccoInputController.displayWeightInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/(rolling|chewing)-tobacco>/weight/:iid                  controllers.TobaccoInputController.processWeightInput(path: ProductPath, iid: String)
+GET        /select-goods/$path<tobacco/(rolling|chewing)-tobacco>/weight/:iid          controllers.TobaccoInputController.displayWeightInput(path: ProductPath, iid: String)
+POST       /select-goods/$path<tobacco/(rolling|chewing)-tobacco>/weight/:iid          controllers.TobaccoInputController.processWeightInput(path: ProductPath, iid: String)
 
 GET        /select-goods/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.displayCountryInput(path: ProductPath, iid: String)
 POST       /select-goods/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.processCountryInput(path: ProductPath, iid: String)
@@ -97,4 +101,4 @@ POST       /enter-goods/:iid/tell-us                                            
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)
 
-GET        /assets/*file                                             controllers.Assets.at(path="/public", file)
+GET        /assets/*file                                                               controllers.Assets.at(path="/public", file)

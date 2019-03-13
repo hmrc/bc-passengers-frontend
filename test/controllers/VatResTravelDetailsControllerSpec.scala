@@ -63,7 +63,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("nonEuOnly"))(any())
     }
@@ -84,7 +84,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "Invoking GET ../did-you-claim-tax-back" should {
+  "Invoking GET .../did-you-claim-tax-back" should {
     "return the did you claim tax back view unpopulated if there is no vat res answer in keystore?" in {
 
       when(controller.cache.fetch(any())) thenReturn Future.successful( None )
@@ -126,7 +126,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "Invoking POST ../did-you-claim-tax-back" should {
+  "Invoking POST .../did-you-claim-tax-back" should {
 
     "return bad request when given invalid data" in {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back").withFormUrlEncodedBody("value" -> "badValue")).get
@@ -167,7 +167,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "Invoking GET ../duty-free" should {
+  "Invoking GET .../duty-free" should {
     "return the duty free view unpopulated if there is no duty free answer in keystore?" in {
 
       when(controller.cache.fetch(any())) thenReturn Future.successful( None )
@@ -209,7 +209,38 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "Invoking POST ../duty-free" should {
+  "Invoking POST .../duty-free" should {
+
+    "redirect to the goods-bought-inside-eu if not bringing duty free and had previously selected eu only countries" in {
+      when(controller.travelDetailsService.storeDutyFreeCheck(meq(false))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), isVatResClaimed = Some(false))))
+
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("bringingDutyFree" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")
+
+      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())
+
+    }
+
+    "redirect to the goods-bought-inside-and-outside-eu if not bringing duty free and had previously selected both eu and non eu countries" in {
+      when(controller.travelDetailsService.storeDutyFreeCheck(meq(false))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = Some(false))))
+
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("bringingDutyFree" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")
+
+      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())
+
+    }
+
 
     "return bad request when given invalid data" in {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("value" -> "badValue")).get
