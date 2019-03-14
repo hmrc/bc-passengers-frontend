@@ -136,7 +136,7 @@ class CurrencyService {
     Currency("SRD", "Suriname dollars (SRD)", Some("SRD"), Nil),
     Currency("STD", "São Tomé and Príncipe dobra (STD)", Some("STD"), Nil),
     Currency("SVC", "El Salvadorian colon (SVC)", Some("SVC"), Nil),
-    Currency("SZL", "Eswantini lilangeni (SZL)", Some("SZL"), List("Swaziland")),
+    Currency("SZL", "Eswatini lilangeni (SZL)", Some("SZL"), List("Swaziland")),
     Currency("THB", "Thai baht (THB)", Some("THB"), List("Thai")),
     Currency("TMT", "Turkmenistanian manat (TMT)", Some("TMT"), Nil),
     Currency("TND", "Tunisian dinar (TND)", Some("TND"), Nil),

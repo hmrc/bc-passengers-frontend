@@ -78,7 +78,7 @@ class CountriesServiceSpec extends BaseSpec {
     Country("Eritrea", "ER", isEu=false, Nil),
     Country("Estonia", "EE", isEu=true, Nil),
     Country("Ethiopia", "ET", isEu=false, Nil),
-    Country("Eswantini", "SZ", isEu=false, List("Swaziland")),
+    Country("Eswatini", "SZ", isEu=false, List("Swaziland")),
     Country("Falkland Islands", "FK", isEu=false, List("Falklands")),
     Country("Faroe Islands", "FO", isEu=false, List("Faroes")),
     Country("Fiji", "FJ", isEu=false, Nil),
