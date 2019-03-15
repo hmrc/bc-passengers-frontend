@@ -1,6 +1,5 @@
 package models
 
-
 case class PurchasedItem(
   purchasedProductInstance: PurchasedProductInstance,
   productTreeLeaf: ProductTreeLeaf,
@@ -8,9 +7,8 @@ case class PurchasedItem(
   gbpCost: BigDecimal,
   exchangeRate: ExchangeRate
 ) {
-  def description: Option[String] = productTreeLeaf.getDescription(purchasedProductInstance)
-  def declarationMessageDescription: String = productTreeLeaf.name
-  def displayWeight: Option[String] = productTreeLeaf.getDisplayWeight(purchasedProductInstance)
+  def descriptionArgs(long: Boolean): Option[(String, List[String])] = productTreeLeaf.getDescriptionArgs(purchasedProductInstance, long)
+  def name: String = productTreeLeaf.name
   def displayCurrency: String = currency.displayName
   def country: Option[String] = purchasedProductInstance.country.map(_.countryName)
 }

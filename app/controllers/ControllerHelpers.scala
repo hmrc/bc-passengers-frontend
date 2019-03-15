@@ -142,17 +142,6 @@ trait ControllerHelpers extends MessagesBaseController
     block(context.getJourneyData.getOrCreatePurchasedProductInstance(path, iid))
   }
 
-  def requirePurchasedProductInstanceDescription(product: ProductTreeLeaf, path: ProductPath, iid: String)(block: String => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    requirePurchasedProductInstance(path, iid) { purchasedProductInstance =>
-      product.getDescription(purchasedProductInstance) match {
-        case Some(desc) => block(desc)
-        case None =>
-          logAndRenderError(s"No purchasedProductInstance found in journeyData for $path:$iid!")
-      }
-    }
-  }
-
   def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
@@ -191,14 +180,6 @@ trait ControllerHelpers extends MessagesBaseController
           logAndRedirect(s"No weightOrVolume found in working instance! Redirecting to dashboard...", routes.DashboardController.showDashboard())
       }
     }
-  }
-
-  def requireWorkingInstanceDescription(product: ProductTreeLeaf)(block: String => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    requireWorkingInstance { purchasedProductInstance =>
-      block(product.getDescription(purchasedProductInstance).getOrElse(""))
-    }
-
   }
 
   def requireWorkingInstanceCurrency(block: Currency => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {

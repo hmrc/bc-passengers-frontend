@@ -2,7 +2,7 @@ package models
 
 import util.BaseSpec
 
-class CalculatorResponseTest extends BaseSpec {
+class CalculatorResponseSpec extends BaseSpec {
 
   "Calling CalculatorResponse.getItemsWithTaxToPay" should {
 

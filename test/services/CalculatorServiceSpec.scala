@@ -9,8 +9,11 @@ import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
+import play.api.mvc.RequestHeader
 import play.api.test.Helpers._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -227,7 +230,9 @@ class CalculatorServiceSpec extends BaseSpec {
         )
       ))
 
-      val response: CalculatorServiceResponse = await(service.calculate())
+      val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+
+      val response: CalculatorServiceResponse = await(service.calculate()(implicitly, messages))
 
       response.asInstanceOf[CalculatorServiceSuccessResponse].calculatorResponse shouldBe
         CalculatorResponse(

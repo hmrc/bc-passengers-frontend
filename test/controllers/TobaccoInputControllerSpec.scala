@@ -195,7 +195,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
     "return a 200 with the currency value populated if there is a working instance currency" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance = Some(
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", currency = Some("JMD")))
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", noOfSticks = Some(200), currency = Some("JMD")))
       ))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco/cigarettes/currency/iid0")).get
@@ -246,8 +246,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
     "return a 200 with the cost value populated if there is a working instance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
-        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
-        )))
+        Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", noOfSticks = Some(200), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
+      )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco/cigarettes/cost/iid0")).get
       val content: String = contentAsString(result)
@@ -265,7 +265,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
-        )))
+      )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco/cigarettes/iid0/update")).get
 
@@ -276,7 +276,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
-        )))
+      )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco/cigarillos/iid0/update")).get
 
@@ -287,7 +287,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(requiredJourneyData.copy(workingInstance =
         Some(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), iid = "iid0", weightOrVolume = Some(BigDecimal(20.5)), currency = Some("JMD"), cost = Some(BigDecimal(200.80)))
-        )))
+      )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco/rolling-tobacco/iid0/update")).get
 

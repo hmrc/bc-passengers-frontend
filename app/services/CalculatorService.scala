@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, Reads}
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
@@ -62,7 +63,7 @@ class CalculatorService @Inject() (
     }
   }
 
-  def calculate()(implicit hc: HeaderCarrier): Future[CalculatorServiceResponse] = {
+  def calculate()(implicit hc: HeaderCarrier, messages: Messages): Future[CalculatorServiceResponse] = {
 
     cache.fetch flatMap {
 

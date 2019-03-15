@@ -48,28 +48,30 @@
       </div>
 
       @alcoholPurchasedItemList.map { purchasedItem =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div class="product-item">
-            <dt class="cya-question">@messages("label.item")</dt>
-            <dd class="cya-answer">@purchasedItem.description</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description</span></a></dd>
+        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
+          <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
+            <div class="product-item">
+              <dt class="cya-question">@messages("label.item")</dt>
+              <dd class="cya-answer">@description</dd>
+              <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@description</span></a></dd>
+            </div>
+            <div class="product-country">
+              <dt class="cya-question">@messages("label.country")</dt>
+              <dd class="cya-answer">@purchasedItem.country</dd>
+              <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@description @messages("label.country")</span></a></dd>
+            </div>
+            <div class="product-price">
+              <dt class="cya-question">@messages("label.price")</dt>
+              <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+              </dd>
+              <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@description @messages("label.price")</span></a></dd>
+            </div>
+          </dl>
+          <div class="margin-bottom-50">
+            <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
           </div>
-          <div class="product-country">
-            <dt class="cya-question">@messages("label.country")</dt>
-            <dd class="cya-answer">@purchasedItem.country</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.country")</span></a></dd>
-          </div>
-          <div class="product-price">
-            <dt class="cya-question">@messages("label.price")</dt>
-            <dd class="cya-answer">
-              @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
-            </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@purchasedItem.description @messages("label.price")</span></a></dd>
-          </div>
-        </dl>
-        <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
-        </div>
+        }
       }
     }
 
@@ -90,55 +92,60 @@
       </div>
 
       @tobaccoPurchasedItemList.map { purchasedItem =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div class="product-item">
-            <dt class="cya-question">@messages("label.item")</dt>
-            <dd class="cya-answer">
-              @if(purchasedItem.displayWeight){
-                @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
-              } else {
-                @purchasedItem.description
-              }
-            </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">
-              @if(purchasedItem.displayWeight){
-                @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
-              } else {
-                @purchasedItem.description
-              }</span></a></dd>
+        @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
+          <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
+            <div class="product-item">
+              <dt class="cya-question">@messages("label.item")</dt>
+              <dd class="cya-answer">
+                @description
+              </dd>
+              <dd class="cya-answer cya-change">
+                <a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
+                  @messages("label.change")
+                  <span class="visually-hidden">
+                    @description
+                  </span>
+                </a>
+              </dd>
+            </div>
+            <div class="product-country">
+              <dt class="cya-question">@messages("label.country")</dt>
+              <dd class="cya-answer">@purchasedItem.country</dd>
+              <dd class="cya-answer cya-change">
+                <a href="@routes.TobaccoInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
+                  @messages("label.change")
+                  <span class="visually-hidden">
+                    @description
+                    @messages("label.country")
+                  </span>
+                </a>
+              </dd>
+            </div>
+            <div class="product-price">
+              <dt class="cya-question">@messages("label.price")</dt>
+              <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+              </dd>
+              <dd class="cya-answer cya-change">
+                <a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
+                  @messages("label.change")
+                  <span class="visually-hidden">
+                    @description
+                    @messages("label.price")
+                  </span>
+                </a>
+              </dd>
+            </div>
+          </dl>
+          <div class="margin-bottom-50">
+            <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
+              @messages("label.remove_this_item")
+              <span class="visually-hidden">
+                @description
+              </span>
+            </a>
           </div>
-          <div class="product-country">
-            <dt class="cya-question">@messages("label.country")</dt>
-            <dd class="cya-answer">@purchasedItem.country</dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change")<span class="visually-hidden">
-              @if(purchasedItem.displayWeight){
-                @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
-              } else {
-                @purchasedItem.description
-              } @messages("label.country")</span></a></dd>
-
-          </div>
-          <div class="product-price">
-            <dt class="cya-question">@messages("label.price")</dt>
-            <dd class="cya-answer">
-              @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
-            </dd>
-            <dd class="cya-answer cya-change"><a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change")<span class="visually-hidden">
-              @if(purchasedItem.displayWeight){
-                @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
-              } else {
-                @purchasedItem.description
-              } @messages("label.price")</span></a></dd>
-          </div>
-        </dl>
-        <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">
-              @if(purchasedItem.displayWeight){
-                @messages("suffix.comma", purchasedItem.description.get) @purchasedItem.displayWeight
-              } else {
-                @purchasedItem.description
-              }</span></a>
-        </div>
+        }
       }
     }
 
@@ -166,35 +173,37 @@
       </div>
     }
     @otherGoodsPurchasedItemList.map { purchasedItem =>
-      <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-        <div class="product-item">
-          <dt class="cya-question">@messages("label.item")</dt>
-          <dd class="cya-answer">@purchasedItem.description</dd>
+      @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
+        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
+          <div class="product-item">
+            <dt class="cya-question">@messages("label.item")</dt>
+            <dd class="cya-answer">@description</dd>
+          </div>
+          <div class="product-country">
+            <dt class="cya-question">@messages("label.country")</dt>
+            <dd class="cya-answer">@purchasedItem.country</dd>
+          </div>
+          <div class="product-price">
+            <dt class="cya-question">@messages("label.price")</dt>
+            <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+            </dd>
+          </div>
+        </dl>
+        <div class="margin-bottom-20">
+          <a href="@routes.NewOtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
         </div>
-        <div class="product-country">
-          <dt class="cya-question">@messages("label.country")</dt>
-          <dd class="cya-answer">@purchasedItem.country</dd>
+        <div class="margin-bottom-50">
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
         </div>
-        <div class="product-price">
-          <dt class="cya-question">@messages("label.price")</dt>
-          <dd class="cya-answer">
-            @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
-          </dd>
-        </div>
-      </dl>
-      <div class="margin-bottom-20">
-        <a href="@routes.NewOtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.edit_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
-      </div>
-      <div class="margin-bottom-50">
-        <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@purchasedItem.description</span></a>
-      </div>
+      }
     }
 
   </div>
 
   @if(showCalculate && otherGoodsPurchasedItemList.size <= 9) {
     @form(action = routes.DashboardController.calculate()) {
-      <button type="submit" class="button margin-top-30">Calculate</button>
+      <button type="submit" class="button margin-top-30">@messages("label.calculate")</button>
     }
   }
 

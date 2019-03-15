@@ -101,7 +101,7 @@ class DeclarationService @Inject()(
           "declarationItemTobacco" -> tobacco.bands.flatMap{ band =>
             band.items.map { item =>
               Json.obj(
-                "commodityDescription" -> item.metadata.declarationMessageDescription.take(40),
+                "commodityDescription" -> item.metadata.name.take(40),
                 "quantity" -> item.noOfUnits.filter(_ != 0).fold[JsValue](JsNull)(x => JsString(x.toString)),
                 "weight" -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString((x * 1000).toString())),
                 "goodsValue" -> item.metadata.cost,
@@ -135,7 +135,7 @@ class DeclarationService @Inject()(
           "declarationItemAlcohol" -> alcohol.bands.flatMap{ band =>
             band.items.map { item =>
               Json.obj(
-                "commodityDescription" -> item.metadata.declarationMessageDescription.take(40),
+                "commodityDescription" -> item.metadata.name.take(40),
                 "volume" -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString(x.toString())),
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
@@ -168,7 +168,7 @@ class DeclarationService @Inject()(
           "declarationItemOther" -> other.bands.flatMap{ band =>
             band.items.map { item =>
               Json.obj(
-                "commodityDescription" -> item.metadata.declarationMessageDescription.take(40),
+                "commodityDescription" -> item.metadata.name.take(40),
                 "quantity" -> "1",
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,

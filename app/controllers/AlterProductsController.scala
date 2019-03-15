@@ -29,24 +29,14 @@ class AlterProductsController @Inject() (
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def confirmRemove(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
-
-    requireProduct(path) { product =>
-      requirePurchasedProductInstanceDescription(product, path, iid) { description =>
-
-        Future.successful(Ok(remove(ConfirmRemoveDto.form, description, path, iid)))
-      }
-    }
+    Future.successful(Ok(remove(ConfirmRemoveDto.form, path, iid)))
   }
 
   def remove(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
     ConfirmRemoveDto.form.bindFromRequest.fold(
       formWithErrors => {
-        requireProduct(path) { product =>
-          requirePurchasedProductInstanceDescription(product, path, iid) { description =>
-            Future.successful(BadRequest(remove(formWithErrors, description, path, iid)))
-          }
-        }
+        Future.successful(BadRequest(remove(formWithErrors, path, iid)))
       },
       confirmRemoveDto => {
         if (confirmRemoveDto.confirmRemove) {
