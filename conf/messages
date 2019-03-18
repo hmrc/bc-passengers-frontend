@@ -38,8 +38,8 @@ text.1_litre_of_spirits_or_ = 1 litre of spirits or 2 litres of sparkling wine o
 text.16_litres_of_beer = 16 litres of beer
 text.4_litres_of_still_wine = 4 litres of still wine
 text.your_allowance_is_a_total_of_ = Your allowance is a total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
-error.bringing_over_allowance = Select if you are you bringing in goods over your allowance
-head.error.bringing_over_allowance =Select if you are you bringing in goods over your allowance
+error.bringing_over_allowance = Select if you are bringing in goods over your allowances
+head.error.bringing_over_allowance = Select if you are bringing in goods over your allowances
 label.more_info_about_bringing_goods_into_the_uk_ = More information about bringing goods into the UK from the European Union, including restricted and banned items
 
 
