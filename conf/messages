@@ -40,6 +40,9 @@ text.4_litres_of_still_wine = 4 litres of still wine
 text.your_allowance_is_a_total_of_ = Your allowance is a total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
 error.bringing_over_allowance = Select if you are you bringing in goods over your allowance
 head.error.bringing_over_allowance =Select if you are you bringing in goods over your allowance
+label.more_info_about_bringing_goods_into_the_uk_ = More information about bringing goods into the UK from the European Union, including restricted and banned items
+
+
 
 # No Need To Use Service Page
 heading.you_do_not_need_to_use_this_service = You do not need to use this service
