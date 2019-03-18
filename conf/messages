@@ -984,13 +984,12 @@ label.tax_is_due = Tax is due because you have gone over your other goods allowa
 
 # Declaration page
 label.declare_your_goods = Declare your goods
-text.you_must_pay_duty_ = You must pay duty and tax on these goods if you bring them into the UK.
-text.you_can_only_declare_your_goods_online_  = You can only declare your goods online once - this is to ensure you do not overpay tax on your goods.
-text.if_you_do_bring_in_ = If you do bring in more goods than the ones you declare online then you will need to go through the red channel at customs.
-text.you_may_have_your_goods_ = You may have your goods seized or face prosecution and imprisonment if you provide false information or use the online service to deliberately avoid paying tax and duties on the goods you bring into the UK.
-text.the_goods_are_for_your_own_ = the goods are for your own use or to give away as a gift
-text.all_the_information_ = all the information in the declaration is correct and complete
-text.by_making_this_declaration_you_ = By making this declaration you are confirming that:
+text.i_understand_that = I understand that:
+text.i_must_pay_duty_ = I must pay duty and tax on these goods if I bring them into the UK
+text.these_goods_are_for_my_own_ = these goods are for my own use or to give away as a gift
+text.this_is_my_only_online_declaration_ = this is my only online declaration for this journey
+text.i_will_need_to_show_my_declaration_receipt_ = I will need to show my declaration receipt if I am intercepted by Border Force, who may also ask for purchase receipts
+text.you_risk_prosecution_and_imprisonment_ = You risk prosecution and imprisonment, paying duty or taxes again and having your goods seized if you provide false information or use the online service to deliberately avoid paying tax and duties on the goods you bring into the UK.
 
 
 # User Details Page
