@@ -14,7 +14,7 @@ import scala.util.{Random, Try}
 
 object WorkingPurchaseDataDto {
 
-  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance) = for {
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[WorkingPurchaseDataDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
   } yield WorkingPurchaseDataDto("", country.countryName, currency, purchasedProductInstance.cost.toList)
@@ -37,6 +37,14 @@ object EuCountryCheckDto {
 
 case class EuCountryCheckDto(euCountryCheck: String)
 
+object BringingOverAllowanceDto {
+  val form: Form[BringingOverAllowanceDto] = Form(
+    mapping(
+      "bringingOverAllowance" -> optional(boolean).verifying("error.bringing_over_allowance", _.isDefined).transform[Boolean](_.get, b => Option(b))
+    )(BringingOverAllowanceDto.apply)(BringingOverAllowanceDto.unapply)
+  )
+}
+case class BringingOverAllowanceDto(bringingOverAllowance: Boolean)
 
 object ClaimedVatResDto {
   val form: Form[ClaimedVatResDto] = Form(

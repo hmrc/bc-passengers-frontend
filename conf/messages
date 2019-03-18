@@ -18,27 +18,34 @@ heading.non_eu_countries = Non-EU countries
 label.eu_countries_only = EU countries only
 label.non_eu_countries_only = Non-EU countries only
 label.both_eu_and_non_eu_countries = Both EU and non-EU countries
-label.continue_to_tell_us_about_your_non_eu_goods = Continue to tell us about your non-EU goods
 text.eu_countries= Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
 text.non_eu_countries = Any other country (including the Canary Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
 error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
 head.error.eu_check = Select if you bought goods from EU countries only, non-EU countries only or both
 
-## Interrupt Page
-heading.you_only_need_to_tell_us_= You only need to tell us about goods bought in non‑EU countries
-heading.tell_us_about_goods_ = Tell us about goods bought in non‑EU countries
-text.you_do_not_need_to_tell_us_ = You do not need to tell us about goods bought from countries inside the EU.
-text.there_are_separate_allowances_ = There are separate allowances for bringing alcohol, tobacco and other goods into the UK from non-EU countries without paying duty or tax.
-text.if_you_go_over_an_individual_allowance_ = If you go over an individual allowance you pay tax or duty on the full value of those goods within that allowance and not just on the amount you are over.
-label.tobacco_allowance = Tobacco allowance
-label.alcohol_allowance = Alcohol allowance
-label.other_goods_allowance = Other goods allowance
-text.200_cigarettes_or_ = 200 cigarettes or 50 cigars or 100 cigarillos or 250g of hand-rolling tobacco (this allowance can be split)
+## Interrupt Pages
+heading.goods_brought_in_from_non_eu_countries_ = Goods brought in from non‑EU countries
+text.you_do_not_need_to_tell_us_ = You do not need to tell us about goods brought in from countries inside the EU.
+text.there_are_separate_allowances_ = There are separate allowances for bringing alcohol, tobacco and other goods into the UK from outside the EU without paying tax or duty.
+text.if_you_bring_in_goods_over_ = If you bring in goods over your allowances, you must declare them.
+text.our_online_calculator_accepts_ = Our online calculator accepts most foreign currencies and will work out the tax due in British pounds.
+heading.are_you_bringing_in_goods_over_ = Are you bringing in goods over your allowances?
+label.interrupt_tobacco = Tobacco
+label.interrupt_alcohol = Alcohol
+label.interrupt_other_goods = Other-Goods
+text.your_allowance_is_200_ = Your allowance is 200 cigarettes or 50 cigars or 100 cigarillos or 250g of loose tobacco (this allowance can be split)
 text.1_litre_of_spirits_or_ = 1 litre of spirits or 2 litres of sparkling wine or 2 litres of fortified wine or 2 litres of cider (this allowance can be split)
 text.16_litres_of_beer = 16 litres of beer
 text.4_litres_of_still_wine = 4 litres of still wine
-text.a_total_of_390_worth_of_ = A total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
-text.more_info_about_bringing_goods_into_the_uk_and_splitting_allowances_ = More information about bringing goods into the UK and splitting allowances (opens in a new window or tab)
+text.your_allowance_is_a_total_of_ = Your allowance is a total of £390 worth of anything else you bring into the UK (£270 if entering the UK by private aircraft or private boat)
+error.bringing_over_allowance = Select if you are you bringing in goods over your allowance
+head.error.bringing_over_allowance =Select if you are you bringing in goods over your allowance
+
+# No Need To Use Service Page
+heading.you_do_not_need_to_use_this_service = You do not need to use this service
+text.if_you_are_sure_the_goods_ = If you are sure the goods you are bringing into the UK are under your allowances, you do not need to declare them or use this service.
+text.if_you_want_to_see_the_tax_due_on_ = If you want to see the tax due on other goods brought into the UK, you can
+text.continue_to_use_our_service_ = continue to use our service to check
 
 ## VAT Res Page
 heading.did_you_claim_tax_back_on_ = Did you claim tax back on any goods you bought in the EU?
@@ -83,7 +90,6 @@ label.customs_checks = Customs checks on alcohol and tobacco
 text.customs_officers_are_more_likely_ = Customs officers are more likely to stop and ask you questions if you have more than the amounts of alcohol and tobacco below.
 label.type_of_goods = Type of goods
 label.amount = Amount
-text.more_info_about_bringing_goods_into_the_uk_ = More information about bringing goods into the UK from the European Union, including restricted and banned items
 
 ## Over 17 Page
 error.over_17 = Select yes if you are 17 or over

@@ -107,7 +107,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("euOnly"))(any())
     }
 
-    "redirect to .../arrivals-from-outside-the-eu when user says they have only arrived from countries outside EU" in {
+    "redirect to .../goods-bought-outside-eu when user says they have only arrived from countries outside EU" in {
 
       when(controller.travelDetailsService.storeEuCountryCheck(meq("nonEuOnly"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
@@ -116,13 +116,13 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("nonEuOnly"))(any())
     }
 
 
-    "redirect to .../arrivals-from-both when user says they have arrived from both EU and ROW countries" in {
+    "redirect to .../goods-bought-inside-and-outside-eu when user says they have arrived from both EU and ROW countries" in {
 
       when(controller.travelDetailsService.storeEuCountryCheck(meq("both"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"))))
@@ -131,7 +131,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("both"))(any())
     }
@@ -146,10 +146,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling GET ../arrivals-from-outside-the-eu" should {
+  "calling GET .../goods-bought-outside-eu" should {
     "return the interrupt page without the added rest of world guidance" in {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-outside-the-eu")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -159,34 +159,95 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
+  "calling POST .../goods-bought-outside-eu" should {
 
-  "calling GET ../arrivals-from-both" should {
+    "redirect to .../private-travel when bringing in goods over the indicated allowances" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
+    }
+
+    "redirect to .../no-need-to-use-service when bringing in goods under the indicated allowances" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")
+    }
+
+    "return bad request when given invalid data" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("value" -> "badValue")).get
+
+      status(response) shouldBe BAD_REQUEST
+    }
+  }
+
+
+  "calling GET .../goods-bought-inside-and-outside-eu" should {
     "return the interrupt page without the added rest of world guidance" in {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      content should include ("You do not need to tell us about goods bought from countries inside the EU.")
+      content should include ("Goods brought in from non‑EU countries")
     }
   }
 
-  "calling GET ../eu-done" should {
-    "return the interrupt page without the added rest of world guidance" in {
+  "calling POST .../goods-bought-inside-and-outside-eu" should {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arrivals-from-both")).get
+    "redirect to .../private-travel when bringing in goods over the indicated allowances" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
+    }
+
+    "redirect to .../no-need-to-use-service when bringing in goods under the indicated allowances" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")
+    }
+
+    "return bad request when given invalid data" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("value" -> "badValue")).get
+
+      status(response) shouldBe BAD_REQUEST
+    }
+  }
+
+
+  "calling GET .../goods-bought-inside-eu" should {
+    "return the goods bought inside the eu interrupt page" in {
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      content should include ("You do not need to tell us about goods bought from countries inside the EU.")
+      content should include ("You do not need to tell us about your goods")
     }
   }
 
-  "Invoking confirmAge" should {
+  "calling GET .../no-need-to-use-service" should {
+    "return no need to use this service page" in {
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")).get
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      content should include ("You do not need to use this service")
+    }
+  }
+
+
+  "calling GET .../confirm-age" should {
 
     "return the confirm age page unpopulated if there is no age answer in keystore" in {
 
@@ -241,7 +302,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
-  "Invoking confirmAgePost" should {
+  "Calling POST .../confirm-age" should {
 
     "redirect to /check-tax-on-goods-you-bring-into-the-uk/tell-us when subsequent journey data is present" in {
 
@@ -296,7 +357,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
-  "Invoking privateCraft" should {
+  "Calling GET .../private-travel" should {
 
     "return the private craft page unpopulated if there is no age answer in keystore" in {
 
@@ -344,7 +405,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "Invoking privateCraftPost" should {
+  "Calling POST .../private-travel" should {
 
     "redirect to /passengers/tell-us" in {
 
@@ -415,7 +476,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
-  "Invoking newSession" should {
+  "Calling GET .../new-session" should {
 
     "redirect to select country, changing session id, keep any session data for bcpaccess when redirecting" in {
 
