@@ -15,17 +15,16 @@
 
   @form(action = routes.TravelDetailsController.euCountryCheckPost()) {
 
+    <fieldset>
+      <legend class="visually-hidden">@messages("heading.are_you_bringing_in_goods_from_")</legend>
+
+      @components.input_radio_group(
+        f("euCountryCheck"),
+        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "both" -> Messages("label.both_eu_and_non_eu_countries"))
+      )
+    </fieldset>
+
     <div class="form-group">
-
-      <fieldset>
-        <legend class="visually-hidden">@messages("heading.did_you_buy_your_goods_from_")</legend>
-
-        @components.input_radio_group(
-          f("euCountryCheck"),
-          Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "both" -> Messages("label.both_eu_and_non_eu_countries"))
-        )
-      </fieldset>
-
       <button class="button" type="submit">@messages("label.continue")</button>
     </div>
   }
