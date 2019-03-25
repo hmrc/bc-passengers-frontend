@@ -702,7 +702,6 @@ class DtoTest extends BaseSpec {
       form.errors.map(_.message) shouldBe List("error.enter_a_date")
     }
 
-
     "return validation errors if any but not all of the dateOfArrival fields are blank" in {
       val formData = Map(
         "firstName" -> "Harry",
@@ -724,6 +723,47 @@ class DtoTest extends BaseSpec {
       form.errors.map(_.message) shouldBe List("error.include_day_month_and_year")
     }
 
+    "return an error if the year field is not 4 chars long" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "passportNumber" -> "123456789",
+        "placeOfArrival" -> "Heathrow",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "18",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.errors.map(_.message) shouldBe List("error.year_length")
+    }
+
+    "check for whole numbers before it checks for year length" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "passportNumber" -> "123456789",
+        "placeOfArrival" -> "Heathrow",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "x",
+        "dateTimeOfArrival.dateOfArrival.year" -> "18",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.errors.map(_.message) shouldBe List("error.only_whole_numbers")
+    }
 
     "allow the dateOfArrival if it is a valid date" in {
       val formData = Map(

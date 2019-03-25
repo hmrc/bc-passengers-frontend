@@ -239,6 +239,8 @@ object EnterYourDetailsDto {
       dateString => (Some(dateString._1), Some(dateString._2), Some(dateString._3))
     )
     .verifying("error.only_whole_numbers", dateString => dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit))
+    .transform[(String, String, String)](identity, identity)
+    .verifying("error.year_length", dateString => dateString._3.size == 4)
     .transform[(Int, Int, Int)](dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt), dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString))
     .verifying("error.enter_a_real_date", dateInt => Try(new LocalDate(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess)
     .transform[LocalDate](
