@@ -76,7 +76,6 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text() shouldBe "Tell us about the goods you are bringing into the UK"
-    Option(doc.getElementById("start-again")) should not be None
 
   }
 

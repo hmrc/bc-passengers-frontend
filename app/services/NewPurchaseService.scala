@@ -12,7 +12,7 @@ class NewPurchaseService @Inject() (
   countriesService: CountriesService
 ) {
 
-  def insertPurchases(path: ProductPath, countryName: String, currency: String, costs: List[BigDecimal], rand: Random = Random)(implicit context: LocalContext): JourneyData = {
+  def insertPurchases(path: ProductPath, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryName: String, currency: String, costs: List[BigDecimal], rand: Random = Random)(implicit context: LocalContext): JourneyData = {
 
     val journeyData = context.journeyData.getOrElse(JourneyData())
 
@@ -20,17 +20,17 @@ class NewPurchaseService @Inject() (
       cost <- costs
       iid = rand.alphanumeric.filter(_.isLetter).take(6).mkString
       country = countriesService.getCountryByName(countryName)
-    } yield PurchasedProductInstance(path, iid, None, None, country, Some(currency), Some(cost))
+    } yield PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost))
 
     journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd)
 
   }
 
-  def updatePurchase(path: ProductPath, iid: String, countryName: String, currency: String, cost: BigDecimal)(implicit context: LocalContext): JourneyData = {
+  def updatePurchase(path: ProductPath, iid: String, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryName: String, currency: String, cost: BigDecimal)(implicit context: LocalContext): JourneyData = {
     val journeyData = context.getJourneyData
     val country = countriesService.getCountryByName(countryName)
     journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances
-      .map(ppi => if (ppi.iid == iid) PurchasedProductInstance(path, iid, None, None, country, Some(currency), Some(cost)) else ppi))
+      .map(ppi => if (ppi.iid == iid) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost)) else ppi))
 
   }
 

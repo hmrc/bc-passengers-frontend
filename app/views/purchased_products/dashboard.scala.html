@@ -13,32 +13,13 @@
 
   <h1 class="heading-xlarge">@messages("label.tell_us_about_the_goods_")</h1>
 
-  <h2 class="heading-large">@messages("label.your_details")</h2>
-
-  <dl class="govuk-check-your-answers cya-questions-short">
-    <div>
-      <dt class="cya-question">@messages("label.private_aircraft_or_private_boat")</dt>
-      <dd class="cya-answer">@{if(journeyData.privateCraft.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer cya-change"><a href="private-travel" role="text">@messages("label.change") <span class="visually-hidden">@messages("label.private_aircraft_or_private_boat")</span></a></dd>
-    </div>
-    <div>
-      <dt class="cya-question">@messages("label.17_or_over")</dt>
-      <dd class="cya-answer">@{if(journeyData.ageOver17.getOrElse("None") == true) messages("label.yes") else messages("label.no")}</dd>
-      <dd class="cya-answer cya-change"><a href="confirm-age" role="text">@messages("label.change") <span class="visually-hidden">@messages("label.17_or_over")</span></a></dd>
-    </div>
-  </dl>
-
-  <h2 class="heading-large">@messages("label.your_purchases")</h2>
-
-  <div class="panel panel-border-wide" id="panel">
-    <p>@messages("label.add_purchases_separately_")</p>
-  </div>
+  <dl class="govuk-check-your-answers cya-questions-short">  </dl>
 
   <div class="alcohol">
     <h3 class="heading-medium">@messages("label.alcohol")</h3>
 
     @if(alcoholPurchasedItemList.isEmpty){
-      <p class="border-bottom">
+      <p>
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
       </p>
     } else {
@@ -53,21 +34,21 @@
             <div class="product-item">
               <dt class="cya-question">@messages("label.item")</dt>
               <dd class="cya-answer">@description</dd>
-              <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayVolumeUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@description</span></a></dd>
             </div>
             <div class="product-country">
               <dt class="cya-question">@messages("label.country")</dt>
               <dd class="cya-answer">@purchasedItem.country</dd>
-              <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@description @messages("label.country")</span></a></dd>
             </div>
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
                 @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
               </dd>
-              <dd class="cya-answer cya-change"><a href="@routes.AlcoholInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.change") <span class="visually-hidden">@description @messages("label.price")</span></a></dd>
             </div>
           </dl>
+          <div class="margin-bottom-20">
+            <a href="@routes.NewAlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+          </div>
           <div class="margin-bottom-50">
             <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
           </div>
@@ -82,7 +63,7 @@
     <h3 class="heading-medium">@messages("label.tobacco")</h3>
 
     @if(tobaccoPurchasedItemList.isEmpty){
-      <p class="border-bottom">
+      <p>
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
       </p>
     } else {
@@ -96,54 +77,24 @@
           <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
             <div class="product-item">
               <dt class="cya-question">@messages("label.item")</dt>
-              <dd class="cya-answer">
-                @description
-              </dd>
-              <dd class="cya-answer cya-change">
-                <a href="@routes.TobaccoInputController.updateNoOfSticksAndWeight(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
-                  @messages("label.change")
-                  <span class="visually-hidden">
-                    @description
-                  </span>
-                </a>
-              </dd>
+              <dd class="cya-answer">@description</dd>
             </div>
             <div class="product-country">
               <dt class="cya-question">@messages("label.country")</dt>
               <dd class="cya-answer">@purchasedItem.country</dd>
-              <dd class="cya-answer cya-change">
-                <a href="@routes.TobaccoInputController.displayCountryUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
-                  @messages("label.change")
-                  <span class="visually-hidden">
-                    @description
-                    @messages("label.country")
-                  </span>
-                </a>
-              </dd>
             </div>
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
                 @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
               </dd>
-              <dd class="cya-answer cya-change">
-                <a href="@routes.TobaccoInputController.displayCurrencyUpdate(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
-                  @messages("label.change")
-                  <span class="visually-hidden">
-                    @description
-                    @messages("label.price")
-                  </span>
-                </a>
-              </dd>
             </div>
           </dl>
+          <div class="margin-bottom-20">
+            <a href="@routes.NewTobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+          </div>
           <div class="margin-bottom-50">
-            <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">
-              @messages("label.remove_this_item")
-              <span class="visually-hidden">
-                @description
-              </span>
-            </a>
+            <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)" role="text">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
           </div>
         }
       }
@@ -156,7 +107,7 @@
     <h3 class="heading-medium">@messages("label.other_goods")</h3>
 
     @if(otherGoodsPurchasedItemList.isEmpty) {
-      <p class="border-bottom">
+      <p>
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
       </p>
     } else if(otherGoodsPurchasedItemList.size < 9) {
@@ -206,8 +157,4 @@
       <button type="submit" class="button margin-top-30">@messages("label.calculate")</button>
     }
   }
-
-  <p class="margin-top-30">
-    <a href="@controllers.routes.TravelDetailsController.newSession()" id="start-again" >@messages("label.start_again")</a>.
-  </p>
 }

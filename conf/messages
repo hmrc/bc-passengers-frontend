@@ -133,7 +133,6 @@ label.are_you_17_or_over = Are you 17 or over?
 # Private Craft
 label.did_you_arrive_in_the_uk_by_private_boat_ = Did you arrive in the UK by private boat or private plane?
 
-
 # Dashboard Page
 label.tell_us_about_your_purchases = Tell us about your purchases
 label.your_details = Your details
@@ -183,17 +182,16 @@ head.error.required.other-goods.adult = Select adult clothing or adult footwear 
 error.required.other-goods.adult = Select adult clothing or adult footwear or both
 head.error.required.other-goods.carpets-fabric = Select carpets or fabrics or both
 error.required.other-goods.carpets-fabric = Select carpets or fabrics or both
-head.error.required.other-goods.childrens-clothing = Select children’s clothing or children’s footwear or both
-error.required.other-goods.childrens-clothing = Select children’s clothing or children’s footwear or both
+head.error.required.other-goods.childrens = Select children’s clothing or children’s footwear or both
+error.required.other-goods.childrens = Select children’s clothing or children’s footwear or both
 head.error.required.other-goods.electronic-devices = Select televisions or all other electronic devices or both
 error.required.other-goods.electronic-devices = Select televisions or all other electronic devices or both
 
 
 # Alcohol Input
 
-## Volume Input Page
-label.what_is_the_volume_of_ = What is the volume of the {0} you are bringing into the UK?
-label.volume_in_litres = Volume in litres
+##New Alcohol Input
+label.total_volume_in_litres = Total volume in litres
 
 head.error.required.volume.alcohol.beer = Enter the volume of beer
 head.error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
@@ -213,358 +211,129 @@ error.required.volume.alcohol.spirits = Enter the volume of spirits
 error.required.volume.alcohol.wine = Enter the volume of wine
 error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
 
-head.error.invalid.characters.volume.alcohol.beer = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.cider.non-sparkling-cider = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.cider.sparkling-cider = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.cider.sparkling-cider-up = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.sparkling-wine = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.spirits = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.wine = Volume must only include numbers, such as 12 or 6.55
-head.error.invalid.characters.volume.alcohol.other = Volume must only include numbers, such as 12 or 6.55
+error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
+head.error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
 
-error.invalid.characters.volume.alcohol.beer = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.cider.non-sparkling-cider = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.cider.sparkling-cider = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.cider.sparkling-cider-up = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.sparkling-wine = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.spirits = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.wine = Volume must only include numbers, such as 12 or 6.55
-error.invalid.characters.volume.alcohol.other = Volume must only include numbers, such as 12 or 6.55
-
-head.error.invalid.format.volume.alcohol.beer = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.cider.non-sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.cider.sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.cider.sparkling-cider-up = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.sparkling-wine = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.spirits = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.wine = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-head.error.invalid.format.volume.alcohol.other = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-
-error.invalid.format.volume.alcohol.beer = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.cider.non-sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.cider.sparkling-cider = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.cider.sparkling-cider-up = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.sparkling-wine = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.spirits = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.wine = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-error.invalid.format.volume.alcohol.other = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
 
 label.litre = litre
 label.litres = litres
 
-label.what_is_the_volume_of_.alcohol.beer = What volume of beer are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.cider.non-sparkling-cider = What volume of non-sparkling cider are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.cider.sparkling-cider = What volume of sparkling cider (1.3% to 5.5% alcohol) are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.cider.sparkling-cider-up = What volume of sparkling cider (5.6% to 8.4% alcohol) are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.sparkling-wine = What volume of sparkling wine are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.spirits = What volume of spirits are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.wine = What volume of wine are you bringing into the UK?
-label.what_is_the_volume_of_.alcohol.other = What volume of alcoholic drinks up to 22% alcohol are you bringing into the UK?
+
+# NEW SINGLE PAGE
+
+label.tobacco.cigarettes = Cigarettes
+label.tobacco.cigarillos = Cigarillos
+label.tobacco.cigars = Cigars
+label.tobacco.chewing-tobacco = Pipe or chewing tobacco
+label.tobacco.rolling-tobacco = Rolling tobacco
+
+label.total_number_of_tobacco.cigarettes = Total number of cigarettes
+label.total_number_of_tobacco.cigarillos = Total number of cigarillos
+label.total_number_of_tobacco.cigars = Total number of cigars
+
+label.if_you_do_not_know_the_exact_number_or_price = If you do not know the exact number or price
+label.if_you_do_not_know_the_exact_number_weight_or_price = If you do not know the exact number, weight or price
+label.if_you_do_not_know_the_exact_weight_or_price = If you do not know the exact weight or price
+label.if_you_do_not_know_the_exact_volume_or_price = If you do not know the exact volume or price
+
+label.country_this_tobacco_was_ = Country this tobacco was bought in
+label.currency_used_to_buy_this_tobacco = Currency used to buy this tobacco
+label.if_you_bought_this_tobacco_ = If you bought this tobacco on a plane or boat, enter the country you were travelling from at the time of purchase
+label.total_weight_in_grammes = Total weight in grammes
 
 
-alcohol.volume_input.panel.beer.1 = You can bring in up to 16 litres of beer without paying duty or tax.
-alcohol.volume_input.panel.beer.2 = If you bring in more than 16 litres of beer, you will pay tax and duty on the entire amount of your beer.
-
-alcohol.volume_input.panel.cider.1 = You can bring in up to 2 litres of cider without paying duty or tax.
-alcohol.volume_input.panel.cider.2 = If you bring in any other alcohol, tell us about all your purchases.
-
-alcohol.volume_input.panel.spirits.1 = You can bring in up to 1 litre of spirits without paying duty or tax.
-alcohol.volume_input.panel.spirits.2 = If you bring in any other alcohol, tell us about all your purchases.
-
-alcohol.volume_input.panel.wine.1 = You can bring in up to 4 litres of wine without paying duty or tax.
-alcohol.volume_input.panel.wine.2 = If you bring in more than 4 litres of wine, you will pay tax and duty on the entire amount of your wine.
-
-alcohol.volume_input.panel.sparkling-wine.1 = You can bring in up to 2 litres of sparkling wine without paying duty or tax.
-alcohol.volume_input.panel.sparkling-wine.2 = If you bring in any other alcohol, tell us about all your purchases.
-
-alcohol.volume_input.panel.other.1 = You can bring in up to 2 litres of port, sherry or alcohol up to 22% without paying duty or tax.
-alcohol.volume_input.panel.other.2 = If you bring in any other alcohol, tell us about all your purchases.
-
-## Country Input Page
-label.alcohol.where_did_you_buy_the_ = Where did you buy the {0} litres of {1}?
-text.if_you_have_bought_goods_from_more_ = If you have bought goods from more than one country, you can add those purchases later.
-
-label.where_did_you_buy_the_.alcohol.beer = Where did you buy the {0} {1} of beer?
-label.where_did_you_buy_the_.alcohol.cider.non-sparkling-cider = Where did you buy the {0} {1} of non-sparkling cider?
-label.where_did_you_buy_the_.alcohol.cider.sparkling-cider = Where did you buy the {0} {1} of sparkling cider?
-label.where_did_you_buy_the_.alcohol.cider.sparkling-cider-up = Where did you buy the {0} {1} of sparkling cider?
-label.where_did_you_buy_the_.alcohol.sparkling-wine = Where did you buy the {0} {1} sparkling wine?
-label.where_did_you_buy_the_.alcohol.spirits = Where did you buy the {0} {1} spirits?
-label.where_did_you_buy_the_.alcohol.wine = Where did you buy the {0} {1} of wine?
-label.where_did_you_buy_the_.alcohol.other = Where did you buy the {0} {1} alcoholic drink up to 22% alcohol?
-
-label.page_title.where_did_you_buy_.alcohol.beer = Where did you buy the beer?
-label.page_title.where_did_you_buy_.alcohol.cider.non-sparkling-cider = Where did you buy the non-sparkling cider?
-label.page_title.where_did_you_buy_.alcohol.cider.sparkling-cider = Where did you buy the sparkling cider?
-label.page_title.where_did_you_buy_.alcohol.cider.sparkling-cider-up = Where did you buy the sparkling cider?
-label.page_title.where_did_you_buy_.alcohol.sparkling-wine = Where did you buy the sparkling wine?
-label.page_title.where_did_you_buy_.alcohol.spirits = Where did you buy the spirits?
-label.page_title.where_did_you_buy_.alcohol.wine = Where did you buy the wine?
-label.page_title.where_did_you_buy_.alcohol.other = Where did you buy the alcoholic drink up to 22% alcohol?
-
-## Currency Input Page
-label.alcohol.what_currency_did_you_use_ = What currency did you use to pay for the {0} litres of {1}?
-
-label.what_currency_did_you_use_.alcohol.beer = What currency did you use to pay for the {0} {1} of beer?
-label.what_currency_did_you_use_.alcohol.cider.non-sparkling-cider = What currency did you use to pay for the {0} {1} of non-sparkling cider?
-label.what_currency_did_you_use_.alcohol.cider.sparkling-cider = What currency did you use to pay for the {0} {1} of sparkling cider?
-label.what_currency_did_you_use_.alcohol.cider.sparkling-cider-up = What currency did you use to pay for the {0} {1} of sparkling cider?
-label.what_currency_did_you_use_.alcohol.sparkling-wine = What currency did you use to pay for the {0} {1} of sparkling wine?
-label.what_currency_did_you_use_.alcohol.spirits = What currency did you use to pay for the {0} {1} of spirits?
-label.what_currency_did_you_use_.alcohol.wine = What currency did you use to pay for the {0} {1} of wine?
-label.what_currency_did_you_use_.alcohol.other = What currency did you use to pay for the {0} {1} of alcoholic drink up to 22% alcohol?
-
-label.page_title.what_currency_did_you_use_.alcohol.beer = What currency did you use to pay for the beer?
-label.page_title.what_currency_did_you_use_.alcohol.cider.non-sparkling-cider = What currency did you use to pay for the non-sparkling cider?
-label.page_title.what_currency_did_you_use_.alcohol.cider.sparkling-cider = What currency did you use to pay for the sparkling cider?
-label.page_title.what_currency_did_you_use_.alcohol.cider.sparkling-cider-up = What currency did you use to pay for the sparkling cider?
-label.page_title.what_currency_did_you_use_.alcohol.sparkling-wine = What currency did you use to pay for the sparkling wine?
-label.page_title.what_currency_did_you_use_.alcohol.spirits = What currency did you use to pay for the spirits?
-label.page_title.what_currency_did_you_use_.alcohol.wine = What currency did you use to pay for the wine?
-label.page_title.what_currency_did_you_use_.alcohol.other = What currency did you use to pay for the alcoholic drink up to 22% alcohol?
-
-## Cost Input Page
-label.alcohol.how_much_did_you_pay_ = How much did you pay for the {0} litres of {1}?
-
-label.how_much_did_you_pay_for_the_.alcohol.beer = How much did you pay for the {0} {1} of beer?
-label.how_much_did_you_pay_for_the_.alcohol.cider.non-sparkling-cider = How much did you pay for the {0} {1} of non-sparkling cider?
-label.how_much_did_you_pay_for_the_.alcohol.cider.sparkling-cider = How much did you pay for the {0} {1} of sparkling cider?
-label.how_much_did_you_pay_for_the_.alcohol.cider.sparkling-cider-up = How much did you pay for the {0} {1} of sparkling cider?
-label.how_much_did_you_pay_for_the_.alcohol.sparkling-wine = How much did you pay for the {0} {1} of sparkling wine?
-label.how_much_did_you_pay_for_the_.alcohol.spirits = How much did you pay for the {0} {1} of spirits?
-label.how_much_did_you_pay_for_the_.alcohol.wine = How much did you pay for the {0} {1} of wine?
-label.how_much_did_you_pay_for_the_.alcohol.other = How much did you pay for the {0} {1} alcoholic drink up to 22% alcohol?
-
-label.page_title.how_much_did_you_pay_.alcohol.beer = How much did you pay for the beer?
-label.page_title.how_much_did_you_pay_.alcohol.cider.non-sparkling-cider = How much did you pay for the non-sparkling cider?
-label.page_title.how_much_did_you_pay_.alcohol.cider.sparkling-cider = How much did you pay for the sparkling cider?
-label.page_title.how_much_did_you_pay_.alcohol.cider.sparkling-cider-up = How much did you pay for the sparkling cider?
-label.page_title.how_much_did_you_pay_.alcohol.sparkling-wine = How much did you pay for the sparkling wine?
-label.page_title.how_much_did_you_pay_.alcohol.spirits = How much did you pay for the spirits?
-label.page_title.how_much_did_you_pay_.alcohol.wine = How much did you pay for the wine?
-label.page_title.how_much_did_you_pay_.alcohol.other = How much did you pay for the alcoholic drink up to 22% alcohol?
-
-head.error.required.cost.alcohol.beer = Enter the price of the beer
-head.error.required.cost.alcohol.cider.non-sparkling-cider = Enter the price of the cider
-head.error.required.cost.alcohol.cider.sparkling-cider = Enter the price of the cider
-head.error.required.cost.alcohol.cider.sparkling-cider-up = Enter the price of the cider
-head.error.required.cost.alcohol.sparkling-wine = Enter the price of the sparkling wine
-head.error.required.cost.alcohol.spirits = Enter the price of the spirits
-head.error.required.cost.alcohol.wine = Enter the price of the wine
-head.error.required.cost.alcohol.other = Enter the price of the other alcoholic drinks
-
-error.required.cost.alcohol.beer = Enter the price of the beer
-error.required.cost.alcohol.cider.non-sparkling-cider = Enter the price of the cider
-error.required.cost.alcohol.cider.sparkling-cider = Enter the price of the cider
-error.required.cost.alcohol.cider.sparkling-cider-up = Enter the price of the cider
-error.required.cost.alcohol.sparkling-wine = Enter the price of the sparkling wine
-error.required.cost.alcohol.spirits = Enter the price of the spirits
-error.required.cost.alcohol.wine = Enter the price of the wine
-error.required.cost.alcohol.other = Enter the price of the other alcoholic drinks
-
-head.error.invalid.characters.cost.alcohol.beer = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.cider.non-sparkling-cider = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.cider.sparkling-cider = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.cider.sparkling-cider-up = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.sparkling-wine = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.spirits = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.wine = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.alcohol.other = Price must only include numbers, such as 12 or 6.58
-
-error.invalid.characters.cost.alcohol.beer = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.cider.non-sparkling-cider = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.cider.sparkling-cider = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.cider.sparkling-cider-up = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.sparkling-wine = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.spirits = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.wine = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.alcohol.other = Price must only include numbers, such as 12 or 6.58
-
-head.error.invalid.format.cost.alcohol.beer = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.cider.non-sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.cider.sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.cider.sparkling-cider-up = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.sparkling-wine = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.spirits = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.wine = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.alcohol.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-
-error.invalid.format.cost.alcohol.beer = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.cider.non-sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.cider.sparkling-cider = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.cider.sparkling-cider-up = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.sparkling-wine = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.spirits = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.wine = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.alcohol.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-
-head.error.exceeded.max.cost.alcohol.beer = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.cider.non-sparkling-cider = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.cider.sparkling-cider = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.cider.sparkling-cider-up = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.sparkling-wine = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.spirits = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.wine = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.alcohol.other = Price must be no more than 9,999,999,999
-
-error.exceeded.max.cost.alcohol.beer = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.cider.non-sparkling-cider = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.cider.sparkling-cider = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.cider.sparkling-cider-up = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.sparkling-wine = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.spirits = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.wine = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.alcohol.other = Price must be no more than 9,999,999,999
-
-# Tobacco Inputs
-
-## No of Sticks Input Page
-
-label.how_many_ = How many {0} you are bringing into the UK?
-
-label.number_of_ = Number of {0}
-label.weight_of_ = Weight of {0}
-
-tobacco.no_of_sticks_input.panel.cigarettes.1 = You can bring in up to 200 cigarettes without paying duty or tax
-tobacco.no_of_sticks_input.panel.cigarettes.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
-
-tobacco.no_of_sticks_weight_input.heading = What is the quantity and weight of the {0} you are bringing into the UK?
-
-tobacco.no_of_sticks_weight_input.panel.cigars.1 = You can bring in up to 50 cigars without paying duty or tax.
-tobacco.no_of_sticks_weight_input.panel.cigars.2 = If you are bringing in other tobacco products, tell us about all your purchases.
-
-tobacco.no_of_sticks_weight_input.panel.cigarillos.1 = You can bring in up to 100 cigarillos without paying duty or tax.
-tobacco.no_of_sticks_weight_input.panel.cigarillos.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
-
-head.error.required.noofsticks.tobacco.cigarettes = Enter the number of cigarettes
-head.error.required.noofsticks.tobacco.cigarillos = Enter the number of cigarillos
-head.error.required.noofsticks.tobacco.cigars = Enter the number of cigars
-
-error.required.noofsticks.tobacco.cigarettes = Enter the number of cigarettes
-error.required.noofsticks.tobacco.cigarillos = Enter the number of cigarillos
-error.required.noofsticks.tobacco.cigars = Enter the number of cigars
-
-head.error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
-head.error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
-head.error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
-
-error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
-error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
-error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
-
-## Weight Input Page
-label.how_much_ = How much {0} you are bringing into the UK?
-
-tobacco.weight_input.panel.rolling-tobacco.1 = You can bring in up to 250g of hand-rolling tobacco without paying duty or tax.
-tobacco.weight_input.panel.rolling-tobacco.2 = If you bring in more than 250g of hand-rolling tobacco, you will pay tax and duty on the entire amount of your hand-rolling tobacco.
-
-tobacco.weight_input.panel.chewing-tobacco.1 = You can bring in up to 250g of pipe or chewing tobacco without paying duty or tax.
-tobacco.weight_input.panel.chewing-tobacco.2 = If you are bringing in any other tobacco products, tell us about all your purchases.
-
-head.error.required.weight.tobacco.cigarillos = Enter the weight of the cigarillos
-head.error.required.weight.tobacco.cigars = Enter the weight of the cigars
-head.error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
-head.error.required.weight.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
-
-error.required.weight.tobacco.cigarillos = Enter the weight of the cigarillos
-error.required.weight.tobacco.cigars = Enter the weight of the cigars
+error.required.tobacco.cigarettes = Enter the price of the cigarettes
+error.required.tobacco.cigarillos = Enter the price of the cigarillos
+error.required.tobacco.rolling-tobacco = Enter the price of the rolling tobacco
+error.required.tobacco.chewing-tobacco = Enter the price of the pipe or chewing tobacco
+error.required.tobacco.cigars = Enter the price of the cigars
+error.required.alcohol.beer = Enter the price of the beer
+error.required.alcohol.cider.sparkling-cider = Enter the price of the cider
+error.required.alcohol.cider.sparkling-cider-up = Enter the price of the cider
+error.required.alcohol.cider.non-sparkling-cider = Enter the price of the cider
+error.required.alcohol.spirits = Enter the price of the spirits
+error.required.alcohol.sparkling-wine = Enter the price of the sparkling wine
+error.required.alcohol.wine = Enter the price of the wine
+error.required.alcohol.other = Enter the price of the other alcoholic drinks
+error.required.noofsticks = Enter the number of cigarettes
 error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 error.required.weight.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
-head.error.invalid.characters.weight.tobacco.cigarillos = Weight must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.weight.tobacco.cigars = Weight must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.weight.tobacco.chewing-tobacco = Weight must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.weight.tobacco.rolling-tobacco = Weight must only include numbers, such as 12 or 6.58
-
-error.invalid.characters.weight.tobacco.cigarillos = Weight must only include numbers, such as 12 or 6.58
-error.invalid.characters.weight.tobacco.cigars = Weight must only include numbers, such as 12 or 6.58
-error.invalid.characters.weight.tobacco.chewing-tobacco = Weight must only include numbers, such as 12 or 6.58
-error.invalid.characters.weight.tobacco.rolling-tobacco = Weight must only include numbers, such as 12 or 6.58
-
-head.error.invalid.format.weight.tobacco.cigarillos = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-head.error.invalid.format.weight.tobacco.cigars = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-head.error.invalid.format.weight.tobacco.chewing-tobacco = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-head.error.invalid.format.weight.tobacco.rolling-tobacco = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-
-error.invalid.format.weight.tobacco.cigarillos = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-error.invalid.format.weight.tobacco.cigars = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-error.invalid.format.weight.tobacco.chewing-tobacco = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-error.invalid.format.weight.tobacco.rolling-tobacco = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
-
-## Country Input Page
-label.tobacco.where_did_you_buy_the_ = Where did you buy the {0}?
-label.page_title.where_did_you_buy_.tobacco.cigarettes = Where did you buy the cigarettes?
-label.page_title.where_did_you_buy_.tobacco.cigarillos = Where did you buy the cigarillos?
-label.page_title.where_did_you_buy_.tobacco.cigars = Where did you buy the cigars?
-label.page_title.where_did_you_buy_.tobacco.chewing-tobacco = Where did you buy the pipe or chewing tobacco?
-label.page_title.where_did_you_buy_.tobacco.rolling-tobacco = Where did you buy the rolling tobacco?
-
-## Currency Input Page
-label.what_currency_did_you_use_to_pay_for_the_ = What currency did you use to pay for the {0}?
-
-label.page_title.what_currency_did_you_use_.tobacco.cigarettes = What currency did you use to pay for the cigarettes?
-label.page_title.what_currency_did_you_use_.tobacco.cigarillos = What currency did you use to pay for the cigarillos?
-label.page_title.what_currency_did_you_use_.tobacco.cigars = What currency did you use to pay for the cigars?
-label.page_title.what_currency_did_you_use_.tobacco.chewing-tobacco = What currency did you use to pay for the pipe or chewing tobacco?
-label.page_title.what_currency_did_you_use_.tobacco.rolling-tobacco = What currency did you use to pay for the rolling tobacco?
+head.error.required.tobacco.cigarettes = Enter the price of the cigarettes
+head.error.required.tobacco.cigarillos = Enter the price of the cigarillos
+head.error.required.tobacco.rolling-tobacco = Enter the price of the rolling tobacco
+head.error.required.tobacco.chewing-tobacco = Enter the price of the pipe or chewing tobacco
+head.error.required.tobacco.cigars = Enter the price of the cigars
+head.error.required.alcohol.beer = Enter the price of the beer
+head.error.required.alcohol.cider.sparkling-cider = Enter the price of the cider
+head.error.required.alcohol.cider.non-sparkling-cider = Enter the price of the cider
+head.error.required.alcohol.cider.sparkling-cider-up = Enter the price of the cider
+head.error.required.alcohol.spirits = Enter the price of the spirits
+head.error.required.alcohol.sparkling-wine = Enter the price of the sparkling wine
+head.error.required.alcohol.wine = Enter the price of the wine
+head.error.required.alcohol.other = Enter the price of the other alcoholic drinks
+head.error.required.noofsticks = Enter the number of cigarettes
+head.error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
+head.error.required.weight.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
 
-## Cost Input Page
-label.how_much_did_you_pay_for_the_ = How much did you pay for the {0}?
 
-label.page_title.how_much_did_you_pay_.tobacco.cigarettes = How much did you pay for the cigarettes?
-label.page_title.how_much_did_you_pay_.tobacco.cigarillos = How much did you pay for the cigarillos?
-label.page_title.how_much_did_you_pay_.tobacco.cigars = How much did you pay for the cigars?
-label.page_title.how_much_did_you_pay_.tobacco.chewing-tobacco = How much did you pay for the pipe or chewing tobacco?
-label.page_title.how_much_did_you_pay_.tobacco.rolling-tobacco = How much did you pay for the rolling tobacco?
+error.no_of_sticks.required.tobacco.cigarettes = Enter the number of cigarettes
+error.no_of_sticks.required.tobacco.cigarillos = Enter the number of cigarillos
+error.no_of_sticks.required.tobacco.cigars = Enter the number of cigars
 
-head.error.required.cost.tobacco.cigarettes = Enter the price of the cigarettes
-head.error.required.cost.tobacco.cigarillos = Enter the price of the cigarillos
-head.error.required.cost.tobacco.cigars = Enter the price of the cigars
-head.error.required.cost.tobacco.chewing-tobacco = Enter the price of the pipe or chewing tobacco
-head.error.required.cost.tobacco.rolling-tobacco = Enter the price of the rolling tobacco
+head.error.no_of_sticks.required.tobacco.cigarettes = Enter the number of cigarettes
+head.error.no_of_sticks.required.tobacco.cigarillos = Enter the number of cigarillos
+head.error.no_of_sticks.required.tobacco.cigars = Enter the number of cigars
 
-error.required.cost.tobacco.cigarettes = Enter the price of the cigarettes
-error.required.cost.tobacco.cigarillos = Enter the price of the cigarillos
-error.required.cost.tobacco.cigars = Enter the price of the cigars
-error.required.cost.tobacco.chewing-tobacco = Enter the price of the pipe or chewing tobacco
-error.required.cost.tobacco.rolling-tobacco = Enter the price of the rolling tobacco
+error.weight_or_volume.required.tobacco.cigarillos  = Enter the weight of the cigarillos
+error.weight_or_volume.required.tobacco.cigars = Enter the weight of the cigars
+error.weight_or_volume.required.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
+error.weight_or_volume.required.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
-head.error.invalid.characters.cost.tobacco.cigarettes = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.tobacco.cigarillos = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.tobacco.cigars = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.tobacco.chewing-tobacco = Price must only include numbers, such as 12 or 6.58
-head.error.invalid.characters.cost.tobacco.rolling-tobacco = Price must only include numbers, such as 12 or 6.58
+head.error.weight_or_volume.required.tobacco.cigarillos  = Enter the weight of the cigarillos
+head.error.weight_or_volume.required.tobacco.cigars = Enter the weight of the cigars
+head.error.weight_or_volume.required.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
+head.error.weight_or_volume.required.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
-error.invalid.characters.cost.tobacco.cigarettes = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.tobacco.cigarillos = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.tobacco.cigars = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.tobacco.chewing-tobacco = Price must only include numbers, such as 12 or 6.58
-error.invalid.characters.cost.tobacco.rolling-tobacco = Price must only include numbers, such as 12 or 6.58
+error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
+error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
+error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
+error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
+error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
+error.l-wine.limit-exceeded = You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
+error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
+error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
 
-head.error.invalid.format.cost.tobacco.cigarettes = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.tobacco.cigarillos = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.tobacco.cigars = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.tobacco.chewing-tobacco = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-head.error.invalid.format.cost.tobacco.rolling-tobacco = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
 
-error.invalid.format.cost.tobacco.cigarettes = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.tobacco.cigarillos = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.tobacco.cigars = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.tobacco.chewing-tobacco = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
-error.invalid.format.cost.tobacco.rolling-tobacco = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
+head.error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
+head.error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
+head.error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
+head.error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
+head.error.l-wine.limit-exceeded = You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
+head.error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
+head.error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
+head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
 
-head.error.exceeded.max.cost.tobacco.cigarettes = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.tobacco.cigarillos = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.tobacco.cigars = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.tobacco.chewing-tobacco = Price must be no more than 9,999,999,999
-head.error.exceeded.max.cost.tobacco.rolling-tobacco = Price must be no more than 9,999,999,999
 
-error.exceeded.max.cost.tobacco.cigarettes = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.tobacco.cigarillos = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.tobacco.cigars = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.tobacco.chewing-tobacco = Price must be no more than 9,999,999,999
-error.exceeded.max.cost.tobacco.rolling-tobacco = Price must be no more than 9,999,999,999
+error.invalid.characters.noofsticks = Quantity must only include whole numbers, such as 12 or 160
+error.invalid.characters = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.weight = Weight must only include numbers, such as 12 or 6.58
+error.exceeded.max = Price must be no more than 9,999,999,999
+error.invalid.format = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.max.decimal.places.weight = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+error.max.decimal.places.volume = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+
+head.error.invalid.characters.noofsticks = Quantity must only include whole numbers, such as 12 or 160
+head.error.invalid.characters = Price must only include numbers, such as 12 or 6.58
+head.error.invalid.characters.weight = Weight must only include numbers, such as 12 or 6.58
+head.error.exceeded.max = Price must be no more than 9,999,999,999
+head.error.invalid.format = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+head.error.max.decimal.places.weight = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
+head.error.max.decimal.places.volume = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
+
 
 head.error.invalid.characters.quantity.other-goods.adult.adult-clothing = Quantity must only include whole numbers, such as 3 or 8
 head.error.invalid.characters.quantity.other-goods.adult.adult-footwear = Quantity must only include whole numbers, such as 3 or 8
@@ -614,38 +383,6 @@ error.invalid.characters.quantity.other-goods.tableware = Quantity must only inc
 error.invalid.characters.quantity.other-goods.watches-clocks = Quantity must only include whole numbers, such as 3 or 8
 error.invalid.characters.quantity.other-goods.other = Quantity must only include whole numbers, such as 3 or 8
 
-
-head.error.l-beer.limit-exceeded.alcohol.beer=You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
-head.error.l-spirit.limit-exceeded.alcohol.spirits=You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
-head.error.l-alcoth.limit-exceeded.alcohol.other=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-head.error.l-alcoth.limit-exceeded.alcohol.cider.non-sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-head.error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-head.error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider-up=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-head.error.l-wine.limit-exceeded.alcohol.sparkling-wine=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
-head.error.l-winesp.limit-exceeded.alcohol.sparkling-wine=You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
-head.error.l-wine.limit-exceeded.alcohol.wine=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
-head.error.l-cigrt.limit-exceeded.tobacco.cigarettes=You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
-head.error.l-crilo.limit-exceeded.tobacco.cigarillos=You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
-head.error.l-cigar.limit-exceeded.tobacco.cigars=You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
-head.error.l-loose.limit-exceeded.tobacco.chewing-tobacco=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
-head.error.l-loose.limit-exceeded.tobacco.rolling-tobacco=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
-
-error.l-beer.limit-exceeded.alcohol.beer=You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
-error.l-spirit.limit-exceeded.alcohol.spirits=You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
-error.l-alcoth.limit-exceeded.alcohol.other=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-error.l-alcoth.limit-exceeded.alcohol.cider.non-sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-error.l-alcoth.limit-exceeded.alcohol.cider.sparkling-cider-up=You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-error.l-wine.limit-exceeded.alcohol.sparkling-wine=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
-error.l-winesp.limit-exceeded.alcohol.sparkling-wine=You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
-error.l-wine.limit-exceeded.alcohol.wine=You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
-error.l-cigrt.limit-exceeded.tobacco.cigarettes=You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
-error.l-crilo.limit-exceeded.tobacco.cigarillos=You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
-error.l-cigar.limit-exceeded.tobacco.cigars=You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
-error.l-loose.limit-exceeded.tobacco.chewing-tobacco=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
-error.l-loose.limit-exceeded.tobacco.rolling-tobacco=You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
-
-
 # Other Goods Currency
 
 label.for_goods_bought_using_more_than_one_currency_ = For goods bought using more than one currency, you need to tell us about each purchase separately.
@@ -660,6 +397,19 @@ label.if_you_bought_this_item_ = If you bought this item on a plane or boat, ent
 label.currency_used_to_buy_the_item = Currency used to buy the item
 label.price_paid_for_this_item = Price paid for this item
 label.tell_us_about_the_goods_ = Tell us about the goods you are bringing into the UK
+
+label.price_paid = Price paid
+label.country_this_alcohol_was_ = Country this alcohol was bought in
+label.if_you_bought_this_alcohol_ = If you bought this alcohol on a plane or boat, enter the country you were travelling from at the time of purchase
+label.currency_used_to_buy_this_alcohol = Currency used to buy this alcohol
+label.alcohol.beer = Beer
+label.alcohol.cider.non-sparkling-cider = Non-sparkling cider
+label.alcohol.cider.sparkling-cider = Sparkling cider (1.3% to 5.5%)
+label.alcohol.cider.sparkling-cider-up = Sparkling cider (5.6% to 8.4%)
+label.alcohol.wine = Wine
+label.alcohol.spirits = Spirits
+label.alcohol.other = Other alcohol
+label.alcohol.sparkling-wine = Sparkling wine
 
 label.price_paid_for_the_1_item = Price paid for first item
 label.price_paid_for_the_2_item = Price paid for second item
@@ -1133,4 +883,4 @@ label.Xg_of_X = {0}g of {1}
 label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
 
-label.calculate = Calculate
+label.calculate = Calculate taxes and duties

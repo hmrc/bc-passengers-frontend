@@ -1,0 +1,452 @@
+package controllers
+
+import connectors.Cache
+import models._
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.mockito.MockitoSugar
+import play.api.Application
+import play.api.data.Form
+import play.api.http.Writeable
+import play.api.test.Helpers.{route => rt, _}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{Request, Result}
+import play.api.test.Helpers.status
+import play.twirl.api.Html
+import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+
+import scala.concurrent.Future
+
+class NewAlcoholInputControllerSpec extends BaseSpec {
+
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
+    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
+    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .overrides(bind[views.html.new_alcohol.alcohol_input].toInstance(MockitoSugar.mock[views.html.new_alcohol.alcohol_input]))
+    .build()
+
+  override def beforeEach: Unit = {
+    reset(injected[Cache], injected[NewPurchaseService], injected[views.html.new_alcohol.alcohol_input])
+  }
+
+  trait LocalSetup {
+
+    lazy val cachedJourneyData = Some(JourneyData(
+      Some("nonEuOnly"),
+      isVatResClaimed = None,
+      bringingDutyFree = None,
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = List(PurchasedProductInstance(
+        ProductPath("alcohol/beer"),
+        "iid0",
+        Some(20.0),
+        None,
+        Some(Country("France", "FR", true, Nil)),
+        Some("EUR"),
+        Some(BigDecimal(12.99))
+      ))
+    ))
+
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[AlcoholDto]])
+
+    def fakeLimits: Map[String, String]
+
+    def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
+
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
+
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+
+      when(injected[views.html.new_alcohol.alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+
+      rt(app, req)
+    }
+  }
+
+  "Getting displayEditForm" should {
+
+    "return a 404 when given an invalid iid" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit")).get
+      status(result) shouldBe NOT_FOUND
+    }
+
+    "return a 500 when purchase is missing country" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("alcohol/beer"),
+          "iid0",
+          Some(20.0),
+          None,
+          None,
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "return a 500 when missing currency" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("alcohol/beer"),
+          "iid0",
+          Some(20.0),
+          None,
+          Some(Country("France", "FR", true, Nil)),
+          None,
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "return a 500 when missing weightOrVolume" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("alcohol/beer"),
+          "iid0",
+          None,
+          None,
+          Some(Country("France", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "return a 404 when purchase has invalid product path" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("invalid/product/path"),
+          "iid0",
+          None,
+          None,
+          Some(Country("France", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      status(result) shouldBe NOT_FOUND
+    }
+
+    "return a 200 when all is ok" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      status(result) shouldBe OK
+    }
+  }
+
+  "Getting displayAddForm" should {
+
+    "return a 404 when given an invalid path" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/invalid/path/tell-us")).get
+      status(result) shouldBe NOT_FOUND
+    }
+
+    "return a 200 when given a valid path" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+      status(result) shouldBe OK
+    }
+  }
+
+  "Posting processAddForm" should {
+
+    "return a 404 when given an invalid path" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/invalid/path/tell-us")).get
+      status(result) shouldBe NOT_FOUND
+    }
+
+    "return a 400 when country not present" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when country not valid" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "Not a real country",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when currency not present" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when currency not valid" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "XXX",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when cost not present" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "20.0"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when cost not valid" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "invalid-cost"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when weightOrVolume not present" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when weightOrVolume not valid" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "invalid-volume",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "return a 400 when beer is over the calculator limit" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "111",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "add a PPI to the JourneyData and redirect to next step" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+      verify(injected[NewPurchaseService], times(1)).insertPurchases(
+        meq(ProductPath("alcohol/beer")),
+        meq(Some(BigDecimal(20.0))),
+        any(),
+        meq("France"),
+        meq("EUR"),
+        meq(List(BigDecimal(12.50))),
+        any()
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+  }
+
+  "Posting processEditForm" should {
+
+    "return a 404 when iid is not found in journey data" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe NOT_FOUND
+
+    }
+
+    "return a 400 when beer is over the calculator limit" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "111",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "modify the relevant PPI in the JourneyData and redirect to next step" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "France",
+        "currency" -> "Euro (EUR)",
+        "weightOrVolume" -> "13.0",
+        "cost" -> "50.00"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+      verify(injected[NewPurchaseService], times(1)).updatePurchase(
+        meq(ProductPath("alcohol/beer")),
+        meq("iid0"),
+        meq(Some(BigDecimal(13.0))),
+        any(),
+        meq("France"),
+        meq("EUR"),
+        meq(BigDecimal(50.00))
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+  }
+}

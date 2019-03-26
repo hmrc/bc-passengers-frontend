@@ -101,17 +101,10 @@ class CalculatorService @Inject() (
         productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
       } yield SpeculativeItem(purchasedProductInstance, productTreeLeaf, 0)
 
-
-      if(speculativeItems.isEmpty) {
-        None
-      }
-      else {
-        for {
-          isAgeOver17 <- journeyData.ageOver17
-          isPrivateCraft <- journeyData.privateCraft
-        } yield LimitRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, speculativeItems)
-      }
-
+      for {
+        isAgeOver17 <- journeyData.ageOver17
+        isPrivateCraft <- journeyData.privateCraft
+      } yield LimitRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, speculativeItems)
   }
 
   def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorRequest]] = {

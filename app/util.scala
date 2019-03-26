@@ -53,12 +53,12 @@ package object util {
     }
   }
 
-  def bigDecimalCheckConstraint(errorSubString: String, decimalPlaces: Int, productPathMessageKey: String): Constraint[String] = Constraint("constraints.bigdecimalcheck")({
+  def bigDecimalCheckConstraint(errorSubString: String, decimalPlaces: Int): Constraint[String] = Constraint("constraints.bigdecimalcheck")({
     plainText =>
       val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.$errorSubString.$productPathMessageKey"))
-        case s if Try(s.toDouble).toOption.fold(true)(d => d <= 0.0) => Seq(ValidationError(s"error.invalid.characters.$errorSubString.$productPathMessageKey"))
-        case s if !s.matches(s"^[0-9]+(\\.[0-9]{1,$decimalPlaces})?$$") => Seq(ValidationError(s"error.invalid.format.$errorSubString.$productPathMessageKey"))
+        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
+        case s if Try(s.toDouble).toOption.fold(true)(d => d <= 0.0) => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
+        case s if !s.matches(s"^[0-9]+(\\.[0-9]{1,${decimalPlaces}})?$$") => Seq(ValidationError(s"error.invalid.format.${errorSubString}"))
         case _ => Nil
       }
       if (errors.isEmpty) {
@@ -68,27 +68,44 @@ package object util {
       }
   })
 
-  def calculatorLimitConstraintInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String): Constraint[Int] = Constraint("constraints.calclimit") {
 
-    calculatorLimitConstraintBigDecimal( limits.mapValues(i => i), applicableLimits, productPathMessageKey )(_)
-  }
-
-  def calculatorLimitConstraintBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, productPathMessageKey: String): Constraint[BigDecimal] = Constraint("constraints.calclimit") { _ =>
+  def calculatorLimitConstraintOptionInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Option[Int]] = Constraint("constraints.calclimit") { opt: Option[Int]  =>
 
     val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
 
     if(errors.isEmpty) Valid
-    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded.$productPathMessageKey")))
+    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
+  }
+
+  def calculatorLimitConstraintOptionBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Option[BigDecimal]] = Constraint("constraints.calclimit") { opt: Option[BigDecimal]  =>
+
+    val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
+
+    if(errors.isEmpty) Valid
+    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
+  }
+
+  def calculatorLimitConstraintInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Int] = Constraint("constraints.calclimit") {
+
+    calculatorLimitConstraintBigDecimal( limits, applicableLimits )(_)
+  }
+
+  def calculatorLimitConstraintBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[BigDecimal] = Constraint("constraints.calclimit") { _ =>
+
+    val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
+
+    if(errors.isEmpty) Valid
+    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
 
   }
 
-  def bigDecimalCostCheckConstraint(errorSubString: String, productPathMessageKey: String): Constraint[String] = Constraint("constraints.bigdecimalcostcheck")({
+  def bigDecimalCostCheckConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.bigdecimalcostcheck")({
     plainText =>
       val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.$errorSubString.$productPathMessageKey"))
-        case s if Try(BigDecimal(s)).isFailure || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}.$productPathMessageKey"))
-        case s if BigDecimal(s).scale > 2  => Seq(ValidationError(s"error.invalid.format.$errorSubString.$productPathMessageKey"))
-        case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError(s"error.exceeded.max.$errorSubString.$productPathMessageKey"))
+        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
+        case s if Try(BigDecimal(s)).isFailure || s.toDouble == "0.0".toDouble => Seq(ValidationError("error.invalid.characters"))
+        case s if BigDecimal(s).scale > 2  => Seq(ValidationError("error.invalid.format"))
+        case s if s.toDouble > "9999999999".toDouble => Seq(ValidationError("error.exceeded.max"))
         case _ => Nil
       }
       if (errors.isEmpty) {
@@ -116,11 +133,11 @@ package object util {
     }
   }
 
-  def noOfSticksConstraint(errorSubString: String, productPathMessageKey: String): Constraint[String] = Constraint("constraints.noofsticks")({
+  def noOfSticksConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.noofsticks")({
     plainText =>
       val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.$errorSubString.$productPathMessageKey"))
-        case s if !s.matches("^[0-9]*$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.$errorSubString.$productPathMessageKey"))
+        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
+        case s if !s.matches("^[0-9]*$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
         case _ => Nil
       }
       if (errors.isEmpty) {

@@ -1,11 +1,11 @@
 # Travel Details
 
-GET        /check-declare-goods-start-page                   controllers.TravelDetailsController.checkDeclareGoodsStartPage
+GET        /check-declare-goods-start-page                                             controllers.TravelDetailsController.checkDeclareGoodsStartPage
 
-GET        /where-goods-bought                               controllers.TravelDetailsController.euCountryCheck
-POST       /where-goods-bought                               controllers.TravelDetailsController.euCountryCheckPost
+GET        /where-goods-bought                                                         controllers.TravelDetailsController.euCountryCheck
+POST       /where-goods-bought                                                         controllers.TravelDetailsController.euCountryCheckPost
 
-GET        /goods-bought-inside-eu                           controllers.TravelDetailsController.goodsBoughtInsideEu
+GET        /goods-bought-inside-eu                                                     controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /goods-bought-outside-eu                          controllers.TravelDetailsController.goodsBoughtOutsideEu
 POST       /goods-bought-outside-eu                          controllers.TravelDetailsController.goodsBoughtOutsideEuPost
@@ -15,55 +15,74 @@ POST       /goods-bought-inside-and-outside-eu               controllers.TravelD
 
 GET        /no-need-to-use-service                           controllers.TravelDetailsController.noNeedToUseService
 
-GET        /private-travel                                   controllers.TravelDetailsController.privateCraft
-POST       /private-travel                                   controllers.TravelDetailsController.privateCraftPost
+GET        /private-travel                                                             controllers.TravelDetailsController.privateCraft
+POST       /private-travel                                                             controllers.TravelDetailsController.privateCraftPost
 
-GET        /confirm-age                                      controllers.TravelDetailsController.confirmAge
-POST       /confirm-age                                      controllers.TravelDetailsController.confirmAgePost
+GET        /confirm-age                                                                controllers.TravelDetailsController.confirmAge
+POST       /confirm-age                                                                controllers.TravelDetailsController.confirmAgePost
 
-GET        /did-you-claim-tax-back                           controllers.TravelDetailsController.didYouClaimTaxBack
-POST       /did-you-claim-tax-back                           controllers.TravelDetailsController.didYouClaimTaxBackPost
+GET        /did-you-claim-tax-back                                                     controllers.TravelDetailsController.didYouClaimTaxBack
+POST       /did-you-claim-tax-back                                                     controllers.TravelDetailsController.didYouClaimTaxBackPost
 
-GET        /duty-free                                        controllers.TravelDetailsController.dutyFree
-POST       /duty-free                                        controllers.TravelDetailsController.dutyFreePost
+GET        /duty-free                                                                  controllers.TravelDetailsController.dutyFree
+POST       /duty-free                                                                  controllers.TravelDetailsController.dutyFreePost
 
-GET        /new-session                                      controllers.TravelDetailsController.newSession
+GET        /new-session                                                                controllers.TravelDetailsController.newSession
 
 # Dashboard
-GET        /tell-us                                          controllers.DashboardController.showDashboard
-POST       /tell-us                                          controllers.DashboardController.calculate
+GET        /tell-us                                                                    controllers.DashboardController.showDashboard
+POST       /tell-us                                                                    controllers.DashboardController.calculate
 
-GET        /remove-goods/$path<.+>/:iid/remove               controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
-POST       /remove-goods/$path<.+>/:iid/remove               controllers.AlterProductsController.remove(path: ProductPath, iid: String)
+GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
+POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
-GET        /calculation                                      controllers.DashboardController.showCalculation
+GET        /calculation                                                                controllers.DashboardController.showCalculation
 
 # Declaration
-GET        /declare-your-goods                               controllers.DeclarationController.declareYourGoods
+GET        /declare-your-goods                                                         controllers.DeclarationController.declareYourGoods
 
-GET        /user-information                                 controllers.DeclarationController.enterYourDetails
-POST       /user-information                                 controllers.DeclarationController.processEnterYourDetails
+GET        /user-information                                                           controllers.DeclarationController.enterYourDetails
+POST       /user-information                                                           controllers.DeclarationController.processEnterYourDetails
 
 
-GET        /select-goods/next-step                               controllers.SelectProductController.nextStep
+GET        /select-goods/next-step                                                     controllers.SelectProductController.nextStep
 
 # Alcohol Input/Update
-GET        /select-goods/$path<alcohol/.+>/start                 controllers.AlcoholInputController.startInputJourney(path: ProductPath)
+GET        /select-goods/$path<alcohol/.+>/start                                       controllers.AlcoholInputController.startInputJourney(path: ProductPath)
 
-GET        /select-goods/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/volume/:iid           controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<alcohol/.+>/volume/:iid/update    controllers.AlcoholInputController.displayVolumeUpdate(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/volume/:iid                                 controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
+POST       /select-goods/$path<alcohol/.+>/volume/:iid                                 controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/volume/:iid/update                          controllers.AlcoholInputController.displayVolumeUpdate(path: ProductPath, iid: String)
 
-GET        /select-goods/$path<alcohol/.+>/country/:iid          controllers.AlcoholInputController.displayCountryInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/country/:iid          controllers.AlcoholInputController.processCountryInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<alcohol/.+>/country/:iid/update   controllers.AlcoholInputController.displayCountryUpdate(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/country/:iid                                controllers.AlcoholInputController.displayCountryInput(path: ProductPath, iid: String)
+POST       /select-goods/$path<alcohol/.+>/country/:iid                                controllers.AlcoholInputController.processCountryInput(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/country/:iid/update                         controllers.AlcoholInputController.displayCountryUpdate(path: ProductPath, iid: String)
 
-GET        /select-goods/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/currency/:iid         controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<alcohol/.+>/currency/:iid/update  controllers.AlcoholInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/currency/:iid                               controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
+POST       /select-goods/$path<alcohol/.+>/currency/:iid                               controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/currency/:iid/update                        controllers.AlcoholInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
 
-GET        /select-goods/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/cost/:iid             controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
+GET        /select-goods/$path<alcohol/.+>/cost/:iid                                   controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
+POST       /select-goods/$path<alcohol/.+>/cost/:iid                                   controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
+
+# New Alcohol Input Controller
+GET        /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.NewAlcoholInputController.displayAddForm(path: ProductPath)
+POST       /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.NewAlcoholInputController.processAddForm(path: ProductPath)
+GET        /enter-goods/alcohol/:iid/edit                                              controllers.NewAlcoholInputController.displayEditForm(iid: String)
+POST       /enter-goods/alcohol/:iid/edit                                              controllers.NewAlcoholInputController.processEditForm(iid: String)
+
+# New Tobacco Input Controller
+GET        /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.NewTobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
+
+GET        /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.NewTobaccoInputController.displayNoOfSticksWeightAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
+
+GET        /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.NewTobaccoInputController.displayWeightAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
+
+GET        /enter-goods/tobacco/:iid/edit                                              controllers.NewTobaccoInputController.displayEditForm(iid: String)
+POST       /enter-goods/tobacco/:iid/edit                                              controllers.NewTobaccoInputController.processEditForm(iid: String)
 
 
 # Tobacco Input/Update
@@ -94,9 +113,8 @@ GET        /select-goods/$path<tobacco/.+>/:iid/update                          
 # Other Goods Journey
 GET        /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.NewOtherGoodsInputController.displayAddForm(path: ProductPath)
 POST       /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.NewOtherGoodsInputController.processAddForm(path: ProductPath)
-GET        /enter-goods/:iid/tell-us                                                   controllers.NewOtherGoodsInputController.displayEditForm(iid: String)
-POST       /enter-goods/:iid/tell-us                                                   controllers.NewOtherGoodsInputController.processEditForm(iid: String)
-
+GET        /enter-goods/other-goods/:iid/edit                                          controllers.NewOtherGoodsInputController.displayEditForm(iid: String)
+POST       /enter-goods/other-goods/:iid/edit                                          controllers.NewOtherGoodsInputController.processEditForm(iid: String)
 
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)

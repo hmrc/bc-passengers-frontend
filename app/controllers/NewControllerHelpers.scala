@@ -7,7 +7,7 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -20,6 +20,7 @@ trait NewControllerHelpers extends MessagesBaseController
 
   def cache: Cache
   def productTreeService: ProductTreeService
+  def calculatorService: CalculatorService
 
   def error_template: views.html.error_template
 
@@ -86,6 +87,20 @@ trait NewControllerHelpers extends MessagesBaseController
   def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {
     Logger.warn(logMessage)
     Future.successful(Redirect(redirectLocation))
+  }
+
+  def requireLimitUsage(journeyData: JourneyData)(block: Map[String, BigDecimal] => Future[Result])(implicit context: LocalContext, hc: HeaderCarrier) = {
+
+    calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
+
+      response match {
+        case LimitUsageSuccessResponse(r) =>
+          block(r.map( x => (x._1, BigDecimal(x._2)) ))
+        case _ =>
+          logAndRenderError("Fetching limits was unsuccessful")
+      }
+
+    }
   }
 
   def requireJourneyData(block: JourneyData => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {

@@ -47,10 +47,10 @@ class SelectProductController @Inject()(
             case ProductTreeLeaf(_, _, _, templateId, _) =>
 
               templateId match {
-                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
-                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
-                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
-                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/select-goods/"+productPath+"/start"))
+                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
+                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
+                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
+                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
                 case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
               }
 
