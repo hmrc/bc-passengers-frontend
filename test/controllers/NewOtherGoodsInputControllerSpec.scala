@@ -53,15 +53,15 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       ))
     ))
 
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[WorkingPurchaseDataDto]])
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[OtherGoodsDto]])
 
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
 
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
-      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
 
       when(injected[views.html.new_other_goods.other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -74,7 +74,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
     "return a 404 when given an invalid iid" in new LocalSetup {
 
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/edit/missing-iid")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit/missing-iid")).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -98,7 +98,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       ))
 
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/iid0/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
@@ -122,7 +122,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       ))
 
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/iid0/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
@@ -146,14 +146,14 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       ))
 
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/iid0/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")).get
       status(result) shouldBe NOT_FOUND
     }
 
     "return a 200 when all is ok" in new LocalSetup {
 
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/iid0/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")).get
       status(result) shouldBe OK
     }
   }
@@ -163,7 +163,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
     "return a 404 when given an invalid path" in new LocalSetup {
 
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/invalid/path/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/invalid/path/tell-us")).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -178,7 +178,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 404 when given an invalid path" in new LocalSetup {
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/invalid/path/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/invalid/path/tell-us")).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -327,6 +327,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("other-goods/adult/adult-clothing")),
+        any(),
+        any(),
         meq("France"),
         meq("EUR"),
         meq(List(BigDecimal(12.12), BigDecimal(13.13))),
@@ -341,7 +343,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 404 when action == continue and iid is not found in journey data" in new LocalSetup {
 
-      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/edit/missing-iid").withFormUrlEncodedBody(
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/missing-iid/edit").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "France",
         "currency" -> "Euro (EUR)",
@@ -355,7 +357,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
     "modify the relevant PPI in the JourneyData and redirect to next step when action == continue and iid is present" in new LocalSetup {
 
-      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/iid0/tell-us").withFormUrlEncodedBody(
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "France",
         "currency" -> "Euro (EUR)",
@@ -369,6 +371,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
         meq(ProductPath("other-goods/books")),
         meq("iid0"),
+        any(),
+        any(),
         meq("France"),
         meq("EUR"),
         meq(BigDecimal(12.12))

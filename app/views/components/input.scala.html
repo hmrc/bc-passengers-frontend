@@ -29,6 +29,15 @@
       @elements.label
     </span>
 
+    @if(elements.args.contains('_inputDetails) ){
+      <details>
+          <summary><span class="summary">@elements.args.get('_inputDetails)</span></summary>
+          <div class="panel panel-border-narrow">
+              <p>@elements.args.get('_inputDetailsHidden)</p>
+          </div>
+      </details>
+    }
+
     @if(elements.args.contains('_inputHint) ){
       <span class="form-hint">
         @elements.args.get('_inputHint)

@@ -11,7 +11,7 @@ class UtilSpec extends BaseSpec {
 
     "succeed when passed 11,000.00 to old constraint" in {
 
-      bigDecimalCostCheckConstraint("cost", "alcohol.beer").apply("11,000.00")
+      bigDecimalCostCheckConstraint("cost").apply("11,000.00")
     }
 
   }

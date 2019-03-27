@@ -1,11 +1,11 @@
 package binders
 
 import models.ProductPath
-import play.api.mvc.PathBindable
+import play.api.mvc.{JavascriptLiteral, PathBindable}
 
 object Binders {
 
-  implicit def productPathBinder(implicit stringBinder: PathBindable[String]): PathBindable[ProductPath] = new PathBindable[ProductPath] {
+  implicit val productPathBinder: PathBindable[ProductPath] = new PathBindable[ProductPath] {
 
     override def bind(key: String, value: String): Either[String, ProductPath] = {
       val re = """^[a-z-/]+$""".r
@@ -18,6 +18,10 @@ object Binders {
     override def unbind(key: String, value: ProductPath): String = {
       value.toString
     }
+  }
+
+  implicit val productPathJSLBinder: JavascriptLiteral[ProductPath] = new JavascriptLiteral[ProductPath] {
+    override def to(value: ProductPath): String = s"""'${value.toString}'"""
   }
 
 }

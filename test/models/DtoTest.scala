@@ -15,26 +15,26 @@ class DtoTest extends BaseSpec {
 
     "fail on empty string" in {
       val formData = Map("volume" -> "")
-      val form = VolumeDto.form(Map.empty, Nil, "alcohol.beer").bind(formData)
+      val form = VolumeDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("volume").get.message shouldBe "error.required.volume.alcohol.beer"
+      form.error("volume").get.message shouldBe "error.required.volume"
     }
 
     "fail on entering 0" in {
       val formData = Map("volume" -> "0")
-      val form = VolumeDto.form(Map.empty, Nil, "alcohol.beer").bind(formData)
+      val form = VolumeDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("volume").get.message shouldBe "error.invalid.characters.volume.alcohol.beer"
+      form.error("volume").get.message shouldBe "error.invalid.characters.volume"
     }
 
     "fail on entering 0.0" in {
       val formData = Map("volume" -> "0.0")
-      val form = VolumeDto.form(Map.empty, Nil, "alcohol.beer").bind(formData)
+      val form = VolumeDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("volume").get.message shouldBe "error.invalid.characters.volume.alcohol.beer"
+      form.error("volume").get.message shouldBe "error.invalid.characters.volume"
     }
 
     "pass on entering .5" in {
@@ -51,18 +51,18 @@ class DtoTest extends BaseSpec {
 
     "fail on entering 00" in {
       val formData = Map("volume" -> "00")
-      val form = VolumeDto.form(Map.empty, Nil, "alcohol.beer").bind(formData)
+      val form = VolumeDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("volume").get.message shouldBe "error.invalid.characters.volume.alcohol.beer"
+      form.error("volume").get.message shouldBe "error.invalid.characters.volume"
     }
 
     "fail on invalid characters" in {
       val formData = Map("volume" -> "gfss")
-      val form = VolumeDto.form(Map.empty, Nil, "alcohol.beer").bind(formData)
+      val form = VolumeDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("volume").get.message shouldBe "error.invalid.characters.volume.alcohol.beer"
+      form.error("volume").get.message shouldBe "error.invalid.characters.volume"
     }
 
     "pass on 3 decimal places" in {
@@ -73,10 +73,10 @@ class DtoTest extends BaseSpec {
 
     "fail on over 3 decimal places" in {
       val formData = Map("volume" -> "100.5555")
-      val form = VolumeDto.form(Map.empty, Nil, "alcohol.beer").bind(formData)
+      val form = VolumeDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("volume").get.message shouldBe "error.invalid.format.volume.alcohol.beer"
+      form.error("volume").get.message shouldBe "error.invalid.format.volume"
     }
 
   }
@@ -85,26 +85,26 @@ class DtoTest extends BaseSpec {
 
     "fail on empty string" in {
       val formData = Map("noOfSticks" -> "")
-      val form = NoOfSticksDto.form(Map.empty, Nil, "tobacco.cigarettes").bind(formData)
+      val form = NoOfSticksDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("noOfSticks").get.message shouldBe "error.required.noofsticks.tobacco.cigarettes"
+      form.error("noOfSticks").get.message shouldBe "error.required.noofsticks"
     }
 
     "fail on entering 0" in {
       val formData = Map("noOfSticks" -> "0")
-      val form = NoOfSticksDto.form(Map.empty, Nil, "tobacco.cigarettes").bind(formData)
+      val form = NoOfSticksDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigarettes"
+      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks"
     }
 
     "fail on invalid characters" in {
       val formData = Map("noOfSticks" -> "500.5")
-      val form = NoOfSticksDto.form(Map.empty, Nil, "tobacco.cigarettes").bind(formData)
+      val form = NoOfSticksDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigarettes"
+      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks"
     }
 
   }
@@ -127,22 +127,22 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "noOfSticks" -> "",
         "weight" -> "")
-      val form = NoOfSticksAndWeightDto.form(Map.empty, Nil, "tobacco.cigars").bind(formData)
+      val form = NoOfSticksAndWeightDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 2
-      form.error("noOfSticks").get.message shouldBe "error.required.noofsticks.tobacco.cigars"
-      form.error("weight").get.message shouldBe "error.required.weight.tobacco.cigars"
+      form.error("noOfSticks").get.message shouldBe "error.required.noofsticks"
+      form.error("weight").get.message shouldBe "error.required.weight"
     }
 
     "fail on entering 0" in {
       val formData = Map(
         "noOfSticks" -> "0",
         "weight" -> "0")
-      val form = NoOfSticksAndWeightDto.form(Map.empty, Nil, "tobacco.cigars").bind(formData)
+      val form = NoOfSticksAndWeightDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 2
-      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigars"
-      form.error("weight").get.message shouldBe "error.invalid.characters.weight.tobacco.cigars"
+      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks"
+      form.error("weight").get.message shouldBe "error.invalid.characters.weight"
     }
 
     "pass on entering weight .5" in {
@@ -165,11 +165,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "noOfSticks" -> "10.5",
         "weight" -> "100g")
-      val form = NoOfSticksAndWeightDto.form(Map.empty, Nil, "tobacco.cigars").bind(formData)
+      val form = NoOfSticksAndWeightDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 2
-      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigars"
-      form.error("weight").get.message shouldBe "error.invalid.characters.weight.tobacco.cigars"
+      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks"
+      form.error("weight").get.message shouldBe "error.invalid.characters.weight"
     }
 
   }
@@ -190,19 +190,19 @@ class DtoTest extends BaseSpec {
     "fail on empty strings" in {
       val formData = Map(
         "weight" -> "")
-      val form = WeightDto.form(Map.empty, Nil, "tobacco.chewing-tobacco").bind(formData)
+      val form = WeightDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("weight").get.message shouldBe "error.required.weight.tobacco.chewing-tobacco"
+      form.error("weight").get.message shouldBe "error.required.weight"
     }
 
     "fail on entering 0" in {
       val formData = Map(
         "weight" -> "0")
-      val form = WeightDto.form(Map.empty, Nil, "tobacco.chewing-tobacco").bind(formData)
+      val form = WeightDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("weight").get.message shouldBe "error.invalid.characters.weight.tobacco.chewing-tobacco"
+      form.error("weight").get.message shouldBe "error.invalid.characters.weight"
     }
 
     "pass on entering weight .5" in {
@@ -222,10 +222,10 @@ class DtoTest extends BaseSpec {
     "fail on invalid characters" in {
       val formData = Map(
         "weight" -> "100g")
-      val form = WeightDto.form(Map.empty, Nil, "tobacco.chewing-tobacco").bind(formData)
+      val form = WeightDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("weight").get.message shouldBe "error.invalid.characters.weight.tobacco.chewing-tobacco"
+      form.error("weight").get.message shouldBe "error.invalid.characters.weight"
     }
 
   }
@@ -303,35 +303,34 @@ class DtoTest extends BaseSpec {
 
     "fail on empty string" in {
       val formData = Map("cost" -> "")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.required.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.required.cost"
     }
 
     "fail on entering 0" in {
       val formData = Map("cost" -> "0")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
-      println(form.toString)
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.invalid.characters.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.invalid.characters"
     }
 
     "fail on entering 0.0" in {
       val formData = Map("cost" -> "0.0")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.invalid.characters.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.invalid.characters"
     }
 
     "fail on entering 00" in {
       val formData = Map("cost" -> "00")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.invalid.characters.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.invalid.characters"
     }
 
     "pass on entering 50." in {
@@ -342,10 +341,10 @@ class DtoTest extends BaseSpec {
 
     "fail on invalid characters" in {
       val formData = Map("cost" -> "£500")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.invalid.characters.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.invalid.characters"
     }
 
     "pass on 2 decimal places" in {
@@ -356,10 +355,10 @@ class DtoTest extends BaseSpec {
 
     "fail on over 2 decimal places" in {
       val formData = Map("cost" -> "1500.555")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.invalid.format.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.invalid.format"
     }
 
     "pass on up to maximum cost 9,999,999,999" in {
@@ -370,10 +369,10 @@ class DtoTest extends BaseSpec {
 
     "fail on over maximum cost 9,999,999,999" in {
       val formData = Map("cost" -> "10000000000")
-      val form = CostDto.form(productPathMessageKey = "alcohol.beer").bind(formData)
+      val form = CostDto.form().bind(formData)
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("cost").get.message shouldBe "error.exceeded.max.cost.alcohol.beer"
+      form.error("cost").get.message shouldBe "error.exceeded.max"
     }
   }
 
