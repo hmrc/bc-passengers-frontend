@@ -94,7 +94,7 @@ class CountriesServiceSpec extends BaseSpec {
     Country("Germany", "DE", isEu=true, List("Deutschland")),
     Country("Ghana", "GH", isEu=false, Nil),
     Country("Gibraltar", "GI", isEu=false, List("Gibraltar Rock")),
-    Country("Grand Canaria", "ES", isEu=false, List("Gran Canaria")),
+    Country("Gran Canaria", "ES", isEu=false, List("Grand Canaria")),
     Country("Greece", "GR", isEu=true, Nil),
     Country("Greenland", "GL", isEu=false, Nil),
     Country("Grenada", "GD", isEu=false, Nil),
