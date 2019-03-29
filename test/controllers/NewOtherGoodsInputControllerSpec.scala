@@ -47,7 +47,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
         "iid0",
         None,
         None,
-        Some(Country("France", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", true, Nil)),
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -115,7 +115,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           None,
           Some(BigDecimal(12.99))
         ))
@@ -139,7 +139,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -186,7 +186,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "add-cost",
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "EUR",
         "costs[0]" -> "12.12"
       )
@@ -196,8 +196,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[views.html.new_other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
 
-      formCaptor.getValue.data("country") shouldBe "France"
-      formCaptor.getValue.data("currency") shouldBe "Euro (EUR)"
+      formCaptor.getValue.data("country") shouldBe "FR"
+      formCaptor.getValue.data("currency") shouldBe "EUR"
       formCaptor.getValue.data("costs[0]") shouldBe "12.12"
       formCaptor.getValue.data("costs[1]") shouldBe ""
     }
@@ -206,7 +206,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "add-cost",
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "EUR",
         "costs[0]" -> "12.10",
         "costs[1]" -> "12.11",
@@ -224,8 +224,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[views.html.new_other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
 
-      formCaptor.getValue.data("country") shouldBe "France"
-      formCaptor.getValue.data("currency") shouldBe "Euro (EUR)"
+      formCaptor.getValue.data("country") shouldBe "FR"
+      formCaptor.getValue.data("currency") shouldBe "EUR"
       formCaptor.getValue.data("costs[0]") shouldBe "12.10"
       formCaptor.getValue.data("costs[8]") shouldBe "12.18"
       formCaptor.getValue.data.get("costs[9]") shouldBe None
@@ -248,7 +248,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "costs[0]" -> "12.12",
         "costs[1]" -> "13.13"
       )
@@ -262,7 +262,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "Not a real country",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "costs[0]" -> "12.12",
         "costs[1]" -> "13.13"
       )
@@ -275,7 +275,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "costs[0]" -> "12.12",
         "costs[1]" -> "13.13"
@@ -289,7 +289,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "XXX",
         "costs[0]" -> "12.12",
         "costs[1]" -> "13.13"
@@ -303,8 +303,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)"
+        "country" -> "FR",
+        "currency" -> "EUR"
       )
 
       val result: Future[Result] = route(app, req).get
@@ -315,8 +315,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "costs[0]" -> "12.12",
         "costs[1]" -> "13.13"
       )
@@ -329,7 +329,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
         meq(ProductPath("other-goods/adult/adult-clothing")),
         any(),
         any(),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(List(BigDecimal(12.12), BigDecimal(13.13))),
         any()
@@ -345,8 +345,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/missing-iid/edit").withFormUrlEncodedBody(
         "action" -> "continue",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "costs[0]" -> "12.12"
       )
 
@@ -359,8 +359,8 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "costs[0]" -> "12.12"
       )
 
@@ -373,7 +373,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
         meq("iid0"),
         any(),
         any(),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(BigDecimal(12.12))
       )(any())

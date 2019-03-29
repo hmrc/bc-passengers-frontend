@@ -12,8 +12,8 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     "fail on empty string in weightOrVolume" in {
       val form = injected[NewAlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -24,8 +24,8 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     "fail on special character in weightOrVolume" in {
       val form = injected[NewAlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "***",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -36,8 +36,8 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     "fail on more than 3 decimal places in weightOrVolume" in {
       val form = injected[NewAlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "4.5678",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -54,8 +54,8 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     "fail on more than allowance 60 litres in sparkling-wine" in {
       val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINESP" -> 1.1), List("L-WINESP")).bind(Map(
         "weightOrVolume" -> "65",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -67,8 +67,8 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
       "fail on more than allowance 90 litres in wine" in {
         val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.1), List("L-WINE")).bind(Map(
           "weightOrVolume" -> "95",
-          "country" -> "France",
-          "currency" -> "Euro (EUR)",
+          "country" -> "FR",
+          "currency" -> "EUR",
           "cost" -> "50"
         ))
         form.hasErrors shouldBe true

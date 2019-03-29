@@ -17,7 +17,7 @@ object OtherGoodsDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
-  } yield OtherGoodsDto("", country.countryName, currency, purchasedProductInstance.cost.toList)
+  } yield OtherGoodsDto("", country.code, currency, purchasedProductInstance.cost.toList)
 }
 
 case class OtherGoodsDto(
@@ -33,7 +33,7 @@ object AlcoholDto {
     currency <- purchasedProductInstance.currency
     weightOrVolume <- purchasedProductInstance.weightOrVolume
     cost <- purchasedProductInstance.cost
-  } yield AlcoholDto(weightOrVolume, country.countryName, currency, cost)
+  } yield AlcoholDto(weightOrVolume, country.code, currency, cost)
 }
 
 case class AlcoholDto(
@@ -50,7 +50,7 @@ object TobaccoDto {
     cost <- purchasedProductInstance.cost
     noOfSticks = purchasedProductInstance.noOfSticks
     weightOrVolume = purchasedProductInstance.weightOrVolume
-  } yield TobaccoDto(noOfSticks,  weightOrVolume, country.countryName, currency, cost)
+  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, currency, cost)
 }
 
 case class TobaccoDto(
@@ -101,7 +101,7 @@ case class BringingDutyFreeDto(bringingDutyFree: Boolean)
 object SelectedCountryDto {
   def form(countryService: CountriesService, optionalItemsRemaining: Boolean = true): Form[SelectedCountryDto] = Form(
     mapping(
-      "country" -> text.verifying("error.country.invalid", countryName => countryService.isValidCountryName(countryName)),
+      "country" -> text.verifying("error.country.invalid", code => countryService.isValidCountryCode(code)),
       "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
     )(SelectedCountryDto.apply)(SelectedCountryDto.unapply)
   )
@@ -150,102 +150,6 @@ object SelectProductsDto {
   )
 }
 case class SelectProductsDto(tokens: List[String])
-
-object VolumeDto {
-
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[VolumeDto] = Form(
-    mapping(
-      "volume" -> text
-        .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
-        .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
-        .verifying(bigDecimalCheckConstraint("volume", 3))
-        .transform[BigDecimal](volume => BigDecimal(volume), bd => bd.toString())
-        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
-    )(VolumeDto.apply)(VolumeDto.unapply)
-  )
-
-}
-case class VolumeDto(volume: BigDecimal)
-
-object QuantityDto {
-
-  val form: Form[QuantityDto] = Form(
-    mapping(
-      "quantity" -> text.verifying(quantityConstraint("quantity")).transform[Int](qty => qty.toInt, int => int.toString))(QuantityDto.apply)(QuantityDto.unapply)
-  )
-}
-case class QuantityDto(quantity: Int)
-
-object NoOfSticksDto {
-
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[NoOfSticksDto] = Form(
-    mapping(
-      "noOfSticks" -> text
-        .verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
-        .verifying(calculatorLimitConstraintInt(limits, applicableLimits))
-    )(NoOfSticksDto.apply)(NoOfSticksDto.unapply)
-  )
-}
-case class NoOfSticksDto(noOfSticks: Int)
-
-object NoOfSticksAndWeightDto {
-
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[NoOfSticksAndWeightDto] = Form(
-    mapping(
-      "noOfSticks" -> text
-        .verifying(noOfSticksConstraint("noofsticks")).transform[Int](noOfSticks => noOfSticks.toInt, int => int.toString)
-        .verifying(calculatorLimitConstraintInt(limits, applicableLimits)),
-      "weight" -> text
-        .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
-        .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
-        .verifying(bigDecimalCheckConstraint("weight", 2))
-        .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
-    )(NoOfSticksAndWeightDto.apply)(NoOfSticksAndWeightDto.unapply)
-  )
-}
-case class NoOfSticksAndWeightDto(noOfSticks: Int, weight: BigDecimal)
-
-object WeightDto {
-
-  def form(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[WeightDto] = Form(
-    mapping(
-      "weight" -> text
-        .transform[String](s => if(s.headOption.contains('.')) "0"+s else s, s => s)
-        .transform[String](s => if(s.lastOption.contains('.')) s+"0" else s, s => s)
-        .verifying(bigDecimalCheckConstraint("weight", 2))
-        .transform[BigDecimal](grams => BigDecimal(decimalFormat5.format(grams.toDouble/1000)), kilos => BigDecimal(decimalFormat5.format(kilos * 1000)).toString())
-        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits))
-    )(WeightDto.apply)(WeightDto.unapply)
-  )
-
-}
-case class WeightDto(weight: BigDecimal)
-
-object CurrencyDto {
-  def form(currencyService: CurrencyService, optionalItemsRemaining: Boolean = true): Form[CurrencyDto] = Form(
-    mapping(
-      "currency" -> text
-        .transform[String](s => currencyService.getCodeByDisplayName(s).getOrElse(""), s => currencyService.getDisplayNameByCode(s).getOrElse(""))
-        .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
-    )(CurrencyDto.apply)(CurrencyDto.unapply)
-  )
-}
-case class CurrencyDto(currency: String, itemsRemaining: Int)
-
-object CostDto {
-
-  def form(optionalItemsRemaining: Boolean = true): Form[CostDto] = Form(
-    mapping(
-      "cost" -> text
-        .transform[String](s => if (s.lastOption.contains('.')) (s + "00").replace(",", "") else s.replace(",", ""), s => s)
-        .verifying(bigDecimalCostCheckConstraint("cost"))
-        .transform[BigDecimal](cost => BigDecimal(cost), bd => formatMonetaryValue(bd)),
-      "itemsRemaining" -> optional(number).verifying("error.required", i => optionalItemsRemaining || i.isDefined).transform[Int](_.getOrElse(0), i => Some(i))
-    )(CostDto.apply)(CostDto.unapply)
-  )
-}
-case class CostDto(cost: BigDecimal, itemsRemaining: Int)
 
 case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 

@@ -12,8 +12,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on empty string in noOfSticks" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -24,8 +24,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on invalid characters in noOfSticks" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "***",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -37,8 +37,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on more than allowance (800) in noOfSticks" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path, Map("L-CIGRT" -> 1.1), List("L-CIGRT")).bind(Map(
         "noOfSticks" -> "801",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -50,7 +50,7 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -61,7 +61,7 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on empty string in currency" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "cost" -> "50"
       ))
@@ -73,8 +73,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on empty string in cost" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> ""
       ))
       form.hasErrors shouldBe true
@@ -85,8 +85,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on special characters in cost" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "***"
       ))
       form.hasErrors shouldBe true
@@ -97,8 +97,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on more than 2 decimal places in cost" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "4.567"
       ))
       form.hasErrors shouldBe true
@@ -109,8 +109,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail when cost exceeds 9,999,999,999" in {
       val form = injected[NewTobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "99999999999"
       ))
       form.hasErrors shouldBe true
@@ -127,8 +127,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on empty string in weightOrVolume" in {
       val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -139,8 +139,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on special characters in weightOrVolume" in {
       val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "***",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -151,8 +151,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on more than 2 decimal places in weightOrVolume" in {
       val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "4.567",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -163,8 +163,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
         "fail on more than allowance 1000g in weightOrVolume" in {
           val form = injected[NewTobaccoInputController].weightOrVolumeForm(path, Map("L-LOOSE" -> 1.1), List("L-LOOSE")).bind(Map(
             "weightOrVolume" -> "1001",
-            "country" -> "France",
-            "currency" -> "Euro (EUR)",
+            "country" -> "FR",
+            "currency" -> "EUR",
             "cost" -> "50"
           ))
           form.hasErrors shouldBe true
@@ -176,7 +176,7 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
       val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "500",
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "cost" -> "50"
       ))
       form.hasErrors shouldBe true
@@ -187,7 +187,7 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on empty string in currency" in {
       val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "500",
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "cost" -> "50"
       ))
@@ -199,8 +199,8 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
     "fail on empty string in cost" in {
       val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "500",
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> ""
       ))
       form.hasErrors shouldBe true

@@ -49,7 +49,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
         "iid0",
         Some(20.0),
         None,
-        Some(Country("France", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", true, Nil)),
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -125,7 +125,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           Some(20.0),
           None,
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           None,
           Some(BigDecimal(12.99))
         ))
@@ -151,7 +151,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -177,7 +177,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -232,7 +232,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "weightOrVolume" -> "20.0",
         "cost" -> "12.50"
       )
@@ -247,7 +247,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
         "country" -> "Not a real country",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "weightOrVolume" -> "20.0",
         "cost" -> "12.50"
       )
@@ -261,7 +261,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "weightOrVolume" -> "20.0",
         "cost" -> "12.50"
@@ -276,7 +276,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "XXX",
         "weightOrVolume" -> "20.0",
         "cost" -> "12.50"
@@ -291,8 +291,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "20.0"
       )
 
@@ -305,8 +305,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "20.0",
         "cost" -> "invalid-cost"
       )
@@ -320,8 +320,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "cost" -> "12.50"
       )
 
@@ -334,8 +334,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "invalid-volume",
         "cost" -> "12.50"
       )
@@ -349,8 +349,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "111",
         "cost" -> "12.50"
       )
@@ -364,8 +364,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "20.0",
         "cost" -> "12.50"
       )
@@ -378,7 +378,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
         meq(ProductPath("alcohol/beer")),
         meq(Some(BigDecimal(20.0))),
         any(),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(List(BigDecimal(12.50))),
         any()
@@ -395,8 +395,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "20.0",
         "cost" -> "12.50"
       )
@@ -411,8 +411,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "111",
         "cost" -> "12.50"
       )
@@ -426,8 +426,8 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "13.0",
         "cost" -> "50.00"
       )
@@ -441,7 +441,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
         meq("iid0"),
         meq(Some(BigDecimal(13.0))),
         any(),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(BigDecimal(50.00))
       )(any())

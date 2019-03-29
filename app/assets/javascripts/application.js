@@ -22,16 +22,18 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource) {
 
   accessibleAutocomplete.enhanceSelectElement({
     selectElement: document.querySelector('#' + selectElementId),
-    name: selectElementId,
     displayMenu: 'inline',
     defaultValue: '',
     source: customSuggest,
+    onConfirm: function(confirmed) {
+      $('select[name="'+selectElementId+'"]').val(confirmed.code);
+    },
     templates: {
       inputValue: function(result) {
-        return result && result.displayName
+        return result && result.displayName;
       },
       suggestion: function(result) {
-        return result.displayName
+        return result.displayName;
       }
     }
   })

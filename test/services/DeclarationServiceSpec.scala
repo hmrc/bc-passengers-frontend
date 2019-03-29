@@ -39,11 +39,11 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
   
-  val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
-    Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Ciagerettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
+  val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
+    Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Ciagerettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
     Some(OtherGoods(List(Band("C",List(Item("OGD/DIGI/TV","1140.42",None,None,
-      Calculation("0.00","159.65","260.01","419.66"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))), Item("OGD/DIGI/TV","1300.00",None,None,
-      Calculation("0.00","182.00","296.40","478.40"),Metadata("Televisions", "Televisions","1300.00",Currency("GBP", "British Pound (GBP)", None, Nil), Country("United Kingdom of Great Britain and Northern Ireland (the)", "GB", isEu = true, Nil), ExchangeRate("1.2", "2018-10-29")))),
+      Calculation("0.00","159.65","260.01","419.66"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))), Item("OGD/DIGI/TV","1300.00",None,None,
+      Calculation("0.00","182.00","296.40","478.40"),Metadata("Televisions", "Televisions","1300.00",Currency("GBP", "British Pound (GBP)", None, Nil), Country("GB", "United Kingdom of Great Britain and Northern Ireland (the)", "GB", isEu = true, Nil), ExchangeRate("1.2", "2018-10-29")))),
       Calculation("0.00","341.65","556.41","898.06"))),
       Calculation("0.00","341.65","556.41","898.06"))
     ),
@@ -243,7 +243,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("ALC/A1/CIDER", "250.10", None, Some(BigDecimal("2.00")), Calculation("0.00","0.00","0.00","0.00"), Metadata("2 litres cider", "Cider but for some reason has a really long product description", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("ALC/A1/CIDER", "250.10", None, Some(BigDecimal("2.00")), Calculation("0.00","0.00","0.00","0.00"), Metadata("2 litres cider", "Cider but for some reason has a really long product description", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             )
@@ -318,14 +318,14 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("ALC/A1/CIDER", "250.10", None, Some(BigDecimal("2.00")), Calculation("0.00","0.00","0.00","0.00"), Metadata("2 litres cider", "Cider", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("ALC/A1/CIDER", "250.10", None, Some(BigDecimal("2.00")), Calculation("0.00","0.00","0.00","0.00"), Metadata("2 litres cider", "Cider", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             ),
             Band("B",
               List(
-                Item("ALC/A2/BEER","304.11", None, Some(BigDecimal("3.00")), Calculation("74.00","79.06","91.43","244.49"),Metadata("3 litres beer", "Beer", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
-                Item("ALC/A3/WINE","152.05", None, Some(BigDecimal("4.00")), Calculation("26.54","113.88","58.49","198.91"), Metadata("4 litres wine", "Wine", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("ALC/A2/BEER","304.11", None, Some(BigDecimal("3.00")), Calculation("74.00","79.06","91.43","244.49"),Metadata("3 litres beer", "Beer", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
+                Item("ALC/A3/WINE","152.05", None, Some(BigDecimal("4.00")), Calculation("26.54","113.88","58.49","198.91"), Metadata("4 litres wine", "Wine", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("100.54","192.94","149.92","443.40")
             )
@@ -336,14 +336,14 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("OGD/CLTHS/CHILD", "250.10", None, None, Calculation("0.00","0.00","0.00","0.00"), Metadata("children's clothes", "Children's Clothes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("OGD/CLTHS/CHILD", "250.10", None, None, Calculation("0.00","0.00","0.00","0.00"), Metadata("children's clothes", "Children's Clothes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             ),
             Band("B",
               List(
-                Item("OGD/BKS/MISC","304.11", None, None, Calculation("74.00","79.06","91.43","244.49"),Metadata("books or publications", "Books or Publications", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
-                Item("OGD/BKS/MISC","152.05", None, None, Calculation("26.54","113.88","58.49","198.91"), Metadata("books or publications", "Books or Publications", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("OGD/BKS/MISC","304.11", None, None, Calculation("74.00","79.06","91.43","244.49"),Metadata("books or publications", "Books or Publications", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
+                Item("OGD/BKS/MISC","152.05", None, None, Calculation("26.54","113.88","58.49","198.91"), Metadata("books or publications", "Books or Publications", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("100.54","192.94","149.92","443.40")
             )
@@ -354,14 +354,14 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("TOB/A1/CIGRT", "250.10", Some(200), None, Calculation("0.00","0.00","0.00","0.00"), Metadata("200 cigarettes", "Cigarettes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("TOB/A1/CIGRT", "250.10", Some(200), None, Calculation("0.00","0.00","0.00","0.00"), Metadata("200 cigarettes", "Cigarettes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             ),
             Band("B",
               List(
-                Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
-                Item("TOB/A1/HAND","152.05",Some(0),Some(BigDecimal("0.12")), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
+                Item("TOB/A1/HAND","152.05",Some(0),Some(BigDecimal("0.12")), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("100.54","192.94","149.92","443.40")
             )
@@ -561,14 +561,14 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("ALC/A1/CIDER", "250.10", None, Some(BigDecimal("2.00")), Calculation("0.00","0.00","0.00","0.00"), Metadata("2 litres cider", "Cider", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("ALC/A1/CIDER", "250.10", None, Some(BigDecimal("2.00")), Calculation("0.00","0.00","0.00","0.00"), Metadata("2 litres cider", "Cider", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             ),
             Band("B",
               List(
-                Item("ALC/A2/BEER","304.11", None, Some(BigDecimal("3.00")), Calculation("74.00","79.06","91.43","244.49"),Metadata("3 litres beer", "Beer", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
-                Item("ALC/A3/WINE","152.05", None, Some(BigDecimal("4.00")), Calculation("26.54","113.88","58.49","198.91"), Metadata("4 litres wine", "Wine", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("ALC/A2/BEER","304.11", None, Some(BigDecimal("3.00")), Calculation("74.00","79.06","91.43","244.49"),Metadata("3 litres beer", "Beer", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
+                Item("ALC/A3/WINE","152.05", None, Some(BigDecimal("4.00")), Calculation("26.54","113.88","58.49","198.91"), Metadata("4 litres wine", "Wine", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("100.54","192.94","149.92","443.40")
             )
@@ -579,14 +579,14 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("OGD/CLTHS/CHILD", "250.10", None, None, Calculation("0.00","0.00","0.00","0.00"), Metadata("children's clothes", "Children's Clothes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("OGD/CLTHS/CHILD", "250.10", None, None, Calculation("0.00","0.00","0.00","0.00"), Metadata("children's clothes", "Children's Clothes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             ),
             Band("B",
               List(
-                Item("OGD/BKS/MISC","304.11", None, None, Calculation("74.00","79.06","91.43","244.49"),Metadata("books or publications", "Books or Publications", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
-                Item("OGD/BKS/MISC","152.05", None, None, Calculation("26.54","113.88","58.49","198.91"), Metadata("books or publications", "Books or Publications", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("OGD/BKS/MISC","304.11", None, None, Calculation("74.00","79.06","91.43","244.49"),Metadata("books or publications", "Books or Publications", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
+                Item("OGD/BKS/MISC","152.05", None, None, Calculation("26.54","113.88","58.49","198.91"), Metadata("books or publications", "Books or Publications", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("100.54","192.94","149.92","443.40")
             )
@@ -597,14 +597,14 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           List(
             Band("A",
               List(
-                Item("TOB/A1/CIGRT", "250.10", Some(200), None, Calculation("0.00","0.00","0.00","0.00"), Metadata("200 cigarettes", "Cigarettes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("TOB/A1/CIGRT", "250.10", Some(200), None, Calculation("0.00","0.00","0.00","0.00"), Metadata("200 cigarettes", "Cigarettes", "300.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("0.00","0.00","0.00","0.00")
             ),
             Band("B",
               List(
-                Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
-                Item("TOB/A1/HAND","152.05",Some(0),Some(BigDecimal("0.12")), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
+                Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29"))),
+                Item("TOB/A1/HAND","152.05",Some(0),Some(BigDecimal("0.12")), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.2", "2018-10-29")))
               ),
               Calculation("100.54","192.94","149.92","443.40")
             )

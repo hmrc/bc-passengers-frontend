@@ -3,7 +3,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import javax.inject.Inject
-import models.{NoOfSticksDto, ProductPath, TobaccoDto}
+import models.{ProductPath, TobaccoDto}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text, _}
 import play.api.i18n.I18nSupport
@@ -47,13 +47,8 @@ class NewTobaccoInputController @Inject()(
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map( x => x.toString ))
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale  <= 2))
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble/1000))), kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))),
-      "country" -> text.verifying("error.country.invalid", name => countriesService.isValidCountryName(name)),
-      "currency" -> text
-        .transform[String](
-          name => currencyService.getCodeByDisplayName(name).getOrElse(name),
-          code => currencyService.getDisplayNameByCode(code).getOrElse(code)
-        )
-        .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
+      "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
@@ -69,13 +64,8 @@ class NewTobaccoInputController @Inject()(
         .transform[Option[Int]](noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)), int => int.mkString)
         .verifying(calculatorLimitConstraintOptionInt(limits, applicableLimits)),
       "weightOrVolume" -> ignored[Option[BigDecimal]](None),
-      "country" -> text.verifying("error.country.invalid", name => countriesService.isValidCountryName(name)),
-      "currency" -> text
-        .transform[String](
-          name => currencyService.getCodeByDisplayName(name).getOrElse(name),
-          code => currencyService.getDisplayNameByCode(code).getOrElse(code)
-        )
-        .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
+      "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
@@ -92,13 +82,8 @@ class NewTobaccoInputController @Inject()(
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale  <= 2))
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble/1000))), kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000))))
         .verifying(calculatorLimitConstraintOptionBigDecimal(limits, applicableLimits)),
-      "country" -> text.verifying("error.country.invalid", name => countriesService.isValidCountryName(name)),
-      "currency" -> text
-        .transform[String](
-        name => currencyService.getCodeByDisplayName(name).getOrElse(name),
-        code => currencyService.getDisplayNameByCode(code).getOrElse(code)
-      )
-        .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
+      "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
@@ -168,8 +153,7 @@ class NewTobaccoInputController @Inject()(
             formWithErrors => {
               Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            dto => {
-              val jd = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+            _ => {
               cache.store(jd) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
@@ -181,8 +165,7 @@ class NewTobaccoInputController @Inject()(
             formWithErrors => {
               Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            dto => {
-              val jd = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+            _ => {
               cache.store(jd) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
@@ -194,8 +177,7 @@ class NewTobaccoInputController @Inject()(
             formWithErrors => {
               Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            dto => {
-              val jd = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+            _ => {
               cache.store(jd) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
@@ -241,8 +223,7 @@ class NewTobaccoInputController @Inject()(
                 formWithErrors => {
                   Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
                 },
-                dto => {
-                  val jd = newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost)
+                _ => {
                   cache.store(jd) map { _ =>
                     Redirect(routes.SelectProductController.nextStep())
                   }
@@ -255,8 +236,7 @@ class NewTobaccoInputController @Inject()(
                 formWithErrors => {
                   Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
                 },
-                dto => {
-                  val jd = newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost)
+                _ => {
                   cache.store(jd) map { _ =>
                     Redirect(routes.SelectProductController.nextStep())
                   }
@@ -269,8 +249,7 @@ class NewTobaccoInputController @Inject()(
                 formWithErrors => {
                   Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
                 },
-                dto => {
-                  val jd = newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost)
+                _ => {
                   cache.store(jd) map { _ =>
                     Redirect(routes.SelectProductController.nextStep())
                   }
