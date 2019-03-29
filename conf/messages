@@ -741,7 +741,7 @@ text.how_the_tax_was_calculated = How the tax was calculated
 
 # Done page - Over 97 Thousand pound
 label.declaring_these_goods = Declaring these goods
-label.cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
+label.you_cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
 label.declare_these_goods = When you arrive in the UK go to the red channel or red-point phone at customs and declare these goods to a member of Border Force.
 label.tax_is_due = Tax is due because you have gone over your other goods allowance.
 
