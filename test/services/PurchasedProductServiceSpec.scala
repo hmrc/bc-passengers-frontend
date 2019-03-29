@@ -55,28 +55,6 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
   }
 
-  "Calling PurchasedProductService.makeWorkingInstance" should {
-
-    "make the provided purchased product instance the working product" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0",  country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("USD")),
-        PurchasedProductInstance(ProductPath("some/other/item"), iid = "iid1", country = Some(Country("Jamaica", "JM", isEu = false, Nil)), currency = Some("JMD"))),
-        workingInstance = None))
-
-      val productToMakeWorkingInstance = PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("USD"))
-
-      await(s.makeWorkingInstance(journeyDataInCache.get, productToMakeWorkingInstance))
-      verify(s.cache, times(1)).store(
-        meq(JourneyData(purchasedProductInstances = List(PurchasedProductInstance(ProductPath("some/item/path"),"iid0",None,None,Some(Country("Egypt", "EG", isEu = false, Nil)),Some("USD"),None),
-          PurchasedProductInstance(ProductPath("some/other/item"),"iid1",None,None,Some(Country("Jamaica", "JM", isEu = false, Nil)),Some("JMD"),None)),
-          workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("Egypt", "EG", isEu = false, Nil)), currency = Some("USD")))))
-      )(any())
-
-    }
-
-  }
-
   "Calling PurchasedProductService.removePurchasedProductInstance" should {
 
     "remove the working instance" in new LocalSetup {
@@ -98,57 +76,5 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
     }
 
-  }
-
-  "Calling PurchasedProductService.storeCurrency" should {
-
-    "store a new working instance, containing the currency" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = None
-
-      await(s.storeCurrency(JourneyData(), ProductPath("some/item/path"), "iid0", "USD"))
-
-      verify(s.cache, times(1)).store(
-        meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))))
-      )(any())
-
-    }
-  }
-
-  "Calling PurchasedProductService.storeCountry" should {
-
-    "store a new working instance, containing the country" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = None
-
-      await(s.storeCountry(
-        JourneyData(), ProductPath("some/item/path"), "iid0", Country("United States of America (the)", "US", isEu = false, Nil)))
-
-      verify(s.cache, times(1)).store(
-        meq(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", country = Some(Country("United States of America (the)", "US", isEu = false, Nil))))))
-      )(any())
-
-    }
-  }
-
-  "Calling PurchasedProductService.updateCountry" should {
-
-    "update a current selected product, containing the updated country and the updated weightOrVolume" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("15.50"))),
-        PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
-      )))
-
-      await(s.updateCountry(journeyDataInCache.get, ProductPath("some/item/path"), "iid0", Country("Jamaica", "JM", isEu = false, Nil))
-      )
-
-      verify(s.cache, times(1)).store(
-        meq(JourneyData(purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("some/item/path"), "iid0", Some(BigDecimal("500")), Some(100), Some(Country("Jamaica", "JM", isEu = false, Nil)), Some("USD"), Some(BigDecimal("15.50"))),
-          PurchasedProductInstance(ProductPath("another/item/path"), "iid1", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
-        ))
-        ))(any())
-    }
   }
 }

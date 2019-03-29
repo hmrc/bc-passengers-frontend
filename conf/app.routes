@@ -47,31 +47,13 @@ POST       /user-information                                                    
 
 GET        /select-goods/next-step                                                     controllers.SelectProductController.nextStep
 
-# Alcohol Input/Update
-GET        /select-goods/$path<alcohol/.+>/start                                       controllers.AlcoholInputController.startInputJourney(path: ProductPath)
 
-GET        /select-goods/$path<alcohol/.+>/volume/:iid                                 controllers.AlcoholInputController.displayVolumeInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/volume/:iid                                 controllers.AlcoholInputController.processVolumeInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<alcohol/.+>/volume/:iid/update                          controllers.AlcoholInputController.displayVolumeUpdate(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<alcohol/.+>/country/:iid                                controllers.AlcoholInputController.displayCountryInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/country/:iid                                controllers.AlcoholInputController.processCountryInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<alcohol/.+>/country/:iid/update                         controllers.AlcoholInputController.displayCountryUpdate(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<alcohol/.+>/currency/:iid                               controllers.AlcoholInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/currency/:iid                               controllers.AlcoholInputController.processCurrencyInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<alcohol/.+>/currency/:iid/update                        controllers.AlcoholInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<alcohol/.+>/cost/:iid                                   controllers.AlcoholInputController.displayCostInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<alcohol/.+>/cost/:iid                                   controllers.AlcoholInputController.processCostInput(path: ProductPath, iid: String)
-
-# New Alcohol Input Controller
 GET        /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.NewAlcoholInputController.displayAddForm(path: ProductPath)
 POST       /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.NewAlcoholInputController.processAddForm(path: ProductPath)
 GET        /enter-goods/alcohol/:iid/edit                                              controllers.NewAlcoholInputController.displayEditForm(iid: String)
 POST       /enter-goods/alcohol/:iid/edit                                              controllers.NewAlcoholInputController.processEditForm(iid: String)
 
-# New Tobacco Input Controller
+
 GET        /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.NewTobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
 POST       /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
 
@@ -85,36 +67,12 @@ GET        /enter-goods/tobacco/:iid/edit                                       
 POST       /enter-goods/tobacco/:iid/edit                                              controllers.NewTobaccoInputController.processEditForm(iid: String)
 
 
-# Tobacco Input/Update
-GET        /select-goods/$path<tobacco/.+>/start                                       controllers.TobaccoInputController.inputNoOfSticksAndWeight(path: ProductPath)
-
-GET        /select-goods/$path<tobacco/cigarettes>/no-of-sticks/:iid                   controllers.TobaccoInputController.displayNoOfSticksInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/cigarettes>/no-of-sticks/:iid                   controllers.TobaccoInputController.processNoOfSticksInput(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid   controllers.TobaccoInputController.displayNoOfSticksWeightInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/(cigars|cigarillos)>/no-of-sticks-weight/:iid   controllers.TobaccoInputController.processNoOfSticksWeightInput(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<tobacco/(rolling|chewing)-tobacco>/weight/:iid          controllers.TobaccoInputController.displayWeightInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/(rolling|chewing)-tobacco>/weight/:iid          controllers.TobaccoInputController.processWeightInput(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.displayCountryInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/.+>/country/:iid                                controllers.TobaccoInputController.processCountryInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<tobacco/.+>/country/:iid/update                         controllers.TobaccoInputController.displayCountryUpdate(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.displayCurrencyInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/.+>/currency/:iid                               controllers.TobaccoInputController.processCurrencyInput(path: ProductPath, iid: String)
-GET        /select-goods/$path<tobacco/.+>/currency/:iid/update                        controllers.TobaccoInputController.displayCurrencyUpdate(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<tobacco/.+>/cost/:iid                                   controllers.TobaccoInputController.displayCostInput(path: ProductPath, iid: String)
-POST       /select-goods/$path<tobacco/.+>/cost/:iid                                   controllers.TobaccoInputController.processCostInput(path: ProductPath, iid: String)
-
-GET        /select-goods/$path<tobacco/.+>/:iid/update                                 controllers.TobaccoInputController.updateNoOfSticksAndWeight(path: ProductPath, iid: String)
-
-# Other Goods Journey
 GET        /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.NewOtherGoodsInputController.displayAddForm(path: ProductPath)
 POST       /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.NewOtherGoodsInputController.processAddForm(path: ProductPath)
+
 GET        /enter-goods/other-goods/:iid/edit                                          controllers.NewOtherGoodsInputController.displayEditForm(iid: String)
 POST       /enter-goods/other-goods/:iid/edit                                          controllers.NewOtherGoodsInputController.processEditForm(iid: String)
+
 
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)

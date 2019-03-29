@@ -32,13 +32,13 @@ class NewTobaccoInputController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit val ec: ExecutionContext
-) extends FrontendController(controllerComponents) with I18nSupport with NewControllerHelpers {
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def weightOrVolumeNoOfSticksForm(path: ProductPath, limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks" -> text
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => !noOfSticks.isEmpty)
-        .verifying("error.invalid.characters.noofsticks", noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false)) )
+        .verifying("error.invalid.characters.noofsticks." + path.toMessageKey, noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false)) )
         .transform[Option[Int]](noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)), int => int.mkString)
         .verifying(calculatorLimitConstraintOptionInt(limits, applicableLimits)),
       "weightOrVolume" -> optional(text)
@@ -65,7 +65,7 @@ class NewTobaccoInputController @Inject()(
     mapping(
       "noOfSticks" -> text
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => !noOfSticks.isEmpty)
-        .verifying("error.invalid.characters.noofsticks", noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false)) )
+        .verifying("error.invalid.characters.noofsticks." + path.toMessageKey, noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false)) )
         .transform[Option[Int]](noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)), int => int.mkString)
         .verifying(calculatorLimitConstraintOptionInt(limits, applicableLimits)),
       "weightOrVolume" -> ignored[Option[BigDecimal]](None),
