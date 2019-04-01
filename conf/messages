@@ -318,7 +318,9 @@ head.error.l-spirit.limit-exceeded = You cannot use this service to declare more
 head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
 
 
-error.invalid.characters.noofsticks = Quantity must only include whole numbers, such as 12 or 160
+error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
+error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
+error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
 error.invalid.characters = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.weight = Weight must only include numbers, such as 12 or 6.58
 error.exceeded.max = Price must be no more than 9,999,999,999
@@ -326,7 +328,9 @@ error.invalid.format = Price must be to a maximum of 2 decimal places, such as 1
 error.max.decimal.places.weight = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
 error.max.decimal.places.volume = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
 
-head.error.invalid.characters.noofsticks = Quantity must only include whole numbers, such as 12 or 160
+head.error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
+head.error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
+head.error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
 head.error.invalid.characters = Price must only include numbers, such as 12 or 6.58
 head.error.invalid.characters.weight = Weight must only include numbers, such as 12 or 6.58
 head.error.exceeded.max = Price must be no more than 9,999,999,999
@@ -508,7 +512,7 @@ error.required.cost = Enter the price
 
 head.error.required.cost.other-goods.adult.adult-clothing = Enter the price of the adult clothing
 head.error.required.cost.other-goods.adult.adult-footwear = Enter the price of the pair of adult footwear
-head.error.required.cost.other-goods.antiques = Enter the price of the antique, collector’s piece or works of art
+head.error.required.cost.other-goods.antiques = Enter the price of the antique, collector’s piece or work of art
 head.error.required.cost.other-goods.books = Enter the price of the book or publication
 head.error.required.cost.other-goods.carpets-fabric.carpets = Enter the price of the carpet
 head.error.required.cost.other-goods.carpets-fabric.fabrics = Enter the price of the fabric
@@ -532,7 +536,7 @@ head.error.required.cost.other-goods.other = Enter the price of the item
 
 error.required.cost.other-goods.adult.adult-clothing = Enter the price of the adult clothing
 error.required.cost.other-goods.adult.adult-footwear = Enter the price of the pair of adult footwear
-error.required.cost.other-goods.antiques = Enter the price of the antique, collector’s piece or works of art
+error.required.cost.other-goods.antiques = Enter the price of the antique, collector’s piece or work of art
 error.required.cost.other-goods.books = Enter the price of the book or publication
 error.required.cost.other-goods.carpets-fabric.carpets = Enter the price of the carpet
 error.required.cost.other-goods.carpets-fabric.fabrics = Enter the price of the fabric

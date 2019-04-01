@@ -31,7 +31,7 @@ class NewAlcoholInputController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit val ec: ExecutionContext
-) extends FrontendController(controllerComponents) with I18nSupport with NewControllerHelpers {
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def alcoholForm(path: ProductPath, limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[AlcoholDto] = Form(
     mapping(

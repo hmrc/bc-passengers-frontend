@@ -30,7 +30,7 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
       ))
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks"
+      form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigarettes"
     }
 
 

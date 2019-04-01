@@ -11,7 +11,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Random
 
 
 trait ControllerHelpers extends MessagesBaseController
@@ -21,16 +20,12 @@ trait ControllerHelpers extends MessagesBaseController
 
   def cache: Cache
   def productTreeService: ProductTreeService
-  def currencyService: CurrencyService
-  def countriesService: CountriesService
   def calculatorService: CalculatorService
 
   def error_template: views.html.error_template
 
   implicit def appConfig: AppConfig
-  implicit def messagesApi: play.api.i18n.MessagesApi
   implicit def ec: ExecutionContext
-
 
   def PublicAction(block: LocalContext => Future[Result]): Action[AnyContent] = {
 
@@ -62,14 +57,15 @@ trait ControllerHelpers extends MessagesBaseController
           requireTravelDetails {
 
             block(ctxWithJd)
+
           }(ctxWithJd, implicitly)
         case None =>
-          logAndRedirect("Unable to get journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
+          logAndRedirect("Unable to get journeyData! Starting a new session...", routes.TravelDetailsController.newSession())
       }
     }
   }
 
-  def trimmingFormUrlEncodedData(block: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+  private def trimmingFormUrlEncodedData(block: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
     block {
       request.map {
         case AnyContentAsFormUrlEncoded(data) =>
@@ -93,6 +89,15 @@ trait ControllerHelpers extends MessagesBaseController
     Future.successful(Redirect(redirectLocation))
   }
 
+  def requireCalculatorResponse(block: CalculatorResponse => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    context.getJourneyData match {
+      case JourneyData(_, _, _, _, _, _, _, _, _, Some(calculatorResponse)) => block(calculatorResponse)
+      case _ =>
+        logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+    }
+  }
+
   def requireLimitUsage(journeyData: JourneyData)(block: Map[String, BigDecimal] => Future[Result])(implicit context: LocalContext, hc: HeaderCarrier) = {
 
     calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
@@ -113,43 +118,21 @@ trait ControllerHelpers extends MessagesBaseController
       case Some(journeyData) =>
         block(journeyData)
       case None =>
-        logAndRedirect("Unable to get journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
+        logAndRedirect("Unable to get journeyData! Starting a new session...", routes.TravelDetailsController.newSession())
     }
   }
 
+  def requirePurchasedProductInstance(iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
-  def requireCalculatorResponse(block: CalculatorResponse => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+    requireJourneyData { journeyData =>
 
-    context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, _, _, _, _, Some(calculatorResponse)) => block(calculatorResponse)
-      case _ =>
-        logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+      journeyData.getPurchasedProductInstance(iid) match {
+        case Some(ppi) => block(ppi)
+        case None => logAndRenderError(s"No purchasedProductInstance found in journeyData for iid: $iid!", NotFound)
+      }
     }
   }
 
-
-  def requireUserInformation(block: UserInformation => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, _, _, _, Some(userInformation), _) => block(userInformation)
-      case _ =>
-        logAndRedirect(s"Missing user info in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
-    }
-  }
-
-  def requirePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    block(context.getJourneyData.getOrCreatePurchasedProductInstance(path, iid))
-  }
-
-  def requireWorkingInstance(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, _, _, Some(workingInstance), _, _) => block(workingInstance)
-      case _ =>
-        logAndRedirect(s"Missing working instance in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
-    }
-  }
 
   def requireTravelDetails(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
@@ -157,45 +140,10 @@ trait ControllerHelpers extends MessagesBaseController
       case JourneyData(Some(_), _, _, Some(_), Some(_), _, _, _, _, _) if appConfig.usingVatResJourney => block
       case JourneyData(Some(_), None, None, Some(_), Some(_), _, _, _, _, _) if !appConfig.usingVatResJourney => block
       case _ =>
-        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
+        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session...", routes.TravelDetailsController.newSession())
     }
   }
 
-  def requireCountryByName(countryName: String)(block: Country => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    countriesService.getCountryByName(countryName) match {
-      case Some(country) => block(country)
-      case _ =>
-        logAndRedirect(s"Country missing in the countries lookup service! Redirecting to country-of-purchase...", routes.TravelDetailsController.newSession())
-    }
-  }
-
-
-  def requireWorkingInstanceWeightOrVolume(block: BigDecimal => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    requireWorkingInstance { purchasedProductInstance =>
-      purchasedProductInstance.weightOrVolume match {
-        case Some(weightOrVolume) => block(weightOrVolume)
-        case None =>
-          logAndRedirect(s"No weightOrVolume found in working instance! Redirecting to dashboard...", routes.DashboardController.showDashboard())
-      }
-    }
-  }
-
-  def requireWorkingInstanceCurrency(block: Currency => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-
-    requireWorkingInstance {
-      case PurchasedProductInstance(_, _, _, _, _, Some(currency), _) =>
-        currencyService.getCurrencyByCode(currency) match {
-          case Some(curr) => block(curr)
-          case None =>
-            logAndRedirect(s"Unable to fetch currency for $currency!", routes.DashboardController.showDashboard())
-
-        }
-      case _ =>
-        logAndRedirect(s"Unable to extract working currency", routes.DashboardController.showDashboard())
-    }
-  }
 
   def withNextSelectedProductPath(block: Option[ProductPath] => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
     context.getJourneyData.selectedProducts match {
@@ -227,50 +175,4 @@ trait ControllerHelpers extends MessagesBaseController
         logAndRenderError(s"Category not found at $path!", NotFound)
     }
   }
-
-  def acceptingValidWorkingInstance(workingInstance: Option[PurchasedProductInstance], product: ProductTreeLeaf)(block: Option[JourneyData] => Future[Result])(implicit context: LocalContext): Future[Result] = {
-
-    workingInstance match {
-      case Some(workingInstance) if product.isValid(workingInstance) =>
-        val updatedPurchasedProductInstances = replaceProductInPlace(context.getJourneyData.purchasedProductInstances, workingInstance)
-        block(Some(context.getJourneyData.copy(purchasedProductInstances = updatedPurchasedProductInstances, workingInstance = None)))
-      case _ =>
-        Logger.warn("Working instance was not valid")
-        block(None)
-    }
-  }
-
-  def replaceProductInPlace(purchasedProductInstances: List[PurchasedProductInstance], productToReplace: PurchasedProductInstance): List[PurchasedProductInstance] = {
-    (purchasedProductInstances.takeWhile(_.iid != productToReplace.iid), purchasedProductInstances.dropWhile(_.iid != productToReplace.iid)) match {
-      case (x, Nil) => productToReplace :: x  //Prepend
-      case (x, y) => x ++ (productToReplace :: y.tail)  //Replace in place
-    }
-  }
-
-
-  def addingWeightOrVolumeToWorkingInstance(journeyData: JourneyData, path: ProductPath, iid: String, weightOrVolume: Option[BigDecimal])(implicit hc: HeaderCarrier, ex: ExecutionContext): JourneyData = {
-
-    journeyData.withUpdatedWorkingInstance(path, iid) { workingInstance =>
-      workingInstance.copy(path = path, iid = iid, weightOrVolume = weightOrVolume)
-    }
-
-  }
-
-  def addingNoOfSticksToWorkingInstance(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Option[Int])(implicit hc: HeaderCarrier, ex: ExecutionContext): JourneyData = {
-
-    journeyData.withUpdatedWorkingInstance(path, iid) { workingInstance =>
-      workingInstance.copy(path = path, iid = iid, noOfSticks = noOfSticks)
-    }
-
-  }
-
-  def addingNoOfSticksAndWeightOrVolumeToWorkingInstance(journeyData: JourneyData, path: ProductPath, iid: String, noOfSticks: Option[Int], weightOrVolume: Option[BigDecimal])(implicit hc: HeaderCarrier, ex: ExecutionContext): JourneyData = {
-
-    journeyData.withUpdatedWorkingInstance(path, iid) { workingInstance =>
-      workingInstance.copy(path = path, iid = iid, noOfSticks = noOfSticks, weightOrVolume = weightOrVolume)
-    }
-
-  }
-
-  def generateIid: String = Random.alphanumeric.take(6).mkString
 }

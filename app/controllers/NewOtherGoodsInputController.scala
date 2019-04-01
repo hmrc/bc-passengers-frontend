@@ -29,7 +29,7 @@ class NewOtherGoodsInputController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit val ec: ExecutionContext
-) extends FrontendController(controllerComponents) with I18nSupport with NewControllerHelpers {
+) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   val addCostForm: Form[OtherGoodsDto] = Form(
     mapping(
