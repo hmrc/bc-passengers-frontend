@@ -35,11 +35,7 @@ class NewOtherGoodsInputController @Inject() (
     mapping(
       "action" -> nonEmptyText,
       "country" -> text,
-      "currency" -> text
-        .transform[String](
-          name => currencyService.getCodeByDisplayName(name).getOrElse(name),
-          code => currencyService.getDisplayNameByCode(code).getOrElse(code)
-        ),
+      "currency" -> text,
       "costs" -> list(text)
         .transform[List[BigDecimal]](
           _.map(s => Try(BigDecimal(s.filter(_ != ','))).toOption.getOrElse(BigDecimal(0))),
@@ -52,12 +48,8 @@ class NewOtherGoodsInputController @Inject() (
     mapping(
       "action" -> nonEmptyText,
       "country" -> text
-        .verifying("error.country.invalid", name => countriesService.isValidCountryName(name)),
+        .verifying("error.country.invalid", name => countriesService.isValidCountryCode(name)),
       "currency" -> text
-        .transform[String](
-          name => currencyService.getCodeByDisplayName(name).getOrElse(name),
-          code => currencyService.getDisplayNameByCode(code).getOrElse(code)
-        )
         .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "costs" -> list(
         text

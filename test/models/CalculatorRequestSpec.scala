@@ -29,7 +29,7 @@ class CalculatorRequestSpec extends BaseSpec {
             "iid0",
             weightOrVolume,
             noOfSticks,
-            Some(Country("Egypt", "EG", isEu = false, Nil)),
+            Some(Country("EG", "Egypt", "EG", isEu = false, Nil)),
             Some("CAD"),
             Some(BigDecimal("2.00"))
           ),
@@ -65,6 +65,7 @@ class CalculatorRequestSpec extends BaseSpec {
           |        "currencySynonyms" : [ ]
           |      },
           |      "country" : {
+          |        "code": "EG",
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
@@ -109,6 +110,7 @@ class CalculatorRequestSpec extends BaseSpec {
           |        "currencySynonyms" : [ ]
           |      },
           |      "country" : {
+          |        "code": "EG",
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
@@ -152,6 +154,7 @@ class CalculatorRequestSpec extends BaseSpec {
           |        "currencySynonyms" : [ ]
           |      },
           |      "country" : {
+          |        "code": "EG",
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
@@ -195,6 +198,7 @@ class CalculatorRequestSpec extends BaseSpec {
           |        "currencySynonyms" : [ ]
           |      },
           |      "country" : {
+          |        "code": "EG",
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
@@ -237,6 +241,7 @@ class CalculatorRequestSpec extends BaseSpec {
           |        "currencySynonyms" : [ ]
           |      },
           |      "country" : {
+          |        "code": "EG",
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,

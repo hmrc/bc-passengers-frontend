@@ -6,7 +6,7 @@ import scala.util.Random
 
 class JourneyDataSpec extends BaseSpec {
 
-  private val countryEgypt = Country("Egypt", "EG", isEu = false, Nil)
+  private val countryEgypt = Country("EG", "title.egypt", "EG", isEu = false, Nil)
 
   "Calling JourneyData.getOrCreatePurchasedProductInstance" should {
     "return the specified product from the journey data if it exists" in {

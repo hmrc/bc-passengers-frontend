@@ -38,7 +38,7 @@
 
     @components.select(
       field = dtoForm("country"),
-      elementOptions = ("","") :: countries.map(c => (c.countryName,c.countryName)),
+      elementOptions = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
       displayEmptyValue = true,
       '_label -> messages("label.country_this_tobacco_was_"),
       '_inputHint -> messages("label.if_you_bought_this_tobacco_"),
@@ -47,7 +47,7 @@
 
     @components.select(
       field = dtoForm("currency"),
-      elementOptions = ("","") :: currencies.map(c => (c.displayName ,c.displayName)),
+      elementOptions = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
       displayEmptyValue = true,
       '_label -> messages("label.currency_used_to_buy_this_tobacco"),
       '_errorsAboveInput -> true

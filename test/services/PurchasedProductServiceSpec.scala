@@ -60,17 +60,17 @@ class PurchasedProductServiceSpec extends BaseSpec {
     "remove the working instance" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = Some(JourneyData( purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("12.99"))),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("4.99"))),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
       )))
 
       await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
 
       verify(s.cache, times(1)).store(
         meq(JourneyData( purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("12.99"))),
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("Egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("12.99"))),
+          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"), Some(BigDecimal("24.99")))
         )))
       )(any())
 

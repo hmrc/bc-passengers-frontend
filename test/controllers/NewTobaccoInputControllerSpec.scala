@@ -56,7 +56,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
         "iid0",
         weightOrVolume,
         noOfSticks,
-        Some(Country("France", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", true, Nil)),
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -157,7 +157,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "noOfSticks" -> "400",
         "cost" -> "92.50"
       )
@@ -176,7 +176,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
         "country" -> "Not a real country",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "noOfSticks" -> "400",
         "cost" -> "92.50"
       )
@@ -194,7 +194,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "noOfSticks" -> "400",
         "cost" -> "92.50"
@@ -213,7 +213,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "Not a valid currency",
         "noOfSticks" -> "400",
         "cost" -> "92.50"
@@ -232,8 +232,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "400",
         "cost" -> ""
       )
@@ -251,8 +251,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "",
         "cost" -> "92.50"
       )
@@ -270,8 +270,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "invalid noOfSticks",
         "cost" -> "92.50"
       )
@@ -289,8 +289,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "400",
         "cost" -> "92.50"
       )
@@ -303,7 +303,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
         meq(ProductPath("tobacco/cigarettes")),
         any(),
         meq(Some(400)),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -322,7 +322,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
       )
@@ -341,7 +341,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
         "country" -> "Not a real country",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
       )
@@ -359,7 +359,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = None
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -378,7 +378,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = None
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "Not a valid currency",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -397,8 +397,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = None
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "400.0",
         "cost" -> ""
       )
@@ -416,8 +416,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = None
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "",
         "cost" -> "92.50"
       )
@@ -435,8 +435,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = None
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "Invalid weightOrVolume",
         "cost" -> "92.50"
       )
@@ -454,8 +454,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = None
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
       )
@@ -468,7 +468,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
         meq(ProductPath("tobacco/rolling-tobacco")),
         meq(Some(BigDecimal(0.4))),
         any(),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -487,7 +487,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
         "country" -> "",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -507,7 +507,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
         "country" -> "Invalid country",
-        "currency" -> "Euro (EUR)",
+        "currency" -> "EUR",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -526,7 +526,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "400.0",
@@ -546,7 +546,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
+        "country" -> "FR",
         "currency" -> "Invalid currency",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "400.0",
@@ -566,8 +566,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "400.0",
         "cost" -> ""
@@ -586,8 +586,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "",
         "cost" -> "92.50"
@@ -606,8 +606,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "Invalid weightOrVolume",
         "cost" -> "92.50"
@@ -626,8 +626,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -646,8 +646,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "Invalid noOfSticks",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -666,8 +666,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "",
         "weightOrVolume" -> "",
         "cost" -> "92.50"
@@ -686,8 +686,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "Invalid noOfSticks",
         "weightOrVolume" -> "Invalid weightOrVolume",
         "cost" -> "92.50"
@@ -706,8 +706,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "50",
         "weightOrVolume" -> "400.0",
         "cost" -> "92.50"
@@ -721,7 +721,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
         meq(ProductPath("tobacco/cigars")),
         meq(Some(BigDecimal(0.4))),
         meq(Some(50)),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -793,7 +793,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           None,
           Some(BigDecimal(92.50))
         ))
@@ -822,7 +822,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           Some("EUR"),
           Some(BigDecimal(92.50))
         ))
@@ -851,7 +851,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("France", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", true, Nil)),
           Some("EUR"),
           Some(BigDecimal(92.50))
         ))
@@ -873,8 +873,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/missing-iid/edit").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "noOfSticks" -> "400",
         "cost" -> "92.50"
       )
@@ -893,8 +893,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "France",
-        "currency" -> "Euro (EUR)",
+        "country" -> "FR",
+        "currency" -> "EUR",
         "weightOrVolume" -> "400.0",
         "noOfSticks" -> "50",
         "cost" -> "98.00"
@@ -909,7 +909,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
         meq("iid0"),
         meq(Some(BigDecimal(0.4))),
         meq(Some(50)),
-        meq("France"),
+        meq("FR"),
         meq("EUR"),
         meq(BigDecimal(98.00))
       )(any())

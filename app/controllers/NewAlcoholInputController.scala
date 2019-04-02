@@ -41,14 +41,8 @@ class NewAlcoholInputController @Inject() (
       .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString) )
       .verifying("error.max.decimal.places.volume", _.scale  <= 3).transform[BigDecimal](identity, identity)
       .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits)),
-      "country" -> text.verifying("error.country.invalid", name => countriesService.isValidCountryName(name)),
-      "currency" -> text
-        .transform[String](
-          name => currencyService.getCodeByDisplayName(name).getOrElse(name),
-          code => currencyService.getDisplayNameByCode(code).getOrElse(code)
-        )
-        .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-
+      "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
@@ -92,11 +86,9 @@ class NewAlcoholInputController @Inject() (
       requireProduct(path) { product =>
         alcoholForm(path, limits, product.applicableLimits).bindFromRequest.fold(
           formWithErrors => {
-            println(formWithErrors.errors)
             Future.successful(BadRequest(alcohol_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
           },
-          dto => {
-            val jd = newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))
+          _ => {
             cache.store(jd) map { _ =>
               Redirect(routes.SelectProductController.nextStep())
             }
@@ -128,8 +120,7 @@ class NewAlcoholInputController @Inject() (
             formWithErrors => {
               Future.successful(BadRequest(alcohol_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            dto => {
-              val jd = newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.currency, dto.cost)
+            _ => {
               cache.store(jd) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }

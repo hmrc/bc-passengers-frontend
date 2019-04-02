@@ -37,12 +37,12 @@
             </div>
             <div class="product-country">
               <dt class="cya-question">@messages("label.country")</dt>
-              <dd class="cya-answer">@purchasedItem.country</dd>
+              <dd class="cya-answer">@messages(purchasedItem.country.mkString)</dd>
             </div>
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
               </dd>
             </div>
           </dl>
@@ -81,12 +81,12 @@
             </div>
             <div class="product-country">
               <dt class="cya-question">@messages("label.country")</dt>
-              <dd class="cya-answer">@purchasedItem.country</dd>
+              <dd class="cya-answer">@messages(purchasedItem.country.mkString)</dd>
             </div>
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
               </dd>
             </div>
           </dl>
@@ -132,12 +132,12 @@
           </div>
           <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
-            <dd class="cya-answer">@purchasedItem.country</dd>
+            <dd class="cya-answer">@messages(purchasedItem.country.mkString)</dd>
           </div>
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @purchasedItem.displayCurrency
+                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
             </dd>
           </div>
         </dl>
