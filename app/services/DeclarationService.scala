@@ -42,7 +42,7 @@ class DeclarationService @Inject()(
 
     def extractChargeReference(declaration: JsValue) =
       ChargeReference((declaration \ "simpleDeclarationRequest" \ "requestDetail" \ "declarationHeader" \ "chargeReference").as[JsString].value)
-    
+
     //First add correlation id etc
     wsAllMethods.POST[JsObject, HttpResponse](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/submit-declaration", partialDeclarationMessage, headers) map {
       case HttpResponse(ACCEPTED, declaration, headers, _) =>
