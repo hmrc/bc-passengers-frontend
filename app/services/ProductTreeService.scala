@@ -16,8 +16,8 @@ class ProductTreeService {
             ProductTreeBranch("cider", "Cider",
               List(
                 ProductTreeLeaf("non-sparkling-cider", "Non-sparkling cider", "ALC/A1/CIDER", "alcohol", List("L-ALCOTH")),
-                ProductTreeLeaf("sparkling-cider", "Sparkling cider (1.3% to 5.5% alcohol)", "ALC/A1/CIDERU5SP", "alcohol", List("L-ALCOTH")),
-                ProductTreeLeaf("sparkling-cider-up", "Sparkling cider (5.6% to 8.4% alcohol)", "ALC/A1/CIDERU8SP", "alcohol", List("L-ALCOTH"))
+                ProductTreeLeaf("sparkling-cider", "Sparkling cider (1.3% to 5.5% alcohol by volume)", "ALC/A1/CIDERU5SP", "alcohol", List("L-ALCOTH")),
+                ProductTreeLeaf("sparkling-cider-up", "Sparkling cider (5.6% to 8.4% alcohol by volume)", "ALC/A1/CIDERU8SP", "alcohol", List("L-ALCOTH"))
               )
             ),
             ProductTreeLeaf("sparkling-wine", "Sparkling wine (such as Champagne or Prosecco)", "ALC/A1/WINESP", "alcohol", List("L-WINE", "L-WINESP")),
@@ -55,7 +55,7 @@ class ProductTreeService {
             ProductTreeBranch("childrens",
               "Children's clothing and footwear", List(
                 ProductTreeLeaf("childrens-clothing", "Children’s clothing", "OGD/CLTHS/CHILD", "other-goods", Nil),
-                ProductTreeLeaf("childrens-footwear", "Children’s Footwear", "OGD/CLTHS/CHILD", "other-goods", Nil)
+                ProductTreeLeaf("childrens-footwear", "Children’s footwear", "OGD/CLTHS/CHILD", "other-goods", Nil)
 
               )
             ),

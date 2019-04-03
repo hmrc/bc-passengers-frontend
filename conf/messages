@@ -152,12 +152,12 @@ label.add_other_goods = Add other goods
 label.add_purchases_separately_ = Add purchases separately if you bought them from more than one country or used more than one currency.
 
 # Select Products Page
-select_products.heading.alcohol = What alcohol are you bringing into the UK?
-select_products.heading.alcohol.cider = What cider are you bringing into the UK?
+select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
+select_products.heading.alcohol.cider = What type of cider are you bringing into the UK?
 
-select_products.heading.tobacco = What tobacco are you bringing into the UK?
+select_products.heading.tobacco = What type of tobacco are you bringing into the UK?
 
-select_products.heading.other-goods = What items are you bringing into the UK?
+select_products.heading.other-goods = What other goods are you bringing into the UK?
 select_products.heading.other-goods.adult = What adult clothing or footwear are you bringing into the UK?
 select_products.heading.other-goods.carpets-fabric = What items of carpet or fabric are you bringing into the UK?
 select_products.heading.other-goods.childrens = What children’s clothing or footwear are you bringing into the UK?
