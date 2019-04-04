@@ -77,4 +77,4 @@ POST       /enter-goods/other-goods/:iid/edit                                   
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)
 
-GET        /assets/*file                                                               controllers.Assets.at(path="/public", file)
+GET        /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)
