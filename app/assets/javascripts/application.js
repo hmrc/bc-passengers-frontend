@@ -20,6 +20,7 @@ $(window).load(function () {
 // ================================================================================
 function enhanceSelectIntoAutoComplete(selectElementId, dataSource) {
 
+
   accessibleAutocomplete.enhanceSelectElement({
     selectElement: document.querySelector('#' + selectElementId),
     displayMenu: 'inline',

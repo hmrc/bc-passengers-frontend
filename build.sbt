@@ -9,12 +9,16 @@ import uk.gov.hmrc.versioning.SbtGitVersioning
 
 val appName = "bc-passengers-frontend"
 
+
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     retrieveManaged := true
+  )
+  .settings(
+    pipelineStages := Seq(digest)
   )
   .settings(scalaSettings: _*)
   .settings(publishingSettings: _*)
