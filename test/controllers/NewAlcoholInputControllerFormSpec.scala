@@ -1,6 +1,6 @@
 package controllers
 
-import models.ProductPath
+import models.{AlcoholDto, ProductPath}
 import util.BaseSpec
 
 class NewAlcoholInputControllerFormSpec extends BaseSpec {
@@ -46,9 +46,9 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     }
   }
 
-    "Posting the alcoholForm" should {
+  "Posting the alcoholForm" should {
 
-      val path = ProductPath("alcohol/sparkling-wine")
+    val path = ProductPath("alcohol/sparkling-wine")
 
 
     "fail on more than allowance 60 litres in sparkling-wine" in {
@@ -64,17 +64,29 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     }
 
 
-      "fail on more than allowance 90 litres in wine" in {
-        val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.1), List("L-WINE")).bind(Map(
-          "weightOrVolume" -> "95",
-          "country" -> "FR",
-          "currency" -> "EUR",
-          "cost" -> "50"
-        ))
-        form.hasErrors shouldBe true
-        form.errors.size shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.l-wine.limit-exceeded"
-      }
+    "fail on more than allowance 90 litres in wine" in {
+      val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.1), List("L-WINE")).bind(Map(
+        "weightOrVolume" -> "95",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "cost" -> "50"
+      ))
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("weightOrVolume").get.message shouldBe "error.l-wine.limit-exceeded"
+    }
+
+    "pass on cost with comma seperated thousands" in {
+      val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.0), List("L-WINE")).bind(Map(
+        "weightOrVolume" -> "90",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "cost" -> "4,444.00"
+      ))
+      form.hasErrors shouldBe false
+      form.value.get shouldBe AlcoholDto(90, "FR", "EUR", 4444)
+
+    }
 
   }
 }

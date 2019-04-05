@@ -208,6 +208,17 @@ class NewTobaccoInputControllerFormSpec extends BaseSpec {
       form.error("cost").get.message shouldBe "error.required.tobacco.rolling-tobacco"
     }
 
+    "pass on cost with comma seperated thousands" in {
+      val form = injected[NewTobaccoInputController].weightOrVolumeForm(path).bind(Map(
+        "weightOrVolume" -> "500",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "cost" -> "4,444.00"
+      ))
+      form.hasErrors shouldBe false
+      form.value.get shouldBe TobaccoDto(None, Some(0.5), "FR", "EUR", 4444)
+    }
+
   }
 
 }
