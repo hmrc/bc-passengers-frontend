@@ -34,6 +34,16 @@ class NewTobaccoInputController @Inject()(
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
+  val resilientForm: Form[TobaccoDto] = Form(
+    mapping(
+      "noOfSticks" -> optional(text).transform[Option[Int]](_.fold(Some(0))(x => Some(Try(x.toInt).getOrElse(Int.MaxValue))), _.map(_.toString)),
+      "weightOrVolume" -> optional(text).transform[Option[BigDecimal]](_.map(x => Try(BigDecimal(x)/1000).getOrElse(0)), _.map(_.toString)),
+      "country" -> ignored(""),
+      "currency" -> ignored(""),
+      "cost" -> ignored(BigDecimal(0))
+    )(TobaccoDto.apply)(TobaccoDto.unapply)
+  )
+
   def weightOrVolumeNoOfSticksForm(path: ProductPath, limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks" -> text
@@ -132,29 +142,19 @@ class NewTobaccoInputController @Inject()(
   }
 
   def processAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
-    val resilientForm: Form[TobaccoDto] = Form(
-      mapping(
-        "noOfSticks" -> optional(text).transform[Option[Int]](_.fold(Some(0))(x => Some(Try(x.toInt).getOrElse(Int.MaxValue))), _.map(_.toString)),
-        "weightOrVolume" -> optional(text).transform[Option[BigDecimal]](_.map(x => Try(BigDecimal(x)/1000).getOrElse(0)), _.map(_.toString)),
-        "country" -> text,
-        "currency" -> text,
-        "cost" -> optional(text).transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), x => Some(x.toString))
-      )(TobaccoDto.apply)(TobaccoDto.unapply)
-    )
 
-
-    val dto = resilientForm.bindFromRequest.value.get
-    val jd = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
-
-    requireLimitUsage(jd) { limits =>
+    requireLimitUsage({
+      val dto = resilientForm.bindFromRequest.value.get
+      newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+    }) { limits =>
       requireProduct(path) { product =>
         def processNoOfSticksAddForm = {
           noOfSticksForm(path, limits, product.applicableLimits).bindFromRequest.fold(
             formWithErrors => {
               Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            _ => {
-              cache.store(jd) map { _ =>
+            dto => {
+              cache.store( newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost)) ) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
             }
@@ -165,8 +165,8 @@ class NewTobaccoInputController @Inject()(
             formWithErrors => {
               Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            _ => {
-              cache.store(jd) map { _ =>
+            dto => {
+              cache.store( newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost)) ) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
             }
@@ -177,8 +177,8 @@ class NewTobaccoInputController @Inject()(
             formWithErrors => {
               Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
-            _ => {
-              cache.store(jd) map { _ =>
+            dto => {
+              cache.store( newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost)) ) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
             }
@@ -200,31 +200,21 @@ class NewTobaccoInputController @Inject()(
 
   def processEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
 
-    val resilientForm: Form[TobaccoDto] = Form(
-      mapping(
-        "noOfSticks" -> optional(text).transform[Option[Int]](_.fold(Some(0))(x => Some(Try(x.toInt).getOrElse(Int.MaxValue))), _.map(_.toString)),
-        "weightOrVolume" -> optional(text).transform[Option[BigDecimal]](_.map(x => Try(BigDecimal(x)/1000).getOrElse(0)), _.map(_.toString)),
-        "country" -> text,
-        "currency" -> text,
-        "cost" -> optional(text).transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), x => Some(x.toString))
-      )(TobaccoDto.apply)(TobaccoDto.unapply)
-    )
-
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
 
-        val dto = resilientForm.bindFromRequest.value.get
-        val jd = newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost)
-
-        requireLimitUsage(jd) { limits =>
+        requireLimitUsage({
+          val dto = resilientForm.bindFromRequest.value.get
+          newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost)
+        }) { limits =>
 
             def processCigarettesEditForm = {
               noOfSticksForm(ppi.path, limits, product.applicableLimits).bindFromRequest.fold(
                 formWithErrors => {
                   Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
                 },
-                _ => {
-                  cache.store(jd) map { _ =>
+                dto => {
+                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost) ) map { _ =>
                     Redirect(routes.SelectProductController.nextStep())
                   }
                 }
@@ -236,8 +226,8 @@ class NewTobaccoInputController @Inject()(
                 formWithErrors => {
                   Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
                 },
-                _ => {
-                  cache.store(jd) map { _ =>
+                dto => {
+                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost) ) map { _ =>
                     Redirect(routes.SelectProductController.nextStep())
                   }
                 }
@@ -249,8 +239,8 @@ class NewTobaccoInputController @Inject()(
                 formWithErrors => {
                   Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
                 },
-                _ => {
-                  cache.store(jd) map { _ =>
+                dto => {
+                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost) ) map { _ =>
                     Redirect(routes.SelectProductController.nextStep())
                   }
                 }
