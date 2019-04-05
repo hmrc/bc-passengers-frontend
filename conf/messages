@@ -131,7 +131,7 @@ label.enter_country = Enter country
 label.are_you_17_or_over = Are you 17 or over?
 
 # Private Craft
-label.did_you_arrive_in_the_uk_by_private_boat_ = Did you arrive in the UK by private boat or private plane?
+label.did_you_arrive_in_the_uk_by_private_boat_ = Did you arrive in the UK by private aircraft or private boat?
 
 # Dashboard Page
 label.tell_us_about_your_purchases = Tell us about your purchases
