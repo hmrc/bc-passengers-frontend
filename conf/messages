@@ -57,10 +57,10 @@ head.error.claimed_vat_res = Select if you claimed tax back on any goods you bou
 label.select_yes_if_the_tax_was_refunded_ = Select yes if the tax was refunded immediately or if you filled in a form to claim the tax back later.
 
 ## Duty Free Page
-heading.are_you_bringing_in_duty_free_ = Are you bringing in duty-free alcohol or tobacco bought in EU shops?
-error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the EU
-head.error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the EU
-label.select_yes_any_any_alcohol_or_tobacco_ = Select yes if any alcohol or tobacco was bought in a ’tax-free’ or ’duty-free’ shop, such as at an airport or ferry port.
+heading.are_you_bringing_in_duty_free_ = Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?
+error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU
+head.error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU
+label.select_yes_any_any_alcohol_or_tobacco_ = Select yes if any alcohol or tobacco was bought in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.
 
 
 ## EU Done Page

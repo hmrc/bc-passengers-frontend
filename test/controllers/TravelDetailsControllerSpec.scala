@@ -27,6 +27,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .configure("features.vat-res" -> false)
     .build()
 
   override def beforeEach: Unit = {

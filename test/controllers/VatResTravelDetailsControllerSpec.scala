@@ -182,7 +182,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       doc.select("#bringingDutyFree-true").hasAttr("checked") shouldBe false
       doc.select("#bringingDutyFree-false").hasAttr("checked") shouldBe false
 
-      content should include ("Are you bringing in duty-free alcohol or tobacco bought in EU shops?")
+      content should include ("Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?")
 
       verify(controller.cache, times(1)).fetch(any())
 
@@ -202,7 +202,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       doc.select("#bringingDutyFree-true").hasAttr("checked") shouldBe true
       doc.select("#bringingDutyFree-false").hasAttr("checked") shouldBe false
 
-      content should include ("Are you bringing in duty-free alcohol or tobacco bought in EU shops?")
+      content should include ("Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?")
 
       verify(controller.cache, times(1)).fetch(any())
 
@@ -261,7 +261,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       Option(doc.getElementById("errors").select("a[href=#bringingDutyFree]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#bringingDutyFree]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the EU"
+      Option(doc.getElementById("errors").select("a[href=#bringingDutyFree]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
       Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
       Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
 
@@ -277,7 +277,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.select("input[name=bringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the EU"
+      doc.select("input[name=bringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
     }
   }
 }
