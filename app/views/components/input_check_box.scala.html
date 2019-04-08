@@ -35,7 +35,7 @@
   @for(((label, v), i) <- inputs.zipWithIndex) {
     <div class="multiple-choice">
       <input id="@v" type="checkbox" name="@field(s"[$i]").name" value="@v" data-journey-click="bc_passengers-frontend:click:@v" />
-      <label for="@v">@messages(label)</label>
+      <label for="@v">@messages("select_products."+label)</label>
     </div>
   }
 

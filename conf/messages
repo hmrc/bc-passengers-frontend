@@ -169,6 +169,54 @@ error.required.other-goods.glassware-ornaments = Select glassware or ornaments o
 
 label.select_all_that_apply = Select all that apply
 
+
+select_products.label.alcohol = Alcohol
+select_products.label.alcohol.beer = Beer
+select_products.label.alcohol.cider = Cider
+select_products.label.alcohol.cider.non-sparkling-cider = Non-sparkling cider
+select_products.label.alcohol.cider.sparkling-cider = Sparkling cider (1.3% to 5.5% alcohol by volume)
+select_products.label.alcohol.cider.sparkling-cider-up = Sparkling cider (5.6% to 8.4% alcohol by volume)
+select_products.label.alcohol.sparkling-wine = Sparkling wine (such as Champagne or Prosecco)
+select_products.label.alcohol.spirits = Spirits (including gin, vodka and alcohol above 22%)
+select_products.label.alcohol.wine = Wine
+select_products.label.alcohol.other = All other alcoholic drinks (including port, sherry and alcohol up to 22%)
+
+select_products.label.tobacco = Tobacco
+select_products.label.tobacco.cigarettes = Cigarettes
+select_products.label.tobacco.cigarillos = Cigarillos
+select_products.label.tobacco.cigars = Cigars
+select_products.label.tobacco.chewing-tobacco = Pipe or chewing tobacco
+select_products.label.tobacco.rolling-tobacco = Rolling tobacco
+
+select_products.label.other-goods = Other Goods
+select_products.label.other-goods.adult = Adult clothing and footwear
+select_products.label.other-goods.adult.adult-clothing = Adult clothing
+select_products.label.other-goods.adult.adult-footwear = Adult footwear
+select_products.label.other-goods.antiques = Antiques, collector’s pieces and works of art
+select_products.label.other-goods.books = Books and publications
+select_products.label.other-goods.carpets-fabric = Carpets and fabrics
+select_products.label.other-goods.carpets-fabric.carpets = Carpets
+select_products.label.other-goods.carpets-fabric.fabrics = Fabrics
+select_products.label.other-goods.car-seats = Children’s car seats
+select_products.label.other-goods.childrens = Children's clothing and footwear
+select_products.label.other-goods.childrens.childrens-clothing = Children’s clothing
+select_products.label.other-goods.childrens.childrens-footwear = Children’s footwear
+select_products.label.other-goods.disability-equipment = Disability equipment
+select_products.label.other-goods.electronic-devices = Electronic devices
+select_products.label.other-goods.electronic-devices.televisions = Televisions
+select_products.label.other-goods.electronic-devices.other = All other electronic devices
+select_products.label.other-goods.furniture = Furniture
+select_products.label.other-goods.glassware = Glassware
+select_products.label.other-goods.jewellery = Jewellery
+select_products.label.other-goods.mobility-aids = Mobility aids
+select_products.label.other-goods.perfumes-cosmetics = Perfumes and cosmetics
+select_products.label.other-goods.protective-helmets = Protective helmets
+select_products.label.other-goods.sanitary-products = Sanitary products
+select_products.label.other-goods.stop-smoking-products = Stop smoking products
+select_products.label.other-goods.tableware = Tableware and kitchenware
+select_products.label.other-goods.watches-clocks = Watches and clocks
+select_products.label.other-goods.other = Anything else
+
 ## Select Product Errors
 head.error.required.alcohol = Select what type of alcohol you are bringing into the UK
 error.required.alcohol = Select what type of alcohol you are bringing into the UK
@@ -407,6 +455,7 @@ label.country_this_alcohol_was_ = Country this alcohol was bought in
 label.if_you_bought_this_alcohol_ = If you bought this alcohol on a plane or boat, enter the country you were travelling from at the time of purchase
 label.currency_used_to_buy_this_alcohol = Currency used to buy this alcohol
 label.alcohol.beer = Beer
+label.alcohol.cider = Cider
 label.alcohol.cider.non-sparkling-cider = Non-sparkling cider
 label.alcohol.cider.sparkling-cider = Sparkling cider (1.3% to 5.5%)
 label.alcohol.cider.sparkling-cider-up = Sparkling cider (5.6% to 8.4%)
@@ -425,16 +474,20 @@ label.price_paid_for_the_7_item = Price paid for seventh item
 label.price_paid_for_the_8_item = Price paid for eighth item
 label.price_paid_for_the_9_item = Price paid for ninth item
 
+label.other-goods.adult = Adult clothing and footwear
 label.other-goods.adult.adult-clothing = Adult clothing
 label.other-goods.adult.adult-footwear = Adult footwear
 label.other-goods.antiques = Antique, collector’s piece or work of art
 label.other-goods.books = Book or publication
+label.other-goods.carpets-fabric = Carpets and fabrics
 label.other-goods.carpets-fabric.carpets = Carpet
 label.other-goods.carpets-fabric.fabrics = Fabric
 label.other-goods.car-seats = Children’s car seat
+label.other-goods.childrens = Children’s clothing and footwear
 label.other-goods.childrens.childrens-clothing = Children’s clothing
 label.other-goods.childrens.childrens-footwear = Children’s footwear
 label.other-goods.disability-equipment = Disability equipment
+label.other-goods.electronic-devices = Electronic devices
 label.other-goods.electronic-devices.televisions = Television
 label.other-goods.electronic-devices.other = Electronic device
 label.other-goods.furniture = Furniture
