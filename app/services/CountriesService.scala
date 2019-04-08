@@ -250,7 +250,6 @@ class CountriesService {
     Country("TT", "title.trinidad_and_tobago", "TT", isEu=false, Nil),
     Country("TN", "title.tunisia", "TN", isEu=false, Nil),
     Country("TR", "title.turkey", "TR", isEu=false, Nil),
-    Country("CY1", "title.turkish_republic_of_northern_cyprus", "CY", isEu=false, List("TRNC", "Northern Cyprus")),
     Country("TM", "title.turkmenistan", "TM", isEu=false, Nil),
     Country("TC", "title.turks_and_caicos_islands", "TC", isEu=false, Nil),
     Country("TV", "title.tuvalu", "TV", isEu=false, Nil),
