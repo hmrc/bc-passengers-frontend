@@ -152,10 +152,11 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "addSelectedProducts to keystore and return redirect to nextStep given valid checkbox values" in new LocalSetup {
+    "addSelectedProducts to keystore, clearing all selected products not in the dto and then redirect to nextStep given valid checkbox values" in new LocalSetup {
+
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(selectedProducts = List(
-        List("alcohol/beer"),List("alcohol/cider")
+        List("alcohol/beer"),List("alcohol/cider"), List("tobacco/cigar")
       )))
 
       override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
@@ -163,7 +164,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
-      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(cachedJourneyData.get), meq(List(ProductPath("alcohol/beer"))))(any())
+      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(requiredJourneyData.copy(selectedProducts = Nil)), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[Cache], times(1)).fetch(any())
 
     }

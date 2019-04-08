@@ -18,7 +18,6 @@ class SelectProductService @Inject()(
 ) {
 
   def addSelectedProducts(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier) = {
-
     val truncatedCurrentSelectedProducts = journeyData.selectedProducts.foldLeft[List[List[String]]](List[List[String]]()) { (acc, ele) =>
       val cat = ele.dropRight(1)
       if(selectedProducts.exists(_.categoryComponent == cat)) acc
