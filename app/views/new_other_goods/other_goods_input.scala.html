@@ -8,10 +8,16 @@
   <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
   <script>
     $(document).ready(function () {
-      var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
+
+      // Get IE or Edge browser version
+      var version = detectIE();
+
+      if (version !== 11) {
+        var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
               enhanceSelectIntoAutoComplete("country", countrySynonymsData)
-      var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
+        var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
               enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+      }
     });
   </script>
 }

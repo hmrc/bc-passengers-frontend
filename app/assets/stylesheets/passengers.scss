@@ -62,3 +62,6 @@ h1 span.heading-medium {
   padding-bottom: 0.5em;
 }
 
+.no-details details summary .arrow-closed {
+  display: none !important;
+}
