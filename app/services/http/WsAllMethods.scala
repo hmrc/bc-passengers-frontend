@@ -1,5 +1,6 @@
 package services.http
 
+import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import javax.inject.{Inject, Singleton}
 import play.api.libs.ws.WSClient
@@ -15,6 +16,7 @@ trait WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost wi
 @Singleton
 class WsAllMethods @Inject() (
   override val auditConnector: AuditConnector,
+  override val actorSystem: ActorSystem,
   environment: Environment,
   val wsClient: WSClient,
   config: Configuration

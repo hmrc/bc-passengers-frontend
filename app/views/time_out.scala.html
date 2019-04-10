@@ -1,0 +1,14 @@
+@this(main_template: views.html.main_template)
+@()(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+
+@main_template(title = messages("label.for_security_we_deleted_your_answers"), timeout = false) {
+
+  <h1 class="heading-xlarge">@messages("label.for_security_we_deleted_your_answers")</h1>
+
+  <div class="form-group">
+    <a class="button" href="@routes.TravelDetailsController.euCountryCheck()" role="button">@messages("label.start_again")</a>
+  </div>
+
+}
