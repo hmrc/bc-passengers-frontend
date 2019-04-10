@@ -1,6 +1,7 @@
 package models
 
 
+import play.api.i18n.Messages
 import util._
 
 sealed trait ProductTreeNode {
@@ -10,26 +11,26 @@ sealed trait ProductTreeNode {
 
 case class ProductTreeLeaf(token: String, name: String, rateID: String, templateId: String, applicableLimits: List[String]) extends ProductTreeNode {
 
-  def getDescriptionArgs(purchasedProductInstance: PurchasedProductInstance, long: Boolean): Option[(String, List[String])] = {
+  def getDescriptionArgs(purchasedProductInstance: PurchasedProductInstance, long: Boolean)(implicit messages: Messages): Option[(String, List[String])] = {
 
     templateId match {
       case "cigars" if long =>
         for(noOfSticks <- purchasedProductInstance.noOfSticks; weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
-          ("label.X_X_Xg", List(noOfSticks.toString, name.toLowerCase(), decimalFormat10.format(weightOrVolume*1000)))
+          ("label.X_X_Xg", List(noOfSticks.toString, messages(name).toLowerCase, decimalFormat10.format(weightOrVolume*1000)))
       case "cigarettes" | "cigars" =>
         for(noOfSticks <- purchasedProductInstance.noOfSticks) yield
-          ("label.X_X", List(noOfSticks.toString, name.toLowerCase()))
+          ("label.X_X", List(noOfSticks.toString, messages(name).toLowerCase))
       case "tobacco" =>
         for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
-          ("label.Xg_of_X", List(decimalFormat10.format(weightOrVolume * 1000), name.toLowerCase()))
+          ("label.Xg_of_X", List(decimalFormat10.format(weightOrVolume * 1000), messages(name).toLowerCase))
       case "alcohol" =>
         for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
           if (weightOrVolume == BigDecimal(1))
-            ("label.X_litre_X", List(weightOrVolume.toString, name.toLowerCase()))
+            ("label.X_litre_X", List(weightOrVolume.toString, messages(name).toLowerCase))
           else
-            ("label.X_litres_X", List(weightOrVolume.toString, name.toLowerCase()))
+            ("label.X_litres_X", List(weightOrVolume.toString, messages(name).toLowerCase))
       case "other-goods" =>
-        Some( (name, Nil) )
+        Some( (messages(name), Nil) )
     }
   }
 
