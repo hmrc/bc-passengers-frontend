@@ -62,6 +62,14 @@ error.bringing_duty_free = Select if you are bringing in alcohol or tobacco boug
 head.error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU
 label.select_yes_any_any_alcohol_or_tobacco_ = Select yes if any alcohol or tobacco was bought in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.
 
+## Duty Free Interrupt EU Page
+heading.you_may_need_to_declare_goods_brought_ = You may need to declare goods brought in from EU countries
+text.you_have_said_you_are_bringing_in_duty-free_ = You have said you are bringing in duty-free alcohol or tobacco from the EU or the UK. This reduces your allowances for bringing in goods without paying tax or duty.
+
+## Duty Free Interrupt Mix Page
+heading.you_may_need_to_declare_all_your_goods = You may need to declare all your goods
+text.you_have_said_you_are_bringing_in_duty-free_ = You have said you are bringing in duty-free alcohol or tobacco from the EU or the UK. This reduces your allowances for bringing in goods without paying tax or duty.
+
 
 ## EU Done Page
 label.alcohol = Alcohol

@@ -7,13 +7,13 @@ POST       /where-goods-bought                                                  
 
 GET        /goods-bought-inside-eu                                                     controllers.TravelDetailsController.goodsBoughtInsideEu
 
-GET        /goods-bought-outside-eu                          controllers.TravelDetailsController.goodsBoughtOutsideEu
-POST       /goods-bought-outside-eu                          controllers.TravelDetailsController.goodsBoughtOutsideEuPost
+GET        /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEu
+POST       /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEuPost
 
-GET        /goods-bought-inside-and-outside-eu               controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEu
-POST       /goods-bought-inside-and-outside-eu               controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEuPost
+GET        /goods-bought-inside-and-outside-eu                                         controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEu
+POST       /goods-bought-inside-and-outside-eu                                         controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEuPost
 
-GET        /no-need-to-use-service                           controllers.TravelDetailsController.noNeedToUseService
+GET        /no-need-to-use-service                                                     controllers.TravelDetailsController.noNeedToUseService
 
 GET        /private-travel                                                             controllers.TravelDetailsController.privateCraft
 POST       /private-travel                                                             controllers.TravelDetailsController.privateCraftPost
@@ -26,6 +26,12 @@ POST       /did-you-claim-tax-back                                              
 
 GET        /duty-free                                                                  controllers.TravelDetailsController.dutyFree
 POST       /duty-free                                                                  controllers.TravelDetailsController.dutyFreePost
+
+GET        /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeEu
+POST       /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeInterruptPost
+
+GET        /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeMix
+POST       /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeInterruptPost
 
 GET        /new-session                                                                controllers.TravelDetailsController.newSession
 

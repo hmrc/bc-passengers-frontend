@@ -280,4 +280,92 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       doc.select("input[name=bringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
     }
   }
+
+  "Invoking GET .../duty-free-eu" should {
+
+    "return the interrupt page for passengers coming from EU that have bought EU" in {
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.title() shouldBe "You may need to declare goods brought in from EU countries - Check tax on goods you bring into the UK - GOV.UK"
+      status(response) shouldBe OK
+    }
+  }
+
+  "Invoking POST .../duty-free-eu" should {
+
+    "return error notification on the form when trying to submit a blank form" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in goods over your allowances"
+    }
+
+    "redirect to the no need to use service page if they are not bringing in goods over their allowance" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")
+    }
+
+    "redirect to the private travel page if they are bringing in goods over their allowance" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
+    }
+  }
+
+  "Invoking GET .../duty-free-mix" should {
+
+    "return the interrupt page for passengers coming from EU that have bought EU" in {
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.title() shouldBe "You may need to declare all your goods - Check tax on goods you bring into the UK - GOV.UK"
+      status(response) shouldBe OK
+    }
+  }
+
+  "Invoking POST .../duty-free-mix" should {
+
+    "return error notification on the form when trying to submit a blank form" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in goods over your allowances"
+    }
+
+    "redirect to the no need to use service page if they are not bringing in goods over their allowance" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")
+    }
+
+    "redirect to the private travel page if they are bringing in goods over their allowance" in {
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
+    }
+  }
 }
