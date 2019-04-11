@@ -240,13 +240,8 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(confirm_private_craft(formWithErrors)))
       },
       privateCraftDto => {
-        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) flatMap { _ =>
-          cache.fetch map {
-            case Some(JourneyData(_, _, _, Some(_), Some(_), _, _, _, _, _)) =>
-              Redirect(routes.DashboardController.showDashboard())
-            case _ =>
-              Redirect(routes.TravelDetailsController.confirmAge())
-          }
+        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) map { _ =>
+          Redirect(routes.TravelDetailsController.confirmAge())
         }
       }
     )

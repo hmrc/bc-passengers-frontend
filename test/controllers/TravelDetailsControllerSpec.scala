@@ -408,20 +408,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "Calling POST .../private-travel" should {
 
-    "redirect to /passengers/tell-us" in {
-
-      when(controller.travelDetailsService.storePrivateCraft(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
-      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), privateCraft = Some(true), ageOver17 = Some(true))))
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
-
-      verify(controller.travelDetailsService, times(1)).storePrivateCraft(meq(true))(any())
-    }
-
-    "redirect to /check-tax-on-goods-you-bring-into-the-uk/confirm-age when only private craft journey data is present" in {
+    "redirect to /check-tax-on-goods-you-bring-into-the-uk/confirm-age" in {
 
       when(controller.travelDetailsService.storePrivateCraft(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(privateCraft = Some(true))))
