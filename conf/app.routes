@@ -27,6 +27,12 @@ POST       /did-you-claim-tax-back                                              
 GET        /duty-free                                                                  controllers.TravelDetailsController.dutyFree
 POST       /duty-free                                                                  controllers.TravelDetailsController.dutyFreePost
 
+GET        /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeEu
+POST       /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeInterruptPost
+
+GET        /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeMix
+POST       /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeInterruptPost
+
 GET        /new-session                                                                controllers.TravelDetailsController.newSession
 
 # Dashboard

@@ -36,6 +36,7 @@ class TravelDetailsController @Inject() (
   val error_template: views.html.error_template,
   val vat_res: views.html.travel_details.vat_res,
   val duty_free: views.html.travel_details.duty_free,
+  val duty_free_interrupt: views.html.travel_details.duty_free_interrupt,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -131,6 +132,29 @@ class TravelDetailsController @Inject() (
     }
   }
 
+  def dutyFreeEu: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(duty_free_interrupt(BringingOverAllowanceDto.form, mixEuRow = false)))
+  }
+
+  def dutyFreeMix: Action[AnyContent] = PublicAction { implicit request =>
+    Future.successful(Ok(duty_free_interrupt(BringingOverAllowanceDto.form, mixEuRow = true)))
+  }
+
+  def dutyFreeInterruptPost: Action[AnyContent] = PublicAction { implicit request =>
+    BringingOverAllowanceDto.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(BadRequest(goods_bought_outside_eu(formWithErrors)))
+      },
+      overAllowanceDto => {
+        if (overAllowanceDto.bringingOverAllowance) {
+          Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
+        } else {
+          Future.successful(Redirect(routes.TravelDetailsController.noNeedToUseService()))
+        }
+      }
+    )
+  }
+
   def dutyFreePost: Action[AnyContent] = PublicAction { implicit request =>
     BringingDutyFreeDto.form.bindFromRequest.fold(
       formWithErrors => {
@@ -148,7 +172,12 @@ class TravelDetailsController @Inject() (
                 Redirect(routes.TravelDetailsController.privateCraft())
             }
           } else {
-            Future.successful(Redirect(routes.TravelDetailsController.privateCraft()))
+            cache.fetch map {
+              case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
+                Redirect(routes.TravelDetailsController.dutyFreeEu())
+              case Some(jd) if jd.euCountryCheck.contains("both") =>
+                Redirect(routes.TravelDetailsController.dutyFreeMix())
+            }
           }
         }
       }
