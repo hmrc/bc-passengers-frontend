@@ -19,8 +19,8 @@ heading.non_eu_countries = Non-EU countries
 label.eu_countries_only = EU countries only
 label.non_eu_countries_only = Non-EU countries only
 label.both_eu_and_non_eu_countries = Both EU and non-EU countries
-text.eu_countries= Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
-text.non_eu_countries = Any other country (including the Canary Islands, Gibraltar and the Turkish Republic of Northern Cyprus).
+text.eu_countries= Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
+text.non_eu_countries = Any other country (including the Canary Islands and Gibraltar).
 error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
 head.error.eu_check = Select if you bought goods from EU countries only, non-EU countries only or both
 
