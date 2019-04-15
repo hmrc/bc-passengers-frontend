@@ -35,6 +35,8 @@ POST       /duty-free-mix                                                       
 
 GET        /new-session                                                                controllers.TravelDetailsController.newSession
 
+GET        /keep-alive                                                                 controllers.TravelDetailsController.keepAlive
+
 # Dashboard
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard
 POST       /tell-us                                                                    controllers.DashboardController.calculate
@@ -84,3 +86,5 @@ GET        /select-goods/*path                                                  
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)
 
 GET        /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)
+
+GET        /time-out                                                                   controllers.PublicController.timeOut()

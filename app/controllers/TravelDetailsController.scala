@@ -275,4 +275,11 @@ class TravelDetailsController @Inject() (
       }
     )
   }
+
+  val keepAlive: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(
+      Ok("Ok")
+    )
+  }
+
 }

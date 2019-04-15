@@ -9,11 +9,27 @@
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   inlineScript: Option[Html] = None,
-  inlineLinkElem: Option[Html] = None
+  inlineLinkElem: Option[Html] = None,
+  timeout: Boolean = true
 )(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @scriptElem={
   <script src="@routes.Assets.versioned("javascripts/application.js")"></script>
+
+  @if(timeout){
+    <script>
+      window.GOVUK.timeoutDialog({
+         timeout: 900,
+         countdown: 120,
+         message: 'For your security, we will delete your answers in',
+         keepAliveUrl: '@routes.TravelDetailsController.keepAlive',
+         signOutUrl: '@routes.PublicController.timeOut',
+         keepAliveButtonText: 'Continue declaring the goods you are bringing into the UK',
+         signOutButtonText: 'Delete your answers',
+      });
+    </script>
+  }
+
   @inlineScript
 }
 

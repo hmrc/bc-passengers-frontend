@@ -14,7 +14,6 @@ $(document).ready(function () {
     // =====================================================
     GOVUK.details.init();
 
-
 })
 
 $(window).load(function () {

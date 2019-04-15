@@ -3,6 +3,7 @@ label.continue = Continue
 label.yes = Yes
 label.no = No
 label.add_more = Add more
+label.start_again = Start again
 
 grams = {0}g
 
@@ -1361,3 +1362,5 @@ title.guernsey_pounds_ggp=Guernsey pounds (GGP)
 title.isle_of_man_pounds_imp=Isle of Man pounds (IMP)
 title.jersey_pounds_jep=Jersey pounds (JEP)
 title.saint_helenian_pounds_shp=Saint Helenian pounds (SHP)
+
+label.for_security_we_deleted_your_answers = For your security, we deleted your answers

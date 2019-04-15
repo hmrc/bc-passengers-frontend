@@ -481,4 +481,13 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
+  "calling GET .../keepAlive" should {
+    "return a response OK" in {
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
+      status(response) shouldBe OK
+
+    }
+  }
+
 }
