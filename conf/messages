@@ -279,8 +279,11 @@ label.litres = litres
 # NEW SINGLE PAGE
 
 label.tobacco.cigarettes = Cigarettes
+label.tobacco.cigarettes.single = Cigarette
 label.tobacco.cigarillos = Cigarillos
+label.tobacco.cigarillos.single = Cigarillo
 label.tobacco.cigars = Cigars
+label.tobacco.cigars.single = Cigar
 label.tobacco.chewing-tobacco = Pipe or chewing tobacco
 label.tobacco.rolling-tobacco = Rolling tobacco
 

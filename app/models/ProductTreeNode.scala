@@ -15,11 +15,20 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
 
     templateId match {
       case "cigars" if long =>
-        for(noOfSticks <- purchasedProductInstance.noOfSticks; weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
-          ("label.X_X_Xg", List(noOfSticks.toString, messages(name).toLowerCase, decimalFormat10.format(weightOrVolume*1000)))
+        for(noOfSticks <- purchasedProductInstance.noOfSticks; weightOrVolume <- purchasedProductInstance.weightOrVolume) yield {
+          if (noOfSticks == 1)
+            ("label.X_X_Xg", List(noOfSticks.toString, messages(name + ".single").toLowerCase, decimalFormat10.format(weightOrVolume * 1000)))
+          else
+            ("label.X_X_Xg", List(noOfSticks.toString, messages(name).toLowerCase, decimalFormat10.format(weightOrVolume * 1000)))
+        }
+
       case "cigarettes" | "cigars" =>
-        for(noOfSticks <- purchasedProductInstance.noOfSticks) yield
-          ("label.X_X", List(noOfSticks.toString, messages(name).toLowerCase))
+        for(noOfSticks <- purchasedProductInstance.noOfSticks) yield {
+          if (noOfSticks == 1)
+            ("label.X_X", List(noOfSticks.toString, messages(name + ".single").toLowerCase))
+          else
+            ("label.X_X", List(noOfSticks.toString, messages(name).toLowerCase))
+        }
       case "tobacco" =>
         for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
           ("label.Xg_of_X", List(decimalFormat10.format(weightOrVolume * 1000), messages(name).toLowerCase))

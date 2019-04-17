@@ -6,6 +6,7 @@ import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.http.Status._
+import play.api.i18n.Messages
 import play.api.libs.json.JodaWrites._
 import util._
 import play.api.libs.json._
@@ -30,7 +31,7 @@ class DeclarationService @Inject()(
   lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 
 
-  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
+  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
@@ -56,7 +57,7 @@ class DeclarationService @Inject()(
     }
   }
 
-  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, rd: String): JsObject = {
+  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, rd: String)(implicit messages: Messages): JsObject = {
 
     val vatResFlag = isVatResClaimed || isBringingDutyFree
 
@@ -101,7 +102,7 @@ class DeclarationService @Inject()(
           "declarationItemTobacco" -> tobacco.bands.flatMap{ band =>
             band.items.map { item =>
               Json.obj(
-                "commodityDescription" -> item.metadata.name.take(40),
+                "commodityDescription" -> messages(item.metadata.name).take(40),
                 "quantity" -> item.noOfUnits.filter(_ != 0).fold[JsValue](JsNull)(x => JsString(x.toString)),
                 "weight" -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString((x * 1000).toString())),
                 "goodsValue" -> item.metadata.cost,
@@ -135,7 +136,7 @@ class DeclarationService @Inject()(
           "declarationItemAlcohol" -> alcohol.bands.flatMap{ band =>
             band.items.map { item =>
               Json.obj(
-                "commodityDescription" -> item.metadata.name.take(40),
+                "commodityDescription" -> messages(item.metadata.name).take(40),
                 "volume" -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString(x.toString())),
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
@@ -168,7 +169,7 @@ class DeclarationService @Inject()(
           "declarationItemOther" -> other.bands.flatMap{ band =>
             band.items.map { item =>
               Json.obj(
-                "commodityDescription" -> item.metadata.name.take(40),
+                "commodityDescription" -> messages(item.metadata.name).take(40),
                 "quantity" -> "1",
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
