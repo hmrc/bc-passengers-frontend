@@ -5,6 +5,7 @@
 
 @main_template(title = messages("label.tax_due_on_these_goods")){
 
+  <a class="link-back" id="back" href="@routes.DashboardController.showDashboard()">@messages("label.back")</a>
 
   <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", "0.00"))</h1>
 
