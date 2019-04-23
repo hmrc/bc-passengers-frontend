@@ -31,3 +31,4 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
 ## Tests
 
 To run the tests locally, simply run the `sbt test` command in the root of the repository
+
