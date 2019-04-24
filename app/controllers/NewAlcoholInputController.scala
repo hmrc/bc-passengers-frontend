@@ -4,7 +4,6 @@ import config.AppConfig
 import connectors.Cache
 import javax.inject.Inject
 import models.{AlcoholDto, OtherGoodsDto, ProductPath}
-import play.api.data.Form
 import play.api.data.Forms.{list, mapping, text}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

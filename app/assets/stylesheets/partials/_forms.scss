@@ -1,5 +1,5 @@
 /*
- * Form Errors
+ * Forms
  *
  */
 
@@ -20,4 +20,21 @@
 
 .form-date .form-group-time-am-pm .form-control{
   width: 100px;
+}
+
+.form-group details {
+  padding-bottom: 0.25em;
+}
+
+.form-group details .panel-border-narrow:last-child{
+  margin-bottom:1em;
+  padding-bottom: 0.5em;
+}
+
+input[type="text"].autocomplete__input {
+  width: 100%;
+}
+
+label.inline {
+  display: inline;
 }

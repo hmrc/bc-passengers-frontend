@@ -2,8 +2,9 @@
 @(f: Form[EnterYourDetailsDto])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
-@main_template(title = messages("label.enter_your_details"), bodyClasses = None) {
+@main_template(title = prefixErrorMessage(messages("label.enter_your_details"), f.hasErrors), bodyClasses = None) {
 
   <a class="link-back" id="back" href="@routes.DeclarationController.declareYourGoods()">@messages("label.back")</a>
 

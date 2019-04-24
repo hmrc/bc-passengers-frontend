@@ -1,24 +1,10 @@
+@import "partials/button-link";
+@import "partials/details";
+@import "partials/forms";
 @import "partials/responsive-table";
+@import "partials/typography";
 @import "partials/vertical-spacing";
-@import "partials/form-errors";
 
-input[type="text"].autocomplete__input {
-  width: 100%;
-}
-
-label.inline {
-  display: inline;
-}
-
-.add-more {
-  margin-top: 0.85em;
-  margin-bottom: 2.75em;
-}
-
-h1 span.heading-medium {
-  display: block;
-  margin-top: 0px;
-}
 
 .border-bottom {
   padding: .63158em 1.05263em .47368em 0;
@@ -29,39 +15,6 @@ h1 span.heading-medium {
   max-width: 95%;
 }
 
-.btn-link {
-  color: #005ea5;
-  box-shadow: none;
-  background-color: transparent;
-  text-decoration: underline;
-  padding: 0;
-  text-align: left;
-  border: 1px solid transparent;
-
-  &:hover {
-    background-color: transparent;
-    color: #005ea5;
-  }
-
-  &:focus {
-    background-color: transparent;
-    color: #005ea5;
-  }
-
-  &:active {
-    top: 0;
-  }
-}
-
-.form-group details {
-  padding-bottom: 0.25em;
-}
-
-.form-group details .panel-border-narrow:last-child{
-  margin-bottom:1em;
-  padding-bottom: 0.5em;
-}
-
-.no-details details summary .arrow-closed {
-  display: none !important;
+.table-20 {
+  width: 20%;
 }

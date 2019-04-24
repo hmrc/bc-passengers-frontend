@@ -2,12 +2,13 @@
 @(selectProductsForm: Form[SelectProductsDto], checkboxes: List[(String, String)], path: ProductPath)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
 @title = {
     @messages(s"select_products.heading.${path.toMessageKey}")
 }
 
-@main_template(title = title.toString, bodyClasses = None) {
+@main_template(title = prefixErrorMessage(title.toString, selectProductsForm.hasErrors), bodyClasses = None) {
 
     @views.html.tags.errors(selectProductsForm, Some(path))
 

@@ -2,8 +2,9 @@
 @(claimedVatResForm: Form[ClaimedVatResDto])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
-@main_template(title = messages("heading.did_you_claim_tax_back_on_")) {
+@main_template(title = prefixErrorMessage(messages("heading.did_you_claim_tax_back_on_"), claimedVatResForm.hasErrors)) {
 
     @views.html.tags.errors(claimedVatResForm)
 

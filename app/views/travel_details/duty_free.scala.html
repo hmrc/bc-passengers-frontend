@@ -2,8 +2,9 @@
 @(bringingDutyFreeForm: Form[BringingDutyFreeDto])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
-@main_template(title = messages("heading.are_you_bringing_in_duty_free_")) {
+@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_duty_free_"), bringingDutyFreeForm.hasErrors)) {
 
     @views.html.tags.errors(bringingDutyFreeForm)
 

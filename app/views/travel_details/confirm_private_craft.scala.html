@@ -1,7 +1,9 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 @(privateCraftForm: Form[PrivateCraftDto])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("label.did_you_arrive_in_the_uk_by_private_boat_")) {
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("label.did_you_arrive_in_the_uk_by_private_boat_"), privateCraftForm.hasErrors)) {
 
     @views.html.tags.errors(privateCraftForm)
 

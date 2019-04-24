@@ -2,12 +2,13 @@
 @(bringingOverAllowance: Form[BringingOverAllowanceDto])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
 @title = {
   @messages("heading.goods_brought_in_from_non_eu_countries_")
 }
 
-@main_template(title = title.toString) {
+@main_template(title = prefixErrorMessage(title.toString, bringingOverAllowance.hasErrors)) {
 
   @views.html.tags.errors(bringingOverAllowance)
 

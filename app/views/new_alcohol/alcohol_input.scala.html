@@ -3,6 +3,7 @@
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
+@import util.prefixErrorMessage
 
 @scriptElem = {
   <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
@@ -27,7 +28,7 @@
 }
 
 @main_template(
-    title = messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase(),
+    title = prefixErrorMessage(messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase(), dtoForm.hasErrors),
     inlineScript = Some(scriptElem),
     inlineLinkElem = Some(linkElem)) {
 
