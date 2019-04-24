@@ -99,7 +99,7 @@ text.transport_them_yourself=transport them yourself
 text.will_use_them_yourself_or_give_ = will use them yourself or give them away as a gift
 text.paid_duty_and_tax_ = have paid duty and tax in the country where you bought them
 label.customs_checks = Customs checks on alcohol and tobacco
-text.customs_officers_are_more_likely_ = Customs officers are more likely to stop and ask you questions if you have more than the amounts of alcohol and tobacco below.
+text.customs_officers_are_more_likely_ = Customs officers are more likely to stop and ask you questions if you have more than these amounts of alcohol and tobacco.
 label.type_of_goods = Type of goods
 label.amount = Amount
 
