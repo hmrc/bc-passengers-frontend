@@ -5,6 +5,8 @@
 
 @main_template(title = messages("label.enter_your_details"), bodyClasses = None) {
 
+  <a class="link-back" id="back" href="@routes.DeclarationController.declareYourGoods()">@messages("label.back")</a>
+
   @views.html.tags.errors(f)
 
   <h1 class="heading-xlarge">@messages("label.enter_your_details")</h1>

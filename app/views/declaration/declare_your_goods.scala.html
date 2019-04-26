@@ -7,6 +7,8 @@
 
 @main_template(title = messages("label.declare_your_goods"), bodyClasses = None) {
 
+  <a class="link-back" id="back" href="@routes.DashboardController.showCalculation()">@messages("label.back")</a>
+
   <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>
 
   <p>@messages("text.i_understand_that")</p>

@@ -4,7 +4,7 @@ label.yes = Yes
 label.no = No
 label.add_more = Add more
 label.start_again = Start again
-
+label.back = Back
 grams = {0}g
 
 # Error messages
