@@ -1,7 +1,9 @@
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
+import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
 
 import scala.util.Try
@@ -160,6 +162,14 @@ package object util {
         Invalid(errors)
       }
   })
+
+  def prefixErrorMessage(title: String, hasError: Boolean)(implicit messages: Messages): String = {
+    if(hasError) {
+      messages("label.error") + " " + title
+    } else {
+      title
+    }
+  }
 
 
 }

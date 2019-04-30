@@ -2,8 +2,9 @@
 @(ageOver17Form: Form[AgeOver17Dto])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
-@main_template(title = messages("label.are_you_17_or_over")) {
+@main_template(title = prefixErrorMessage(messages("label.are_you_17_or_over"), ageOver17Form.hasErrors)) {
 
     @views.html.tags.errors(ageOver17Form)
 

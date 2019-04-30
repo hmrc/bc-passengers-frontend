@@ -2,13 +2,14 @@
 @(confirmRemoveForm: Form[ConfirmRemoveDto], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
 
 @title = {
   @messages(s"label.do_you_want_to_remove_.${path.toMessageKey}")
 }
 
 
-@main_template(title = title.toString) {
+@main_template(title = prefixErrorMessage(title.toString, confirmRemoveForm.hasErrors)) {
 
 @form(action = routes.AlterProductsController.remove(path, iid)){
 

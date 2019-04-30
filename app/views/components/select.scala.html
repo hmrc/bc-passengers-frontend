@@ -25,36 +25,36 @@
 
 <div class="form-group @if(elements.hasErrors){ form-group-error }">
 
-<label for="@elements.field.name" class="@elements.args.get('_labelClass) @elements.args.get('_groupClass)">
-    <span class="label__text">
-        @elements.label
-    </span>
+    <label for="@elements.field.name" class="@elements.args.get('_labelClass) @elements.args.get('_groupClass)">
+        <span class="label__text">
+            @elements.label
+        </span>
+    </label>
 
     @if(elements.args.contains('_inputHint) ){
-        <span class="form-hint">
-        @elements.args.get('_inputHint)
+        <span id="hint-@elements.field.name" class="form-hint">
+            @elements.args.get('_inputHint)
         </span>
     }
-</label>
 
-@if(elements.args.contains('_additionalTitleText)){<p>@elements.args.get('_additionalTitleText)</p>}
-@if(elements.args.contains('_errorsAboveInput)){
-    @elements.errors.map { error => <span style="display: block" class="error-message">@Messages(error)</span>}
-}
-<select id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)">
-    @if(displayEmptyValue) {
-        <option value="">@elements.args.get('_emptyValueText)</option>
+    @if(elements.args.contains('_additionalTitleText)){<p>@elements.args.get('_additionalTitleText)</p>}
+    @if(elements.args.contains('_errorsAboveInput)){
+        @elements.errors.map { error => <span style="display: block" class="error-message">@Messages(error)</span>}
     }
-    @for(option <- elementOptions) {
-        <option
-                id="@elements.field.name-@(option._1.toLowerCase.map(x => if(x == ' ') '-' else x).filterNot(x => "()".contains(x)))"
-                value="@option._1"
-        @if(value==option._1){selected="selected"}
-        >@option._2</option>
+    <select aria-describedby="hint-@elements.field.name" id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)">
+        @if(displayEmptyValue) {
+            <option value="">@elements.args.get('_emptyValueText)</option>
+        }
+        @for(option <- elementOptions) {
+            <option
+                    id="@elements.field.name-@(option._1.toLowerCase.map(x => if(x == ' ') '-' else x).filterNot(x => "()".contains(x)))"
+                    value="@option._1"
+            @if(value==option._1){selected="selected"}
+            >@option._2</option>
+        }
+    </select>
+    @if(!elements.args.contains('_errorsAboveInput)){
+        @elements.errors.map { error => <span style="display: block" class="error-notification">@Messages(error)</span>}
     }
-</select>
-@if(!elements.args.contains('_errorsAboveInput)){
-    @elements.errors.map { error => <span style="display: block" class="error-notification">@Messages(error)</span>}
-}
 
 </div>
