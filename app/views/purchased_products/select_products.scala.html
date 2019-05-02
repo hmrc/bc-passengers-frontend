@@ -12,18 +12,17 @@
 
     @views.html.tags.errors(selectProductsForm, Some(path))
 
-    <h1 class="heading-xlarge">@title.toString</h1>
-
     @form(action = routes.SelectProductController.processProductSelection(path)){
 
         <div class="form-group">
 
-            <fieldset>
+            <fieldset aria-describedby="product-hint">
 
                 <legend>
-                    <span class="visually-hidden">@title.toString</span>
-                    <span class="body-text">@messages("label.select_all_that_apply")</span>
+                    <h1 class="heading-xlarge">@title.toString</h1>
                 </legend>
+
+                <span id="product-hint" class="body-text">@messages("label.select_all_that_apply")</span>
 
                 @components.input_check_box(
                     selectProductsForm("tokens"),
