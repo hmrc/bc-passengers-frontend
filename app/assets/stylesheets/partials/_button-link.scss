@@ -20,4 +20,9 @@
   &:active {
     top: 0;
   }
+
+  &[disabled]:hover {
+     background-color: transparent;
+     color: #005ea5;
+  }
 }
