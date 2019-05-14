@@ -103,22 +103,26 @@ class NewTobaccoInputController @Inject()(
   
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
     requireProduct(path) { product =>
-      Future.successful(Ok( no_of_sticks_input(noOfSticksForm(path), product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
+        Future.successful(Ok( no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      }
     }
   }
 
 
   def displayWeightAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
     requireProduct(path) { product =>
-      Future.successful(Ok( weight_or_volume_input(weightOrVolumeForm(path), product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
+          Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      }
     }
   }
 
-
-
   def displayNoOfSticksWeightAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
     requireProduct(path) { product =>
-      Future.successful(Ok( no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path), product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
+          Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      }
     }
   }
 

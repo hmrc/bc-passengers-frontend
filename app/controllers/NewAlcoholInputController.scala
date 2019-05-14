@@ -61,7 +61,9 @@ class NewAlcoholInputController @Inject() (
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
     requireProduct(path) { product =>
-      Future.successful(Ok( alcohol_input(alcoholForm(path), product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
+        Future.successful(Ok(alcohol_input(alcoholForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      }
     }
   }
 
@@ -77,8 +79,6 @@ class NewAlcoholInputController @Inject() (
   }
 
   def processAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
-
-
     requireLimitUsage({
       val dto = resilientForm.bindFromRequest.value.get
       newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))

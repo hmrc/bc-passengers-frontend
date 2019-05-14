@@ -18,6 +18,7 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import views.html.new_tobacco._
 
 import scala.concurrent.Future
 
@@ -34,9 +35,9 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[Cache], injected[NewPurchaseService], injected[views.html.new_tobacco.no_of_sticks_input])
-    reset(injected[Cache], injected[NewPurchaseService], injected[views.html.new_tobacco.weight_or_volume_input])
-    reset(injected[Cache], injected[NewPurchaseService], injected[views.html.new_tobacco.no_of_sticks_weight_or_volume_input])
+    reset(injected[Cache], injected[NewPurchaseService], injected[no_of_sticks_input])
+    reset(injected[Cache], injected[NewPurchaseService], injected[weight_or_volume_input])
+    reset(injected[Cache], injected[NewPurchaseService], injected[no_of_sticks_weight_or_volume_input])
   }
 
   trait LocalSetup {
@@ -64,6 +65,8 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
     def fakeLimits: Map[String, String]
 
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[TobaccoDto]])
+
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
@@ -73,9 +76,9 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[views.html.new_tobacco.no_of_sticks_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
-      when(injected[views.html.new_tobacco.weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
-      when(injected[views.html.new_tobacco.no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -129,6 +132,78 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")).get
       status(result) shouldBe OK
+    }
+
+    "display default country and currency if set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigars")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+      override def noOfSticks: Option[Int] = Some(150)
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          productPath,
+          "iid0",
+          weightOrVolume,
+          noOfSticks,
+          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        )),
+        defaultCountry = Some("FR"),
+        defaultCurrency = Some("EUR")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("country") shouldBe "FR"
+      formCaptor.getValue.data("currency") shouldBe "EUR"
+    }
+
+    "not display default country and currency if not set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigars")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+      override def noOfSticks: Option[Int] = Some(150)
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          productPath,
+          "iid0",
+          weightOrVolume,
+          noOfSticks,
+          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("country") shouldBe ""
+      formCaptor.getValue.data("currency") shouldBe ""
     }
   }
 

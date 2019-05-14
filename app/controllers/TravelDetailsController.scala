@@ -58,7 +58,7 @@ class TravelDetailsController @Inject() (
 
   val euCountryCheck: Action[AnyContent] = PublicAction { implicit request => {
     cache.fetch map {
-      case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _, _, _)) =>
+      case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _, _, _, _, _)) =>
         Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck))))
       case _ =>
         Ok(eu_country_check(EuCountryCheckDto.form))
@@ -75,7 +75,7 @@ class TravelDetailsController @Inject() (
       euCountryCheckDto => {
         travelDetailsService.storeEuCountryCheck(euCountryCheckDto.euCountryCheck) flatMap { _ =>
           cache.fetch map {
-            case Some(JourneyData(Some(_), Some(_), Some(_), Some(_), Some(_), _, _, _, _, _)) =>
+            case Some(JourneyData(Some(_), Some(_), Some(_), Some(_), Some(_), _, _, _, _, _, _, _)) =>
               Redirect(routes.DashboardController.showDashboard())
             case _ =>
               if (appConfig.usingVatResJourney) {
@@ -99,7 +99,7 @@ class TravelDetailsController @Inject() (
 
   def didYouClaimTaxBack: Action[AnyContent] = PublicAction { implicit request =>
     cache.fetch map {
-      case Some(JourneyData(_, Some(claimedVatRes), _, _, _, _, _, _, _, _)) =>
+      case Some(JourneyData(_, Some(claimedVatRes), _, _, _, _, _, _, _, _, _, _)) =>
         Ok(vat_res(ClaimedVatResDto.form.fill(ClaimedVatResDto(claimedVatRes))))
       case _ =>
         Ok(vat_res(ClaimedVatResDto.form))
@@ -125,7 +125,7 @@ class TravelDetailsController @Inject() (
 
   def dutyFree: Action[AnyContent] = PublicAction { implicit request =>
     cache.fetch map {
-      case Some(JourneyData(_, _, Some(bringingDutyFree), _, _, _, _, _, _, _)) =>
+      case Some(JourneyData(_, _, Some(bringingDutyFree), _, _, _, _, _, _, _, _, _)) =>
         Ok(duty_free(BringingDutyFreeDto.form.fill(BringingDutyFreeDto(bringingDutyFree))))
       case _ =>
         Ok(duty_free(BringingDutyFreeDto.form))
@@ -233,7 +233,7 @@ class TravelDetailsController @Inject() (
 
   def confirmAge: Action[AnyContent] = PublicAction { implicit request =>
     cache.fetch map {
-      case Some(JourneyData(_, _, _, _, Some(ageOver17), _, _, _, _, _)) =>
+      case Some(JourneyData(_, _, _, _, Some(ageOver17), _, _, _, _, _, _, _)) =>
         Ok(confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString))))
       case _ =>
         Ok(confirm_age(AgeOver17Dto.form))
@@ -256,7 +256,7 @@ class TravelDetailsController @Inject() (
 
   val privateCraft: Action[AnyContent] = PublicAction { implicit request =>
     cache.fetch map {
-      case Some(JourneyData(_, _, _, Some(pc), _, _, _, _, _, _)) =>
+      case Some(JourneyData(_, _, _, Some(pc), _, _, _, _, _, _, _, _)) =>
         Ok(confirm_private_craft(form.bind(Map("privateCraft" -> pc.toString))))
       case _ =>
         Ok(confirm_private_craft(form))
