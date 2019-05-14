@@ -49,7 +49,9 @@ case class JourneyData(
   purchasedProductInstances: List[PurchasedProductInstance] = Nil,
   workingInstance: Option[PurchasedProductInstance] = None,
   userInformation: Option[UserInformation] = None,
-  calculatorResponse: Option[CalculatorResponse] = None
+  calculatorResponse: Option[CalculatorResponse] = None,
+  defaultCountry: Option[String] = None,
+  defaultCurrency: Option[String] = None
 ) {
 
   def allCurrencyCodes: Set[String] = (for {

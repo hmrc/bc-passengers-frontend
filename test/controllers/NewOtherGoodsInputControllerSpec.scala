@@ -18,6 +18,7 @@ import services.NewPurchaseService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import views.html.new_other_goods.other_goods_input
 
 import scala.concurrent.Future
 
@@ -27,11 +28,11 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[views.html.new_other_goods.other_goods_input].toInstance(MockitoSugar.mock[views.html.new_other_goods.other_goods_input]))
+    .overrides(bind[other_goods_input].toInstance(MockitoSugar.mock[other_goods_input]))
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[Cache], injected[NewPurchaseService], injected[views.html.new_other_goods.other_goods_input])
+    reset(injected[Cache], injected[NewPurchaseService], injected[other_goods_input])
   }
 
   trait LocalSetup {
@@ -55,7 +56,6 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[OtherGoodsDto]])
 
-
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
@@ -63,7 +63,7 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
       when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[views.html.new_other_goods.other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -171,6 +171,66 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us")).get
       status(result) shouldBe OK
+    }
+
+    "display default country and currency if set in JourneyData" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("other-goods/books"),
+          "iid0",
+          None,
+          None,
+          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        )),
+        defaultCountry = Some("FR"),
+        defaultCurrency = Some("EUR")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("country") shouldBe "FR"
+      formCaptor.getValue.data("currency") shouldBe "EUR"
+    }
+
+    "not display default country and currency if not set in JourneyData" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("other-goods/books"),
+          "iid0",
+          None,
+          None,
+          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("country") shouldBe ""
+      formCaptor.getValue.data("currency") shouldBe ""
     }
   }
 

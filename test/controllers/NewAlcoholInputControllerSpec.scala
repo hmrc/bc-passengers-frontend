@@ -2,6 +2,8 @@ package controllers
 
 import connectors.Cache
 import models._
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -19,6 +21,7 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import views.html.new_alcohol.alcohol_input
 
 import scala.concurrent.Future
 
@@ -29,11 +32,11 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
     .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[views.html.new_alcohol.alcohol_input].toInstance(MockitoSugar.mock[views.html.new_alcohol.alcohol_input]))
+    .overrides(bind[alcohol_input].toInstance(MockitoSugar.mock[alcohol_input]))
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[Cache], injected[NewPurchaseService], injected[views.html.new_alcohol.alcohol_input])
+    reset(injected[Cache], injected[NewPurchaseService], injected[alcohol_input])
   }
 
   trait LocalSetup {
@@ -68,7 +71,7 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[views.html.new_alcohol.alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -213,6 +216,70 @@ class NewAlcoholInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
       status(result) shouldBe OK
+    }
+
+    "display default country and currency if set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("alcohol/beer"),
+          "iid0",
+          Some(20.0),
+          None,
+          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        )),
+        defaultCountry = Some("FR"),
+        defaultCurrency = Some("EUR")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[views.html.new_alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("country") shouldBe "FR"
+      formCaptor.getValue.data("currency") shouldBe "EUR"
+    }
+
+    "not display default country and currency if not set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        Some("nonEuOnly"),
+        isVatResClaimed = None,
+        bringingDutyFree = None,
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("alcohol/beer"),
+          "iid0",
+          Some(20.0),
+          None,
+          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        ))
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[views.html.new_alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("country") shouldBe ""
+      formCaptor.getValue.data("currency") shouldBe ""
     }
   }
 

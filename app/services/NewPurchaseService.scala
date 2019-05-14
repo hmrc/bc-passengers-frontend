@@ -22,16 +22,17 @@ class NewPurchaseService @Inject() (
       country = countriesService.getCountryByCode(countryCode)
     } yield PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost))
 
-    journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd)
-
+    journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd,
+      defaultCountry = Some(countryCode),
+      defaultCurrency = Some(currency))
   }
 
   def updatePurchase(path: ProductPath, iid: String, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryCode: String, currency: String, cost: BigDecimal)(implicit context: LocalContext): JourneyData = {
     val journeyData = context.getJourneyData
     val country = countriesService.getCountryByCode(countryCode)
     journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances
-      .map(ppi => if (ppi.iid == iid) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost)) else ppi))
-
+      .map(ppi => if (ppi.iid == iid) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost)) else ppi),
+      defaultCountry = Some(countryCode),
+      defaultCurrency = Some(currency))
   }
-
 }

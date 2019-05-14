@@ -68,7 +68,9 @@ class NewOtherGoodsInputController @Inject() (
   def displayAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
 
     requireProduct(path) { product =>
-      Future.successful(Ok( other_goods_input(continueForm(path), product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
+          Future.successful(Ok(other_goods_input(continueForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      }
     }
   }
 
