@@ -19,6 +19,12 @@
         var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
               enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
       }
+
+
+    $('button[type=submit]').on('click', function() {
+        $('<input>').attr({type: 'hidden', name: 'action', value: $(this).attr('value')}).appendTo('form');
+    })
+
     });
   </script>
 }
@@ -92,13 +98,13 @@
     } else {
       <div class="form-group">
         @if(iid.isEmpty) {
-          <button type="submit" class="button btn-link" name="action" value="add-cost" data-ignore-double-submit="true">@messages(s"label.add_more.${path.toMessageKey}")</button>
+          <button type="submit" class="button btn-link" name="action" value="add-cost">@messages(s"label.add_more.${path.toMessageKey}")</button>
         }
       </div>
     }
 
     <div class="form-group">
-      <button type="submit" class="button" name="action" value="continue" data-ignore-double-submit="true">@messages("label.continue")</button>
+      <button type="submit" class="button" name="action" value="continue">@messages("label.continue")</button>
     </div>
 
     <div class="form-group">
