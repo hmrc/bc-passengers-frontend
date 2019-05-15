@@ -77,7 +77,7 @@
           @helper.repeatWithIndex(dtoForm("costs")) { (field, i) =>
             @components.input(
               field,
-             '_label -> messages(s"label.price_paid_for_the_${i+1}_item"),
+             '_label -> messages(s"label.price_paid_for_item_", i+1),
              '_labelTextClass -> "form-label"
             )
           }
@@ -85,9 +85,9 @@
 
     </div>
 
-    @if(dtoForm.value.fold(0)(_.costs.size) >= 9) {
+    @if(dtoForm.value.fold(0)(_.costs.size) >= 50) {
       <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_9_other_goods_to_declare_")</p>
+        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
       </div>
     } else {
       <div class="form-group">
