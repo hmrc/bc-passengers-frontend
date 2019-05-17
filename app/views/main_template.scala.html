@@ -10,7 +10,8 @@
   mainClass: Option[String] = None,
   inlineScript: Option[Html] = None,
   inlineLinkElem: Option[Html] = None,
-  timeout: Boolean = true
+  timeout: Boolean = true,
+  backLink: Option[String] = None
 )(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @scriptElem={
@@ -47,22 +48,28 @@
 }
 
 @main = {
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            @mainContent
-        </div>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      @backLink.map { backLink =>
+          <a class="link-back" id="back" href="@backLink">@messages("label.back")</a>
+      }
+
+      @mainContent
+
     </div>
+  </div>
 
 }
 
 
 @govuk_wrapper(title = title,
-               mainClass = mainClass,
-               bodyClasses = bodyClasses,
-               sidebar = sidebarLayout,
-               contentHeader = contentHeader,
-               mainContent = main,
-               serviceInfoContent = serviceInfoContent,
-               scriptElem = Some(scriptElem),
-               linkElem = Some(linkElem)
+  mainClass = mainClass,
+  bodyClasses = bodyClasses,
+  sidebar = sidebarLayout,
+  contentHeader = contentHeader,
+  mainContent = main,
+  serviceInfoContent = serviceInfoContent,
+  scriptElem = Some(scriptElem),
+  linkElem = Some(linkElem)
 )

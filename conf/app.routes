@@ -2,8 +2,8 @@
 
 GET        /check-declare-goods-start-page                                             controllers.TravelDetailsController.checkDeclareGoodsStartPage
 
-GET        /where-goods-bought                                                         controllers.TravelDetailsController.euCountryCheck
-POST       /where-goods-bought                                                         controllers.TravelDetailsController.euCountryCheckPost
+GET        /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBought
+POST       /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBoughtPost
 
 GET        /goods-bought-inside-eu                                                     controllers.TravelDetailsController.goodsBoughtInsideEu
 
@@ -15,8 +15,8 @@ POST       /goods-bought-inside-and-outside-eu                                  
 
 GET        /no-need-to-use-service                                                     controllers.TravelDetailsController.noNeedToUseService
 
-GET        /private-travel                                                             controllers.TravelDetailsController.privateCraft
-POST       /private-travel                                                             controllers.TravelDetailsController.privateCraftPost
+GET        /private-travel                                                             controllers.TravelDetailsController.privateTravel
+POST       /private-travel                                                             controllers.TravelDetailsController.privateTravelPost
 
 GET        /confirm-age                                                                controllers.TravelDetailsController.confirmAge
 POST       /confirm-age                                                                controllers.TravelDetailsController.confirmAgePost

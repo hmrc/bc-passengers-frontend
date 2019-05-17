@@ -49,6 +49,7 @@ class CalculatorServiceSpec extends BaseSpec {
       Some("nonEuOnly"),
       None,
       None,
+      None,
       Some(false),
       Some(true),
       Nil,
@@ -57,6 +58,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val goodJourneyData = JourneyData(
       Some("nonEuOnly"),
+      None,
       None,
       None,
       Some(false),
@@ -75,6 +77,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     val imperfectJourneyData = JourneyData(
       Some("nonEuOnly"),
+      None,
       None,
       None,
       Some(false),

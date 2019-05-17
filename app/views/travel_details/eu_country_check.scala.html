@@ -16,7 +16,7 @@
   <h2 class="heading-medium">@messages("heading.non_eu_countries")</h2>
   <p>@messages("text.non_eu_countries")</p>
 
-  @form(action = routes.TravelDetailsController.euCountryCheckPost()) {
+  @form(action = routes.TravelDetailsController.whereGoodsBoughtPost()) {
 
     <fieldset>
       <legend class="visually-hidden">@messages("heading.are_you_bringing_in_goods_from_")</legend>

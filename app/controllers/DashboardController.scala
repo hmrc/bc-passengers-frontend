@@ -17,10 +17,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class DashboardController @Inject() (
   val countriesService: CountriesService,
   val cache: Cache,
-  val purhasedProductService: PurchasedProductService,
+  val purchasedProductService: PurchasedProductService,
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+  val backLinkModel: BackLinkModel,
 
   val dashboard: views.html.purchased_products.dashboard,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
@@ -57,7 +58,7 @@ class DashboardController @Inject() (
 
         val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
-        Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate))
+        Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate, backLinkModel.backLink))
 
       }
     }
