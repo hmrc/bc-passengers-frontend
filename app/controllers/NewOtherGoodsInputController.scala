@@ -105,7 +105,7 @@ class NewOtherGoodsInputController @Inject() (
       def processAddCost = addCostForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) )),
         dto => {
-          val f = addCostForm.fill( dto.copy(costs = (dto.costs :+ BigDecimal(0)).take(9)) )
+          val f = addCostForm.fill( dto.copy(costs = (dto.costs :+ BigDecimal(0)).take(50)) )
           Future.successful(Ok( other_goods_input(f, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
         }
       )

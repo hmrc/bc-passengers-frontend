@@ -110,17 +110,17 @@
       <p>
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
       </p>
-    } else if(otherGoodsPurchasedItemList.size < 9) {
+    } else if(otherGoodsPurchasedItemList.size < 50) {
       <div class="add-more">
         <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
       </div>
-    } else if(otherGoodsPurchasedItemList.size == 9) {
+    } else if(otherGoodsPurchasedItemList.size == 50) {
       <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_9_other_goods_to_declare_")</p>
+        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
       </div>
     } else {
       <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_9_other_goods_or_fewer_")</p>
+        <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")</p>
       </div>
     }
     @otherGoodsPurchasedItemList.map { purchasedItem =>
@@ -152,7 +152,7 @@
 
   </div>
 
-  @if(showCalculate && otherGoodsPurchasedItemList.size <= 9) {
+  @if(showCalculate && otherGoodsPurchasedItemList.size <= 50) {
     @form(action = routes.DashboardController.calculate()) {
       <button type="submit" class="button margin-top-30">@messages("label.calculate")</button>
     }

@@ -477,16 +477,7 @@ label.alcohol.wine = Wine
 label.alcohol.spirits = Spirits
 label.alcohol.other = Other alcohol
 label.alcohol.sparkling-wine = Sparkling wine
-
-label.price_paid_for_the_1_item = Price paid for first item
-label.price_paid_for_the_2_item = Price paid for second item
-label.price_paid_for_the_3_item = Price paid for third item
-label.price_paid_for_the_4_item = Price paid for fourth item
-label.price_paid_for_the_5_item = Price paid for fifth item
-label.price_paid_for_the_6_item = Price paid for sixth item
-label.price_paid_for_the_7_item = Price paid for seventh item
-label.price_paid_for_the_8_item = Price paid for eighth item
-label.price_paid_for_the_9_item = Price paid for ninth item
+label.price_paid_for_item_ = Price paid for item {0}
 
 label.other-goods.adult = Adult clothing and footwear
 label.other-goods.adult.adult-clothing = Adult clothing
@@ -942,8 +933,8 @@ label.do_you_want_to_remove_.alcohol.wine = Do you want to remove this wine?
 label.do_you_want_to_remove_.alcohol.other = Do you want to remove this other alcohol?
 
 
-label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_9_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 9 other goods to declare. If you do have more, you will need to declare all your goods, alcohol and tobacco at the red channel at customs.
-label.you_can_only_calculate_taxes_and_duties_on_9_other_goods_or_fewer_ = You can only calculate taxes and duties on 9 other goods or fewer - remove items from your duty estimate to continue. If you do have more, go through the red channel at customs.
+label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 50 other goods to declare. If you do have more, you will need to declare all your goods, alcohol and tobacco at the red channel at customs.
+label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_ = You can only calculate taxes and duties on 50 other goods or fewer - remove items from your duty estimate to continue. If you do have more, go through the red channel at customs.
 
 
 label.X_litre_X = {0} litre {1}
