@@ -1,5 +1,5 @@
 @this(form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, main_template: views.html.main_template)
-@(bringingOverAllowance: Form[BringingOverAllowanceDto], mixEuRow: Boolean)(implicit request: Request[_], messages: Messages)
+@(bringingOverAllowance: Form[BringingOverAllowanceDto], mixEuRow: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import util.prefixErrorMessage
@@ -12,7 +12,7 @@
   }
 }
 
-@main_template(title = prefixErrorMessage(title.toString, bringingOverAllowance.hasErrors)) {
+@main_template(title = prefixErrorMessage(title.toString, bringingOverAllowance.hasErrors), backLink = backLink) {
 
     @views.html.tags.errors(bringingOverAllowance)
 

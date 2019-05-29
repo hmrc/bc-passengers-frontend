@@ -3,13 +3,14 @@
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
-  showCalculate: Boolean
+  showCalculate: Boolean,
+  backLink: Option[String]
 )(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import util._
 
-@main_template(title = messages("label.tell_us_about_the_goods_"), bodyClasses = None) {
+@main_template(title = messages("label.tell_us_about_the_goods_"), backLink = backLink) {
 
   <h1 class="heading-xlarge">@messages("label.tell_us_about_the_goods_")</h1>
 

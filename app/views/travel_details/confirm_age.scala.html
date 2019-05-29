@@ -1,10 +1,10 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(ageOver17Form: Form[AgeOver17Dto])(implicit request: Request[_], messages: Messages)
+@(ageOver17Form: Form[AgeOver17Dto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import util.prefixErrorMessage
 
-@main_template(title = prefixErrorMessage(messages("label.are_you_17_or_over"), ageOver17Form.hasErrors)) {
+@main_template(title = prefixErrorMessage(messages("label.are_you_17_or_over"), ageOver17Form.hasErrors), backLink = backLink) {
 
     @views.html.tags.errors(ageOver17Form)
 

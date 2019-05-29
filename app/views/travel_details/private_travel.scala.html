@@ -1,15 +1,15 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(privateCraftForm: Form[PrivateCraftDto])(implicit request: Request[_], messages: Messages)
+@(privateCraftForm: Form[PrivateCraftDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util.prefixErrorMessage
 
-@main_template(title = prefixErrorMessage(messages("label.did_you_arrive_in_the_uk_by_private_boat_"), privateCraftForm.hasErrors)) {
+@main_template(title = prefixErrorMessage(messages("label.did_you_arrive_in_the_uk_by_private_boat_"), privateCraftForm.hasErrors), backLink = backLink) {
 
     @views.html.tags.errors(privateCraftForm)
 
     <h1 class="heading-xlarge">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</h1>
 
-    @form(action = routes.TravelDetailsController.privateCraftPost()){
+    @form(action = routes.TravelDetailsController.privateTravelPost()){
 
         <fieldset>
             <legend class="visually-hidden">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</legend>

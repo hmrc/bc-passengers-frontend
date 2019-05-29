@@ -1,10 +1,10 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(claimedVatResForm: Form[ClaimedVatResDto])(implicit request: Request[_], messages: Messages)
+@(claimedVatResForm: Form[ClaimedVatResDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import util.prefixErrorMessage
 
-@main_template(title = prefixErrorMessage(messages("heading.did_you_claim_tax_back_on_"), claimedVatResForm.hasErrors)) {
+@main_template(title = prefixErrorMessage(messages("heading.did_you_claim_tax_back_on_"), claimedVatResForm.hasErrors), backLink = backLink) {
 
     @views.html.tags.errors(claimedVatResForm)
 
