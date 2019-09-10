@@ -59,9 +59,9 @@ class NewOtherGoodsInputController @Inject() (
           )
           .verifying(blankOkCostCheckConstraint(path.toMessageKey))
       )
-      .transform[List[String]](_.filter(!_.isEmpty), identity)
-      .verifying("error.required.cost."+path.toMessageKey, _.size > 0)
-      .transform[List[BigDecimal]](_.map(s => BigDecimal(s.filter(_ != ','))), _.map(formatMonetaryValue))
+      .transform[List[String]](_.map(_.filter(_ != ','))filter(!_.isEmpty), identity)
+      .verifying("error.required.cost."+path.toMessageKey, c => c.size > 0)
+      .transform[List[BigDecimal]](_.map(s => BigDecimal(s)), _.map(formatMonetaryValue))
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
