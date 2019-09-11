@@ -412,6 +412,19 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
+    "return a 400 when action == continue and cost contains ',' only" in new LocalSetup {
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+        "action" -> "continue",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "costs[0]" -> ","
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
     "add a number of PPIs to the JourneyData and redirect to next step when action == continue and iid is not present" in new LocalSetup {
 
       val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
