@@ -1,0 +1,20 @@
+@this(govuk_wrapper: views.html.govuk_wrapper)
+@()(implicit request: Request[_], messages: Messages)
+
+@contentHeader = {
+  <h1>@messages("label.you_cannot_use_this_service")</h1>
+}
+
+@mainContent = {
+
+  <p>@messages("label.you_cannot_declare_individual_items_worth_more_")</p>
+
+  <p>@messages("label.you_can")<p>
+
+  <ul class="text list list-bullet">
+    <li><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.go_back_and_change_the_items_value")</a></li>
+    <li>@messages("label.declare_your_goods_at_the_red_channel_at_customs")</li>
+  </ul>
+}
+
+@govuk_wrapper(title = messages("label.you_cannot_use_this_service"), contentHeader = Some(contentHeader), mainContent = mainContent)

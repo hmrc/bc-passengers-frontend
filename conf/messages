@@ -1,20 +1,14 @@
-# Global
 label.continue = Continue
 label.yes = Yes
 label.no = No
 label.add_more = Add more
 label.start_again = Start again
 label.error = Error:
-
 label.back = Back
 grams = {0}g
-
-# Error messages
 label.there_is_a_problem = There is a problem
 head.error.country.invalid = Enter the country of purchase
 error.country.invalid = Enter the country of purchase
-
-## EU Check Page
 heading.are_you_bringing_in_goods_from_ = Are you bringing in goods from EU countries, non-EU countries or both?
 heading.eu_countries = EU countries
 heading.non_eu_countries = Non-EU countries
@@ -25,8 +19,6 @@ text.eu_countries= Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, 
 text.non_eu_countries = Any other country (including the Canary Islands and Gibraltar).
 error.eu_check=Select if you bought goods from EU countries only, non-EU countries only or both
 head.error.eu_check = Select if you bought goods from EU countries only, non-EU countries only or both
-
-## Interrupt Pages
 heading.goods_brought_in_from_non_eu_countries_ = Goods brought in from non‑EU countries
 text.you_do_not_need_to_tell_us_ = You do not need to tell us about goods brought in from countries inside the EU.
 text.there_are_separate_allowances_ = There are separate allowances for bringing alcohol, tobacco and other goods into the UK from outside the EU without paying tax or duty.
@@ -44,37 +36,22 @@ text.your_allowance_is_a_total_of_ = Your allowance is a total of £390 worth of
 error.bringing_over_allowance = Select if you are bringing in goods over your allowances
 head.error.bringing_over_allowance = Select if you are bringing in goods over your allowances
 label.more_info_about_bringing_goods_into_the_uk_ = More information about bringing goods into the UK from the European Union, including restricted and banned items
-
-
-
-# No Need To Use Service Page
 heading.you_do_not_need_to_use_this_service = You do not need to use this service
 text.if_you_are_sure_the_goods_ = If you are sure the goods you are bringing into the UK are under your allowances, you do not need to declare them or use this service.
 text.if_you_want_to_see_the_tax_due_on_ = If you want to see the tax due on other goods brought into the UK, you can
 text.continue_to_use_our_service_ = continue to use our service to check
-
-## VAT Res Page
 heading.did_you_claim_tax_back_on_ = Did you claim tax back on any goods you bought in the EU?
 error.claimed_vat_res = Select if you claimed tax back on any goods you bought in the EU
 head.error.claimed_vat_res = Select if you claimed tax back on any goods you bought in the EU
 label.select_yes_if_the_tax_was_refunded_ = Select yes if the tax was refunded immediately or if you filled in a form to claim the tax back later.
-
-## Duty Free Page
 heading.are_you_bringing_in_duty_free_ = Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?
 error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU
 head.error.bringing_duty_free = Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU
 label.select_yes_any_any_alcohol_or_tobacco_ = Select yes if any alcohol or tobacco was bought in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.
-
-## Duty Free Interrupt EU Page
 heading.you_may_need_to_declare_goods_brought_ = You may need to declare goods brought in from EU countries
 text.you_have_said_you_are_bringing_in_duty-free_ = You have said you are bringing in duty-free alcohol or tobacco from the EU or the UK. This reduces your allowances for bringing in goods without paying tax or duty.
-
-## Duty Free Interrupt Mix Page
 heading.you_may_need_to_declare_all_your_goods = You may need to declare all your goods
 text.you_have_said_you_are_bringing_in_duty-free_ = You have said you are bringing in duty-free alcohol or tobacco from the EU or the UK. This reduces your allowances for bringing in goods without paying tax or duty.
-
-
-## EU Done Page
 label.alcohol = Alcohol
 label.beer = Beer
 label.wine = Wine
@@ -104,24 +81,14 @@ label.customs_checks = Customs checks on alcohol and tobacco
 text.customs_officers_are_more_likely_ = Customs officers are more likely to stop and ask you questions if you have more than these amounts of alcohol and tobacco.
 label.type_of_goods = Type of goods
 label.amount = Amount
-
-## Over 17 Page
 error.over_17 = Select yes if you are 17 or over
 head.error.over_17 = Select yes if you are 17 or over
-
-## Private Craft Page
 error.private_craft = Select yes if you arrived in the UK by private aircraft or private boat
 head.error.private_craft = Select yes if you arrived in the UK by private aircraft or private boat
-
-## Remove page
 error.remove_product = Select yes if you want to remove this item
 head.error.remove_product = Select yes if you want to remove this item
-
-## Currency Input
 head.error.currency.invalid = Enter the currency used
 error.currency.invalid = Enter the currency used
-
-# Start page
 label.check_tax_on_goods_you_bring_ = Check tax on goods you bring into the UK
 label.you_may_need_to_pay_tax_or_duties_ = You may need to pay tax or duties on any goods you bring into the UK from abroad.
 label.use_this_service_to = Use this service to:
@@ -133,18 +100,10 @@ text.the_exact_price_of_your_goods_ = the exact price of your goods in the curre
 text.the_quantity_or_volume_of_your_goods = the quantity or volume of your goods
 label.if_you_want_to_declare_and_pay_online_ = If you want to declare and pay online, you will need your passport number and card details.
 label.start_now = Start now
-
-# Where did you buy your goods?
 label.where_did_you_buy_goods = Where did you buy your goods?
 label.enter_country = Enter country
-
-# Over 17
 label.are_you_17_or_over = Are you 17 or over?
-
-# Private Craft
 label.did_you_arrive_in_the_uk_by_private_boat_ = Did you arrive in the UK by private aircraft or private boat?
-
-# Dashboard Page
 label.tell_us_about_your_purchases = Tell us about your purchases
 label.your_details = Your details
 label.your_purchases = Your purchases
@@ -161,26 +120,18 @@ label.add_alcohol = Add alcohol
 label.add_tobacco = Add tobacco
 label.add_other_goods = Add other goods
 label.add_purchases_separately_ = Add purchases separately if you bought them from more than one country or used more than one currency.
-
-# Select Products Page
 select_products.heading.alcohol = What type of alcohol are you bringing into the UK?
 select_products.heading.alcohol.cider = What type of cider are you bringing into the UK?
-
 select_products.heading.tobacco = What type of tobacco are you bringing into the UK?
-
 select_products.heading.other-goods = What other goods are you bringing into the UK?
 select_products.heading.other-goods.adult = What adult clothing or footwear are you bringing into the UK?
 select_products.heading.other-goods.carpets-fabric = What items of carpet or fabric are you bringing into the UK?
 select_products.heading.other-goods.childrens = What children’s clothing or footwear are you bringing into the UK?
 select_products.heading.other-goods.electronic-devices = What electronic devices are you bringing into the UK?
 select_products.heading.other-goods.glassware-ornaments = What glassware and ornament products are you bringing into the UK?
-
 head.error.required.other-goods.glassware-ornaments = Select glassware or ornaments or both
 error.required.other-goods.glassware-ornaments = Select glassware or ornaments or both
-
 label.select_all_that_apply = Select all that apply
-
-
 select_products.label.alcohol = Alcohol
 select_products.label.alcohol.beer = Beer
 select_products.label.alcohol.cider = Cider
@@ -191,14 +142,12 @@ select_products.label.alcohol.sparkling-wine = Sparkling wine (such as Champagne
 select_products.label.alcohol.spirits = Spirits (including gin, vodka and alcohol above 22%)
 select_products.label.alcohol.wine = Wine
 select_products.label.alcohol.other = All other alcoholic drinks (including port, sherry and alcohol up to 22%)
-
 select_products.label.tobacco = Tobacco
 select_products.label.tobacco.cigarettes = Cigarettes
 select_products.label.tobacco.cigarillos = Cigarillos
 select_products.label.tobacco.cigars = Cigars
 select_products.label.tobacco.chewing-tobacco = Pipe or chewing tobacco
 select_products.label.tobacco.rolling-tobacco = Rolling tobacco
-
 select_products.label.other-goods = Other Goods
 select_products.label.other-goods.adult = Adult clothing and footwear
 select_products.label.other-goods.adult.adult-clothing = Adult clothing
@@ -209,7 +158,7 @@ select_products.label.other-goods.carpets-fabric = Carpets and fabrics
 select_products.label.other-goods.carpets-fabric.carpets = Carpets
 select_products.label.other-goods.carpets-fabric.fabrics = Fabrics
 select_products.label.other-goods.car-seats = Children’s car seats
-select_products.label.other-goods.childrens = Children's clothing and footwear
+select_products.label.other-goods.childrens = Children’s clothing and footwear
 select_products.label.other-goods.childrens.childrens-clothing = Children’s clothing
 select_products.label.other-goods.childrens.childrens-footwear = Children’s footwear
 select_products.label.other-goods.disability-equipment = Disability equipment
@@ -227,8 +176,6 @@ select_products.label.other-goods.stop-smoking-products = Stop smoking products
 select_products.label.other-goods.tableware = Tableware and kitchenware
 select_products.label.other-goods.watches-clocks = Watches and clocks
 select_products.label.other-goods.other = Anything else
-
-## Select Product Errors
 head.error.required.alcohol = Select what type of alcohol you are bringing into the UK
 error.required.alcohol = Select what type of alcohol you are bringing into the UK
 head.error.required.alcohol.cider = Select what type of cider you are bringing into the UK
@@ -245,13 +192,7 @@ head.error.required.other-goods.childrens = Select children’s clothing or chil
 error.required.other-goods.childrens = Select children’s clothing or children’s footwear or both
 head.error.required.other-goods.electronic-devices = Select televisions or all other electronic devices or both
 error.required.other-goods.electronic-devices = Select televisions or all other electronic devices or both
-
-
-# Alcohol Input
-
-##New Alcohol Input
 label.total_volume_in_litres = Total volume in litres
-
 head.error.required.volume.alcohol.beer = Enter the volume of beer
 head.error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
 head.error.required.volume.alcohol.cider.sparkling-cider = Enter the volume of cider
@@ -260,7 +201,6 @@ head.error.required.volume.alcohol.sparkling-wine = Enter the volume of sparklin
 head.error.required.volume.alcohol.spirits = Enter the volume of spirits
 head.error.required.volume.alcohol.wine = Enter the volume of wine
 head.error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
-
 error.required.volume.alcohol.beer = Enter the volume of beer
 error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
 error.required.volume.alcohol.cider.sparkling-cider = Enter the volume of cider
@@ -269,17 +209,10 @@ error.required.volume.alcohol.sparkling-wine = Enter the volume of sparkling win
 error.required.volume.alcohol.spirits = Enter the volume of spirits
 error.required.volume.alcohol.wine = Enter the volume of wine
 error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
-
 error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
 head.error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
-
-
 label.litre = litre
 label.litres = litres
-
-
-# NEW SINGLE PAGE
-
 label.tobacco.cigarettes = Cigarettes
 label.tobacco.cigarettes.single = Cigarette
 label.tobacco.cigarillos = Cigarillos
@@ -288,20 +221,23 @@ label.tobacco.cigars = Cigars
 label.tobacco.cigars.single = Cigar
 label.tobacco.chewing-tobacco = Pipe or chewing tobacco
 label.tobacco.rolling-tobacco = Rolling tobacco
-
 label.total_number_of_tobacco.cigarettes = Total number of cigarettes
 label.total_number_of_tobacco.cigarillos = Total number of cigarillos
 label.total_number_of_tobacco.cigars = Total number of cigars
-
 label.if_you_do_not_know_the_exact_number_or_price = If you do not know the exact number or price
 label.if_you_do_not_know_the_exact_number_weight_or_price = If you do not know the exact number, weight or price
 label.if_you_do_not_know_the_exact_weight_or_price = If you do not know the exact weight or price
 label.if_you_do_not_know_the_exact_volume_or_price = If you do not know the exact volume or price
-
 label.country_this_tobacco_was_ = Country this tobacco was bought in
 label.currency_used_to_buy_this_tobacco = Currency used to buy this tobacco
 label.if_you_bought_this_tobacco_ = If you bought this tobacco on a plane or boat, enter the country you were travelling from at the time of purchase
 label.total_weight_in_grammes = Total weight in grammes
+
+label.you_cannot_use_this_service=You cannot use this service
+label.you_cannot_declare_individual_items_worth_more_=You cannot declare individual items worth more than £21billion using this service.
+label.you_can=You can:
+label.go_back_and_change_the_items_value=go back and change the item’s value
+label.declare_your_goods_at_the_red_channel_at_customs=declare your goods at the red channel at customs
 
 
 error.required.tobacco.cigarettes = Enter the price of the cigarettes
@@ -337,22 +273,16 @@ head.error.required.alcohol.other = Enter the price of the other alcoholic drink
 head.error.required.noofsticks = Enter the number of cigarettes
 head.error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 head.error.required.weight.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
-
-
-
 error.no_of_sticks.required.tobacco.cigarettes = Enter the number of cigarettes
 error.no_of_sticks.required.tobacco.cigarillos = Enter the number of cigarillos
 error.no_of_sticks.required.tobacco.cigars = Enter the number of cigars
-
 head.error.no_of_sticks.required.tobacco.cigarettes = Enter the number of cigarettes
 head.error.no_of_sticks.required.tobacco.cigarillos = Enter the number of cigarillos
 head.error.no_of_sticks.required.tobacco.cigars = Enter the number of cigars
-
 error.weight_or_volume.required.tobacco.cigarillos  = Enter the weight of the cigarillos
 error.weight_or_volume.required.tobacco.cigars = Enter the weight of the cigars
 error.weight_or_volume.required.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 error.weight_or_volume.required.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
-
 head.error.weight_or_volume.required.tobacco.cigarillos  = Enter the weight of the cigarillos
 head.error.weight_or_volume.required.tobacco.cigars = Enter the weight of the cigars
 head.error.weight_or_volume.required.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
@@ -761,15 +691,13 @@ error.exceeded.max.cost.other-goods.tableware = Price must be no more than 9,999
 error.exceeded.max.cost.other-goods.watches-clocks = Price must be no more than 9,999,999,999
 error.exceeded.max.cost.other-goods.other = Price must be no more than 9,999,999,999
 
-# Hidden Text
+
 label.if_you_do_not_know_the_volume = If you do not know the volume
 label.if_you_do_not_know_the_number = If you do not know the number
 label.if_you_do_not_know_the_number_or_weight = If you do not know the number or weight
 label.if_you_do_not_know_the_weight = If you do not know the weight
 label.if_the_currency_you_used_is_not_shown = If the currency you used is not shown
 label.you_cannot_use_this_service_ = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
-
-## Done page
 done.page_title = You will need to pay £{0} for goods purchased outside of the EU
 done.h1 = Tax due on these goods<br />£{0}
 label.what_you_need_to_do_next = What you need to do next
@@ -789,21 +717,15 @@ label.declare_once = You can only declare your goods online once. If you bring i
 label.change_your_answers = Change your answers
 label.declare_your_goods_and_pay_online = Declare your goods and pay online
 label.all_items_within_allowance = All the items you entered are included within your personal allowances
-
-# Done page - Nothing to Declare
 label.tax_due_on_these_goods = Tax due on these goods
 label.personal_allowances = All the items you entered are included within your personal allowances
 label.green_channel = Go to the green channel at customs if these are the only goods you are bringing into the UK from abroad.
 label.fire_arms = Go to the red channel or red-point phone at customs if you have something else to declare or are carrying restricted items such as firearms or ammunition.
 text.how_the_tax_was_calculated = How the tax was calculated
-
-# Done page - Over 97 Thousand pound
 label.declaring_these_goods = Declaring these goods
 label.you_cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
 label.declare_these_goods = When you arrive in the UK go to the red channel or red-point phone at customs and declare these goods to a member of Border Force.
 label.tax_is_due = Tax is due because you have gone over your other goods allowance.
-
-# Declaration page
 label.declare_your_goods = Declare your goods
 text.i_understand_that = I understand that:
 text.i_must_pay_duty_ = I must pay duty and tax on these goods if I bring them into the UK
@@ -811,9 +733,6 @@ text.these_goods_are_for_my_own_ = these goods are for my own use or to give awa
 text.this_is_my_only_online_declaration_ = this is my only online declaration for this journey
 text.i_will_need_to_show_my_declaration_receipt_ = I will need to show my declaration receipt if I am intercepted by Border Force, who may also ask for purchase receipts
 text.you_risk_prosecution_and_imprisonment_ = You risk prosecution and imprisonment, paying duty or taxes again and having your goods seized if you provide false information or use the online service to deliberately avoid paying tax and duties on the goods you bring into the UK.
-
-
-# User Details Page
 label.enter_your_details = Enter your details
 label.first_name = First name
 label.last_name = Last name
@@ -889,8 +808,6 @@ label.add_more.other-goods.tableware = Add more tableware or kitchenware
 label.add_more.other-goods.watches-clocks = Add more watches or clocks
 label.add_more.other-goods.other = Add more other items
 
-
-# Remove Page
 label.remove_this_item = Remove this item
 label.do_you_want_to_remove_this = Do you want to remove this {0}?
 label.do_you_want_to_remove_.other-goods.adult.adult-clothing = Do you want to remove this adult clothing?
@@ -1203,8 +1120,6 @@ title.western_sahara=Western Sahara
 title.yemen=Yemen
 title.zambia=Zambia
 title.zimbabwe=Zimbabwe
-
-
 
 title.united_arab_emirates_dirham_aed=United Arab Emirates dirham (AED)
 title.albanian_lek_all=Albanian lek (ALL)
