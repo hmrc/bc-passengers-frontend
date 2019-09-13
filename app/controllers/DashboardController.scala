@@ -28,6 +28,7 @@ class DashboardController @Inject() (
   val done: views.html.purchased_products.done,
   val over_ninty_seven_thousand_pounds: views.html.purchased_products.over_ninty_seven_thousand_pounds,
   val error_template: views.html.error_template,
+  val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -74,6 +75,11 @@ class DashboardController @Inject() (
           Redirect(routes.DashboardController.showCalculation())
         }
 
+      case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
+
+        Future.successful {
+          BadRequest(purchase_price_out_of_bounds())
+        }
 
       case _ =>
         Future.successful {

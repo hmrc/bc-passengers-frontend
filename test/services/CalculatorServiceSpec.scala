@@ -16,6 +16,7 @@ import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.test.Helpers._
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.{HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import util.BaseSpec
 
@@ -193,6 +194,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
       def cachedJourneyData: Option[JourneyData]
 
+      def simulatePurchasePriceOutOfBounds: Boolean
+
       lazy val service = {
 
         when(injected[Cache].fetch(any())) thenReturn {
@@ -206,15 +209,22 @@ class CalculatorServiceSpec extends BaseSpec {
           ))
         }
 
-        when(injected[WsAllMethods].POST[CalculatorRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())(any(),any(),any(),any())) thenReturn {
-          Future.successful(CalculatorResponse(
-            Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-            Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-            Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-            Calculation("0.00", "0.00", "0.00", "0.00"),
-            withinFreeAllowance = false,
-            limits = Map.empty
-          ))
+        if(simulatePurchasePriceOutOfBounds) {
+          when(injected[WsAllMethods].POST[CalculatorRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
+            (any(), any(), any(), any())) thenReturn Future.failed(new Upstream4xxResponse("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty))
+        }
+        else {
+          when(injected[WsAllMethods].POST[CalculatorRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
+            (any(), any(), any(), any())) thenReturn {
+            Future.successful(CalculatorResponse(
+              Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Calculation("0.00", "0.00", "0.00", "0.00"),
+              withinFreeAllowance = false,
+              limits = Map.empty
+            ))
+          }
         }
 
         injected[CalculatorService]
@@ -233,6 +243,8 @@ class CalculatorServiceSpec extends BaseSpec {
         )
       ))
 
+      override lazy val simulatePurchasePriceOutOfBounds = false
+
       val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
       val response: CalculatorServiceResponse = await(service.calculate()(implicitly, messages))
@@ -246,6 +258,38 @@ class CalculatorServiceSpec extends BaseSpec {
           withinFreeAllowance = false,
           limits = Map.empty
         )
+
+      verify(injected[Cache], times(1)).fetch(any())
+
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
+
+      verify(injected[WsAllMethods], times(1)).POST[CalculatorRequest, CalculatorResponse](
+        meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
+        meq(CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
+          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
+        ))),
+        any())(any(),any(),any(),any())
+
+
+    }
+
+    "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse when call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        euCountryCheck = Some("nonEuOnly"),
+        ageOver17 = Some(true),
+        privateCraft = Some(false),
+        purchasedProductInstances = List(
+          PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
+          PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("USD"), cost = Some(BigDecimal("4.00")))
+        )
+      ))
+
+      override lazy val simulatePurchasePriceOutOfBounds = true
+
+      val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+
+      await(service.calculate()(implicitly, messages)) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
 
       verify(injected[Cache], times(1)).fetch(any())
 

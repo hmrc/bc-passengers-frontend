@@ -10,8 +10,9 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, Reads}
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.http.Status._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
@@ -20,6 +21,7 @@ import scala.math.BigDecimal.RoundingMode
 trait CalculatorServiceResponse
 case object CalculatorServiceNoJourneyDataResponse extends CalculatorServiceResponse
 case object CalculatorServiceCantBuildCalcReqResponse extends CalculatorServiceResponse
+case object CalculatorServicePurchasePriceOutOfBoundsFailureResponse extends CalculatorServiceResponse
 case class CalculatorServiceSuccessResponse(calculatorResponse: CalculatorResponse) extends CalculatorServiceResponse
 
 
@@ -74,6 +76,9 @@ class CalculatorService @Inject() (
 
             wsAllMethods.POST[CalculatorRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { r =>
               CalculatorServiceSuccessResponse(r)
+            } recover {
+              case e: Upstream4xxResponse if e.upstreamResponseCode == REQUESTED_RANGE_NOT_SATISFIABLE =>
+                CalculatorServicePurchasePriceOutOfBoundsFailureResponse
             }
 
           case None =>
