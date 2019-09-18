@@ -74,7 +74,7 @@ class CalculatorService @Inject() (
         journeyDataToCalculatorRequest(journeyData) flatMap {
           case Some(calculatorRequest) =>
 
-            wsAllMethods.POST[CalculatorRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { r =>
+            wsAllMethods.POST[CalculatorServiceRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { r =>
               CalculatorServiceSuccessResponse(r)
             } recover {
               case e: Upstream4xxResponse if e.upstreamResponseCode == REQUESTED_RANGE_NOT_SATISFIABLE =>
@@ -112,7 +112,7 @@ class CalculatorService @Inject() (
       } yield LimitRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, speculativeItems)
   }
 
-  def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorRequest]] = {
+  def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorServiceRequest]] = {
 
     getCurrencyConversionRates(journeyData) map { ratesMap =>
 
@@ -133,7 +133,14 @@ class CalculatorService @Inject() (
         for {
           isAgeOver17 <- journeyData.ageOver17
           isPrivateCraft <- journeyData.privateCraft
-        } yield CalculatorRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
+        } yield CalculatorServiceRequest(
+          isPrivateCraft,
+          isAgeOver17,
+          journeyData.isVatResClaimed,
+          journeyData.isBringingDutyFree.getOrElse(false),
+          journeyData.irishBorder.getOrElse(false) && purchasedItems.exists(s => s.countryCode == Some("IE")),
+
+          purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
     }
 

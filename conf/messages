@@ -81,6 +81,8 @@ label.customs_checks = Customs checks on alcohol and tobacco
 text.customs_officers_are_more_likely_ = Customs officers are more likely to stop and ask you questions if you have more than these amounts of alcohol and tobacco.
 label.type_of_goods = Type of goods
 label.amount = Amount
+error.irish_border = Select yes if you are entering Northern Ireland from Ireland
+head.error.irish_border = Select yes if you are entering Northern Ireland from Ireland
 error.over_17 = Select yes if you are 17 or over
 head.error.over_17 = Select yes if you are 17 or over
 error.private_craft = Select yes if you arrived in the UK by private aircraft or private boat
@@ -691,7 +693,7 @@ error.exceeded.max.cost.other-goods.tableware = Price must be no more than 9,999
 error.exceeded.max.cost.other-goods.watches-clocks = Price must be no more than 9,999,999,999
 error.exceeded.max.cost.other-goods.other = Price must be no more than 9,999,999,999
 
-
+label.are_entering_northern_ireland_ = Are you entering Northern Ireland from Ireland?
 label.if_you_do_not_know_the_volume = If you do not know the volume
 label.if_you_do_not_know_the_number = If you do not know the number
 label.if_you_do_not_know_the_number_or_weight = If you do not know the number or weight

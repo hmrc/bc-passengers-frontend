@@ -92,11 +92,11 @@ case class ClaimedVatResDto(claimedVatRes: Boolean)
 object BringingDutyFreeDto {
   val form: Form[BringingDutyFreeDto] = Form(
     mapping(
-      "bringingDutyFree" -> optional(boolean).verifying("error.bringing_duty_free", _.isDefined).transform[Boolean](_.get, b => Option(b))
+      "isBringingDutyFree" -> optional(boolean).verifying("error.bringing_duty_free", _.isDefined).transform[Boolean](_.get, b => Option(b))
     )(BringingDutyFreeDto.apply)(BringingDutyFreeDto.unapply)
   )
 }
-case class BringingDutyFreeDto(bringingDutyFree: Boolean)
+case class BringingDutyFreeDto(isBringingDutyFree: Boolean)
 
 object SelectedCountryDto {
   def form(countryService: CountriesService, optionalItemsRemaining: Boolean = true): Form[SelectedCountryDto] = Form(
@@ -116,6 +116,15 @@ object AgeOver17Dto {
   )
 }
 case class AgeOver17Dto(ageOver17: Boolean)
+
+object IrishBorderDto {
+  val form: Form[IrishBorderDto] = Form(
+    mapping(
+      "irishBorder" -> optional(boolean).verifying("error.irish_border", _.isDefined).transform[Boolean](_.get, b => Option(b))
+    )(IrishBorderDto.apply)(IrishBorderDto.unapply)
+  )
+}
+case class IrishBorderDto(irishBorder: Boolean)
 
 
 object PrivateCraftDto {

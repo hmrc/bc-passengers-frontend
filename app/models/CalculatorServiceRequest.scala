@@ -6,9 +6,9 @@ import util._
 
 import scala.math.BigDecimal.RoundingMode
 
-object CalculatorRequest {
+object CalculatorServiceRequest {
 
-  implicit def writes(implicit messages: Messages): OWrites[CalculatorRequest] = {
+  implicit def writes(implicit messages: Messages): OWrites[CalculatorServiceRequest] = {
 
     implicit val piw: Writes[PurchasedItem] = new Writes[PurchasedItem] {
 
@@ -35,11 +35,18 @@ object CalculatorRequest {
         ).stripNulls
       }
     }
-    Json.writes[CalculatorRequest]
+    Json.writes[CalculatorServiceRequest]
   }
 }
 
-case class CalculatorRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, isVatResClaimed: Option[Boolean], items: List[PurchasedItem])
+case class CalculatorServiceRequest(
+  isPrivateCraft: Boolean,
+  isAgeOver17: Boolean,
+  isVatResClaimed: Option[Boolean],
+  isBringingDutyFree: Boolean,
+  isIrishBorderCrossing: Boolean,
+  items: List[PurchasedItem]
+)
 
 
 object LimitRequest {

@@ -1,21 +1,19 @@
 package controllers
 
+import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 
 @Singleton
 class BackLinkModel @Inject() (
-  configuration: Configuration
+  appConfig: AppConfig
 ) {
 
   import routes._
 
-  lazy val isVatRes = configuration.getOptional[Boolean]("features.vat-res").getOrElse(false)
-
-
   def backLink(implicit context: LocalContext): Option[String] =
-    if (isVatRes) backLinkVatRes(context) else backLinkStandard(context)
+    if (appConfig.isVatResJourneyEnabled) backLinkVatRes(context) else backLinkStandard(context)
 
 
   def backLinkVatRes(context: LocalContext): Option[String] = {
@@ -24,7 +22,7 @@ class BackLinkModel @Inject() (
 
     def eucc = context.journeyData.flatMap(_.euCountryCheck)
     def vrc = context.journeyData.flatMap(_.isVatResClaimed).getOrElse(false)
-    def bdf = context.journeyData.flatMap(_.bringingDutyFree).getOrElse(false)
+    def bdf = context.journeyData.flatMap(_.isBringingDutyFree).getOrElse(false)
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
     def call = location match {
@@ -66,6 +64,12 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.privateTravel)
       case "tell-us" =>
         Some(TravelDetailsController.confirmAge)
+      case "ireland-to-northern-ireland" =>
+        Some(DashboardController.showDashboard)
+      case "calculation" if appConfig.isIrishBorderQuestionEnabled =>
+        Some(TravelDetailsController.irishBorder)
+      case "calculation" if !appConfig.isIrishBorderQuestionEnabled =>
+        Some(DashboardController.showDashboard)
       case _ =>
         None
     }
@@ -74,14 +78,13 @@ class BackLinkModel @Inject() (
 
   }
 
-
   def backLinkStandard(context: LocalContext): Option[String] = {
 
     val location = context.request.path.split('/').last
 
     def eucc = context.journeyData.flatMap(_.euCountryCheck)
     def vrc = context.journeyData.flatMap(_.isVatResClaimed).getOrElse(false)
-    def bdf = context.journeyData.flatMap(_.bringingDutyFree).getOrElse(false)
+    def bdf = context.journeyData.flatMap(_.isBringingDutyFree).getOrElse(false)
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
     def call = location match {
@@ -103,6 +106,12 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.privateTravel)
       case "tell-us" =>
         Some(TravelDetailsController.confirmAge)
+      case "ireland-to-northern-ireland" =>
+        Some(DashboardController.showDashboard())
+      case "calculation" if appConfig.isIrishBorderQuestionEnabled =>
+        Some(TravelDetailsController.irishBorder)
+      case "calculation" if !appConfig.isIrishBorderQuestionEnabled =>
+        Some(DashboardController.showDashboard)
       case _ =>
         None
     }

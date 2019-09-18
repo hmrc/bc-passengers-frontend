@@ -22,5 +22,6 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
   // Feature Flags
-  lazy val usingVatResJourney: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
+  lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
+  lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
 }

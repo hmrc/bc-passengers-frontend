@@ -59,7 +59,7 @@ class DashboardController @Inject() (
 
         val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
-        Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate, backLinkModel.backLink))
+        Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate, backLinkModel.backLink, appConfig.isIrishBorderQuestionEnabled))
 
       }
     }
@@ -102,7 +102,7 @@ class DashboardController @Inject() (
           case allTax if allTax > 97000  =>
             Ok (over_ninty_seven_thousand_pounds (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP))
 
-          case _ => Ok (done (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP) )
+          case _ => Ok (done (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink) )
         }
       }
     }

@@ -2,7 +2,7 @@
 package controllers
 
 import connectors.Cache
-import models.JourneyData
+import models.{Calculation, CalculatorResponse, JourneyData}
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -11,7 +11,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import services.TravelDetailsService
+import services.{CalculatorService, CalculatorServiceSuccessResponse, TravelDetailsService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
@@ -25,6 +25,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .configure("features.vat-res" -> false)
@@ -40,6 +41,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
     def cachedJourneyData: Option[JourneyData] = Some(JourneyData())
     when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
     when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
+    when(injected[CalculatorService].calculate()(any(),any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), true, Map.empty)))
+    when(injected[CalculatorService].storeCalculatorResponse(any(), any())(any())) thenReturn Future.successful(JourneyData())
   }
 
 
@@ -253,8 +256,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
       content should include ("You do not need to use this service")
     }
   }
-
-
   "calling GET .../confirm-age" should {
 
     "return the confirm age page unpopulated if there is no age answer in keystore" in new LocalSetup {
@@ -315,7 +316,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     "redirect to /check-tax-on-goods-you-bring-into-the-uk/tell-us when subsequent journey data is present" in new LocalSetup {
 
       when(controller.travelDetailsService.storeAgeOver17(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
-      when(controller.cache.fetch(any())) thenReturn Future.successful( Some(JourneyData(ageOver17 = Some(false), privateCraft = Some(false))) )
+      when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(ageOver17 = Some(false), privateCraft = Some(false))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
 
@@ -363,6 +364,116 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are 17 or over"
     }
 
+
+    "calling GET .../ireland-to-northern-ireland" should {
+
+      "return the ireland to northern ireland page unpopulated if there is no ireland answer in keystore" in new LocalSetup {
+
+        when(controller.cache.fetch(any())) thenReturn Future.successful(None)
+
+        val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+        status(response) shouldBe OK
+
+        val content = contentAsString(response)
+        val doc = Jsoup.parse(content)
+
+        doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
+        doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
+
+        verify(controller.cache, times(1)).fetch(any())
+      }
+
+      "return the ireland to northern ireland page pre-populated yes if there is ireland answer true in keystore" in new LocalSetup {
+
+        when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(privateCraft = Some(true), ageOver17 = Some(true), irishBorder = Some(true))))
+
+        val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+        status(response) shouldBe OK
+
+        val content = contentAsString(response)
+        val doc = Jsoup.parse(content)
+
+        doc.select("#irishBorder-true").hasAttr("checked") shouldBe true
+        doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
+
+        verify(controller.cache, times(1)).fetch(any())
+      }
+
+      "return the ireland to northern ireland page pre-populated no if there is ireland answer false in keystore" in new LocalSetup {
+
+        when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(privateCraft = Some(false), ageOver17 = Some(false), irishBorder = Some(false))))
+
+        val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+        status(response) shouldBe OK
+
+        val content = contentAsString(response)
+        val doc = Jsoup.parse(content)
+
+        doc.select("#irishBorder-false").hasAttr("checked") shouldBe true
+        doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
+
+        verify(controller.cache, times(1)).fetch(any())
+      }
+
+    }
+
+    "Calling POST .../ireland-to-northern-ireland" should {
+
+      "redirect to /check-tax-on-goods-you-bring-into-the-uk/calculation" in new LocalSetup {
+
+        when(controller.travelDetailsService.storeIrishBorder(meq(true))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+        when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(irishBorder = Some(false), privateCraft = Some(false))))
+
+        val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("irishBorder" -> "true")).get
+
+        status(response) shouldBe SEE_OTHER
+        redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/calculation")
+
+        verify(controller.travelDetailsService, times(1)).storeIrishBorder(meq(true))(any())
+      }
+
+      "return bad request when given invalid data" in new LocalSetup {
+        val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("value" -> "badValue")).get
+
+        status(response) shouldBe BAD_REQUEST
+
+        verify(controller.travelDetailsService, times(0)).storeIrishBorder(any())(any())
+
+      }
+
+      "return top error summary box when trying to submit a blank form" in new LocalSetup {
+
+        val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+        status(response) shouldBe BAD_REQUEST
+
+        val content = contentAsString(response)
+        val doc = Jsoup.parse(content)
+
+        Option(doc.getElementById("errors").select("a[href=#irishBorder]")).isEmpty shouldBe false
+        Option(doc.getElementById("errors").select("a[href=#irishBorder]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+        Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
+        Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+
+      }
+
+      "return error notification on the control when trying to submit a blank form" in new LocalSetup {
+
+        val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+        status(response) shouldBe BAD_REQUEST
+
+        val content = contentAsString(response)
+        val doc = Jsoup.parse(content)
+
+        doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
+        doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+      }
+
+    }
   }
 
   "Calling GET .../private-travel" should {

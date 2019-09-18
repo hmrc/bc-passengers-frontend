@@ -1,0 +1,33 @@
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(irishBorderForm: Form[IrishBorderDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("label.are_entering_northern_ireland_"), irishBorderForm.hasErrors), backLink = backLink) {
+
+  @views.html.tags.errors(irishBorderForm)
+
+  <h1 class="heading-xlarge">@messages("label.are_entering_northern_ireland_")</h1>
+
+  @form(action = routes.TravelDetailsController.irishBorderPost()) {
+
+    <fieldset>
+      <legend class="visually-hidden">@messages("label.are_entering_northern_ireland_")</legend>
+
+      @components.input_radio_group(
+        irishBorderForm("irishBorder"),
+        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+        '_labelClass -> "block-label inputLabelBeforeError",
+        '_inline -> true
+      )
+
+    </fieldset>
+
+    <div class="form-group">
+      <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+
+  }
+
+}
