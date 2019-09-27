@@ -15,7 +15,7 @@ import util._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class NewTobaccoInputController @Inject()(
+class TobaccoInputController @Inject()(
   val cache: Cache,
   val productTreeService: ProductTreeService,
   val newPurchaseService: NewPurchaseService,

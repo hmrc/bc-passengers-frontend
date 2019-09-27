@@ -39,7 +39,7 @@
     @messages(s"label.${path.toMessageKey}")
   </h1>
 
-  @form(action = iid.fold(routes.NewTobaccoInputController.processAddForm(path))(iid => routes.NewTobaccoInputController.processEditForm(iid)) ) {
+  @form(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid)) ) {
 
     @content
 

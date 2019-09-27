@@ -34,10 +34,10 @@ class PayApiService @Inject()(
 
   lazy val returnUrl = configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
 
-  lazy val returnUrlFailed = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.DashboardController.showCalculation()
+  lazy val returnUrlFailed = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation()
   lazy val returnUrlCancelled = returnUrlFailed
 
-  lazy val backUrl = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.DeclarationController.enterYourDetails()
+  lazy val backUrl = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier): Future[PayApiServiceResponse] = {
 

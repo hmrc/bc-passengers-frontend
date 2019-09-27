@@ -16,7 +16,7 @@ import play.api.data.Forms._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class NewAlcoholInputController @Inject() (
+class AlcoholInputController @Inject()(
   val cache: Cache,
   val productTreeService: ProductTreeService,
   val newPurchaseService: NewPurchaseService,

@@ -5,7 +5,7 @@ import models._
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -22,7 +22,7 @@ import views.html.new_tobacco._
 
 import scala.concurrent.Future
 
-class NewTobaccoInputControllerSpec extends BaseSpec {
+class TobaccoInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))

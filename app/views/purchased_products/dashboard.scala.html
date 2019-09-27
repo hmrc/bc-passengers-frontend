@@ -49,7 +49,7 @@
             </div>
           </dl>
           <div class="margin-bottom-20">
-            <a href="@routes.NewAlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+            <a href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
           </div>
           <div class="margin-bottom-50">
             <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
@@ -93,7 +93,7 @@
             </div>
           </dl>
           <div class="margin-bottom-20">
-            <a href="@routes.NewTobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+            <a href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
           </div>
           <div class="margin-bottom-50">
             <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
@@ -144,7 +144,7 @@
           </div>
         </dl>
         <div class="margin-bottom-20">
-          <a href="@routes.NewOtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+          <a href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
         </div>
         <div class="margin-bottom-50">
           <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
@@ -157,9 +157,9 @@
   @if(showCalculate && otherGoodsPurchasedItemList.size <= 50) {
 
     @if(isIrishBorderQuestionEnabled) {
-      <a href="@routes.TravelDetailsController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
+      <a href="@routes.CalculateDeclareController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
     } else {
-      @form(action = routes.DashboardController.calculate()) {
+      @form(action = routes.CalculateDeclareController.calculate()) {
         <button type="submit" class="button margin-top-30">@messages("label.calculate")</button>
       }
     }

@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 import akka.stream.Materializer
 import config.AppConfig
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HttpEntity
 import play.api.{Application, Configuration, mvc}
 import play.api.inject.bind

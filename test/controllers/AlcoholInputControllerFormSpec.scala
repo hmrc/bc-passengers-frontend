@@ -3,14 +3,14 @@ package controllers
 import models.{AlcoholDto, ProductPath}
 import util.BaseSpec
 
-class NewAlcoholInputControllerFormSpec extends BaseSpec {
+class AlcoholInputControllerFormSpec extends BaseSpec {
 
   "Posting the alcoholForm" should {
 
     val path = ProductPath("alcohol/beer")
 
     "fail on empty string in weightOrVolume" in {
-      val form = injected[NewAlcoholInputController].alcoholForm(path).bind(Map(
+      val form = injected[AlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "",
         "country" -> "FR",
         "currency" -> "EUR",
@@ -22,7 +22,7 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     }
 
     "fail on special character in weightOrVolume" in {
-      val form = injected[NewAlcoholInputController].alcoholForm(path).bind(Map(
+      val form = injected[AlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "***",
         "country" -> "FR",
         "currency" -> "EUR",
@@ -34,7 +34,7 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     }
 
     "fail on more than 3 decimal places in weightOrVolume" in {
-      val form = injected[NewAlcoholInputController].alcoholForm(path).bind(Map(
+      val form = injected[AlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "4.5678",
         "country" -> "FR",
         "currency" -> "EUR",
@@ -52,7 +52,7 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
 
 
     "fail on more than allowance 60 litres in sparkling-wine" in {
-      val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINESP" -> 1.1), List("L-WINESP")).bind(Map(
+      val form = injected[AlcoholInputController].alcoholForm(path, Map("L-WINESP" -> 1.1), List("L-WINESP")).bind(Map(
         "weightOrVolume" -> "65",
         "country" -> "FR",
         "currency" -> "EUR",
@@ -65,7 +65,7 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
 
 
     "fail on more than allowance 90 litres in wine" in {
-      val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.1), List("L-WINE")).bind(Map(
+      val form = injected[AlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.1), List("L-WINE")).bind(Map(
         "weightOrVolume" -> "95",
         "country" -> "FR",
         "currency" -> "EUR",
@@ -77,7 +77,7 @@ class NewAlcoholInputControllerFormSpec extends BaseSpec {
     }
 
     "pass on cost with comma seperated thousands" in {
-      val form = injected[NewAlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.0), List("L-WINE")).bind(Map(
+      val form = injected[AlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.0), List("L-WINE")).bind(Map(
         "weightOrVolume" -> "90",
         "country" -> "FR",
         "currency" -> "EUR",

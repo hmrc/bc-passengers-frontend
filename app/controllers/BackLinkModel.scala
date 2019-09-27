@@ -67,7 +67,7 @@ class BackLinkModel @Inject() (
       case "ireland-to-northern-ireland" =>
         Some(DashboardController.showDashboard)
       case "calculation" if appConfig.isIrishBorderQuestionEnabled =>
-        Some(TravelDetailsController.irishBorder)
+        Some(CalculateDeclareController.irishBorder)
       case "calculation" if !appConfig.isIrishBorderQuestionEnabled =>
         Some(DashboardController.showDashboard)
       case _ =>
@@ -109,7 +109,7 @@ class BackLinkModel @Inject() (
       case "ireland-to-northern-ireland" =>
         Some(DashboardController.showDashboard())
       case "calculation" if appConfig.isIrishBorderQuestionEnabled =>
-        Some(TravelDetailsController.irishBorder)
+        Some(CalculateDeclareController.irishBorder)
       case "calculation" if !appConfig.isIrishBorderQuestionEnabled =>
         Some(DashboardController.showDashboard)
       case _ =>

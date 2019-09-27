@@ -5,9 +5,9 @@ import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -18,15 +18,18 @@ import services._
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
+import scala.collection.JavaConversions._
 import scala.concurrent.Future
 import scala.language.postfixOps
 
 
-class DeclarationControllerSpec extends BaseSpec {
+class CalculateDeclareControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
+    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
     .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
@@ -35,15 +38,25 @@ class DeclarationControllerSpec extends BaseSpec {
     .build()
 
   override def beforeEach: Unit = {
-    reset(injected[Cache], injected[PurchasedProductService], injected[UserInformationService],
-      injected[PayApiService], injected[DeclarationService], injected[DateTimeProviderService])
+    reset(
+      injected[Cache],
+      injected[PurchasedProductService],
+      injected[UserInformationService],
+      injected[PayApiService],
+      injected[DeclarationService],
+      injected[DateTimeProviderService],
+      injected[TravelDetailsService]
+    )
   }
 
   trait LocalSetup {
 
-    def cachedJourneyData: Option[JourneyData]
     def payApiResponse: PayApiServiceResponse
     def declarationServiceResponse: DeclarationServiceResponse
+
+    def cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData()))
+
+    when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
 
     lazy val cr = CalculatorResponse(
       Some(Alcohol(List(
@@ -73,10 +86,14 @@ class DeclarationControllerSpec extends BaseSpec {
 
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any())) thenReturn Future.successful(payApiResponse)
+      when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
       when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
+      when(injected[CalculatorService].calculate(any())(any(),any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), true, Map.empty)))
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any())(any())) thenReturn Future.successful(JourneyData())
+
       rt(app, req)
     }
   }
@@ -84,7 +101,7 @@ class DeclarationControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods" should {
 
     "Display the declaration informational page" in new LocalSetup {
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -103,7 +120,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Display the user information page" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -122,7 +139,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -146,7 +163,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when first name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -170,7 +187,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when last name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -194,7 +211,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when passport number is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -218,7 +235,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when place of arrival is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -242,7 +259,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -266,7 +283,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
 
@@ -292,7 +309,7 @@ class DeclarationControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(cr), userInformation = Some(ui))))
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -318,5 +335,131 @@ class DeclarationControllerSpec extends BaseSpec {
     }
   }
 
+  "calling GET .../ireland-to-northern-ireland" should {
 
+    "return the ireland to northern ireland page unpopulated if there is no ireland answer in keystore" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(None)
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
+      doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
+
+      verify(injected[Cache], times(1)).fetch(any())
+    }
+
+    "return the ireland to northern ireland page pre-populated yes if there is ireland answer true in keystore" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(privateCraft = Some(true), ageOver17 = Some(true), irishBorder = Some(true))))
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("#irishBorder-true").hasAttr("checked") shouldBe true
+      doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
+
+      verify(injected[Cache], times(1)).fetch(any())
+    }
+
+    "return the ireland to northern ireland page pre-populated no if there is ireland answer false in keystore" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(privateCraft = Some(false), ageOver17 = Some(false), irishBorder = Some(false))))
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("#irishBorder-false").hasAttr("checked") shouldBe true
+      doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
+
+      verify(injected[Cache], times(1)).fetch(any())
+    }
+
+  }
+
+  "Calling POST .../ireland-to-northern-ireland" should {
+
+    "redirect to /check-tax-on-goods-you-bring-into-the-uk/calculation" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(irishBorder = Some(false), privateCraft = Some(false))))
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("irishBorder" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/calculation")
+
+      verify(injected[TravelDetailsService], times(1)).storeIrishBorder(any())(meq(true))(any())
+    }
+
+    "return bad request when given invalid data" in new LocalSetup {
+
+
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("value" -> "badValue")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      verify(injected[TravelDetailsService], times(0)).storeIrishBorder(any())(any())(any())
+
+    }
+
+    "return top error summary box when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      Option(doc.getElementById("errors").select("a[href=#irishBorder]")).isEmpty shouldBe false
+      Option(doc.getElementById("errors").select("a[href=#irishBorder]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
+      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+
+    }
+
+    "return error notification on the control when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val payApiResponse = null
+      override lazy val declarationServiceResponse = null
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+    }
+
+  }
 }

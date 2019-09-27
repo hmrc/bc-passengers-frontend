@@ -7,7 +7,7 @@
 
 @main_template(title = messages("label.declare_your_goods"), bodyClasses = None) {
 
-  <a class="link-back" id="back" href="@routes.DashboardController.showCalculation()">@messages("label.back")</a>
+  <a class="link-back" id="back" href="@routes.CalculateDeclareController.showCalculation()">@messages("label.back")</a>
 
   <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>
 
@@ -28,7 +28,7 @@
     </strong>
   </div>
 
-  <p class="margin-top-30"><a href="@routes.DeclarationController.enterYourDetails" class="button" role="button">@messages("label.declare_your_goods_and_pay_online")</a></p>
+  <p class="margin-top-30"><a href="@routes.CalculateDeclareController.enterYourDetails" class="button" role="button">@messages("label.declare_your_goods_and_pay_online")</a></p>
 
   <p>
     <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or

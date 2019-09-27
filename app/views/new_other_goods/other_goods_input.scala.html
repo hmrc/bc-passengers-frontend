@@ -45,7 +45,7 @@
     @messages(s"label.${path.toMessageKey}")
   </h1>
 
-  @form(action = iid.fold(routes.NewOtherGoodsInputController.processAddForm(path))(iid => routes.NewOtherGoodsInputController.processEditForm(iid)) ) {
+  @form(action = iid.fold(routes.OtherGoodsInputController.processAddForm(path))(iid => routes.OtherGoodsInputController.processEditForm(iid)) ) {
 
     @components.select(
       field = dtoForm("country"),

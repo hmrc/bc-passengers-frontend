@@ -24,9 +24,7 @@ class DashboardController @Inject() (
   val backLinkModel: BackLinkModel,
 
   val dashboard: views.html.purchased_products.dashboard,
-  val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
-  val done: views.html.purchased_products.done,
-  val over_ninty_seven_thousand_pounds: views.html.purchased_products.over_ninty_seven_thousand_pounds,
+
   val error_template: views.html.error_template,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
 
@@ -61,49 +59,6 @@ class DashboardController @Inject() (
 
         Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate, backLinkModel.backLink, appConfig.isIrishBorderQuestionEnabled))
 
-      }
-    }
-  }
-
-
-  def calculate: Action[AnyContent] = DashboardAction { implicit context =>
-    calculatorService.calculate() flatMap {
-
-      case CalculatorServiceSuccessResponse(calculatorResponse) =>
-
-        calculatorService.storeCalculatorResponse(context.getJourneyData, calculatorResponse) map { _ =>
-          Redirect(routes.DashboardController.showCalculation())
-        }
-
-      case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
-
-        Future.successful {
-          BadRequest(purchase_price_out_of_bounds())
-        }
-
-      case _ =>
-        Future.successful {
-          InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
-        }
-    }
-  }
-
-  def showCalculation: Action[AnyContent] = DashboardAction { implicit context =>
-    requireCalculatorResponse { calculatorResponse =>
-
-      Future.successful {
-        BigDecimal(calculatorResponse.calculation.allTax) match {
-          case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-            Ok (nothing_to_declare (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, false))
-
-          case allTax if allTax > 0 && allTax < 9 || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-            Ok (nothing_to_declare (calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true))
-
-          case allTax if allTax > 97000  =>
-            Ok (over_ninty_seven_thousand_pounds (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP))
-
-          case _ => Ok (done (calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink) )
-        }
       }
     }
   }

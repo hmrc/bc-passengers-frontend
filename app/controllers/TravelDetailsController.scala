@@ -29,7 +29,7 @@ class TravelDetailsController @Inject() (
   val check_declare_goods_start_page: views.html.travel_details.check_declare_goods_start_page,
   val eu_country_check: views.html.travel_details.eu_country_check,
   val no_need_to_use_service: views.html.travel_details.no_need_to_use_service,
-  val irish_border : views.html.travel_details.irish_border,
+
   val goods_bought_inside_and_outside_eu: views.html.travel_details.goods_bought_inside_and_outside_eu,
   val goods_bought_outside_eu: views.html.travel_details.goods_bought_outside_eu,
   val goods_bought_inside_eu: views.html.travel_details.goods_bought_inside_eu,
@@ -39,7 +39,7 @@ class TravelDetailsController @Inject() (
   val did_you_claim_tax_back: views.html.travel_details.did_you_claim_tax_back,
   val duty_free: views.html.travel_details.duty_free,
   val duty_free_interrupt: views.html.travel_details.duty_free_interrupt,
-  val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
+
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -77,7 +77,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(eu_country_check(formWithErrors)))
       },
       euCountryCheckDto => {
-        travelDetailsService.storeEuCountryCheck(euCountryCheckDto.euCountryCheck) flatMap { _ =>
+        travelDetailsService.storeEuCountryCheck(context.journeyData)(euCountryCheckDto.euCountryCheck) flatMap { _ =>
           cache.fetch map { _ =>
             if (appConfig.isVatResJourneyEnabled) {
               euCountryCheckDto.euCountryCheck match {
@@ -115,7 +115,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(did_you_claim_tax_back(formWithErrors, backLinkModel.backLink)))
       },
       didYouClaimTaxBackDto => {
-        travelDetailsService.storeVatResCheck(didYouClaimTaxBackDto.claimedVatRes) map { _ =>
+        travelDetailsService.storeVatResCheck(context.journeyData)(didYouClaimTaxBackDto.claimedVatRes) map { _ =>
           if (didYouClaimTaxBackDto.claimedVatRes) {
             Redirect(routes.TravelDetailsController.privateTravel())
           } else {
@@ -165,7 +165,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(goods_bought_outside_eu(formWithErrors, backLinkModel.backLink)))
       },
       overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance( overAllowanceDto.bringingOverAllowance ) map { _ =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)( overAllowanceDto.bringingOverAllowance ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel())
           } else {
@@ -182,7 +182,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(duty_free(formWithErrors, backLinkModel.backLink)))
       },
       isBringingDutyFreeDto => {
-        travelDetailsService.storeBringingDutyFree(isBringingDutyFreeDto.isBringingDutyFree) flatMap { _ =>
+        travelDetailsService.storeBringingDutyFree(context.journeyData)(isBringingDutyFreeDto.isBringingDutyFree) flatMap { _ =>
           if (!isBringingDutyFreeDto.isBringingDutyFree) {
             cache.fetch map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
@@ -226,7 +226,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(goods_bought_outside_eu(formWithErrors, backLinkModel.backLink)))
       },
       overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance( overAllowanceDto.bringingOverAllowance ) map { _ =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)( overAllowanceDto.bringingOverAllowance ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel())
           } else {
@@ -254,7 +254,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(goods_bought_inside_and_outside_eu(formWithErrors, backLinkModel.backLink)))
       },
       overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance( overAllowanceDto.bringingOverAllowance ) map { _ =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)( overAllowanceDto.bringingOverAllowance ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel())
           } else {
@@ -288,52 +288,8 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(confirm_age(formWithErrors, backLinkModel.backLink)))
       },
       ageOver17Dto => {
-        travelDetailsService.storeAgeOver17(ageOver17Dto.ageOver17) map { _ =>
+        travelDetailsService.storeAgeOver17(context.journeyData)(ageOver17Dto.ageOver17) map { _ =>
           Redirect(routes.DashboardController.showDashboard())
-        }
-      }
-    )
-  }
-
-  def irishBorder: Action[AnyContent] = PublicAction { implicit context =>
-    Future.successful {
-      context.journeyData match {
-        case Some(JourneyData(_, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
-          Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
-        case _ =>
-          Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))
-      }
-    }
-  }
-
-  def irishBorderPost: Action[AnyContent] = PublicAction { implicit context =>
-    IrishBorderDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink)))
-      },
-      irishBorderDto => {
-        travelDetailsService.storeIrishBorder(irishBorderDto.irishBorder) flatMap { _ =>
-
-          calculatorService.calculate() flatMap {
-
-            case CalculatorServiceSuccessResponse(calculatorResponse) =>
-
-              calculatorService.storeCalculatorResponse(context.getJourneyData.copy(irishBorder = Some(irishBorderDto.irishBorder)), calculatorResponse) map { _ =>
-                Redirect(routes.DashboardController.showCalculation())
-              }
-
-            case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
-
-              Future.successful {
-                BadRequest(purchase_price_out_of_bounds())
-              }
-
-            case _ =>
-              Future.successful {
-                InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
-              }
-          }
-
         }
       }
     )
@@ -356,7 +312,7 @@ class TravelDetailsController @Inject() (
         Future.successful(BadRequest(private_travel(formWithErrors, backLinkModel.backLink)))
       },
       privateCraftDto => {
-        travelDetailsService.storePrivateCraft( privateCraftDto.privateCraft ) map { _ =>
+        travelDetailsService.storePrivateCraft(context.journeyData)( privateCraftDto.privateCraft ) map { _ =>
           Redirect(routes.TravelDetailsController.confirmAge())
         }
       }

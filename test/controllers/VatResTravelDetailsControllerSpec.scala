@@ -6,7 +6,7 @@ import models.JourneyData
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -40,7 +40,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     val controller: TravelDetailsController = app.injector.instanceOf[TravelDetailsController]
     def cachedJourneyData: Option[JourneyData] = Some(JourneyData())
     when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
+    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
 
   }
 
@@ -48,7 +48,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../did-you-claim-tax-back when user selects country in EU" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(meq("euOnly"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("euOnly"))(any())) thenReturn Future.successful( Some( JourneyData() ) )
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
@@ -56,12 +56,12 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
 
-      verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("euOnly"))(any())
+      verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(any())(meq("euOnly"))(any())
     }
 
     "redirect to .../arrivals-from-outside-the-eu when user says they have only arrived from countries outside EU" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(meq("nonEuOnly"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("nonEuOnly"))(any())) thenReturn Future.successful( Some( JourneyData() ) )
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
@@ -69,13 +69,13 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
 
-      verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("nonEuOnly"))(any())
+      verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(any())(meq("nonEuOnly"))(any())
     }
 
 
     "redirect to .../did-you-claim-tax-back when user says they have arrived from both EU and ROW countries" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(meq("both"))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("both"))(any())) thenReturn Future.successful( Some( JourneyData() ) )
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
@@ -83,7 +83,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
 
-      verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(meq("both"))(any())
+      verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(any())(meq("both"))(any())
     }
   }
 
@@ -134,7 +134,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       status(response) shouldBe BAD_REQUEST
 
-      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())
+      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
 
     }
 
@@ -210,7 +210,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
   "Invoking POST .../duty-free" should {
 
     "redirect to the goods-bought-inside-eu if not bringing duty free and had previously selected eu only countries" in new LocalSetup {
-      when(controller.travelDetailsService.storeBringingDutyFree(meq(false))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future.successful( Some( JourneyData() ) )
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), isVatResClaimed = Some(false))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("isBringingDutyFree" -> "false")).get
@@ -219,11 +219,11 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")
 
-      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())
+      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
     }
 
     "redirect to the goods-bought-inside-and-outside-eu if not bringing duty free and had previously selected both eu and non eu countries" in new LocalSetup {
-      when(controller.travelDetailsService.storeBringingDutyFree(meq(false))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
+      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future.successful( Some( JourneyData() ) )
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = Some(false))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("isBringingDutyFree" -> "false")).get
@@ -232,7 +232,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")
 
-      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())
+      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
     }
 
 
@@ -241,7 +241,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       status(response) shouldBe BAD_REQUEST
 
-      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())
+      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
 
     }
 
