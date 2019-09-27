@@ -1,12 +1,12 @@
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(bringingDutyFreeForm: Form[BringingDutyFreeDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(isBringingDutyFreeForm: Form[BringingDutyFreeDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import util.prefixErrorMessage
 
-@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_duty_free_"), bringingDutyFreeForm.hasErrors), backLink = backLink) {
+@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_duty_free_"), isBringingDutyFreeForm.hasErrors), backLink = backLink) {
 
-    @views.html.tags.errors(bringingDutyFreeForm)
+    @views.html.tags.errors(isBringingDutyFreeForm)
 
     <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_duty_free_")</h1>
 
@@ -20,7 +20,7 @@
             </div>
 
             @components.input_radio_group(
-                bringingDutyFreeForm("bringingDutyFree"),
+                isBringingDutyFreeForm("isBringingDutyFree"),
                 Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
                 '_labelClass -> "block-label inputLabelBeforeError",
                 '_inline -> true

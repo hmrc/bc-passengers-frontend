@@ -179,8 +179,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("#bringingDutyFree-true").hasAttr("checked") shouldBe false
-      doc.select("#bringingDutyFree-false").hasAttr("checked") shouldBe false
+      doc.select("#isBringingDutyFree-true").hasAttr("checked") shouldBe false
+      doc.select("#isBringingDutyFree-false").hasAttr("checked") shouldBe false
 
       content should include ("Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?")
 
@@ -189,7 +189,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the duty free view populated if there is a duty free answer already in keystore?" in new LocalSetup {
 
-      when(controller.cache.fetch(any())) thenReturn Future.successful( Some(JourneyData(bringingDutyFree = Some(true))) )
+      when(controller.cache.fetch(any())) thenReturn Future.successful( Some(JourneyData(isBringingDutyFree = Some(true))) )
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -198,8 +198,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("#bringingDutyFree-true").hasAttr("checked") shouldBe true
-      doc.select("#bringingDutyFree-false").hasAttr("checked") shouldBe false
+      doc.select("#isBringingDutyFree-true").hasAttr("checked") shouldBe true
+      doc.select("#isBringingDutyFree-false").hasAttr("checked") shouldBe false
 
       content should include ("Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?")
 
@@ -213,7 +213,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.storeBringingDutyFree(meq(false))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), isVatResClaimed = Some(false))))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("bringingDutyFree" -> "false")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("isBringingDutyFree" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
 
@@ -226,7 +226,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       when(controller.travelDetailsService.storeBringingDutyFree(meq(false))(any())) thenReturn Future.successful(CacheMap("", Map.empty))
       when(controller.cache.fetch(any())) thenReturn Future.successful(Some(JourneyData(euCountryCheck = Some("both"), isVatResClaimed = Some(false))))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("bringingDutyFree" -> "false")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("isBringingDutyFree" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
 
@@ -254,8 +254,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#bringingDutyFree]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#bringingDutyFree]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      Option(doc.getElementById("errors").select("a[href=#isBringingDutyFree]")).isEmpty shouldBe false
+      Option(doc.getElementById("errors").select("a[href=#isBringingDutyFree]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
       Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
       Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
     }
@@ -269,8 +269,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("input[name=bringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
     }
   }
 

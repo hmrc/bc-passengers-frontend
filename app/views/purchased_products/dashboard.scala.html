@@ -4,7 +4,8 @@
   tobaccoPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
   showCalculate: Boolean,
-  backLink: Option[String]
+  backLink: Option[String],
+  isIrishBorderQuestionEnabled: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
@@ -38,7 +39,7 @@
             </div>
             <div class="product-country">
               <dt class="cya-question">@messages("label.country")</dt>
-              <dd class="cya-answer">@messages(purchasedItem.country.mkString)</dd>
+              <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
             </div>
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
@@ -82,7 +83,7 @@
             </div>
             <div class="product-country">
               <dt class="cya-question">@messages("label.country")</dt>
-              <dd class="cya-answer">@messages(purchasedItem.country.mkString)</dd>
+              <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
             </div>
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
@@ -133,7 +134,7 @@
           </div>
           <div class="product-country">
             <dt class="cya-question">@messages("label.country")</dt>
-            <dd class="cya-answer">@messages(purchasedItem.country.mkString)</dd>
+            <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
           </div>
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
@@ -154,8 +155,13 @@
   </div>
 
   @if(showCalculate && otherGoodsPurchasedItemList.size <= 50) {
-    @form(action = routes.DashboardController.calculate()) {
-      <button type="submit" class="button margin-top-30">@messages("label.calculate")</button>
+
+    @if(isIrishBorderQuestionEnabled) {
+      <a href="@routes.TravelDetailsController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
+    } else {
+      @form(action = routes.DashboardController.calculate()) {
+        <button type="submit" class="button margin-top-30">@messages("label.calculate")</button>
+      }
     }
   }
 }

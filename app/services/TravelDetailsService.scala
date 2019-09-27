@@ -26,7 +26,7 @@ class TravelDetailsService @Inject() (
             journeyData.copy(
               euCountryCheck = Some(countryChoice),
               isVatResClaimed = None,
-              bringingDutyFree = None,
+              isBringingDutyFree = None,
               bringingOverAllowance = None,
               privateCraft = None,
               ageOver17 = None,
@@ -52,7 +52,7 @@ class TravelDetailsService @Inject() (
           case _ =>
             journeyData.copy(
               isVatResClaimed = Some(isVatResClaimed),
-              bringingDutyFree = None,
+              isBringingDutyFree = None,
               bringingOverAllowance = None,
               privateCraft = None,
               ageOver17 = None,
@@ -66,17 +66,17 @@ class TravelDetailsService @Inject() (
     }
   }
 
-  def storeBringingDutyFree(bringingDutyFree: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeBringingDutyFree(isBringingDutyFree: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
 
     cache.fetch flatMap {
       case Some(journeyData) =>
 
         val updatedJourneyData = journeyData match {
-          case _ if journeyData.bringingDutyFree.contains(bringingDutyFree) =>
-            journeyData.copy(bringingDutyFree = Some(bringingDutyFree))
+          case _ if journeyData.isBringingDutyFree.contains(isBringingDutyFree) =>
+            journeyData.copy(isBringingDutyFree = Some(isBringingDutyFree))
           case _ =>
             journeyData.copy(
-              bringingDutyFree = Some(bringingDutyFree),
+              isBringingDutyFree = Some(isBringingDutyFree),
               bringingOverAllowance = None,
               privateCraft = None,
               ageOver17 = None,
@@ -86,7 +86,7 @@ class TravelDetailsService @Inject() (
 
         cache.store(updatedJourneyData)
       case None =>
-        cache.store(JourneyData(bringingDutyFree = Some(bringingDutyFree)))
+        cache.store(JourneyData(isBringingDutyFree = Some(isBringingDutyFree)))
     }
   }
 
@@ -153,6 +153,26 @@ class TravelDetailsService @Inject() (
         cache.store(updatedJourneyData)
       case None =>
         cache.store( JourneyData(ageOver17 = Some(ageOver17)) )
+    }
+  }
+
+  def storeIrishBorder (irishBorder: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+
+    cache.fetch flatMap {
+      case Some(journeyData) =>
+
+        val updatedJourneyData = journeyData match {
+          case _ if journeyData.irishBorder.contains(irishBorder) =>
+            journeyData.copy(irishBorder = Some(irishBorder))
+          case _ =>
+            journeyData.copy(
+              irishBorder = Some(irishBorder)
+            )
+        }
+
+        cache.store(updatedJourneyData)
+      case None =>
+        cache.store( JourneyData(irishBorder = Some(irishBorder)) )
     }
   }
 }

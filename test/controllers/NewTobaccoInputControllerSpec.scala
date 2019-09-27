@@ -49,7 +49,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
     lazy val cachedJourneyData = Some(JourneyData(
       Some("nonEuOnly"),
       isVatResClaimed = None,
-      bringingDutyFree = None,
+      isBringingDutyFree = None,
       privateCraft = Some(false),
       ageOver17 = Some(true),
       purchasedProductInstances = List(PurchasedProductInstance(
@@ -145,7 +145,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
         isVatResClaimed = None,
-        bringingDutyFree = None,
+        isBringingDutyFree = None,
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -182,7 +182,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
         isVatResClaimed = None,
-        bringingDutyFree = None,
+        isBringingDutyFree = None,
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -831,7 +831,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
         isVatResClaimed = None,
-        bringingDutyFree = None,
+        isBringingDutyFree = None,
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -860,7 +860,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
         isVatResClaimed = None,
-        bringingDutyFree = None,
+        isBringingDutyFree = None,
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -889,7 +889,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
         isVatResClaimed = None,
-        bringingDutyFree = None,
+        isBringingDutyFree = None,
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -918,7 +918,7 @@ class NewTobaccoInputControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
         isVatResClaimed = None,
-        bringingDutyFree = None,
+        isBringingDutyFree = None,
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(

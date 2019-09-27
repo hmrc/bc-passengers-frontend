@@ -53,70 +53,73 @@ class CalculatorServiceSpec extends BaseSpec {
       None,
       Some(false),
       Some(true),
+      Some(true),
       Nil,
-      List(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("USD"),Some(123)))
+      List(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"), Some(123)))
     )
 
     val goodJourneyData = JourneyData(
-      Some("nonEuOnly"),
-      None,
-      None,
-      None,
-      Some(false),
-      Some(true),
-      Nil,
-      List(
-        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"),"iid0",Some(45),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
-        PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)),
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),
-        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123))
+      euCountryCheck = Some("nonEuOnly"),
+      isVatResClaimed = None,
+      isBringingDutyFree = Some(false),
+      bringingOverAllowance = None,
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      irishBorder = Some(false),
+      selectedProducts = Nil,
+      purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(1234)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GBP"), Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GGP"), Some(123))
       )
     )
 
     val imperfectJourneyData = JourneyData(
-      Some("nonEuOnly"),
-      None,
-      None,
-      None,
-      Some(false),
-      Some(true),
-      Nil,
-      List(
-        PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),
-        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),
-        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"),"iid0",Some(45),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),
-        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0",weightOrVolume = None,Some(20),Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)), //Note weightOrVolume = None
-        PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),
-        PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123))
+      euCountryCheck = Some("nonEuOnly"),
+      isVatResClaimed = None,
+      isBringingDutyFree = Some(false),
+      bringingOverAllowance = None,
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      irishBorder = Some(false),
+      selectedProducts = Nil,
+      purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", weightOrVolume = None, Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(1234)), //Note weightOrVolume = None
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GBP"), Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GGP"), Some(123))
       )
     )
 
 
-    val calcRequest = CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(74563)),ProductTreeLeaf("car-seats","label.other-goods.car-seats","OGD/MOB/MISC","other-goods", Nil),Currency("AUD","title.australian_dollars_aud",Some("AUD"), List("Australian", "Oz")), BigDecimal(74563/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(33)),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("AUD","title.australian_dollars_aud",Some("AUD"), List("Australian", "Oz")), BigDecimal(33/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid1",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(5432)),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CHF","title.swiss_francs_chf",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"),"iid0",Some(45),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CHF"),Some(43)),ProductTreeLeaf("chewing-tobacco","label.tobacco.chewing-tobacco","TOB/A1/OTHER","tobacco", List("L-LOOSE")),Currency("CHF","title.swiss_francs_chf",Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43/1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"),"iid0",Some(40),Some(20),Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("AUD"),Some(1234)),ProductTreeLeaf("cigars","label.tobacco.cigars","TOB/A1/CIGAR","cigars", List("L-CIGAR")),Currency("AUD","title.australian_dollars_aud",Some("AUD"), List("Australian", "Oz")), BigDecimal(1234/1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"),"iid0",None,Some(200),Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("GBP"),Some(60)),ProductTreeLeaf("cigarettes","label.tobacco.cigarettes","TOB/A1/CIGRT","cigarettes", List("L-CIGRT")),Currency("GBP","title.british_pounds_gbp",None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"),"iid0",Some(12),None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("GGP"),Some(123)),ProductTreeLeaf("beer","label.alcohol.beer","ALC/A2/BEER","alcohol", List("L-BEER")),Currency("GGP","title.guernsey_pounds_ggp",None, List("Channel Islands")), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
+    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, isBringingDutyFree = false, isIrishBorderCrossing = false, List(
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)), ProductTreeLeaf("car-seats", "label.other-goods.car-seats", "OGD/MOB/MISC", "other-goods", Nil), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(74563 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)), ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(33 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)), ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(43)), ProductTreeLeaf("chewing-tobacco", "label.tobacco.chewing-tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(1234)), ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR")), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(1234 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GBP"), Some(60)), ProductTreeLeaf("cigarettes", "label.tobacco.cigarettes", "TOB/A1/CIGRT", "cigarettes", List("L-CIGRT")), Currency("GBP", "title.british_pounds_gbp", None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GGP"), Some(123)), ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A2/BEER", "alcohol", List("L-BEER")), Currency("GGP", "title.guernsey_pounds_ggp", None, List("Channel Islands")), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
     ))
 
     trait LocalSetup {
 
       lazy val service: CalculatorService = {
 
-        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(),any(),any())) thenReturn {
+        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(), any(), any())) thenReturn {
           Future.successful(List(
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "USD", None)
           ))
         }
 
-        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](any())(any(),any(),any())) thenReturn {
+        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](any())(any(), any(), any())) thenReturn {
           Future.successful(List(
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "AUD", Some("1.76")),
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "CHF", Some("1.26"))
@@ -129,62 +132,141 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "return None if there was a missing rate, making a call to the currency-conversion service" in new LocalSetup {
 
-      val response: Option[CalculatorRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData))
+      val response: Option[CalculatorServiceRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData))
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(), any(), any())
 
       response shouldBe None
     }
 
     "skip invalid instances (instances with missing required data)" in new LocalSetup {
 
-      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(imperfectJourneyData)).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(imperfectJourneyData)).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
-      response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token=="cigars"))
+      response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token == "cigars"))
     }
 
     "transform journey data to a calculator request, making a call to the currency-conversion service" in new LocalSetup {
 
-      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData)).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData)).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
       response shouldBe calcRequest
     }
 
     "transform journey data with vat res = Some(true) to a calculator request with the vat res parameter included as true" in new LocalSetup {
 
-      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(true)))).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(true)))).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
       response shouldBe calcRequest.copy(isVatResClaimed = Some(true))
     }
 
     "transform journey data with vat res = Some(false) to a calculator request with the vat res parameter included as false" in new LocalSetup {
 
-      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(false)))).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(false)))).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
       response shouldBe calcRequest.copy(isVatResClaimed = Some(false))
     }
 
     "transform journey data with vat res = None to a calculator request with the vat res parameter not included" in new LocalSetup {
 
-      val response: CalculatorRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = None))).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = None))).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
       response shouldBe calcRequest.copy(isVatResClaimed = None)
+    }
+
+    "transform journey data with irish border = Some(true) and one item purchased in IE to a calculator request with the irish border parameter true" in new LocalSetup {
+
+      val irishBorderJourneyData = goodJourneyData.copy(
+        purchasedProductInstances = goodJourneyData.purchasedProductInstances.map {
+          case ppi if ppi.path == ProductPath("other-goods/car-seats") =>
+            ppi.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
+          case ppi => ppi
+        },
+        irishBorder = Some(true)
+      )
+
+      val irishBorderCalcRequest = calcRequest.copy(
+        items = calcRequest.items.map {
+          case pi if pi.purchasedProductInstance.path == ProductPath("other-goods/car-seats") =>
+            pi.copy(
+              purchasedProductInstance = pi.purchasedProductInstance.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
+            )
+          case pi => pi
+        },
+        isIrishBorderCrossing = true
+      )
+
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(irishBorderJourneyData)).get
+
+      verify(injected[Cache], times(0)).fetch(any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
+
+      response shouldBe irishBorderCalcRequest
+    }
+
+    "transform journey data with irish border = false and one item purchased in IE to a calculator request with the irish border parameter false" in new LocalSetup {
+
+      val irishBorderJourneyData = goodJourneyData.copy(
+        purchasedProductInstances = goodJourneyData.purchasedProductInstances.map {
+          case ppi if ppi.path == ProductPath("other-goods/car-seats") =>
+            ppi.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
+          case ppi => ppi
+        },
+        irishBorder = Some(false)
+      )
+
+      val irishBorderCalcRequest = calcRequest.copy(
+        items = calcRequest.items.map {
+          case pi if pi.purchasedProductInstance.path == ProductPath("other-goods/car-seats") =>
+            pi.copy(
+              purchasedProductInstance = pi.purchasedProductInstance.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
+            )
+          case pi => pi
+        },
+        isIrishBorderCrossing = false
+      )
+
+
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(irishBorderJourneyData)).get
+
+      verify(injected[Cache], times(0)).fetch(any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
+
+      response shouldBe irishBorderCalcRequest
+    }
+
+    "transform journey data with irish border = Some(true) and no items purchased in IE to a calculator request with the irish border parameter false" in new LocalSetup {
+
+      val irishBorderJourneyData = goodJourneyData.copy(
+        irishBorder = Some(true)
+      )
+
+      val irishBorderCalcRequest = calcRequest.copy(
+        isIrishBorderCrossing = false
+      )
+
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(irishBorderJourneyData)).get
+
+      verify(injected[Cache], times(0)).fetch(any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
+
+      response shouldBe irishBorderCalcRequest
     }
   }
 
@@ -210,11 +292,11 @@ class CalculatorServiceSpec extends BaseSpec {
         }
 
         if(simulatePurchasePriceOutOfBounds) {
-          when(injected[WsAllMethods].POST[CalculatorRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
+          when(injected[WsAllMethods].POST[CalculatorServiceRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
             (any(), any(), any(), any())) thenReturn Future.failed(new Upstream4xxResponse("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty))
         }
         else {
-          when(injected[WsAllMethods].POST[CalculatorRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
+          when(injected[WsAllMethods].POST[CalculatorServiceRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
             (any(), any(), any(), any())) thenReturn {
             Future.successful(CalculatorResponse(
               Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -263,9 +345,9 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
 
-      verify(injected[WsAllMethods], times(1)).POST[CalculatorRequest, CalculatorResponse](
+      verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any())(any(),any(),any(),any())
@@ -295,9 +377,9 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
 
-      verify(injected[WsAllMethods], times(1)).POST[CalculatorRequest, CalculatorResponse](
+      verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false,  List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any())(any(),any(),any(),any())

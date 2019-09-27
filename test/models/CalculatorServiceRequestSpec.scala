@@ -7,9 +7,9 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import util.BaseSpec
 
-class CalculatorRequestSpec extends BaseSpec {
+class CalculatorServiceRequestSpec extends BaseSpec {
 
-  "Converting a CalculatorRequest to json" should {
+  "Converting a CalculatorServiceRequest to json" should {
 
     trait Setup {
 
@@ -22,21 +22,27 @@ class CalculatorRequestSpec extends BaseSpec {
 
       def templateId: String
 
-      lazy val cr = CalculatorRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, List(
-        PurchasedItem(
-          PurchasedProductInstance(
-            ProductPath("path/to/dummy-product"),
-            "iid0",
-            weightOrVolume,
-            noOfSticks,
-            Some(Country("EG", "Egypt", "EG", isEu = false, Nil)),
-            Some("CAD"),
-            Some(BigDecimal("2.00"))
-          ),
-          ProductTreeLeaf("dummy-product", "Dummy product name", "DUMMY/RATE/ID", templateId, Nil),
-          Currency("CAD", "Canadian dollars (CAD)", Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate)
+      lazy val cr = CalculatorServiceRequest(isPrivateCraft = false,
+        isAgeOver17 = true,
+        isVatResClaimed = None,
+        isBringingDutyFree = true,
+        isIrishBorderCrossing = false,
+        List(
+          PurchasedItem(
+            PurchasedProductInstance(
+              ProductPath("path/to/dummy-product"),
+              "iid0",
+              weightOrVolume,
+              noOfSticks,
+              Some(Country("EG", "Egypt", "EG", isEu = false, Nil)),
+              Some("CAD"),
+              Some(BigDecimal("2.00"))
+            ),
+            ProductTreeLeaf("dummy-product", "Dummy product name", "DUMMY/RATE/ID", templateId, Nil),
+            Currency("CAD", "Canadian dollars (CAD)", Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate)
+          )
         )
-      ))
+      )
     }
 
     "convert cigarettes correctly" in new Setup {
@@ -50,6 +56,8 @@ class CalculatorRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isBringingDutyFree" : true,
+          |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -94,6 +102,8 @@ class CalculatorRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isBringingDutyFree" : true,
+          |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -139,6 +149,8 @@ class CalculatorRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isBringingDutyFree" : true,
+          |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -183,6 +195,8 @@ class CalculatorRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isBringingDutyFree" : true,
+          |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -227,6 +241,8 @@ class CalculatorRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isBringingDutyFree" : true,
+          |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",

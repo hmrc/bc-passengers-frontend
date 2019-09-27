@@ -12,7 +12,8 @@ case class PurchasedItem(
   def descriptionArgs(long: Boolean)(implicit messages: Messages): Option[(String, List[String])] = productTreeLeaf.getDescriptionArgs(purchasedProductInstance, long)
   def name: String = productTreeLeaf.name
   def displayCurrency: String = currency.displayName
-  def country: Option[String] = purchasedProductInstance.country.map(_.countryName)
+  def countryName: Option[String] = purchasedProductInstance.country.map(_.countryName)
+  def countryCode: Option[String] = purchasedProductInstance.country.map(_.code)
 }
 
 case class SpeculativeItem(

@@ -52,25 +52,25 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeEuCountryCheck("nonEuOnly"))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("nonEuOnly"), None, None, None, None, None, Nil, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("nonEuOnly"), None, None, None, None, None, None, Nil, Nil)) )(any())
     }
 
     "store the eu country check in keystore, keeping subsequent journey data the same if the answer has not changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, Some(true), Some(false), dummySelectedProducts, dummyPpi) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, Some(true), Some(false), None, dummySelectedProducts, dummyPpi) )
 
       await(travelDetailsService.storeEuCountryCheck("both"))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, Some(true), Some(false), dummySelectedProducts, dummyPpi)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, Some(true), Some(false), None, dummySelectedProducts, dummyPpi)) )(any())
     }
 
     "store the eu country check in keystore when journey data does exist, setting subsequent journey data to None if the answer has changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), Some(true), Some(true), Some(true), Some(true), Some(false), dummySelectedProducts, dummyPpi) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), Some(true), Some(true), Some(true), Some(true), Some(false), None, dummySelectedProducts, dummyPpi) )
 
       await(travelDetailsService.storeEuCountryCheck("nonEuOnly"))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("nonEuOnly"), None, None, None, None, None, Nil, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("nonEuOnly"), None, None, None, None, None, None, Nil, Nil)) )(any())
     }
   }
 
@@ -82,25 +82,55 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, Some(true), Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, Some(true), None, Nil)) )(any())
     }
 
     "store age confirmation in keystore maintaining subsequent journey data, keeping subsequent journey data the same if age confirmation answer has not changed " in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, None, Some(true), dummySelectedProducts ) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, None, Some(true), None, dummySelectedProducts ) )
 
       await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, None, Some(true), dummySelectedProducts)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, None, Some(true), None, dummySelectedProducts)) )(any())
     }
 
     "store age confirmation in keystore when journey data does exist, setting subsequent journey data to None if the age confirmation has changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, None, Some(false), dummySelectedProducts) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, None, Some(false), None, dummySelectedProducts) )
 
       await(travelDetailsService.storeAgeOver17(ageOver17 = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, None, Some(true), Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, None, Some(true), None, Nil)) )(any())
+    }
+  }
+
+  "Calling storeIrishBorder" should {
+
+    "store Irish Border in keystore when no journey data there currently" in new LocalSetup {
+
+      override val journeyDataInCache = None
+
+      await(travelDetailsService.storeIrishBorder(irishBorder = true))
+
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, None, None, Some(true), Nil)) )(any())
+    }
+
+    "store Irish Border in keystore maintaining subsequent journey data, keeping subsequent journey data the same if Irish Border answer has not changed " in new LocalSetup {
+
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, None, None, Some(true), dummySelectedProducts ) )
+
+      await(travelDetailsService.storeIrishBorder(irishBorder = true))
+
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, None, None, Some(true), dummySelectedProducts)) )(any())
+    }
+
+    "store Irish Border in keystore when journey data does exist, keepng subsequent journey data if the Irish Border has changed" in new LocalSetup {
+
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, None, None, Some(false), dummySelectedProducts) )
+
+      await(travelDetailsService.storeIrishBorder(irishBorder = true))
+
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, None, None, Some(true), dummySelectedProducts)) )(any())
     }
   }
 
@@ -112,25 +142,25 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storePrivateCraft(privateCraft = false))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, Some(false), None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, None, Some(false), None, None, Nil)) )(any())
     }
 
     "store private craft setting in keystore when journey data does exist, keeping subsequent journey data the same if private craft answer has not changed " in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, Some(false), Some(true), dummySelectedProducts) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, Some(false), Some(true), None, dummySelectedProducts) )
 
       await(travelDetailsService.storePrivateCraft(privateCraft = false))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, Some(false), Some(true), dummySelectedProducts)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, Some(false), Some(true), None, dummySelectedProducts)) )(any())
     }
 
     "store private craft setting in keystore when journey data does exist, setting subsequent journey data to None if the private craft answer has changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, Some(false), None, dummySelectedProducts) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, None, Some(false), None, None, dummySelectedProducts) )
 
       await(travelDetailsService.storePrivateCraft(privateCraft = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, Some(true), None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, None, Some(true), None, None, Nil)) )(any())
     }
   }
 
@@ -142,25 +172,25 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeVatResCheck(isVatResClaimed = false))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, Some(false), None, None, None, None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, Some(false), None, None, None, None, None, Nil)) )(any())
     }
 
     "store isVatResClaimed setting in keystore when journey data does exist, keeping subsequent journey data the same if vat res answer has not changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), Some(true), Some(true), Some(false), Some(true), Some(false), dummySelectedProducts) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), Some(true), Some(true), Some(false), Some(true), Some(false), None, dummySelectedProducts) )
 
       await(travelDetailsService.storeVatResCheck(isVatResClaimed = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), Some(true), Some(true), Some(false), Some(true), Some(false), dummySelectedProducts)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), Some(true), Some(true), Some(false), Some(true), Some(false), None, dummySelectedProducts)) )(any())
     }
 
     "store isVatResClaimed setting in keystore when journey data does exist, setting subsequent journey data to None if the vat res answer has changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), Some(false), None, Some(false), None, None, Nil) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), Some(false), None, Some(false), None, None, None, Nil) )
 
       await(travelDetailsService.storeVatResCheck(isVatResClaimed = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), Some(true), None, None, None, None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), Some(true), None, None, None, None, None, Nil)) )(any())
     }
   }
 
@@ -172,59 +202,57 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeBringingOverAllowance(bringingOverAllowance = false))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, Some(false), None, None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, None, Some(false), None, None, None, Nil)) )(any())
     }
 
     "store bringingOverAllowance setting in keystore when journey data does exist, keeping subsequent journey data the same if over allowance answer has not changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, Some(false), Some(true), Some(false), dummySelectedProducts) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, Some(false), Some(true), Some(false), None, dummySelectedProducts) )
 
       await(travelDetailsService.storeBringingOverAllowance(bringingOverAllowance = false))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, Some(false), Some(true), Some(false), dummySelectedProducts)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, Some(false), Some(true), Some(false), None, dummySelectedProducts)) )(any())
     }
 
     "store bringingOverAllowance setting in keystore when journey data does exist, setting subsequent journey data to None if over allowance answer has changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, Some(false), None, None, Nil) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, None, Some(false), None, None, None, Nil) )
 
       await(travelDetailsService.storeBringingOverAllowance(bringingOverAllowance = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, Some(true), None, None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, None, Some(true), None, None, None, Nil)) )(any())
     }
   }
 
   "Calling storeBringingDutyFree" should {
 
-    "store bringingDutyFree setting in keystore when no journey data is currently there" in new LocalSetup {
+    "store isBringingDutyFree setting in keystore when no journey data is currently there" in new LocalSetup {
 
       override val journeyDataInCache = None
 
-      await(travelDetailsService.storeBringingDutyFree(bringingDutyFree = false))
+      await(travelDetailsService.storeBringingDutyFree(isBringingDutyFree = false))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, Some(false), None, None, None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None, Some(false), None, None, None, None, Nil)) )(any())
     }
 
-    "store bringingDutyFree setting in keystore when journey data does exist, keeping subsequent journey data the same if over allowance answer has not changed" in new LocalSetup {
+    "store isBringingDutyFree setting in keystore when journey data does exist, keeping subsequent journey data the same if over allowance answer has not changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, Some(true), Some(false), Some(true), Some(false), dummySelectedProducts) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, Some(true), Some(false), Some(true), Some(false), None, dummySelectedProducts) )
 
-      await(travelDetailsService.storeBringingDutyFree(bringingDutyFree = true))
+      await(travelDetailsService.storeBringingDutyFree(isBringingDutyFree = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, Some(true), Some(false), Some(true), Some(false), dummySelectedProducts)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, Some(true), Some(false), Some(true), Some(false), None, dummySelectedProducts)) )(any())
     }
 
-    "store bringingDutyFree setting in keystore when journey data does exist, setting subsequent journey data to None if over allowance answer has changed" in new LocalSetup {
+    "store isBringingDutyFree setting in keystore when journey data does exist, setting subsequent journey data to None if over allowance answer has changed" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("both"), None, Some(false), Some(false), None, None, Nil) )
+      override val journeyDataInCache = Some( JourneyData(Some("both"), None, Some(false), Some(false), None, None, None, Nil) )
 
-      await(travelDetailsService.storeBringingDutyFree(bringingDutyFree = true))
+      await(travelDetailsService.storeBringingDutyFree(isBringingDutyFree = true))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, Some(true), None, None, None, Nil)) )(any())
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("both"), None, Some(true), None, None, None, None, Nil)) )(any())
     }
   }
-
-
 
   "Calling fetchAndGetJourneyData" should {
 

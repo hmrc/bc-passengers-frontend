@@ -15,6 +15,9 @@ POST       /goods-bought-inside-and-outside-eu                                  
 
 GET        /no-need-to-use-service                                                     controllers.TravelDetailsController.noNeedToUseService
 
+GET        /ireland-to-northern-ireland                                                controllers.TravelDetailsController.irishBorder
+POST       /ireland-to-northern-ireland                                                controllers.TravelDetailsController.irishBorderPost
+
 GET        /private-travel                                                             controllers.TravelDetailsController.privateTravel
 POST       /private-travel                                                             controllers.TravelDetailsController.privateTravelPost
 

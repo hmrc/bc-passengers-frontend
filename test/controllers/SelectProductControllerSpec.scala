@@ -26,7 +26,7 @@ import scala.language.postfixOps
 
 class SelectProductControllerSpec extends BaseSpec {
 
-  val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))
+  val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false))
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[SelectProductService].toInstance(MockitoSugar.mock[SelectProductService]))
@@ -182,7 +182,7 @@ class SelectProductControllerSpec extends BaseSpec {
         import play.api.test.Helpers.route
 
         when(injected[Cache].fetch(any())) thenReturn{
-          Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), isVatResClaimed = None, bringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), selectedProducts = selectedProducts)))
+          Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), selectedProducts = selectedProducts)))
         }
         when(injected[SelectProductService].removeSelectedProduct()(any())) thenReturn{
           Future.successful(CacheMap("dummy", Map.empty))

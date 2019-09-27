@@ -42,10 +42,11 @@ object JourneyData {
 case class JourneyData(
   euCountryCheck: Option[String] = None,
   isVatResClaimed: Option[Boolean] = None,
-  bringingDutyFree: Option[Boolean] = None,
+  isBringingDutyFree: Option[Boolean] = None,
   bringingOverAllowance: Option[Boolean] = None,
   privateCraft: Option[Boolean] = None,
   ageOver17: Option[Boolean] = None,
+  irishBorder: Option[Boolean] = None,
   selectedProducts: List[List[String]] = Nil,
   purchasedProductInstances: List[PurchasedProductInstance] = Nil,
   workingInstance: Option[PurchasedProductInstance] = None,
