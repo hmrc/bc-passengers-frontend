@@ -14,165 +14,144 @@ class TravelDetailsService @Inject() (
   implicit val ec: ExecutionContext
 ) {
 
-  def storeEuCountryCheck(countryChoice: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeEuCountryCheck(journeyData: Option[JourneyData])(countryChoice: String)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(jd) if !jd.euCountryCheck.contains(countryChoice) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.euCountryCheck.contains(countryChoice) =>
-            journeyData.copy(euCountryCheck = Some(countryChoice))
-          case _ =>
-            journeyData.copy(
-              euCountryCheck = Some(countryChoice),
-              isVatResClaimed = None,
-              isBringingDutyFree = None,
-              bringingOverAllowance = None,
-              privateCraft = None,
-              ageOver17 = None,
-              selectedProducts = Nil,
-              purchasedProductInstances = Nil
-            )
-        }
+        cache.storeJourneyData(jd.copy(
+          euCountryCheck = Some(countryChoice),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = None,
+          privateCraft = None,
+          ageOver17 = None,
+          selectedProducts = Nil,
+          purchasedProductInstances = Nil
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store( JourneyData(euCountryCheck = Some(countryChoice)) )
+        cache.storeJourneyData( JourneyData(euCountryCheck = Some(countryChoice)) )
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 
-  def storeVatResCheck(isVatResClaimed: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeVatResCheck(journeyData: Option[JourneyData])(isVatResClaimed: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(journeyData) if !journeyData.isVatResClaimed.contains(isVatResClaimed) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.isVatResClaimed.contains(isVatResClaimed) =>
-            journeyData.copy(isVatResClaimed = Some(isVatResClaimed))
-          case _ =>
-            journeyData.copy(
-              isVatResClaimed = Some(isVatResClaimed),
-              isBringingDutyFree = None,
-              bringingOverAllowance = None,
-              privateCraft = None,
-              ageOver17 = None,
-              selectedProducts = Nil
-            )
-        }
+        cache.storeJourneyData(journeyData.copy(
+          isVatResClaimed = Some(isVatResClaimed),
+          isBringingDutyFree = None,
+          bringingOverAllowance = None,
+          privateCraft = None,
+          ageOver17 = None,
+          selectedProducts = Nil
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store(JourneyData(isVatResClaimed = Some(isVatResClaimed)))
+        cache.storeJourneyData( JourneyData(isVatResClaimed = Some(isVatResClaimed)) )
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 
-  def storeBringingDutyFree(isBringingDutyFree: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeBringingDutyFree(journeyData: Option[JourneyData])(isBringingDutyFree: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(journeyData) if !journeyData.isBringingDutyFree.contains(isBringingDutyFree) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.isBringingDutyFree.contains(isBringingDutyFree) =>
-            journeyData.copy(isBringingDutyFree = Some(isBringingDutyFree))
-          case _ =>
-            journeyData.copy(
-              isBringingDutyFree = Some(isBringingDutyFree),
-              bringingOverAllowance = None,
-              privateCraft = None,
-              ageOver17 = None,
-              selectedProducts = Nil
-            )
-        }
+        cache.storeJourneyData(journeyData.copy(
+          isBringingDutyFree = Some(isBringingDutyFree),
+          bringingOverAllowance = None,
+          privateCraft = None,
+          ageOver17 = None,
+          selectedProducts = Nil
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store(JourneyData(isBringingDutyFree = Some(isBringingDutyFree)))
+        cache.storeJourneyData(JourneyData(isBringingDutyFree = Some(isBringingDutyFree)))
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 
-  def storeBringingOverAllowance(bringingOverAllowance: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeBringingOverAllowance(journeyData: Option[JourneyData])(bringingOverAllowance: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(journeyData) if !journeyData.bringingOverAllowance.contains(bringingOverAllowance) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.bringingOverAllowance.contains(bringingOverAllowance) =>
-            journeyData.copy(bringingOverAllowance = Some(bringingOverAllowance))
-          case _ =>
-            journeyData.copy(
-              bringingOverAllowance = Some(bringingOverAllowance),
-              privateCraft = None,
-              ageOver17 = None,
-              selectedProducts = Nil
-            )
-        }
+        cache.storeJourneyData(journeyData.copy(
+          bringingOverAllowance = Some(bringingOverAllowance),
+          privateCraft = None,
+          ageOver17 = None,
+          selectedProducts = Nil
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store( JourneyData(bringingOverAllowance = Some(bringingOverAllowance)) )
+        cache.storeJourneyData( JourneyData(bringingOverAllowance = Some(bringingOverAllowance)))
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 
-  def storePrivateCraft(privateCraft: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storePrivateCraft(journeyData: Option[JourneyData])(privateCraft: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(journeyData) if !journeyData.privateCraft.contains(privateCraft) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.privateCraft.contains(privateCraft) =>
-            journeyData.copy(privateCraft = Some(privateCraft))
-          case _ =>
-            journeyData.copy(
-              privateCraft = Some(privateCraft),
-              ageOver17 = None,
-              selectedProducts = Nil
-            )
-        }
+        cache.storeJourneyData(journeyData.copy(
+          privateCraft = Some(privateCraft),
+          ageOver17 = None,
+          selectedProducts = Nil
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store( JourneyData(privateCraft = Some(privateCraft)) )
+        cache.storeJourneyData( JourneyData(privateCraft = Some(privateCraft)) )
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 
-  def storeAgeOver17(ageOver17: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeAgeOver17(journeyData: Option[JourneyData])(ageOver17: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(journeyData) if !journeyData.ageOver17.contains(ageOver17) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.ageOver17.contains(ageOver17) =>
-            journeyData.copy(ageOver17 = Some(ageOver17))
-          case _ =>
-            journeyData.copy(
-              ageOver17 = Some(ageOver17),
-              selectedProducts = Nil
-            )
-        }
+        cache.storeJourneyData(journeyData.copy(
+          ageOver17 = Some(ageOver17),
+          selectedProducts = Nil
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store( JourneyData(ageOver17 = Some(ageOver17)) )
+        cache.storeJourneyData( JourneyData(ageOver17 = Some(ageOver17)) )
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 
-  def storeIrishBorder (irishBorder: Boolean)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def storeIrishBorder(journeyData: Option[JourneyData])(irishBorder: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
-    cache.fetch flatMap {
-      case Some(journeyData) =>
+    journeyData match {
+      case Some(journeyData) if !journeyData.irishBorder.contains(irishBorder) =>
 
-        val updatedJourneyData = journeyData match {
-          case _ if journeyData.irishBorder.contains(irishBorder) =>
-            journeyData.copy(irishBorder = Some(irishBorder))
-          case _ =>
-            journeyData.copy(
-              irishBorder = Some(irishBorder)
-            )
-        }
+        cache.storeJourneyData(journeyData.copy(
+          irishBorder = Some(irishBorder)
+        ))
 
-        cache.store(updatedJourneyData)
       case None =>
-        cache.store( JourneyData(irishBorder = Some(irishBorder)) )
+        cache.storeJourneyData( JourneyData(irishBorder = Some(irishBorder)) )
+
+      case _ =>
+        Future.successful( journeyData )
     }
   }
 }

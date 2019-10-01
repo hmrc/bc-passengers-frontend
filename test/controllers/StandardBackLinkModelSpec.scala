@@ -210,7 +210,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = routes.TravelDetailsController.irishBorder
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }
@@ -226,7 +226,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = routes.TravelDetailsController.irishBorder
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }
@@ -239,7 +239,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = routes.TravelDetailsController.irishBorder
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }

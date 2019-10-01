@@ -383,7 +383,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = routes.TravelDetailsController.irishBorder
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }
@@ -399,9 +399,9 @@ class VatResBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = routes.DashboardController.showCalculation
+      override def call: Call = routes.CalculateDeclareController.showCalculation
 
-      m.backLink(context) shouldBe Some(routes.TravelDetailsController.irishBorder.url)
+      m.backLink(context) shouldBe Some(routes.CalculateDeclareController.irishBorder.url)
     }
 
     "return user to /tell-us" in new LocalSetup {
@@ -412,7 +412,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = routes.DashboardController.showCalculation
+      override def call: Call = routes.CalculateDeclareController.showCalculation
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }

@@ -15,9 +15,6 @@ POST       /goods-bought-inside-and-outside-eu                                  
 
 GET        /no-need-to-use-service                                                     controllers.TravelDetailsController.noNeedToUseService
 
-GET        /ireland-to-northern-ireland                                                controllers.TravelDetailsController.irishBorder
-POST       /ireland-to-northern-ireland                                                controllers.TravelDetailsController.irishBorderPost
-
 GET        /private-travel                                                             controllers.TravelDetailsController.privateTravel
 POST       /private-travel                                                             controllers.TravelDetailsController.privateTravelPost
 
@@ -40,53 +37,53 @@ GET        /new-session                                                         
 
 GET        /keep-alive                                                                 controllers.TravelDetailsController.keepAlive
 
-# Dashboard
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard
-POST       /tell-us                                                                    controllers.DashboardController.calculate
+POST       /tell-us                                                                    controllers.CalculateDeclareController.calculate
+
 
 GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
-GET        /calculation                                                                controllers.DashboardController.showCalculation
-
-# Declaration
-GET        /declare-your-goods                                                         controllers.DeclarationController.declareYourGoods
-
-GET        /user-information                                                           controllers.DeclarationController.enterYourDetails
-POST       /user-information                                                           controllers.DeclarationController.processEnterYourDetails
-
-
 GET        /select-goods/next-step                                                     controllers.SelectProductController.nextStep
 
-
-GET        /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.NewAlcoholInputController.displayAddForm(path: ProductPath)
-POST       /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.NewAlcoholInputController.processAddForm(path: ProductPath)
-GET        /enter-goods/alcohol/:iid/edit                                              controllers.NewAlcoholInputController.displayEditForm(iid: String)
-POST       /enter-goods/alcohol/:iid/edit                                              controllers.NewAlcoholInputController.processEditForm(iid: String)
-
-
-GET        /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.NewTobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
-POST       /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
-
-GET        /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.NewTobaccoInputController.displayNoOfSticksWeightAddForm(path: ProductPath)
-POST       /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
-
-GET        /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.NewTobaccoInputController.displayWeightAddForm(path: ProductPath)
-POST       /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.NewTobaccoInputController.processAddForm(path: ProductPath)
-
-GET        /enter-goods/tobacco/:iid/edit                                              controllers.NewTobaccoInputController.displayEditForm(iid: String)
-POST       /enter-goods/tobacco/:iid/edit                                              controllers.NewTobaccoInputController.processEditForm(iid: String)
+GET        /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.AlcoholInputController.displayAddForm(path: ProductPath)
+POST       /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.AlcoholInputController.processAddForm(path: ProductPath)
+GET        /enter-goods/alcohol/:iid/edit                                              controllers.AlcoholInputController.displayEditForm(iid: String)
+POST       /enter-goods/alcohol/:iid/edit                                              controllers.AlcoholInputController.processEditForm(iid: String)
 
 
-GET        /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.NewOtherGoodsInputController.displayAddForm(path: ProductPath)
-POST       /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.NewOtherGoodsInputController.processAddForm(path: ProductPath)
+GET        /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.TobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.TobaccoInputController.processAddForm(path: ProductPath)
 
-GET        /enter-goods/other-goods/:iid/edit                                          controllers.NewOtherGoodsInputController.displayEditForm(iid: String)
-POST       /enter-goods/other-goods/:iid/edit                                          controllers.NewOtherGoodsInputController.processEditForm(iid: String)
+GET        /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.displayNoOfSticksWeightAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.processAddForm(path: ProductPath)
+
+GET        /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.TobaccoInputController.displayWeightAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.TobaccoInputController.processAddForm(path: ProductPath)
+
+GET        /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.displayEditForm(iid: String)
+POST       /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.processEditForm(iid: String)
+
+
+GET        /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.OtherGoodsInputController.displayAddForm(path: ProductPath)
+POST       /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.OtherGoodsInputController.processAddForm(path: ProductPath)
+
+GET        /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.displayEditForm(iid: String)
+POST       /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.processEditForm(iid: String)
 
 
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)
+
+GET        /calculation                                                                controllers.CalculateDeclareController.showCalculation
+
+GET        /declare-your-goods                                                         controllers.CalculateDeclareController.declareYourGoods
+
+GET        /user-information                                                           controllers.CalculateDeclareController.enterYourDetails
+POST       /user-information                                                           controllers.CalculateDeclareController.processEnterYourDetails
+
+GET        /ireland-to-northern-ireland                                                controllers.CalculateDeclareController.irishBorder
+POST       /ireland-to-northern-ireland                                                controllers.CalculateDeclareController.irishBorderPost
 
 GET        /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)
 

@@ -7,7 +7,7 @@ import connectors.Cache
 import models._
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.bind
@@ -274,15 +274,9 @@ class CalculatorServiceSpec extends BaseSpec {
 
     trait LocalSetup {
 
-      def cachedJourneyData: Option[JourneyData]
-
       def simulatePurchasePriceOutOfBounds: Boolean
 
       lazy val service = {
-
-        when(injected[Cache].fetch(any())) thenReturn {
-          Future.successful(cachedJourneyData)
-        }
 
         when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())) thenReturn {
           Future.successful(List(
@@ -315,7 +309,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "make a call to the currency-conversion service, the calculator service and return a valid response" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      val jd = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
         ageOver17 = Some(true),
         privateCraft = Some(false),
@@ -323,13 +317,13 @@ class CalculatorServiceSpec extends BaseSpec {
           PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
           PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("USD"), cost = Some(BigDecimal("4.00")))
         )
-      ))
+      )
 
       override lazy val simulatePurchasePriceOutOfBounds = false
 
       val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
-      val response: CalculatorServiceResponse = await(service.calculate()(implicitly, messages))
+      val response: CalculatorServiceResponse = await(service.calculate(jd)(implicitly, messages))
 
       response.asInstanceOf[CalculatorServiceSuccessResponse].calculatorResponse shouldBe
         CalculatorResponse(
@@ -341,8 +335,6 @@ class CalculatorServiceSpec extends BaseSpec {
           limits = Map.empty
         )
 
-      verify(injected[Cache], times(1)).fetch(any())
-
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
@@ -350,14 +342,13 @@ class CalculatorServiceSpec extends BaseSpec {
         meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
-        any())(any(),any(),any(),any())
-
-
+        any()
+      )(any(),any(),any(),any())
     }
 
     "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse when call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(
+      val jd = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
         ageOver17 = Some(true),
         privateCraft = Some(false),
@@ -365,15 +356,13 @@ class CalculatorServiceSpec extends BaseSpec {
           PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
           PurchasedProductInstance(ProductPath("tobacco/cigars"), iid = "iid1", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("USD"), cost = Some(BigDecimal("4.00")))
         )
-      ))
+      )
 
       override lazy val simulatePurchasePriceOutOfBounds = true
 
       val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
-      await(service.calculate()(implicitly, messages)) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
-
-      verify(injected[Cache], times(1)).fetch(any())
+      await(service.calculate(jd)(implicitly, messages)) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
 
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
 
@@ -382,9 +371,8 @@ class CalculatorServiceSpec extends BaseSpec {
         meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false,  List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
-        any())(any(),any(),any(),any())
-
-
+        any()
+      )(any(),any(),any(),any())
     }
   }
 

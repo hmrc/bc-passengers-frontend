@@ -26,5 +26,10 @@ class Cache @Inject()(
 
   def store(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[CacheMap] = this.cache("journeyData", journeyData)
 
+  def storeJourneyData(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
+    super.cache("journeyData", journeyData) map {
+      _.getEntry[JourneyData]("journeyData")
+    }
+
   def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = this.fetchAndGetEntry[JourneyData]("journeyData")
 }

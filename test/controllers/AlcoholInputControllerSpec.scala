@@ -7,7 +7,7 @@ import org.jsoup.nodes.Document
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -25,7 +25,7 @@ import views.html.new_alcohol.alcohol_input
 
 import scala.concurrent.Future
 
-class NewAlcoholInputControllerSpec extends BaseSpec {
+class AlcoholInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))

@@ -6,13 +6,13 @@
 
 @main_template(title = prefixErrorMessage(messages("label.enter_your_details"), f.hasErrors), bodyClasses = None) {
 
-  <a class="link-back" id="back" href="@routes.DeclarationController.declareYourGoods()">@messages("label.back")</a>
+  <a class="link-back" id="back" href="@routes.CalculateDeclareController.declareYourGoods()">@messages("label.back")</a>
 
   @views.html.tags.errors(f)
 
   <h1 class="heading-xlarge">@messages("label.enter_your_details")</h1>
 
-  @form(action = routes.DeclarationController.processEnterYourDetails) {
+  @form(action = routes.CalculateDeclareController.processEnterYourDetails) {
 
       @components.input(
         f("firstName"),

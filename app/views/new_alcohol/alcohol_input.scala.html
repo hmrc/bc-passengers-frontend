@@ -39,7 +39,7 @@
     @messages(s"label.${path.toMessageKey}")
   </h1>
 
-  @form(action = iid.fold(routes.NewAlcoholInputController.processAddForm(path))(iid => routes.NewAlcoholInputController.processEditForm(iid)) ) {
+  @form(action = iid.fold(routes.AlcoholInputController.processAddForm(path))(iid => routes.AlcoholInputController.processEditForm(iid)) ) {
 
     @components.input(
       field = dtoForm("weightOrVolume"),

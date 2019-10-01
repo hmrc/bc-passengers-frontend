@@ -5,7 +5,7 @@ import models._
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -22,7 +22,7 @@ import views.html.new_other_goods.other_goods_input
 
 import scala.concurrent.Future
 
-class NewOtherGoodsInputControllerSpec extends BaseSpec {
+class OtherGoodsInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -72,7 +72,6 @@ class NewOtherGoodsInputControllerSpec extends BaseSpec {
   "Getting displayEditForm" should {
 
     "return a 404 when given an invalid iid" in new LocalSetup {
-
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit/missing-iid")).get
       status(result) shouldBe NOT_FOUND

@@ -19,7 +19,6 @@ import scala.math.BigDecimal.RoundingMode
 
 
 trait CalculatorServiceResponse
-case object CalculatorServiceNoJourneyDataResponse extends CalculatorServiceResponse
 case object CalculatorServiceCantBuildCalcReqResponse extends CalculatorServiceResponse
 case object CalculatorServicePurchasePriceOutOfBoundsFailureResponse extends CalculatorServiceResponse
 case class CalculatorServiceSuccessResponse(calculatorResponse: CalculatorResponse) extends CalculatorServiceResponse
@@ -60,19 +59,17 @@ class CalculatorService @Inject() (
         }
 
       case None =>
+
         Logger.debug("No items available for limits request")
         Future.successful(LimitUsageCantBuildCalcReqResponse)
     }
   }
 
-  def calculate()(implicit hc: HeaderCarrier, messages: Messages): Future[CalculatorServiceResponse] = {
+  def calculate(journeyData: JourneyData)(implicit hc: HeaderCarrier, messages: Messages): Future[CalculatorServiceResponse] = {
 
-    cache.fetch flatMap {
+    journeyDataToCalculatorRequest(journeyData) flatMap {
 
-      case Some(journeyData) =>
-
-        journeyDataToCalculatorRequest(journeyData) flatMap {
-          case Some(calculatorRequest) =>
+      case Some(calculatorRequest) =>
 
             wsAllMethods.POST[CalculatorServiceRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { r =>
               CalculatorServiceSuccessResponse(r)
@@ -81,13 +78,10 @@ class CalculatorService @Inject() (
                 CalculatorServicePurchasePriceOutOfBoundsFailureResponse
             }
 
-          case None =>
-            Logger.error("No items available for calculation request")
-            Future.successful(CalculatorServiceCantBuildCalcReqResponse)
-        }
-
       case None =>
-        Future.successful(CalculatorServiceNoJourneyDataResponse)
+
+        Logger.error("No items available for calculation request")
+        Future.successful(CalculatorServiceCantBuildCalcReqResponse)
     }
   }
 
