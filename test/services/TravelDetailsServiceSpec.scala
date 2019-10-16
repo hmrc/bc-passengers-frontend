@@ -64,11 +64,11 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store the eu country check in keystore when journey data does exist, setting subsequent journey data to None if the answer has changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), Some(true), Some(true), Some(true), Some(true), Some(false), None, dummySelectedProducts, dummyPpi) )
+      val journeyData = Some( JourneyData(Some("both"), Some(true), Some(true), Some(true), Some(true), Some(false), None, dummySelectedProducts, dummyPpi, defaultCountry = Some("US"), defaultCurrency = Some("USD")) )
 
       await(travelDetailsService.storeEuCountryCheck(journeyData)("nonEuOnly"))
 
-      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(Some("nonEuOnly"), None, None, None, None, None, None, Nil, Nil)) )(any())
+      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(Some("nonEuOnly"), None, None, None, None, None, None, Nil, Nil, defaultCountry = None, defaultCurrency = None)) )(any())
     }
   }
 

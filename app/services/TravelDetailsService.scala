@@ -27,7 +27,9 @@ class TravelDetailsService @Inject() (
           privateCraft = None,
           ageOver17 = None,
           selectedProducts = Nil,
-          purchasedProductInstances = Nil
+          purchasedProductInstances = Nil,
+          defaultCountry = None,
+          defaultCurrency = None
         ))
 
       case None =>
