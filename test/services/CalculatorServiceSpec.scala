@@ -190,25 +190,13 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe calcRequest.copy(isVatResClaimed = None)
     }
 
-    "transform journey data with irish border = Some(true) and one item purchased in IE to a calculator request with the irish border parameter true" in new LocalSetup {
+    "transform journey data with irish border = Some(true) to a calculator request with the irish border parameter true" in new LocalSetup {
 
       val irishBorderJourneyData = goodJourneyData.copy(
-        purchasedProductInstances = goodJourneyData.purchasedProductInstances.map {
-          case ppi if ppi.path == ProductPath("other-goods/car-seats") =>
-            ppi.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
-          case ppi => ppi
-        },
         irishBorder = Some(true)
       )
 
       val irishBorderCalcRequest = calcRequest.copy(
-        items = calcRequest.items.map {
-          case pi if pi.purchasedProductInstance.path == ProductPath("other-goods/car-seats") =>
-            pi.copy(
-              purchasedProductInstance = pi.purchasedProductInstance.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
-            )
-          case pi => pi
-        },
         isIrishBorderCrossing = true
       )
 
@@ -220,44 +208,13 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe irishBorderCalcRequest
     }
 
-    "transform journey data with irish border = false and one item purchased in IE to a calculator request with the irish border parameter false" in new LocalSetup {
+    "transform journey data with irish border = false to a calculator request with the irish border parameter false" in new LocalSetup {
 
       val irishBorderJourneyData = goodJourneyData.copy(
-        purchasedProductInstances = goodJourneyData.purchasedProductInstances.map {
-          case ppi if ppi.path == ProductPath("other-goods/car-seats") =>
-            ppi.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
-          case ppi => ppi
-        },
         irishBorder = Some(false)
       )
 
       val irishBorderCalcRequest = calcRequest.copy(
-        items = calcRequest.items.map {
-          case pi if pi.purchasedProductInstance.path == ProductPath("other-goods/car-seats") =>
-            pi.copy(
-              purchasedProductInstance = pi.purchasedProductInstance.copy(country = Some(Country("IE", "title.ireland", "IE", isEu = false, Nil)))
-            )
-          case pi => pi
-        },
-        isIrishBorderCrossing = false
-      )
-
-
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(irishBorderJourneyData)).get
-
-      verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
-
-      response shouldBe irishBorderCalcRequest
-    }
-
-    "transform journey data with irish border = Some(true) and no items purchased in IE to a calculator request with the irish border parameter false" in new LocalSetup {
-
-      val irishBorderJourneyData = goodJourneyData.copy(
-        irishBorder = Some(true)
-      )
-
-      val irishBorderCalcRequest = calcRequest.copy(
         isIrishBorderCrossing = false
       )
 
@@ -268,6 +225,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       response shouldBe irishBorderCalcRequest
     }
+
   }
 
   "Calling CalculatorService.calculate" should {

@@ -132,7 +132,7 @@ class CalculatorService @Inject() (
           isAgeOver17,
           journeyData.isVatResClaimed,
           journeyData.isBringingDutyFree.getOrElse(false),
-          journeyData.irishBorder.getOrElse(false) && purchasedItems.exists(s => s.countryCode == Some("IE")),
+          journeyData.irishBorder.getOrElse(false),
 
           purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
