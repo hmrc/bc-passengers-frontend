@@ -1,13 +1,11 @@
 @this(main_template: views.html.main_template)
-@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, underNinePounds: Boolean)(implicit request: Request[_], messages: Messages)
+@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
 
-@main_template(title = messages("label.tax_due_on_these_goods")){
+@main_template(title = messages("label.tax_due_on_these_goods"), backLink = backLink){
 
-  <a class="link-back" id="back" href="@routes.DashboardController.showDashboard()">@messages("label.back")</a>
-
-  <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", "0.00"))</h1>
+  <h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br>&pound;0.00</h1>
 
   @if(!underNinePounds){
     <p>@messages("label.personal_allowances")</p>

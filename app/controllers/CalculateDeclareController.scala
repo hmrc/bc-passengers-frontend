@@ -154,13 +154,13 @@ class CalculateDeclareController @Inject()(
       Future.successful {
         BigDecimal(calculatorResponse.calculation.allTax) match {
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, false))
+            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, false, backLinkModel.backLink))
 
           case allTax if allTax > 0 && allTax < 9 || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true))
+            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true, backLinkModel.backLink))
 
           case allTax if allTax > 97000  =>
-            Ok( over_ninty_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP))
+            Ok( over_ninty_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
           case _ => Ok( done(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink) )
         }
