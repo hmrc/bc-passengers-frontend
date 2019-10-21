@@ -2,7 +2,6 @@ label.continue = Continue
 label.yes = Yes
 label.no = No
 label.add_more = Add more
-label.start_again = Start again
 label.error = Error:
 label.back = Back
 grams = {0}g
@@ -51,7 +50,6 @@ label.select_yes_any_any_alcohol_or_tobacco_ = Select yes if any alcohol or toba
 heading.you_may_need_to_declare_goods_brought_ = You may need to declare goods brought in from EU countries
 text.you_have_said_you_are_bringing_in_duty-free_ = You have said you are bringing in duty-free alcohol or tobacco from the EU or the UK. This reduces your allowances for bringing in goods without paying tax or duty.
 heading.you_may_need_to_declare_all_your_goods = You may need to declare all your goods
-text.you_have_said_you_are_bringing_in_duty-free_ = You have said you are bringing in duty-free alcohol or tobacco from the EU or the UK. This reduces your allowances for bringing in goods without paying tax or duty.
 label.alcohol = Alcohol
 label.beer = Beer
 label.wine = Wine
@@ -239,7 +237,7 @@ label.you_cannot_use_this_service=You cannot use this service
 label.you_cannot_declare_individual_items_worth_more_=You cannot declare individual items worth more than £21billion using this service.
 label.you_can=You can:
 label.go_back_and_change_the_items_value=go back and change the item’s value
-label.declare_your_goods_at_the_red_channel_at_customs=declare your goods at the red channel at customs
+label.go_to_the_red_channel_=go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
 
 error.required.tobacco.cigarettes = Enter the price of the cigarettes
@@ -290,26 +288,25 @@ head.error.weight_or_volume.required.tobacco.cigars = Enter the weight of the ci
 head.error.weight_or_volume.required.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 head.error.weight_or_volume.required.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
-error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
-error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
-error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
-error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
-error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
-error.l-wine.limit-exceeded = You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
-error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
-error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
+error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-wine.limit-exceeded =You cannot use this service to declare more than 90 litres of ordinary and sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
-
-head.error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go through the red channel at customs to declare these cigarettes.
-head.error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go through the red channel at customs to declare these cigarillos.
-head.error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go through the red channel at customs to declare these cigars.
-head.error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go through the red channel at customs to declare this beer.
-head.error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go through the red channel at customs to declare this sparkling wine.
-head.error.l-wine.limit-exceeded = You cannot use this service to declare more than 90 litres of ordinary and sparkling wine combined. Go through the red channel at customs to declare this wine.
-head.error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go through the red channel at customs to declare this alcohol.
-head.error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go through the red channel at customs to declare these spirits.
-head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco using this service. Go through the red channel at customs to declare this tobacco.
+head.error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-wine.limit-exceeded =You cannot use this service to declare more than 90 litres of ordinary and sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
 
 error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
@@ -473,7 +470,6 @@ head.error.currency.invalid.other-goods.tableware = Enter the currency used
 head.error.currency.invalid.other-goods.watches-clocks = Enter the currency used
 head.error.currency.invalid.other-goods.other = Enter the currency used
 
-head.error.country.invalid.other-goods.antiques = Enter the country of purchase
 head.error.country.invalid.other-goods.adult.adult-clothing = Enter the country of purchase
 head.error.country.invalid.other-goods.adult.adult-footwear = Enter the country of purchase
 head.error.country.invalid.other-goods.antiques = Enter the country of purchase
@@ -699,7 +695,7 @@ label.if_you_do_not_know_the_number = If you do not know the number
 label.if_you_do_not_know_the_number_or_weight = If you do not know the number or weight
 label.if_you_do_not_know_the_weight = If you do not know the weight
 label.if_the_currency_you_used_is_not_shown = If the currency you used is not shown
-label.you_cannot_use_this_service_ = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
+label.you_cannot_use_this_service_ = You cannot use this service. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 done.page_title = You will need to pay £{0} for goods purchased outside of the EU
 label.what_you_need_to_do_next = What you need to do next
 label.duty_and_tax_to_pay_per_item = Duty and tax to pay per item
@@ -714,18 +710,18 @@ label.vat = VAT
 label.exchange_rates = We use <a href="https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly" target="_blank">HMRC’s exchange rates for customs and VAT (opens in a new window or tab)</a> to make this calculation. We use the rates for the month in which you are declaring.
 label.you_must_pay_duty_and_tax_ = You must pay duty and tax on these goods if you bring them into the UK.
 label.you_can_declare_these_goods_ = You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
-label.declare_once = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go through the red channel at customs.
+label.declare_once = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go to the red channel, red-point phone or speak to Border Force to declare them. If they are not available go to GOV.UK to find out what to do.
 label.change_your_answers = Change your answers
 label.declare_your_goods_and_pay_online = Declare your goods and pay online
 label.all_items_within_allowance = All the items you entered are included within your personal allowances
 label.tax_due_on_these_goods = Tax due on these goods
 label.personal_allowances = All the items you entered are included within your personal allowances
 label.green_channel = Go to the green channel at customs if these are the only goods you are bringing into the UK from abroad.
-label.fire_arms = Go to the red channel or red-point phone at customs if you have something else to declare or are carrying restricted items such as firearms or ammunition.
+label.fire_arms = Go to the red channel, red-point phone or speak to Border Force if you have something else to declare or are carrying restricted items such as firearms or ammunition.  If they are not available go to GOV.UK to find out what to do.
 text.how_the_tax_was_calculated = How the tax was calculated
 label.declaring_these_goods = Declaring these goods
 label.you_cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
-label.declare_these_goods = When you arrive in the UK go to the red channel or red-point phone at customs and declare these goods to a member of Border Force.
+label.declare_these_goods = When you arrive in the UK go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 label.tax_is_due = Tax is due because you have gone over your other goods allowance.
 label.declare_your_goods = Declare your goods
 text.i_understand_that = I understand that:
@@ -851,8 +847,8 @@ label.do_you_want_to_remove_.alcohol.wine = Do you want to remove this wine?
 label.do_you_want_to_remove_.alcohol.other = Do you want to remove this other alcohol?
 
 
-label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 50 other goods to declare. If you do have more, you will need to declare all your goods, alcohol and tobacco at the red channel at customs.
-label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_ = You can only calculate taxes and duties on 50 other goods or fewer - remove items from your duty estimate to continue. If you do have more, go through the red channel at customs.
+label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 50 other goods to declare. If you have more, you need to declare all your goods, alcohol and tobacco at the red channel, red-point phone or with a member of Border Force. If they are not available go to GOV.UK to find out what to do.
+label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_ = You can only calculate taxes and duties on 50 other goods or fewer - remove items from your duty estimate to continue. If you have more, go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
 
 label.X_litre_X = {0} litre {1}
