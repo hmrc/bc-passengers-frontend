@@ -701,7 +701,6 @@ label.if_you_do_not_know_the_weight = If you do not know the weight
 label.if_the_currency_you_used_is_not_shown = If the currency you used is not shown
 label.you_cannot_use_this_service_ = You cannot use this service. Please go to the red channel or red point phone and declare your goods to Border Force.
 done.page_title = You will need to pay £{0} for goods purchased outside of the EU
-done.h1 = Tax due on these goods<br />£{0}
 label.what_you_need_to_do_next = What you need to do next
 label.duty_and_tax_to_pay_per_item = Duty and tax to pay per item
 label.how_your_total_was_calculated = How your total was calculated

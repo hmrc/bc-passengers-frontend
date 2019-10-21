@@ -5,7 +5,7 @@
 
 @main_template(title = messages("label.tax_due_on_these_goods"), backLink = backLink) {
 
-  <h1 class="heading-xlarge margin-bottom-20">@Html(messages("done.h1", formatMonetaryValue(calculatorResponseDto.calculation.allTax)))</h1>
+  <h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br>&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</h1>
 
   <table class="responsive-table" role="grid">
     <thead>
