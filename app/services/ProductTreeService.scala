@@ -56,7 +56,6 @@ class ProductTreeService {
               "label.other-goods.childrens", List(
                 ProductTreeLeaf("childrens-clothing", "label.other-goods.childrens.childrens-clothing", "OGD/CLTHS/CHILD", "other-goods", Nil),
                 ProductTreeLeaf("childrens-footwear", "label.other-goods.childrens.childrens-footwear", "OGD/CLTHS/CHILD", "other-goods", Nil)
-
               )
             ),
             ProductTreeLeaf("disability-equipment", "label.other-goods.disability-equipment", "OGD/BKS/MISC", "other-goods", Nil),
@@ -68,6 +67,7 @@ class ProductTreeService {
             ),
             ProductTreeLeaf("furniture", "label.other-goods.furniture", "OGD/ORN/MISC", "other-goods", Nil),
             ProductTreeLeaf("glassware", "label.other-goods.glassware", "OGD/GLASS", "other-goods", Nil),
+            ProductTreeLeaf("heated-tobacco", "label.other-goods.heated-tobacco","OGD/HTB","other-goods", Nil),
             ProductTreeLeaf("jewellery", "label.other-goods.jewellery","OGD/ORN/MISC","other-goods", Nil),
             ProductTreeLeaf("mobility-aids", "label.other-goods.mobility-aids", "OGD/MOB/MISC", "other-goods", Nil),
             ProductTreeLeaf("perfumes-cosmetics", "label.other-goods.perfumes-cosmetics", "OGD/COSMT", "other-goods", Nil),
