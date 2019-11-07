@@ -5,6 +5,7 @@ label.add_more = Add more
 label.error = Error:
 label.back = Back
 grams = {0}grams
+label.grams = grams
 label.there_is_a_problem = There is a problem
 head.error.country.invalid = Enter the country of purchase
 error.country.invalid = Enter the country of purchase
