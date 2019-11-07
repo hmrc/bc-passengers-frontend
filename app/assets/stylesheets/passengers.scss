@@ -5,6 +5,10 @@
 @import "partials/typography";
 @import "partials/vertical-spacing";
 
+// Palette should be imported before focus
+// Palette and focus should be imported after any service-specific styles.
+@import "partials/palette";
+@import "partials/focus";
 
 .border-bottom {
   padding: .63158em 1.05263em .47368em 0;
