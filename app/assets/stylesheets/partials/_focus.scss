@@ -17,7 +17,6 @@
   details summary:focus .summary {
     text-decoration: none;
   }
-  input:focus,
   textarea:focus,
   select:focus,
   #global-header input:focus {
@@ -81,6 +80,13 @@
 
 // govuk textarea
   textarea:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    -webkit-box-shadow: inset 0 0 0 2px;
+    box-shadow: inset 0 0 0 2px;
+  }
+  // inputs
+    input:focus {
     outline: 3px solid #fd0;
     outline-offset: 0;
     -webkit-box-shadow: inset 0 0 0 2px;

@@ -200,6 +200,9 @@ button[disabled]:hover,
 .button[disabled="disabled"] {
   background-color: #00703c;
 }
+.btn-link{
+  background-color: transparent;
+}
 button:active,
 .button:active,
 .button--small:active {
