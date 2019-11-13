@@ -11,7 +11,9 @@
     @form(action = routes.TravelDetailsController.confirmAgePost()){
 
         <fieldset>
-            <legend class="heading-xlarge">@messages("label.are_you_17_or_over")</legend>
+            <legend>
+                <h1 class="heading-xlarge">@messages("label.are_you_17_or_over")</h1>
+            </legend>
 
             @components.input_radio_group(
                 ageOver17Form("ageOver17"),
