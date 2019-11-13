@@ -38,7 +38,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
   trait LocalSetup {
 
     val controller: TravelDetailsController = app.injector.instanceOf[TravelDetailsController]
+
     def cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData()))
+
     when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
     when(injected[TravelDetailsService].storeAgeOver17(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
     when(injected[TravelDetailsService].storeBringingDutyFree(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
@@ -158,6 +160,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling GET .../goods-bought-outside-eu" should {
     "return the interrupt page without the added rest of world guidance" in new LocalSetup {
 
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")).get
       status(response) shouldBe OK
 
@@ -171,6 +175,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling POST .../goods-bought-outside-eu" should {
 
     "redirect to .../private-travel when bringing in goods over the indicated allowances" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
@@ -178,6 +185,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "redirect to .../no-need-to-use-service when bringing in goods under the indicated allowances" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
@@ -185,6 +195,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return bad request when given invalid data" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
@@ -193,7 +206,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
 
   "calling GET .../goods-bought-inside-and-outside-eu" should {
+
     "return the interrupt page without the added rest of world guidance" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"), None, None)))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")).get
       status(response) shouldBe OK
@@ -208,6 +224,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling POST .../goods-bought-inside-and-outside-eu" should {
 
     "redirect to .../private-travel when bringing in goods over the indicated allowances" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
@@ -215,6 +234,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "redirect to .../no-need-to-use-service when bringing in goods under the indicated allowances" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
@@ -222,6 +244,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return bad request when given invalid data" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"), None, None)))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
@@ -230,7 +255,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
 
   "calling GET .../goods-bought-inside-eu" should {
+
     "return the goods bought inside the eu interrupt page" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("euOnly"), None, None)))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")).get
       status(response) shouldBe OK
@@ -243,7 +271,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
   }
 
   "calling GET .../no-need-to-use-service" should {
+
     "return no need to use this service page" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(false))))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")).get
       status(response) shouldBe OK
@@ -254,11 +285,125 @@ class TravelDetailsControllerSpec extends BaseSpec {
       content should include ("You do not need to use this service")
     }
   }
+
+
+
+  "Calling GET .../private-travel" should {
+
+    "return the private craft page unpopulated if there is no age answer in keystore" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+
+      status(response) shouldBe OK
+      val doc = Jsoup.parse(contentAsString(response))
+
+      doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
+      doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
+
+      verify(controller.cache, times(1)).fetch(any())
+    }
+
+    "return the private craft page pre populated no if there is answer false in keystore" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), privateCraft = Some(false))))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+
+      status(response) shouldBe OK
+      val doc = Jsoup.parse(contentAsString(response))
+
+      doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
+      doc.select("#privateCraft-false").hasAttr("checked") shouldBe true
+
+      verify(controller.cache, times(1)).fetch(any())
+    }
+
+    "return the private craft page pre populated yes if there is age answer true in keystore" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), privateCraft = Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+
+      status(response) shouldBe OK
+      val doc = Jsoup.parse(contentAsString(response))
+
+      doc.select("#privateCraft-true").hasAttr("checked") shouldBe true
+      doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
+
+      verify(controller.cache, times(1)).fetch(any())
+    }
+  }
+
+  "Calling POST .../private-travel" should {
+
+    "redirect to /check-tax-on-goods-you-bring-into-the-uk/confirm-age" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), privateCraft = Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/confirm-age")
+
+      verify(controller.travelDetailsService, times(1)).storePrivateCraft(any())(meq(true))(any())
+    }
+
+
+    "return bad request when given invalid data" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("value" -> "bad_value")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      verify(controller.travelDetailsService, times(0)).storePrivateCraft(any())(any())(any())
+
+    }
+
+    "return error summary box on the page head when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      Option(doc.getElementById("errors").select("a[href=#privateCraft]")).isEmpty shouldBe false
+      Option(doc.getElementById("errors").select("a[href=#privateCraft]").html()).get shouldBe "Select yes if you arrived in the UK by private aircraft or private boat"
+      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
+      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+    }
+
+
+    "return error notification on the control when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you arrived in the UK by private aircraft or private boat"
+
+    }
+
+  }
+
   "calling GET .../confirm-age" should {
 
     "return the confirm age page unpopulated if there is no age answer in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful( None )
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true))))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
@@ -275,7 +420,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return the confirm age page pre-populated yes if there is age answer true in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful( Some(JourneyData(privateCraft = Some(true), ageOver17 = Some(true))) )
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true), ageOver17 = Some(true))))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
@@ -292,7 +437,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return the confirm age page pre-populated no if there is age answer false in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful( Some(JourneyData(privateCraft = Some(false), ageOver17 = Some(false))) )
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true), ageOver17 = Some(false))))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
@@ -313,7 +458,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to /check-tax-on-goods-you-bring-into-the-uk/tell-us when subsequent journey data is present" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(ageOver17 = Some(false), privateCraft = Some(false))))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody("ageOver17" -> "true")).get
 
@@ -324,6 +469,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return bad request when given invalid data" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true))))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
@@ -333,6 +481,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return top error summary box when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true))))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
@@ -350,6 +500,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
 
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), None, None, Some(true), Some(true))))
+
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe BAD_REQUEST
@@ -363,110 +515,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   }
 
-  "Calling GET .../private-travel" should {
 
-    "return the private craft page unpopulated if there is no age answer in keystore" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Future.successful( None )
-
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
-
-      status(response) shouldBe OK
-      val doc = Jsoup.parse(contentAsString(response))
-
-      doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
-      doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
-
-      verify(controller.cache, times(1)).fetch(any())
-    }
-
-    "return the private craft page pre populated no if there is age answer false in keystore" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Future.successful( Some(JourneyData(privateCraft = Some(false))) )
-
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
-
-      status(response) shouldBe OK
-      val doc = Jsoup.parse(contentAsString(response))
-
-      doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
-      doc.select("#privateCraft-false").hasAttr("checked") shouldBe true
-
-      verify(controller.cache, times(1)).fetch(any())
-    }
-
-    "return the private craft page pre populated yes if there is age answer true in keystore" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Future.successful( Some(JourneyData(privateCraft = Some(true))) )
-
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
-
-      status(response) shouldBe OK
-      val doc = Jsoup.parse(contentAsString(response))
-
-      doc.select("#privateCraft-true").hasAttr("checked") shouldBe true
-      doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
-
-      verify(controller.cache, times(1)).fetch(any())
-    }
-  }
-
-  "Calling POST .../private-travel" should {
-
-    "redirect to /check-tax-on-goods-you-bring-into-the-uk/confirm-age" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(privateCraft = Some(true))))
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("privateCraft" -> "true")).get
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/confirm-age")
-
-      verify(controller.travelDetailsService, times(1)).storePrivateCraft(any())(meq(true))(any())
-    }
-
-
-    "return bad request when given invalid data" in new LocalSetup {
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody("value" -> "bad_value")).get
-
-      status(response) shouldBe BAD_REQUEST
-
-      verify(controller.travelDetailsService, times(0)).storePrivateCraft(any())(any())(any())
-
-    }
-
-    "return error summary box on the page head when trying to submit a blank form" in new LocalSetup {
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
-
-      status(response) shouldBe BAD_REQUEST
-
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
-
-      Option(doc.getElementById("errors").select("a[href=#privateCraft]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#privateCraft]").html()).get shouldBe "Select yes if you arrived in the UK by private aircraft or private boat"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
-    }
-
-
-    "return error notification on the control when trying to submit a blank form" in new LocalSetup {
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
-
-      status(response) shouldBe BAD_REQUEST
-
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
-
-      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you arrived in the UK by private aircraft or private boat"
-
-    }
-
-  }
 
   "Calling GET .../new-session" should {
 

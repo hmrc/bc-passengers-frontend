@@ -137,7 +137,7 @@ trait ControllerHelpers extends MessagesBaseController
       case JourneyData(Some(_), _, _,  _,Some(_), Some(_), _, _, _, _, _, _, _, _) if appConfig.isVatResJourneyEnabled => block
       case JourneyData(Some(_), None, None, _, Some(_), Some(_), _, _, _, _, _, _, _, _) if !appConfig.isVatResJourneyEnabled => block
       case _ =>
-        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... " + context.getJourneyData , routes.TravelDetailsController.newSession())
+        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... ", routes.TravelDetailsController.newSession())
     }
   }
 
