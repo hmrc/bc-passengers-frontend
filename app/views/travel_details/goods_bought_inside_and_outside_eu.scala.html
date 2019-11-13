@@ -50,11 +50,12 @@
   <p>@messages("text.if_you_bring_in_goods_over_")</p>
   <p>@messages("text.our_online_calculator_accepts_")</p>
 
-  <h2 class="heading-medium">@messages("heading.are_you_bringing_in_goods_over_")</h2>
 
   @form(action = routes.TravelDetailsController.goodsBoughtInsideAndOutsideEuPost()){
     <fieldset>
-      <legend class="visually-hidden">@messages("heading.are_you_bringing_in_goods_over_")</legend>
+      <legend class="heading-medium">
+        @messages("heading.are_you_bringing_in_goods_over_")
+      </legend>
 
       @components.input_radio_group(
         bringingOverAllowance("bringingOverAllowance"),
@@ -62,7 +63,6 @@
         '_labelClass -> "block-label inputLabelBeforeError",
         '_inline -> true
       )
-
     </fieldset>
 
     <div class="form-group">

@@ -35,7 +35,7 @@ class CalculateDeclareController @Inject()(
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
   val done: views.html.purchased_products.done,
-  val over_ninty_seven_thousand_pounds: views.html.purchased_products.over_ninty_seven_thousand_pounds,
+  val over_ninety_seven_thousand_pounds: views.html.purchased_products.over_ninety_seven_thousand_pounds,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -160,7 +160,7 @@ class CalculateDeclareController @Inject()(
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true, backLinkModel.backLink))
 
           case allTax if allTax > 97000  =>
-            Ok( over_ninty_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+            Ok( over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
           case _ => Ok( done(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink) )
         }

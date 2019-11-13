@@ -13,7 +13,9 @@
       <tr role="row">
         <th scope="col">@messages("label.item")</th>
         <th scope="col">@messages("label.price")</th>
-        <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
+        <th class="numeric" scope="col">
+          <span class="table-25">@messages("label.tax_due")</span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -43,7 +45,7 @@
 
   <details role="group">
     <summary role="button" aria-controls="details-content-0" aria-expanded="false">
-      <span class="summary">How the tax was calculated</span>
+      <span class="summary">@messages("text.how_the_tax_was_calculated")</span>
     </summary>
     <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
 
@@ -51,7 +53,8 @@
         <thead>
         <tr role="row">
           <th scope="col"></th>
-          <th class="numeric" scope="col" width="25%">@messages("label.tax_due")</th>
+          <th class="numeric" scope="col">
+            <span class="table-25">@messages("label.tax_due")</span></th>
         </tr>
         </thead>
 

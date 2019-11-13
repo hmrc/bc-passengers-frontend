@@ -8,12 +8,10 @@
 
     @views.html.tags.errors(ageOver17Form)
 
-    <h1 class="heading-xlarge">@messages("label.are_you_17_or_over")</h1>
-
     @form(action = routes.TravelDetailsController.confirmAgePost()){
 
         <fieldset>
-            <legend class="visually-hidden">@messages("label.are_you_17_or_over")</legend>
+            <legend class="heading-xlarge">@messages("label.are_you_17_or_over")</legend>
 
             @components.input_radio_group(
                 ageOver17Form("ageOver17"),

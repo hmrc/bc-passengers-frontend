@@ -7,12 +7,10 @@
 
     @views.html.tags.errors(privateCraftForm)
 
-    <h1 class="heading-xlarge">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</h1>
-
     @form(action = routes.TravelDetailsController.privateTravelPost()){
 
         <fieldset>
-            <legend class="visually-hidden">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</legend>
+            <legend class="heading-xlarge">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</legend>
 
             @components.input_radio_group(
                 privateCraftForm("privateCraft"),
