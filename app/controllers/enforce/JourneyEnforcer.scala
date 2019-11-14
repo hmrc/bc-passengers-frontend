@@ -4,11 +4,9 @@ import config.AppConfig
 import connectors.Cache
 import controllers.{LocalContext, routes}
 import javax.inject.{Inject, Singleton}
-import models.JourneyData
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded, Call, DefaultActionBuilder, Request, RequestHeader, Result}
-import controllers.enforce._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
@@ -26,118 +24,6 @@ class JourneyEnforcer {
 
   def redirect(implicit context: LocalContext): Future[Result] =
     logAndRedirect(s"Enforcer prerequisites not met for ${context.request.path}, redirecting", routes.TravelDetailsController.whereGoodsBought())
-}
-
-@Singleton
-class WhereGoodsBoughtEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.WhereGoodsBoughtStep else nonvatres.WhereGoodsBoughtStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class GoodsBoughtInAndOutEuEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInAndOutEuStep else nonvatres.GoodsBoughtInAndOutEuStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class GoodsBoughtOutsideEuEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtOutsideEuStep else nonvatres.GoodsBoughtOutsideEuStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class GoodsBoughtInsideEuEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInsideEuStep else nonvatres.GoodsBoughtInsideEuStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class NoNeedToUseServiceEnforcer @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.NoNeedToUseStep else nonvatres.NoNeedToUseStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class PrivateCraftEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.PrivateCraftStep else nonvatres.PrivateCraftStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class Is17OrOverEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.Is17OrOverStep else nonvatres.Is17OrOverStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class DashboardEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val step = if(appConfig.isVatResJourneyEnabled) vatres.DashboardStep else nonvatres.DashboardStep
-    journeyEnforcer(step)(block)
-  }
-}
-
-@Singleton
-class DidYouClaimTaxBackEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    journeyEnforcer( vatres.DidYouClaimTaxBackEuOnlyStep, vatres.DidYouClaimTaxBackBothStep )(block)
-  }
-}
-
-@Singleton
-class BringingDutyFreeEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    journeyEnforcer( vatres.BringingDutyFreeEuStep, vatres.BringingDutyFreeBothStep )(block)
-  }
-}
-
-@Singleton
-class DeclareDutyFreeMixEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    journeyEnforcer( vatres.DeclareDutyFreeMixStep )(block)
-  }
-}
-
-@Singleton
-class DeclareDutyFreeEuEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    journeyEnforcer( vatres.DeclareDutyFreeEuStep )(block)
-  }
-}
-
-@Singleton
-class DeclareDutyFreeAnyEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, appConfig: AppConfig ) {
-
-  def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    journeyEnforcer( vatres.DeclareDutyFreeEuStep, vatres.DeclareDutyFreeMixStep )(block)
-  }
 }
 
 @Singleton
@@ -177,11 +63,171 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder)
 }
 
 @Singleton
-class DashboardAction @Inject() (publicAction: PublicAction, dashboardEnforcer: DashboardEnforcer) {
+class DashboardAction @Inject() (journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.DashboardStep else nonvatres.DashboardStep
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
-      dashboardEnforcer {
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class WhereGoodsBoughtAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.WhereGoodsBoughtStep else nonvatres.WhereGoodsBoughtStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class GoodsBoughtInAndOutEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInAndOutEuStep else nonvatres.GoodsBoughtInAndOutEuStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class GoodsBoughtOutsideEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtOutsideEuStep else nonvatres.GoodsBoughtOutsideEuStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class GoodsBoughtInsideEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInsideEuStep else nonvatres.GoodsBoughtInsideEuStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class NoNeedToUseServiceAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.NoNeedToUseStep else nonvatres.NoNeedToUseStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class PrivateCraftAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.PrivateCraftStep else nonvatres.PrivateCraftStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class Is17OrOverAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.Is17OrOverStep else nonvatres.Is17OrOverStep
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class DidYouClaimTaxBackAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer( vatres.DidYouClaimTaxBackEuOnlyStep, vatres.DidYouClaimTaxBackBothStep ) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class BringingDutyFreeAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer( vatres.BringingDutyFreeEuStep, vatres.BringingDutyFreeBothStep ) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class DeclareDutyFreeMixAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer( vatres.DeclareDutyFreeMixStep ) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class DeclareDutyFreeEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer( vatres.DeclareDutyFreeEuStep ) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class DeclareDutyFreeAnyAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer( vatres.DeclareDutyFreeEuStep, vatres.DeclareDutyFreeMixStep ) {
         block(context)
       }
     }
