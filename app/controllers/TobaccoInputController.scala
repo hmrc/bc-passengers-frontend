@@ -2,6 +2,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
 import models.{ProductPath, TobaccoDto}
 import play.api.data.Form
@@ -22,6 +23,9 @@ class TobaccoInputController @Inject()(
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
 
   val error_template: views.html.error_template,
   val tobacco_input: views.html.new_tobacco.tobacco_input,
@@ -101,7 +105,7 @@ class TobaccoInputController @Inject()(
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
   
-  def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
       withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
         Future.successful(Ok( no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
@@ -110,7 +114,7 @@ class TobaccoInputController @Inject()(
   }
 
 
-  def displayWeightAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
       withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
           Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
@@ -118,7 +122,7 @@ class TobaccoInputController @Inject()(
     }
   }
 
-  def displayNoOfSticksWeightAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayNoOfSticksWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
       withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
           Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
@@ -126,7 +130,7 @@ class TobaccoInputController @Inject()(
     }
   }
 
-  def displayEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         TobaccoDto.fromPurchasedProductInstance(ppi).fold(logAndRenderError("Unable to construct dto from PurchasedProductInstance")) { dto =>
@@ -145,7 +149,7 @@ class TobaccoInputController @Inject()(
     }
   }
 
-  def processAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireLimitUsage({
       val dto = resilientForm.bindFromRequest.value.get
@@ -202,7 +206,7 @@ class TobaccoInputController @Inject()(
   }
 
 
-  def processEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
 
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>

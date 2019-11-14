@@ -4,6 +4,7 @@ import java.util.UUID
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -28,6 +29,9 @@ class CalculateDeclareController @Inject()(
   val declarationService: DeclarationService,
   val dateTimeProviderService: DateTimeProviderService,
 
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
+
   val you_need_to_declare: views.html.declaration.declare_your_goods,
   val enter_your_details: views.html.declaration.enter_your_details,
   val error_template: views.html.error_template,
@@ -45,15 +49,15 @@ class CalculateDeclareController @Inject()(
 
   def receiptDateTime: DateTime = dateTimeProviderService.now
 
-  def declareYourGoods: Action[AnyContent] = DashboardAction { implicit context =>
+  def declareYourGoods: Action[AnyContent] = dashboardAction { implicit context =>
     Future.successful(Ok(you_need_to_declare()))
   }
 
-  def enterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
+  def enterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
     Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))
   }
 
-  def processEnterYourDetails: Action[AnyContent] = DashboardAction { implicit context =>
+  def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
 
     EnterYourDetailsDto.form(receiptDateTime).bindFromRequest.fold(
 
@@ -92,7 +96,7 @@ class CalculateDeclareController @Inject()(
     )
   }
 
-  def irishBorder: Action[AnyContent] = PublicAction { implicit context =>
+  def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
         case Some(JourneyData(_, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
@@ -103,7 +107,7 @@ class CalculateDeclareController @Inject()(
     }
   }
 
-  def irishBorderPost: Action[AnyContent] = PublicAction { implicit context =>
+  def irishBorderPost: Action[AnyContent] = publicAction { implicit context =>
     IrishBorderDto.form.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink)))
@@ -120,7 +124,7 @@ class CalculateDeclareController @Inject()(
     )
   }
 
-  def calculate: Action[AnyContent] = DashboardAction { implicit context =>
+  def calculate: Action[AnyContent] = dashboardAction { implicit context =>
 
     doCalculateAction(context.getJourneyData)
   }
@@ -148,7 +152,7 @@ class CalculateDeclareController @Inject()(
     }
   }
 
-  def showCalculation: Action[AnyContent] = DashboardAction { implicit context =>
+  def showCalculation: Action[AnyContent] = dashboardAction { implicit context =>
     requireCalculatorResponse { calculatorResponse =>
 
       Future.successful {

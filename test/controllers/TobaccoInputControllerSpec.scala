@@ -48,8 +48,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     lazy val cachedJourneyData = Some(JourneyData(
       Some("nonEuOnly"),
-      isVatResClaimed = None,
+      isVatResClaimed = Some(true),
       isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
       privateCraft = Some(false),
       ageOver17 = Some(true),
       purchasedProductInstances = List(PurchasedProductInstance(
@@ -146,6 +147,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -183,6 +185,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -832,6 +835,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -861,6 +865,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -890,6 +895,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -919,6 +925,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(

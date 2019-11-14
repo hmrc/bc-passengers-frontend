@@ -2,6 +2,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
 import models.{AlcoholDto, OtherGoodsDto, ProductPath}
 import play.api.data.Forms.{list, mapping, text}
@@ -23,6 +24,9 @@ class AlcoholInputController @Inject()(
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
 
   val error_template: views.html.error_template,
   val alcohol_input: views.html.new_alcohol.alcohol_input,
@@ -59,7 +63,7 @@ class AlcoholInputController @Inject()(
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
-  def displayAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
       withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
         Future.successful(Ok(alcohol_input(alcoholForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
@@ -67,7 +71,7 @@ class AlcoholInputController @Inject()(
     }
   }
 
-  def displayEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         AlcoholDto.fromPurchasedProductInstance(ppi) match {
@@ -78,7 +82,7 @@ class AlcoholInputController @Inject()(
     }
   }
 
-  def processAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireLimitUsage({
       val dto = resilientForm.bindFromRequest.value.get
       newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))
@@ -98,7 +102,7 @@ class AlcoholInputController @Inject()(
     }
   }
 
-  def processEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
 
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>

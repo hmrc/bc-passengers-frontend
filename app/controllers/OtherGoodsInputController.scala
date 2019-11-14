@@ -2,8 +2,9 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
-import models.{ProductPath, OtherGoodsDto}
+import models.{OtherGoodsDto, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.I18nSupport
@@ -22,6 +23,9 @@ class OtherGoodsInputController @Inject()(
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
 
   val other_goods_input: views.html.new_other_goods.other_goods_input,
   val error_template: views.html.error_template,
@@ -65,7 +69,7 @@ class OtherGoodsInputController @Inject()(
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
-  def displayAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireProduct(path) { product =>
       withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
@@ -74,7 +78,7 @@ class OtherGoodsInputController @Inject()(
     }
   }
 
-  def displayEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
 
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
@@ -86,7 +90,7 @@ class OtherGoodsInputController @Inject()(
     }
   }
 
-  def processAddForm(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireProduct(path) { product =>
 
@@ -117,7 +121,7 @@ class OtherGoodsInputController @Inject()(
   }
 
 
-  def processEditForm(iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
 
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>

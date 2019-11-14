@@ -1,15 +1,19 @@
 package controllers.enforce
 
 import config.AppConfig
+import connectors.Cache
 import controllers.{LocalContext, routes}
 import javax.inject.{Inject, Singleton}
 import models.JourneyData
 import play.api.Logger
 import play.api.mvc.Results._
-import play.api.mvc.{Call, Result}
+import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded, Call, DefaultActionBuilder, Request, RequestHeader, Result}
 import controllers.enforce._
+import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class JourneyEnforcer {
@@ -133,5 +137,53 @@ class DeclareDutyFreeAnyEnforcer @Inject() ( journeyEnforcer: JourneyEnforcer, a
 
   def apply(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
     journeyEnforcer( vatres.DeclareDutyFreeEuStep, vatres.DeclareDutyFreeMixStep )(block)
+  }
+}
+
+@Singleton
+class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder) {
+
+  private def trimmingFormUrlEncodedData(block: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+    block {
+      request.map {
+        case AnyContentAsFormUrlEncoded(data) =>
+          AnyContentAsFormUrlEncoded(data.map {
+            case (key, vals) => (key, vals.map(_.trim))
+          })
+        case b => b
+      }
+    }
+  }
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+
+    actionBuilder.async { implicit request =>
+
+      trimmingFormUrlEncodedData { implicit request =>
+
+        request.session.get(SessionKeys.sessionId) match {
+          case Some(s) =>
+            val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, Some(request.session), Some(request))
+            cache.fetch(headerCarrier) flatMap { journeyData =>
+              block(LocalContext(request, s, journeyData))
+            }
+          case None =>
+            Future.successful(Redirect(routes.TravelDetailsController.newSession()))
+        }
+
+      }
+    }
+  }
+}
+
+@Singleton
+class DashboardAction @Inject() (publicAction: PublicAction, dashboardEnforcer: DashboardEnforcer) {
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      dashboardEnforcer {
+        block(context)
+      }
+    }
   }
 }

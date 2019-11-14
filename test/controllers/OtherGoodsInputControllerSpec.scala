@@ -41,6 +41,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       Some("nonEuOnly"),
       isVatResClaimed = None,
       isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
       privateCraft = Some(false),
       ageOver17 = Some(true),
       purchasedProductInstances = List(PurchasedProductInstance(
@@ -83,6 +84,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -107,6 +109,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -131,6 +134,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -178,6 +182,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -209,6 +214,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(

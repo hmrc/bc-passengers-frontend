@@ -2,6 +2,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
 import models.{ProductPath, ProductTreeBranch, ProductTreeLeaf, SelectProductsDto}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -19,6 +20,9 @@ class SelectProductController @Inject()(
   val countriesService: CountriesService,
   val selectProductService: SelectProductService,
 
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
+
   val purchasedProductService: PurchasedProductService,
   val select_products: views.html.purchased_products.select_products,
   val error_template: views.html.error_template,
@@ -29,7 +33,7 @@ class SelectProductController @Inject()(
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
-  def nextStep(): Action[AnyContent] = DashboardAction { implicit context =>
+  def nextStep(): Action[AnyContent] = dashboardAction { implicit context =>
 
     withNextSelectedProductPath {
 
@@ -59,7 +63,7 @@ class SelectProductController @Inject()(
     }
   }
 
-  def askProductSelection(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireProductOrCategory(path) {
 
@@ -72,7 +76,7 @@ class SelectProductController @Inject()(
   }
 
 
-  def processProductSelection(path: ProductPath): Action[AnyContent] = DashboardAction { implicit context =>
+  def processProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireCategory(path) { branch =>
 

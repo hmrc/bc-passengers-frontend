@@ -2,6 +2,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -19,6 +20,9 @@ class AlterProductsController @Inject() (
   val countriesService: CountriesService,
   val productTreeService: ProductTreeService,
 
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
+
   val remove: views.html.purchased_products.remove,
   val error_template: views.html.error_template,
 
@@ -28,11 +32,11 @@ class AlterProductsController @Inject() (
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
-  def confirmRemove(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def confirmRemove(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     Future.successful(Ok(remove(ConfirmRemoveDto.form, path, iid)))
   }
 
-  def remove(path: ProductPath, iid: String): Action[AnyContent] = DashboardAction { implicit context =>
+  def remove(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
 
     ConfirmRemoveDto.form.bindFromRequest.fold(
       formWithErrors => {

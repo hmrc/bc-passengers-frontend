@@ -26,10 +26,13 @@ class TravelDetailsController @Inject() (
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
   val backLinkModel: BackLinkModel,
+
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
+
   val check_declare_goods_start_page: views.html.travel_details.check_declare_goods_start_page,
   val eu_country_check: views.html.travel_details.eu_country_check,
   val no_need_to_use_service: views.html.travel_details.no_need_to_use_service,
-
   val goods_bought_inside_and_outside_eu: views.html.travel_details.goods_bought_inside_and_outside_eu,
   val goods_bought_outside_eu: views.html.travel_details.goods_bought_outside_eu,
   val goods_bought_inside_eu: views.html.travel_details.goods_bought_inside_eu,
@@ -72,7 +75,7 @@ class TravelDetailsController @Inject() (
     )
   }
 
-  val whereGoodsBought: Action[AnyContent] = PublicAction { implicit context =>
+  val whereGoodsBought: Action[AnyContent] = publicAction { implicit context =>
     whereGoodsBoughtEnforcer {
       Future.successful {
         context.journeyData match {
@@ -85,7 +88,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val whereGoodsBoughtPost: Action[AnyContent] = PublicAction { implicit context =>
+  val whereGoodsBoughtPost: Action[AnyContent] = publicAction { implicit context =>
     whereGoodsBoughtEnforcer {
       EuCountryCheckDto.form.bindFromRequest.fold(
         formWithErrors => {
@@ -114,7 +117,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val didYouClaimTaxBack: Action[AnyContent] = PublicAction { implicit context =>
+  val didYouClaimTaxBack: Action[AnyContent] = publicAction { implicit context =>
     didYouClaimTaxBackEnforcer {
       Future.successful {
         context.journeyData match {
@@ -127,7 +130,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val didYouClaimTaxBackPost: Action[AnyContent] = PublicAction { implicit context =>
+  val didYouClaimTaxBackPost: Action[AnyContent] = publicAction { implicit context =>
     didYouClaimTaxBackEnforcer {
       ClaimedVatResDto.form.bindFromRequest.fold(
         formWithErrors => {
@@ -146,7 +149,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val dutyFree: Action[AnyContent] = PublicAction { implicit context =>
+  val dutyFree: Action[AnyContent] = publicAction { implicit context =>
     bringingDutyFreeEnforcer {
       Future.successful {
         context.journeyData match {
@@ -159,7 +162,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val dutyFreePost: Action[AnyContent] = PublicAction { implicit context =>
+  val dutyFreePost: Action[AnyContent] = publicAction { implicit context =>
     bringingDutyFreeEnforcer {
       BringingDutyFreeDto.form.bindFromRequest.fold(
         formWithErrors => {
@@ -191,13 +194,13 @@ class TravelDetailsController @Inject() (
   }
 
 
-  val goodsBoughtInsideEu: Action[AnyContent] = PublicAction { implicit context =>
+  val goodsBoughtInsideEu: Action[AnyContent] = publicAction { implicit context =>
     goodsBoughtInsideEuEnforcer {
       Future.successful(Ok(goods_bought_inside_eu(backLinkModel.backLink)))
     }
   }
 
-  val goodsBoughtOutsideEu: Action[AnyContent] = PublicAction { implicit context =>
+  val goodsBoughtOutsideEu: Action[AnyContent] = publicAction { implicit context =>
     goodsBoughtOutsideEuEnforcer {
       Future.successful {
         context.journeyData match {
@@ -210,7 +213,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val goodsBoughtOutsideEuPost: Action[AnyContent] = PublicAction { implicit context =>
+  val goodsBoughtOutsideEuPost: Action[AnyContent] = publicAction { implicit context =>
     goodsBoughtOutsideEuEnforcer {
       BringingOverAllowanceDto.form.bindFromRequest.fold(
         formWithErrors => {
@@ -229,7 +232,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val goodsBoughtInsideAndOutsideEu: Action[AnyContent] = PublicAction { implicit context =>
+  val goodsBoughtInsideAndOutsideEu: Action[AnyContent] = publicAction { implicit context =>
     goodsBoughtInAndOutEuEnforcer {
       Future.successful {
         context.journeyData match {
@@ -242,7 +245,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val goodsBoughtInsideAndOutsideEuPost: Action[AnyContent] = PublicAction { implicit context =>
+  val goodsBoughtInsideAndOutsideEuPost: Action[AnyContent] = publicAction { implicit context =>
     goodsBoughtInAndOutEuEnforcer {
       BringingOverAllowanceDto.form.bindFromRequest.fold(
         formWithErrors => {
@@ -261,13 +264,13 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val noNeedToUseService: Action[AnyContent] = PublicAction { implicit context =>
+  val noNeedToUseService: Action[AnyContent] = publicAction { implicit context =>
     noNeedToUseServiceEnforcer {
       Future.successful(Ok(no_need_to_use_service(backLinkModel.backLink)))
     }
   }
 
-  val dutyFreeEu: Action[AnyContent] = PublicAction { implicit context =>
+  val dutyFreeEu: Action[AnyContent] = publicAction { implicit context =>
     declareDutyFreeEuEnforcer {
       Future.successful {
         context.journeyData match {
@@ -280,7 +283,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val dutyFreeMix: Action[AnyContent] = PublicAction { implicit context =>
+  val dutyFreeMix: Action[AnyContent] = publicAction { implicit context =>
     declareDutyFreeMixEnforcer {
       Future.successful {
         context.journeyData match {
@@ -293,7 +296,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val dutyFreeInterruptPost: Action[AnyContent] = PublicAction { implicit context =>
+  val dutyFreeInterruptPost: Action[AnyContent] = publicAction { implicit context =>
     declareDutyFreeAnyEnforcer {
       BringingOverAllowanceDto.form.bindFromRequest.fold(
         formWithErrors => {
@@ -312,7 +315,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val privateTravel: Action[AnyContent] = PublicAction { implicit context =>
+  val privateTravel: Action[AnyContent] = publicAction { implicit context =>
     privateCraftEnforcer {
       Future.successful {
         context.journeyData match {
@@ -325,7 +328,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val privateTravelPost: Action[AnyContent] = PublicAction { implicit context =>
+  val privateTravelPost: Action[AnyContent] = publicAction { implicit context =>
     privateCraftEnforcer {
       form.bindFromRequest.fold(
         formWithErrors => {
@@ -343,7 +346,7 @@ class TravelDetailsController @Inject() (
 
 
 
-  def confirmAge: Action[AnyContent] = PublicAction { implicit context =>
+  def confirmAge: Action[AnyContent] = publicAction { implicit context =>
     is17OrOverEnforcer {
       Future.successful {
         context.journeyData match {
@@ -356,7 +359,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  def confirmAgePost: Action[AnyContent] = PublicAction { implicit context =>
+  def confirmAgePost: Action[AnyContent] = publicAction { implicit context =>
     is17OrOverEnforcer {
       AgeOver17Dto.form.bindFromRequest.fold(
         formWithErrors => {
