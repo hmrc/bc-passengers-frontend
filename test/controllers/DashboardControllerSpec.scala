@@ -108,7 +108,7 @@ class DashboardControllerSpec extends BaseSpec {
   }
 
   "Calling GET .../calculation" should {
-    "redirect to the over ninty seven thousand pounds page if the total to declare is over ninty seven thousand pounds" in new LocalSetup {
+    "redirect to the over ninety seven thousand pounds page if the total to declare is over ninety seven thousand pounds" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
