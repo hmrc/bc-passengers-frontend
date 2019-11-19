@@ -1,6 +1,7 @@
 @this(
   govuk_wrapper: views.html.govuk_wrapper,
-  sidebar: uk.gov.hmrc.play.views.html.layouts.Sidebar
+  sidebar: uk.gov.hmrc.play.views.html.layouts.Sidebar,
+  appConfig: config.AppConfig
 )
 
 @(title: String,
@@ -49,6 +50,7 @@
 
 @main = {
   <div class="grid-row">
+
     <div class="column-two-thirds">
 
       @backLink.map { backLink =>
@@ -62,12 +64,26 @@
 
 }
 
+@mainContentHeader = {
+
+  @if(appConfig.languageTranslationEnabled) {
+    @views.html.language_selection(
+    appConfig.languageMap,
+    appConfig.routeToSwitchLanguage,
+    Some("text--right flush--right"))
+  }
+
+  @if(contentHeader.isDefined) {
+    @contentHeader
+  }
+}
+
 
 @govuk_wrapper(title = title,
   mainClass = mainClass,
   bodyClasses = bodyClasses,
   sidebar = sidebarLayout,
-  contentHeader = contentHeader,
+  contentHeader = Some(mainContentHeader),
   mainContent = main,
   serviceInfoContent = serviceInfoContent,
   scriptElem = Some(scriptElem),

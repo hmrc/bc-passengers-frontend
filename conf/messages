@@ -731,7 +731,7 @@ label.tax = Tax
 label.customs = Customs
 label.excise = Excise (alcohol and tobacco only)
 label.vat = VAT
-label.exchange_rates = We use <a href="https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly" target="_blank">HMRC’s exchange rates for customs and VAT (opens in a new window or tab)</a> to make this calculation. We use the rates for the month in which you are declaring.
+label.exchange_rates = We use <a href="{0}" target="_blank">HMRC’s exchange rates for customs and VAT (opens in a new window or tab)</a> to make this calculation. We use the rates for the month in which you are declaring.
 label.you_must_pay_duty_and_tax_ = You must pay duty and tax on these goods if you bring them into the UK.
 label.you_can_declare_these_goods_ = You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
 label.declare_once = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go to the red channel, red-point phone or speak to Border Force to declare them. If they are not available go to GOV.UK to find out what to do.
@@ -742,7 +742,7 @@ label.tax_due_on_these_goods = Tax due on these goods
 label.personal_allowances = All the items you entered are included within your personal allowances
 label.green_channel = Go to the green channel at customs if these are the only goods you are bringing into the UK from abroad.
 label.fire_arms = Go to the red channel, red-point phone or speak to Border Force if you have something else to declare or are carrying restricted items such as firearms or ammunition.  If they are not available go to GOV.UK to find out what to do.
-text.how_the_tax_was_calculated = How the tax was calculated
+label.how_the_tax_was_calculated = How the tax was calculated
 label.declaring_these_goods = Declaring these goods
 label.you_cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
 label.declare_these_goods = When you arrive in the UK go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.

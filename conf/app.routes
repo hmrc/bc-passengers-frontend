@@ -96,3 +96,5 @@ GET        /accessibility-statement                                             
 GET        /other-goods/add-new                                                        controllers.OtherGoodsSearchController.clearAndSearchGoods
 GET        /other-goods/add                                                            controllers.OtherGoodsSearchController.searchGoods
 POST       /other-goods/add                                                            controllers.OtherGoodsSearchController.processSearchGoods
+
+GET        /language/:lang                                                             controllers.LocalLanguageController.switchToLanguage(lang: String)
