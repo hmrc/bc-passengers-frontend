@@ -8,12 +8,13 @@
 
   @views.html.tags.errors(irishBorderForm)
 
-  <h1 class="heading-xlarge">@messages("label.are_entering_northern_ireland_")</h1>
 
   @form(action = routes.CalculateDeclareController.irishBorderPost()) {
 
     <fieldset>
-      <legend class="visually-hidden">@messages("label.are_entering_northern_ireland_")</legend>
+      <legend>
+          <h1 class="heading-xlarge">@messages("label.are_entering_northern_ireland_")</h1>
+      </legend>
 
       @components.input_radio_group(
         irishBorderForm("irishBorder"),

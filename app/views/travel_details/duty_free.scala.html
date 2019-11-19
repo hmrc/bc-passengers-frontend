@@ -8,12 +8,12 @@
 
     @views.html.tags.errors(isBringingDutyFreeForm)
 
-    <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_duty_free_")</h1>
-
     @form(action = routes.TravelDetailsController.dutyFreePost()){
 
         <fieldset>
-            <legend class="visually-hidden">@messages("heading.are_you_bringing_in_duty_free_")</legend>
+            <legend>
+                <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_duty_free_")</h1>
+            </legend>
 
             <div class="panel panel-border-wide" id="panel">
                 <p>@messages("label.select_yes_any_any_alcohol_or_tobacco_")</p>
