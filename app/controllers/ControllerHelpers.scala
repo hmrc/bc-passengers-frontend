@@ -7,7 +7,7 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,52 +27,6 @@ trait ControllerHelpers extends MessagesBaseController
   implicit def appConfig: AppConfig
   implicit def ec: ExecutionContext
 
-  def PublicAction(block: LocalContext => Future[Result]): Action[AnyContent] = {
-
-    Action.async { implicit request =>
-
-      trimmingFormUrlEncodedData { implicit request =>
-
-        request.session.get(SessionKeys.sessionId) match {
-          case Some(s) =>
-            cache.fetch(hc(request)) flatMap { journeyData =>
-              block(LocalContext(request, s, journeyData))
-            }
-          case None =>
-            Future.successful(Redirect(routes.TravelDetailsController.newSession()))
-        }
-
-      }
-    }
-  }
-
-  def DashboardAction(block: LocalContext => Future[Result]): Action[AnyContent] = {
-
-    PublicAction { implicit context =>
-
-      context.journeyData match {
-
-        case Some(journeyData) =>
-          requireTravelDetails {
-            block(context)
-          }
-        case None =>
-          logAndRedirect("Unable to get journeyData! Starting a new session...", routes.TravelDetailsController.newSession())
-      }
-    }
-  }
-
-  private def trimmingFormUrlEncodedData(block: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
-    block {
-      request.map {
-        case AnyContentAsFormUrlEncoded(data) =>
-          AnyContentAsFormUrlEncoded(data.map {
-            case (key, vals) => (key, vals.map(_.trim))
-          })
-        case b => b
-      }
-    }
-  }
 
   implicit def contextToRequest(implicit localContext: LocalContext)= localContext.request
 
@@ -137,7 +91,7 @@ trait ControllerHelpers extends MessagesBaseController
       case JourneyData(Some(_), _, _,  _,Some(_), Some(_), _, _, _, _, _, _, _, _) if appConfig.isVatResJourneyEnabled => block
       case JourneyData(Some(_), None, None, _, Some(_), Some(_), _, _, _, _, _, _, _, _) if !appConfig.isVatResJourneyEnabled => block
       case _ =>
-        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... " + context.getJourneyData , routes.TravelDetailsController.newSession())
+        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... ", routes.TravelDetailsController.newSession())
     }
   }
 

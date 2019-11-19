@@ -2,6 +2,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.{Inject, Singleton}
 import models.{ProductTreeLeaf, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -23,6 +24,9 @@ class DashboardController @Inject() (
   val calculatorService: CalculatorService,
   val backLinkModel: BackLinkModel,
 
+  publicAction: PublicAction,
+  dashboardAction: DashboardAction,
+
   val dashboard: views.html.purchased_products.dashboard,
 
   val error_template: views.html.error_template,
@@ -34,7 +38,7 @@ class DashboardController @Inject() (
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
-  def showDashboard: Action[AnyContent] = DashboardAction { implicit context =>
+  def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
 
     cache.fetch flatMap { journeyData: Option[JourneyData] =>
 

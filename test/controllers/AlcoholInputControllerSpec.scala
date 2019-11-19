@@ -45,6 +45,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
       Some("nonEuOnly"),
       isVatResClaimed = None,
       isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
       privateCraft = Some(false),
       ageOver17 = Some(true),
       purchasedProductInstances = List(PurchasedProductInstance(
@@ -95,6 +96,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -121,6 +123,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -147,6 +150,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -173,6 +177,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -226,6 +231,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
@@ -259,6 +265,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         Some("nonEuOnly"),
         isVatResClaimed = None,
         isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(

@@ -36,7 +36,7 @@ class DashboardControllerSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    def travelDetailsJourneyData: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None,  ageOver17 = Some(true), privateCraft = Some(false))
+    def travelDetailsJourneyData: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
@@ -51,14 +51,14 @@ class DashboardControllerSpec extends BaseSpec {
   val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
   "Calling GET .../tell-us" should {
-    "start a new session if any travel details are missing" in new LocalSetup {
+    "redirect to start if travel details are missing" in new LocalSetup {
 
       override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
 
       verify(controller.cache, times(1)).fetch(any())
     }
