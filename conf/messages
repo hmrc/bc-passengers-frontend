@@ -168,7 +168,7 @@ select_products.label.other-goods.electronic-devices.televisions = Televisions
 select_products.label.other-goods.electronic-devices.other = All other electronic devices
 select_products.label.other-goods.furniture = Furniture
 select_products.label.other-goods.glassware = Glassware
-select_products.label.other-goods.heated-tobacco = Heated Tobacco
+select_products.label.other-goods.heated-tobacco = Heated tobacco
 select_products.label.other-goods.jewellery = Jewellery
 select_products.label.other-goods.mobility-aids = Mobility aids
 select_products.label.other-goods.perfumes-cosmetics = Perfumes and cosmetics
@@ -797,7 +797,7 @@ head.error.enter_a_real_time= Enter a real time of arrival
 
 label.add_more.other-goods.adult.adult-clothing = Add more adult clothing
 label.add_more.other-goods.adult.adult-footwear = Add more adult footwear
-label.add_more.other-goods.antiques = Add more antiques, collector’s peices or works of art
+label.add_more.other-goods.antiques = Add more antiques, collector’s pieces or works of art
 label.add_more.other-goods.books = Add more books or publications
 label.add_more.other-goods.carpets-fabric.carpets = Add more carpets
 label.add_more.other-goods.carpets-fabric.fabrics = Add more fabric
