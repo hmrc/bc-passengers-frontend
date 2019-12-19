@@ -2,15 +2,18 @@ package models
 
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
-import play.api.data.{Form, Mapping}
 import play.api.data.Forms.{optional, _}
 import play.api.data.validation._
-import play.api.libs.json.Json
-import services.{CalculatorService, CountriesService, CurrencyService}
-import uk.gov.hmrc.http.HeaderCarrier
-import util._
+import play.api.data.{Form, Mapping}
+import services.CountriesService
 
-import scala.util.{Random, Try}
+import scala.util.Try
+
+case class OtherGoodsSearchDto(
+  searchTerm: Option[OtherGoodsSearchItem],
+  remove: Option[Int],
+  action: Option[String]
+)
 
 object OtherGoodsDto {
 
@@ -233,7 +236,3 @@ object EnterYourDetailsDto {
 case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
 
 case class EnterYourDetailsDto(firstName: String, lastName: String, passportNumber: String, placeOfArrival: String, dateTimeOfArrival: DateTimeOfArrival)
-
-
-
-

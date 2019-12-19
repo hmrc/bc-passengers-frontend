@@ -55,7 +55,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, Some(true), Some(false), None, dummySelectedProducts, dummyPpi) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, Some(true), Some(false), None, Nil, dummyPpi) )
 
       await(travelDetailsService.storeEuCountryCheck(journeyData)("both"))
 
@@ -64,7 +64,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store the eu country check in keystore when journey data does exist, setting subsequent journey data to None if the answer has changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), Some(true), Some(true), Some(true), Some(true), Some(false), None, dummySelectedProducts, dummyPpi, defaultCountry = Some("US"), defaultCurrency = Some("USD")) )
+      val journeyData = Some( JourneyData(Some("both"), Some(true), Some(true), Some(true), Some(true), Some(false), None, Nil, dummyPpi, defaultCountry = Some("US"), defaultCurrency = Some("USD")) )
 
       await(travelDetailsService.storeEuCountryCheck(journeyData)("nonEuOnly"))
 
@@ -83,7 +83,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, Some(true), None, dummySelectedProducts ) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, Some(true), None) )
 
       await(travelDetailsService.storeAgeOver17(journeyData)(ageOver17 = true))
 
@@ -92,7 +92,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store age confirmation in keystore when journey data does exist, setting subsequent journey data to None if the age confirmation has changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, Some(false), None, dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, Some(false), None) )
 
       await(travelDetailsService.storeAgeOver17(journeyData)(ageOver17 = true))
 
@@ -111,7 +111,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, None, Some(true), dummySelectedProducts ) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, None, Some(true)) )
 
       await(travelDetailsService.storeIrishBorder(journeyData)(irishBorder = true))
 
@@ -120,11 +120,11 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store Irish Border in keystore when journey data does exist, keepng subsequent journey data if the Irish Border has changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, None, Some(false), dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, None, None, Some(false)) )
 
       await(travelDetailsService.storeIrishBorder(journeyData)(irishBorder = true))
 
-      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(Some("both"), None, None, None, None, None, Some(true), dummySelectedProducts)) )(any())
+      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(Some("both"), None, None, None, None, None, Some(true))) )(any())
     }
   }
 
@@ -139,7 +139,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, Some(false), Some(true), None, dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, Some(false), Some(true), None) )
 
       await(travelDetailsService.storePrivateCraft(journeyData)(privateCraft = false))
 
@@ -148,7 +148,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store private craft setting in keystore when journey data does exist, setting subsequent journey data to None if the private craft answer has changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, None, Some(false), None, None, dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, None, Some(false), None, None) )
 
       await(travelDetailsService.storePrivateCraft(journeyData)(privateCraft = true))
 
@@ -167,7 +167,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), Some(true), Some(true), Some(false), Some(true), Some(false), None, dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), Some(true), Some(true), Some(false), Some(true), Some(false), None) )
 
       await(travelDetailsService.storeVatResCheck(journeyData)(isVatResClaimed = true))
 
@@ -195,7 +195,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, None, Some(false), Some(true), Some(false), None, dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), None, None, Some(false), Some(true), Some(false), None) )
 
       await(travelDetailsService.storeBringingOverAllowance(journeyData)(bringingOverAllowance = false))
 
@@ -223,7 +223,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData = Some( JourneyData(Some("both"), None, Some(true), Some(false), Some(true), Some(false), None, dummySelectedProducts) )
+      val journeyData = Some( JourneyData(Some("both"), None, Some(true), Some(false), Some(true), Some(false), None) )
 
       await(travelDetailsService.storeBringingDutyFree(journeyData)(isBringingDutyFree = true))
 

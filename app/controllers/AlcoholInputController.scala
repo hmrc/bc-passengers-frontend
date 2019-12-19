@@ -29,7 +29,7 @@ class AlcoholInputController @Inject()(
   dashboardAction: DashboardAction,
 
   val error_template: views.html.error_template,
-  val alcohol_input: views.html.new_alcohol.alcohol_input,
+  val alcohol_input: views.html.alcohol.alcohol_input,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -48,11 +48,11 @@ class AlcoholInputController @Inject()(
   def alcoholForm(path: ProductPath, limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Form[AlcoholDto] = Form(
     mapping(
       "weightOrVolume" -> optional(text)
-      .verifying("error.required.volume."+ path.toMessageKey, _.isDefined)
-      .verifying("error.invalid.characters.volume", x => !x.isDefined || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false))
-      .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString) )
-      .verifying("error.max.decimal.places.volume", _.scale  <= 3).transform[BigDecimal](identity, identity)
-      .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits)),
+        .verifying("error.required.volume."+ path.toMessageKey, _.isDefined)
+        .verifying("error.invalid.characters.volume", x => !x.isDefined || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false))
+        .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString) )
+        .verifying("error.max.decimal.places.volume", _.scale  <= 3).transform[BigDecimal](identity, identity)
+        .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits)),
       "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
       "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text

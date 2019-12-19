@@ -1,21 +1,19 @@
-@this(tobacco_input: views.html.new_tobacco.tobacco_input, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@this(tobacco_input: views.html.tobacco.tobacco_input, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
 @(dtoForm: Form[TobaccoDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], currencies: List[Currency])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
 
 
-
 @tobacco_input(dtoForm, product, path, iid, countries, currencies) {
 
 
   @components.input(
-    field = dtoForm("weightOrVolume"),
-    '_inputDetails -> messages(s"label.if_you_do_not_know_the_exact_weight_or_price"),
+    field = dtoForm("noOfSticks"),
+    '_inputDetails -> messages(s"label.if_you_do_not_know_the_exact_number_or_price"),
     '_inputDetailsHidden -> messages(s"label.you_cannot_use_this_service_"),
-    '_label -> messages(s"label.total_weight_in_grams"),
-    '_labelTextClass -> "form-label",
-    '_inputSuffix ->  messages(s"label.grams")
+    '_label -> messages(s"label.total_number_of_" + path.toMessageKey),
+    '_labelTextClass -> "form-label"
   )
 
 }

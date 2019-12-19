@@ -4,15 +4,16 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
-import models.{OtherGoodsDto, ProductPath}
+import models.{OtherGoodsDto, OtherGoodsSearchDto, ProductAlias, ProductPath, ProductTreeNode}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import util._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -27,7 +28,7 @@ class OtherGoodsInputController @Inject()(
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
 
-  val other_goods_input: views.html.new_other_goods.other_goods_input,
+  val other_goods_input: views.html.other_goods.other_goods_input,
   val error_template: views.html.error_template,
 
   override val controllerComponents: MessagesControllerComponents,
@@ -149,4 +150,6 @@ class OtherGoodsInputController @Inject()(
       }
     }
   }
+
+
 }

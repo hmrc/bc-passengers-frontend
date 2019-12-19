@@ -14,6 +14,7 @@ $(document).ready(function () {
     // =====================================================
     GOVUK.details.init();
 
+    $('input[type=submit], button[type=submit]').data('ignore-double-submit', 'true');
 })
 
 $(window).load(function () {
@@ -26,7 +27,7 @@ $(window).load(function () {
 // ================================================================================
 //  Function to enhance any select element into an accessible auto-complete (by id)
 // ================================================================================
-function enhanceSelectIntoAutoComplete(selectElementId, dataSource) {
+function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm = false) {
 
   accessibleAutocomplete.enhanceSelectElement({
     selectElement: document.querySelector('#' + selectElementId),
@@ -35,6 +36,12 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource) {
     source: customSuggest,
     onConfirm: function(confirmed) {
       $('select[name="'+selectElementId+'"]').val(confirmed.code);
+      if(submitOnConfirm) {
+        window.setTimeout(function(){
+          $('form').submit();
+        }, 100);
+      }
+
     },
     templates: {
       inputValue: function(result) {

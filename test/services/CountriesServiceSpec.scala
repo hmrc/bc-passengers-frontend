@@ -276,8 +276,6 @@ class CountriesServiceSpec extends BaseSpec {
       val grouped = countriesService.getAllCountries.groupBy(_.code)
 
       val dupes = for(group <- grouped if group._2.size > 1) yield {
-        println(group)
-        for(c <- group._2) println("  " + c)
         group
       }
 

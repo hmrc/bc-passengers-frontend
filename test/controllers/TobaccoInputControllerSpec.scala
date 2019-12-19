@@ -18,7 +18,7 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.new_tobacco._
+import views.html.tobacco._
 
 import scala.concurrent.Future
 
@@ -29,9 +29,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
     .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[views.html.new_tobacco.no_of_sticks_input].toInstance(MockitoSugar.mock[views.html.new_tobacco.no_of_sticks_input]))
-    .overrides(bind[views.html.new_tobacco.weight_or_volume_input].toInstance(MockitoSugar.mock[views.html.new_tobacco.weight_or_volume_input]))
-    .overrides(bind[views.html.new_tobacco.no_of_sticks_weight_or_volume_input].toInstance(MockitoSugar.mock[views.html.new_tobacco.no_of_sticks_weight_or_volume_input]))
+    .overrides(bind[views.html.tobacco.no_of_sticks_input].toInstance(MockitoSugar.mock[views.html.tobacco.no_of_sticks_input]))
+    .overrides(bind[views.html.tobacco.weight_or_volume_input].toInstance(MockitoSugar.mock[views.html.tobacco.weight_or_volume_input]))
+    .overrides(bind[views.html.tobacco.no_of_sticks_weight_or_volume_input].toInstance(MockitoSugar.mock[views.html.tobacco.no_of_sticks_weight_or_volume_input]))
     .build()
 
   override def beforeEach: Unit = {

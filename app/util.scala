@@ -135,34 +135,6 @@ package object util {
     }
   }
 
-  def noOfSticksConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.noofsticks")({
-    plainText =>
-      val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if !s.matches("^[0-9]*$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
-        case _ => Nil
-      }
-      if (errors.isEmpty) {
-        Valid
-      } else {
-        Invalid(errors)
-      }
-  })
-
-  def quantityConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.quantity")({
-    plainText =>
-      val errors = plainText match {
-        case s if s == "" => Seq(ValidationError(s"error.required.${errorSubString}"))
-        case s if !s.matches("^[0-9]*$") || s.toDouble == "0.0".toDouble => Seq(ValidationError(s"error.invalid.characters.${errorSubString}"))
-        case _ => Nil
-      }
-      if (errors.isEmpty) {
-        Valid
-      } else {
-        Invalid(errors)
-      }
-  })
-
   def prefixErrorMessage(title: String, hasError: Boolean)(implicit messages: Messages): String = {
     if(hasError) {
       messages("label.error") + " " + title

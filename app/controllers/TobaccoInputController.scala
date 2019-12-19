@@ -28,10 +28,10 @@ class TobaccoInputController @Inject()(
   dashboardAction: DashboardAction,
 
   val error_template: views.html.error_template,
-  val tobacco_input: views.html.new_tobacco.tobacco_input,
-  val weight_or_volume_input: views.html.new_tobacco.weight_or_volume_input,
-  val no_of_sticks_input: views.html.new_tobacco.no_of_sticks_input,
-  val no_of_sticks_weight_or_volume_input: views.html.new_tobacco.no_of_sticks_weight_or_volume_input,
+  val tobacco_input: views.html.tobacco.tobacco_input,
+  val weight_or_volume_input: views.html.tobacco.weight_or_volume_input,
+  val no_of_sticks_input: views.html.tobacco.no_of_sticks_input,
+  val no_of_sticks_weight_or_volume_input: views.html.tobacco.no_of_sticks_weight_or_volume_input,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

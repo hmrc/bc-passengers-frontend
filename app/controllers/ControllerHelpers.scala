@@ -96,15 +96,15 @@ trait ControllerHelpers extends MessagesBaseController
   }
 
 
-  def withNextSelectedProductPath(block: Option[ProductPath] => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-    context.getJourneyData.selectedProducts match {
+  def withNextSelectedProductAlias(block: Option[ProductAlias] => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+    context.getJourneyData.selectedAliases match {
       case Nil => block(None)
-      case x :: _ => block(Some(ProductPath(x)))
+      case productAlias :: _ => block(Some(productAlias))
     }
   }
 
   def requireProductOrCategory(path: ProductPath)(block: ProductTreeNode => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-    productTreeService.getProducts.getDescendant(path) match {
+    productTreeService.productTree.getDescendant(path) match {
       case Some(node) => block(node)
       case None =>
         logAndRenderError(s"Product or category not found at $path!", NotFound)

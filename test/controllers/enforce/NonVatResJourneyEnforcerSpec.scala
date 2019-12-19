@@ -242,22 +242,19 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "ageOver17" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { p =>
+      forEachInGrid(params) {
+        case List(euCountryCheck: Option[String], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean], ageOver17: Option[Boolean]) =>
 
-        p match {
-          case List(euCountryCheck: Option[String], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean], ageOver17: Option[Boolean]) =>
+          implicit val jd = JourneyData(euCountryCheck, None, None, bringingOverAllowance, privateCraft, ageOver17)
 
-            implicit val jd = JourneyData(euCountryCheck, None, None, bringingOverAllowance, privateCraft, ageOver17)
-
-            jd match {
-              case JourneyData(Some("nonEuOnly"), _, _, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _)
-                   | JourneyData(Some("both"), _, _, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _)
-              =>
-                status(res) shouldBe OK
-              case _ =>
-                status(res) shouldBe SEE_OTHER
-            }
-        }
+          jd match {
+            case JourneyData(Some("nonEuOnly"), _, _, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _)
+                 | JourneyData(Some("both"), _, _, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _)
+            =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
       }
     }
   }

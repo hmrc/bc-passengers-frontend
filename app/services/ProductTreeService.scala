@@ -1,13 +1,13 @@
 package services
 
 import javax.inject.Singleton
-import models.{ProductTreeBranch, ProductTreeLeaf}
+import models.{OtherGoodsSearchItem, ProductListEntry, ProductPath, ProductTreeBranch, ProductTreeLeaf}
 
 
 @Singleton
 class ProductTreeService {
 
-  private val productTree =
+  val productTree: ProductTreeBranch =
     ProductTreeBranch("root", "Root",
       List(
         ProductTreeBranch("alcohol",
@@ -77,13 +77,93 @@ class ProductTreeService {
             ProductTreeLeaf("tableware", "label.other-goods.tableware", "OGD/TABLE", "other-goods", Nil),
             ProductTreeLeaf("watches-clocks", "label.other-goods.watches-clocks", "OGD/ORN/MISC", "other-goods", Nil),
             ProductTreeLeaf("other", "label.other-goods.other", "OGD/OTHER", "other-goods", Nil)
-          )
         )
       )
     )
+  )
 
-  def getProducts: ProductTreeBranch = {
-    productTree
-  }
+  val otherGoodsSearchItems: List[OtherGoodsSearchItem] = List(
+    OtherGoodsSearchItem("label.other-goods.adult_belt", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.adult_clothing", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.adult_shoes", ProductPath("other-goods/adult/adult-footwear")),
+    OtherGoodsSearchItem("label.other-goods.adult_trainers", ProductPath("other-goods/adult/adult-footwear")),
+    OtherGoodsSearchItem("label.other-goods.adult_footwear", ProductPath("other-goods/adult/adult-footwear")),
+    OtherGoodsSearchItem("label.other-goods.aftershave", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques")),
+    OtherGoodsSearchItem("label.other-goods.apple_watch", ProductPath("other-goods/watches-clocks")),
+    OtherGoodsSearchItem("label.other-goods.bag", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.briefcase", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.book", ProductPath("other-goods/books")),
+    OtherGoodsSearchItem("label.other-goods.bracelet", ProductPath("other-goods/jewellery")),
+    OtherGoodsSearchItem("label.other-goods.camera", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.camera_equipment", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.childrens_clothing", ProductPath("other-goods/childrens/childrens-clothing")),
+    OtherGoodsSearchItem("label.other-goods.childrens_footwear", ProductPath("other-goods/childrens/childrens-footwear")),
+    OtherGoodsSearchItem("label.other-goods.china", ProductPath("other-goods/tableware")),
+    OtherGoodsSearchItem("label.other-goods.chocolate", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.cologne", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.computer", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.cosmetics", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.cuckoo_clock", ProductPath("other-goods/watches-clocks")),
+    OtherGoodsSearchItem("label.other-goods.dell_laptop", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.earrings", ProductPath("other-goods/jewellery")),
+    OtherGoodsSearchItem("label.other-goods.eyewear", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.food", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.fabric", ProductPath("other-goods/carpets-fabric/fabrics")),
+    OtherGoodsSearchItem("label.other-goods.fragrance", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.gold", ProductPath("other-goods/jewellery")),
+    OtherGoodsSearchItem("label.other-goods.golf_equipment", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.handbag", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.iPad", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.iPhone", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.jeans", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.jewellery", ProductPath("other-goods/jewellery")),
+    OtherGoodsSearchItem("label.other-goods.kindle", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.laptop", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.leather_goods", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.lingerie", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.macbook", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.makeup", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.mobile_phone", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.nicotine_patch", ProductPath("other-goods/stop-smoking-products")),
+    OtherGoodsSearchItem("label.other-goods.necklace", ProductPath("other-goods/jewellery")),
+    OtherGoodsSearchItem("label.other-goods.ornament", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.painting", ProductPath("other-goods/antiques")),
+    OtherGoodsSearchItem("label.other-goods.perfume", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.prescription_glasses", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.porcelain", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.pottery", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.ring", ProductPath("other-goods/jewellery")),
+    OtherGoodsSearchItem("label.other-goods.samsung_laptop", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.samsung_mobile_phone", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.soft-drink", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.sony_laptop", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.sunglasses", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.sweets", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.tablet", ProductPath("other-goods/electronic-devices/other")),
+    OtherGoodsSearchItem("label.other-goods.television", ProductPath("other-goods/electronic-devices/televisions")),
+    OtherGoodsSearchItem("label.other-goods.underwear", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.watch", ProductPath("other-goods/watches-clocks")),
 
+    // Additional values
+    OtherGoodsSearchItem("label.other-goods.booster_seat", ProductPath("other-goods/car-seats")),
+    OtherGoodsSearchItem("label.other-goods.cutlery", ProductPath("other-goods/tableware")),
+    OtherGoodsSearchItem("label.other-goods.disability_apparatus", ProductPath("other-goods/disability-equipment")),
+    OtherGoodsSearchItem("label.other-goods.glass", ProductPath("other-goods/glassware")),
+    OtherGoodsSearchItem("label.other-goods.hygiene_products", ProductPath("other-goods/other")),
+    OtherGoodsSearchItem("label.other-goods.heets", ProductPath("other-goods/heated-tobacco")),
+    OtherGoodsSearchItem("label.other-goods.helmet", ProductPath("other-goods/protective-helmets")),
+    OtherGoodsSearchItem("label.other-goods.iqos", ProductPath("other-goods/heated-tobacco")),
+    OtherGoodsSearchItem("label.other-goods.kids_clothes", ProductPath("other-goods/childrens/childrens-clothing")),
+    OtherGoodsSearchItem("label.other-goods.kids_shoes", ProductPath("other-goods/childrens/childrens-footwear")),
+    OtherGoodsSearchItem("label.other-goods.mans_clothes", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear")),
+    OtherGoodsSearchItem("label.other-goods.rug", ProductPath("other-goods/carpets-fabric/carpets")),
+    OtherGoodsSearchItem("label.other-goods.scents", ProductPath("other-goods/perfumes-cosmetics")),
+    OtherGoodsSearchItem("label.other-goods.sofa", ProductPath("other-goods/furniture")),
+    OtherGoodsSearchItem("label.other-goods.textiles", ProductPath("other-goods/carpets-fabric/fabrics")),
+    OtherGoodsSearchItem("label.other-goods.tv", ProductPath("other-goods/electronic-devices/televisions")),
+    OtherGoodsSearchItem("label.other-goods.womens_clothes", ProductPath("other-goods/adult/adult-clothing")),
+    OtherGoodsSearchItem("label.other-goods.womens_shoes", ProductPath("other-goods/adult/adult-footwear"))
+  ).sortBy(_.name)
 }

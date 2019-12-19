@@ -26,7 +26,6 @@ class TravelDetailsService @Inject() (
           bringingOverAllowance = None,
           privateCraft = None,
           ageOver17 = None,
-          selectedProducts = Nil,
           purchasedProductInstances = Nil,
           defaultCountry = None,
           defaultCurrency = None
@@ -50,8 +49,7 @@ class TravelDetailsService @Inject() (
           isBringingDutyFree = None,
           bringingOverAllowance = None,
           privateCraft = None,
-          ageOver17 = None,
-          selectedProducts = Nil
+          ageOver17 = None
         ))
 
       case None =>
@@ -71,8 +69,7 @@ class TravelDetailsService @Inject() (
           isBringingDutyFree = Some(isBringingDutyFree),
           bringingOverAllowance = None,
           privateCraft = None,
-          ageOver17 = None,
-          selectedProducts = Nil
+          ageOver17 = None
         ))
 
       case None =>
@@ -91,8 +88,7 @@ class TravelDetailsService @Inject() (
         cache.storeJourneyData(journeyData.copy(
           bringingOverAllowance = Some(bringingOverAllowance),
           privateCraft = None,
-          ageOver17 = None,
-          selectedProducts = Nil
+          ageOver17 = None
         ))
 
       case None =>
@@ -110,8 +106,7 @@ class TravelDetailsService @Inject() (
 
         cache.storeJourneyData(journeyData.copy(
           privateCraft = Some(privateCraft),
-          ageOver17 = None,
-          selectedProducts = Nil
+          ageOver17 = None
         ))
 
       case None =>
@@ -128,8 +123,7 @@ class TravelDetailsService @Inject() (
       case Some(journeyData) if !journeyData.ageOver17.contains(ageOver17) =>
 
         cache.storeJourneyData(journeyData.copy(
-          ageOver17 = Some(ageOver17),
-          selectedProducts = Nil
+          ageOver17 = Some(ageOver17)
         ))
 
       case None =>

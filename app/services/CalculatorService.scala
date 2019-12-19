@@ -97,7 +97,7 @@ class CalculatorService @Inject() (
 
       val speculativeItems: List[SpeculativeItem] = for {
         purchasedProductInstance <- journeyData.workingInstance.fold(journeyData.purchasedProductInstances)(wi => wi :: journeyData.purchasedProductInstances.filter(_.iid != wi.iid))
-        productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
+        productTreeLeaf <- productTreeService.productTree.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
       } yield SpeculativeItem(purchasedProductInstance, productTreeLeaf, 0)
 
       for {
@@ -112,7 +112,7 @@ class CalculatorService @Inject() (
 
       val purchasedItems: List[PurchasedItem] = for {
         purchasedProductInstance <- journeyData.purchasedProductInstances
-        productTreeLeaf <- productTreeService.getProducts.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
+        productTreeLeaf <- productTreeService.productTree.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
         curCode <- purchasedProductInstance.currency
         currency <- currencyService.getCurrencyByCode(curCode)
         cost <- purchasedProductInstance.cost

@@ -393,8 +393,8 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                    | JourneyData(Some("euOnly"), Some(false), Some(true), Some(false), Some(_), _, _, _, _, _, _, _, _, _) //Q6, NoNeed
                    | JourneyData(Some("nonEuOnly"), _, _, Some(false), Some(_), _, _, _, _, _, _, _, _, _) //Q3, NoNeed
                    | JourneyData(Some("both"), Some(false), Some(true), Some(true), Some(_), _, _, _, _, _, _, _, _, _)  //Q9
-                   | JourneyData(Some("both"), Some(false), Some(false), Some(true), Some(_), _, _, _, _, _, _, _, _, _) //Q8
-                   | JourneyData(Some("nonEuOnly"), _, _, Some(true), Some(_), _, _, _, _, _, _, _, _, _) //Q3
+                   | JourneyData(Some("both"), Some(false), Some(false), Some(true), Some(_), _, _,_, _, _, _, _, _, _) //Q8
+                   | JourneyData(Some("nonEuOnly"), _, _, Some(true), Some(_), _, _, _, _, _, _,_, _, _) //Q3
                    | JourneyData(Some("both"), Some(true), _, _, Some(_), _, _, _, _, _, _, _, _, _) //Q4
                    | JourneyData(Some("euOnly"), Some(true), _, _, Some(_), _, _, _, _, _, _, _, _, _) //Q2
                    | JourneyData(Some("euOnly"), Some(false), Some(true), Some(true), Some(_), _, _, _, _, _, _, _, _, _) //Q6

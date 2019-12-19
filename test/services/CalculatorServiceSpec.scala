@@ -66,7 +66,6 @@ class CalculatorServiceSpec extends BaseSpec {
       privateCraft = Some(false),
       ageOver17 = Some(true),
       irishBorder = Some(false),
-      selectedProducts = Nil,
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
@@ -86,7 +85,6 @@ class CalculatorServiceSpec extends BaseSpec {
       privateCraft = Some(false),
       ageOver17 = Some(true),
       irishBorder = Some(false),
-      selectedProducts = Nil,
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
@@ -98,15 +96,16 @@ class CalculatorServiceSpec extends BaseSpec {
       )
     )
 
+    def getProductTreeLeaf(path: String) =  injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
 
     val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, isBringingDutyFree = false, isIrishBorderCrossing = false, List(
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)), ProductTreeLeaf("car-seats", "label.other-goods.car-seats", "OGD/MOB/MISC", "other-goods", Nil), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(74563 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)), ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(33 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)), ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(43)), ProductTreeLeaf("chewing-tobacco", "label.tobacco.chewing-tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(1234)), ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR")), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(1234 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GBP"), Some(60)), ProductTreeLeaf("cigarettes", "label.tobacco.cigarettes", "TOB/A1/CIGRT", "cigarettes", List("L-CIGRT")), Currency("GBP", "title.british_pounds_gbp", None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
-      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GGP"), Some(123)), ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A2/BEER", "alcohol", List("L-BEER")), Currency("GGP", "title.guernsey_pounds_ggp", None, List("Channel Islands")), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)), getProductTreeLeaf("other-goods/car-seats"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(74563 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)), getProductTreeLeaf("other-goods/antiques"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(33 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)), getProductTreeLeaf("other-goods/antiques"), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(43)), getProductTreeLeaf("tobacco/chewing-tobacco"), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(43 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(1234)), getProductTreeLeaf("tobacco/cigars"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(1234 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GBP"), Some(60)),  getProductTreeLeaf("tobacco/cigarettes"), Currency("GBP", "title.british_pounds_gbp", None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")), BigDecimal(60).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate)),
+      PurchasedItem(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("GGP"), Some(123)), getProductTreeLeaf("alcohol/beer"), Currency("GGP", "title.guernsey_pounds_ggp", None, List("Channel Islands")), BigDecimal(123).setScale(2, RoundingMode.DOWN), ExchangeRate("1.00", todaysDate))
     ))
 
     trait LocalSetup {

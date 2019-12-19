@@ -18,7 +18,7 @@ import services.NewPurchaseService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.new_other_goods.other_goods_input
+import views.html.other_goods.other_goods_input
 
 import scala.concurrent.Future
 
@@ -259,7 +259,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe OK
 
-      verify(injected[views.html.new_other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -328,7 +328,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe OK
 
-      verify(injected[views.html.new_other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -501,4 +501,5 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     }
 
   }
+
 }
