@@ -593,6 +593,7 @@ error.invalid.characters.cost.other-goods.electronic-devices.televisions = Price
 error.invalid.characters.cost.other-goods.electronic-devices.other = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.furniture = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.glassware = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.heated-tobacco = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.jewellery = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.mobility-aids = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.perfumes-cosmetics = Price must only include numbers, such as 12 or 6.58
