@@ -116,7 +116,7 @@ class CurrencyService {
     Currency("PAB", "title.panamanian_balboa_pab", Some("PAB"), List("Panamanian")),
     Currency("PEN", "title.peruvian_sol_pen", Some("PEN"), Nil),
     Currency("PGK", "title.papua_new_guinea_kina_pgk", Some("PGK"), Nil),
-    Currency("PHP", "title.philippineno_pesos_php", Some("PHP"), List("Philippenes", "Philipines", "Phillippines", "Philipines")),
+    Currency("PHP", "title.philippineno_pesos_php", Some("PHP"), List("Philippenes", "Phillipines", "Phillippines", "Philipines")),
     Currency("PKR", "title.pakistani_rupees_pkr", Some("PKR"), Nil),
     Currency("PLN", "title.polish_zloty_pln", Some("PLN"), List("Poland")),
     Currency("PYG", "title.paraguan_guarani_pyg", Some("PYG"), List("Paraguay")),
