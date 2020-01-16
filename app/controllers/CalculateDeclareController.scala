@@ -4,7 +4,7 @@ import java.util.UUID
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction}
+import controllers.enforce.{DashboardAction, PublicAction, DeclareAction}
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -31,6 +31,7 @@ class CalculateDeclareController @Inject()(
 
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
+  declareAction: DeclareAction,
 
   val you_need_to_declare: views.html.declaration.declare_your_goods,
   val enter_your_details: views.html.declaration.enter_your_details,
@@ -45,15 +46,16 @@ class CalculateDeclareController @Inject()(
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
+                                          
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def receiptDateTime: DateTime = dateTimeProviderService.now
 
-  def declareYourGoods: Action[AnyContent] = dashboardAction { implicit context =>
+  def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
     Future.successful(Ok(you_need_to_declare()))
   }
 
-  def enterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
+  def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
     Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))
   }
 
@@ -160,10 +162,10 @@ class CalculateDeclareController @Inject()(
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, false, backLinkModel.backLink))
 
-          case allTax if allTax > 0 && allTax < 9 || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
+          case allTax if allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true, backLinkModel.backLink))
 
-          case allTax if allTax > 97000  =>
+          case allTax if allTax > appConfig.paymentLimit  =>
             Ok( over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
           case _ => Ok( done(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink) )
