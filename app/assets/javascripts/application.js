@@ -34,14 +34,19 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
     displayMenu: 'inline',
     defaultValue: '',
     source: customSuggest,
+    confirmOnBlur: true,
     onConfirm: function(confirmed) {
-      $('select[name="'+selectElementId+'"]').val(confirmed.code);
-      if(submitOnConfirm) {
-        window.setTimeout(function(){
-          $('form').submit();
-        }, 100);
+      if(confirmed !== undefined) {
+        $('select[name="'+selectElementId+'"]').val(confirmed.code);
+        if(submitOnConfirm) {
+          window.setTimeout(function(){
+            $('form').submit();
+          }, 100);
+        }
       }
-
+      else {
+        $('select[name="'+selectElementId+'"]').val('')
+      }
     },
     templates: {
       inputValue: function(result) {
