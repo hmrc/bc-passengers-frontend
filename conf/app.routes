@@ -72,7 +72,9 @@ GET        /enter-goods/other-goods/:iid/edit                                   
 POST       /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.processEditForm(iid: String)
 
 
+GET        /select-new-goods/*path                                                     controllers.SelectProductController.clearAndAskProductSelection(path: ProductPath)
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)
+POST       /select-goods/$path<other-goods.*>                                          controllers.SelectProductController.processProductSelectionOtherGoods(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)
 
 GET        /calculation                                                                controllers.CalculateDeclareController.showCalculation
@@ -90,3 +92,7 @@ GET        /assets/*file                                                        
 GET        /time-out                                                                   controllers.PublicController.timeOut()
 
 GET        /accessibility-statement                                                    controllers.PublicController.accessibilityStatement()
+
+GET        /other-goods/add-new                                                        controllers.OtherGoodsSearchController.clearAndSearchGoods
+GET        /other-goods/add                                                            controllers.OtherGoodsSearchController.searchGoods
+POST       /other-goods/add                                                            controllers.OtherGoodsSearchController.processSearchGoods

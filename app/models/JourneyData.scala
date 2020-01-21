@@ -35,6 +35,12 @@ case class UserInformation(
   timeOfArrival: LocalTime
 )
 
+object ProductAlias {
+  implicit val formats = Json.format[ProductAlias]
+}
+
+case class ProductAlias(term: String, productPath: ProductPath)
+
 object JourneyData {
   implicit val formats = Json.format[JourneyData]
 }
@@ -47,7 +53,7 @@ case class JourneyData(
   privateCraft: Option[Boolean] = None,
   ageOver17: Option[Boolean] = None,
   irishBorder: Option[Boolean] = None,
-  selectedProducts: List[List[String]] = Nil,
+  selectedAliases: List[ProductAlias] = Nil,
   purchasedProductInstances: List[PurchasedProductInstance] = Nil,
   workingInstance: Option[PurchasedProductInstance] = None,
   userInformation: Option[UserInformation] = None,
@@ -55,6 +61,8 @@ case class JourneyData(
   defaultCountry: Option[String] = None,
   defaultCurrency: Option[String] = None
 ) {
+
+  val selectedProducts: List[List[String]] = selectedAliases.map(_.productPath.components)
 
   def allCurrencyCodes: Set[String] = (for {
     purchasedProductInstances <- purchasedProductInstances

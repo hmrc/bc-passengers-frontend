@@ -1,11 +1,12 @@
 package services
 
-import models.{ProductPath, ProductTreeBranch, ProductTreeLeaf}
+import models.{OtherGoodsSearchItem, ProductPath, ProductTreeBranch, ProductTreeLeaf, ProductTreeNode}
 import org.scalatest.Matchers
 import uk.gov.hmrc.play.test.UnitSpec
+import util.BaseSpec
 
 
-class ProductTreeServiceSpec extends UnitSpec with Matchers {
+class ProductTreeServiceSpec extends BaseSpec {
 
   val tree =
     ProductTreeBranch("root", "NestedTree",
@@ -52,4 +53,20 @@ class ProductTreeServiceSpec extends UnitSpec with Matchers {
       tree.getDescendant(ProductPath(List("Not", "A", "Valid", "Path"))) shouldBe None
     }
   }
+
+  "Calling getOtherGoodsSearchItems" should {
+    "Return a list of other-goods search items which are all present in the productTree" in {
+
+      val productTreeService = injected[ProductTreeService]
+
+      val items: List[OtherGoodsSearchItem] = productTreeService.otherGoodsSearchItems
+
+      for(item <- items) {
+        val descendant: Option[ProductTreeNode] = productTreeService.productTree.getDescendant(item.path)
+        assert(descendant.isDefined, item.path + " was not defined in the product tree")
+      }
+    }
+
+  }
+
 }

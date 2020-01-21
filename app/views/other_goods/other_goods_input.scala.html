@@ -15,15 +15,15 @@
 
       if (version !== 11) {
         var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
-              enhanceSelectIntoAutoComplete("country", countrySynonymsData)
+        enhanceSelectIntoAutoComplete("country", countrySynonymsData)
         var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
-              enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+        enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
       }
 
 
-    $('button[type=submit]').on('click', function() {
+      $('button[type=submit]').on('click', function() {
         $('<input>').attr({type: 'hidden', name: 'action', value: $(this).attr('value')}).appendTo('form');
-    })
+      })
 
     });
   </script>

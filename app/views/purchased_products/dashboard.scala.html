@@ -1,4 +1,4 @@
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, appConfig: config.AppConfig)
 @(journeyData: JourneyData,
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
@@ -22,12 +22,12 @@
 
     @if(alcoholPurchasedItemList.isEmpty){
       <p>
-        <a href="@routes.SelectProductController.askProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
+        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
       </p>
     } else {
 
       <div class="add-more">
-        <a href="@routes.SelectProductController.askProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
+        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
       </div>
 
       @alcoholPurchasedItemList.map { purchasedItem =>
@@ -66,12 +66,12 @@
 
     @if(tobaccoPurchasedItemList.isEmpty){
       <p>
-        <a href="@routes.SelectProductController.askProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
+        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
       </p>
     } else {
 
       <div class="add-more">
-        <a href="@routes.SelectProductController.askProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
+        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
       </div>
 
       @tobaccoPurchasedItemList.map { purchasedItem =>
@@ -109,17 +109,16 @@
 
     @if(otherGoodsPurchasedItemList.isEmpty) {
       <p>
-        <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
-      </p>
-    } else if(otherGoodsPurchasedItemList.size < 50) {
+        <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>      </p>
+    } else if(otherGoodsPurchasedItemList.size < appConfig.maxOtherGoods) {
       <div class="add-more">
-        <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.add_other_goods")</a>
+        <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>
       </div>
-    } else if(otherGoodsPurchasedItemList.size == 50) {
+    } else if(otherGoodsPurchasedItemList.size == appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">
         <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
       </div>
-    } else {
+    } else if(otherGoodsPurchasedItemList.size > appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">
         <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")</p>
       </div>
@@ -153,7 +152,7 @@
 
   </div>
 
-  @if(showCalculate && otherGoodsPurchasedItemList.size <= 50) {
+  @if(showCalculate && otherGoodsPurchasedItemList.size <= appConfig.maxOtherGoods) {
 
     @if(isIrishBorderQuestionEnabled) {
       <a href="@routes.CalculateDeclareController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>

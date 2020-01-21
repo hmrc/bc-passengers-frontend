@@ -21,7 +21,7 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.new_alcohol.alcohol_input
+import views.html.alcohol.alcohol_input
 
 import scala.concurrent.Future
 
@@ -251,7 +251,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.new_alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -283,7 +283,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.new_alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""

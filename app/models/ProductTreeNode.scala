@@ -5,11 +5,15 @@ import play.api.i18n.Messages
 import util._
 
 sealed trait ProductTreeNode {
-  val name: String
-  val token: String
+  def name: String
+  def token: String
+  def isLeaf: Boolean
+  def isBranch = !isLeaf
 }
 
 case class ProductTreeLeaf(token: String, name: String, rateID: String, templateId: String, applicableLimits: List[String]) extends ProductTreeNode {
+
+  override def isLeaf = true
 
   def getDescriptionArgs(purchasedProductInstance: PurchasedProductInstance, long: Boolean)(implicit messages: Messages): Option[(String, List[String])] = {
 
@@ -78,6 +82,8 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
 }
 
 case class ProductTreeBranch(token: String, name: String, children: List[ProductTreeNode]) extends ProductTreeNode {
+
+  override def isLeaf = false
 
   def getDescendant(path: ProductPath): Option[ProductTreeNode] = {
     children.find(_.token == path.components.head) match {

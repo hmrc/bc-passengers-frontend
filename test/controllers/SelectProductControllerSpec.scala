@@ -2,7 +2,7 @@
 package controllers
 
 import connectors.Cache
-import models.{JourneyData, ProductPath}
+import models.{JourneyData, ProductAlias, ProductPath}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Matchers.{eq => meq, _}
@@ -28,6 +28,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
   val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
 
+
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[SelectProductService].toInstance(MockitoSugar.mock[SelectProductService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
@@ -50,19 +51,42 @@ class SelectProductControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Option[JourneyData]
 
+    def addSelectedProductsAsAliasesResult: JourneyData = JourneyData()
+
+
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
-      when(injected[SelectProductService].addSelectedProducts(any(),any())(any())) thenReturn {
-        Future.successful(JourneyData())
+      when(injected[SelectProductService].addSelectedProductsAsAliases(any(),any())(any())) thenReturn {
+        Future.successful(addSelectedProductsAsAliasesResult)
       }
 
       when(injected[PurchasedProductService].clearWorkingInstance(any())(any(),any())) thenReturn Future.successful(cachedJourneyData.get)
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].storeJourneyData(any())(any())) thenReturn Future.successful(cachedJourneyData)
 
       rt(app, req)
     }
 
+  }
+
+  "Invoking clearAndAskProductSelection" should {
+
+    "clear any selectedAliases from the Journey Data, cache it and redirect to askProductSelection with the correct path" in new LocalSetup {
+
+      val localRequiredJourneyData = requiredJourneyData.copy(selectedAliases = List(
+        ProductAlias("alcohol.beer", ProductPath("alcohol/beer"))
+      ))
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+
+        verify(injected[Cache], times(1)).storeJourneyData(meq(localRequiredJourneyData.copy(selectedAliases = Nil)))(any())
+
+    }
   }
 
   "Invoking askProductSelection for branch items" should {
@@ -152,47 +176,84 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "addSelectedProducts to keystore, clearing all selected products not in the dto and then redirect to nextStep given valid checkbox values" in new LocalSetup {
+    "addSelectedProducts to keystore and then redirect to nextStep given valid checkbox values" in new LocalSetup {
 
+      val localRequiredJourneyData = requiredJourneyData.copy(selectedAliases = List(
+        ProductAlias("alcohol.beer", ProductPath("alcohol/beer")),
+        ProductAlias("alcohol.cider", ProductPath("alcohol/cider")),
+        ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))
+      ))
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData.copy(selectedProducts = List(
-        List("alcohol/beer"),List("alcohol/cider"), List("tobacco/cigar")
-      )))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
       override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
-      verify(injected[SelectProductService], times(1)).addSelectedProducts(meq(requiredJourneyData.copy(selectedProducts = Nil)), meq(List(ProductPath("alcohol/beer"))))(any())
+      verify(injected[SelectProductService], times(1)).addSelectedProductsAsAliases(meq(localRequiredJourneyData), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[Cache], times(1)).fetch(any())
+
+    }
+  }
+
+  "Invoking processProductSelectionOtherGoods" should {
+
+    "return bad request when given invalid data" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("value" -> "bad_value")).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
+    "addSelectedProducts to keystore and then redirect to searchGoods when the value is a ProductTreeBranch" in new LocalSetup {
+
+      override lazy val addSelectedProductsAsAliasesResult = JourneyData(selectedAliases = List(
+        ProductAlias("label.carpets-fabric", ProductPath("other-goods/carpets-fabric"))
+      ))
+
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("tokens[0]" -> "carpets-fabric")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+    }
+
+    "addSelectedProducts to keystore and then redirect to searchGoods when the value is a ProductTreeLeaf" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("tokens[0]" -> "car-seats")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")
 
     }
   }
 
   "Invoking nextStep" should {
 
-
     trait NextStepSetup {
 
-      def selectedProducts: List[List[String]]
+      def selectedProducts: List[ProductAlias]
 
       lazy val response = {
 
         import play.api.test.Helpers.route
 
         when(injected[Cache].fetch(any())) thenReturn{
-//          Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), isVatResClaimed = None, isBringingDutyFree = None, ageOver17 = Some(true), privateCraft = Some(false), selectedProducts = selectedProducts)))
-          Future.successful(Some(requiredJourneyData.copy(selectedProducts = selectedProducts)))
+          Future.successful(Some(requiredJourneyData.copy( selectedAliases = selectedProducts )))
         }
-        when(injected[SelectProductService].removeSelectedProduct()(any())) thenReturn{
+        when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn{
           Future.successful(CacheMap("dummy", Map.empty))
         }
 
         route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get
       }
-
-
     }
 
     "redirect to dashboard page when journeyData.selectedProducts returns an empty list" in new NextStepSetup {
@@ -202,36 +263,36 @@ class SelectProductControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
       verify(injected[Cache], times(1)).fetch(any())
-      verify(injected[SelectProductService], times(0)).removeSelectedProduct()(any())
+      verify(injected[SelectProductService], times(0)).removeSelectedAlias(any())(any())
     }
 
     "inform the user the item is not found when journeyData.selectedProducts contains an invalid path" in new NextStepSetup {
 
-      override val selectedProducts = List(List("other-goods", "beer"))
+      override val selectedProducts = List(ProductAlias("other-goods.invalid", ProductPath("other-goods/invalid")))
 
       status(response) shouldBe NOT_FOUND
       verify(injected[Cache], times(1)).fetch(any())
-      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any())
+      verify(injected[SelectProductService], times(1)).removeSelectedAlias(any())(any())
     }
 
     "go to purchase input form when journeyData.selectedProducts contains a leaf" in new NextStepSetup {
 
-      override val selectedProducts = List(List("other-goods", "books"))
+      override val selectedProducts = List(ProductAlias("other-goods.books", ProductPath("other-goods/books")))
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/tell-us")
       verify(injected[Cache], times(1)).fetch(any())
-      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any())
+      verify(injected[SelectProductService], times(1)).removeSelectedAlias(any())(any())
     }
 
     "redirect to selectProducts when journeyData.selectedProducts contains a branch" in new NextStepSetup {
 
-      override val selectedProducts = List(List("alcohol"))
+      override val selectedProducts = List(ProductAlias("alcohol", ProductPath("alcohol")))
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
       verify(injected[Cache], times(1)).fetch(any())
-      verify(injected[SelectProductService], times(1)).removeSelectedProduct()(any())
+      verify(injected[SelectProductService], times(1)).removeSelectedAlias(any())(any())
     }
   }
 }

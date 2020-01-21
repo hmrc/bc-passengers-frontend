@@ -76,7 +76,7 @@ class TravelDetailsController @Inject() (
   val whereGoodsBought: Action[AnyContent] = whereGoodsBoughtAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _,_, _, _, _, _, _)) =>
           Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck))))
         case _ =>
           Ok(eu_country_check(EuCountryCheckDto.form))
