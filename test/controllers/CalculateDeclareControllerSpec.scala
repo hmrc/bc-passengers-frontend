@@ -58,7 +58,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
 
-    lazy val crBelowLimit= CalculatorResponse(
+    lazy val crBelowLimit = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -74,12 +74,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
-      Calculation("0.00", "0.00", "0.00", "1.00"),
+      Calculation("0.00", "0.00", "0.00", "8.99"),
       withinFreeAllowance = true,
       limits = Map.empty
     )
 
-    lazy val crWithinLimit = CalculatorResponse(
+    lazy val crWithinLimitLow = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -95,7 +95,28 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
-      Calculation("0.00", "0.00", "0.00", "18567.00"),
+      Calculation("0.00", "0.00", "0.00", "9.00"),
+      withinFreeAllowance = true,
+      limits = Map.empty
+    )
+
+    lazy val crWithinLimitHigh = CalculatorResponse(
+      Some(Alcohol(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(Tobacco(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(OtherGoods(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Calculation("0.00", "0.00", "0.00", "97000.00"),
       withinFreeAllowance = true,
       limits = Map.empty
     )
@@ -105,18 +126,18 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
-      ), Calculation("0.00", "0.00", "0.00", "100000.00"))),
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
-      ), Calculation("0.00", "0.00", "0.00", "100000.00"))),
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
-        ), Calculation("0.00", "88.00", "306038.56", "306126.56"))
-      ), Calculation("0.00", "88.00", "306038.56", "306126.56"))),
-      Calculation("0.00", "88.00", "306038.56", "306126.56"),
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Calculation("0.00", "0.00", "0.00", "97000.01"),
       withinFreeAllowance = true,
       limits = Map.empty
     )
@@ -172,8 +193,21 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax greater than nine pounds and less than 90,000" should {
 
-    "Display the where-goods-bought page" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimit))))
+    "Display the where-goods-bought page when at the lower end of the range" in new LocalSetup {
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
+    }
+
+    "Display the where-goods-bought page when at the higher end of the range" in new LocalSetup {
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -188,8 +222,22 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax greater than nine pounds and less than 90,000" should {
 
-    "Display the where-goods-bought page" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimit))))
+    "Display the where-goods-bought page when at the lower end of the range" in new LocalSetup {
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+    }
+
+    "Display the where-goods-bought page when at the higher end of the range" in new LocalSetup {
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -355,7 +403,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimit))))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -379,7 +427,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimit), userInformation = Some(ui))))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
 
@@ -405,7 +453,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimit), userInformation = Some(ui))))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
       override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
