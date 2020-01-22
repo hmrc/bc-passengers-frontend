@@ -22,6 +22,8 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
   lazy val maxOtherGoods: Int = runModeConfiguration.getOptional[Int]("max-other-goods-items").getOrElse(50)
+  lazy val minPaymentAmount: Int = runModeConfiguration.getOptional[Int]("min-payment-amount").getOrElse(9)
+  lazy val paymentLimit: Int = runModeConfiguration.getOptional[Int]("payment-limit").getOrElse(97000)
 
   // Feature Flags
   lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
