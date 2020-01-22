@@ -242,7 +242,7 @@ class DeclareAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppCo
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
 
-      if (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) > appConfig.minPaymentAmount && BigDecimal(x.calculation.allTax) <  appConfig.paymentLimit)){
+      if (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) >= appConfig.minPaymentAmount && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit)){
         block(context)
       } else {
        Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
