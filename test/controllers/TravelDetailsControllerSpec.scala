@@ -253,7 +253,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-
   "calling GET .../goods-bought-inside-eu" should {
 
     "return the goods bought inside the eu interrupt page" in new LocalSetup {
@@ -285,8 +284,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
       content should include ("You do not need to use this service")
     }
   }
-
-
 
   "Calling GET .../private-travel" should {
 

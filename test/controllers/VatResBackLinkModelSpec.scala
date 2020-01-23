@@ -121,7 +121,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = TravelDetailsController.dutyFreeEu
+      override def call: Call = TravelDetailsController.bringingDutyFreeQuestionEu()
 
       m.backLink(context) shouldBe Some(TravelDetailsController.dutyFree.url)
     }
@@ -147,7 +147,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = TravelDetailsController.dutyFreeMix
+      override def call: Call = TravelDetailsController.bringingDutyFreeQuestionMix()
 
       m.backLink(context) shouldBe Some(TravelDetailsController.dutyFree.url)
     }
@@ -191,7 +191,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.dutyFreeMix.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionMix().url)
     }
 
     "return user to no-need-to-use-this-service when euCountryCheck=both and isVatResClaimed=false and isBringingDutyFree=true and bringingOverAllowance=false" in new LocalSetup {
@@ -269,7 +269,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.dutyFreeEu.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionEu().url)
     }
 
     "return user to no-need-to-use-this-service when euCountryCheck=euOnly and isVatResClaimed=false and bringingOverAllowance=false" in new LocalSetup {
@@ -311,7 +311,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.noNeedToUseService
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.dutyFreeMix.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionMix.url)
     }
 
     "return user to duty-free-eu when euCountryCheck=euOnly" in new LocalSetup {
@@ -324,7 +324,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.noNeedToUseService
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.dutyFreeEu.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionEu.url)
     }
 
     "return user to goods-bought-outside-eu when euCountryCheck=nonEuOnly" in new LocalSetup {

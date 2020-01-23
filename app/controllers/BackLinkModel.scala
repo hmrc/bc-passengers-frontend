@@ -39,7 +39,7 @@ class BackLinkModel @Inject() (
       case "private-travel" if eucc==Some("both") & !vrc & !bdf & !boa =>
         Some(TravelDetailsController.noNeedToUseService)
       case "private-travel" if eucc==Some("both") & !vrc & bdf & boa =>
-        Some(TravelDetailsController.dutyFreeMix)
+        Some(TravelDetailsController.bringingDutyFreeQuestionMix())
       case "private-travel" if eucc==Some("both") & vrc =>
         Some(TravelDetailsController.didYouClaimTaxBack)
       case "private-travel" if eucc==Some("nonEuOnly")  & boa=>
@@ -49,15 +49,15 @@ class BackLinkModel @Inject() (
       case "private-travel" if eucc==Some("euOnly") & vrc =>
         Some(TravelDetailsController.didYouClaimTaxBack)
       case "private-travel" if eucc==Some("euOnly") & !vrc & boa=>
-        Some(TravelDetailsController.dutyFreeEu)
+        Some(TravelDetailsController.bringingDutyFreeQuestionEu())
       case "private-travel" if eucc==Some("euOnly") & !vrc & !boa=>
         Some(TravelDetailsController.noNeedToUseService)
       case "no-need-to-use-service" if eucc==Some("both") & !bdf =>
         Some(TravelDetailsController.goodsBoughtInsideAndOutsideEu)
       case "no-need-to-use-service" if eucc==Some("both") & bdf =>
-        Some(TravelDetailsController.dutyFreeMix)
+        Some(TravelDetailsController.bringingDutyFreeQuestionMix())
       case "no-need-to-use-service" if eucc==Some("euOnly") =>
-        Some(TravelDetailsController.dutyFreeEu)
+        Some(TravelDetailsController.bringingDutyFreeQuestionEu())
       case "no-need-to-use-service" if eucc==Some("nonEuOnly") =>
         Some(TravelDetailsController.goodsBoughtOutsideEu)
       case "confirm-age" =>
