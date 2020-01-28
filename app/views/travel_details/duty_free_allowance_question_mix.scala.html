@@ -5,11 +5,7 @@
 @import util.prefixErrorMessage
 
 @title = {
-  @if(mixEuRow){
     @messages("heading.you_may_need_to_declare_all_your_goods")
-  }else{
-    @messages("heading.you_may_need_to_declare_goods_brought_")
-  }
 }
 
 @main_template(title = prefixErrorMessage(title.toString, bringingOverAllowance.hasErrors), backLink = backLink) {
@@ -52,7 +48,7 @@
     <p>@messages("text.if_you_bring_in_goods_over_")</p>
     <p>@messages("text.our_online_calculator_accepts_")</p>
 
-    @form(action = routes.TravelDetailsController.dutyFreeInterruptPost()){
+    @form(action = routes.TravelDetailsController.dutyFreeAllowanceQuestionMixPost()){
     <fieldset>
       <legend class="heading-medium">@messages("heading.are_you_bringing_in_goods_over_")</legend>
 

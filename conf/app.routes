@@ -27,11 +27,11 @@ POST       /did-you-claim-tax-back                                              
 GET        /duty-free                                                                  controllers.TravelDetailsController.dutyFree
 POST       /duty-free                                                                  controllers.TravelDetailsController.dutyFreePost
 
-GET        /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeEu
-POST       /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeInterruptPost
+GET        /duty-free-eu                                                               controllers.TravelDetailsController.bringingDutyFreeQuestionEu
+POST       /duty-free-eu                                                               controllers.TravelDetailsController.dutyFreeAllowanceQuestionEuPost
 
-GET        /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeMix
-POST       /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeInterruptPost
+GET        /duty-free-mix                                                              controllers.TravelDetailsController.bringingDutyFreeQuestionMix
+POST       /duty-free-mix                                                              controllers.TravelDetailsController.dutyFreeAllowanceQuestionMixPost
 
 GET        /new-session                                                                controllers.TravelDetailsController.newSession
 

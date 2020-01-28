@@ -248,7 +248,6 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
     }
 
-
     "return bad request when given invalid data" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = None))
@@ -258,7 +257,6 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
 
       verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
-
     }
 
     "return top error summary box when trying to submit a blank form" in new LocalSetup {
