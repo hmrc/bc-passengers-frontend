@@ -6,7 +6,7 @@
 @import util.prefixErrorMessage
 
 @scriptElem = {
-  <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
+  <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
   <script>
     $(document).ready(function () {
 
@@ -15,16 +15,16 @@
 
       if (version !== 11) {
         var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
-              enhanceSelectIntoAutoComplete("country", countrySynonymsData)
+        enhanceSelectIntoAutoComplete("country", countrySynonymsData)
         var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
-              enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+        enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
       }
     });
   </script>
 }
 
 @linkElem = {
-  <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
+  <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
 }
 
 @main_template(

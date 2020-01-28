@@ -6,7 +6,7 @@
 @import util.prefixErrorMessage
 
 @scriptElem = {
-  <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
+  <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
   <script>
     $(document).ready(function () {
 
@@ -36,7 +36,7 @@
 }
 
 @linkElem = {
-  <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
+  <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
 }
 
 @main_template(

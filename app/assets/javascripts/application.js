@@ -32,23 +32,33 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
   accessibleAutocomplete.enhanceSelectElement({
     selectElement: document.querySelector('#' + selectElementId),
     displayMenu: 'inline',
-    defaultValue: '',
+    minLength: 2,
     source: customSuggest,
+    confirmOnBlur: true,
     onConfirm: function(confirmed) {
-      $('select[name="'+selectElementId+'"]').val(confirmed.code);
-      if(submitOnConfirm) {
-        window.setTimeout(function(){
-          $('form').submit();
-        }, 100);
-      }
 
+      //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
+      let foundInData = dataSource.find(e => e.displayName === $('#'+selectElementId).val())
+      let element = !!confirmed ? confirmed : foundInData
+
+      if(!!element) {
+        $('select[name="'+selectElementId+'"]').val(element.code);
+        if(submitOnConfirm) {
+          window.setTimeout(function(){
+            $('form').submit();
+          }, 100);
+        }
+      }
+      else {
+        $('select[name="'+selectElementId+'"]').val('')
+      }
     },
     templates: {
       inputValue: function(result) {
-        return result && result.displayName;
+        return (!!result && result.displayName ? result.displayName : '');
       },
       suggestion: function(result) {
-        return result.displayName;
+        return !!result.displayName ? result.displayName : result;
       }
     }
   })
