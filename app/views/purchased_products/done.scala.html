@@ -44,7 +44,7 @@
 
   <details class="margin-bottom-20" role="group">
     <summary role="button" aria-controls="details-content-0" aria-expanded="false">
-      <span class="summary">How the tax was calculated</span>
+      <span class="summary">@messages("label.how_the_tax_was_calculated")</span>
     </summary>
     <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
 
@@ -83,7 +83,7 @@
 
       @if(!hideExchangeRateInfo) {
         <br>
-        <p class="margin-top-30">@Html(messages("label.exchange_rates"))</p>
+        <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly"))</p>
       }
     </div>
   </details>

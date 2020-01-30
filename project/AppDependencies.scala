@@ -12,6 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-play-26" % "0.46.0",
     "uk.gov.hmrc" %% "http-caching-client" % "8.5.0-play-26",
     "com.typesafe.play" %% "play-json-joda" % "2.6.13",
+    "uk.gov.hmrc" %% "play-language" % "4.2.0-play-26",
     "org.mindrot" % "jbcrypt" % "0.4",
     "org.webjars.npm" % "accessible-autocomplete" % "2.0.1"
   )

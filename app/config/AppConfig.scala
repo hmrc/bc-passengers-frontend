@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
+import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
@@ -28,4 +29,13 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
   // Feature Flags
   lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
   lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
+
+  def languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy"))
+
+  def routeToSwitchLanguage = (lang: String) => controllers.routes.LocalLanguageController.switchToLanguage(lang)
+
+  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
+
 }
