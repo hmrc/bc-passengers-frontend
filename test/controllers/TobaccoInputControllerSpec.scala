@@ -48,6 +48,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     lazy val cachedJourneyData = Some(JourneyData(
       Some("nonEuOnly"),
+      arrivingNICheck = Some(true),
       isVatResClaimed = Some(true),
       isBringingDutyFree = None,
       bringingOverAllowance = Some(true),
@@ -145,6 +146,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -183,6 +185,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -833,6 +836,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -863,6 +867,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -893,6 +898,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -923,6 +929,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),

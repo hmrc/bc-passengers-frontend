@@ -38,6 +38,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
 
     val requiredJourneyData = JourneyData(
       Some("nonEuOnly"),
+      arrivingNICheck = Some(true),
       isVatResClaimed = None,
       isBringingDutyFree = None,
       bringingOverAllowance = Some(true),

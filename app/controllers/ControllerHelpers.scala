@@ -43,7 +43,7 @@ trait ControllerHelpers extends MessagesBaseController
   def requireCalculatorResponse(block: CalculatorResponse => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(_, _, _, _, _, _, _, _, _, _, _, Some(calculatorResponse), _, _) => block(calculatorResponse)
+      case JourneyData(_, _,_, _, _, _, _, _, _, _, _, _, Some(calculatorResponse), _, _) => block(calculatorResponse)
       case _ =>
         logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
     }
@@ -88,8 +88,8 @@ trait ControllerHelpers extends MessagesBaseController
   def requireTravelDetails(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     context.getJourneyData match {
-      case JourneyData(Some(_), _, _,  _,Some(_), Some(_), _, _, _, _, _, _, _, _) if appConfig.isVatResJourneyEnabled => block
-      case JourneyData(Some(_), None, None, _, Some(_), Some(_), _, _, _, _, _, _, _, _) if !appConfig.isVatResJourneyEnabled => block
+      case JourneyData(Some(_), _,_, _,  _,Some(_), Some(_), _, _, _, _, _, _, _, _) if appConfig.isVatResJourneyEnabled => block
+      case JourneyData(Some(_), _, None, None, _, Some(_), Some(_), _, _, _, _, _, _, _, _) if !appConfig.isVatResJourneyEnabled => block
       case _ =>
         logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... ", routes.TravelDetailsController.newSession())
     }
@@ -129,7 +129,7 @@ trait ControllerHelpers extends MessagesBaseController
 
   def withDefaults(jd: JourneyData)(block: Option[String] =>  Option[String] => Future[Result])(implicit context: LocalContext): Future[Result] = {
     jd match {
-      case JourneyData(_, _, _, _, _, _, _, _, _, _, _, _, defaultCountry, defaultCurrency) => block(defaultCountry)(defaultCurrency)
+      case JourneyData(_, _,_, _, _, _, _, _, _, _, _, _, _, defaultCountry, defaultCurrency) => block(defaultCountry)(defaultCurrency)
     }
   }
 }

@@ -1234,3 +1234,7 @@ title.isle_of_man_pounds_imp=Punt Ynys Manaw (IMP)
 title.jersey_pounds_jep=Punt Jersey (JEP)
 title.saint_helenian_pounds_shp=Punt Saint Helena (SHP)
 label.for_security_we_deleted_your_answers=Er eich diogelwch, gwnaethom ddileu’ch atebion
+
+heading.arriving-ni = (W)Is your final destination Northern Ireland?(W)
+head.error.arriving_ni = (W)Select if your final destination is Northern Ireland(W)
+error.arriving_ni = (W)Select if your final destination is Northern Ireland(W)
