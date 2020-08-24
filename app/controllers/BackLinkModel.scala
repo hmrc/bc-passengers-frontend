@@ -22,14 +22,17 @@ class BackLinkModel @Inject() (
 
     def eucc = context.journeyData.flatMap(_.euCountryCheck)
     def vrc = context.journeyData.flatMap(_.isVatResClaimed).getOrElse(false)
+    def arrivalni = context.journeyData.flatMap(_.arrivingNICheck)
     def bdf = context.journeyData.flatMap(_.isBringingDutyFree).getOrElse(false)
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
     def call = location match {
       case "did-you-claim-tax-back" | "goods-bought-outside-eu" =>
-        Some(TravelDetailsController.whereGoodsBought)
+        Some(ArrivingNIController.loadArrivingNIPage)
       case "duty-free" =>
         Some(TravelDetailsController.didYouClaimTaxBack)
+      case "arriving-ni" =>
+        Some(TravelDetailsController.whereGoodsBought)
       case "goods-bought-inside-eu" | "duty-free-eu" | "goods-bought-inside-and-outside-eu" | "duty-free-mix" =>
         Some(TravelDetailsController.dutyFree)
       case "private-travel" if eucc==Some("both") & !vrc & bdf & !boa =>
@@ -89,6 +92,8 @@ class BackLinkModel @Inject() (
 
     def call = location match {
       case "goods-bought-inside-eu" | "goods-bought-inside-and-outside-eu" | "goods-bought-outside-eu" =>
+        Some(ArrivingNIController.loadArrivingNIPage)
+      case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
       case "private-travel" if eucc==Some("both") & boa =>
         Some(TravelDetailsController.goodsBoughtInsideAndOutsideEuPost)

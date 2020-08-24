@@ -39,6 +39,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     lazy val cachedJourneyData = Some(JourneyData(
       Some("nonEuOnly"),
+      arrivingNICheck = Some(true),
       isVatResClaimed = None,
       isBringingDutyFree = None,
       bringingOverAllowance = Some(true),
@@ -82,6 +83,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -107,6 +109,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -132,6 +135,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -180,6 +184,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -212,6 +217,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Some(JourneyData(
         Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),

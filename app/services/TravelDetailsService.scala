@@ -134,7 +134,8 @@ class TravelDetailsService @Inject() (
     }
   }
 
-  def storeIrishBorder(journeyData: Option[JourneyData])(irishBorder: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+  def storeIrishBorder(journeyData: Option[JourneyData])(irishBorder: Boolean)
+                      (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
     journeyData match {
       case Some(journeyData) if !journeyData.irishBorder.contains(irishBorder) =>
@@ -145,6 +146,24 @@ class TravelDetailsService @Inject() (
 
       case None =>
         cache.storeJourneyData( JourneyData(irishBorder = Some(irishBorder)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
+
+  def storeArrivingNI(journeyData: Option[JourneyData])(arrivingNICheck: Boolean)
+                     (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+
+    journeyData match {
+      case Some(journeyData) if !journeyData.arrivingNICheck.contains(arrivingNICheck) =>
+
+        cache.storeJourneyData(journeyData.copy(
+          arrivingNICheck = Some(arrivingNICheck)
+        ))
+
+      case None =>
+        cache.storeJourneyData( JourneyData(arrivingNICheck = Some(arrivingNICheck)) )
 
       case _ =>
         Future.successful( journeyData )

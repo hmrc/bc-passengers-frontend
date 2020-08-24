@@ -51,6 +51,7 @@ class CalculatorServiceSpec extends BaseSpec {
       None,
       None,
       None,
+      None,
       Some(false),
       Some(true),
       Some(true),
@@ -268,6 +269,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val jd = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         ageOver17 = Some(true),
         privateCraft = Some(false),
         purchasedProductInstances = List(
@@ -307,6 +309,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val jd = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
         ageOver17 = Some(true),
         privateCraft = Some(false),
         purchasedProductInstances = List(

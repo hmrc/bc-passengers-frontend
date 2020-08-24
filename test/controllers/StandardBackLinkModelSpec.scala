@@ -23,16 +23,17 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
     def isIrishBorderQuestionEnabled: Boolean
     def euCountryCheck: Option[String]
+    def isArrivingNi: Option[Boolean] = None
     def isVatResClaimed: Option[Boolean]
     def isBringingDutyFree: Option[Boolean]
     def bringingOverAllowance: Option[Boolean]
 
     def call: Call
 
-    lazy val journeyData = (euCountryCheck, isVatResClaimed, isBringingDutyFree) match {
-      case (None, None, None) => None
-      case (euCountryCheck, isVatResClaimed, isBringingDutyFree) =>
-        Some(JourneyData(euCountryCheck = euCountryCheck, isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree, bringingOverAllowance = bringingOverAllowance))
+    lazy val journeyData = (euCountryCheck, isArrivingNi, isVatResClaimed, isBringingDutyFree) match {
+      case (None, None, None, None) => None
+      case (euCountryCheck, isArrivingNi, isVatResClaimed, isBringingDutyFree) =>
+        Some(JourneyData(euCountryCheck = euCountryCheck, arrivingNICheck = isArrivingNi, isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree, bringingOverAllowance = bringingOverAllowance))
     }
 
     lazy val context = new LocalContext(FakeRequest(call), "FAKESESSIONID", journeyData)
@@ -40,48 +41,66 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
   import routes._
 
-  "Going back to where-goods-bought" should {
+  "Going back to arriving-ni" should {
 
     "happen when on goods-bought-outside-eu" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck  = None
+      override val isArrivingNi  = None
       override val isVatResClaimed = None
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
       override def call: Call = TravelDetailsController.goodsBoughtOutsideEu
 
-      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
-    "happen when on goods-bought-inside-eu" in new LocalSetup {
+    "happen when on arriving-ni" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck  = None
+      override val isArrivingNi  = None
       override val isVatResClaimed = None
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
       override def call: Call = TravelDetailsController.goodsBoughtInsideEu
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.whereGoodsBought.url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
     "happen when on goods-bought-inside-and-outside-eu" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck  = None
+      override val isArrivingNi = None
       override val isVatResClaimed = None
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
       override def call: Call = TravelDetailsController.goodsBoughtInsideAndOutsideEu
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.whereGoodsBought.url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
   }
 
+  "Going back to where-goods-bought" should {
+    "happen when on arriving-ni" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck  = None
+      override val isArrivingNi  = None
+      override val isVatResClaimed = None
+      override val isBringingDutyFree = None
+      override val bringingOverAllowance = None
+
+      override def call: Call = ArrivingNIController.loadArrivingNIPage
+
+      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
+    }
+  }
 
   "Going back from private-travel" should {
 

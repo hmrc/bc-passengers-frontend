@@ -249,4 +249,17 @@ class DeclareAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppCo
      }
     }
   }
+
+}
+
+@Singleton
+class ArrivingNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+  val step = if(appConfig.isVatResJourneyEnabled) vatres.ArrivingNIStep else nonvatres.ArrivingNIStep
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
 }

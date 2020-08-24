@@ -23,6 +23,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
     def isIrishBorderQuestionEnabled: Boolean
     def euCountryCheck: Option[String]
+    def arrivingNICheck: Option[Boolean] = None
     def isVatResClaimed: Option[Boolean]
     def isBringingDutyFree: Option[Boolean]
     def bringingOverAllowance: Option[Boolean]
@@ -30,10 +31,10 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
     def call: Call
 
-    lazy val journeyData = (euCountryCheck, isVatResClaimed, isBringingDutyFree) match {
-      case (None, None, None) => None
-      case (euCountryCheck, isVatResClaimed, isBringingDutyFree) =>
-        Some(JourneyData(euCountryCheck = euCountryCheck, isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree, bringingOverAllowance = bringingOverAllowance))
+    lazy val journeyData = (euCountryCheck, arrivingNICheck, isVatResClaimed, isBringingDutyFree) match {
+      case (None,None, None, None) => None
+      case (euCountryCheck, arrivingNICheck, isVatResClaimed, isBringingDutyFree) =>
+        Some(JourneyData(euCountryCheck = euCountryCheck,arrivingNICheck = arrivingNICheck, isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree, bringingOverAllowance = bringingOverAllowance))
     }
 
     lazy val context = {
@@ -51,7 +52,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
   import routes._
 
-  "Going back to where-goods-bought" should {
+  "Going back to arrvingNi" should {
 
     "happen when on did-you-claim-tax-back" in new LocalSetup {
 
@@ -63,20 +64,21 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.didYouClaimTaxBack
 
-      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
     "happen when on goods-bought-outside-eu" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
       override val euCountryCheck  = None
+      override val arrivingNICheck = None
       override val isVatResClaimed = None
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
       override def call: Call = TravelDetailsController.goodsBoughtOutsideEu
 
-      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
   }
@@ -415,6 +417,20 @@ class VatResBackLinkModelSpec extends BaseSpec {
       override def call: Call = routes.CalculateDeclareController.showCalculation
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
+    }
+  }
+  "Going back to where-goods-bought" should {
+    "happen when on arriving-ni" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck  = None
+      override val isVatResClaimed = None
+      override val isBringingDutyFree = None
+      override val bringingOverAllowance = None
+
+      override def call: Call = ArrivingNIController.loadArrivingNIPage
+
+      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
     }
   }
 }

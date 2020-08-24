@@ -54,7 +54,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "euOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(any())(meq("euOnly"))(any())
     }
@@ -67,7 +67,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(any())(meq("nonEuOnly"))(any())
     }
@@ -81,7 +81,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought").withFormUrlEncodedBody("euCountryCheck" -> "both")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")
 
       verify(controller.travelDetailsService, times(1)).storeEuCountryCheck(any())(meq("both"))(any())
     }
@@ -91,7 +91,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the did you claim tax back view unpopulated if there is no vat res answer in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), isVatResClaimed = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), arrivingNICheck = Some(true), isVatResClaimed = None))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
@@ -110,7 +110,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the did you claim tax back view populated if there is a vat res answer already in keystore?" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), isVatResClaimed = Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"),arrivingNICheck = Some(true),  isVatResClaimed = Some(true)))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
@@ -132,7 +132,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return bad request when given invalid data" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), isVatResClaimed = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), arrivingNICheck = Some(true), isVatResClaimed = None))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back").withFormUrlEncodedBody("value" -> "badValue")).get
 
@@ -144,7 +144,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return top error summary box when trying to submit a blank form" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), isVatResClaimed = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), arrivingNICheck = Some(true), isVatResClaimed = None))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
@@ -161,7 +161,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), isVatResClaimed = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"),arrivingNICheck = Some(true),  isVatResClaimed = None))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
@@ -179,7 +179,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the duty free view unpopulated if there is no duty free answer in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(false), isBringingDutyFree = None))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -198,7 +198,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the duty free view populated if there is a duty free answer already in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(false), isBringingDutyFree = Some(true)))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -220,7 +220,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to the goods-bought-inside-eu if not bringing duty free and had previously selected eu only countries" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false),Some(false), isBringingDutyFree = None))
 
       when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future.successful( Some( JourneyData() ) )
 
@@ -235,7 +235,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to the goods-bought-inside-and-outside-eu if not bringing duty free and had previously selected both eu and non eu countries" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false), isBringingDutyFree = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("both"),Some(false), Some(false), isBringingDutyFree = None))
 
       when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future.successful( Some( JourneyData() ) )
 
@@ -250,7 +250,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return bad request when given invalid data" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(false), isBringingDutyFree = None))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("value" -> "badValue")).get
 
@@ -261,7 +261,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return top error summary box when trying to submit a blank form" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"),Some(false), Some(false), isBringingDutyFree = None))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -278,7 +278,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), isBringingDutyFree = None))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(false),isBringingDutyFree = None))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
@@ -296,7 +296,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the interrupt page for passengers coming from EU that have bought EU" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"),Some(false), Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
 
@@ -312,7 +312,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the form when trying to submit a blank form" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false),Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
 
@@ -327,7 +327,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"),Some(false), Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
 
@@ -337,7 +337,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to the private travel page if they are bringing in goods over their allowance" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false), Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
 
@@ -350,7 +350,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return the interrupt page for passengers coming from EU that have bought EU" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false),Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
 
@@ -366,7 +366,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "return error notification on the form when trying to submit a blank form" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false),Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
 
@@ -381,7 +381,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false), Some(false), Some(true)))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
 
@@ -392,7 +392,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to the private travel page if they are bringing in goods over their allowance" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false), Some(true)))
+      override lazy val cachedJourneyData = Some(JourneyData(Some("both"), Some(false),Some(false), Some(true)))
       
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
 
