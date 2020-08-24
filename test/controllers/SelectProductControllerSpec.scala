@@ -26,7 +26,7 @@ import scala.language.postfixOps
 
 class SelectProductControllerSpec extends BaseSpec {
 
-  val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
+  val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
 
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()

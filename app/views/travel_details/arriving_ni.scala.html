@@ -1,0 +1,34 @@
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(arrivingNIForm: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("heading.arriving-ni"), arrivingNIForm.hasErrors), backLink = backLink) {
+
+@views.html.tags.errors(arrivingNIForm)
+
+
+@form(action = routes.ArrivingNIController.postArrivingNIPage()){
+
+<fieldset>
+    <legend>
+        <h1 class="heading-xlarge">@messages("heading.arriving-ni")</h1>
+    </legend>
+
+    @components.input_radio_group(
+    arrivingNIForm("arrivingNI"),
+    Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+    '_labelClass -> "block-label inputLabelBeforeError",
+    '_inline -> true
+    )
+
+    <div class="form-group">
+        <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+
+</fieldset>
+
+}
+
+}

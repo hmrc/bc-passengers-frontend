@@ -77,7 +77,7 @@ class TravelDetailsController @Inject() (
   val whereGoodsBought: Action[AnyContent] = whereGoodsBoughtAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(Some(countryCheck), _, _, _, _, _, _, _,_, _, _, _, _, _)) =>
+        case Some(JourneyData(Some(countryCheck), _,_, _, _, _, _, _, _,_, _, _, _, _, _)) =>
           Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck))))
         case _ =>
           Ok(eu_country_check(EuCountryCheckDto.form))
@@ -92,20 +92,7 @@ class TravelDetailsController @Inject() (
       },
       euCountryCheckDto => {
         travelDetailsService.storeEuCountryCheck(context.journeyData)(euCountryCheckDto.euCountryCheck) flatMap { _ =>
-          cache.fetch map { _ =>
-            if (appConfig.isVatResJourneyEnabled) {
-              euCountryCheckDto.euCountryCheck match {
-                case "euOnly" => Redirect(routes.TravelDetailsController.didYouClaimTaxBack())
-                case "nonEuOnly" => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
-                case "both" => Redirect(routes.TravelDetailsController.didYouClaimTaxBack())
-              }
-            } else {
-              euCountryCheckDto.euCountryCheck match {
-                case "euOnly" => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
-                case "nonEuOnly" => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
-                case "both" => Redirect(routes.TravelDetailsController.goodsBoughtInsideAndOutsideEu())
-              }
-            }
+          cache.fetch map { _ => Redirect(routes.ArrivingNIController.loadArrivingNIPage())
           }
         }
       }
@@ -115,7 +102,7 @@ class TravelDetailsController @Inject() (
   val didYouClaimTaxBack: Action[AnyContent] = didYouClaimTaxBackAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, Some(claimedVatRes), _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _,Some(claimedVatRes), _, _, _, _, _, _, _, _, _, _, _, _)) =>
           Ok(did_you_claim_tax_back(ClaimedVatResDto.form.fill(ClaimedVatResDto(claimedVatRes)), backLinkModel.backLink))
         case _ =>
           Ok(did_you_claim_tax_back(ClaimedVatResDto.form, backLinkModel.backLink))
@@ -143,7 +130,7 @@ class TravelDetailsController @Inject() (
   val dutyFree: Action[AnyContent] = bringingDutyFreeAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, Some(isBringingDutyFree), _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _,_, Some(isBringingDutyFree), _, _, _, _, _, _, _, _, _, _, _)) =>
           Ok(bringing_duty_free_question(BringingDutyFreeDto.form.fill(BringingDutyFreeDto(isBringingDutyFree)), backLinkModel.backLink))
         case _ =>
           Ok(bringing_duty_free_question(BringingDutyFreeDto.form, backLinkModel.backLink))
@@ -187,7 +174,7 @@ class TravelDetailsController @Inject() (
   val goodsBoughtOutsideEu: Action[AnyContent] = goodsBoughtOutsideEuAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _,_ , _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
           Ok(goods_bought_outside_eu(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), backLinkModel.backLink))
         case _ =>
           Ok(goods_bought_outside_eu(BringingOverAllowanceDto.form, backLinkModel.backLink))
@@ -215,7 +202,7 @@ class TravelDetailsController @Inject() (
   val goodsBoughtInsideAndOutsideEu: Action[AnyContent] = goodsBoughtInAndOutEuAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _,_, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
           Ok(goods_bought_inside_and_outside_eu(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), backLinkModel.backLink))
         case _ =>
           Ok(goods_bought_inside_and_outside_eu(BringingOverAllowanceDto.form, backLinkModel.backLink))
@@ -247,7 +234,7 @@ class TravelDetailsController @Inject() (
   val bringingDutyFreeQuestionEu: Action[AnyContent] = declareDutyFreeEuAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_,_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
           Ok(duty_free_allowance_question_eu(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), mixEuRow = false, backLinkModel.backLink))
         case _ =>
           Ok(duty_free_allowance_question_eu(BringingOverAllowanceDto.form, mixEuRow = false, backLinkModel.backLink))
@@ -258,7 +245,7 @@ class TravelDetailsController @Inject() (
   val bringingDutyFreeQuestionMix: Action[AnyContent] = declareDutyFreeMixAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _,_, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _)) =>
           Ok(duty_free_allowance_question_mix(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), mixEuRow = true, backLinkModel.backLink))
         case _ =>
           Ok(duty_free_allowance_question_mix(BringingOverAllowanceDto.form, mixEuRow = true, backLinkModel.backLink))
@@ -303,7 +290,7 @@ class TravelDetailsController @Inject() (
   val privateTravel: Action[AnyContent] = privateCraftAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _, Some(pc), _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _, _,_, _, Some(pc), _, _, _, _, _, _, _, _, _)) =>
           Ok(private_travel(form.bind(Map("privateCraft" -> pc.toString)), backLinkModel.backLink))
         case _ =>
           Ok(private_travel(form, backLinkModel.backLink))
@@ -327,7 +314,7 @@ class TravelDetailsController @Inject() (
   def confirmAge: Action[AnyContent] = is17OrOverAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _, _, Some(ageOver17), _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _, _,_, _, _, Some(ageOver17), _, _, _, _, _, _, _, _)) =>
           Ok(confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString)), backLinkModel.backLink))
         case _ =>
           Ok(confirm_age(AgeOver17Dto.form, backLinkModel.backLink))

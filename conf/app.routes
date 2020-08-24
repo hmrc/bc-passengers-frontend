@@ -5,6 +5,9 @@ GET        /check-declare-goods-start-page                                      
 GET        /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBought
 POST       /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBoughtPost
 
+GET        /arriving-ni                                                                controllers.ArrivingNIController.loadArrivingNIPage
+POST       /arriving-ni                                                                controllers.ArrivingNIController.postArrivingNIPage
+
 GET        /goods-bought-inside-eu                                                     controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEu
