@@ -1382,5 +1382,5 @@ label.other-goods.mans_clothes = Man’s clothes
 label.other-goods.womens_clothes = Women’s clothes
 
 heading.arriving-ni = Is your final destination Northern Ireland?
-head.error.arriving_ni = Select if your final destination is Northern Ireland
-error.arriving_ni = Select if your final destination is Northern Ireland
+head.error.arriving_ni = Select yes if your final destination is Northern Ireland
+error.arriving_ni = Select yes if your final destination is Northern Ireland
