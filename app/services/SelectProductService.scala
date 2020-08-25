@@ -5,7 +5,6 @@ import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models.{JourneyData, ProductAlias, ProductPath, ProductTreeBranch, ProductTreeLeaf}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,7 +37,7 @@ class SelectProductService @Inject()(
     }
   }
 
-  def removeSelectedAlias(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def removeSelectedAlias(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] = {
     cache.store(journeyData.copy(selectedAliases = journeyData.selectedAliases.tail))
   }
 

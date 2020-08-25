@@ -9,7 +9,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
+import repositories.BCPassengersSessionRepository
 import util.BaseSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,6 +18,7 @@ import scala.concurrent.Future
 class PurchasedProductServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
@@ -33,7 +34,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
       val service = app.injector.instanceOf[PurchasedProductService]
       val mock = service.cache
       when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData() )
       service
     }
   }

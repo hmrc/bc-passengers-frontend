@@ -14,8 +14,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{status, route => rt, _}
 import play.twirl.api.Html
+import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.tobacco._
@@ -25,6 +25,7 @@ import scala.concurrent.Future
 class TobaccoInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
@@ -71,7 +72,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-      when(injected[Cache].store(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
 

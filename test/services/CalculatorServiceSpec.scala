@@ -15,9 +15,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.test.Helpers._
+import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HttpResponse, Upstream4xxResponse}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import util.BaseSpec
 
 import scala.concurrent.Future
@@ -26,6 +26,7 @@ import scala.math.BigDecimal.RoundingMode
 class CalculatorServiceSpec extends BaseSpec {
 
   override lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .configure(
@@ -345,7 +346,7 @@ class CalculatorServiceSpec extends BaseSpec {
         val service = app.injector.instanceOf[CalculatorService]
         val mock = service.cache
         when(mock.fetch(any())) thenReturn Future.successful( None )
-        when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+        when(mock.store(any())(any())) thenReturn Future.successful( JourneyData() )
         service
       }
 

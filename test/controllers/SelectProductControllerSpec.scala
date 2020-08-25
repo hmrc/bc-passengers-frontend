@@ -15,8 +15,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
+import repositories.BCPassengersSessionRepository
 import services._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -30,6 +30,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[SelectProductService].toInstance(MockitoSugar.mock[SelectProductService]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -249,7 +250,7 @@ class SelectProductControllerSpec extends BaseSpec {
           Future.successful(Some(requiredJourneyData.copy( selectedAliases = selectedProducts )))
         }
         when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn{
-          Future.successful(CacheMap("dummy", Map.empty))
+          Future.successful(JourneyData())
         }
 
         route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get

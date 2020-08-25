@@ -13,6 +13,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.Helpers.{defaultAwaitTimeout, route, status}
 import play.api.test.Helpers._
+import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
@@ -26,6 +27,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
   val mockAppConfig = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])

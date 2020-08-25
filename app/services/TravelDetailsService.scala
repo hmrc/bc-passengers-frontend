@@ -4,7 +4,6 @@ import connectors.Cache
 import javax.inject.Inject
 import models.JourneyData
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
 

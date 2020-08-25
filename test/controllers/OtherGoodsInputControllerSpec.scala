@@ -14,8 +14,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import play.twirl.api.Html
+import repositories.BCPassengersSessionRepository
 import services.NewPurchaseService
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.other_goods.other_goods_input
@@ -25,6 +25,7 @@ import scala.concurrent.Future
 class OtherGoodsInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
@@ -60,7 +61,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-      when(injected[Cache].store(any())(any())) thenReturn Future.successful(CacheMap("id", Map.empty))
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
       when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
       when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get

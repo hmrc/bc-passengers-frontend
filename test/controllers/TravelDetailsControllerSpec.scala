@@ -11,8 +11,9 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
+import reactivemongo.api.commands.UpdateWriteResult
+import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, CalculatorServiceSuccessResponse, TravelDetailsService}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -24,6 +25,7 @@ import scala.language.postfixOps
 class TravelDetailsControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -533,9 +535,18 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "calling GET .../keepAlive" should {
     "return a response OK" in new LocalSetup {
-
+      when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
+        .successful(UpdateWriteResult(true,1,1,Seq(),Seq(),None,None,None))
       val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
       status(response) shouldBe OK
+
+    }
+
+    "return a response INTERNAL_SERVER_ERROR" in new LocalSetup {
+      when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
+        .failed(new Exception("failed updating timestamp"))
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
+      status(response) shouldBe INTERNAL_SERVER_ERROR
 
     }
   }

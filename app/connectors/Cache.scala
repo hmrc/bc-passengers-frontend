@@ -2,34 +2,25 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 import models.JourneyData
-import play.api.{Configuration, Environment}
-import services.http.WsAllMethods
+import reactivemongo.api.commands.UpdateWriteResult
+import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import uk.gov.hmrc.play.bootstrap.config.{AppName, ServicesConfig}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class Cache @Inject()(
-  override val http: WsAllMethods,
-  environment: Environment,
-  config: Configuration,
-  servicesConfig: ServicesConfig,
-  implicit val ec: ExecutionContext
-) extends SessionCache {
+                       val sessionRepository: BCPassengersSessionRepository,
+                       implicit val ec: ExecutionContext
+) {
 
-  override lazy val defaultSource = AppName.fromConfiguration(config)
-  override lazy val baseUri = servicesConfig.baseUrl("cachable.session-cache")
-  override lazy val domain = servicesConfig.getConfString("cachable.session-cache.domain", "keystore")
-
-  def store(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[CacheMap] = this.cache("journeyData", journeyData)
+  def store(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] = sessionRepository.store("journeyData", journeyData)
 
   def storeJourneyData(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
-    super.cache("journeyData", journeyData) map {
-      _.getEntry[JourneyData]("journeyData")
-    }
+    sessionRepository.store("journeyData", journeyData).flatMap(_ => fetch)
 
-  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = this.fetchAndGetEntry[JourneyData]("journeyData")
+  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = sessionRepository.fetch[JourneyData]("journeyData")
+
+  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier) : Future[UpdateWriteResult] = sessionRepository.updateUpdatedAtTimestamp
 }
