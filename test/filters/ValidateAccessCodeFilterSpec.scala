@@ -16,12 +16,14 @@ import util.BaseSpec
 import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
+import repositories.BCPassengersSessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ValidateAccessCodeFilterSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .configure("access.cutoffdate" -> "2019-01-25")
     .configure("access.intervaldays" -> "7")
     .configure("access.logkeys" -> "false")

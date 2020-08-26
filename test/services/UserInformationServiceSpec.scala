@@ -11,7 +11,6 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import util.BaseSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +35,7 @@ class UserInformationServiceSpec extends BaseSpec {
       val service = app.injector.instanceOf[UserInformationService]
       val mock = service.cache
       when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.store(any())(any())) thenReturn Future.successful( CacheMap("fakeid", Map.empty) )
+      when(mock.store(any())(any())) thenReturn Future.successful( JourneyData() )
       service
     }
   }

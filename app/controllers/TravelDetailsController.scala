@@ -8,6 +8,7 @@ import controllers.enforce._
 import javax.inject.{Inject, Singleton}
 import models.PrivateCraftDto._
 import models._
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
@@ -336,9 +337,12 @@ class TravelDetailsController @Inject() (
   }
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(
+    cache.updateUpdatedAtTimestamp.map(_ =>
       Ok("Ok")
-    )
+    ).recover{
+      case e => Logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
+        InternalServerError(e.getMessage)
+    }
   }
 
 }

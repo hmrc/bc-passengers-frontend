@@ -13,6 +13,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
 import util.{BaseSpec, _}
@@ -22,6 +23,7 @@ import scala.concurrent.Future
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   override lazy val app = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .configure(

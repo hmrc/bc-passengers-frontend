@@ -10,10 +10,12 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import util.BaseSpec
 import play.api.inject.bind
+import repositories.BCPassengersSessionRepository
 
 class VatResBackLinkModelSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
     .build()
 

@@ -8,11 +8,13 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import repositories.BCPassengersSessionRepository
 import util.BaseSpec
 
 class StandardBackLinkModelSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
     .build()
 
