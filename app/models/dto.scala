@@ -227,7 +227,6 @@ object EnterYourDetailsDto {
         "dateOfArrival" -> mandatoryDate("error.enter_a_date"),
         "timeOfArrival" -> mandatoryTime("error.enter_a_time")
       )(DateTimeOfArrival.apply)(DateTimeOfArrival.unapply)
-        .verifying("error.not_in_past", dto => dto.dateOfArrival.toDateTime(dto.timeOfArrival).isAfter(declarationTime.minus(Hours.THREE)))
         .verifying("error.72_hours", dto => dto.dateOfArrival.toDateTime(dto.timeOfArrival).isBefore(declarationTime.plus(Days.THREE)))
     )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
   )
