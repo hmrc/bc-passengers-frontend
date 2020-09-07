@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 package util
 
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpecLike}

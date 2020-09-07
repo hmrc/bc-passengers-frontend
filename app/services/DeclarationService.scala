@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 package services
 
 
@@ -46,12 +51,12 @@ class DeclarationService @Inject()(
 
     //First add correlation id etc
     wsAllMethods.POST[JsObject, HttpResponse](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/submit-declaration", partialDeclarationMessage, headers) map {
-      case HttpResponse(ACCEPTED, declaration, headers, _) =>
-        DeclarationServiceSuccessResponse(extractChargeReference(declaration))
-      case HttpResponse(BAD_REQUEST, _, _, _) =>
+      case HttpResponse(ACCEPTED, declaration, _) =>
+        DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
+      case HttpResponse(BAD_REQUEST, _, _) =>
         Logger.error("BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted")
         DeclarationServiceFailureResponse
-      case HttpResponse(status, _, _, _) =>
+      case HttpResponse(status, _, _) =>
         Logger.error("Unexpected status of " + status + " received from bc-passengers-declarations, unable to proceed")
         DeclarationServiceFailureResponse
     }
