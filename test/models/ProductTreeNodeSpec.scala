@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 package models
 
 import play.api.i18n.{Messages, MessagesApi}

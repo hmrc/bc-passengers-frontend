@@ -1,3 +1,8 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
 @(dtoForm: Form[OtherGoodsDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], currencies: List[Currency])(implicit request: Request[_], messages: Messages)
 
