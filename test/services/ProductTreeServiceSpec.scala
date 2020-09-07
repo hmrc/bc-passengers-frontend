@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 package services
 
 import models.{OtherGoodsSearchItem, ProductPath, ProductTreeBranch, ProductTreeLeaf, ProductTreeNode}

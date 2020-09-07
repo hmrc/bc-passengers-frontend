@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 package controllers.enforce.nonvatres
 
 import controllers.enforce.JourneyStep

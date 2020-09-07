@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
