@@ -37,7 +37,8 @@ class ProductTreeService {
             ProductTreeLeaf("cigarillos", "label.tobacco.cigarillos", "TOB/A1/CRILO", "cigars", List("L-CRILO")),
             ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR")),
             ProductTreeLeaf("chewing-tobacco", "label.tobacco.chewing-tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")),
-            ProductTreeLeaf("rolling-tobacco", "label.tobacco.rolling-tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE"))
+            ProductTreeLeaf("rolling-tobacco", "label.tobacco.rolling-tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE")),
+            ProductTreeLeaf("heated-tobacco", "label.tobacco.heated-tobacco","TOB/A1/HTB","tobacco", List("L-LOOSE"))
           )
         ),
         ProductTreeBranch("other-goods",
@@ -72,7 +73,6 @@ class ProductTreeService {
             ),
             ProductTreeLeaf("furniture", "label.other-goods.furniture", "OGD/ORN/MISC", "other-goods", Nil),
             ProductTreeLeaf("glassware", "label.other-goods.glassware", "OGD/GLASS", "other-goods", Nil),
-            ProductTreeLeaf("heated-tobacco", "label.other-goods.heated-tobacco","OGD/HTB","other-goods", Nil),
             ProductTreeLeaf("jewellery", "label.other-goods.jewellery","OGD/ORN/MISC","other-goods", Nil),
             ProductTreeLeaf("mobility-aids", "label.other-goods.mobility-aids", "OGD/MOB/MISC", "other-goods", Nil),
             ProductTreeLeaf("perfumes-cosmetics", "label.other-goods.perfumes-cosmetics", "OGD/COSMT", "other-goods", Nil),
@@ -156,9 +156,7 @@ class ProductTreeService {
     OtherGoodsSearchItem("label.other-goods.disability_apparatus", ProductPath("other-goods/disability-equipment")),
     OtherGoodsSearchItem("label.other-goods.glass", ProductPath("other-goods/glassware")),
     OtherGoodsSearchItem("label.other-goods.hygiene_products", ProductPath("other-goods/other")),
-    OtherGoodsSearchItem("label.other-goods.heets", ProductPath("other-goods/heated-tobacco")),
     OtherGoodsSearchItem("label.other-goods.helmet", ProductPath("other-goods/protective-helmets")),
-    OtherGoodsSearchItem("label.other-goods.iqos", ProductPath("other-goods/heated-tobacco")),
     OtherGoodsSearchItem("label.other-goods.kids_clothes", ProductPath("other-goods/childrens/childrens-clothing")),
     OtherGoodsSearchItem("label.other-goods.kids_shoes", ProductPath("other-goods/childrens/childrens-footwear")),
     OtherGoodsSearchItem("label.other-goods.mans_clothes", ProductPath("other-goods/adult/adult-clothing")),
