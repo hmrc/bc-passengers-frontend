@@ -32,13 +32,13 @@ class BackLinkModel @Inject() (
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
     def call = location match {
-      case "did-you-claim-tax-back" | "goods-bought-outside-eu" =>
+      case "goods-bought-inside-eu" | "goods-bought-outside-eu" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "duty-free" =>
         Some(TravelDetailsController.didYouClaimTaxBack)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
-      case "goods-bought-inside-eu" | "duty-free-eu" | "goods-bought-inside-and-outside-eu" | "duty-free-mix" =>
+      case "duty-free-eu" | "goods-bought-inside-and-outside-eu" | "duty-free-mix" =>
         Some(TravelDetailsController.dutyFree)
       case "private-travel" if eucc==Some("both") & !vrc & bdf & !boa =>
         Some(TravelDetailsController.noNeedToUseService)
@@ -54,8 +54,8 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.goodsBoughtOutsideEu)
       case "private-travel" if eucc==Some("nonEuOnly") & !boa =>
         Some(TravelDetailsController.noNeedToUseService)
-      case "private-travel" if eucc==Some("euOnly") & vrc =>
-        Some(TravelDetailsController.didYouClaimTaxBack)
+      case "private-travel" if eucc==Some("euOnly") & boa=>
+        Some(TravelDetailsController.goodsBoughtOutsideEu)
       case "private-travel" if eucc==Some("euOnly") & !vrc & boa=>
         Some(TravelDetailsController.bringingDutyFreeQuestionEu())
       case "private-travel" if eucc==Some("euOnly") & !vrc & !boa=>
@@ -64,10 +64,8 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.goodsBoughtInsideAndOutsideEu)
       case "no-need-to-use-service" if eucc==Some("both") & bdf =>
         Some(TravelDetailsController.bringingDutyFreeQuestionMix())
-      case "no-need-to-use-service" if eucc==Some("euOnly") =>
-        Some(TravelDetailsController.bringingDutyFreeQuestionEu())
-      case "no-need-to-use-service" if eucc==Some("nonEuOnly") =>
-        Some(TravelDetailsController.goodsBoughtOutsideEu)
+      case "no-need-to-use-service" =>
+        Some(TravelDetailsController.goodsBoughtOutsideEu())
       case "confirm-age" =>
         Some(TravelDetailsController.privateTravel)
       case "tell-us" =>

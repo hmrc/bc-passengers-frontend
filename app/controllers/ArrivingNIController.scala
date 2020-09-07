@@ -56,19 +56,16 @@ class ArrivingNIController @Inject()(
           travelDetailsService.storeArrivingNI(context.journeyData)(arrivingNI).map(_ =>
             context.getJourneyData.euCountryCheck match {
               case Some(euCountryCheck) =>
-                if (appConfig.isVatResJourneyEnabled) {
                   euCountryCheck match {
-                    case "euOnly" => Redirect(routes.TravelDetailsController.didYouClaimTaxBack())
-                    case "nonEuOnly" => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
-                    case "both" => Redirect(routes.TravelDetailsController.didYouClaimTaxBack())
-                  }
-                } else {
-                  euCountryCheck match {
-                    case "euOnly" => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
+                    case "euOnly" =>
+                      if (arrivingNI) {
+                        Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
+                      } else {
+                        Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
+                      }
                     case "nonEuOnly" => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
                     case "both" => Redirect(routes.TravelDetailsController.goodsBoughtInsideAndOutsideEu())
                   }
-                }
             }
           )
       })

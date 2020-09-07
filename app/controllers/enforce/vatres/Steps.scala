@@ -11,13 +11,14 @@ case object WhereGoodsBoughtStep extends JourneyStep(Nil, _ => _ => true)
 
 case object DidYouClaimTaxBackEuOnlyStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("euOnly")) && x.flatMap(_.arrivingNICheck).isDefined)
 
-case object GoodsBoughtOutsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("nonEuOnly")) && x.flatMap(_.arrivingNICheck).isDefined)
+case object GoodsBoughtOutsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck).isDefined) && x.flatMap(_.arrivingNICheck).isDefined)
 
 case object DidYouClaimTaxBackBothStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("both")) && x.flatMap(_.arrivingNICheck).isDefined)
 
 case object BringingDutyFreeEuStep extends JourneyStep(preceeding = List(DidYouClaimTaxBackEuOnlyStep), predicate = _ => _.flatMap(_.isVatResClaimed) == Some(false))
 
-case object GoodsBoughtInsideEuStep extends JourneyStep(preceeding = List(BringingDutyFreeEuStep), predicate = _ => _.flatMap(_.isBringingDutyFree) == Some(false))
+//case object GoodsBoughtInsideEuStep extends JourneyStep(preceeding = List(BringingDutyFreeEuStep), predicate = _ => _.flatMap(_.isBringingDutyFree) == Some(false))
+case object GoodsBoughtInsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("euOnly")) && x.flatMap(_.arrivingNICheck) == Some(true))
 
 case object DeclareDutyFreeEuStep extends JourneyStep(preceeding = List(BringingDutyFreeEuStep), predicate = _ => _.flatMap(_.isBringingDutyFree) == Some(true))
 
