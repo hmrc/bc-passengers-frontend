@@ -36,4 +36,4 @@ case object DashboardStep extends JourneyStep(preceeding = List(Is17OrOverStep),
 
 case object ArrivingNIStep extends JourneyStep(preceeding = List(WhereGoodsBoughtStep), predicate = _ => _.flatMap(_.euCountryCheck).isDefined)
 
-case object PrivateCraftStep extends JourneyStep(preceeding = List(GoodsBoughtOutsideEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance)== Some(true))
+case object PrivateCraftStep extends JourneyStep(preceeding = List(GoodsBoughtOutsideEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)
