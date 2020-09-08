@@ -61,15 +61,16 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
   "Going back to arrvingNi" should {
 
-    "happen when on did-you-claim-tax-back" in new LocalSetup {
+    "happen when on goods-bought-inside-eu" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = None
+      override val euCountryCheck  = Some("euOnly")
+      override val arrivingNICheck  = Some(true)
       override val isVatResClaimed = None
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
-      override def call: Call = TravelDetailsController.didYouClaimTaxBack
+      override def call: Call = TravelDetailsController.goodsBoughtInsideEu()
 
       m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
@@ -108,19 +109,6 @@ class VatResBackLinkModelSpec extends BaseSpec {
   }
 
   "Going back to duty-free" should {
-
-    "happen when on goods-bought-inside-eu" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
-
-      override def call: Call = TravelDetailsController.goodsBoughtInsideEu
-
-      m.backLink(context) shouldBe Some(TravelDetailsController.dutyFree.url)
-    }
 
     "happen when on duty-free-eu" in new LocalSetup {
 
@@ -255,30 +243,18 @@ class VatResBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtOutsideEu.url)
     }
 
-    "return user to did-you-claim-tax-back when euCountryCheck=euOnly and isVatResClaimed=true" in new LocalSetup {
+    "return user to goods-bought-outside-eu when euCountryCheck=euOnly and arrivingNICheck=false and bringingOverAllowance=true" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
       override val euCountryCheck  = Some("euOnly")
-      override val isVatResClaimed = Some(true)
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
-
-      override def call: Call = TravelDetailsController.privateTravel
-
-      m.backLink(context) shouldBe Some(TravelDetailsController.didYouClaimTaxBack.url)
-    }
-
-    "return user to duty-free-eu when euCountryCheck=euOnly and isVatResClaimed=false and bringingOverAllowance=true" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = Some("euOnly")
+      override val arrivingNICheck = Some(false)
       override val isVatResClaimed = Some(false)
       override val isBringingDutyFree = None
       override val bringingOverAllowance = Some(true)
 
       override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionEu().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtOutsideEu().url)
     }
 
     "return user to no-need-to-use-this-service when euCountryCheck=euOnly and isVatResClaimed=false and bringingOverAllowance=false" in new LocalSetup {
@@ -323,17 +299,18 @@ class VatResBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionMix.url)
     }
 
-    "return user to duty-free-eu when euCountryCheck=euOnly" in new LocalSetup {
+    "return user to goods-bought-outside-eu when euCountryCheck=euOnly and arrivingNICheck is false" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
       override val euCountryCheck = Some("euOnly")
+      override val arrivingNICheck = Some(false)
       override val isVatResClaimed = None
       override val isBringingDutyFree = None
       override val bringingOverAllowance = None
 
       override def call: Call = TravelDetailsController.noNeedToUseService
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.bringingDutyFreeQuestionEu.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtOutsideEu().url)
     }
 
     "return user to goods-bought-outside-eu when euCountryCheck=nonEuOnly" in new LocalSetup {

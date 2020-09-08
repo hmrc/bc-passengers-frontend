@@ -94,9 +94,9 @@ class ArrivingNIControllerSpec extends BaseSpec {
     }
 
 
-    "redirect to .../did-you-claim-tax-back when user says they have arrived from EU when isVatResJourneyEnabled is true" in  {
+    "redirect to .../goods-bought-outside-eu when user says they have arrived from EU and final destination is not NI" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
@@ -105,7 +105,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody("arrivingNI" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
 
 
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(false))(any())
