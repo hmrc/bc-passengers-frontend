@@ -495,7 +495,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       Option(doc.getElementById("errors").select("a[href=#ageOver17]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#ageOver17]").html()).get shouldBe "Select yes if you are 17 or over"
+      Option(doc.getElementById("errors").select("a[href=#ageOver17]").html()).get shouldBe "Select yes if you are aged 17 or over"
       Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
       Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
 
@@ -513,7 +513,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are 17 or over"
+      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are aged 17 or over"
     }
 
   }
