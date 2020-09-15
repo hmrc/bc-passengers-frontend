@@ -82,7 +82,7 @@ class DashboardControllerSpec extends BaseSpec {
     val content: String = contentAsString(result)
     val doc: Document = Jsoup.parse(content)
 
-    doc.getElementsByTag("h1").text() shouldBe "Tell us about the goods you are bringing into the UK"
+    doc.getElementsByTag("h1").text() shouldBe "Tell us about your goods"
 
   }
 
