@@ -29,6 +29,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
       lazy val cr = CalculatorServiceRequest(isPrivateCraft = false,
         isAgeOver17 = true,
+        isArrivingNI = false,
         isVatResClaimed = None,
         isBringingDutyFree = true,
         isIrishBorderCrossing = false,
@@ -61,6 +62,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isArrivingNI" : false,
           |  "isBringingDutyFree" : true,
           |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
@@ -107,6 +109,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isArrivingNI" : false,
           |  "isBringingDutyFree" : true,
           |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
@@ -154,6 +157,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isArrivingNI" : false,
           |  "isBringingDutyFree" : true,
           |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
@@ -200,6 +204,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isArrivingNI" : false,
           |  "isBringingDutyFree" : true,
           |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
@@ -246,6 +251,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
+          |  "isArrivingNI" : false,
           |  "isBringingDutyFree" : true,
           |  "isIrishBorderCrossing" : false,
           |  "items" : [ {
