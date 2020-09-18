@@ -551,7 +551,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
   "Calling POST .../ireland-to-northern-ireland" should {
 
-    "redirect to /check-tax-on-goods-you-bring-into-the-uk/calculation" in new LocalSetup {
+    "redirect to /check-tax-on-goods-you-bring-into-the-uk/tax-due" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(irishBorder = Some(false), privateCraft = Some(false))))
       override lazy val payApiResponse = null
@@ -560,7 +560,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("irishBorder" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/calculation")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tax-due")
 
       verify(injected[TravelDetailsService], times(1)).storeIrishBorder(any())(meq(true))(any())
     }

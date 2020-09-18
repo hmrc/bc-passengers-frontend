@@ -675,6 +675,7 @@ label.tax=Treth
 label.customs=Tollau
 label.excise=Ecséis (alcohol a thybaco yn unig)
 label.vat=TAW
+label.upto_72_hours = (W)You can declare your goods and pay online up to 72 hours before arriving in the UK.(W)
 label.exchange_rates=Rydym yn defnyddio <a href="{0}" target="_blank">cyfraddau cyfnewid CThEM ar gyfer tollau a TAW (yn agor ffenestr neu dab newydd)</a> i wneud y cyfrifiad hwn. Rydym yn defnyddio’r cyfraddau ar gyfer y mis y byddwch yn datgan ynddo.
 label.you_must_pay_duty_and_tax_=Mae'n rhaid i chi dalu toll a threth ar y nwyddau hyn os rydych yn dod â nhw i’r DU.
 label.you_can_declare_these_goods_=Gallwch ddatgan y nwyddau hyn a thalu’r dreth a’r doll ar-lein hyd at 72 awr cyn i chi gyrraedd yn y DU.

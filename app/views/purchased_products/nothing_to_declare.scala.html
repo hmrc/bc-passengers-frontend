@@ -94,9 +94,8 @@
 
       @if(!hideExchangeRateInfo) {
         <br>
-        <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly"))</p>
+        <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat"))</p>
       }
-
     </div>
   </details>
 
@@ -105,6 +104,6 @@
   <p>@messages("label.green_channel")</p>
   <p>@messages("label.fire_arms")</p>
 
-  <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
-  <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again").toLowerCase()</a>.
+<p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a></p>
+<p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
 }

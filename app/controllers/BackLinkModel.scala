@@ -72,9 +72,9 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.confirmAge)
       case "ireland-to-northern-ireland" =>
         Some(DashboardController.showDashboard)
-      case "calculation" if appConfig.isIrishBorderQuestionEnabled =>
+      case "tax-due" if appConfig.isIrishBorderQuestionEnabled =>
         Some(CalculateDeclareController.irishBorder)
-      case "calculation" if !appConfig.isIrishBorderQuestionEnabled =>
+      case "tax-due" if !appConfig.isIrishBorderQuestionEnabled =>
         Some(DashboardController.showDashboard)
       case _ =>
         None
@@ -116,9 +116,9 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.confirmAge)
       case "ireland-to-northern-ireland" =>
         Some(DashboardController.showDashboard())
-      case "calculation" if appConfig.isIrishBorderQuestionEnabled =>
+      case "tax-due" if appConfig.isIrishBorderQuestionEnabled =>
         Some(CalculateDeclareController.irishBorder)
-      case "calculation" if !appConfig.isIrishBorderQuestionEnabled =>
+      case "tax-due" if !appConfig.isIrishBorderQuestionEnabled =>
         Some(DashboardController.showDashboard)
       case _ =>
         None

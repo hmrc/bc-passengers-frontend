@@ -80,7 +80,7 @@ GET        /select-goods/*path                                                  
 POST       /select-goods/$path<other-goods.*>                                          controllers.SelectProductController.processProductSelectionOtherGoods(path: ProductPath)
 POST       /select-goods/*path                                                         controllers.SelectProductController.processProductSelection(path: ProductPath)
 
-GET        /calculation                                                                controllers.CalculateDeclareController.showCalculation
+GET        /tax-due                                                                    controllers.CalculateDeclareController.showCalculation
 
 GET        /declare-your-goods                                                         controllers.CalculateDeclareController.declareYourGoods
 
