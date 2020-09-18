@@ -87,7 +87,7 @@ class DashboardControllerSpec extends BaseSpec {
   }
 
 
-  "Calling GET .../calculation" should {
+  "Calling GET .../tax-due" should {
     "redirect to the under nine pounds page if the total to declare is under nine pounds" in new LocalSetup {
 
 
@@ -103,7 +103,7 @@ class DashboardControllerSpec extends BaseSpec {
         ))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -114,7 +114,7 @@ class DashboardControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET .../calculation" should {
+  "Calling GET .../tax-due" should {
     "redirect to the over ninety seven thousand pounds page if the total to declare is over ninety seven thousand pounds" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
@@ -129,7 +129,7 @@ class DashboardControllerSpec extends BaseSpec {
         ))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -143,7 +143,7 @@ class DashboardControllerSpec extends BaseSpec {
   }
 
 
-  "Calling GET .../calculation" should {
+  "Calling GET .../tax-due" should {
     "redirect to the calculation done page with exchange rate message not includes if response only includes GBP currency" in new LocalSetup {
 
 
@@ -158,7 +158,7 @@ class DashboardControllerSpec extends BaseSpec {
         ))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -183,14 +183,14 @@ class DashboardControllerSpec extends BaseSpec {
         ))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      content should include ("We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\" target=\"_blank\">HMRC’s exchange rates")
+      content should include ("We use <a href=\"https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat\" target=\"_blank\">HMRC’s exchange rates")
       doc.title shouldBe  "Tax due on these goods - Check tax on goods you bring into the UK - GOV.UK"
     }
   }
@@ -211,7 +211,7 @@ class DashboardControllerSpec extends BaseSpec {
       ))
     ))
 
-    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 
@@ -235,7 +235,7 @@ class DashboardControllerSpec extends BaseSpec {
       ))
     ))
 
-    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 
@@ -261,7 +261,7 @@ class DashboardControllerSpec extends BaseSpec {
       ))
     ))
 
-    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/calculation")).get
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 

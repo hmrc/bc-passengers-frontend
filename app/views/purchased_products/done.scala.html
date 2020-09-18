@@ -88,19 +88,18 @@
 
       @if(!hideExchangeRateInfo) {
         <br>
-        <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly"))</p>
+        <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat"))</p>
       }
     </div>
   </details>
+  <p>@messages("label.upto_72_hours")</p>
 
   <p class="margin-bottom-30">
     <a class="button" href="@controllers.routes.CalculateDeclareController.declareYourGoods()">
     @messages("label.declare_your_goods_and_pay_online")</a>
   </p>
 
-  <p>
-    <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
-    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again").toLowerCase()</a>.
-  </p>
+    <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a></p>
+    <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
 
 }

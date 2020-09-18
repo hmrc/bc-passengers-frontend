@@ -51,8 +51,8 @@ class PayApiServiceSpec extends BaseSpec {
        |    "passengerName": "Harry Potter",
        |    "placeOfArrival": "Heathrow",
        |    "returnUrl": "http://localhost:9514/feedback/passengers",
-       |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
-       |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
+       |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
+       |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
        |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information",
        |    "items": [
        |        {
@@ -83,8 +83,8 @@ class PayApiServiceSpec extends BaseSpec {
        |    "passengerName": "Harry Potter",
        |    "placeOfArrival": "Heathrow",
        |    "returnUrl": "http://localhost:9514/feedback/passengers",
-       |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
-       |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/calculation",
+       |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
+       |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
        |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information",
        |    "items": [
        |        {
