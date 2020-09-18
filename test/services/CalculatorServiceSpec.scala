@@ -72,6 +72,7 @@ class CalculatorServiceSpec extends BaseSpec {
       bringingOverAllowance = None,
       privateCraft = Some(false),
       ageOver17 = Some(true),
+      arrivingNICheck = Some(false),
       irishBorder = Some(false),
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
@@ -91,6 +92,7 @@ class CalculatorServiceSpec extends BaseSpec {
       bringingOverAllowance = None,
       privateCraft = Some(false),
       ageOver17 = Some(true),
+      arrivingNICheck = Some(false),
       irishBorder = Some(false),
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
@@ -105,7 +107,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     def getProductTreeLeaf(path: String) =  injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
 
-    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None, isBringingDutyFree = false, isIrishBorderCrossing = false, List(
+    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isVatResClaimed = None, isBringingDutyFree = false, isIrishBorderCrossing = false, List(
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)), getProductTreeLeaf("other-goods/car-seats"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(74563 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)), getProductTreeLeaf("other-goods/antiques"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(33 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)), getProductTreeLeaf("other-goods/antiques"), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
@@ -275,8 +277,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val jd = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
         ageOver17 = Some(true),
+        arrivingNICheck = Some(false),
         privateCraft = Some(false),
         purchasedProductInstances = List(
           PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
@@ -304,7 +306,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false, List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
@@ -315,8 +317,8 @@ class CalculatorServiceSpec extends BaseSpec {
 
       val jd = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
         ageOver17 = Some(true),
+        arrivingNICheck = Some(false),
         privateCraft = Some(false),
         purchasedProductInstances = List(
           PurchasedProductInstance(ProductPath("other-goods/antiques"), iid = "iid0", country = Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), currency = Some("CAD"), cost = Some(BigDecimal("2.00"))),
@@ -334,7 +336,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false,  List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false,  List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()

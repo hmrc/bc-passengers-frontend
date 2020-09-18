@@ -108,7 +108,8 @@ class CalculatorService @Inject() (
       for {
         isAgeOver17 <- journeyData.ageOver17
         isPrivateCraft <- journeyData.privateCraft
-      } yield LimitRequest(isPrivateCraft, isAgeOver17, journeyData.isVatResClaimed, speculativeItems)
+        isArrivingNI <- journeyData.arrivingNICheck
+      } yield LimitRequest(isPrivateCraft, isAgeOver17, isArrivingNI, journeyData.isVatResClaimed, speculativeItems)
   }
 
   def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorServiceRequest]] = {
@@ -132,9 +133,11 @@ class CalculatorService @Inject() (
         for {
           isAgeOver17 <- journeyData.ageOver17
           isPrivateCraft <- journeyData.privateCraft
+          isArrivingNI <- journeyData.arrivingNICheck
         } yield CalculatorServiceRequest(
           isPrivateCraft,
           isAgeOver17,
+          isArrivingNI,
           journeyData.isVatResClaimed,
           journeyData.isBringingDutyFree.getOrElse(false),
           journeyData.irishBorder.getOrElse(false),
