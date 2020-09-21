@@ -32,7 +32,7 @@ class BackLinkModel @Inject() (
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
     def call = location match {
-      case "goods-bought-inside-eu" | "goods-bought-outside-eu" =>
+      case "goods-bought-into-northern-ireland-inside-EU" | "goods-bought-outside-eu" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "duty-free" =>
         Some(TravelDetailsController.didYouClaimTaxBack)
@@ -94,7 +94,7 @@ class BackLinkModel @Inject() (
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
     def call = location match {
-      case "goods-bought-inside-eu" | "goods-bought-inside-and-outside-eu" | "goods-bought-outside-eu" =>
+      case "goods-bought-into-northern-ireland-inside-EU" | "goods-bought-inside-and-outside-eu" | "goods-bought-outside-eu" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)

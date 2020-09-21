@@ -115,7 +115,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "calling POST .../where-goods-bought" should {
 
-    "redirect to .../goods-bought-inside-eu when user selects country in EU" in new LocalSetup {
+    "redirect to .../goods-bought-into-northern-ireland-inside-EU when user selects country in EU" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
@@ -259,13 +259,13 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling GET .../goods-bought-inside-eu" should {
+  "calling GET .../goods-bought-into-northern-ireland-inside-EU" should {
 
     "return the goods bought inside the eu interrupt page" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("euOnly"), Some(true), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-EU")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
