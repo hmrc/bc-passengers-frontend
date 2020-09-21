@@ -61,7 +61,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
   "Going back to arrvingNi" should {
 
-    "happen when on goods-bought-inside-eu" in new LocalSetup {
+    "happen when on goods-bought-into-northern-ireland-inside-EU" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
       override val euCountryCheck  = Some("euOnly")

@@ -224,7 +224,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
   "Invoking POST .../duty-free" should {
 
-    "redirect to the goods-bought-inside-eu if not bringing duty free and had previously selected eu only countries" in new LocalSetup {
+    "redirect to the goods-bought-into-northern-ireland-inside-EU if not bringing duty free and had previously selected eu only countries" in new LocalSetup {
 
       override lazy val cachedJourneyData = Some(JourneyData(Some("euOnly"), Some(false),Some(false), isBringingDutyFree = None))
 
@@ -234,7 +234,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       status(response) shouldBe SEE_OTHER
 
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-EU")
 
       verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
     }

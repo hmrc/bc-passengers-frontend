@@ -128,7 +128,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
     }
 
 
-    "redirect to .../goods-bought-inside-eu  when user says they have arrived from EU when isVatResJourneyEnabled is false" in  {
+    "redirect to .../goods-bought-into-northern-ireland-inside-EU  when user says they have arrived from EU when isVatResJourneyEnabled is false" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
@@ -141,7 +141,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody("arrivingNI" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-EU")
 
 
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(true))(any())
