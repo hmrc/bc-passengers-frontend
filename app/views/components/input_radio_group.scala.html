@@ -51,7 +51,10 @@
                                 }
                             } else { @label }
                         }
+                    @elements.args.get(Symbol(value)).map{label => <br>
+                    <span id="hint-@value" class="form-hint govuk-radios__hint">@label</span>}
                     </label>
+
                 </div>
             }
         }

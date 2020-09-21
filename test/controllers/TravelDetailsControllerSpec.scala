@@ -5,11 +5,13 @@
 
 package controllers
 
+import akka.util.Helpers.Requiring
 import connectors.Cache
 import models.{Calculation, CalculatorResponse, JourneyData}
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
+import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -88,6 +90,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
+      doc.getElementsByTag("h1").text() shouldBe "Where are you bringing goods from?"
+
+      doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
+
+      doc.getElementById("hint-nonEuOnly").text() shouldBe "If you are bringing in goods from both EU and non-EU countries, select this option."
+      doc.getElementById("hint-greatBritain").text() shouldBe "If you are bringing goods from Great Britain to Northern Ireland only, select this option."
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe true
 
       verify(controller.cache, times(1)).fetch(any())
@@ -104,9 +112,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
+      doc.getElementsByTag("h1").text() shouldBe "Where are you bringing goods from?"
       doc.select("#euCountryCheck-euonly").hasAttr("checked") shouldBe false
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe false
-      doc.select("#euCountryCheck-both").hasAttr("checked") shouldBe false
+      doc.select("#euCountryCheck-greatBritain").hasAttr("checked") shouldBe false
 
 
       verify(controller.cache, times(1)).fetch(any())

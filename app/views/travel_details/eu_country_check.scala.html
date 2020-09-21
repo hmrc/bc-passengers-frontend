@@ -28,7 +28,9 @@
 
       @components.input_radio_group(
         f("euCountryCheck"),
-        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "both" -> Messages("label.both_eu_and_non_eu_countries"))
+        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "greatBritain" -> Messages("label.great_britain")),
+        Symbol("nonEuOnly") -> messages("label.if_you_are_bringing_in_goods_from_both"),
+        Symbol("greatBritain") -> messages("label.if_you_are_bringing_good_from_Great_Britain")
       )
     </fieldset>
 
