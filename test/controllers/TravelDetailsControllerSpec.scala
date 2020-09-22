@@ -90,7 +90,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Where are you bringing goods from?"
+      doc.getElementsByTag("h1").text() shouldBe "Where are you bringing in goods from?"
 
       doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
 
@@ -112,7 +112,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Where are you bringing goods from?"
+      doc.getElementsByTag("h1").text() shouldBe "Where are you bringing in goods from?"
       doc.select("#euCountryCheck-euonly").hasAttr("checked") shouldBe false
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe false
       doc.select("#euCountryCheck-greatBritain").hasAttr("checked") shouldBe false
@@ -168,6 +168,40 @@ class TravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
 
       verify(controller.travelDetailsService, times(0)).storeEuCountryCheck(any())(any())(any())
+
+    }
+
+    "return error summary box on the page head when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(None)))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      Option(doc.getElementById("errors").select("a[href=#euCountryCheck]")).isEmpty shouldBe false
+      Option(doc.getElementById("errors").select("a[href=#euCountryCheck]").html()).get shouldBe "Select where you are bringing in goods from"
+      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
+      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+    }
+
+
+    "return error notification on the control when trying to submit a blank form" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(None)))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+
+      status(response) shouldBe BAD_REQUEST
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
+      doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select where you are bringing in goods from"
 
     }
   }
