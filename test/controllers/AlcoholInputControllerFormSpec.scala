@@ -93,5 +93,17 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
 
     }
 
+    "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
+      val form = injected[AlcoholInputController].alcoholForm(path).bind(Map(
+        "weightOrVolume" -> "300",
+        "country" -> "IN",
+        "currency" -> "INR",
+        "cost" -> "5000.00"
+      ))
+      form.hasErrors shouldBe false
+      form.value.get shouldBe AlcoholDto(300, "IN", "INR", 5000)
+
+    }
+
   }
 }
