@@ -224,6 +224,17 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       form.value.get shouldBe TobaccoDto(None, Some(0.5), "FR", "EUR", 4444)
     }
 
+    "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
+      val form = injected[TobaccoInputController].noOfSticksForm(path).bind(Map(
+        "noOfSticks" -> "1000",
+        "country" -> "IN",
+        "currency" -> "INR",
+        "cost" -> "4500.00"
+      ))
+      form.hasErrors shouldBe false
+      form.value.get shouldBe TobaccoDto(Some(1000), None, "IN", "INR", 4500)
+    }
+
   }
 
 }

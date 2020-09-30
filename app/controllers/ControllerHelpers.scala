@@ -33,7 +33,7 @@ trait ControllerHelpers extends MessagesBaseController
   implicit def ec: ExecutionContext
 
 
-  implicit def contextToRequest(implicit localContext: LocalContext)= localContext.request
+  implicit def contextToRequest(implicit localContext: LocalContext): Request[AnyContent] = localContext.request
 
   def logAndRenderError(logMessage: String, status: Status = InternalServerError)(implicit context: LocalContext): Future[Result] = {
     Logger.warn(logMessage)
@@ -54,18 +54,18 @@ trait ControllerHelpers extends MessagesBaseController
     }
   }
 
-  def requireLimitUsage(journeyData: JourneyData)(block: Map[String, BigDecimal] => Future[Result])(implicit context: LocalContext, hc: HeaderCarrier) = {
+  def requireLimitUsage(journeyData: JourneyData)(block: Map[String, BigDecimal] => Future[Result])(implicit context: LocalContext, hc: HeaderCarrier): Future[Result] = {
 
-    calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
+        calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
 
-      response match {
-        case LimitUsageSuccessResponse(r) =>
-          block(r.map( x => (x._1, BigDecimal(x._2)) ))
-        case _ =>
-          logAndRenderError("Fetching limits was unsuccessful")
-      }
+          response match {
+            case LimitUsageSuccessResponse(r) =>
+              block(r.map(x => (x._1, BigDecimal(x._2))))
+            case _ =>
+              logAndRenderError("Fetching limits was unsuccessful")
+          }
 
-    }
+        }
   }
 
   def requireJourneyData(block: JourneyData => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
