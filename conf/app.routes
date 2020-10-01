@@ -8,6 +8,9 @@ POST       /where-goods-bought                                                  
 GET        /arriving-ni                                                                controllers.ArrivingNIController.loadArrivingNIPage
 POST       /arriving-ni                                                                controllers.ArrivingNIController.postArrivingNIPage
 
+GET        /gb-ni-vat-check                                                            controllers.UKVatPaidController.loadUKVatPaidPage
+POST       /gb-ni-vat-check                                                            controllers.UKVatPaidController.postUKVatPaidPage
+
 GET        /goods-bought-into-northern-ireland-inside-EU                               controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEu

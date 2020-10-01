@@ -1376,3 +1376,7 @@ label.other-goods.womens_clothes = Women’s clothes
 heading.arriving-ni = Is your final destination Northern Ireland?
 head.error.arriving_ni = Select yes if your final destination is Northern Ireland
 error.arriving_ni = Select yes if your final destination is Northern Ireland
+
+heading.is_uk_vat_paid = Did you, or will you pay UK VAT when buying all of your goods?
+head.error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying all of your goods
+error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying all of your goods

@@ -11,12 +11,12 @@ import controllers.{LocalContext, routes}
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc.Results._
-import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded, Call, DefaultActionBuilder, Request, RequestHeader, Result}
+import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class JourneyEnforcer {
@@ -263,6 +263,17 @@ class ArrivingNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: Ap
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
       journeyEnforcer(step) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class UKVatPaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.UKVatPaidStep) {
         block(context)
       }
     }

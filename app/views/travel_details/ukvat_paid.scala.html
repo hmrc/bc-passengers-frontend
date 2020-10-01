@@ -1,0 +1,39 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(uKVatPaidForm: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("heading.is_uk_vat_paid"), uKVatPaidForm.hasErrors), backLink = backLink) {
+
+@views.html.tags.errors(uKVatPaidForm)
+
+
+@form(action = routes.UKVatPaidController.postUKVatPaidPage()){
+
+<fieldset>
+    <legend>
+        <h1 class="heading-xlarge">@messages("heading.is_uk_vat_paid")</h1>
+    </legend>
+
+    @components.input_radio_group(
+    uKVatPaidForm("isUKVatPaid"),
+    Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+    '_labelClass -> "block-label inputLabelBeforeError",
+    '_inline -> true
+    )
+
+    <div class="form-group">
+        <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+
+</fieldset>
+
+}
+
+}

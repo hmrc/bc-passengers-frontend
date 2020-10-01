@@ -173,4 +173,22 @@ class TravelDetailsService @Inject() (
         Future.successful( journeyData )
     }
   }
+
+  def storeUKVatPaid(journeyData: Option[JourneyData])(isUKVatPaid: Boolean)
+                     (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+
+    journeyData match {
+      case Some(journeyData) if !journeyData.isUKVatPaid.contains(isUKVatPaid) =>
+
+        cache.storeJourneyData(journeyData.copy(
+          isUKVatPaid = Some(isUKVatPaid)
+        ))
+
+      case None =>
+        cache.storeJourneyData( JourneyData(isUKVatPaid = Some(isUKVatPaid)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
 }
