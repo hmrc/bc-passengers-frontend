@@ -7,7 +7,6 @@ package controllers
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 
 @Singleton
@@ -27,7 +26,6 @@ class BackLinkModel @Inject() (
 
     def eucc = context.journeyData.flatMap(_.euCountryCheck)
     def vrc = context.journeyData.flatMap(_.isVatResClaimed).getOrElse(false)
-    def arrivalni = context.journeyData.flatMap(_.arrivingNICheck)
     def bdf = context.journeyData.flatMap(_.isBringingDutyFree).getOrElse(false)
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
 
@@ -38,6 +36,8 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.didYouClaimTaxBack)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
+      case "gb-ni-vat-check" =>
+        Some(ArrivingNIController.loadArrivingNIPage)
       case "duty-free-eu" | "goods-bought-inside-and-outside-eu" | "duty-free-mix" =>
         Some(TravelDetailsController.dutyFree)
       case "private-travel" if eucc==Some("both") & !vrc & bdf & !boa =>
@@ -98,6 +98,8 @@ class BackLinkModel @Inject() (
         Some(ArrivingNIController.loadArrivingNIPage)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
+      case "gb-ni-vat-check" =>
+        Some(ArrivingNIController.loadArrivingNIPage)
       case "private-travel" if eucc==Some("both") & boa =>
         Some(TravelDetailsController.goodsBoughtInsideAndOutsideEuPost)
       case "private-travel" if eucc==Some("both") & !boa =>
