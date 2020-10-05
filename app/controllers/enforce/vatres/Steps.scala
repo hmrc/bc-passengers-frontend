@@ -38,4 +38,6 @@ case object ArrivingNIStep extends JourneyStep(preceeding = List(WhereGoodsBough
 
 case object UKVatPaidStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("greatBritain")) && x.flatMap(_.arrivingNICheck) == Some(true))
 
+case object UKExcisePaidStep extends JourneyStep(preceeding = List(UKVatPaidStep), predicate = _ => _.flatMap(_.isUKVatPaid).isDefined)
+
 case object PrivateCraftStep extends JourneyStep(preceeding = List(GoodsBoughtOutsideEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)

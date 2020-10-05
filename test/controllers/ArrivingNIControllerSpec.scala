@@ -27,9 +27,9 @@ import scala.concurrent.Future
 
 class ArrivingNIControllerSpec extends BaseSpec {
 
-  val mockTravelDetailService = MockitoSugar.mock[TravelDetailsService]
-  val mockCache = MockitoSugar.mock[Cache]
-  val mockAppConfig = MockitoSugar.mock[AppConfig]
+  val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
+  val mockCache: Cache = MockitoSugar.mock[Cache]
+  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -147,7 +147,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(true))(any())
     }
 
-    "return a bad request when user selects an invalid value" in  {
+    "return a bad request when user selects an invalid value in Arriving NI page" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("None"))))
 

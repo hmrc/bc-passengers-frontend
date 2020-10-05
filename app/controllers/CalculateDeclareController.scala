@@ -51,7 +51,7 @@ class CalculateDeclareController @Inject()(
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
-                                          
+
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def receiptDateTime: DateTime = dateTimeProviderService.now
@@ -106,7 +106,7 @@ class CalculateDeclareController @Inject()(
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_,_, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
+        case Some(JourneyData(_, _, _,_, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
           Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
         case _ =>
           Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))

@@ -1,0 +1,38 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(uKExcisePaidForm: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("heading.is_uk_excise_paid"), uKExcisePaidForm.hasErrors), backLink = backLink) {
+
+@views.html.tags.errors(uKExcisePaidForm)
+
+
+@form(action = routes.UKExcisePaidController.postUKExcisePaidPage()){
+
+<fieldset>
+    <h1 class="heading-xlarge">@messages("heading.is_uk_excise_paid")</h1>
+    <p>@Html(messages("text.excise_duty_will_usually", "https://www.gov.uk/tax-on-shopping/alcohol-tobacco"))</p>
+
+    @components.input_radio_group(
+    uKExcisePaidForm("isUKExcisePaid"),
+    Seq("true" -> Messages("label.yes"),
+    "false" -> Messages("label.no"),
+    "true" -> Messages("label.no_tobacco_or_alcohol")),
+    )
+
+    <div class="form-group">
+        <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+
+</fieldset>
+
+}
+
+}

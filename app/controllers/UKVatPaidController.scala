@@ -35,7 +35,7 @@ class UKVatPaidController @Inject()(
   val loadUKVatPaidPage: Action[AnyContent] = uKVatPaidAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_,Some(isUKVatPaid), _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_,_,Some(isUKVatPaid), _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
           Ok(isUKVatPaidPage(UKVatPaidForm.form.fill(isUKVatPaid), backLinkModel.backLink))
         case _ =>
           Ok(isUKVatPaidPage(UKVatPaidForm.form, backLinkModel.backLink))
@@ -54,14 +54,7 @@ class UKVatPaidController @Inject()(
       success = {
         isUKVatPaid =>
           travelDetailsService.storeUKVatPaid(context.journeyData)(isUKVatPaid).map(_ =>
-            context.getJourneyData.euCountryCheck match {
-              case Some(euCountryCheck) =>
-                euCountryCheck match {
-                  case "greatBritain" =>
-                      Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
-                  case _ => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
-                }
-            }
+            Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage())
           )
       })
   }
