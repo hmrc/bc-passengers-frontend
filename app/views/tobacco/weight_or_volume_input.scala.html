@@ -9,11 +9,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
 
-
-
 @tobacco_input(dtoForm, product, path, iid, countries, currencies) {
-
-
   @components.input(
     field = dtoForm("weightOrVolume"),
     '_inputDetails -> messages(s"label.if_you_do_not_know_the_exact_weight_or_price"),
@@ -22,5 +18,4 @@
     '_labelTextClass -> "form-label",
     '_inputSuffix ->  messages(s"label.grams")
   )
-
 }
