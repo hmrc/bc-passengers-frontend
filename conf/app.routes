@@ -58,8 +58,8 @@ GET        /enter-goods/alcohol/:iid/edit                                       
 POST       /enter-goods/alcohol/:iid/edit                                              controllers.AlcoholInputController.processEditForm(iid: String)
 
 
-GET        /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.TobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
-POST       /enter-goods/$path<tobacco/cigarettes>/tell-us                              controllers.TobaccoInputController.processAddForm(path: ProductPath)
+GET        /enter-goods/$path<tobacco/(cigarettes|heated-tobacco)>/tell-us             controllers.TobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
+POST       /enter-goods/$path<tobacco/(cigarettes|heated-tobacco)>/tell-us             controllers.TobaccoInputController.processAddForm(path: ProductPath)
 
 GET        /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.displayNoOfSticksWeightAddForm(path: ProductPath)
 POST       /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.processAddForm(path: ProductPath)

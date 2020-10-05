@@ -41,6 +41,7 @@ case class ProductTreeLeaf(token: String, name: String, rateID: String, template
       case "tobacco" =>
         for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
           ("label.Xg_of_X", List(decimalFormat10.format(weightOrVolume * 1000), messages(name).toLowerCase))
+
       case "alcohol" =>
         for(weightOrVolume <- purchasedProductInstance.weightOrVolume) yield
           if (weightOrVolume == BigDecimal(1))

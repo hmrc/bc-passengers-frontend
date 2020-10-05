@@ -6,7 +6,7 @@
 package services
 
 import javax.inject.Singleton
-import models.{OtherGoodsSearchItem, ProductListEntry, ProductPath, ProductTreeBranch, ProductTreeLeaf}
+import models.{OtherGoodsSearchItem, ProductPath, ProductTreeBranch, ProductTreeLeaf}
 
 
 @Singleton
@@ -38,7 +38,7 @@ class ProductTreeService {
             ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR")),
             ProductTreeLeaf("chewing-tobacco", "label.tobacco.chewing-tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")),
             ProductTreeLeaf("rolling-tobacco", "label.tobacco.rolling-tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE")),
-            ProductTreeLeaf("heated-tobacco", "label.tobacco.heated-tobacco","TOB/A1/HTB","tobacco", List("L-LOOSE"))
+            ProductTreeLeaf("heated-tobacco", "label.tobacco.heated-tobacco","TOB/A1/HTB","cigarettes", List("L-CRILO"))
           )
         ),
         ProductTreeBranch("other-goods",

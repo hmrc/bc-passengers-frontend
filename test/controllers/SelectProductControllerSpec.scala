@@ -120,7 +120,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       h1 shouldBe "What type of tobacco are you bringing into the UK?"
 
-      forAll(List("cigars", "cigarettes", "cigarillos", "rolling-tobacco", "chewing-tobacco")) { cb =>
+      forAll(List("cigars", "cigarettes", "cigarillos", "rolling-tobacco", "chewing-tobacco", "heated-tobacco")) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
     }
