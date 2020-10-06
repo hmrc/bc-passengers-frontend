@@ -54,6 +54,7 @@ case class JourneyData(
   euCountryCheck: Option[String] = None,
   arrivingNICheck: Option[Boolean] = None,
   isUKVatPaid: Option[Boolean] = None,
+  isUKExcisePaid: Option[Boolean] = None,
   isVatResClaimed: Option[Boolean] = None,
   isBringingDutyFree: Option[Boolean] = None,
   bringingOverAllowance: Option[Boolean] = None,

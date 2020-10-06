@@ -9,7 +9,7 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -76,7 +76,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
   "postUKVatPaidPage" should {
 
-/*    "redirect to .../gb-ni-excise-check when user says they have only arrived from GB and going to NI and has answered if they paid UK VAT" in  {
+    "redirect to .../gb-ni-excise-check when user says they have only arrived from GB and going to NI and has answered if they paid UK VAT" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true))))
 
@@ -91,7 +91,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-excise-check")
 
       verify(mockTravelDetailService, times(1)).storeUKVatPaid(any())(meq(true))(any())
-    }*/
+    }
 
     "return a bad request when user selects an invalid value" in  {
 

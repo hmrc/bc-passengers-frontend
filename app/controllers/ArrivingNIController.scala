@@ -35,7 +35,8 @@ class ArrivingNIController @Inject()(
   val loadArrivingNIPage: Action[AnyContent] = arrivingNIAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, Some(arrivingNI), _,_, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, Some(arrivingNI), _, _,_, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+
           Ok(arrivingNIPage(ArrivingNIForm.form.fill(arrivingNI), backLinkModel.backLink))
         case _ =>
           Ok(arrivingNIPage(ArrivingNIForm.form, backLinkModel.backLink))

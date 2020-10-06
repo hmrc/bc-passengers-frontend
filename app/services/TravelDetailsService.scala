@@ -191,4 +191,22 @@ class TravelDetailsService @Inject() (
         Future.successful( journeyData )
     }
   }
+
+  def storeUKExcisePaid(journeyData: Option[JourneyData])(isUKExcisePaid: Boolean)
+                    (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+
+    journeyData match {
+      case Some(journeyData) if !journeyData.isUKExcisePaid.contains(isUKExcisePaid) =>
+
+        cache.storeJourneyData(journeyData.copy(
+          isUKExcisePaid = Some(isUKExcisePaid)
+        ))
+
+      case None =>
+        cache.storeJourneyData( JourneyData(isUKExcisePaid = Some(isUKExcisePaid)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
 }

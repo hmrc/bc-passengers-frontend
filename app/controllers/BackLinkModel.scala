@@ -38,6 +38,8 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>
         Some(ArrivingNIController.loadArrivingNIPage)
+      case "gb-ni-excise-check" =>
+        Some(UKVatPaidController.loadUKVatPaidPage)
       case "duty-free-eu" | "goods-bought-inside-and-outside-eu" | "duty-free-mix" =>
         Some(TravelDetailsController.dutyFree)
       case "private-travel" if eucc==Some("both") & !vrc & bdf & !boa =>
@@ -100,6 +102,8 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>
         Some(ArrivingNIController.loadArrivingNIPage)
+      case "gb-ni-excise-check" =>
+        Some(UKVatPaidController.loadUKVatPaidPage)
       case "private-travel" if eucc==Some("both") & boa =>
         Some(TravelDetailsController.goodsBoughtInsideAndOutsideEuPost)
       case "private-travel" if eucc==Some("both") & !boa =>

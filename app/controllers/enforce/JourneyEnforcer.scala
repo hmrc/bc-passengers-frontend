@@ -279,3 +279,14 @@ class UKVatPaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: 
     }
   }
 }
+
+@Singleton
+class UKExcisePaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.UKExcisePaidStep) {
+        block(context)
+      }
+    }
+  }
+}
