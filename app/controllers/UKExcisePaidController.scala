@@ -34,7 +34,7 @@ class UKExcisePaidController @Inject()(
   val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,Some(isUKExcisePaid), _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _, _,Some(isUKExcisePaid), _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form.fill(isUKExcisePaid), backLinkModel.backLink))
         case _ =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form, backLinkModel.backLink))
@@ -53,10 +53,9 @@ class UKExcisePaidController @Inject()(
       success = {
         isUKExcisePaid =>
           travelDetailsService.storeUKExcisePaid(context.journeyData)(isUKExcisePaid).map(_ =>
-            Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
+            Redirect(routes.UKResidentController.loadUKResidentPage())
           )
       })
   }
 
 }
-

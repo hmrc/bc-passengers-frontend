@@ -7,22 +7,21 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.UKVatPaidAction
-import forms.UKVatPaidForm
+import controllers.enforce.UKResidentAction
+import forms.UKResidentForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
-class UKVatPaidController @Inject()(
+class UKResidentController @Inject()(
                                       val cache: Cache,
-                                      uKVatPaidAction: UKVatPaidAction,
+                                      uKResidentAction: UKResidentAction,
                                       val error_template: views.html.error_template,
-                                      val isUKVatPaidPage: views.html.travel_details.ukvat_paid,
+                                      val isUKResidentPage: views.html.travel_details.uk_resident,
                                       override val controllerComponents: MessagesControllerComponents,
                                       implicit val appConfig: AppConfig,
                                       val backLinkModel: BackLinkModel,
@@ -32,32 +31,31 @@ class UKVatPaidController @Inject()(
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
 
-  val loadUKVatPaidPage: Action[AnyContent] = uKVatPaidAction { implicit context =>
+  val loadUKResidentPage: Action[AnyContent] = uKResidentAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_,Some(isUKVatPaid), _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
-          Ok(isUKVatPaidPage(UKVatPaidForm.form.fill(isUKVatPaid), backLinkModel.backLink))
+        case Some(JourneyData(_, _, _, _,Some(ukResident),_, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+          Ok(isUKResidentPage(UKResidentForm.form.fill(ukResident), backLinkModel.backLink))
         case _ =>
-          Ok(isUKVatPaidPage(UKVatPaidForm.form, backLinkModel.backLink))
+          Ok(isUKResidentPage(UKResidentForm.form, backLinkModel.backLink))
       }
     }
   }
 
-  def postUKVatPaidPage(): Action[AnyContent] = uKVatPaidAction { implicit context =>
-    UKVatPaidForm.form.bindFromRequest().fold(
+  def postUKResidentPage(): Action[AnyContent] = uKResidentAction { implicit context =>
+    UKResidentForm.form.bindFromRequest().fold(
       hasErrors = {
         formWithErrors =>
           Future.successful(
-            BadRequest(isUKVatPaidPage(formWithErrors, backLinkModel.backLink))
+            BadRequest(isUKResidentPage(formWithErrors, backLinkModel.backLink))
           )
       },
       success = {
-        isUKVatPaid =>
-          travelDetailsService.storeUKVatPaid(context.journeyData)(isUKVatPaid).map(_ =>
-            Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage())
+        isUKResident =>
+          travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(_ =>
+            Redirect(routes.TravelDetailsController.whereGoodsBought())
           )
       })
   }
 
 }
-

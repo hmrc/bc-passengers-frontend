@@ -290,3 +290,14 @@ class UKExcisePaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicActio
     }
   }
 }
+
+@Singleton
+class UKResidentAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.UKResidentStep) {
+        block(context)
+      }
+    }
+  }
+}

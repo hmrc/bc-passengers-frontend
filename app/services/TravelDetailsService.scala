@@ -209,4 +209,21 @@ class TravelDetailsService @Inject() (
         Future.successful( journeyData )
     }
   }
+  def storeUKResident(journeyData: Option[JourneyData])(isUKResident: Boolean)
+                     (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+
+    journeyData match {
+      case Some(journeyData) if !journeyData.isUKResident.contains(isUKResident) =>
+
+        cache.storeJourneyData(journeyData.copy(
+          isUKResident = Some(isUKResident)
+        ))
+
+      case None =>
+        cache.storeJourneyData( JourneyData(isUKResident = Some(isUKResident)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
 }

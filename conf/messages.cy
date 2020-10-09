@@ -1261,3 +1261,7 @@ head.error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK Excise 
 error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK Excise on all your goods(W)
 label.no_tobacco_or_alcohol = (W)I am not bringing in any alcohol or tobacco(W)
 text.excise_duty_will_usually = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port. <a rel="noreferrer noopener" target="_blank" href="{0}">Read more about alcohol and tobacco duties (opens in new tab)</a>(W)
+
+heading.uk-resident = (W)Are you a UK citizen?(W)
+head.error.is_uk_resident = (W)Select yes if you are a UK resident(W)
+error.is_uk_resident = (W)Select yes if you are a UK resident(W)

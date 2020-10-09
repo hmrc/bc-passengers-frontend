@@ -81,7 +81,6 @@ class UKVatPaidControllerSpec extends BaseSpec {
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      //when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
       when(mockTravelDetailService.storeUKVatPaid(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-check")
