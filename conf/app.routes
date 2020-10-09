@@ -14,6 +14,9 @@ POST       /gb-ni-vat-check                                                     
 GET        /gb-ni-excise-check                                                         controllers.UKExcisePaidController.loadUKExcisePaidPage
 POST       /gb-ni-excise-check                                                         controllers.UKExcisePaidController.postUKExcisePaidPage
 
+GET        /gb-ni-uk-resident-check                                                    controllers.UKResidentController.loadUKResidentPage
+POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage
+
 GET        /goods-bought-into-northern-ireland-inside-EU                               controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEu

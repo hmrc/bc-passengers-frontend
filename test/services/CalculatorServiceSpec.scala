@@ -60,6 +60,7 @@ class CalculatorServiceSpec extends BaseSpec {
       None,
       None,
       None,
+      None,
       Some(false),
       Some(true),
       Some(true),

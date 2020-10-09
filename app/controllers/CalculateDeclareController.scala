@@ -106,7 +106,7 @@ class CalculateDeclareController @Inject()(
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
+        case Some(JourneyData(_, _, _,_, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
           Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
         case _ =>
           Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))
@@ -161,7 +161,6 @@ class CalculateDeclareController @Inject()(
 
   def showCalculation: Action[AnyContent] = dashboardAction { implicit context =>
     requireCalculatorResponse { calculatorResponse =>
-
       Future.successful {
         BigDecimal(calculatorResponse.calculation.allTax) match {
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
