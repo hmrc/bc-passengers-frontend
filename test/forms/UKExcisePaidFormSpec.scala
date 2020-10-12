@@ -20,7 +20,7 @@ class UKExcisePaidFormSpec extends  BaseSpec{
       UKExcisePaidForm.form.bind(Map("isUKExcisePaid"-> "true")).value shouldBe Some(true)
     }
     "return error if the user selects invalid value" in {
-      UKExcisePaidForm.form.bind(Map("isUKExcisePaid"-> "invalid"))
+      UKExcisePaidForm.form.bind(Map("isUKExcisePaid"-> ""))
         .errors.exists(_.message == "error.is_uk_excise_paid") shouldBe true
     }
   }

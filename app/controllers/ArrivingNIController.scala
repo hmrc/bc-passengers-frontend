@@ -15,7 +15,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class ArrivingNIController @Inject()(
@@ -37,15 +36,15 @@ class ArrivingNIController @Inject()(
       context.journeyData match {
         case Some(JourneyData(_, Some(arrivingNI), _, _,_, _, _, _, _, _, _, _, _, _, _, _, _ ,_)) =>
 
-          Ok(arrivingNIPage(ArrivingNIForm.form.fill(arrivingNI), backLinkModel.backLink))
+          Ok(arrivingNIPage(ArrivingNIForm.validateForm().fill(arrivingNI), backLinkModel.backLink))
         case _ =>
-          Ok(arrivingNIPage(ArrivingNIForm.form, backLinkModel.backLink))
+          Ok(arrivingNIPage(ArrivingNIForm.validateForm(), backLinkModel.backLink))
       }
     }
   }
 
   def postArrivingNIPage(): Action[AnyContent] = arrivingNIAction { implicit context =>
-    ArrivingNIForm.form.bindFromRequest().fold(
+    ArrivingNIForm.validateForm(context.getJourneyData.euCountryCheck).bindFromRequest().fold(
       hasErrors = {
         formWithErrors =>
           Future.successful(
