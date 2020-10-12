@@ -1241,6 +1241,8 @@ label.for_security_we_deleted_your_answers=Er eich diogelwch, gwnaethom ddileuâ€
 heading.arriving-ni=(W)Is your final destination Northern Ireland?(W)
 head.error.arriving_ni=(W)Select if your final destination is Northern Ireland(W)
 error.arriving_ni=(W)Select if your final destination is Northern Ireland(W)
+head.error.arriving_gb=(W)You do not need to declare your goods if you are only travelling within Great Britain. Select yes if your final destination is Northern Ireland.(W)
+error.arriving_gb=(W)You do not need to declare your goods if you are only travelling within Great Britain. Select yes if your final destination is Northern Ireland.(W)
 
 heading.is_uk_vat_paid = (W)Did you, or will you pay UK VAT when buying all of your goods?(W)
 head.error.is_uk_vat_paid = (W)Select yes if you have, or will pay UK VAT when buying all of your goods(W)
