@@ -52,8 +52,12 @@ class UKResidentController @Inject()(
       },
       success = {
         isUKResident =>
-          travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(_ =>
-            Redirect(routes.TravelDetailsController.whereGoodsBought())
+          travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(f = _ =>
+            (context.getJourneyData.isUKVatPaid, context.getJourneyData.isUKExcisePaid, isUKResident) match {
+              case (Some(false), _, true) | (_, Some(false), true) => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
+              case _ => Redirect(routes.TravelDetailsController.whereGoodsBought())
+            }
+
           )
       })
   }

@@ -9,7 +9,7 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -75,6 +75,54 @@ class UKResidentControllerSpec extends BaseSpec {
   }
 
   "postUKResidentPage" should {
+
+    "redirect to .../goods-bought-outside-eu when user travels from GB to NI and answered NO for UK VAT paid and YES for Excise paid and UK resident" in  {
+
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(false),Some(true),Some(true))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        .withFormUrlEncodedBody("isUKResident" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+
+      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
+    }
+
+    "redirect to .../goods-bought-outside-eu when user travels from GB to NI and answered NO for Excise paid and YES for UK VAT paid and UK resident" in  {
+
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(false),Some(true))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        .withFormUrlEncodedBody("isUKResident" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+
+      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
+    }
+
+    "redirect to .../uk-resident-no-need-to-use-service when user travels from GB to NI and has answered YES for UK VAT, Excise paid and UK resident" in  {
+
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(true),Some(true))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        .withFormUrlEncodedBody("isUKResident" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought") // TODO add kick out url once the page implemented
+
+      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
+    }
 
     "return a bad request when user selects an invalid value" in  {
 
