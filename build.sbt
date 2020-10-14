@@ -1,9 +1,9 @@
 import TestPhases.oneForkedJvmPerTest
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings, targetJvm}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-
 import sbt.Keys._
 import sbt._
+import scoverage.ScoverageKeys
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
@@ -30,7 +30,12 @@ lazy val microservice = Project(appName, file("."))
     parallelExecution in Test := false,
     fork in Test := false
   )
-  //.settings(SbtBuildInfo(): _*)
+  .settings(
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
+      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
+      ".*ControllerConfiguration;.*LocalLanguageController;.*testonly.*;",
+    ScoverageKeys.coverageMinimum := 80
+  )
   .configs(IntegrationTest)
   .settings(
     inConfig(IntegrationTest)(Defaults.itSettings),

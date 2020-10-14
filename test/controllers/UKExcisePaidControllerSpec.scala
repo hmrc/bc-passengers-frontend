@@ -44,7 +44,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
   }
   "loadUKExcisePaidPage" should {
     "load the page" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), Some(true), Some(true), Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), Some(true), Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-excise-check")).get
       status(result) shouldBe OK
 
