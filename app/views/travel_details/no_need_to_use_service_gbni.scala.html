@@ -1,0 +1,18 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template)
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@main_template(title = messages("heading.no_need_to_use"), bodyClasses = None, backLink = backLink) {
+  <h1 class="heading-xlarge">@messages("heading.no_need_to_use")</h1>
+  <p>@messages("text.you_do_not_need_to_declare_goods")</p>
+
+  <ul class=" list-bullet">
+      <li>@messages("text.are_only_bringing_in_goods")</li>
+      <li>@messages("text.have_paid_vat_excise")</li>
+      <li>@messages("text.are_uk_resident")</li>
+  </ul>
+}

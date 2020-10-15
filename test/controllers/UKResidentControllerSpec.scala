@@ -108,9 +108,9 @@ class UKResidentControllerSpec extends BaseSpec {
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
     }
 
-    "redirect to .../uk-resident-no-need-to-use-service when user travels from GB to NI and has answered YES for UK VAT, Excise paid and UK resident" in  {
+    "redirect to .../gb-ni-no-need-to-use-service when user has paid UK VAT and Excise and is a UK Resident" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(true),Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true), Some(true), Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
@@ -119,7 +119,7 @@ class UKResidentControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody("isUKResident" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought") // TODO add kick out url once the page implemented
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-no-need-to-use-service")
 
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
     }

@@ -46,6 +46,7 @@ class TravelDetailsController @Inject() (
   val bringing_duty_free_question: views.html.travel_details.bringing_duty_free_question,
   val duty_free_allowance_question_mix: views.html.travel_details.duty_free_allowance_question_mix,
   val duty_free_allowance_question_eu: views.html.travel_details.duty_free_allowance_question_eu,
+  val no_need_to_use_service_gbni: views.html.travel_details.no_need_to_use_service_gbni,
 
   whereGoodsBoughtAction: WhereGoodsBoughtAction,
   didYouClaimTaxBackAction: DidYouClaimTaxBackAction,
@@ -59,6 +60,7 @@ class TravelDetailsController @Inject() (
   declareDutyFreeMixAction: DeclareDutyFreeMixAction,
   privateCraftAction: PrivateCraftAction,
   is17OrOverAction: Is17OrOverAction,
+  noNeedToUseServiceGbniAction: NoNeedToUseServiceGbniAction,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -347,6 +349,10 @@ class TravelDetailsController @Inject() (
       case e => Logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
         InternalServerError(e.getMessage)
     }
+  }
+
+  val noNeedToUseServiceGbni: Action[AnyContent] = noNeedToUseServiceGbniAction { implicit context =>
+    Future.successful(Ok(no_need_to_use_service_gbni(backLinkModel.backLink)))
   }
 
 }

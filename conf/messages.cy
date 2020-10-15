@@ -1395,3 +1395,9 @@ text.excise_duty_will_usually = (W)Excise duty will usually be included in the c
 heading.uk-resident = (W)Are you a UK citizen?(W)
 head.error.is_uk_resident = (W)Select yes if you are a UK resident(W)
 error.is_uk_resident = (W)Select yes if you are a UK resident(W)
+
+heading.no_need_to_use = (W)You do not need to use this service(W)
+text.you_do_not_need_to_declare_goods = (W)You do not need to declare your goods or use this service as long as you:(W)
+text.are_only_bringing_in_goods = (W)are only bringing in goods to Northern Ireland from Great Britain or the Isle of Man(W)
+text.have_paid_vat_excise = (W)and have paid both VAT and excise duty (where applicable) on all of your goods(W)
+text.are_uk_resident = (W)and are a UK resident(W)
