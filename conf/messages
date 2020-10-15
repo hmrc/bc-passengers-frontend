@@ -1530,3 +1530,9 @@ text.excise_duty_will_usually = Excise duty will usually be included in the cost
 heading.uk-resident = Are you a UK citizen?
 head.error.is_uk_resident = Select yes if you are a UK resident
 error.is_uk_resident = Select yes if you are a UK resident
+
+heading.no_need_to_use = You do not need to use this service
+text.you_do_not_need_to_declare_goods = You do not need to declare your goods or use this service as long as you:
+text.are_only_bringing_in_goods = are only bringing in goods to Northern Ireland from Great Britain or the Isle of Man
+text.have_paid_vat_excise = and have paid both VAT and excise duty (where applicable) on all of your goods
+text.are_uk_resident = and are a UK resident

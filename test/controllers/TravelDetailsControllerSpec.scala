@@ -5,11 +5,12 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -27,6 +28,10 @@ import scala.language.postfixOps
 
 
 class TravelDetailsControllerSpec extends BaseSpec {
+
+  val mockCache: Cache = MockitoSugar.mock[Cache]
+  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
+  val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -596,4 +601,34 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
+  "Invoking GET .../gb-ni-no-need-to-use-service" should {
+
+    "load no need to use service gbni page if they have paid VAT and excise and are a UK resident" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("greatBritain"), Some(true), Some(true), Some(true), Some(true))))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-no-need-to-use-service")).get
+
+      status(response) shouldBe OK
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "You do not need to use this service"
+
+      verify(controller.cache, times(1)).fetch(any())
+    }
+  }
+
+  "return bad request when given invalid data" in new LocalSetup {
+
+    override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"),Some(true), None, None,None, None,None, Some(true), Some(true))))
+
+    val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody("value" -> "badValue")).get
+
+    status(response) shouldBe BAD_REQUEST
+
+    verify(controller.travelDetailsService, times(0)).storeAgeOver17(any())(any())(any())
+
+  }
 }

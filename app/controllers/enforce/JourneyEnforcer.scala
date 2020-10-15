@@ -301,3 +301,14 @@ class UKResidentAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction:
     }
   }
 }
+
+@Singleton
+class NoNeedToUseServiceGbniAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.noNeedToUseServiceGbniStep) {
+        block(context)
+      }
+    }
+  }
+}
