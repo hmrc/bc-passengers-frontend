@@ -226,4 +226,22 @@ class TravelDetailsService @Inject() (
         Future.successful( journeyData )
     }
   }
+
+  def storeUccRelief(journeyData: Option[JourneyData])(isUccRelief: Boolean)
+                     (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+
+    journeyData match {
+      case Some(journeyData) if !journeyData.isUccRelief.contains(isUccRelief) =>
+
+        cache.storeJourneyData(journeyData.copy(
+          isUccRelief = Some(isUccRelief)
+        ))
+
+      case None =>
+        cache.storeJourneyData( JourneyData(isUccRelief = Some(isUccRelief)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
 }

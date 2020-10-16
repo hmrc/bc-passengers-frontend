@@ -34,8 +34,8 @@ class UKResidentController @Inject()(
   val loadUKResidentPage: Action[AnyContent] = uKResidentAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _,Some(ukResident),_, _, _, _, _, _, _, _, _, _, _, _, _)) =>
-          Ok(isUKResidentPage(UKResidentForm.form.fill(ukResident), backLinkModel.backLink))
+        case Some(JourneyData(_, _, _, _,Some(isUKResident),_,_, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+          Ok(isUKResidentPage(UKResidentForm.form.fill(isUKResident), backLinkModel.backLink))
         case _ =>
           Ok(isUKResidentPage(UKResidentForm.form, backLinkModel.backLink))
       }
@@ -55,6 +55,7 @@ class UKResidentController @Inject()(
           travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(f = _ =>
             (context.getJourneyData.isUKVatPaid, context.getJourneyData.isUKExcisePaid, isUKResident) match {
               case (Some(false), _, true) | (_, Some(false), true) => Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
+              case (_, _, false) => Redirect(routes.UccReliefController.loadUccReliefPage())
               case (Some(true), Some(true), true) => Redirect(routes.TravelDetailsController.noNeedToUseServiceGbni())
               case _ => Redirect(routes.TravelDetailsController.whereGoodsBought())
             }

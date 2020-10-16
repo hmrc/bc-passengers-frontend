@@ -303,6 +303,17 @@ class UKResidentAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction:
 }
 
 @Singleton
+class UccReliefAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.UccReliefStep) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
 class NoNeedToUseServiceGbniAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>

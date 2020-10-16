@@ -144,6 +144,22 @@ class UKResidentControllerSpec extends BaseSpec {
       verify(mockTravelDetailService, times(0)).storeUKResident(any())(any())(any())
     }
 
+    "redirect to .../gb-ni-exemptions when user says they have only arrived from GB and going to NI and is NOT UK Resident" in  {
+
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true), Some(true),Some(false))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        .withFormUrlEncodedBody("isUKResident" -> "false")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions")
+
+      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(false))(any())
+    }
+
   }
 
 }
