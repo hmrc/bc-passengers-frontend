@@ -56,6 +56,7 @@ case class JourneyData(
   isUKVatPaid: Option[Boolean] = None,
   isUKExcisePaid: Option[Boolean] = None,
   isUKResident: Option[Boolean] = None,
+  isUccRelief: Option[Boolean] = None,
   isVatResClaimed: Option[Boolean] = None,
   isBringingDutyFree: Option[Boolean] = None,
   bringingOverAllowance: Option[Boolean] = None,

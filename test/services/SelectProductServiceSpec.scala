@@ -51,7 +51,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
     "add selected products setting in keystore when journey data does exist there currently" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("euOnly"), Some(false),Some(false),Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(true), Nil) )
+      override val journeyDataInCache = Some( JourneyData(Some("euOnly"), Some(false),Some(false),Some(false),Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(true), Nil) )
 
       var selectedAliases = List(
         ProductAlias("Cigarettes", ProductPath("tobacco/cigarettes")),
@@ -60,13 +60,13 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProductsAsAliases(journeyDataInCache.get, selectedAliases.map(_.productPath)))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("euOnly"),Some(false), Some(false), Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(false), Some(true),
+      verify(cacheMock, times(1)).store( meq(JourneyData(Some("euOnly"),Some(false), Some(false), Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(false), Some(true),
         List( ProductAlias("label.tobacco.cigarettes", ProductPath("tobacco/cigarettes")), ProductAlias("label.tobacco.cigars", ProductPath("tobacco/cigars")) ))) )(any())
     }
 
     "store selected products which are ProductTreeBranches at the start of the list in keystore, in the order they were sent, followed by ProductTreeLeaves" in new LocalSetup {
 
-      override val journeyDataInCache = Some(JourneyData(None, None, None,None,None, None, None, None, None, None, None, List()))
+      override val journeyDataInCache = Some(JourneyData(None, None,None, None,None,None, None, None, None, None, None, None, List()))
 
       val selectedProducts = List(
         ProductPath("other-goods/antiques"),
@@ -78,7 +78,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProductsAsAliases(journeyDataInCache.get, selectedProducts))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None,None,None,None,None, None, None, None, None, None, None,
+      verify(cacheMock, times(1)).store( meq(JourneyData(None,None,None,None,None,None, None, None, None, None, None, None,
         List(
           ProductAlias("label.other-goods.carpets-fabric", ProductPath("other-goods/carpets-fabric")),
           ProductAlias("label.other-goods.adult", ProductPath("other-goods/adult")),
@@ -94,12 +94,12 @@ class SelectProductServiceSpec extends BaseSpec {
 
     "remove the first selected product and update keystore" in new LocalSetup {
 
-      override val journeyDataInCache = Some(JourneyData(None,None,None,None,None, None, None, None, None, None, None,
+      override val journeyDataInCache = Some(JourneyData(None,None,None,None,None,None, None, None, None, None, None, None,
         List(ProductAlias("tobacco.cigarettes", ProductPath("tobacco/cigarettes")), ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))) ))
 
       await(selectProductService.removeSelectedAlias(journeyDataInCache.get))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, None,None,None,None,None, None, None, None, None, None,
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, None,None,None,None,None,None, None, None, None, None, None,
         List(
           ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))
         ) ))

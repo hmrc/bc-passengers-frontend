@@ -3,12 +3,16 @@
  *
  */
 
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
 package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.UKExcisePaidAction
-import forms.UKExcisePaidForm
+import controllers.enforce.UccReliefAction
+import forms.UccReliefForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
@@ -17,11 +21,11 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UKExcisePaidController @Inject()(
+class UccReliefController @Inject()(
                                      val cache: Cache,
-                                     uKExcisePaidAction: UKExcisePaidAction,
+                                     uccReliefAction: UccReliefAction,
                                      val error_template: views.html.error_template,
-                                     val isUKExcisePaidPage: views.html.travel_details.ukexcise_paid,
+                                     val isUccReliefPage: views.html.travel_details.ucc_relief,
                                      override val controllerComponents: MessagesControllerComponents,
                                      implicit val appConfig: AppConfig,
                                      val backLinkModel: BackLinkModel,
@@ -31,31 +35,32 @@ class UKExcisePaidController @Inject()(
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
 
-  val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
+  val loadUccReliefPage: Action[AnyContent] = uccReliefAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,Some(isUKExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
-          Ok(isUKExcisePaidPage(UKExcisePaidForm.form.fill(isUKExcisePaid), backLinkModel.backLink))
+        case Some(JourneyData(_,_,_,_,_,Some(isUccRelief), _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+          Ok(isUccReliefPage(UccReliefForm.form.fill(isUccRelief), backLinkModel.backLink))
         case _ =>
-          Ok(isUKExcisePaidPage(UKExcisePaidForm.form, backLinkModel.backLink))
+          Ok(isUccReliefPage(UccReliefForm.form, backLinkModel.backLink))
       }
     }
   }
 
-  def postUKExcisePaidPage(): Action[AnyContent] = uKExcisePaidAction { implicit context =>
-    UKExcisePaidForm.form.bindFromRequest().fold(
+  def postUccReliefPage(): Action[AnyContent] = uccReliefAction { implicit context =>
+    UccReliefForm.form.bindFromRequest().fold(
       hasErrors = {
         formWithErrors =>
           Future.successful(
-            BadRequest(isUKExcisePaidPage(formWithErrors, backLinkModel.backLink))
+            BadRequest(isUccReliefPage(formWithErrors, backLinkModel.backLink))
           )
       },
       success = {
-        isUKExcisePaid =>
-          travelDetailsService.storeUKExcisePaid(context.journeyData)(isUKExcisePaid).map(_ =>
-            Redirect(routes.UKResidentController.loadUKResidentPage())
+        isUccRelief =>
+          travelDetailsService.storeUccRelief(context.journeyData)(isUccRelief).map(_ =>
+            Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
           )
       })
   }
 
 }
+

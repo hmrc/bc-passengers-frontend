@@ -35,7 +35,7 @@ class UKVatPaidController @Inject()(
   val loadUKVatPaidPage: Action[AnyContent] = uKVatPaidAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_,Some(isUKVatPaid), _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_,_,Some(isUKVatPaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
           Ok(isUKVatPaidPage(UKVatPaidForm.form.fill(isUKVatPaid), backLinkModel.backLink))
         case _ =>
           Ok(isUKVatPaidPage(UKVatPaidForm.form, backLinkModel.backLink))
