@@ -61,20 +61,6 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
   "Going back to arrvingNi" should {
 
-    "happen when on goods-bought-into-northern-ireland-inside-EU" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = Some("euOnly")
-      override val arrivingNICheck  = Some(true)
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
-
-      override def call: Call = TravelDetailsController.goodsBoughtInsideEu()
-
-      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
-    }
-
     "happen when on goods-bought-outside-eu" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false

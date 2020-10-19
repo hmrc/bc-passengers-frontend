@@ -9,7 +9,7 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.Matchers.{eq => meq,_}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -74,7 +74,7 @@ class UccReliefControllerSpec extends BaseSpec {
     }
   }
 
-  "postUKExcisePaidPage" should {
+  "postUccReliefPage" should {
 
     "return a bad request when user selects an invalid value" in  {
 
@@ -82,7 +82,7 @@ class UccReliefControllerSpec extends BaseSpec {
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions").withFormUrlEncodedBody("isUKExcisePaid" -> "dummy")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions").withFormUrlEncodedBody("isUccRelief" -> "dummy")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -94,6 +94,22 @@ class UccReliefControllerSpec extends BaseSpec {
       doc.getElementById("errors").select("a[href=#isUccRelief]").html() shouldBe "Select yes if all of your goods are covered by the tax and duty exemptions"
       doc.getElementById("isUccRelief").getElementsByClass("error-message").html() shouldBe "Select yes if all of your goods are covered by the tax and duty exemptions"
       verify(mockTravelDetailService, times(0)).storeUccRelief(any())(any())(any())
+    }
+
+    "redirect to .../goods-bought-outside-eu when user non-UK Resident travels from GB to NI" in  {
+
+      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(true),Some(false))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeUccRelief(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions")
+        .withFormUrlEncodedBody("isUccRelief" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+
+      verify(mockTravelDetailService, times(1)).storeUccRelief(any())(meq(true))(any())
     }
 
   }
