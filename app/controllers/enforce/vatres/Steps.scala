@@ -43,7 +43,7 @@ case object UKExcisePaidStep extends JourneyStep(preceeding = List(UKVatPaidStep
 
 case object UKResidentStep extends JourneyStep(preceeding = List(UKExcisePaidStep), predicate = _ => _.flatMap(_.isUKExcisePaid).isDefined)
 
-case object UccReliefStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> (x.flatMap(_.isUKResident) == Some(false)))
+case object UccReliefStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> x.flatMap(_.isUKResident).contains(false))
 
 case object noNeedToUseServiceGbniStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> x.flatMap(_.isUKVatPaid) .contains(true) && x.flatMap(_.isUKExcisePaid) .contains(true) && x.flatMap(_.isUKResident) .contains(true))
 
