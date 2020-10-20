@@ -1377,20 +1377,10 @@ head.error.is_uk_vat_paid = (W)Select yes if you have, or will pay UK VAT when b
 error.is_uk_vat_paid = (W)Select yes if you have, or will pay UK VAT when buying all of your goods(W)
 
 heading.is_uk_excise_paid = (W)Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?(W)
-head.error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK Excise on all your goods(W)
-error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK Excise on all your goods(W)
-label.no_tobacco_or_alcohol = (W)I am not bringing in any alcohol or tobacco(W)
+head.error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco(W)
+error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco(W)
 text.excise_duty_will_usually = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port. <a rel="noreferrer noopener" target="_blank" href="{0}">Read more about alcohol and tobacco duties (opens in new tab)</a>(W)
-
-heading.is_uk_vat_paid = (W)Did you, or will you pay UK VAT when buying all of your goods?(W)
-head.error.is_uk_vat_paid = (W)Select yes if you have, or will pay UK VAT on all your goods(W)
-error.is_uk_vat_paid = (W)Select yes if you have, or will pay UK VAT on all your goods(W)
-
-heading.is_uk_excise_paid = (W)Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?(W)
-head.error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK Excise on all your goods(W)
-error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK Excise on all your goods(W)
-label.no_tobacco_or_alcohol = (W)I am not bringing in any alcohol or tobacco(W)
-text.excise_duty_will_usually = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port. <a rel="noreferrer noopener" target="_blank" href="{0}">Read more about alcohol and tobacco duties (opens in new tab)</a>(W)
+text.excise_duty_selection = (W)If you are not bringing in any alcohol or tobacco select yes below.(W)
 
 heading.uk-resident = (W)Are you a UK resident?(W)
 head.error.is_uk_resident = (W)Select yes if you are a UK resident(W)

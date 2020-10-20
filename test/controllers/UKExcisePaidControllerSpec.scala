@@ -107,8 +107,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#isUKExcisePaid]").html() shouldBe "Select if you have, or will pay UK excise duty when buying all of your alcohol and tobacco"
-      doc.getElementById("isUKExcisePaid").getElementsByClass("error-message").html() shouldBe "Select if you have, or will pay UK excise duty when buying all of your alcohol and tobacco"
+      doc.getElementById("errors").select("a[href=#isUKExcisePaid]").html() shouldBe "Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco"
+      doc.getElementById("isUKExcisePaid").getElementsByClass("error-message").html() shouldBe "Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco"
       verify(mockTravelDetailService, times(0)).storeUKVatPaid(any())(any())(any())
     }
 
