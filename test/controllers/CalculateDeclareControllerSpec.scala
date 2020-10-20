@@ -149,7 +149,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       limits = Map.empty
     )
     
-    lazy val ui = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+    lazy val ui = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
     lazy val dt = DateTime.parse("2018-11-23T06:21:00Z")
 
@@ -298,8 +298,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "",
           "lastName" -> "Potter",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+          "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -322,8 +325,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "123456789012345678901234567890123451234",
           "lastName" -> "Potter",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+          "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -346,8 +352,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "123456789012345678901234567890123451234",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+          "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -360,7 +369,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when passport number is too long" in new LocalSetup {
+    "Return BAD REQUEST and display the user information when identification number is too long" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
       override lazy val payApiResponse = PayApiServiceFailureResponse
@@ -370,8 +379,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "12345678901234567890123456789012345612345",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "12345678901234567890123456789012345612345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -394,8 +406,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "123456789012345678901234567890123456123456",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -418,8 +433,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+          "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "abc",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -444,8 +462,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+          "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -470,8 +491,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "passportNumber" -> "123456789",
-          "placeOfArrival" -> "Heathrow",
+          "identificationType" -> "passport",
+          "identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",

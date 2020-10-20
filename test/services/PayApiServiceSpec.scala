@@ -49,7 +49,7 @@ class PayApiServiceSpec extends BaseSpec {
        |    "taxToPayInPence": 9700000,
        |    "dateOfArrival": "2018-11-12T12:20:00",
        |    "passengerName": "Harry Potter",
-       |    "placeOfArrival": "Heathrow",
+       |    "placeOfArrival": "LHR",
        |    "returnUrl": "http://localhost:9514/feedback/passengers",
        |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
        |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
@@ -81,7 +81,7 @@ class PayApiServiceSpec extends BaseSpec {
        |    "taxToPayInPence": 9700000,
        |    "dateOfArrival": "2018-07-12T12:20:00",
        |    "passengerName": "Harry Potter",
-       |    "placeOfArrival": "Heathrow",
+       |    "placeOfArrival": "LHR",
        |    "returnUrl": "http://localhost:9514/feedback/passengers",
        |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
        |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
@@ -109,7 +109,7 @@ class PayApiServiceSpec extends BaseSpec {
 
   trait LocalSetup {
     def httpResponse: HttpResponse
-    val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+    val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
     val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
       Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
       Some(OtherGoods(List(Band("C",List(Item("OGD/DIGI/TV","1140.42",None,None,

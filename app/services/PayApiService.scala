@@ -6,14 +6,12 @@
 package services
 
 
-import connectors.Cache
 import controllers.routes
 import javax.inject.{Inject, Singleton}
-import models.{CalculatorResponse, ChargeReference, Item, UserInformation}
+import models.{CalculatorResponse, ChargeReference, UserInformation}
 import org.joda.time.DateTime
-import play.api.Mode.Mode
 import play.api.libs.json.{JsArray, JsString, JsValue, Json}
-import play.api.{Configuration, Environment}
+import play.api.Configuration
 import play.mvc.Http.Status._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -24,12 +22,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PayApiService @Inject()(
-  cache: Cache,
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
-  environment: Environment,
-  productTreeService: ProductTreeService,
-  currencyService: CurrencyService,
   servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
 ) {
@@ -44,6 +38,10 @@ class PayApiService @Inject()(
 
   lazy val backUrl = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
 
+  private def getPlaceOfArrival(userInfo: UserInformation) = {
+    if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
+  }
+
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, receiptDateTime: DateTime)(implicit hc: HeaderCarrier): Future[PayApiServiceResponse] = {
 
     val requestBody = Json.obj(
@@ -51,7 +49,7 @@ class PayApiService @Inject()(
       "taxToPayInPence" -> amountPence,
       "dateOfArrival" -> userInformation.dateOfArrival.toDateTime(userInformation.timeOfArrival).toString("yyyy-MM-dd'T'HH:mm:ss"),
       "passengerName" -> s"${userInformation.firstName} ${userInformation.lastName}",
-      "placeOfArrival" -> userInformation.placeOfArrival,
+      "placeOfArrival" -> getPlaceOfArrival(userInformation),
       "returnUrl" -> returnUrl,
       "returnUrlFailed" -> returnUrlFailed,
       "returnUrlCancelled" -> returnUrlCancelled,

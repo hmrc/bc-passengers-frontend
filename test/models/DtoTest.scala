@@ -5,13 +5,8 @@
 
 package models
 
-import org.joda.time.{DateTime, LocalDateTime}
-import play.api.data.FormError
-import services.CurrencyService
+import org.joda.time.DateTime
 import util.BaseSpec
-import play.api.data.Forms._
-
-import scala.util.Random
 
 
 class DtoTest extends BaseSpec {
@@ -22,8 +17,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -44,8 +42,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harrybuthasareallylongfirstnameinstead",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -68,8 +69,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -90,8 +94,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potterbutnowhislastnamehasbecomereallylong",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -110,12 +117,168 @@ class DtoTest extends BaseSpec {
       form.error("lastName").get.message shouldBe "error.max-length.last_name"
     }
 
-    "allow the passportNumber to be any string that is 40 characters or under" in {
+    "allow the identificationType to be any string that is 40 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "0123456789012345678901234567890123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if the identificationType is empty" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identificationType" -> "",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("identificationType").get.message shouldBe "error.identification_type"
+    }
+
+    "allow the identificationNumber to be any string that is 40 characters or under" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "0123456789012345678901234567890123456789",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if the identificationNumber is over 40 characters" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "01234567890123456789012345678901234567891",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("identificationNumber").get.message shouldBe "error.max-length.identification_number"
+    }
+
+    "allow the emailAddress in valid format" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "0123456789012345678901234567890123456789",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if the emailAddress is invalid" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("emailAddress").get.message shouldBe "emailAddress.error.format"
+    }
+
+    "allow the placeOfArrival.selectPlaceOfArrival to be any string that is 40 characters or under" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -132,12 +295,15 @@ class DtoTest extends BaseSpec {
     }
 
 
-    "return validation errors if the passportNumber is over 40 characters" in {
+    "return validation errors if the placeOfArrival.selectPlaceOfArrival is over 40 characters" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "01234567890123456789012345678901234567891",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -153,15 +319,18 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("passportNumber").get.message shouldBe "error.max-length.passport_number"
+      form.error("placeOfArrival.selectPlaceOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
     }
 
-    "allow the placeOfArrival to be any string that is 40 characters or under" in {
+    "allow the placeOfArrival.enterPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "London Airport",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -177,13 +346,15 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe false
     }
 
-
-    "return validation errors if the placeOfArrival is over 40 characters" in {
+    "return validation errors if the placeOfArrival.enterPlaceOfArrival is over 40 characters" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -199,16 +370,18 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("placeOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
+      form.error("placeOfArrival.enterPlaceOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
     }
-
 
     "return validation errors if the dateOfArrival is not a valid date" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "40",
         "dateTimeOfArrival.dateOfArrival.month" -> "23",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -232,8 +405,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "s@",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -257,8 +433,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "50",
         "dateTimeOfArrival.dateOfArrival.month" -> "04",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -278,8 +457,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "",
         "dateTimeOfArrival.dateOfArrival.month" -> "",
         "dateTimeOfArrival.dateOfArrival.year" -> "",
@@ -299,8 +481,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "1",
         "dateTimeOfArrival.dateOfArrival.month" -> "",
         "dateTimeOfArrival.dateOfArrival.year" -> "",
@@ -320,8 +505,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "18",
@@ -341,8 +529,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "x",
         "dateTimeOfArrival.dateOfArrival.year" -> "18",
@@ -362,8 +553,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -384,8 +578,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -406,8 +603,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -423,7 +623,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("placeOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
+      form.error("placeOfArrival.selectPlaceOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
     }
 
 
@@ -431,8 +631,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -452,8 +655,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -477,8 +683,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -499,8 +708,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -520,8 +732,11 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "passportNumber" -> "123456789",
-        "placeOfArrival" -> "Heathrow",
+        "identificationType" -> "passport",
+        "identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "26",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",

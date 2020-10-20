@@ -27,6 +27,7 @@ class CalculateDeclareController @Inject()(
   val productTreeService: ProductTreeService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
+  val portsOfArrivalService: PortsOfArrivalService,
   val backLinkModel: BackLinkModel,
   val travelDetailsService: TravelDetailsService,
   val userInformationService: UserInformationService,
@@ -61,7 +62,7 @@ class CalculateDeclareController @Inject()(
   }
 
   def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
-    Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime))))
+    Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts)))
   }
 
   def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
@@ -69,7 +70,7 @@ class CalculateDeclareController @Inject()(
     EnterYourDetailsDto.form(receiptDateTime).bindFromRequest.fold(
 
       formWithErrors => {
-        Future.successful(BadRequest(enter_your_details(formWithErrors)))
+        Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPorts)))
       },
       enterYourDetailsDto => {
 
@@ -164,10 +165,10 @@ class CalculateDeclareController @Inject()(
       Future.successful {
         BigDecimal(calculatorResponse.calculation.allTax) match {
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, false, backLinkModel.backLink))
+            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
           case allTax if allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, true, backLinkModel.backLink))
+            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
           case allTax if allTax > appConfig.paymentLimit  =>
             Ok( over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))

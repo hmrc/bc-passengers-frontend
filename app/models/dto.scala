@@ -171,6 +171,8 @@ case class SelectProductsDto(tokens: List[String])
 case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 
 object EnterYourDetailsDto {
+  val validateTelephoneNumber = """^\+?(?:\s*\d){10,13}$"""
+  val emailAddressPattern = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
 
   private def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
     text =>
@@ -179,6 +181,21 @@ object EnterYourDetailsDto {
       else Valid
   }
 
+  def maxLength(length: Int , fieldName: String): Constraint[String] = Constraint("constraint.maxLength", length) {
+    text =>
+      if (text.size <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
+  }
+
+  private def isEmailAddress(pattern: String, fieldName: String): Constraint[String] = {
+    Constraint {
+      case str if str.matches(pattern) =>
+        Valid
+      case str if str.isEmpty =>
+        Invalid(ValidationError(s"error.required.$fieldName"))
+      case _ =>
+        Invalid(fieldName, pattern)
+    }
+  }
 
   private def mandatoryDate(error: String) = tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
     .verifying("error.enter_a_date", dateParts => {
@@ -222,12 +239,25 @@ object EnterYourDetailsDto {
       localTime => (localTime.getHourOfDay, localTime.getMinuteOfHour, if (localTime.getHourOfDay > 12) "pm" else "am")
     )
 
+  def placeOfArrivalConstraint(message: String): Constraint[PlaceOfArrival] = Constraint {
+    model => (model.selectPlaceOfArrival, model.enterPlaceOfArrival) match {
+      case (x, y) if(x.isEmpty && y.isEmpty) => Invalid(message, "selectPlaceOfArrival")
+      case _ => Valid
+    }
+  }
+
   def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
       "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")),
       "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")),
-      "passportNumber" -> text.verifying(nonEmptyMaxLength(40, "passport_number")),
-      "placeOfArrival" -> text.verifying(nonEmptyMaxLength(40, "place_of_arrival")),
+      "identificationType" -> optional(text).verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
+      "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number")),
+      "emailAddress" -> text.verifying(isEmailAddress(emailAddressPattern, "emailAddress.error.format")),
+      "placeOfArrival" -> mapping(
+        "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
+        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")))
+      )(PlaceOfArrival.apply)(PlaceOfArrival.unapply).verifying()
+        .verifying(placeOfArrivalConstraint("error.required.place_of_arrival")),
       "dateTimeOfArrival" -> mapping(
         "dateOfArrival" -> mandatoryDate("error.enter_a_date"),
         "timeOfArrival" -> mandatoryTime("error.enter_a_time")
@@ -238,5 +268,5 @@ object EnterYourDetailsDto {
 }
 
 case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
-
-case class EnterYourDetailsDto(firstName: String, lastName: String, passportNumber: String, placeOfArrival: String, dateTimeOfArrival: DateTimeOfArrival)
+case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
+case class EnterYourDetailsDto(firstName: String, lastName: String, identificationType: Option[String], identificationNumber: String, emailAddress: String, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)

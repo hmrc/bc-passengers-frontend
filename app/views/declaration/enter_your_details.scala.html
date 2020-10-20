@@ -3,13 +3,37 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(f: Form[EnterYourDetailsDto])(implicit request: Request[_], messages: Messages)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(f: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
+@import play.api.libs.json.{JsObject, Json}
 @import util.prefixErrorMessage
 
-@main_template(title = prefixErrorMessage(messages("label.enter_your_details"), f.hasErrors), bodyClasses = None) {
+@scriptElem = {
+<script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
+  <script>
+    $(document).ready(function () {
+
+      // Get IE or Edge browser version
+      var version = detectIE()
+
+      if (version !== 11) {
+        var portOfArrivalSynonymsData = @Html( Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString )
+        enhanceSelectIntoAutoComplete("placeOfArrival.selectPlaceOfArrival", portOfArrivalSynonymsData);
+      }
+    })
+  </script>
+}
+
+@linkElem = {
+<link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
+}
+
+@main_template(
+  title = prefixErrorMessage(messages("label.enter_your_details"), f.hasErrors), bodyClasses = None,
+  inlineScript = Some(scriptElem),
+  inlineLinkElem = Some(linkElem)) {
 
   <a class="link-back" id="back" href="@routes.CalculateDeclareController.declareYourGoods()">@messages("label.back")</a>
 
@@ -32,21 +56,64 @@
         '_labelTextClass -> "form-label-bold",
         '_inputClass -> "form-control-3-4"
       )
+      <span class="form-label-bold">@messages("label.select_identification_type")</span>
+      <span class="form-hint" style="color: #6f777b;">@messages("label.choose_identification_type")</span>
+
+       @components.input_radio_group(
+       f("identificationType"),
+       Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
+       '_labelClass -> "block-label inputLabelBeforeError"
+       )
 
       @components.input(
-        f("passportNumber"),
-        '_label -> messages("label.passport_number"),
-        '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4"
+      f("identificationNumber"),
+      '_label -> messages("label.identification_number"),
+      '_labelTextClass -> "form-label-bold",
+      '_inputHint -> messages("label.enter_identification_number"),
+      '_inputClass -> "form-control-3-4"
       )
 
       @components.input(
-        f("placeOfArrival"),
-        '_label -> messages("label.place_of_arrival"),
+      f("emailAddress"),
+      '_label -> messages("label.email_address"),
+      '_labelTextClass -> "form-label-bold",
+      '_inputHint -> messages("label.email_address_hint"),
+      '_inputClass -> "form-control-3-4"
+      )
+
+    <div class="form-group @{if(f("placeOfArrival").hasErrors) "form-group-error" else "" }" id="placeOfArrival">
+
+        @f.errors.filter(_.key == "placeOfArrival").map { error =>
+            <span class="error-message">@messages(error.message)</span>
+        }
+
+      @components.select(
+        f("placeOfArrival.selectPlaceOfArrival"),
+        elementOptions = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+        displayEmptyValue = true,
+        '_label -> messages("label.place_of_arrival_uk"),
         '_labelTextClass -> "form-label-bold",
         '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
-        '_inputClass -> "form-control-3-4"
+        '_errorsAboveInput -> true
       )
+      <details class="margin-bottom-20" role="group">
+
+            <summary role="button" aria-controls="details-content-0" aria-expanded="false">
+                <span class="summary">@messages("label.place_of_arrival_not_listed")</span>
+            </summary>
+
+            <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
+                <p>
+                    @components.input(
+                    f("placeOfArrival.enterPlaceOfArrival"),
+                    '_label -> messages("label.enter_place_of_arrival"),
+                    '_labelTextClass -> "form-label-bold",
+                    '_inputClass -> "form-control-3-4"
+                    )
+                </p>
+            </div>
+      </details>
+</div>
 
       <div class="form-group @{if(f("dateTimeOfArrival").hasErrors) "form-group-error" else "" }" id="dateTimeOfArrival">
 
@@ -57,7 +124,7 @@
           @components.dateFieldsFreeInlineLegend(
             f,
             "dateTimeOfArrival.dateOfArrival",
-            '_inputHint -> messages("label.for_example_31_10_2018"),
+            '_inputHint -> messages("label.for_example_31_10_2020"),
             '_legendSpanClass -> "form-label-bold",
             '_legend -> messages("label.date_of_arrival")
           )
