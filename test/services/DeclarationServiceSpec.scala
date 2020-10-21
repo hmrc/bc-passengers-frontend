@@ -45,7 +45,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   val declarationService: DeclarationService = app.injector.instanceOf[DeclarationService]
 
-  val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+  val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
   
   val calculatorResponse = CalculatorResponse(
     Some(Alcohol(
@@ -95,10 +95,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         )
       ),
       "requestDetail" -> Json.obj(
-        "customerReference" -> Json.obj("passport" -> "123456789"),
-        "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+        "customerReference" -> Json.obj("identificationType" -> "passport", "identificationNumber" -> "SX12345"),
+        "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
         "contactDetails" -> Json.obj(),
-        "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
+        "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
         "declarationTobacco" -> Json.obj(
           "totalExciseTobacco" -> "100.54",
           "totalCustomsTobacco" -> "192.94",
@@ -270,7 +270,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "truncate a product description to 40 characters if the product description is too big in the metadata." in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -307,10 +307,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             "requestParameters" -> Json.arr( Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR") )
           ),
           "requestDetail" -> Json.obj(
-            "customerReference" -> Json.obj("passport" -> "123456789"),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "customerReference" -> Json.obj("identificationType" -> "passport", "identificationNumber" -> "SX12345"),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
             "contactDetails" -> Json.obj(),
-            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
+            "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
             "declarationAlcohol" -> Json.obj(
               "totalExciseAlcohol" -> "100.54",
               "totalCustomsAlcohol" -> "192.94",
@@ -345,7 +345,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "generate the correct payload and set the vat res flag to true if vat res has not been claimed but duty free has" in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -424,10 +424,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             "requestParameters" -> Json.arr( Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR") )
           ),
           "requestDetail" -> Json.obj(
-            "customerReference" -> Json.obj("passport" -> "123456789"),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "customerReference" -> Json.obj("identificationType" -> "passport", "identificationNumber" -> "SX12345"),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
             "contactDetails" -> Json.obj(),
-            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
+            "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
               "totalCustomsTobacco" -> "192.94",
@@ -588,7 +588,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in {
 
-      val userInformation = UserInformation("Harry", "Potter", "123456789", "Heathrow", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter", Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -667,10 +667,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             "requestParameters" -> Json.arr( Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR") )
           ),
           "requestDetail" -> Json.obj(
-            "customerReference" -> Json.obj("passport" -> "123456789"),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "customerReference" -> Json.obj("identificationType" -> "passport", "identificationNumber" -> "SX12345"),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
             "contactDetails" -> Json.obj(),
-            "declarationHeader" -> Json.obj("portOfEntry" -> "Heathrow", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
+            "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20"),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
               "totalCustomsTobacco" -> "192.94",

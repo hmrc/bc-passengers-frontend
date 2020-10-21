@@ -97,7 +97,7 @@ class PortsOfArrivalService {
     PortsOfArrival("LBA", "title.leeds_bradford_airport", isGB=true, List("Leeds Airport", "Bradford Airport", "LBA")),
     PortsOfArrival("LEI", "title.leith", isGB=true, Nil),
     PortsOfArrival("LER", "title.lerwick", isGB=true, Nil),
-    PortsOfArrival("LPL", "title.liverpool_john_lennon_airportk", isGB=true, List("Liverpool Airport", "John Lennon Airport", "LPL")),
+    PortsOfArrival("LPL", "title.liverpool_john_lennon_airport", isGB=true, List("Liverpool Airport", "John Lennon Airport", "LPL")),
     PortsOfArrival("LCY", "title.london_city_airport", isGB=true, List("LCY")),
     PortsOfArrival("LGP", "title.london_gateway", isGB=true, Nil),
     PortsOfArrival("LTN", "title.luton_airport", isGB=true, List("London Luton Airport", "LTN")),

@@ -15,7 +15,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.JodaWrites._
 import util._
 import play.api.libs.json._
-import play.api.{Configuration, Environment, Logger}
+import play.api.Logger
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -27,8 +27,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationService @Inject()(
   val cache: Cache,
   val wsAllMethods: WsAllMethods,
-  configuration: Configuration,
-  environment: Environment,
   servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
 ) {
@@ -62,40 +60,36 @@ class DeclarationService @Inject()(
     }
   }
 
+  private def getPlaceOfArrival(userInfo: UserInformation) = {
+    if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
+  }
+
   def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, rd: String)(implicit messages: Messages): JsObject = {
 
     val vatResFlag = isVatResClaimed || isBringingDutyFree
 
-    val customerReference: JsValue = Json.toJson(userInformation)(new Writes[UserInformation] {
-      override def writes(o: UserInformation): JsValue = Json.obj("passport" -> o.passportNumber)
-    })
+    val customerReference: JsValue = Json.toJson(userInformation)((o: UserInformation) => Json.obj("identificationType" -> o.identificationType, "identificationNumber" -> o.identificationNumber))
 
-    val personalDetails = Json.toJson(userInformation)(new Writes[UserInformation] {
-      override def writes(o: UserInformation): JsValue = Json.obj("firstName" -> o.firstName, "lastName" -> o.lastName)
-    })
+    val personalDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("firstName" -> o.firstName, "lastName" -> o.lastName, "emailAddress" -> o.emailAddress))
 
-    val declarationHeader = Json.toJson(userInformation)(new Writes[UserInformation] {
-      override def writes(o: UserInformation): JsValue = {
+    val declarationHeader: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
 
-        def formattedTwoDecimals (timeSegment: Int) = {
-          timeSegment match {
-            case ts if ts < 10 => "0" + ts
-            case ts => ts.toString
-          }
+      def formattedTwoDecimals(timeSegment: Int) = {
+        timeSegment match {
+          case ts if ts < 10 => "0" + ts
+          case ts => ts.toString
         }
-        
-        Json.obj("portOfEntry" -> o.placeOfArrival, "expectedDateOfArrival" -> o.dateOfArrival, "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}")
       }
+
+      Json.obj("portOfEntry" -> getPlaceOfArrival(o), "expectedDateOfArrival" -> o.dateOfArrival, "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}")
     })
 
-    val liabilityDetails = Json.toJson(calculatorResponse.calculation)(new Writes[Calculation] {
-      override def writes(o: Calculation): JsValue = Json.obj(
-        "totalExciseGBP" -> o.excise,
-        "totalCustomsGBP" -> o.customs,
-        "totalVATGBP" -> o.vat,
-        "grandTotalGBP" -> o.allTax
-      )
-    })
+    val liabilityDetails = Json.toJson(calculatorResponse.calculation)((o: Calculation) => Json.obj(
+      "totalExciseGBP" -> o.excise,
+      "totalCustomsGBP" -> o.customs,
+      "totalVATGBP" -> o.vat,
+      "grandTotalGBP" -> o.allTax
+    ))
 
     val declarationTobacco = {
 

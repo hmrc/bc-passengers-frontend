@@ -16,7 +16,7 @@
 <div class="form-group @if(elements.hasErrors){ form-group-error }">
 
     <label for="@elements.field.name" class="@elements.args.get('_labelClass) @elements.args.get('_groupClass)">
-        <span class="label__text">
+        <span @if(elements.args.contains('_labelTextClass)) { class="@elements.args.get('_labelTextClass)"}>
             @elements.label
         </span>
     </label>

@@ -7,10 +7,10 @@ package models
 
 import org.joda.time.{LocalDate, LocalTime}
 import play.api.libs.json.Json
+
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 
-import scala.util.Random
 
 object PurchasedProductInstance {
   implicit val formats = Json.format[PurchasedProductInstance]
@@ -29,13 +29,16 @@ object UserInformation {
   implicit val formats = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
-    UserInformation(dto.firstName, dto.lastName, dto.passportNumber, dto.placeOfArrival, dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
+    UserInformation(dto.firstName, dto.lastName, dto.identificationType, dto.identificationNumber , dto.emailAddress, dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""), dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""), dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
 }
 case class UserInformation(
   firstName: String,
   lastName: String,
-  passportNumber: String,
-  placeOfArrival: String,
+  identificationType: Option[String],
+  identificationNumber: String,
+  emailAddress: String,
+  selectPlaceOfArrival: String,
+  enterPlaceOfArrival: String,
   dateOfArrival: LocalDate,
   timeOfArrival: LocalTime
 )

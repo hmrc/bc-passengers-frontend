@@ -28,7 +28,7 @@ $(window).load(function () {
 //  Function to enhance any select element into an accessible auto-complete (by id)
 // ================================================================================
 function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm = false) {
-
+  selectElementId = selectElementId.replace( /(:|\.|\[|\]|,|=)/g, "\\$1" )
   accessibleAutocomplete.enhanceSelectElement({
     selectElement: document.querySelector('#' + selectElementId),
     displayMenu: 'inline',
