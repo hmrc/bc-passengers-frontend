@@ -30,9 +30,9 @@ class CalculatorServiceRequestSpec extends BaseSpec {
       lazy val cr = CalculatorServiceRequest(isPrivateCraft = false,
         isAgeOver17 = true,
         isArrivingNI = false,
-        isVatResClaimed = None,
-        isBringingDutyFree = true,
-        isIrishBorderCrossing = false,
+        isUKVatPaid = None,
+        isUKExcisePaid = Some(false),
+        isUKResident = Some(true),
         List(
           PurchasedItem(
             PurchasedProductInstance(
@@ -63,8 +63,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isBringingDutyFree" : true,
-          |  "isIrishBorderCrossing" : false,
+          |  "isUKExcisePaid" : false,
+          |  "isUKResident" : true,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -110,8 +110,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isBringingDutyFree" : true,
-          |  "isIrishBorderCrossing" : false,
+          |  "isUKExcisePaid" : false,
+          |  "isUKResident" : true,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -158,8 +158,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isBringingDutyFree" : true,
-          |  "isIrishBorderCrossing" : false,
+          |  "isUKExcisePaid" : false,
+          |  "isUKResident" : true,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -205,8 +205,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isBringingDutyFree" : true,
-          |  "isIrishBorderCrossing" : false,
+          |  "isUKExcisePaid" : false,
+          |  "isUKResident" : true,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -252,8 +252,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isBringingDutyFree" : true,
-          |  "isIrishBorderCrossing" : false,
+          |  "isUKExcisePaid" : false,
+          |  "isUKResident" : true,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",

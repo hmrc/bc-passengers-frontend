@@ -45,9 +45,9 @@ case class CalculatorServiceRequest(
   isPrivateCraft: Boolean,
   isAgeOver17: Boolean,
   isArrivingNI: Boolean,
-  isVatResClaimed: Option[Boolean],
-  isBringingDutyFree: Boolean,
-  isIrishBorderCrossing: Boolean,
+  isUKVatPaid: Option[Boolean],
+  isUKExcisePaid: Option[Boolean],
+  isUKResident: Option[Boolean],
   items: List[PurchasedItem]
 )
 
@@ -70,5 +70,5 @@ object LimitRequest {
   }
 }
 
-case class LimitRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, isArrivingNI: Boolean, isVatResClaimed: Option[Boolean], items: List[SpeculativeItem])
+case class LimitRequest(isPrivateCraft: Boolean, isAgeOver17: Boolean, isArrivingNI: Boolean, items: List[SpeculativeItem])
 

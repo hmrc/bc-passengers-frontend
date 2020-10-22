@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
+import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, Reads}
 import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import play.api.http.Status._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
@@ -109,7 +109,7 @@ class CalculatorService @Inject() (
         isAgeOver17 <- journeyData.ageOver17
         isPrivateCraft <- journeyData.privateCraft
         isArrivingNI <- journeyData.arrivingNICheck
-      } yield LimitRequest(isPrivateCraft, isAgeOver17, isArrivingNI, journeyData.isVatResClaimed, speculativeItems)
+      } yield LimitRequest(isPrivateCraft, isAgeOver17, isArrivingNI, speculativeItems)
   }
 
   def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorServiceRequest]] = {
@@ -138,9 +138,9 @@ class CalculatorService @Inject() (
           isPrivateCraft,
           isAgeOver17,
           isArrivingNI,
-          journeyData.isVatResClaimed,
-          journeyData.isBringingDutyFree.getOrElse(false),
-          journeyData.irishBorder.getOrElse(false),
+          journeyData.isUKVatPaid,
+          journeyData.isUKExcisePaid,
+          journeyData.isUKResident,
 
           purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
