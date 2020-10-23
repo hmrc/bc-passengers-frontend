@@ -25,6 +25,10 @@ class TravelDetailsService @Inject() (
 
         cache.storeJourneyData(jd.copy(
           euCountryCheck = Some(countryChoice),
+          isUKVatPaid = None,
+          isUKExcisePaid = None,
+          isUKResident = None,
+          isUccRelief = None,
           isVatResClaimed = None,
           isBringingDutyFree = None,
           bringingOverAllowance = None,
