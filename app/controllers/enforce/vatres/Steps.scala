@@ -11,9 +11,10 @@ case object WhereGoodsBoughtStep extends JourneyStep(Nil, _ => _ => true)
 
 case object DidYouClaimTaxBackEuOnlyStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("euOnly") && x.flatMap(_.arrivingNICheck).isDefined)
 
-case object GoodsBoughtOutsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck).contains("euOnly") && x.flatMap(_.arrivingNICheck).contains(false))
-                                                                                                                  || (x.flatMap(_.euCountryCheck).contains("nonEuOnly") && x.flatMap(_.arrivingNICheck).isDefined)
+case object GoodsBoughtIntoNIStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=>  (x.flatMap(_.euCountryCheck).contains("nonEuOnly") && x.flatMap(_.arrivingNICheck).contains(true))
                                                                                                                   || (x.flatMap(_.euCountryCheck).contains("greatBritain") && x.flatMap(_.arrivingNICheck).contains(true)))
+
+case object GoodsBoughtIntoGBStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> !x.flatMap(_.euCountryCheck).contains("greatBritain") && x.flatMap(_.arrivingNICheck).contains(false))
 
 case object DidYouClaimTaxBackBothStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("both") && x.flatMap(_.arrivingNICheck).isDefined)
 
@@ -25,11 +26,9 @@ case object DeclareDutyFreeEuStep extends JourneyStep(preceeding = List(Bringing
 
 case object BringingDutyFreeBothStep extends JourneyStep(preceeding = List(DidYouClaimTaxBackBothStep), predicate = _ => _.flatMap(_.isVatResClaimed).contains(false))
 
-case object GoodsBoughtInAndOutEuStep extends JourneyStep(preceeding = List(BringingDutyFreeBothStep), predicate = _ => _.flatMap(_.isBringingDutyFree).contains(false))
-
 case object DeclareDutyFreeMixStep extends JourneyStep(preceeding = List(BringingDutyFreeBothStep), predicate = _ => _.flatMap(_.isBringingDutyFree).contains(true))
 
-case object NoNeedToUseStep extends JourneyStep(preceeding = List(GoodsBoughtInAndOutEuStep, GoodsBoughtOutsideEuStep, DeclareDutyFreeMixStep, DeclareDutyFreeEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance).contains(false))
+case object NoNeedToUseStep extends JourneyStep(preceeding = List(GoodsBoughtIntoGBStep, GoodsBoughtIntoNIStep, DeclareDutyFreeMixStep, DeclareDutyFreeEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance).contains(false))
 
 case object Is17OrOverStep extends JourneyStep(preceeding = List(PrivateCraftStep), predicate = _ => _.flatMap(_.privateCraft).isDefined)
 
@@ -47,4 +46,4 @@ case object UccReliefStep extends JourneyStep(preceeding = List(UKResidentStep),
 
 case object noNeedToUseServiceGbniStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> x.flatMap(_.isUKVatPaid) .contains(true) && x.flatMap(_.isUKExcisePaid) .contains(true) && x.flatMap(_.isUKResident) .contains(true))
 
-case object PrivateCraftStep extends JourneyStep(preceeding = List(GoodsBoughtOutsideEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)
+case object PrivateCraftStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)

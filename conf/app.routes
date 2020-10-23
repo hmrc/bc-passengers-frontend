@@ -22,13 +22,13 @@ POST       /gb-ni-exemptions                                                    
 
 GET        /gb-ni-no-need-to-use-service                                               controllers.TravelDetailsController.noNeedToUseServiceGbni
 
-GET        /goods-bought-into-northern-ireland-inside-EU                               controllers.TravelDetailsController.goodsBoughtInsideEu
+GET        /goods-bought-into-northern-ireland-inside-eu                               controllers.TravelDetailsController.goodsBoughtInsideEu
 
-GET        /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEu
-POST       /goods-bought-outside-eu                                                    controllers.TravelDetailsController.goodsBoughtOutsideEuPost
+GET        /goods-brought-into-northern-ireland                                        controllers.TravelDetailsController.goodsBoughtIntoNI
+POST       /goods-brought-into-northern-ireland                                        controllers.TravelDetailsController.goodsBoughtIntoNIPost
 
-GET        /goods-bought-inside-and-outside-eu                                         controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEu
-POST       /goods-bought-inside-and-outside-eu                                         controllers.TravelDetailsController.goodsBoughtInsideAndOutsideEuPost
+GET        /goods-brought-into-great-britain-iom                                       controllers.TravelDetailsController.goodsBoughtIntoGB
+POST       /goods-brought-into-great-britain-iom                                       controllers.TravelDetailsController.goodsBoughtIntoGBPost
 
 GET        /no-need-to-use-service                                                     controllers.TravelDetailsController.noNeedToUseService
 

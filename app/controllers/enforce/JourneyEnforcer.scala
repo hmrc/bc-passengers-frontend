@@ -96,13 +96,11 @@ class WhereGoodsBoughtAction @Inject()(journeyEnforcer: JourneyEnforcer, appConf
 }
 
 @Singleton
-class GoodsBoughtInAndOutEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
-
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInAndOutEuStep else nonvatres.GoodsBoughtInAndOutEuStep
+class GoodsBoughtIntoGBAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
-      journeyEnforcer(step) {
+      journeyEnforcer(vatres.GoodsBoughtIntoGBStep) {
         block(context)
       }
     }
@@ -110,13 +108,11 @@ class GoodsBoughtInAndOutEuAction @Inject()(journeyEnforcer: JourneyEnforcer, ap
 }
 
 @Singleton
-class GoodsBoughtOutsideEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
-
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtOutsideEuStep else nonvatres.GoodsBoughtOutsideEuStep
+class GoodsBoughtIntoNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
-      journeyEnforcer(step) {
+      journeyEnforcer(vatres.GoodsBoughtIntoNIStep) {
         block(context)
       }
     }

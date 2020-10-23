@@ -95,14 +95,14 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
     }
   }
 
-  "Calling VatResJourneyEnforcer.enforcePrereqs for GoodsBoughtOutsideEuStep (Q3)" should {
+  "Calling VatResJourneyEnforcer.enforcePrereqs for GoodsBoughtIntoNIStep (Q3)" should {
 
-    "pass if euCountryCheck == nonEuOnly" in new GridSetup {
+    "pass if euCountryCheck == nonEuOnly or greatBritain" in new GridSetup {
 
-      override lazy val journeyStep = GoodsBoughtOutsideEuStep
+      override lazy val journeyStep = GoodsBoughtIntoNIStep
 
       override lazy val params = ListMap(
-        "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
+        "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("greatBritain"), None),
           "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
@@ -112,8 +112,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
           implicit val jd = JourneyData(euCountryCheck,arrivingNICheck)
 
-          if (jd == JourneyData(Some("nonEuOnly"),Some(true)) || jd == JourneyData(Some("nonEuOnly"), Some(false))
-                                                              || jd == JourneyData(Some("euOnly"), Some(false)))
+          if (jd == JourneyData(Some("nonEuOnly"),Some(true)) || jd == JourneyData(Some("greatBritain"), Some(true)))
             status(res) shouldBe OK
           else
             status(res) shouldBe SEE_OTHER

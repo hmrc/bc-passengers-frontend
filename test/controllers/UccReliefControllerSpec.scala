@@ -96,7 +96,7 @@ class UccReliefControllerSpec extends BaseSpec {
       verify(mockTravelDetailService, times(0)).storeUccRelief(any())(any())(any())
     }
 
-    "redirect to .../goods-bought-outside-eu when user non-UK Resident travels from GB to NI" in  {
+    "redirect to .../goods-brought-into-northern-ireland when user non-UK Resident travels from GB to NI" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(true),Some(false))))
 
@@ -107,7 +107,7 @@ class UccReliefControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody("isUccRelief" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
 
       verify(mockTravelDetailService, times(1)).storeUccRelief(any())(meq(true))(any())
     }

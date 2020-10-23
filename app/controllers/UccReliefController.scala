@@ -57,7 +57,7 @@ class UccReliefController @Inject()(
       success = {
         isUccRelief =>
           travelDetailsService.storeUccRelief(context.journeyData)(isUccRelief).map(_ =>
-            Redirect(routes.TravelDetailsController.goodsBoughtOutsideEu())
+            Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
           )
       })
   }
