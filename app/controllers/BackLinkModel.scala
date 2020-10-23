@@ -25,10 +25,9 @@ class BackLinkModel @Inject() (
     val location = context.request.path.split('/').last
 
     def eucc = context.journeyData.flatMap(_.euCountryCheck)
-    def vrc = context.journeyData.flatMap(_.isVatResClaimed).getOrElse(false)
-    def bdf = context.journeyData.flatMap(_.isBringingDutyFree).getOrElse(false)
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
     def ukr = context.journeyData.flatMap(_.isUKResident).getOrElse(false)
+    def arN = context.journeyData.flatMap(_.arrivingNICheck).getOrElse(false)
 
     def call = location match {
       case "duty-free" =>
@@ -36,6 +35,8 @@ class BackLinkModel @Inject() (
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>
+        Some(ArrivingNIController.loadArrivingNIPage)
+      case "goods-bought-into-northern-ireland-inside-eu" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "gb-ni-excise-check" =>
         Some(UKVatPaidController.loadUKVatPaidPage)
@@ -45,40 +46,24 @@ class BackLinkModel @Inject() (
         Some(UKResidentController.loadUKResidentPage())
       case "gb-ni-no-need-to-use-service" =>
         Some(UKResidentController.loadUKResidentPage)
-      case "goods-bought-outside-eu" if eucc!=Some("greatBritain") =>
+      case "goods-brought-into-northern-ireland" if eucc!=Some("greatBritain") =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "goods-bought-outside-eu" if eucc==Some("greatBritain") & ukr =>
+      case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & ukr =>
         Some(UKResidentController.loadUKResidentPage)
-      case "goods-bought-outside-eu" if eucc==Some("greatBritain") & !ukr =>
+      case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & !ukr =>
         Some(UccReliefController.loadUccReliefPage())
-      case "duty-free-eu" | "goods-bought-inside-and-outside-eu" | "duty-free-mix" =>
-        Some(TravelDetailsController.dutyFree)
-      case "private-travel" if eucc==Some("both") & !vrc & bdf & !boa =>
+      case "goods-brought-into-great-britain-iom" =>
+        Some(ArrivingNIController.loadArrivingNIPage)
+      case "private-travel" if arN & boa =>
+        Some(TravelDetailsController.goodsBoughtIntoNI)
+      case "private-travel" if !arN & boa =>
+        Some(TravelDetailsController.goodsBoughtIntoGB)
+      case "private-travel" if !boa=>
         Some(TravelDetailsController.noNeedToUseService)
-      case "private-travel" if eucc==Some("both") & !vrc & !bdf & boa =>
-        Some(TravelDetailsController.goodsBoughtInsideAndOutsideEu)
-      case "private-travel" if eucc==Some("both") & !vrc & !bdf & !boa =>
-        Some(TravelDetailsController.noNeedToUseService)
-      case "private-travel" if eucc==Some("both") & !vrc & bdf & boa =>
-        Some(TravelDetailsController.bringingDutyFreeQuestionMix())
-      case "private-travel" if eucc==Some("both") & vrc =>
-        Some(TravelDetailsController.didYouClaimTaxBack)
-      case "private-travel" if eucc==Some("nonEuOnly")  & boa=>
-        Some(TravelDetailsController.goodsBoughtOutsideEu)
-      case "private-travel" if eucc==Some("nonEuOnly") & !boa =>
-        Some(TravelDetailsController.noNeedToUseService)
-      case "private-travel" if eucc==Some("euOnly") & boa=>
-        Some(TravelDetailsController.goodsBoughtOutsideEu)
-      case "private-travel" if eucc==Some("euOnly") & !vrc & boa=>
-        Some(TravelDetailsController.bringingDutyFreeQuestionEu())
-      case "private-travel" if eucc==Some("euOnly") & !vrc & !boa=>
-        Some(TravelDetailsController.noNeedToUseService)
-      case "no-need-to-use-service" if eucc==Some("both") & !bdf =>
-        Some(TravelDetailsController.goodsBoughtInsideAndOutsideEu)
-      case "no-need-to-use-service" if eucc==Some("both") & bdf =>
-        Some(TravelDetailsController.bringingDutyFreeQuestionMix())
-      case "no-need-to-use-service" =>
-        Some(TravelDetailsController.goodsBoughtOutsideEu())
+      case "no-need-to-use-service" if arN =>
+        Some(TravelDetailsController.goodsBoughtIntoNI())
+      case "no-need-to-use-service" if !arN =>
+        Some(TravelDetailsController.goodsBoughtIntoGB())
       case "confirm-age" =>
         Some(TravelDetailsController.privateTravel)
       case "tell-us" =>
@@ -98,61 +83,6 @@ class BackLinkModel @Inject() (
   }
 
   def backLinkStandard(context: LocalContext): Option[String] = {
-
-    val location = context.request.path.split('/').last
-
-    def eucc = context.journeyData.flatMap(_.euCountryCheck)
-    def vrc = context.journeyData.flatMap(_.isVatResClaimed).getOrElse(false)
-    def bdf = context.journeyData.flatMap(_.isBringingDutyFree).getOrElse(false)
-    def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
-    def ukr = context.journeyData.flatMap(_.isUKResident).getOrElse(false)
-
-    def call = location match {
-      case "arriving-ni" =>
-        Some(TravelDetailsController.whereGoodsBought)
-      case "gb-ni-vat-check" =>
-        Some(ArrivingNIController.loadArrivingNIPage)
-      case "gb-ni-excise-check" =>
-        Some(UKVatPaidController.loadUKVatPaidPage)
-      case "gb-ni-uk-resident-check" =>
-        Some(UKExcisePaidController.loadUKExcisePaidPage)
-      case "gb-ni-exemptions" =>
-        Some(UKResidentController.loadUKResidentPage())
-      case "gb-ni-no-need-to-use-service" =>
-        Some(UKResidentController.loadUKResidentPage)
-      case "goods-bought-outside-eu" if eucc!=Some("greatBritain") =>
-        Some(ArrivingNIController.loadArrivingNIPage)
-      case "goods-bought-outside-eu" if eucc==Some("greatBritain") & ukr =>
-        Some(UKResidentController.loadUKResidentPage)
-      case "goods-bought-outside-eu" if eucc==Some("greatBritain") & !ukr =>
-        Some(UccReliefController.loadUccReliefPage())
-      case "private-travel" if eucc==Some("both") & boa =>
-        Some(TravelDetailsController.goodsBoughtInsideAndOutsideEuPost)
-      case "private-travel" if eucc==Some("both") & !boa =>
-        Some(TravelDetailsController.noNeedToUseService)
-      case "private-travel" if eucc==Some("nonEuOnly") & !boa =>
-        Some(TravelDetailsController.noNeedToUseService)
-      case "private-travel" if eucc==Some("nonEuOnly") & boa=>
-        Some(TravelDetailsController.goodsBoughtOutsideEu)
-      case "no-need-to-use-service" if eucc==Some("both") =>
-        Some(TravelDetailsController.goodsBoughtInsideAndOutsideEu)
-      case "no-need-to-use-service" if eucc==Some("nonEuOnly") =>
-        Some(TravelDetailsController.goodsBoughtOutsideEu)
-      case "confirm-age" =>
-        Some(TravelDetailsController.privateTravel)
-      case "tell-us" =>
-        Some(TravelDetailsController.confirmAge)
-      case "ireland-to-northern-ireland" =>
-        Some(DashboardController.showDashboard())
-      case "tax-due" if appConfig.isIrishBorderQuestionEnabled =>
-        Some(CalculateDeclareController.irishBorder)
-      case "tax-due" if !appConfig.isIrishBorderQuestionEnabled =>
-        Some(DashboardController.showDashboard)
-      case _ =>
-        None
-    }
-
-    call.map(_.toString)
-
+    backLinkVatRes(context)
   }
 }

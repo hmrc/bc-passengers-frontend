@@ -234,22 +234,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       status(response) shouldBe SEE_OTHER
 
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-EU")
-
-      verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
-    }
-
-    "redirect to the goods-bought-inside-and-outside-eu if not bringing duty free and had previously selected both eu and non eu countries" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Some(JourneyData(Some("both"),Some(false),Some(false), Some(false),Some(false),Some(false),Some(false),  isBringingDutyFree = None))
-
-      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future.successful( Some( JourneyData() ) )
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody("isBringingDutyFree" -> "false")).get
-
-      status(response) shouldBe SEE_OTHER
-
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-eu")
 
       verify(controller.travelDetailsService, times(0)).storeVatResCheck(any())(any())(any())
     }
@@ -328,7 +313,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in goods over your allowances"
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
     }
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {
@@ -382,7 +367,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in goods over your allowances"
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
     }
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {

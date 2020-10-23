@@ -76,7 +76,7 @@ class UKResidentControllerSpec extends BaseSpec {
 
   "postUKResidentPage" should {
 
-    "redirect to .../goods-bought-outside-eu when user travels from GB to NI and answered NO for UK VAT paid and YES for Excise paid and UK resident" in  {
+    "redirect to .../goods-brought-into-northern-ireland when user travels from GB to NI and answered NO for UK VAT paid and YES for Excise paid and UK resident" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(false),Some(true),Some(true))))
 
@@ -87,12 +87,12 @@ class UKResidentControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody("isUKResident" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
 
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
     }
 
-    "redirect to .../goods-bought-outside-eu when user travels from GB to NI and answered NO for Excise paid and YES for UK VAT paid and UK resident" in  {
+    "redirect to .../goods-brought-into-northern-ireland when user travels from GB to NI and answered NO for Excise paid and YES for UK VAT paid and UK resident" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(false),Some(true))))
 
@@ -103,7 +103,7 @@ class UKResidentControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody("isUKResident" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
 
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
     }

@@ -127,7 +127,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "calling POST .../where-goods-bought" should {
 
-    "redirect to .../goods-bought-into-northern-ireland-inside-EU when user selects country in EU" in new LocalSetup {
+    "redirect to .../goods-bought-into-northern-ireland-inside-eu when user selects country in EU" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
@@ -209,12 +209,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling GET .../goods-bought-outside-eu" should {
+  "calling GET .../goods-brought-into-northern-ireland" should {
     "return the interrupt page without the added rest of world guidance" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"),Some(true), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
@@ -230,7 +230,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), Some(true), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
@@ -240,7 +240,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"), Some(true), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")
@@ -257,42 +257,32 @@ class TravelDetailsControllerSpec extends BaseSpec {
   }
 
 
-  "calling GET .../goods-bought-inside-and-outside-eu" should {
+  "calling GET .../goods-brought-into-great-britain-iom" should {
 
     "return the interrupt page without the added rest of world guidance" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"),Some(true), None, None)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("nonEuOnly"),Some(false), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      content should include ("Goods brought in from non‑EU countries")
+      content should include ("Goods brought into Great Britain")
     }
   }
 
-  "calling POST .../goods-bought-inside-and-outside-eu" should {
+  "calling POST .../goods-brought-into-great-britain-iom" should {
 
     "redirect to .../private-travel when bringing in goods over the indicated allowances" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"), Some(true), None, None)))
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("euOnly"), Some(false), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom").withFormUrlEncodedBody("bringingOverAllowance" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/private-travel")
-    }
-
-    "redirect to .../no-need-to-use-service when bringing in goods under the indicated allowances" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("both"), Some(true), None, None)))
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-inside-and-outside-eu").withFormUrlEncodedBody("bringingOverAllowance" -> "false")).get
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")
     }
 
     "return bad request when given invalid data" in new LocalSetup {
@@ -305,13 +295,13 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling GET .../goods-bought-into-northern-ireland-inside-EU" should {
+  "calling GET .../goods-bought-into-northern-ireland-inside-eu" should {
 
     "return the goods bought inside the eu interrupt page" in new LocalSetup {
 
       override lazy val cachedJourneyData = Future.successful(Some(JourneyData(Some("euOnly"), Some(true), None, None)))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-EU")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-eu")).get
       status(response) shouldBe OK
 
       val content = contentAsString(response)
