@@ -14,15 +14,13 @@ import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
-import play.api.mvc.RequestHeader
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
-import uk.gov.hmrc.http.{HttpResponse, Upstream4xxResponse}
+import uk.gov.hmrc.http.Upstream4xxResponse
 import util.BaseSpec
 
 import scala.concurrent.Future
@@ -78,6 +76,9 @@ class CalculatorServiceSpec extends BaseSpec {
       ageOver17 = Some(true),
       arrivingNICheck = Some(false),
       irishBorder = Some(false),
+      isUKVatPaid = None,
+      isUKExcisePaid = Some(true),
+      isUKResident = Some(false),
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
@@ -98,6 +99,9 @@ class CalculatorServiceSpec extends BaseSpec {
       ageOver17 = Some(true),
       arrivingNICheck = Some(false),
       irishBorder = Some(false),
+      isUKVatPaid = None,
+      isUKExcisePaid = Some(true),
+      isUKResident = Some(false),
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
@@ -111,7 +115,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     def getProductTreeLeaf(path: String) =  injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
 
-    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isVatResClaimed = None, isBringingDutyFree = false, isIrishBorderCrossing = false, List(
+    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None, isUKExcisePaid = Some(true), isUKResident = Some(false), List(
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)), getProductTreeLeaf("other-goods/car-seats"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(74563 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)), getProductTreeLeaf("other-goods/antiques"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(33 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)), getProductTreeLeaf("other-goods/antiques"), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
@@ -174,68 +178,68 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "transform journey data with vat res = Some(true) to a calculator request with the vat res parameter included as true" in new LocalSetup {
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(true)))).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isUKVatPaid = Some(true)))).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
-      response shouldBe calcRequest.copy(isVatResClaimed = Some(true))
+      response shouldBe calcRequest.copy(isUKVatPaid = Some(true))
     }
 
     "transform journey data with vat res = Some(false) to a calculator request with the vat res parameter included as false" in new LocalSetup {
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = Some(false)))).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isUKVatPaid = Some(false)))).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
-      response shouldBe calcRequest.copy(isVatResClaimed = Some(false))
+      response shouldBe calcRequest.copy(isUKVatPaid = Some(false))
     }
 
     "transform journey data with vat res = None to a calculator request with the vat res parameter not included" in new LocalSetup {
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isVatResClaimed = None))).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isUKVatPaid = None))).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
-      response shouldBe calcRequest.copy(isVatResClaimed = None)
+      response shouldBe calcRequest.copy(isUKVatPaid = None)
     }
 
-    "transform journey data with irish border = Some(true) to a calculator request with the irish border parameter true" in new LocalSetup {
+    "transform journey data with excise paid = Some(true) to a calculator request with the irish border parameter true" in new LocalSetup {
 
-      val irishBorderJourneyData = goodJourneyData.copy(
-        irishBorder = Some(true)
+      val isUKExcisePaidJourneyData = goodJourneyData.copy(
+        isUKExcisePaid = Some(true)
       )
 
-      val irishBorderCalcRequest = calcRequest.copy(
-        isIrishBorderCrossing = true
+      val isUKExcisePaidCalcRequest = calcRequest.copy(
+        isUKExcisePaid = Some(true)
       )
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(irishBorderJourneyData)).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(isUKExcisePaidJourneyData)).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
-      response shouldBe irishBorderCalcRequest
+      response shouldBe isUKExcisePaidCalcRequest
     }
 
-    "transform journey data with irish border = false to a calculator request with the irish border parameter false" in new LocalSetup {
+    "transform journey data with excise paid = false to a calculator request with the irish border parameter false" in new LocalSetup {
 
-      val irishBorderJourneyData = goodJourneyData.copy(
-        irishBorder = Some(false)
+      val isUKExcisePaidJourneyData = goodJourneyData.copy(
+        isUKExcisePaid = Some(false)
       )
 
-      val irishBorderCalcRequest = calcRequest.copy(
-        isIrishBorderCrossing = false
+      val isUKExcisePaidCalcRequest = calcRequest.copy(
+        isUKExcisePaid = Some(false)
       )
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(irishBorderJourneyData)).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(isUKExcisePaidJourneyData)).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
-      response shouldBe irishBorderCalcRequest
+      response shouldBe isUKExcisePaidCalcRequest
     }
 
   }
@@ -310,7 +314,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false, List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None,  isUKExcisePaid = None, isUKResident = None, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
@@ -340,7 +344,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isVatResClaimed = None,  isBringingDutyFree = false, isIrishBorderCrossing = false,  List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None,  isUKExcisePaid = None, isUKResident = None,  List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
