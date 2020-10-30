@@ -13,6 +13,8 @@ class PortsOfArrivalService {
 
   def getAllPorts: List[PortsOfArrival] = ports
 
+  def getAllPortsNI: List[PortsOfArrival] = ports.filter(_.isGB == false)
+
   def getPortByCode(code: String): Option[PortsOfArrival] = ports.find(c => c.code == code)
 
   def isValidPortCode(code: String): Boolean = getPortByCode(code).isDefined

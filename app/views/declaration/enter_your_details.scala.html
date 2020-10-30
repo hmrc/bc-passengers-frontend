@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(f: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival])(implicit request: Request[_], messages: Messages)
+@(f: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String] )(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
@@ -59,43 +59,70 @@
       <span class="form-label-bold">@messages("label.select_identification_type")</span>
       <span class="form-hint" style="color: #6f777b;">@messages("label.choose_identification_type")</span>
 
-       @components.input_radio_group(
-       f("identificationType"),
-       Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
-       '_labelClass -> "block-label inputLabelBeforeError"
-       )
+      <div class="form-group @{if(f("identification").hasErrors) "form-group-error" else "" }" id="identification">
 
-      @components.input(
-      f("identificationNumber"),
-      '_label -> messages("label.identification_number"),
-      '_labelTextClass -> "form-label-bold",
-      '_inputHint -> messages("label.enter_identification_number"),
-      '_inputClass -> "form-control-3-4"
-      )
+        @if(journeyStart.contains("greatBritain")){
+           @components.input_radio_group(
+             f("identification.identificationType"),
+             Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_license_number"), "telephone" -> Messages("label.telephone_number")),
+             '_labelClass -> "block-label inputLabelBeforeError",
+             Symbol("telephone") -> messages("label.telephone_number_hint")
+           )
+        } else {
+           @components.input_radio_group(
+             f("identification.identificationType"),
+             Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
+             '_labelClass -> "block-label inputLabelBeforeError"
+           )
+        }
+        @f.errors.filter(_.key == "identification").map { error =>
+             <span class="error-message">@messages(error.message)</span>
+        }
+        @components.input(
+            f("identification.identificationNumber"),
+            '_label -> messages("label.identification_number"),
+            '_labelTextClass -> "form-label-bold",
+            '_inputHint -> messages("label.enter_identification_number"),
+            '_inputClass -> "form-control-3-4"
+        )
+      </div>
 
-      @components.input(
-      f("emailAddress"),
-      '_label -> messages("label.email_address"),
-      '_labelTextClass -> "form-label-bold",
-      '_inputHint -> messages("label.email_address_hint"),
-      '_inputClass -> "form-control-3-4"
-      )
+    @components.input(
+        f("emailAddress"),
+        '_label -> messages("label.email_address"),
+        '_labelTextClass -> "form-label-bold",
+        '_inputHint -> messages("label.email_address_hint"),
+        '_inputClass -> "form-control-3-4"
+    )
+
 
     <div class="form-group @{if(f("placeOfArrival").hasErrors) "form-group-error" else "" }" id="placeOfArrival">
 
         @f.errors.filter(_.key == "placeOfArrival").map { error =>
             <span class="error-message">@messages(error.message)</span>
         }
+        @if(journeyStart.contains("greatBritain")){
+          @components.select(
+            f("placeOfArrival.selectPlaceOfArrival"),
+            elementOptions = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+            displayEmptyValue = true,
+            '_label -> messages("label.place_of_arrival_ni"),
+            '_labelTextClass -> "form-label-bold",
+            '_inputHint -> messages("label.for_example_belfast_international_airport"),
+            '_errorsAboveInput -> true
+          )
+        } else {
+          @components.select(
+            f("placeOfArrival.selectPlaceOfArrival"),
+            elementOptions = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+            displayEmptyValue = true,
+            '_label -> messages("label.place_of_arrival_uk"),
+            '_labelTextClass -> "form-label-bold",
+            '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
+            '_errorsAboveInput -> true
+          )
+        }
 
-      @components.select(
-        f("placeOfArrival.selectPlaceOfArrival"),
-        elementOptions = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
-        displayEmptyValue = true,
-        '_label -> messages("label.place_of_arrival_uk"),
-        '_labelTextClass -> "form-label-bold",
-        '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
-        '_errorsAboveInput -> true
-      )
       <details class="margin-bottom-20" role="group">
 
             <summary role="button" aria-controls="details-content-0" aria-expanded="false">

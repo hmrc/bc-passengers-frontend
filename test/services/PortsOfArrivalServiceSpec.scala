@@ -139,6 +139,16 @@ class PortsOfArrivalServiceSpec extends BaseSpec {
     PortsOfArrival("WOR", "title.workington", isGB=true, Nil)
   )
 
+  private val expectedNIPorts: List[PortsOfArrival] = List(
+    PortsOfArrival("BEL", "title.belfast_docks",isGB=false,Nil),
+    PortsOfArrival("BFS", "title.belfast_international_airport",isGB=false, List("BFS")),
+    PortsOfArrival("LDY", "title.city_of_derry_airport", isGB=false, List("Londonderry Airport", "LDY", "Derry Airport")),
+    PortsOfArrival("LDY", "title.derry_port", isGB=false,List("Foyle Port", "Londonderry Port")),
+    PortsOfArrival("BHD", "title.george_best_belfast_city_airport", isGB=false, List("Belfast City Airport", "BHD")),
+    PortsOfArrival("LAR", "title.larne", isGB=false, Nil),
+    PortsOfArrival("WPT", "title.warrenpoint", isGB=false, Nil)
+  )
+
   "getAllPorts" should {
 
     val portsService = app.injector.instanceOf[PortsOfArrivalService]
@@ -146,6 +156,16 @@ class PortsOfArrivalServiceSpec extends BaseSpec {
     "return the expected ports" in {
       portsService.getAllPorts shouldEqual expectedPorts
     }
+  }
+
+  "getAllPortsNI" should {
+
+    val portsService = app.injector.instanceOf[PortsOfArrivalService]
+
+    "return the expected ports" in {
+      portsService.getAllPortsNI shouldEqual expectedNIPorts
+    }
+
   }
 
   "isInGB" should {

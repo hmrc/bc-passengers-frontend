@@ -17,8 +17,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
@@ -42,8 +42,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harrybuthasareallylongfirstnameinstead",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -69,8 +69,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -94,8 +94,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potterbutnowhislastnamehasbecomereallylong",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -121,8 +121,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
@@ -145,8 +145,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -165,15 +165,15 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("identificationType").get.message shouldBe "error.identification_type"
+      form.error("identification.identificationType").get.message shouldBe "error.identification_type"
     }
 
     "allow the identificationNumber to be any string that is 40 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "0123456789012345678901234567890123456789",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "0123456789012345678901234567890123456789",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -196,8 +196,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "01234567890123456789012345678901234567891",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "01234567890123456789012345678901234567891",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -216,15 +216,66 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("identificationNumber").get.message shouldBe "error.max-length.identification_number"
+      form.error("identification.identificationNumber").get.message shouldBe "error.max-length.identification_number"
+    }
+
+    "allow the identificationNumber to be correct if identificationType is telephone and in correct format" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "telephone",
+        "identification.identificationNumber" -> "0123456789",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if identificationType is telephone and identificationNumber is not in correct format" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "telephone",
+        "identification.identificationNumber" -> "abcdefghi",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("identification").get.message shouldBe "error.telephone_number.format"
     }
 
     "allow the emailAddress in valid format" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "0123456789012345678901234567890123456789",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "0123456789012345678901234567890123456789",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
@@ -247,8 +298,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -267,15 +318,15 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("emailAddress").get.message shouldBe "emailAddress.error.format"
+      form.error("emailAddress").get.message shouldBe "error.format.emailAddress"
     }
 
     "allow the placeOfArrival.selectPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -299,8 +350,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -326,8 +377,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "London Airport",
@@ -350,8 +401,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
@@ -373,12 +424,39 @@ class DtoTest extends BaseSpec {
       form.error("placeOfArrival.enterPlaceOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
     }
 
+    "return validation errors if the placeOfArrival.enterPlaceOfArrival and placeOfArrival.selectPlaceOfArrival is empty" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("placeOfArrival").get.message shouldBe "error.required.place_of_arrival"
+    }
+
     "return validation errors if the dateOfArrival is not a valid date" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -405,8 +483,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -433,8 +511,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -457,8 +535,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -481,8 +559,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -505,8 +583,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -529,8 +607,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -553,8 +631,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -578,8 +656,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -603,8 +681,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -631,8 +709,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -655,8 +733,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -683,8 +761,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -708,8 +786,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -732,8 +810,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
-        "identificationType" -> "passport",
-        "identificationNumber" -> "SX12345",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
         "emailAddress"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",

@@ -62,7 +62,10 @@ class CalculateDeclareController @Inject()(
   }
 
   def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
-    Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts)))
+    context.getJourneyData.euCountryCheck match {
+      case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck)))
+      case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck)))
+    }
   }
 
   def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
@@ -70,7 +73,10 @@ class CalculateDeclareController @Inject()(
     EnterYourDetailsDto.form(receiptDateTime).bindFromRequest.fold(
 
       formWithErrors => {
-        Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPorts)))
+        context.getJourneyData.euCountryCheck match {
+          case Some("greatBritain") => Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck)))
+          case _ => Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck)))
+        }
       },
       enterYourDetailsDto => {
 

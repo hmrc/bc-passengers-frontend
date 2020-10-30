@@ -149,7 +149,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       limits = Map.empty
     )
     
-    lazy val ui = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+    lazy val ui = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
     lazy val dt = DateTime.parse("2018-11-23T06:21:00Z")
 
@@ -256,6 +256,20 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Enter your details"
     }
+
+    "Display the where-goods-bought page when at the lower end of the range from GB to NI" in new LocalSetup {
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+
+
+      val content = contentAsString(response)
+      val doc = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+    }
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax greater than £90,000" should {
@@ -295,11 +309,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+
         .withFormUrlEncodedBody(
           "firstName" -> "",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -325,8 +340,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "123456789012345678901234567890123451234",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -352,8 +367,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "123456789012345678901234567890123451234",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -379,8 +394,35 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "12345678901234567890123456789012345612345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "12345678901234567890123456789012345612345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
+
+      status(response) shouldBe BAD_REQUEST
+    }
+
+    "Return BAD REQUEST and display the user information when identification number is not in correct format" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "telephone",
+          "identification.identificationNumber" -> "abcdefgh",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
@@ -406,11 +448,38 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
+
+      status(response) shouldBe BAD_REQUEST
+    }
+
+    "Return BAD REQUEST and display the user information when invalid telephone num ber is entered" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "telephone",
+          "identification.identificationNumber" -> "abcdefghi",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
           "dateTimeOfArrival.dateOfArrival.month" -> "11",
           "dateTimeOfArrival.dateOfArrival.year" -> "2018",
@@ -433,8 +502,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -462,8 +531,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
@@ -491,8 +560,38 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
-          "identificationType" -> "passport",
-          "identificationNumber" -> "SX12345",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
+          "emailAddress"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response).get shouldBe "http://example.com/payment-journey"
+
+      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+    }
+
+    "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful from GB to NI" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
+      override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "telephone",
+          "identification.identificationNumber" -> "07884559563",
           "emailAddress"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
