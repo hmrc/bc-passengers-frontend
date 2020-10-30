@@ -854,10 +854,12 @@ error.enter_a_real_date= Enter a real date of arrival
 head.error.enter_a_real_date= Enter a real date of arrival
 error.enter_a_real_time= Enter a real time of arrival
 head.error.enter_a_real_time= Enter a real time of arrival
-head.emailAddress.error.format = Enter your email address in the correct format, like name@example.com
-emailAddress.error.format = Enter your email address in the correct format, like name@example.com
-error.required.emailAddress.error.format = Enter your email address
-head.error.required.emailAddress.error.format = Enter your email address
+error.format.emailAddress = Enter your email address in the correct format, like name@example.com
+head.error.format.emailAddress = Enter your email address in the correct format, like name@example.com
+error.required.emailAddress = Enter your email address
+head.error.required.emailAddress = Enter your email address
+head.error.telephone_number.format = Enter your selected identification number in the correct format
+error.telephone_number.format = Enter your selected identification number in the correct format
 
 
 label.add_more.other-goods.adult.adult-clothing = Add more adult clothing

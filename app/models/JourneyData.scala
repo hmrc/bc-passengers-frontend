@@ -29,12 +29,12 @@ object UserInformation {
   implicit val formats = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
-    UserInformation(dto.firstName, dto.lastName, dto.identificationType, dto.identificationNumber , dto.emailAddress, dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""), dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""), dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
+    UserInformation(dto.firstName, dto.lastName, dto.identification.identificationType.getOrElse(""), dto.identification.identificationNumber , dto.emailAddress, dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""), dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""), dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
 }
 case class UserInformation(
   firstName: String,
   lastName: String,
-  identificationType: Option[String],
+  identificationType: String,
   identificationNumber: String,
   emailAddress: String,
   selectPlaceOfArrival: String,

@@ -171,7 +171,7 @@ case class SelectProductsDto(tokens: List[String])
 case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 
 object EnterYourDetailsDto {
-  val validateTelephoneNumber = """^\+?(?:\s*\d){10,13}$"""
+  val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
   val emailAddressPattern = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
 
   private def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
@@ -193,7 +193,7 @@ object EnterYourDetailsDto {
       case str if str.isEmpty =>
         Invalid(ValidationError(s"error.required.$fieldName"))
       case _ =>
-        Invalid(fieldName, pattern)
+        Invalid(s"error.format.$fieldName", pattern)
     }
   }
 
@@ -246,13 +246,28 @@ object EnterYourDetailsDto {
     }
   }
 
+  private def verifyIdentificationNumberConstraint(pattern: String): Constraint[Identification] = {
+    Constraint {
+      model =>
+        (model.identificationType, model.identificationNumber) match {
+          case (x, y) if (!x.contains("telephone") && !y.isEmpty) => Valid
+          case (x, y) if (x.contains("telephone") && y.matches(pattern)  ) => Valid
+          case _ => Invalid(ValidationError(s"error.telephone_number.format"))
+        }
+    }
+  }
+
+
   def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
       "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")),
       "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")),
-      "identificationType" -> optional(text).verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
-      "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number")),
-      "emailAddress" -> text.verifying(isEmailAddress(emailAddressPattern, "emailAddress.error.format")),
+      "identification" -> mapping(
+        "identificationType" -> optional(text).verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
+        "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
+      )(Identification.apply)(Identification.unapply)
+        .verifying(verifyIdentificationNumberConstraint(telephoneNumberPattern)),
+      "emailAddress" -> text.verifying(isEmailAddress(emailAddressPattern, "emailAddress")),
       "placeOfArrival" -> mapping(
         "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
         "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")))
@@ -269,4 +284,5 @@ object EnterYourDetailsDto {
 
 case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
-case class EnterYourDetailsDto(firstName: String, lastName: String, identificationType: Option[String], identificationNumber: String, emailAddress: String, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
+case class Identification(identificationType: Option[String], identificationNumber: String)
+case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification , emailAddress: String, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)

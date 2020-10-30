@@ -45,7 +45,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   val declarationService: DeclarationService = app.injector.instanceOf[DeclarationService]
 
-  val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+  val userInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
   
   val calculatorResponse = CalculatorResponse(
     Some(Alcohol(
@@ -270,7 +270,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "truncate a product description to 40 characters if the product description is too big in the metadata." in {
 
-      val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -345,7 +345,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "generate the correct payload and set the vat res flag to true if vat res has not been claimed but duty free has" in {
 
-      val userInformation = UserInformation("Harry", "Potter",Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
@@ -588,7 +588,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in {
 
-      val userInformation = UserInformation("Harry", "Potter", Some("passport"), "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation = UserInformation("Harry", "Potter", "passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
