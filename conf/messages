@@ -353,6 +353,7 @@ error.l-wine.limit-exceeded =You cannot use this service to declare more than 90
 error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+error.l-htb.limit-exceeded = You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
 head.error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 head.error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
@@ -363,6 +364,7 @@ head.error.l-wine.limit-exceeded =You cannot use this service to declare more th
 head.error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 head.error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+head.error.l-htb.limit-exceeded = You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
 
 error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
