@@ -40,7 +40,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigarettes"
     }
 
-    "fail on more than allowance (800) in noOfSticks" in {
+    "fail on more than allowance (800) in CIGRT-noOfSticks" in {
       val form = injected[TobaccoInputController].noOfSticksForm(path, Map("L-CIGRT" -> 1.1), List("L-CIGRT")).bind(Map(
         "noOfSticks" -> "801",
         "country" -> "FR",
@@ -50,6 +50,18 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
       form.error("noOfSticks").get.message shouldBe "error.l-cigrt.limit-exceeded"
+    }
+
+    "fail on more than allowance (800) in HTB-noOfSticks" in {
+      val form = injected[TobaccoInputController].noOfSticksForm(path, Map("L-HTB" -> 1.1), List("L-HTB")).bind(Map(
+        "noOfSticks" -> "801",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "cost" -> "50"
+      ))
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("noOfSticks").get.message shouldBe "error.l-htb.limit-exceeded"
     }
 
     "fail on empty string in country" in {

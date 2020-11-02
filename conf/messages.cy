@@ -329,6 +329,7 @@ head.error.weight_or_volume.required.tobacco.cigarillos=Nodwch bwysau’r sigari
 head.error.weight_or_volume.required.tobacco.cigars=Nodwch bwysau’r sigârs
 head.error.weight_or_volume.required.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
 head.error.weight_or_volume.required.tobacco.rolling-tobacco=Nodwch bwysau’r tybaco rholio â llaw
+
 error.l-cigrt.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 sigarét. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 error.l-crilo.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 400 sigarilo. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 error.l-cigar.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 200 sigâr. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
@@ -338,6 +339,8 @@ error.l-wine.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mw
 error.l-alcoth.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 20 litr o seidr a diodydd alcoholaidd eraill gyda’i gilydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 error.l-spirit.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 10 litr o wirodydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 error.l-loose.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 1,000g o dybaco rhydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
+error.l-htb.limit-exceeded =(W)You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.(W)
+
 head.error.l-cigrt.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 sigarét. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 head.error.l-crilo.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 400 sigarilo. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 head.error.l-cigar.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 200 sigâr. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
@@ -347,6 +350,8 @@ head.error.l-wine.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatg
 head.error.l-alcoth.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 20 litr o seidr a diodydd alcoholaidd eraill gyda’i gilydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 head.error.l-spirit.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 10 litr o wirodydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 head.error.l-loose.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 1,000g o dybaco rhydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
+head.error.l-htb.limit-exceeded=(W)You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.(W)
+
 error.invalid.characters.noofsticks.tobacco.cigars=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, megis 12 neu 160
 error.invalid.characters.noofsticks.tobacco.cigarillos=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, megis 12 neu 160
 error.invalid.characters.noofsticks.tobacco.cigarettes=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 20 neu 300
