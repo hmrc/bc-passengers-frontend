@@ -769,7 +769,9 @@ label.customs = Customs
 label.excise = Excise (alcohol and tobacco only)
 label.vat = VAT
 label.upto_72_hours = You can declare your goods and pay online up to 72 hours before arriving in the UK.
-label.exchange_rates = We use <a href="{0}" target="_blank">HMRC’s exchange rates for customs and VAT (opens in a new window or tab)</a> to make this calculation. We use the rates for the month in which you are declaring.
+label.we_use = We use
+label.exchange_rates = HMRC’s exchange rates for customs and VAT (opens in a new window or tab)
+label.to_make_this_calculation = to make this calculation. We use the rates for the month in which you are declaring.
 label.you_must_pay_duty_and_tax_ = You must pay duty and tax on these goods if you bring them into the UK.
 label.you_can_declare_these_goods_ = You can declare these goods and pay the tax and duty online up to 72 hours before you arrive in the UK.
 label.declare_once = You can only declare your goods online once. If you bring in goods other than the ones you declare online, you will need to go to the red channel, red-point phone or speak to Border Force to declare them. If they are not available go to GOV.UK to find out what to do.
@@ -778,8 +780,8 @@ label.declare_your_goods_and_pay_online = Declare your goods and pay online
 label.all_items_within_allowance = All the items you entered are included within your personal allowances
 label.tax_due_on_these_goods = Tax due on these goods
 label.personal_allowances = All the items you entered are included within your personal allowances
-label.green_channel = Go to the green channel at customs if these are the only goods you are bringing into the UK from abroad.
-label.fire_arms = Go to the red channel, red-point phone or speak to Border Force if you have something else to declare or are carrying restricted items such as firearms or ammunition.  If they are not available go to GOV.UK to find out what to do.
+label.green_channel = Go to the green ‘nothing to declare’ channel at your arrival location if these are the only goods you are bringing into the UK from abroad.
+label.import_export_licence = Go to the red ‘goods to declare’ channel or use the red-point phone if you have something else to declare. This also includes if you are carrying any restricted items or goods that require either an import or export licence.
 label.how_the_tax_was_calculated = How the tax was calculated
 label.declaring_these_goods = Declaring these goods
 label.you_cannot_make_payments = You cannot make payments for tax and duty above £97,000 using this service.
@@ -1581,7 +1583,8 @@ error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying al
 heading.is_uk_excise_paid = Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?
 head.error.is_uk_excise_paid = Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco
 error.is_uk_excise_paid = Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco
-text.excise_duty_will_usually = Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port. <a rel="noreferrer noopener" target="_blank" href="{0}">Read more about alcohol and tobacco duties (opens in new tab).</a>
+text.excise_duty_will_usually = Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.
+text.read_more = Read more about alcohol and tobacco duties (opens in new tab).
 text.excise_duty_selection = If you are not bringing in any alcohol or tobacco select yes below.
 
 heading.uk-resident = Are you a UK resident?

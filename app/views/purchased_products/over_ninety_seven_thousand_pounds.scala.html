@@ -88,7 +88,9 @@
 
       @if(!hideExchangeRateInfo) {
       <br>
-      <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat"))</p>
+      <p class="margin-top-30">
+        @messages("label.we_use") <a href = "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" target="_blank">@messages("label.exchange_rates")</a>
+        @messages("label.to_make_this_calculation")</p>
       }
     </div>
   </details>

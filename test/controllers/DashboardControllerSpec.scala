@@ -190,7 +190,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      content should include ("We use <a href=\"https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat\" target=\"_blank\">HMRC’s exchange rates")
+      content should include ("<a href = \"https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat\" target=\"_blank\">HMRC’s exchange rates")
       doc.title shouldBe  "Tax due on these goods - Check tax on goods you bring into the UK - GOV.UK"
     }
   }

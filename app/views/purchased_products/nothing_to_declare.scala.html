@@ -94,7 +94,10 @@
 
       @if(!hideExchangeRateInfo) {
         <br>
-        <p class="margin-top-30">@Html(messages("label.exchange_rates", "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat"))</p>
+        <p class="margin-top-30">
+          @messages("label.we_use") <a href = "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" target="_blank">@messages("label.exchange_rates")</a>
+          @messages("label.to_make_this_calculation")
+        </p>
       }
     </div>
   </details>
@@ -102,7 +105,7 @@
   <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
 
   <p>@messages("label.green_channel")</p>
-  <p>@messages("label.fire_arms")</p>
+  <p>@messages("label.import_export_licence")</p>
 
 <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a></p>
 <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
