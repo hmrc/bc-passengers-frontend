@@ -48,6 +48,7 @@ case class CalculatorServiceRequest(
   isUKVatPaid: Option[Boolean],
   isUKExcisePaid: Option[Boolean],
   isUKResident: Option[Boolean],
+  isUccRelief: Option[Boolean],
   items: List[PurchasedItem]
 )
 

@@ -79,7 +79,7 @@ class CalculatorService @Inject() (
             wsAllMethods.POST[CalculatorServiceRequest, CalculatorResponse](s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate", calculatorRequest) map { r =>
               CalculatorServiceSuccessResponse(r)
             } recover {
-              case e: Upstream4xxResponse if e.upstreamResponseCode == REQUESTED_RANGE_NOT_SATISFIABLE =>
+              case e: UpstreamErrorResponse if e.statusCode == REQUESTED_RANGE_NOT_SATISFIABLE =>
                 CalculatorServicePurchasePriceOutOfBoundsFailureResponse
             }
 
@@ -141,7 +141,7 @@ class CalculatorService @Inject() (
           journeyData.isUKVatPaid,
           journeyData.isUKExcisePaid,
           journeyData.isUKResident,
-
+          journeyData.isUccRelief,
           purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
     }
