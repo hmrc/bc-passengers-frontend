@@ -36,9 +36,10 @@ class ProductTreeService {
             ProductTreeLeaf("cigarettes", "label.tobacco.cigarettes", "TOB/A1/CIGRT", "cigarettes", List("L-CIGRT")),
             ProductTreeLeaf("cigarillos", "label.tobacco.cigarillos", "TOB/A1/CRILO", "cigars", List("L-CRILO")),
             ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR")),
+            ProductTreeLeaf("heated-tobacco", "label.tobacco.heated-tobacco","TOB/A1/HTB","cigarettes", List("L-HTB")),
             ProductTreeLeaf("chewing-tobacco", "label.tobacco.chewing-tobacco", "TOB/A1/OTHER", "tobacco", List("L-LOOSE")),
-            ProductTreeLeaf("rolling-tobacco", "label.tobacco.rolling-tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE")),
-            ProductTreeLeaf("heated-tobacco", "label.tobacco.heated-tobacco","TOB/A1/HTB","cigarettes", List("L-HTB"))
+            ProductTreeLeaf("rolling-tobacco", "label.tobacco.rolling-tobacco", "TOB/A1/HAND", "tobacco", List("L-LOOSE"))
+
           )
         ),
         ProductTreeBranch("other-goods",

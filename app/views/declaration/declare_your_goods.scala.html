@@ -35,8 +35,6 @@
 
   <p class="margin-top-30"><a href="@routes.CalculateDeclareController.enterYourDetails" class="button" role="button">@messages("label.declare_your_goods_and_pay_online")</a></p>
 
-  <p>
-    <a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a> or
-    <a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again").toLowerCase()</a>.
-  </p>
+  <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a></p>
+  <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
 }

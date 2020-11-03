@@ -97,8 +97,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
 
-      doc.getElementById("hint-nonEuOnly").text() shouldBe "If you are bringing in goods from both EU and non-EU countries, select this option."
-      doc.getElementById("hint-greatBritain").text() shouldBe "If you are bringing goods from Great Britain to Northern Ireland only, select this option."
+      doc.getElementById("hint-greatBritain").text() shouldBe "If you are bringing goods from Great Britain or the Isle of Man to Northern Ireland only, select this option."
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe true
 
       verify(controller.cache, times(1)).fetch(any())
@@ -414,7 +413,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       Option(doc.getElementById("errors").select("a[href=#privateCraft]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#privateCraft]").html()).get shouldBe "Select yes if you have, or will use private transport to arrive in the UK"
+      Option(doc.getElementById("errors").select("a[href=#privateCraft]").html()).get shouldBe "Select yes if you are arriving in the UK by private transport"
       Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
       Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
     }
@@ -432,7 +431,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you have, or will use private transport to arrive in the UK"
+      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are arriving in the UK by private transport"
 
     }
 

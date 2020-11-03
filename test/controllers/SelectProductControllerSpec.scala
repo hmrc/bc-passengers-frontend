@@ -103,8 +103,8 @@ class SelectProductControllerSpec extends BaseSpec {
       override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
 
       status(result) shouldBe OK
-      h1 shouldBe "What type of alcohol are you bringing into the UK?"
-      title shouldBe "What type of alcohol are you bringing into the UK? - Check tax on goods you bring into the UK - GOV.UK"
+      h1 shouldBe "What type of alcohol do you want to add?"
+      title shouldBe "What type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
       forAll(List("beer", "wine", "cider", "spirits", "wine", "sparkling-wine")) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
@@ -118,7 +118,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco")).get
 
       status(result) shouldBe OK
-      h1 shouldBe "What type of tobacco are you bringing into the UK?"
+      h1 shouldBe "What type of tobacco do you want to add?"
 
       forAll(List("cigars", "cigarettes", "cigarillos", "rolling-tobacco", "chewing-tobacco", "heated-tobacco")) { cb =>
         Option(doc.getElementById(cb)) should not be None
@@ -133,7 +133,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")).get
 
       status(result) shouldBe OK
-      h1 shouldBe "What other goods are you bringing into the UK?"
+      h1 shouldBe "What type of other goods do you want to add?"
       Option(doc.getElementById("antiques")) should not be None
     }
 
