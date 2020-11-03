@@ -726,7 +726,9 @@ label.customs=Tollau
 label.excise=Ecséis (alcohol a thybaco yn unig)
 label.vat=TAW
 label.upto_72_hours = (W)You can declare your goods and pay online up to 72 hours before arriving in the UK.(W)
-label.exchange_rates=Rydym yn defnyddio <a href="{0}" target="_blank">cyfraddau cyfnewid CThEM ar gyfer tollau a TAW (yn agor ffenestr neu dab newydd)</a> i wneud y cyfrifiad hwn. Rydym yn defnyddio’r cyfraddau ar gyfer y mis y byddwch yn datgan ynddo.
+label.we_use = (W)We use(W)
+label.exchange_rates = (W)HMRC’s exchange rates for customs and VAT (opens in a new window or tab)(W)
+label.to_make_this_calculation = (W)to make this calculation. We use the rates for the month in which you are declaring.(W)
 label.you_must_pay_duty_and_tax_=Mae'n rhaid i chi dalu toll a threth ar y nwyddau hyn os rydych yn dod â nhw i’r DU.
 label.you_can_declare_these_goods_=Gallwch ddatgan y nwyddau hyn a thalu’r dreth a’r doll ar-lein hyd at 72 awr cyn i chi gyrraedd yn y DU.
 label.declare_once=Dim ond unwaith y gallwch ddatgan eich nwyddau ar-lein. Os byddwch yn dod â nwyddau i mewn ar wahân i’r rheiny rydych yn eu datgan ar-lein, bydd angen i chi fynd i’r sianel goch neu’r ffôn pwynt coch, neu siarad â Llu’r Ffiniau er mwyn eu datgan. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
@@ -735,8 +737,8 @@ label.declare_your_goods_and_pay_online=Datgan eich nwyddau a thalu ar-lein
 label.all_items_within_allowance=Mae’r holl eitemau rydych wedi’u nodi wedi’u cynnwys yn eich lwfansau personol
 label.tax_due_on_these_goods=Y dreth sy’n ddyledus ar y nwyddau hyn
 label.personal_allowances=Mae’r holl eitemau rydych wedi’u nodi wedi’u cynnwys yn eich lwfansau personol
-label.green_channel=Ewch i’r sianel werdd drwy’r tollau os mai dyma’r unig nwyddau rydych yn dod â nhw i’r DU o dramor.
-label.fire_arms=Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau os oes gennych rywbeth arall i’w ddatgan neu os ydych yn cario eitemau cyfyngedig megis arfau tanio neu fwledi a chetris. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
+label.green_channel=(W)Go to the green ‘nothing to declare’ channel at your arrival location if these are the only goods you are bringing into the UK from abroad.(W)
+label.import_export_licence=(W)Go to the red ‘goods to declare’ channel or use the red-point phone if you have something else to declare. This also includes if you are carrying any restricted items or goods that require either an import or export licence.(W)
 label.how_the_tax_was_calculated=Sut y cafodd y dreth ei chyfrifo
 label.declaring_these_goods=Datgan y nwyddau hyn
 label.you_cannot_make_payments=Ni allwch wneud taliadau am dreth a tholl dros £97,000 drwy ddefnyddio’r gwasanaeth hwn.
@@ -1440,7 +1442,8 @@ error.is_uk_vat_paid = (W)Select yes if you have, or will pay UK VAT when buying
 heading.is_uk_excise_paid = (W)Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?(W)
 head.error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco(W)
 error.is_uk_excise_paid = (W)Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco(W)
-text.excise_duty_will_usually = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port. <a rel="noreferrer noopener" target="_blank" href="{0}">Read more about alcohol and tobacco duties (opens in new tab)</a>(W)
+text.excise_duty_will_usually = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.(W)
+text.read_more = (W)Read more about alcohol and tobacco duties (opens in new tab).(W)
 text.excise_duty_selection = (W)If you are not bringing in any alcohol or tobacco select yes below.(W)
 
 heading.uk-resident = (W)Are you a UK resident?(W)
