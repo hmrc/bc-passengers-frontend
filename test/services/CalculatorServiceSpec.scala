@@ -20,7 +20,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
-import uk.gov.hmrc.http.Upstream4xxResponse
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import util.BaseSpec
 
 import scala.concurrent.Future
@@ -79,6 +79,7 @@ class CalculatorServiceSpec extends BaseSpec {
       isUKVatPaid = None,
       isUKExcisePaid = Some(true),
       isUKResident = Some(false),
+      isUccRelief = Some(true),
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
@@ -102,6 +103,7 @@ class CalculatorServiceSpec extends BaseSpec {
       isUKVatPaid = None,
       isUKExcisePaid = Some(true),
       isUKResident = Some(false),
+      isUccRelief = Some(true),
       purchasedProductInstances = List(
         PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)),
@@ -113,9 +115,9 @@ class CalculatorServiceSpec extends BaseSpec {
       )
     )
 
-    def getProductTreeLeaf(path: String) =  injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
+    def getProductTreeLeaf(path: String): ProductTreeLeaf =  injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
 
-    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None, isUKExcisePaid = Some(true), isUKResident = Some(false), List(
+    val calcRequest = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None, isUKExcisePaid = Some(true), isUKResident = Some(false), isUccRelief = Some(true), List(
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(74563)), getProductTreeLeaf("other-goods/car-seats"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(74563 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(33)), getProductTreeLeaf("other-goods/antiques"), Currency("AUD", "title.australian_dollars_aud", Some("AUD"), List("Australian", "Oz")), BigDecimal(33 / 1.76).setScale(2, RoundingMode.DOWN), ExchangeRate("1.76", todaysDate)),
       PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432)), getProductTreeLeaf("other-goods/antiques"), Currency("CHF", "title.swiss_francs_chf", Some("CHF"), List("Swiss", "Switzerland")), BigDecimal(5432 / 1.26).setScale(2, RoundingMode.DOWN), ExchangeRate("1.26", todaysDate)),
@@ -176,7 +178,7 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe calcRequest
     }
 
-    "transform journey data with vat res = Some(true) to a calculator request with the vat res parameter included as true" in new LocalSetup {
+    "transform journey data with VAT paid = Some(true) to a calculator request with the isUKVatPaid parameter included as true" in new LocalSetup {
 
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isUKVatPaid = Some(true)))).get
 
@@ -186,7 +188,7 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe calcRequest.copy(isUKVatPaid = Some(true))
     }
 
-    "transform journey data with vat res = Some(false) to a calculator request with the vat res parameter included as false" in new LocalSetup {
+    "transform journey data with VAT paid = Some(false) to a calculator request with the isUKVatPaid parameter included as false" in new LocalSetup {
 
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isUKVatPaid = Some(false)))).get
 
@@ -196,7 +198,7 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe calcRequest.copy(isUKVatPaid = Some(false))
     }
 
-    "transform journey data with vat res = None to a calculator request with the vat res parameter not included" in new LocalSetup {
+    "transform journey data with VAT paid = None to a calculator request with the isUKVatPaid parameter not included" in new LocalSetup {
 
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData.copy(isUKVatPaid = None))).get
 
@@ -206,15 +208,11 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe calcRequest.copy(isUKVatPaid = None)
     }
 
-    "transform journey data with excise paid = Some(true) to a calculator request with the irish border parameter true" in new LocalSetup {
+    "transform journey data with excise paid = Some(true) to a calculator request with the isUKExcisePaid parameter true" in new LocalSetup {
 
-      val isUKExcisePaidJourneyData = goodJourneyData.copy(
-        isUKExcisePaid = Some(true)
-      )
+      val isUKExcisePaidJourneyData: JourneyData = goodJourneyData.copy(isUKExcisePaid = Some(true))
 
-      val isUKExcisePaidCalcRequest = calcRequest.copy(
-        isUKExcisePaid = Some(true)
-      )
+      val isUKExcisePaidCalcRequest: CalculatorServiceRequest = calcRequest.copy(isUKExcisePaid = Some(true))
 
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(isUKExcisePaidJourneyData)).get
 
@@ -224,15 +222,11 @@ class CalculatorServiceSpec extends BaseSpec {
       response shouldBe isUKExcisePaidCalcRequest
     }
 
-    "transform journey data with excise paid = false to a calculator request with the irish border parameter false" in new LocalSetup {
+    "transform journey data with excise paid = false to a calculator request with the isUKExcisePaid parameter false" in new LocalSetup {
 
-      val isUKExcisePaidJourneyData = goodJourneyData.copy(
-        isUKExcisePaid = Some(false)
-      )
+      val isUKExcisePaidJourneyData: JourneyData = goodJourneyData.copy(isUKExcisePaid = Some(false))
 
-      val isUKExcisePaidCalcRequest = calcRequest.copy(
-        isUKExcisePaid = Some(false)
-      )
+      val isUKExcisePaidCalcRequest: CalculatorServiceRequest = calcRequest.copy(isUKExcisePaid = Some(false))
 
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(isUKExcisePaidJourneyData)).get
 
@@ -250,7 +244,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       def simulatePurchasePriceOutOfBounds: Boolean
 
-      lazy val service = {
+      lazy val service: CalculatorService = {
 
         when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())) thenReturn {
           Future.successful(List(
@@ -261,7 +255,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
         if(simulatePurchasePriceOutOfBounds) {
           when(injected[WsAllMethods].POST[CalculatorServiceRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
-            (any(), any(), any(), any())) thenReturn Future.failed(new Upstream4xxResponse("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty))
+            (any(), any(), any(), any())) thenReturn Future.failed(UpstreamErrorResponse.apply("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty))
         }
         else {
           when(injected[WsAllMethods].POST[CalculatorServiceRequest, CalculatorResponse](meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"), any(), any())
@@ -283,7 +277,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "make a call to the currency-conversion service, the calculator service and return a valid response" in new LocalSetup {
 
-      val jd = JourneyData(
+      val jd: JourneyData = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
         ageOver17 = Some(true),
         arrivingNICheck = Some(false),
@@ -294,7 +288,7 @@ class CalculatorServiceSpec extends BaseSpec {
         )
       )
 
-      override lazy val simulatePurchasePriceOutOfBounds = false
+      override lazy val simulatePurchasePriceOutOfBounds: Boolean = false
 
       val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
@@ -314,7 +308,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None,  isUKExcisePaid = None, isUKResident = None, List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None,  isUKExcisePaid = None, isUKResident = None, isUccRelief = None, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
@@ -323,7 +317,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse when call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new LocalSetup {
 
-      val jd = JourneyData(
+      val jd: JourneyData = JourneyData(
         euCountryCheck = Some("nonEuOnly"),
         ageOver17 = Some(true),
         arrivingNICheck = Some(false),
@@ -334,7 +328,7 @@ class CalculatorServiceSpec extends BaseSpec {
         )
       )
 
-      override lazy val simulatePurchasePriceOutOfBounds = true
+      override lazy val simulatePurchasePriceOutOfBounds: Boolean = true
 
       val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
@@ -344,7 +338,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None,  isUKExcisePaid = None, isUKResident = None,  List(
+        meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, isUKVatPaid = None,  isUKExcisePaid = None, isUKResident = None, isUccRelief = None, List(
           PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)),Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
@@ -357,7 +351,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "store a new user information" in {
 
-      lazy val s = {
+      lazy val s: CalculatorService = {
         val service = app.injector.instanceOf[CalculatorService]
         val mock = service.cache
         when(mock.fetch(any())) thenReturn Future.successful( None )

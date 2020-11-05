@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import util.BaseSpec
 
 class CalculatorServiceRequestSpec extends BaseSpec {
@@ -27,12 +27,13 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
       def templateId: String
 
-      lazy val cr = CalculatorServiceRequest(isPrivateCraft = false,
+      lazy val cr: CalculatorServiceRequest = CalculatorServiceRequest(isPrivateCraft = false,
         isAgeOver17 = true,
         isArrivingNI = false,
         isUKVatPaid = None,
         isUKExcisePaid = Some(false),
         isUKResident = Some(true),
+        isUccRelief = Some(false),
         List(
           PurchasedItem(
             PurchasedProductInstance(
@@ -53,18 +54,19 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
     "convert cigarettes correctly" in new Setup {
 
-      override val weightOrVolume = None
-      override val noOfSticks = Some(200)
+      override val weightOrVolume: None.type = None
+      override val noOfSticks: Option[Int] = Some(200)
 
-      override val templateId = "cigarettes"
+      override val templateId: String = "cigarettes"
 
-      val expected = Json.parse(
+      val expected: JsValue = Json.parse(
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
           |  "isUKExcisePaid" : false,
           |  "isUKResident" : true,
+          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -100,18 +102,19 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
     "convert cigars correctly" in new Setup {
 
-      override val weightOrVolume = Some(BigDecimal("1.0"))
-      override val noOfSticks = Some(50)
+      override val weightOrVolume: Option[BigDecimal] = Some(BigDecimal("1.0"))
+      override val noOfSticks: Option[Int] = Some(50)
 
-      override val templateId = "cigars"
+      override val templateId: String = "cigars"
 
-      val expected = Json.parse(
+      val expected: JsValue = Json.parse(
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
           |  "isUKExcisePaid" : false,
           |  "isUKResident" : true,
+          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -148,18 +151,19 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
     "convert tobacco correctly" in new Setup {
 
-      override val weightOrVolume = Some(BigDecimal("1.0"))
-      override val noOfSticks = None
+      override val weightOrVolume: Option[BigDecimal] = Some(BigDecimal("1.0"))
+      override val noOfSticks: None.type = None
 
-      override val templateId = "tobacco"
+      override val templateId: String = "tobacco"
 
-      val expected = Json.parse(
+      val expected: JsValue = Json.parse(
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
           |  "isUKExcisePaid" : false,
           |  "isUKResident" : true,
+          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -195,18 +199,19 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
     "convert alcohol correctly" in new Setup {
 
-      override val weightOrVolume = Some(BigDecimal("1.0"))
-      override val noOfSticks = None
+      override val weightOrVolume: Option[BigDecimal] = Some(BigDecimal("1.0"))
+      override val noOfSticks: None.type = None
 
-      override val templateId = "alcohol"
+      override val templateId: String = "alcohol"
 
-      val expected = Json.parse(
+      val expected: JsValue = Json.parse(
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
           |  "isUKExcisePaid" : false,
           |  "isUKResident" : true,
+          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
@@ -242,18 +247,19 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
     "convert other goods correctly" in new Setup {
 
-      override val weightOrVolume = None
-      override val noOfSticks = None
+      override val weightOrVolume: None.type = None
+      override val noOfSticks: None.type = None
 
-      override val templateId = "other-goods"
+      override val templateId: String = "other-goods"
 
-      val expected = Json.parse(
+      val expected: JsValue = Json.parse(
         """{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
           |  "isUKExcisePaid" : false,
           |  "isUKResident" : true,
+          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
