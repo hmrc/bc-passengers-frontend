@@ -306,7 +306,7 @@ error.required.alcohol.sparkling-wine = Enter the price of the sparkling wine
 error.required.alcohol.wine = Enter the price of the wine
 error.required.alcohol.other = Enter the price of the other alcoholic drinks
 error.required.noofsticks.cigarettes = Enter the number of cigarettes
-error.required.noofsticks.heated-tobacco=Enter the number of units of heated-tobacco
+error.required.noofsticks.heated-tobacco=Enter the number of units of heated tobacco
 error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 error.required.weight.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
@@ -367,7 +367,6 @@ head.error.l-spirit.limit-exceeded = You cannot use this service to declare more
 head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 head.error.l-htb.limit-exceeded = You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
-
 error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
 error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
 error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
@@ -389,7 +388,6 @@ head.error.exceeded.max = Price must be no more than 9,999,999,999
 head.error.invalid.format = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
 head.error.max.decimal.places.weight = Weight must be to a maximum of 2 decimal places, such as 20.55 or 356.45
 head.error.max.decimal.places.volume = Volume must be to a maximum of 3 decimal places, such as 12.699 or 6.333
-
 
 head.error.invalid.characters.quantity.other-goods.adult.adult-clothing = Quantity must only include whole numbers, such as 3 or 8
 head.error.invalid.characters.quantity.other-goods.adult.adult-footwear = Quantity must only include whole numbers, such as 3 or 8
@@ -501,7 +499,6 @@ label.other-goods.other = Other item
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
 label.enter_currency = Enter currency
 
-
 ## Cost Input
 label.how_much_did_you_pay_for_this_ = How much did you pay for this {0}?
 label.price_in = Price in {0}
@@ -604,7 +601,6 @@ error.required.cost.other-goods.stop-smoking-products = Enter the price of the s
 error.required.cost.other-goods.tableware = Enter the price of the tableware or kitchenware
 error.required.cost.other-goods.watches-clocks = Enter the price of the watch or clock
 error.required.cost.other-goods.other = Enter the price of the item
-
 
 head.error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
 head.error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
@@ -866,7 +862,6 @@ head.error.required.emailAddress = Enter your email address
 head.error.telephone_number.format = Enter your selected identification number in the correct format
 error.telephone_number.format = Enter your selected identification number in the correct format
 
-
 label.add_more.other-goods.adult.adult-clothing = Add more adult clothing
 label.add_more.other-goods.adult.adult-footwear = Add more adult footwear
 label.add_more.other-goods.antiques = Add more antiques, collector’s pieces or works of art
@@ -933,21 +928,16 @@ label.do_you_want_to_remove_.alcohol.spirits = Do you want to remove these spiri
 label.do_you_want_to_remove_.alcohol.wine = Do you want to remove this wine?
 label.do_you_want_to_remove_.alcohol.other = Do you want to remove this other alcohol?
 
-
 label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 50 other goods to declare. If you have more, you need to declare all your goods, alcohol and tobacco at the red channel, red-point phone or with a member of Border Force. If they are not available go to GOV.UK to find out what to do.
 label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_ = You can only calculate taxes and duties on 50 other goods or fewer - remove items from your duty estimate to continue. If you have more, go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
-
 label.X_litre_X = {0} litre {1}
 label.X_litres_X = {0} litres {1}
-
 label.Xg_of_X = {0}g of {1}
-
 label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
 
 label.calculate = Calculate taxes and duties
-
 
 title.afghanistan=Afghanistan
 title.aland_islands=Åland Islands
@@ -1547,15 +1537,12 @@ label.other-goods.tablet = Tablet
 label.other-goods.television = Television
 label.other-goods.underwear = Underwear
 label.other-goods.watch = Watch
-
 label.other-goods.nicotine_patch = Nicotene patch
 label.other-goods.cuckoo_clock = Cuckoo clock
 label.other-goods.hygiene_products = Hygiene products
 label.other-goods.cutlery = Cutlery
 label.other-goods.helmet = Helmet
 label.other-goods.scents = Scents
-label.other-goods.iqos = IQOS
-label.other-goods.heets = HEETS
 label.other-goods.glass = Glass
 label.other-goods.sofa = Sofa
 label.other-goods.tv = TV

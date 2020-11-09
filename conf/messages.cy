@@ -168,6 +168,8 @@ select_products.heading.other-goods.carpets-fabric=Pa eitemau o garped neu ffabr
 select_products.heading.other-goods.childrens=Pa ddillad neu esgidiau i blant rydych yn dod â nhw i’r DU?
 select_products.heading.other-goods.electronic-devices=Pa ddyfeisiau electronig rydych yn dod â nhw i’r DU?
 select_products.heading.other-goods.glassware-ornaments=Pa eitemau gwydr ac addurnau rydych yn dod â nhw i’r DU?
+error.other_goods_search = (W)Search for goods(W)
+head.error.other_goods_search = (W)Search for goods(W)
 head.error.required.other-goods.glassware-ornaments=Dewiswch eitemau gwydr neu addurnau neu’r ddau
 error.required.other-goods.glassware-ornaments=Dewiswch eitemau gwydr neu addurnau neu’r ddau
 label.select_all_that_apply=Dewiswch bob un sy’n gymwys
@@ -274,12 +276,21 @@ label.country_this_tobacco_was_=Y wlad lle y prynwyd y tybaco hwn
 label.currency_used_to_buy_this_tobacco=Yr arian cyfred a ddefnyddiwyd i brynu’r tybaco hwn
 label.if_you_bought_this_tobacco_=Os prynoch y tybaco hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
 label.total_weight_in_grams=Cyfanswm y pwysau mewn gramau
+
 label.you_cannot_use_this_service=Ni allwch ddefnyddio’r gwasanaeth hwn
 label.you_cannot_declare_individual_items_worth_more_=Ni allwch ddatgan eitemau unigol sy’n werth mwy na £2.1 biliwn drwy’r gwasanaeth hwn.
 label.you_can=Gallwch wneud y canlynol:
 label.go_back_and_change_the_items_value=mynd yn ôl a newid gwerth yr eitem
 label.go_to_the_red_channel_=ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
+
 label.what_other_goods_are_= (W)What type of other goods do you want to add?(W)
+label.add_your_goods= (W)Add your goods(W)
+label.if_there_are_no_search_results_ = (W)If there are no search results for the goods you are bringing into the UK(W)
+label.search_through_our_lists_and = (W)Search through our lists and(W)
+label.categorise_your_goods_yourself= (W)categorise your goods yourself.(W)
+head.error.required.search_for_goods = (W)Search for goods(W)
+error.required.search_for_goods = (W)Search for goods(W)
+
 error.required.tobacco.cigarettes=Nodwch bris y sigaréts
 error.required.tobacco.cigarillos=Nodwch bris y sigarilos
 error.required.tobacco.rolling-tobacco=Nodwch bris y tybaco rholio â llaw
@@ -298,12 +309,13 @@ error.required.noofsticks.cigarettes=Nodwch nifer y sigaréts
 error.required.noofsticks.heated-tobacco=(W)Enter the number of units of heated-tobacco(W)
 error.required.weight.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
 error.required.weight.tobacco.rolling-tobacco=Nodwch bwysau’r tybaco rholio â llaw
+
 head.error.required.tobacco.cigarettes=Nodwch bris y sigaréts
 head.error.required.tobacco.cigarillos=Nodwch bris y sigarilos
 head.error.required.tobacco.rolling-tobacco=Nodwch bris y tybaco rholio â llaw
+head.error.required.tobacco.heated-tobacco = (W)Enter the price of the heated tobacco(W)
 head.error.required.tobacco.chewing-tobacco=Nodwch bris y tybaco cetyn neu gnoi
 head.error.required.tobacco.cigars=Nodwch bris y sigârs
-head.error.required.noofsticks.heated-tobacco=(W)Enter the number of units of heated-tobacco(W)
 head.error.required.alcohol.beer=Nodwch bris y cwrw
 head.error.required.alcohol.cider.sparkling-cider=Nodwch bris y seidr
 head.error.required.alcohol.cider.non-sparkling-cider=Nodwch bris y seidr
@@ -312,7 +324,8 @@ head.error.required.alcohol.spirits=Nodwch bris y gwirodydd
 head.error.required.alcohol.sparkling-wine=Nodwch bris y gwin pefriog
 head.error.required.alcohol.wine=Nodwch bris y gwin
 head.error.required.alcohol.other=Nodwch bris y diodydd alcoholaidd eraill
-head.error.required.noofsticks=Nodwch nifer y sigaréts
+head.error.required.noofsticks.cigarettes = (W)Enter the number of cigarettes(W)
+head.error.required.noofsticks.heated-tobacco = (W)Enter the number of units of heated tobacco(W)
 head.error.required.weight.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
 head.error.required.weight.tobacco.rolling-tobacco=Nodwch bwysau’r tybaco rholio â llaw
 error.no_of_sticks.required.tobacco.cigarettes=Nodwch nifer y sigaréts
@@ -364,6 +377,7 @@ error.exceeded.max=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 error.invalid.format=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 error.max.decimal.places.weight=Mae'n rhaid i’r pwysau gynnwys 2 le degol ar y mwyaf, fel 20.55 neu 356.45
 error.max.decimal.places.volume=Mae'n rhaid i’r cyfaint gynnwys 3 lle degol ar y mwyaf, fel 12.699 neu 6.333
+
 head.error.invalid.characters.noofsticks.tobacco.cigars=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, megis 12 neu 160
 head.error.invalid.characters.noofsticks.tobacco.cigarillos=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, megis 12 neu 160
 head.error.invalid.characters.noofsticks.tobacco.cigarettes=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 20 neu 300
@@ -374,6 +388,7 @@ head.error.exceeded.max=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999
 head.error.invalid.format=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 head.error.max.decimal.places.weight=Mae'n rhaid i’r pwysau gynnwys 2 le degol ar y mwyaf, fel 20.55 neu 356.45
 head.error.max.decimal.places.volume=Mae'n rhaid i’r cyfaint gynnwys 3 lle degol ar y mwyaf, fel 12.699 neu 6.333
+
 head.error.invalid.characters.quantity.other-goods.adult.adult-clothing=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 head.error.invalid.characters.quantity.other-goods.adult.adult-footwear=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 head.error.invalid.characters.quantity.other-goods.antiques=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
@@ -397,6 +412,7 @@ head.error.invalid.characters.quantity.other-goods.stop-smoking-products=Mae'n r
 head.error.invalid.characters.quantity.other-goods.tableware=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 head.error.invalid.characters.quantity.other-goods.watches-clocks=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 head.error.invalid.characters.quantity.other-goods.other=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
+
 error.invalid.characters.quantity.other-goods.adult.adult-clothing=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 error.invalid.characters.quantity.other-goods.adult.adult-footwear=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 error.invalid.characters.quantity.other-goods.antiques=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
@@ -420,16 +436,22 @@ error.invalid.characters.quantity.other-goods.stop-smoking-products=Mae'n rhaid 
 error.invalid.characters.quantity.other-goods.tableware=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 error.invalid.characters.quantity.other-goods.watches-clocks=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
 error.invalid.characters.quantity.other-goods.other=Mae'n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 3 neu 8
+
+
+
 label.for_goods_bought_using_more_than_one_currency_=Ar gyfer nwyddau a brynwyd gan ddefnyddio mwy nag un arian cyfred, mae angen i chi roi gwybod i ni am bob peth rydych wedi’i brynu ar wahân.
 label.if_your_goods_are_worth_more_than_=Os yw’ch nwyddau yn werth dros £390 gyda’i gilydd (£270 os gwnaethoch gyrraedd mewn awyren breifat neu gwch preifat), byddwch yn talu treth a tholl ar y swm sydd dros hynny. Mae hyn ar wahân i’ch lwfansau ar gyfer tybaco ac alcohol.
+
 other-goods.volume_input.panel.1=Os yw cyfanswm gwerth eich holl nwyddau eraill o dan £270 oherwydd eich bod wedi cyrraedd mewn awyren breifat neu gwch preifat, nid oes angen i chi eu datgan.
 other-goods.volume_input.panel.2=Os yw cyfanswm gwerth eich nwyddau eraill dros £270 oherwydd eich bod wedi cyrraedd mewn awyren breifat neu gwch preifat, byddwch yn talu treth neu doll ar werth llawn y nwyddau hynny ac nid dim ond ar y swm rydych drosto. Mae lwfansau ar wahân ar gyfer tybaco ac alcohol.
+
 label.tell_us_about_the=Rhowch y manylion canlynol:
 label.country_the_item_was_bought_in=Y wlad lle y prynwyd yr eitem
 label.if_you_bought_this_item_=Os prynoch yr eitem hon ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
 label.currency_used_to_buy_the_item=Yr arian cyfred a ddefnyddiwyd i brynu’r eitem
 label.price_paid_for_this_item=Y pris a dalwyd am yr eitem hon
 label.tell_us_about_the_goods_=(W)Tell us about your goods(W)
+
 label.price_paid=Y pris a dalwyd
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
 label.if_you_bought_this_alcohol_=Os prynoch yr alcohol hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
@@ -444,6 +466,7 @@ label.alcohol.spirits=Gwirodydd
 label.alcohol.other=Alcohol arall
 label.alcohol.sparkling-wine=Gwin pefriog
 label.price_paid_for_item_=Y pris a dalwyd ar gyfer eitem {0}
+
 label.other-goods.adult=Dillad ac esgidiau i oedolion
 label.other-goods.adult.adult-clothing=Dillad i oedolion
 label.other-goods.adult.adult-footwear=Esgidiau i oedolion
@@ -471,10 +494,15 @@ label.other-goods.stop-smoking-products=Cynhyrchion rhoi’r gorau i ysmygu
 label.other-goods.tableware=Llestri neu gyfarpar cegin
 label.other-goods.watches-clocks=Oriawr neu gloc
 label.other-goods.other=Eitem arall
+
+
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?
 label.enter_currency=Nodwch yr arian cyfred
+
+
 label.how_much_did_you_pay_for_this_=Faint y gwnaethoch ei dalu am y {0}?
 label.price_in=Pris mewn {0}
+
 head.error.currency.invalid.other-goods.antiques=Nodwch yr arian cyfred a ddefnyddiwyd
 head.error.currency.invalid.other-goods.adult.adult-clothing=Nodwch yr arian cyfred a ddefnyddiwyd
 head.error.currency.invalid.other-goods.adult.adult-footwear=Nodwch yr arian cyfred a ddefnyddiwyd
@@ -499,6 +527,7 @@ head.error.currency.invalid.other-goods.stop-smoking-products=Nodwch yr arian cy
 head.error.currency.invalid.other-goods.tableware=Nodwch yr arian cyfred a ddefnyddiwyd
 head.error.currency.invalid.other-goods.watches-clocks=Nodwch yr arian cyfred a ddefnyddiwyd
 head.error.currency.invalid.other-goods.other=Nodwch yr arian cyfred a ddefnyddiwyd
+
 head.error.country.invalid.other-goods.adult.adult-clothing=Nodwch y wlad lle y prynwyd yr eitem
 head.error.country.invalid.other-goods.adult.adult-footwear=Nodwch y wlad lle y prynwyd yr eitem
 head.error.country.invalid.other-goods.antiques=Nodwch y wlad lle y prynwyd yr eitem
@@ -522,7 +551,9 @@ head.error.country.invalid.other-goods.stop-smoking-products=Nodwch y wlad lle y
 head.error.country.invalid.other-goods.tableware=Nodwch y wlad lle y prynwyd yr eitem
 head.error.country.invalid.other-goods.watches-clocks=Nodwch y wlad lle y prynwyd yr eitem
 head.error.country.invalid.other-goods.other=Nodwch y wlad lle y prynwyd yr eitem
+
 error.required.cost=Nodwch y pris
+
 head.error.required.cost.other-goods.adult.adult-clothing=Nodwch bris y dillad i oedolion
 head.error.required.cost.other-goods.adult.adult-footwear=Nodwch bris y pâr o esgidiau i oedolion
 head.error.required.cost.other-goods.antiques=Nodwch bris yr hen beth, yr eitem brin neu’r gwaith celf
@@ -546,6 +577,7 @@ head.error.required.cost.other-goods.stop-smoking-products=Nodwch bris y cynnyrc
 head.error.required.cost.other-goods.tableware=Nodwch bris y llestri neu’r cyfarpar cegin
 head.error.required.cost.other-goods.watches-clocks=Nodwch bris yr oriawr neu’r cloc
 head.error.required.cost.other-goods.other=Nodwch bris yr eitem
+
 error.required.cost.other-goods.adult.adult-clothing=Nodwch bris y dillad i oedolion
 error.required.cost.other-goods.adult.adult-footwear=Nodwch bris y pâr o esgidiau i oedolion
 error.required.cost.other-goods.antiques=Nodwch bris yr hen beth, yr eitem brin neu’r gwaith celf
@@ -569,6 +601,7 @@ error.required.cost.other-goods.stop-smoking-products=Nodwch bris y cynnyrch rho
 error.required.cost.other-goods.tableware=Nodwch bris y llestri neu’r cyfarpar cegin
 error.required.cost.other-goods.watches-clocks=Nodwch bris yr oriawr neu’r cloc
 error.required.cost.other-goods.other=Nodwch bris yr eitem
+
 head.error.invalid.characters.cost.other-goods.adult.adult-clothing=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 head.error.invalid.characters.cost.other-goods.adult.adult-footwear=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 head.error.invalid.characters.cost.other-goods.antiques=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
@@ -592,6 +625,7 @@ head.error.invalid.characters.cost.other-goods.stop-smoking-products=Mae'n rhaid
 head.error.invalid.characters.cost.other-goods.tableware=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 head.error.invalid.characters.cost.other-goods.watches-clocks=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 head.error.invalid.characters.cost.other-goods.other=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
+
 error.invalid.characters.cost.other-goods.adult.adult-clothing=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 error.invalid.characters.cost.other-goods.adult.adult-footwear=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 error.invalid.characters.cost.other-goods.antiques=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
@@ -615,6 +649,7 @@ error.invalid.characters.cost.other-goods.stop-smoking-products=Mae'n rhaid i’
 error.invalid.characters.cost.other-goods.tableware=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 error.invalid.characters.cost.other-goods.watches-clocks=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
 error.invalid.characters.cost.other-goods.other=Mae'n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
+
 head.error.invalid.format.cost.other-goods.adult.adult-clothing=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 head.error.invalid.format.cost.other-goods.adult.adult-footwear=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 head.error.invalid.format.cost.other-goods.antiques=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
@@ -638,6 +673,7 @@ head.error.invalid.format.cost.other-goods.stop-smoking-products=Mae'n rhaid i�
 head.error.invalid.format.cost.other-goods.tableware=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 head.error.invalid.format.cost.other-goods.watches-clocks=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 head.error.invalid.format.cost.other-goods.other=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
+
 error.invalid.format.cost.other-goods.adult.adult-clothing=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 error.invalid.format.cost.other-goods.adult.adult-footwear=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 error.invalid.format.cost.other-goods.antiques=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
@@ -661,6 +697,7 @@ error.invalid.format.cost.other-goods.stop-smoking-products=Mae'n rhaid i’r pr
 error.invalid.format.cost.other-goods.tableware=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 error.invalid.format.cost.other-goods.watches-clocks=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
 error.invalid.format.cost.other-goods.other=Mae'n rhaid i’r pris gynnwys 2 le degol ar y mwyaf, fel 12.69 neu 6.33
+
 head.error.exceeded.max.cost.other-goods.adult.adult-clothing=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 head.error.exceeded.max.cost.other-goods.adult.adult-footwear=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 head.error.exceeded.max.cost.other-goods.antiques=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
@@ -684,6 +721,7 @@ head.error.exceeded.max.cost.other-goods.stop-smoking-products=Mae'n rhaid i’r
 head.error.exceeded.max.cost.other-goods.tableware=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 head.error.exceeded.max.cost.other-goods.watches-clocks=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 head.error.exceeded.max.cost.other-goods.other=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
+
 error.exceeded.max.cost.other-goods.adult.adult-clothing=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 error.exceeded.max.cost.other-goods.adult.adult-footwear=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 error.exceeded.max.cost.other-goods.antiques=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
@@ -707,6 +745,7 @@ error.exceeded.max.cost.other-goods.stop-smoking-products=Mae'n rhaid i’r pris
 error.exceeded.max.cost.other-goods.tableware=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 error.exceeded.max.cost.other-goods.watches-clocks=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
 error.exceeded.max.cost.other-goods.other=Mae'n rhaid i’r pris beidio â bod yn fwy na 9,999,999,999
+
 label.are_entering_northern_ireland_=A ydych yn cyrraedd Gogledd Iwerddon o Iwerddon?
 label.if_you_do_not_know_the_volume=Os nad ydych yn gwybod y cyfaint
 label.if_you_do_not_know_the_number=Os nad ydych yn gwybod y nifer
@@ -772,12 +811,13 @@ label.for_example_belfast_international_airport = (W)For example, Belfast Intern
 label.place_of_arrival_not_listed = (W)If your place of arrival is not listed(W)
 label.enter_place_of_arrival = (W)Enter your place of arrival(W)
 label.date_of_arrival=Dyddiad cyrraedd
-label.for_example_31_10_2018=Er enghraifft, 31 10 2018
+label.for_example_31_10_2020=Er enghraifft, 31 10 2020
 label.time_of_arrival=Amser cyrraedd
 label.for_example_930=Er enghraifft, 9:30am neu 2:55pm
 time.fields.hour=Awr
 time.fields.minute=Munud
 time.fields.am-pm=am neu pm
+
 error.required.first_name=Nodwch eich enw cyntaf
 head.error.required.first_name=Nodwch eich enw cyntaf
 error.max-length.first_name=Mae'n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai
@@ -821,6 +861,7 @@ error.required.emailAddress = (W)Enter your email address(W)
 head.error.required.emailAddress = (W)Enter your email address(W)
 head.error.telephone_number.format = (W)Enter your selected identification number in the correct format(W)
 error.telephone_number.format = (W)Enter your selected identification number in the correct format(W)
+
 label.add_more.other-goods.adult.adult-clothing=Ychwanegu rhagor o ddillad i oedolion
 label.add_more.other-goods.adult.adult-footwear=Ychwanegu rhagor o esgidiau i oedolion
 label.add_more.other-goods.antiques=Ychwanegu rhagor o hen bethau, eitemau prin neu weithiau celf
@@ -844,6 +885,7 @@ label.add_more.other-goods.stop-smoking-products=Ychwanegu rhagor o gynhyrchion 
 label.add_more.other-goods.tableware=Ychwanegu rhagor o lestri neu gyfarpar cegin
 label.add_more.other-goods.watches-clocks=Ychwanegu rhagor o oriorau neu glociau
 label.add_more.other-goods.other=Ychwanegu rhagor o eitemau eraill
+
 label.remove_this_item=Tynnu’r eitem hon
 label.do_you_want_to_remove_this=A ydych am dynnu’r {0}?
 label.do_you_want_to_remove_.other-goods.adult.adult-clothing=A ydych am dynnu’r eitem hon o ddillad i oedolion?
@@ -869,12 +911,14 @@ label.do_you_want_to_remove_.other-goods.stop-smoking-products=A ydych am dynnu�
 label.do_you_want_to_remove_.other-goods.tableware=A ydych am dynnu’r llestri neu’r cyfarpar cegin hyn?
 label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r oriawr neu’r cloc hwn?
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
+
 label.do_you_want_to_remove_.tobacco.cigarettes=A ydych am dynnu’r sigaréts hyn?
 label.do_you_want_to_remove_.tobacco.cigarillos=A ydych am dynnu’r sigarilos hyn?
 label.do_you_want_to_remove_.tobacco.cigars=A ydych am dynnu’r sigârs hyn?
 label.do_you_want_to_remove_.tobacco.chewing-tobacco=A ydych am dynnu’r tybaco cetyn neu gnoi hwn?
 label.do_you_want_to_remove_.tobacco.rolling-tobacco=A ydych am dynnu’r tybaco rholio hwn?
 label.do_you_want_to_remove_.tobacco.heated-tobacco=(W)Do you want to remove this heated tobacco?(W)
+
 label.do_you_want_to_remove_.alcohol.beer=A ydych am dynnu’r cwrw hwn?
 label.do_you_want_to_remove_.alcohol.cider.non-sparkling-cider=A ydych am dynnu’r seidr hwn?
 label.do_you_want_to_remove_.alcohol.cider.sparkling-cider=A ydych am dynnu’r seidr hwn?
@@ -883,14 +927,18 @@ label.do_you_want_to_remove_.alcohol.sparkling-wine=A ydych am dynnu’r gwin pe
 label.do_you_want_to_remove_.alcohol.spirits=A ydych am dynnu’r gwirodydd hyn?
 label.do_you_want_to_remove_.alcohol.wine=A ydych am dynnu’r gwin hwn?
 label.do_you_want_to_remove_.alcohol.other=A ydych am dynnu’r alcohol arall hwn?
+
 label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_=Gallwch barhau i gyfrifo trethi a thollau os nad oes gennych fwy na 50 o nwyddau eraill i’w datgan. Os oes gennych fwy na hynny, bydd angen i chi ddatgan eich holl nwyddau, alcohol a thybaco drwy fynd i’r sianel goch neu’r ffôn pwynt coch, neu drwy siarad ag aelod o Lu’r Ffiniau. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_=Gallwch ond cyfrifo trethi a thollau ar 50 o nwyddau eraill neu lai – tynnwch eitemau o’ch amcangyfrif tollau i fynd yn eich blaen. Os oes gennych fwy na hynny, ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
+
 label.X_litre_X={0} litr {1}
 label.X_litres_X={0} litr {1}
 label.Xg_of_X={0}g o {1}
 label.X_X={0} {1}
 label.X_X_Xg={0} {1}, {2}g
+
 label.calculate=Cyfrifo trethi a thollau
+
 title.afghanistan=Afghanistan
 title.aland_islands=Ynysoedd Åland
 title.albania=Albania
@@ -1147,6 +1195,7 @@ title.western_sahara=Gorllewin Sahara
 title.yemen=Yemen
 title.zambia=Zambia
 title.zimbabwe=Zimbabwe
+
 title.united_arab_emirates_dirham_aed=Dirham yr Emiraethau Arabaidd Unedig (AED)
 title.albanian_lek_all=Lek Albania (ALL)
 title.armenian_dram_amd=Dram Armenia (AMD)
@@ -1323,11 +1372,11 @@ title.cambridge_city_airport=(W)Cambridge City Airport(W)
 title.cardiff_airport=(W)Cardiff Airport(W)
 title.carlisle_lake_district_airport=(W)Carlisle Lake District Airport(W)
 title.city_of_derry_airport=(W)City of Derry Airport(W)
-title.ocventry_airport=(W)Coventry Airport(W)
+title.cocventry_airport=(W)Coventry Airport(W)
 title.derry_port=(W)Derry Port(W)
 title.doncaster_sheffield_airport=(W)Doncaster Sheffield Airport(W)
 title.dover=(W)Dover(W)
-title.dundee_aiport=(W)Dundee Aiport(W)
+title.dundee_airport=(W)Dundee Aiport(W)
 title.east_midlands_airport=(W)East Midlands Airport(W)
 title.ebbsfleet=(W)Ebbsfleet(W)
 title.edinburgh_airport=(W)Edinburgh Airport(W)
@@ -1428,6 +1477,85 @@ title.wick=(W)Wick(W)
 title.workington=(W)Workington(W)
 
 label.for_security_we_deleted_your_answers=Er eich diogelwch, gwnaethom ddileu’ch atebion
+
+label.other-goods.adult_belt = (W)Adult belt(W)
+label.other-goods.adult_clothing = (W)Adult clothing(W)
+label.other-goods.adult_shoes = (W)Adult shoes(W)
+label.other-goods.adult_trainers = (W)Adult trainers(W)
+label.other-goods.adult_footwear = (W)Adult footwear(W)
+label.other-goods.aftershave = (W)Aftershave(W)
+label.other-goods.antiques = (W)Antique, collector’s piece or work of art(W)
+label.other-goods.apple_watch = (W)Apple Watch(W)
+label.other-goods.bag = (W)Bag(W)
+label.other-goods.book = (W)Book(W)
+label.other-goods.bracelet = (W)Bracelet(W)
+label.other-goods.briefcase = (W)Briefcase(W)
+label.other-goods.camera = (W)Camera(W)
+label.other-goods.camera_equipment = (W)Camera Equipment(W)
+label.other-goods.china = (W)China(W)
+label.other-goods.childrens_clothing = (W)Children’s clothing(W)
+label.other-goods.childrens_footwear = (W)Children’s footwear(W)
+label.other-goods.chocolate = (W)Chocolate(W)
+label.other-goods.cologne = (W)Cologne(W)
+label.other-goods.computer = (W)Computer(W)
+label.other-goods.cosmetics = (W)Cosmetics(W)
+label.other-goods.dell_laptop = (W)Dell laptop(W)
+label.other-goods.earrings = (W)Earrings(W)
+label.other-goods.eyewear = (W)Eyewear(W)
+label.other-goods.food = (W)Food(W)
+label.other-goods.fabric = (W)Fabric(W)
+label.other-goods.fragrance = (W)Fragrance(W)
+label.other-goods.gold = (W)Gold(W)
+label.other-goods.golf_equipment = (W)Golf equipment(W)
+label.other-goods.handbag = (W)Handbag(W)
+label.other-goods.iPad = (W)iPad(W)
+label.other-goods.iPhone = (W)iPhone(W)
+label.other-goods.jeans = (W)Jeans(W)
+label.other-goods.jewellery = (W)Jewellery(W)
+label.other-goods.kindle = (W)Kindle(W)
+label.other-goods.laptop = (W)Laptop(W)
+label.other-goods.leather_goods = (W)Leather goods(W)
+label.other-goods.lingerie = (W)Lingerie(W)
+label.other-goods.macbook = (W)MacBook(W)
+label.other-goods.makeup = (W)Make-up(W)
+label.other-goods.mobile_phone = (W)Mobile phone(W)
+label.other-goods.necklace = (W)Necklace(W)
+label.other-goods.ornament = (W)Ornament(W)
+label.other-goods.painting = (W)Painting(W)
+label.other-goods.perfume = (W)Perfume(W)
+label.other-goods.porcelain = (W)Porcelain(W)
+label.other-goods.pottery = (W)Pottery(W)
+label.other-goods.prescription_glasses = (W)Prescription glasses(W)
+label.other-goods.ring = (W)Ring(W)
+label.other-goods.samsung_laptop = (W)Samsung laptop(W)
+label.other-goods.samsung_mobile_phone = (W)Samsung mobile phone(W)
+label.other-goods.soft-drink = (W)Soft drink(W)
+label.other-goods.sony_laptop = (W)Sony laptop(W)
+label.other-goods.sunglasses = (W)Sunglasses(W)
+label.other-goods.sweets = (W)Sweets(W)
+label.other-goods.tablet = (W)Tablet(W)
+label.other-goods.television = (W)Television(W)
+label.other-goods.underwear = (W)Underwear(W)
+label.other-goods.watch = (W)Watch(W)
+label.other-goods.nicotine_patch = (W)Nicotene patch(W)
+label.other-goods.cuckoo_clock = (W)Cuckoo clock(W)
+label.other-goods.hygiene_products = (W)Hygiene products(W)
+label.other-goods.cutlery = (W)Cutlery(W)
+label.other-goods.helmet = (W)Helmet(W)
+label.other-goods.scents = (W)Scents(W)
+label.other-goods.glass = (W)Glass(W)
+label.other-goods.sofa = (W)Sofa(W)
+label.other-goods.tv = (W)TV(W)
+label.other-goods.disability_apparatus = (W)Disability apparatus(W)
+label.other-goods.kids_shoes = (W)Kid’s shoes(W)
+label.other-goods.kids_clothes = (W)Kid’s clothes(W)
+label.other-goods.booster_seat = (W)Booster seat(W)
+label.other-goods.textiles = (W)Textiles(W)
+label.other-goods.rug = (W)Rug(W)
+label.other-goods.mans_shoes = (W)Man’s shoes(W)
+label.other-goods.womens_shoes = (W)Women’s shoes(W)
+label.other-goods.mans_clothes = (W)Man’s clothes(W)
+label.other-goods.womens_clothes = (W)Women’s clothes(W)
 
 heading.arriving-ni=(W)Is your final destination Northern Ireland?(W)
 head.error.arriving_ni=(W)Select if your final destination is Northern Ireland(W)
