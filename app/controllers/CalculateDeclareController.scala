@@ -9,7 +9,7 @@ import java.util.UUID
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction, DeclareAction}
+import controllers.enforce.{DashboardAction, DeclareAction, PublicAction}
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -88,7 +88,7 @@ class CalculateDeclareController @Inject()(
 
           requireCalculatorResponse { calculatorResponse =>
 
-            declarationService.submitDeclaration(userInformation, calculatorResponse, context.getJourneyData.isVatResClaimed.getOrElse(false), context.getJourneyData.isBringingDutyFree.getOrElse(false), receiptDateTime, correlationId) flatMap {
+            declarationService.submitDeclaration(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
 
               case DeclarationServiceFailureResponse =>
                 Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
