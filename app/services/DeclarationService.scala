@@ -10,12 +10,12 @@ import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
+import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.JodaWrites._
 import util._
 import play.api.libs.json._
-import play.api.Logger
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -34,11 +34,11 @@ class DeclarationService @Inject()(
   lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 
 
-  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
+  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-    val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, isVatResClaimed, isBringingDutyFree, rd)
+    val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, journeyData, rd)
 
     val headers = Seq(
       "X-Correlation-ID" -> correlationId
@@ -60,28 +60,72 @@ class DeclarationService @Inject()(
     }
   }
 
-  private def getPlaceOfArrival(userInfo: UserInformation) = {
-    if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
-  }
+  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, rd: String)(implicit messages: Messages): JsObject = {
 
-  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, isVatResClaimed: Boolean, isBringingDutyFree: Boolean, rd: String)(implicit messages: Messages): JsObject = {
+    val ni = "NI"
+    val gb = "GB"
 
-    val vatResFlag = isVatResClaimed || isBringingDutyFree
+    def getBooleanValue(value: Option[Boolean]): Boolean = {
+      value match {
+        case Some(true) => true
+        case _ => false
+      }
+    }
 
-    val customerReference: JsValue = Json.toJson(userInformation)((o: UserInformation) => Json.obj("identificationType" -> o.identificationType, "identificationNumber" -> o.identificationNumber))
+    val customerReference: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
+
+      def getIdValue(idType: String, idValue: String): String = {
+        idType match {
+          case "telephone" => s"${servicesConfig.getString("declarations.telephonePrefix")}$idValue"
+          case _ => idValue
+        }
+      }
+
+      Json.obj("idType" -> o.identificationType,
+        "idValue" -> getIdValue(o.identificationType, o.identificationNumber),
+        "ukResident" -> getBooleanValue(journeyData.isUKResident))
+    })
 
     val personalDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("firstName" -> o.firstName, "lastName" -> o.lastName, "emailAddress" -> o.emailAddress))
 
     val declarationHeader: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
 
-      def formattedTwoDecimals(timeSegment: Int) = {
+      def formattedTwoDecimals(timeSegment: Int): String = {
         timeSegment match {
           case ts if ts < 10 => "0" + ts
           case ts => ts.toString
         }
       }
 
-      Json.obj("portOfEntry" -> getPlaceOfArrival(o), "expectedDateOfArrival" -> o.dateOfArrival, "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}")
+      def getPlaceOfArrival(userInfo: UserInformation): String = {
+        if (userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
+      }
+
+      def getTravellingFrom(travellingFrom: Option[String]): String = {
+        travellingFrom match {
+          case Some("euOnly") => servicesConfig.getString("declarations.euOnly")
+          case Some("nonEuOnly") => servicesConfig.getString("declarations.nonEuOnly")
+          case _ => servicesConfig.getString("declarations.greatBritain")
+        }
+      }
+
+      def getOnwardTravel(isArrivingNI: Option[Boolean]): String = {
+        isArrivingNI match {
+          case Some(true) => ni
+          case _ => gb
+        }
+      }
+
+      Json.obj("portOfEntry" -> getPlaceOfArrival(o),
+                      "expectedDateOfArrival" -> o.dateOfArrival,
+                      "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}",
+                      "messageTypes" -> Json.obj("messageType" -> servicesConfig.getString("declarations.create")),
+                      "travellingFrom" -> getTravellingFrom(journeyData.euCountryCheck),
+                      "onwardTravelGBNI" -> getOnwardTravel(journeyData.arrivingNICheck),
+                      "uccRelief" -> getBooleanValue(journeyData.isUccRelief),
+                      "ukVATPaid" -> getBooleanValue(journeyData.isUKVatPaid),
+                      "ukExcisePaid" -> getBooleanValue(journeyData.isUKExcisePaid)
+              )
     })
 
     val liabilityDetails = Json.toJson(calculatorResponse.calculation)((o: Calculation) => Json.obj(
@@ -98,7 +142,7 @@ class DeclarationService @Inject()(
           "totalExciseTobacco" -> tobacco.calculation.excise,
           "totalCustomsTobacco" -> tobacco.calculation.customs,
           "totalVATTobacco" -> tobacco.calculation.vat,
-          "declarationItemTobacco" -> tobacco.bands.flatMap{ band =>
+          "declarationItemTobacco" -> tobacco.bands.flatMap { band =>
             band.items.map { item =>
               Json.obj(
                 "commodityDescription" -> messages(item.metadata.name).take(40),
@@ -113,7 +157,7 @@ class DeclarationService @Inject()(
                 },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
-                "VATRESClaimed" -> vatResFlag,
+                "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
                 "vatGBP" -> item.calculation.vat
@@ -132,7 +176,7 @@ class DeclarationService @Inject()(
           "totalExciseAlcohol" -> alcohol.calculation.excise,
           "totalCustomsAlcohol" -> alcohol.calculation.customs,
           "totalVATAlcohol" -> alcohol.calculation.vat,
-          "declarationItemAlcohol" -> alcohol.bands.flatMap{ band =>
+          "declarationItemAlcohol" -> alcohol.bands.flatMap { band =>
             band.items.map { item =>
               Json.obj(
                 "commodityDescription" -> messages(item.metadata.name).take(40),
@@ -146,7 +190,7 @@ class DeclarationService @Inject()(
                 },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
-                "VATRESClaimed" -> vatResFlag,
+                "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
                 "vatGBP" -> item.calculation.vat
@@ -165,7 +209,7 @@ class DeclarationService @Inject()(
           "totalExciseOther" -> other.calculation.excise,
           "totalCustomsOther" -> other.calculation.customs,
           "totalVATOther" -> other.calculation.vat,
-          "declarationItemOther" -> other.bands.flatMap{ band =>
+          "declarationItemOther" -> other.bands.flatMap { band =>
             band.items.map { item =>
               Json.obj(
                 "commodityDescription" -> messages(item.metadata.name).take(40),
@@ -179,7 +223,7 @@ class DeclarationService @Inject()(
                 },
                 "exchangeRateDate" -> item.metadata.exchangeRate.date,
                 "goodsValueGBP" -> item.purchaseCost,
-                "VATRESClaimed" -> vatResFlag,
+                "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
                 "vatGBP" -> item.calculation.vat
@@ -195,7 +239,7 @@ class DeclarationService @Inject()(
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate" -> rd,
-          "requestParameters" -> Json.arr( Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR") )
+          "requestParameters" -> Json.arr(Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR"))
         ),
         "requestDetail" -> Json.obj(
           "customerReference" -> customerReference,
@@ -214,5 +258,7 @@ class DeclarationService @Inject()(
 }
 
 trait DeclarationServiceResponse
+
 case object DeclarationServiceFailureResponse extends DeclarationServiceResponse
+
 case class DeclarationServiceSuccessResponse(chargeReference: ChargeReference) extends DeclarationServiceResponse

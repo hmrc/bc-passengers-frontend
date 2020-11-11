@@ -10,6 +10,7 @@ import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
@@ -20,7 +21,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
-import services._
+import services.{PayApiServiceFailureResponse, _}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -65,7 +66,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
 
-    lazy val crBelowLimit = CalculatorResponse(
+    lazy val crBelowLimit: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -86,7 +87,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       limits = Map.empty
     )
 
-    lazy val crWithinLimitLow = CalculatorResponse(
+    lazy val crWithinLimitLow: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -107,7 +108,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       limits = Map.empty
     )
 
-    lazy val crWithinLimitHigh = CalculatorResponse(
+    lazy val crWithinLimitHigh: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -128,7 +129,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       limits = Map.empty
     )
 
-    lazy val crAboveLimit= CalculatorResponse(
+    lazy val crAboveLimit: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
           Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -149,9 +150,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       limits = Map.empty
     )
     
-    lazy val ui = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+    lazy val ui: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-    lazy val dt = DateTime.parse("2018-11-23T06:21:00Z")
+    lazy val dt: DateTime = DateTime.parse("2018-11-23T06:21:00Z")
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
@@ -160,9 +161,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any())) thenReturn Future.successful(payApiResponse)
       when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
-      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
+      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
-      when(injected[CalculatorService].calculate(any())(any(),any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), true, Map.empty)))
+      when(injected[CalculatorService].calculate(any())(any(),any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty)))
       when(injected[CalculatorService].storeCalculatorResponse(any(), any())(any())) thenReturn Future.successful(JourneyData())
 
       rt(app, req)
@@ -172,11 +173,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax less than minPaymentAmount" should {
 
     "Display the where-goods-bought page" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crBelowLimit))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crBelowLimit))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -187,11 +188,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Display the where-goods-bought page" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crBelowLimit))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crBelowLimit))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -201,27 +202,27 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax greater than nine pounds and less than 90,000" should {
 
     "Display the where-goods-bought page when at the lower end of the range" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
     }
 
     "Display the where-goods-bought page when at the higher end of the range" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
     }
@@ -230,43 +231,43 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax greater than nine pounds and less than 90,000" should {
 
     "Display the where-goods-bought page when at the lower end of the range" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Enter your details"
     }
 
     "Display the where-goods-bought page when at the higher end of the range" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Enter your details"
     }
 
     "Display the where-goods-bought page when at the lower end of the range from GB to NI" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Enter your details"
     }
@@ -275,11 +276,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax greater than £90,000" should {
 
     "Display the where-goods-bought page" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crAboveLimit))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crAboveLimit))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -289,11 +290,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax greater £90,000" should {
 
     "Display the where-goods-bought page" in new LocalSetup {
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crAboveLimit))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crAboveLimit))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -304,11 +305,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
 
         .withFormUrlEncodedBody(
           "firstName" -> "",
@@ -332,11 +333,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when first name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "123456789012345678901234567890123451234",
           "lastName" -> "Potter",
@@ -359,11 +360,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when last name is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "123456789012345678901234567890123451234",
@@ -386,11 +387,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when identification number is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -413,11 +414,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when identification number is not in correct format" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -440,11 +441,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when place of arrival is too long" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -467,11 +468,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when invalid telephone num ber is entered" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -494,11 +495,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -521,13 +522,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),
         arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true),
         ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
-      override lazy val payApiResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse = DeclarationServiceFailureResponse
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceFailureResponse
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -552,11 +553,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
-      override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
+      override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -582,11 +583,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful from GB to NI" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
-      override lazy val payApiResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
-      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
+      override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
         .withFormUrlEncodedBody(
           "firstName" -> "Harry",
           "lastName" -> "Potter",
@@ -615,16 +616,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "return the ireland to northern ireland page unpopulated if there is no ireland answer in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(None)
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(None)
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
 
       status(response) shouldBe OK
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
       doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
@@ -634,16 +635,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "return the ireland to northern ireland page pre-populated yes if there is ireland answer true in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(privateCraft = Some(true), ageOver17 = Some(true), irishBorder = Some(true))))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(privateCraft = Some(true), ageOver17 = Some(true), irishBorder = Some(true))))
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
 
       status(response) shouldBe OK
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.select("#irishBorder-true").hasAttr("checked") shouldBe true
       doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
@@ -653,16 +654,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "return the ireland to northern ireland page pre-populated no if there is ireland answer false in keystore" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(privateCraft = Some(false), ageOver17 = Some(false), irishBorder = Some(false))))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(privateCraft = Some(false), ageOver17 = Some(false), irishBorder = Some(false))))
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
 
       status(response) shouldBe OK
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.select("#irishBorder-false").hasAttr("checked") shouldBe true
       doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
@@ -676,11 +677,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "redirect to /check-tax-on-goods-you-bring-into-the-uk/tax-due" in new LocalSetup {
 
-      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(irishBorder = Some(false), privateCraft = Some(false))))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(irishBorder = Some(false), privateCraft = Some(false))))
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("irishBorder" -> "true")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("irishBorder" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tax-due")
@@ -694,7 +695,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("value" -> "badValue")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland").withFormUrlEncodedBody("value" -> "badValue")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -707,12 +708,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
 
       status(response) shouldBe BAD_REQUEST
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       Option(doc.getElementById("errors").select("a[href=#irishBorder]")).isEmpty shouldBe false
       Option(doc.getElementById("errors").select("a[href=#irishBorder]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
@@ -726,12 +727,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val payApiResponse = null
       override lazy val declarationServiceResponse = null
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/ireland-to-northern-ireland")).get
 
       status(response) shouldBe BAD_REQUEST
 
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
 
       doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
       doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are entering Northern Ireland from Ireland"

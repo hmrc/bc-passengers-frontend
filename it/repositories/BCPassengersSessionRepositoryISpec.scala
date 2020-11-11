@@ -5,12 +5,10 @@ import java.util.Date
 import models.JourneyData
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
-import reactivemongo.play.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
