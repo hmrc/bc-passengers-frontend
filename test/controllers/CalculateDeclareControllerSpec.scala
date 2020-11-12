@@ -316,7 +316,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -343,7 +344,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -370,7 +372,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "123456789012345678901234567890123451234",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -397,7 +400,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "12345678901234567890123456789012345612345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -424,7 +428,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "telephone",
           "identification.identificationNumber" -> "abcdefgh",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -451,7 +456,64 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
+
+      status(response) shouldBe BAD_REQUEST
+    }
+
+    "Return BAD REQUEST and display the user information when only email address is entered" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
+
+      status(response) shouldBe BAD_REQUEST
+    }
+
+    "Return BAD REQUEST and display the user information when email address and confirm email address do not match" in new LocalSetup {
+
+      override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "xyz@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -478,7 +540,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "telephone",
           "identification.identificationNumber" -> "abcdefghi",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -505,7 +568,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -534,7 +598,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "LHR",
           "placeOfArrival.enterPlaceOfArrival" -> "",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -563,7 +628,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "passport",
           "identification.identificationNumber" -> "SX12345",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -593,7 +659,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           "lastName" -> "Potter",
           "identification.identificationType" -> "telephone",
           "identification.identificationNumber" -> "07884559563",
-          "emailAddress"-> "abc@gmail.com",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
           "placeOfArrival.selectPlaceOfArrival" -> "",
           "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
           "dateTimeOfArrival.dateOfArrival.day" -> "23",

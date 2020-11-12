@@ -186,17 +186,6 @@ object EnterYourDetailsDto {
       if (text.size <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
   }
 
-  private def isEmailAddress(pattern: String, fieldName: String): Constraint[String] = {
-    Constraint {
-      case str if str.matches(pattern) =>
-        Valid
-      case str if str.isEmpty =>
-        Invalid(ValidationError(s"error.required.$fieldName"))
-      case _ =>
-        Invalid(s"error.format.$fieldName", pattern)
-    }
-  }
-
   private def mandatoryDate(error: String) = tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
     .verifying("error.enter_a_date", dateParts => {
       val definedParts: Int = dateParts.productIterator.collect { case o@Some(_) => o }.size
@@ -239,7 +228,7 @@ object EnterYourDetailsDto {
       localTime => (localTime.getHourOfDay, localTime.getMinuteOfHour, if (localTime.getHourOfDay > 12) "pm" else "am")
     )
 
-  def placeOfArrivalConstraint(message: String): Constraint[PlaceOfArrival] = Constraint {
+  private def placeOfArrivalConstraint(message: String): Constraint[PlaceOfArrival] = Constraint {
     model => (model.selectPlaceOfArrival, model.enterPlaceOfArrival) match {
       case (x, y) if(x.isEmpty && y.isEmpty) => Invalid(message, "selectPlaceOfArrival")
       case _ => Valid
@@ -257,6 +246,22 @@ object EnterYourDetailsDto {
     }
   }
 
+  private def emailAddressMatchConstraint(): Constraint[EmailAddress] = {
+    Constraint {
+      model =>
+        (model.email, model.confirmEmail) match {
+          case (x, y) if(x.isEmpty && y.isEmpty) => Valid
+          case (x, y) if(!x.isEmpty && y.isEmpty) => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
+          case (x, y) if(x.isEmpty && !y.isEmpty) => Invalid(ValidationError(s"error.required.emailAddress.email"))
+          case (x, y) if ((!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern) ))=>
+            Invalid(s"error.format.emailAddress", emailAddressPattern)
+          case (x, y) if( x != y) =>
+            Invalid(ValidationError(s"error.required.emailAddress.no_match"))
+          case _ => Valid
+        }
+    }
+  }
+
 
   def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
@@ -267,7 +272,11 @@ object EnterYourDetailsDto {
         "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
       )(Identification.apply)(Identification.unapply)
         .verifying(verifyIdentificationNumberConstraint(telephoneNumberPattern)),
-      "emailAddress" -> text.verifying(isEmailAddress(emailAddressPattern, "emailAddress")),
+      "emailAddress" -> mapping(
+        "email" -> text,
+        "confirmEmail" -> text
+      )(EmailAddress.apply)(EmailAddress.unapply)
+        .verifying(emailAddressMatchConstraint()),
       "placeOfArrival" -> mapping(
         "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
         "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")))
@@ -285,4 +294,5 @@ object EnterYourDetailsDto {
 case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
 case class Identification(identificationType: Option[String], identificationNumber: String)
-case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification , emailAddress: String, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
+case class EmailAddress(email: String, confirmEmail: String)
+case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification , emailAddress: EmailAddress, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
