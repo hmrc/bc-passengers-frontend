@@ -64,7 +64,7 @@
         @if(journeyStart.contains("greatBritain")){
            @components.input_radio_group(
              f("identification.identificationType"),
-             Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_license_number"), "telephone" -> Messages("label.telephone_number")),
+             Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_licence_number"), "telephone" -> Messages("label.telephone_number")),
              '_labelClass -> "block-label inputLabelBeforeError",
              Symbol("telephone") -> messages("label.telephone_number_hint")
            )
@@ -87,13 +87,25 @@
         )
       </div>
 
-    @components.input(
-        f("emailAddress"),
-        '_label -> messages("label.email_address"),
+    <div class="form-group @{if(f("emailAddress").hasErrors) "form-group-error" else "" }" id="emailAddress">
+        @f.errors.filter(_.key == "emailAddress").map { error =>
+        <span class="error-message">@messages(error.message)</span>
+        }
+        @components.input(
+            f("emailAddress.email"),
+            '_label -> messages("label.email_address"),
+            '_labelTextClass -> "form-label-bold",
+            '_inputHint -> messages("label.email_address_hint"),
+            '_inputClass -> "form-control-3-4"
+        )
+
+        @components.input(
+        f("emailAddress.confirmEmail"),
+        '_label -> messages("label.confirm_email_address"),
         '_labelTextClass -> "form-label-bold",
-        '_inputHint -> messages("label.email_address_hint"),
         '_inputClass -> "form-control-3-4"
-    )
+        )
+    </div>
 
 
     <div class="form-group @{if(f("placeOfArrival").hasErrors) "form-group-error" else "" }" id="placeOfArrival">

@@ -19,7 +19,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -44,7 +45,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -71,7 +73,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -96,7 +99,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potterbutnowhislastnamehasbecomereallylong",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -123,7 +127,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -147,7 +152,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -174,7 +180,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "0123456789012345678901234567890123456789",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -198,7 +205,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "01234567890123456789012345678901234567891",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -225,7 +233,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "telephone",
         "identification.identificationNumber" -> "0123456789",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -249,7 +258,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "telephone",
         "identification.identificationNumber" -> "abcdefghi",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -270,13 +280,14 @@ class DtoTest extends BaseSpec {
       form.error("identification").get.message shouldBe "error.telephone_number.format"
     }
 
-    "allow the emailAddress in valid format" in {
+    "allow the same email and confirmEmail in valid format" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "0123456789012345678901234567890123456789",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "abc@gmail.com",
+        "emailAddress.confirmEmail"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -294,13 +305,14 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe false
     }
 
-    "return validation errors if the emailAddress is invalid" in {
+    "return validation errors if the email is invalid" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc",
+        "emailAddress.email"-> "abc",
+        "emailAddress.confirmEmail"-> "abc@gmail.com",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -321,13 +333,126 @@ class DtoTest extends BaseSpec {
       form.error("emailAddress").get.message shouldBe "error.format.emailAddress"
     }
 
+    "return validation errors if the confirmEmail is invalid" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "abc@gmail.com",
+        "emailAddress.confirmEmail"-> "abc",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("emailAddress").get.message shouldBe "error.format.emailAddress"
+    }
+
+    "return validation errors if the email and confirmEmail does not match" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "abc@gmail.com",
+        "emailAddress.confirmEmail"-> "xyz@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.no_match"
+    }
+
+    "return validation errors if the confirmEmail is empty" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "abc@gmail.com",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.confirmEmail"
+    }
+
+    "return validation errors if the Email is empty" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "abc@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.email"
+    }
+
     "allow the placeOfArrival.selectPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -352,7 +477,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -379,7 +505,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "London Airport",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -403,7 +530,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -430,7 +558,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -457,7 +586,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "40",
@@ -485,7 +615,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -513,7 +644,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "50",
@@ -537,7 +669,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "",
@@ -561,7 +694,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "1",
@@ -585,7 +719,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -609,7 +744,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -633,7 +769,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -658,7 +795,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -683,7 +821,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -711,7 +850,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -735,7 +875,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -763,7 +904,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -788,7 +930,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "23",
@@ -812,7 +955,8 @@ class DtoTest extends BaseSpec {
         "lastName" -> "Potter",
         "identification.identificationType" -> "passport",
         "identification.identificationNumber" -> "SX12345",
-        "emailAddress"-> "abc@gmail.com",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
         "dateTimeOfArrival.dateOfArrival.day" -> "26",
