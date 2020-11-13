@@ -80,7 +80,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     ),
     Calculation("102.54", "534.89", "725.03", "1362.46"),
     withinFreeAllowance = false,
-    limits = Map.empty
+    limits = Map.empty,
+    isAnyItemOverAllowance = true
   )
 
   val expectedJsObj: JsObject = Json.obj(
@@ -294,7 +295,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         tobacco = None,
         calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       )
 
       val dm = declarationService.buildPartialDeclarationMessage(
@@ -413,7 +415,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         )),
         calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       )
 
 
@@ -664,7 +667,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         )),
         calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       )
 
 
@@ -880,7 +884,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         )),
         calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       )
 
       val dm = declarationService.buildPartialDeclarationMessage(

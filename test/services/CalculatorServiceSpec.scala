@@ -266,7 +266,8 @@ class CalculatorServiceSpec extends BaseSpec {
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = false,
-              limits = Map.empty
+              limits = Map.empty,
+              isAnyItemOverAllowance = false
             ))
           }
         }
@@ -301,7 +302,8 @@ class CalculatorServiceSpec extends BaseSpec {
           Some(OtherGoods(List(),Calculation("0.00","0.00","0.00","0.00"))),
           Calculation("0.00","0.00","0.00","0.00"),
           withinFreeAllowance = false,
-          limits = Map.empty
+          limits = Map.empty,
+          isAnyItemOverAllowance = false
         )
 
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
@@ -359,10 +361,10 @@ class CalculatorServiceSpec extends BaseSpec {
         service
       }
 
-      await(s.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, limits = Map.empty)))
+      await(s.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false)))
 
       verify(s.cache, times(1)).store(
-        meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, limits = Map.empty))))
+        meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false))))
       )(any())
 
     }

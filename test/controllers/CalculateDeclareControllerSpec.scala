@@ -84,7 +84,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "8.99"),
       withinFreeAllowance = true,
-      limits = Map.empty
+      limits = Map.empty,
+      isAnyItemOverAllowance = false
     )
 
     lazy val crWithinLimitLow: CalculatorResponse = CalculatorResponse(
@@ -105,7 +106,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "9.00"),
       withinFreeAllowance = true,
-      limits = Map.empty
+      limits = Map.empty,
+      isAnyItemOverAllowance = false
     )
 
     lazy val crWithinLimitHigh: CalculatorResponse = CalculatorResponse(
@@ -126,7 +128,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "97000.00"),
       withinFreeAllowance = true,
-      limits = Map.empty
+      limits = Map.empty,
+      isAnyItemOverAllowance = false
     )
 
     lazy val crAboveLimit: CalculatorResponse = CalculatorResponse(
@@ -147,9 +150,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "97000.01"),
       withinFreeAllowance = true,
-      limits = Map.empty
+      limits = Map.empty,
+      isAnyItemOverAllowance = false
     )
-    
+
     lazy val ui: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
     lazy val dt: DateTime = DateTime.parse("2018-11-23T06:21:00Z")
@@ -163,7 +167,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
       when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
-      when(injected[CalculatorService].calculate(any())(any(),any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty)))
+      when(injected[CalculatorService].calculate(any())(any(),any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)))
       when(injected[CalculatorService].storeCalculatorResponse(any(), any())(any())) thenReturn Future.successful(JourneyData())
 
       rt(app, req)
