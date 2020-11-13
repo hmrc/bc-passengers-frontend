@@ -5,42 +5,42 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 object Calculation {
-  implicit val formats = Json.format[Calculation]
+  implicit val formats: OFormat[Calculation] = Json.format[Calculation]
 }
 
 object ExchangeRate {
-  implicit val formats = Json.format[ExchangeRate]
+  implicit val formats: OFormat[ExchangeRate] = Json.format[ExchangeRate]
 }
 
 object Metadata {
-  implicit val formats = Json.format[Metadata]
+  implicit val formats: OFormat[Metadata] = Json.format[Metadata]
 }
 
 object Item {
-  implicit val formats = Json.format[Item]
+  implicit val formats: OFormat[Item] = Json.format[Item]
 }
 
 object Band {
-  implicit val formats = Json.format[Band]
+  implicit val formats: OFormat[Band] = Json.format[Band]
 }
 
 object Alcohol {
-  implicit val formats = Json.format[Alcohol]
+  implicit val formats: OFormat[Alcohol] = Json.format[Alcohol]
 }
 
 object Tobacco {
-  implicit val formats = Json.format[Tobacco]
+  implicit val formats: OFormat[Tobacco] = Json.format[Tobacco]
 }
 
 object OtherGoods {
-  implicit val formats = Json.format[OtherGoods]
+  implicit val formats: OFormat[OtherGoods] = Json.format[OtherGoods]
 }
 
 object CalculatorResponse {
-  implicit val formats = Json.format[CalculatorResponse]
+  implicit val formats: OFormat[CalculatorResponse] = Json.format[CalculatorResponse]
 }
 
 case class Calculation(excise: String, customs: String, vat: String, allTax: String)
@@ -59,7 +59,8 @@ case class CalculatorResponse(
   otherGoods: Option[OtherGoods],
   calculation: Calculation,
   withinFreeAllowance: Boolean,
-  limits: Map[String, String]
+  limits: Map[String, String],
+  isAnyItemOverAllowance: Boolean
 ) {
 
 

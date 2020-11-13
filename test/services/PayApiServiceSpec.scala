@@ -12,6 +12,7 @@ import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
@@ -25,7 +26,7 @@ import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {
 
-  override lazy val app = GuiceApplicationBuilder()
+  override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -41,9 +42,9 @@ class PayApiServiceSpec extends BaseSpec {
     super.beforeEach()
   }
 
-  val exampleChargeRef = ChargeReference("XYPRRVWV52PVDI")
+  val exampleChargeRef: ChargeReference = ChargeReference("XYPRRVWV52PVDI")
 
-  val exampleJson = Json.parse(
+  val exampleJson: JsValue = Json.parse(
     s"""{
        |    "chargeReference": "XYPRRVWV52PVDI",
        |    "taxToPayInPence": 9700000,
@@ -75,7 +76,7 @@ class PayApiServiceSpec extends BaseSpec {
        |}
     """.stripMargin)
 
-  val exampleJsonForBstArrival = Json.parse(
+  val exampleJsonForBstArrival: JsValue = Json.parse(
     s"""{
        |    "chargeReference": "XYPRRVWV52PVDI",
        |    "taxToPayInPence": 9700000,
@@ -109,8 +110,8 @@ class PayApiServiceSpec extends BaseSpec {
 
   trait LocalSetup {
     def httpResponse: HttpResponse
-    val userInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
-    val calculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
+    val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+    val calculatorResponse: CalculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
       Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
       Some(OtherGoods(List(Band("C",List(Item("OGD/DIGI/TV","1140.42",None,None,
         Calculation("0.00","0.00","0.00","0.00"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29"))), Item("OGD/DIGI/TV","1300.00",None,None,
@@ -120,11 +121,12 @@ class PayApiServiceSpec extends BaseSpec {
       ),
       Calculation("102.54","534.89","725.03","1362.46"),
       withinFreeAllowance = false,
-      limits = Map.empty
+      limits = Map.empty,
+      isAnyItemOverAllowance = true
     )
 
-    val receiptDateTime = DateTime.parse("2018-11-12T13:56:01+0000")
-    lazy val s = {
+    val receiptDateTime: DateTime = DateTime.parse("2018-11-12T13:56:01+0000")
+    lazy val s: PayApiService = {
       val service = injected[PayApiService]
       when(service.wsAllMethods.POST[JsValue,HttpResponse](any(),any(),any())(any(),any(),any(),any())) thenReturn Future.successful(httpResponse)
       service
@@ -135,42 +137,42 @@ class PayApiServiceSpec extends BaseSpec {
 
     "return PayApiServiceFailureResponse when client returns 400" in new LocalSetup {
 
-      override lazy val httpResponse = HttpResponse(BAD_REQUEST)
+      override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
 
-      val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return PayApiServiceFailureResponse when client returns 500" in new LocalSetup {
 
-      override lazy val httpResponse = HttpResponse(BAD_REQUEST)
+      override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
 
-      val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return a PayApiServiceSuccessResponse with a payment url when http client returns 201" in new LocalSetup {
 
-      override lazy val httpResponse = HttpResponse(CREATED, Some(
+      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val r = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return a PayApiServiceSuccessResponse with a payment url when http client returns 201 (when in BST)" in new LocalSetup {
 
-      val uiWithBstArrival = userInformation.copy(dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val uiWithBstArrival: UserInformation = userInformation.copy(dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-      override lazy val httpResponse = HttpResponse(CREATED, Some(
+      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val r = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, receiptDateTime))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, receiptDateTime))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJsonForBstArrival),any())(any(),any(),any(),any())
     }

@@ -13,7 +13,7 @@ class CalculatorResponseSpec extends BaseSpec {
 
     trait LocalSetup {
 
-      lazy val cr = CalculatorResponse(
+      lazy val cr: CalculatorResponse = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
             Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -31,7 +31,8 @@ class CalculatorResponseSpec extends BaseSpec {
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("100.00", "0.00", "0.00", "100.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       )
     }
 
@@ -51,7 +52,7 @@ class CalculatorResponseSpec extends BaseSpec {
       def tobaccoCurrency: Currency
       def otherGoodsCurrency: Currency
 
-      lazy val cr = CalculatorResponse(
+      lazy val cr: CalculatorResponse = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
             Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", alcoholCurrency, Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
@@ -69,42 +70,43 @@ class CalculatorResponseSpec extends BaseSpec {
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       )
     }
 
     "work with alcohol not GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
-      override lazy val tobaccoCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val otherGoodsCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val alcoholCurrency: Currency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val tobaccoCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
 
       cr.allItemsUseGBP shouldBe false
     }
 
     "work with tobacco not GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val tobaccoCurrency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
-      override lazy val otherGoodsCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val alcoholCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val otherGoodsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
 
       cr.allItemsUseGBP shouldBe false
     }
 
     "work with other goods not GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val tobaccoCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val otherGoodsCurrency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val alcoholCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
 
       cr.allItemsUseGBP shouldBe false
     }
 
     "work when all GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val tobaccoCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val otherGoodsCurrency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val alcoholCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
 
       cr.allItemsUseGBP shouldBe true
     }
@@ -133,7 +135,8 @@ class CalculatorResponseSpec extends BaseSpec {
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "100.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = false
       ).asDto(applySorting = true)
 
 
@@ -166,7 +169,8 @@ class CalculatorResponseSpec extends BaseSpec {
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "100.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = false
       ).asDto(applySorting = true)
 
       calculatorResponseDto.items.map(_.metadata.description) shouldBe List(
@@ -200,7 +204,8 @@ class CalculatorResponseSpec extends BaseSpec {
         ), Calculation("0.00", "0.00", "0.00", "100.00"))),
         Calculation("0.00", "0.00", "0.00", "300.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       ).asDto(applySorting = true)
 
 

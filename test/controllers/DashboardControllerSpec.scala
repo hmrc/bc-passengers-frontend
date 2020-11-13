@@ -99,7 +99,8 @@ class DashboardControllerSpec extends BaseSpec {
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "1.00", "1.00", "3.00"),
           withinFreeAllowance = false,
-          limits = Map.empty
+          limits = Map.empty,
+          isAnyItemOverAllowance = false
         ))
       ))
 
@@ -125,7 +126,8 @@ class DashboardControllerSpec extends BaseSpec {
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "7.00", "90000.00", "98000.00"),
           withinFreeAllowance = false,
-          limits = Map.empty
+          limits = Map.empty,
+          isAnyItemOverAllowance = true
         ))
       ))
 
@@ -154,7 +156,8 @@ class DashboardControllerSpec extends BaseSpec {
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "1.00", "1.00", "300.00"), withinFreeAllowance = false,
-          limits = Map.empty
+          limits = Map.empty,
+          isAnyItemOverAllowance = false
         ))
       ))
 
@@ -179,7 +182,8 @@ class DashboardControllerSpec extends BaseSpec {
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "1.00", "1.00", "300.00"), withinFreeAllowance = false,
-          limits = Map.empty
+          limits = Map.empty,
+          isAnyItemOverAllowance = false
         ))
       ))
 
@@ -207,7 +211,8 @@ class DashboardControllerSpec extends BaseSpec {
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
         withinFreeAllowance = true,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = false
       ))
     ))
 
@@ -231,7 +236,8 @@ class DashboardControllerSpec extends BaseSpec {
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
       ))
     ))
 
@@ -257,7 +263,8 @@ class DashboardControllerSpec extends BaseSpec {
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("1.00", "1.00", "1.00", "300.00"),
         withinFreeAllowance = false,
-        limits = Map.empty
+        limits = Map.empty,
+        isAnyItemOverAllowance = false
       ))
     ))
 
