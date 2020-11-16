@@ -110,7 +110,7 @@ class CalculateDeclareController @Inject()(
 
               case DeclarationServiceSuccessResponse(cr) =>
 
-                payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt, receiptDateTime) map {
+                payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt) map {
 
                   case PayApiServiceFailureResponse =>
                     InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))

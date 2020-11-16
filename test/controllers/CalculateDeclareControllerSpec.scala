@@ -187,7 +187,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
       when(injected[UserInformationService].storeUserInformation(any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
       when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
-      when(injected[PayApiService].requestPaymentUrl(any(), any(), any(), any(), any())(any())) thenReturn Future.successful(payApiResponse)
+      when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any())(any(), any())) thenReturn Future.successful(payApiResponse)
       when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
       when(injected[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DateTimeProviderService].now) thenReturn dt
@@ -502,56 +502,56 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       "Return BAD REQUEST and display the user information when only email address is entered" in new LocalSetup {
 
-        override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-        override lazy val payApiResponse = PayApiServiceFailureResponse
-        override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-        val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
-          .withFormUrlEncodedBody(
-            "firstName" -> "Harry",
-            "lastName" -> "Potter",
-            "identification.identificationType" -> "passport",
-            "identification.identificationNumber" -> "SX12345",
-            "emailAddress.email" -> "abc@gmail.com",
-            "emailAddress.confirmEmail" -> "",
-            "placeOfArrival.selectPlaceOfArrival" -> "",
-            "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
-            "dateTimeOfArrival.dateOfArrival.day" -> "23",
-            "dateTimeOfArrival.dateOfArrival.month" -> "11",
-            "dateTimeOfArrival.dateOfArrival.year" -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour" -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute" -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-          )
-        ).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
 
         status(response) shouldBe BAD_REQUEST
       }
 
       "Return BAD REQUEST and display the user information when email address and confirm email address do not match" in new LocalSetup {
 
-        override lazy val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
-        override lazy val payApiResponse = PayApiServiceFailureResponse
-        override lazy val declarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-        val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
-          .withFormUrlEncodedBody(
-            "firstName" -> "Harry",
-            "lastName" -> "Potter",
-            "identification.identificationType" -> "passport",
-            "identification.identificationNumber" -> "SX12345",
-            "emailAddress.email" -> "abc@gmail.com",
-            "emailAddress.confirmEmail" -> "xyz@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival" -> "",
-            "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
-            "dateTimeOfArrival.dateOfArrival.day" -> "23",
-            "dateTimeOfArrival.dateOfArrival.month" -> "11",
-            "dateTimeOfArrival.dateOfArrival.year" -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour" -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute" -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-          )
-        ).get
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "passport",
+          "identification.identificationNumber" -> "SX12345",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "xyz@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "123456789012345678901234567890123456123456",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
 
         status(response) shouldBe BAD_REQUEST
       }
