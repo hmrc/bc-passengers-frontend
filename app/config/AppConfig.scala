@@ -6,13 +6,13 @@
 package config
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 import play.api.i18n.Lang
+import play.api.{Configuration, Environment}
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 @Singleton
-class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: RunMode, servicesConfig: ServicesConfig) {
+class AppConfig @Inject() (val runModeConfiguration: Configuration, val environment: Environment, runMode: RunMode, servicesConfig: ServicesConfig) {
 
   private def loadConfig(key: String) = runModeConfiguration.get[String](key)
 
@@ -33,6 +33,11 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: Run
   lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
   lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
   lazy val isAmendmentsEnabled: Boolean = runModeConfiguration.get[Boolean]("features.amendments")
+
+  //STRIDE sigin singout urls
+  lazy val role: String = servicesConfig.getString("login.role")
+  lazy val loginContinueUrl: String = servicesConfig.getString("login.continue")
+  lazy val unauthorisedUrl: String = servicesConfig.getString("urls.unauthorised")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

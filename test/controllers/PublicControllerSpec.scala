@@ -9,6 +9,7 @@ import config.AppConfig
 import connectors.Cache
 import org.jsoup.Jsoup
 import org.mockito.Mockito.when
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -26,6 +27,7 @@ class PublicControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
   "Calling /time-out" should {

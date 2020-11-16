@@ -8,7 +8,7 @@ package controllers.enforce
 import config.AppConfig
 import controllers.LocalContext
 import controllers.enforce.vatres._
-import models.JourneyData
+import models.{IdentifierRequest, JourneyData}
 import org.scalatest.exceptions.TestFailedException
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -32,7 +32,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
     def params: ListMap[String, List[Any]]
 
     def res(implicit jd: JourneyData): Future[Result] = {
-      lazy val context = LocalContext(FakeRequest("GET", "/"), "fake-session-id", Some(jd))
+      lazy val context = LocalContext(IdentifierRequest(FakeRequest("GET", "/"),"somePID"), "fake-session-id", Some(jd))
       enforcer.apply(journeyStep)(Future.successful(Ok("Ok")))(context)
     }
 

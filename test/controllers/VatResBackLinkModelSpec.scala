@@ -6,7 +6,7 @@
 package controllers
 
 import config.AppConfig
-import models.JourneyData
+import models.{IdentifierRequest, JourneyData}
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -50,7 +50,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
       when(injected[AppConfig].isVatResJourneyEnabled) thenReturn true
       when(injected[AppConfig].isIrishBorderQuestionEnabled) thenReturn isIrishBorderQuestionEnabled
 
-      LocalContext(FakeRequest(call), "FAKESESSIONIN", journeyData)
+      LocalContext(IdentifierRequest(FakeRequest(call), "somePID"), "FAKESESSIONIN", journeyData)
     }
   }
 

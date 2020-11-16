@@ -7,6 +7,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -39,6 +40,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
+    .configure("features.vat-res" -> false)
     .build()
 
   override def beforeEach: Unit = {
