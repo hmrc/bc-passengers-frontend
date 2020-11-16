@@ -6,6 +6,7 @@
 package controllers
 
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -32,6 +33,7 @@ class DashboardControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
   

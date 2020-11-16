@@ -7,6 +7,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,6 +38,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(bind[AppConfig].toInstance(mockAppConfig))
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
   override def beforeEach(): Unit = {

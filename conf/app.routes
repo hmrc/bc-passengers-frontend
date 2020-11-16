@@ -120,3 +120,5 @@ GET        /other-goods/add                                                     
 POST       /other-goods/add                                                            controllers.OtherGoodsSearchController.processSearchGoods
 
 GET        /language/:lang                                                             controllers.LocalLanguageController.switchToLanguage(lang: String)
+
+GET        /unauthorised-user                                                          controllers.UnauthorisedController.show()

@@ -8,6 +8,7 @@ package controllers
 import config.AppConfig
 import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, Tobacco}
 import org.mockito.Mockito.when
+import models.{IdentifierRequest, JourneyData}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -75,7 +76,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
     )
 
     when(injected[AppConfig].declareGoodsUrl) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
-    lazy val context: LocalContext = LocalContext(FakeRequest(call), "FAKESESSIONID", journeyData)
+    lazy val context = LocalContext(IdentifierRequest(FakeRequest(call), "somePID"), "FAKESESSIONID", journeyData)
   }
 
   import routes._

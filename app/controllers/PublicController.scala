@@ -11,6 +11,7 @@ import config.AppConfig
 import connectors.Cache
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
+import controllers.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.http.SessionKeys
@@ -22,6 +23,7 @@ class PublicController @Inject() (
   val cache: Cache,
   val productTreeService: ProductTreeService,
   val calculatorService: CalculatorService,
+  identify: IdentifierAction,
 
   val error_template: views.html.error_template,
   val accessibility_statement: views.html.accessibility_statement_en,
@@ -33,13 +35,13 @@ class PublicController @Inject() (
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
-  def timeOut: Action[AnyContent] = Action.async { implicit context =>
+  def timeOut: Action[AnyContent] = identify async { implicit context =>
     Future.successful(Ok(time_out()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
 
   }
 
 
-  def accessibilityStatement: Action[AnyContent] = Action.async { implicit context =>
+  def accessibilityStatement: Action[AnyContent] = identify async { implicit context =>
     Future.successful(Ok(accessibility_statement()))
 
   }

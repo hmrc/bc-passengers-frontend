@@ -1,0 +1,19 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(govuk_wrapper: views.html.govuk_wrapper)
+@()(implicit request: Request[_], messages: Messages)
+
+@contentHeader = {
+<h1>@messages("error.unauthorised.page.title")</h1>
+}
+
+@mainContent = {
+
+<p>@messages("error.unauthorised.page.text")</p>
+<p>@messages("error.unauthorised.page.text2")</p>
+}
+
+@govuk_wrapper(title = messages("label.you_cannot_use_this_service"), contentHeader = Some(contentHeader), mainContent = mainContent)
