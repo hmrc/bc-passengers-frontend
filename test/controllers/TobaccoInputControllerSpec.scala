@@ -6,6 +6,7 @@
 package controllers
 
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models._
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
@@ -38,6 +39,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
     .overrides(bind[views.html.tobacco.no_of_sticks_input].toInstance(MockitoSugar.mock[views.html.tobacco.no_of_sticks_input]))
     .overrides(bind[views.html.tobacco.weight_or_volume_input].toInstance(MockitoSugar.mock[views.html.tobacco.weight_or_volume_input]))
     .overrides(bind[views.html.tobacco.no_of_sticks_weight_or_volume_input].toInstance(MockitoSugar.mock[views.html.tobacco.no_of_sticks_weight_or_volume_input]))
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
   override def beforeEach: Unit = {

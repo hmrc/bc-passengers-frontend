@@ -7,6 +7,7 @@ package controllers
 
 import config.AppConfig
 import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, Tobacco}
+import models.{IdentifierRequest, JourneyData}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -72,7 +73,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       isAnyItemOverAllowance =true
     )
 
-    lazy val context = new LocalContext(FakeRequest(call), "FAKESESSIONID", journeyData)
+    lazy val context = LocalContext(IdentifierRequest(FakeRequest(call), "somePID"), "FAKESESSIONID", journeyData)
   }
 
   import routes._

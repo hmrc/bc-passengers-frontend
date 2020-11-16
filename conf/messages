@@ -1642,3 +1642,9 @@ label.declaration.fifth_message = If you have additional goods to declare, go to
 label.declaration.sixth_message = If you need to remove goods from your declaration
 label.declaration.seventh_message = From February 2021, you will be able to use the online service to add goods to an existing declaration.
 text.read_more_about_refunds = visit GOV.UK to request a refund.
+
+
+#unauthorised page
+error.unauthorised.page.title=Unauthorised user
+error.unauthorised.page.text=Check the details you have entered and try again.
+error.unauthorised.page.text2=If your details are correct, contact your administrator to get the appropriate access.

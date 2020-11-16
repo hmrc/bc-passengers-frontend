@@ -7,6 +7,7 @@ package controllers
 
 
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
@@ -33,6 +34,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .configure("features.vat-res" -> true)
     .build()
 

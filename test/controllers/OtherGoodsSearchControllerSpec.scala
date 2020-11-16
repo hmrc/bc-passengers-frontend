@@ -6,6 +6,7 @@
 package controllers
 
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models._
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
@@ -33,6 +34,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(bind[other_goods_input].toInstance(MockitoSugar.mock[other_goods_input]))
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
   override def beforeEach: Unit = {

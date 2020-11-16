@@ -7,7 +7,7 @@ import scoverage.ScoverageKeys
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
-val appName = "bc-passengers-frontend"
+val appName = "bc-passengers-stride-frontend"
 
 
 lazy val microservice = Project(appName, file("."))

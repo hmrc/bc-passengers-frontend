@@ -7,8 +7,10 @@ package controllers.enforce
 
 import config.AppConfig
 import connectors.Cache
+import controllers.actions.IdentifierAction
 import controllers.{LocalContext, routes}
 import javax.inject.{Inject, Singleton}
+import models.IdentifierRequest
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -32,7 +34,7 @@ class JourneyEnforcer {
 }
 
 @Singleton
-class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder) {
+class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder, identify: IdentifierAction) {
 
   private def trimmingFormUrlEncodedData(block: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
     block {
@@ -48,7 +50,8 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder)
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
 
-    actionBuilder.async { implicit request =>
+    identify.async { implicit request =>
+      val provideId = request.credId
 
       trimmingFormUrlEncodedData { implicit request =>
 
@@ -56,7 +59,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder)
           case Some(s) =>
             val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, Some(request.session), Some(request))
             cache.fetch(headerCarrier) flatMap { journeyData =>
-              block(LocalContext(request, s, journeyData))
+              block(LocalContext(IdentifierRequest(request, provideId), s, journeyData))
             }
           case None =>
             Future.successful(Redirect(routes.TravelDetailsController.newSession()))

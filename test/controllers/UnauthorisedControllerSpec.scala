@@ -11,13 +11,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.status
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import scala.language.postfixOps
 
-class PublicControllerSpec extends BaseSpec {
+class UnauthorisedControllerSpec extends BaseSpec {
+
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -26,14 +27,14 @@ class PublicControllerSpec extends BaseSpec {
     .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
-  "Calling /time-out" should {
-    "return 200" in {
-      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
+  "Unauthorised Controller" must {
+
+    "return OK" in {
+
+      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/unauthorised-user")).get
 
       status(result) shouldBe OK
+
     }
   }
-
 }
-
-

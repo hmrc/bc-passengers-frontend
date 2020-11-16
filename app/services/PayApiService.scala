@@ -9,6 +9,8 @@ package services
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.{CalculatorResponse, ChargeReference, UserInformation}
+import org.joda.time.DateTime
+import play.api.libs.json.{JsArray, JsString, JsValue, Json}
 import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.libs.json._
@@ -33,10 +35,10 @@ class PayApiService @Inject()(
 
   lazy val returnUrl: String = configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
 
-  lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation()
+  lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation()
   lazy val returnUrlCancelled: String = returnUrlFailed
 
-  lazy val backUrl: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
+  lazy val backUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 

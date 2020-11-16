@@ -7,6 +7,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.mockito.Matchers.{eq => meq, _}
@@ -39,6 +40,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .configure("features.vat-res" -> false)
     .build()
 
@@ -67,7 +69,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "return the check declare goods start page" in new LocalSetup {
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-declare-goods-start-page")).get
+      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/")).get
 
       status(response) shouldBe OK
 

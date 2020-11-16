@@ -9,6 +9,7 @@ import java.util.UUID
 
 import config.AppConfig
 import connectors.Cache
+import controllers.actions.IdentifierAction
 import controllers.enforce._
 import javax.inject.{Inject, Singleton}
 import models.PrivateCraftDto._
@@ -61,6 +62,7 @@ class TravelDetailsController @Inject() (
   privateCraftAction: PrivateCraftAction,
   is17OrOverAction: Is17OrOverAction,
   noNeedToUseServiceGbniAction: NoNeedToUseServiceGbniAction,
+  identify: IdentifierAction,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -75,7 +77,7 @@ class TravelDetailsController @Inject() (
     }
   }
 
-  val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
+  val checkDeclareGoodsStartPage: Action[AnyContent] = identify async { implicit request =>
     Future.successful(
       Ok(check_declare_goods_start_page())
     )
