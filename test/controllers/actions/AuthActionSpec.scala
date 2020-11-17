@@ -53,11 +53,27 @@ class AuthActionSpec extends BaseSpec with MockitoSugar{
 
     "the user is logged in with NO internalId returned" must {
 
-      "redirect to unauthorised" in {
+      "redirect to unauthorised in case of exception" in {
 
         implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new IncorrectCredentialStrength), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get should endWith("unauthorised-user")
+      }
+
+      "redirect to unauthorised in case of no exception" in {
+
+        val authConnector = mock[AuthConnector]
+        implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
+
+        when(authConnector.authorise[Option[Credentials]](any(), any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val authAction = new AuthenticatedIdentifierAction(authConnector, appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
