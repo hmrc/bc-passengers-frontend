@@ -1,0 +1,39 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+
+
+@main_template(title = messages("label.declare_your_goods"), bodyClasses = None , backLink = backLink) {
+
+
+  <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>
+
+  <p>@messages("text.i_understand_that")</p>
+  <ul class="list-bullet" style="margin-bottom: 15px;">
+    <li>@messages("text.these_goods_are_for_my_own_")</li>
+    <li>@messages("text.this_is_my_only_online_declaration_")</li>
+    <li>@messages("text.i_will_need_to_show_my_declaration_receipt_")</li>
+  </ul>
+
+  <div class="notice">
+    <i class="icon icon-important">
+      <span class="visually-hidden">Warning</span>
+    </i>
+    <strong class="bold-small">
+      @messages("text.you_risk_prosecution_and_imprisonment_zero_pound")
+    </strong>
+  </div>
+
+  <p class="margin-top-30"><a href="@controllers.routes.CalculateDeclareController.enterYourDetails()" class="button">
+    @messages("label.declare_your_goods")</a>
+  </p>
+
+  <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a></p>
+  <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
+}

@@ -243,9 +243,14 @@ class DeclareAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppCo
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
 
-      if (context.journeyData.isDefined && context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) >= appConfig.minPaymentAmount && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit)){
+      if (context.journeyData.isDefined &&
+        (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) >= appConfig.minPaymentAmount && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit)) ||
+        (context.getJourneyData.euCountryCheck.getOrElse("") == "greatBritain" && context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) <= appConfig.paymentLimit && x.isAnyItemOverAllowance))
+      ){
         block(context)
-      } else {
+      }
+
+      else {
        Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
      }
     }
@@ -319,3 +324,4 @@ class NoNeedToUseServiceGbniAction @Inject()(journeyEnforcer: JourneyEnforcer, p
     }
   }
 }
+

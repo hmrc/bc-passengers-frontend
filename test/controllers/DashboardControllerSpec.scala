@@ -226,6 +226,32 @@ class DashboardControllerSpec extends BaseSpec {
     doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
   }
 
+  "redirect to declare your goods page if the total tax to pay is 0 and items were over free allowance in GB-NI journey and has zero tax liability" in new LocalSetup {
+
+
+    override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+      euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), calculatorResponse = Some(CalculatorResponse(
+        Some(Alcohol(List(Band("A",List(Item("Adult Clothing", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("Adult clothing", "Adult clothing", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil),
+          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+        Calculation("0.00", "0.00", "0.00", "0.00"),
+        withinFreeAllowance = true,
+        limits = Map.empty,
+        isAnyItemOverAllowance = true
+      ))
+    ))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+
+    status(result) shouldBe OK
+
+    val content: String = contentAsString(result)
+    val doc: Document = Jsoup.parse(content)
+
+    doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+  }
+
   "redirect to the under nine pound page if the total tax to pay was 0 but items were not within the free allowance (0 rated)" in new LocalSetup {
 
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(

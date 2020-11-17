@@ -9,7 +9,7 @@ import java.util.UUID
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, DeclareAction, PublicAction}
+import controllers.enforce.{DashboardAction, PublicAction, DeclareAction}
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -40,11 +40,13 @@ class CalculateDeclareController @Inject()(
   declareAction: DeclareAction,
 
   val you_need_to_declare: views.html.declaration.declare_your_goods,
+  val zero_to_declare_your_goods: views.html.declaration.zero_to_declare_your_goods,
   val enter_your_details: views.html.declaration.enter_your_details,
   val error_template: views.html.error_template,
   val irish_border : views.html.travel_details.irish_border,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
+  val zero_to_declare: views.html.purchased_products.zero_to_declare,
   val done: views.html.purchased_products.done,
   val over_ninety_seven_thousand_pounds: views.html.purchased_products.over_ninety_seven_thousand_pounds,
 
@@ -58,13 +60,26 @@ class CalculateDeclareController @Inject()(
   def receiptDateTime: DateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
-    Future.successful(Ok(you_need_to_declare()))
+
+    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
+      val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
+      calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax <= appConfig.minPaymentAmount
+    }
+    requireCalculatorResponse { calculatorResponse =>
+      Future.successful {
+        if (checkZeroPoundCondition(calculatorResponse))
+          Ok(zero_to_declare_your_goods(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+        else {
+          Ok(you_need_to_declare())
+        }
+      }
+    }
   }
 
   def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
     context.getJourneyData.euCountryCheck match {
-      case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck)))
-      case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck)))
+      case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
+      case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
     }
   }
 
@@ -74,8 +89,8 @@ class CalculateDeclareController @Inject()(
 
       formWithErrors => {
         context.getJourneyData.euCountryCheck match {
-          case Some("greatBritain") => Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck)))
-          case _ => Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck)))
+          case Some("greatBritain") => Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
+          case _ => Future.successful(BadRequest(enter_your_details(formWithErrors, portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
         }
       },
       enterYourDetailsDto => {
@@ -167,13 +182,21 @@ class CalculateDeclareController @Inject()(
   }
 
   def showCalculation: Action[AnyContent] = dashboardAction { implicit context =>
+
+    def checkZeroPoundCondition(calculatorResponse:CalculatorResponse):Boolean = {
+      val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
+     calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax <= appConfig.minPaymentAmount
+    }
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
         BigDecimal(calculatorResponse.calculation.allTax) match {
+          case allTax if checkZeroPoundCondition(calculatorResponse) =>
+            Ok( zero_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
-          case allTax if allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
+          case allTax if (allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance) =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
           case allTax if allTax > appConfig.paymentLimit  =>
@@ -185,4 +208,3 @@ class CalculateDeclareController @Inject()(
     }
   }
 }
-
