@@ -74,6 +74,10 @@ class BackLinkModel @Inject() (
         Some(CalculateDeclareController.irishBorder)
       case "tax-due" if !appConfig.isIrishBorderQuestionEnabled =>
         Some(DashboardController.showDashboard)
+      case "declare-your-goods" =>
+        Some(CalculateDeclareController.showCalculation())
+      case "user-information" =>
+        Some(CalculateDeclareController.declareYourGoods())
       case _ =>
         None
     }

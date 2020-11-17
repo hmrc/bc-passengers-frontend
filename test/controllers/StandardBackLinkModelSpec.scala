@@ -6,7 +6,7 @@
 package controllers
 
 import config.AppConfig
-import models.JourneyData
+import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, Tobacco}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -38,16 +38,39 @@ class StandardBackLinkModelSpec extends BaseSpec {
     def isVatResClaimed: Option[Boolean]= None
     def isBringingDutyFree: Option[Boolean]= None
     def bringingOverAllowance: Option[Boolean]= None
+    def calculatorResponse: Option[CalculatorResponse] = None
 
     def call: Call
 
-    lazy val journeyData = (euCountryCheck, isArrivingNi,isUKVatPaid,isUKExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree) match {
-      case (None, None, None, None,None, None, None, None) => None
-      case (euCountryCheck, isArrivingNi,isUKVatPaid,isUKExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree) =>
+    lazy val journeyData = (euCountryCheck, isArrivingNi,isUKVatPaid,isUKExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree, calculatorResponse) match {
+      case (None, None, None, None,None, None, None, None, None) => None
+      case (euCountryCheck, isArrivingNi,isUKVatPaid,isUKExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree, calculatorResponse) =>
         Some(JourneyData(euCountryCheck = euCountryCheck, arrivingNICheck = isArrivingNi, isUKVatPaid = isUKVatPaid,isUKExcisePaid=isUKExcisePaid,
           isUKResident=isUKResident,isUccRelief=isUccRelief,isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree,
-          bringingOverAllowance = bringingOverAllowance))
+          bringingOverAllowance = bringingOverAllowance, calculatorResponse = calculatorResponse))
     }
+
+    lazy val crWithinLimitLow: CalculatorResponse = CalculatorResponse(
+      Some(Alcohol(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(Tobacco(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(OtherGoods(List(
+        Band("A", List(
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        ), Calculation("0.00", "0.00", "0.00", "0.00"))
+      ), Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Calculation("0.00", "0.00", "0.00", "9.00"),
+      withinFreeAllowance = true,
+      limits = Map.empty,
+      isAnyItemOverAllowance =true
+    )
 
     lazy val context = new LocalContext(FakeRequest(call), "FAKESESSIONID", journeyData)
   }
@@ -312,6 +335,51 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override def call: Call = routes.DashboardController.showDashboard
 
       m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge.url)
+    }
+  }
+
+  "Going back from user-information" should {
+
+    "return user to declare-your-goods" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck = Some("greatBritain")
+      override val isArrivingNi = Some(true)
+      override val calculatorResponse = Some(crWithinLimitLow)
+
+      override def call: Call = CalculateDeclareController.enterYourDetails()
+
+      m.backLink(context) shouldBe Some(CalculateDeclareController.declareYourGoods().url)
+    }
+  }
+
+  "Going back from declare-your-goods" should {
+
+    "return user to tax-due" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck = Some("greatBritain")
+      override val isArrivingNi = Some(true)
+      override val calculatorResponse = Some(crWithinLimitLow)
+
+      override def call: Call = CalculateDeclareController.declareYourGoods()
+
+      m.backLink(context) shouldBe Some(CalculateDeclareController.showCalculation().url)
+    }
+  }
+
+  "Going back from tax-due" should {
+
+    "return user to tell-us" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck = Some("greatBritain")
+      override val isArrivingNi = Some(true)
+      override val calculatorResponse = Some(crWithinLimitLow)
+
+      override def call: Call = CalculateDeclareController.showCalculation()
+
+      m.backLink(context) shouldBe Some(DashboardController.showDashboard().url)
     }
   }
 

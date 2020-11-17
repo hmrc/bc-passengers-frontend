@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(f: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String] )(implicit request: Request[_], messages: Messages)
+@(f: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String] )(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
@@ -33,9 +33,9 @@
 @main_template(
   title = prefixErrorMessage(messages("label.enter_your_details"), f.hasErrors), bodyClasses = None,
   inlineScript = Some(scriptElem),
-  inlineLinkElem = Some(linkElem)) {
+  inlineLinkElem = Some(linkElem),
+  backLink = backLink) {
 
-  <a class="link-back" id="back" href="@routes.CalculateDeclareController.declareYourGoods()">@messages("label.back")</a>
 
   @views.html.tags.errors(f)
 
