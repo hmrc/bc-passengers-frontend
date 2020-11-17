@@ -51,7 +51,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder,
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
 
     identify.async { implicit request =>
-      val provideId = request.credId
+      val pId = request.providerId
 
       trimmingFormUrlEncodedData { implicit request =>
 
@@ -59,7 +59,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder,
           case Some(s) =>
             val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, Some(request.session), Some(request))
             cache.fetch(headerCarrier) flatMap { journeyData =>
-              block(LocalContext(IdentifierRequest(request, provideId), s, journeyData))
+              block(LocalContext(IdentifierRequest(request, pId), s, journeyData))
             }
           case None =>
             Future.successful(Redirect(routes.TravelDetailsController.newSession()))
