@@ -12,7 +12,6 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfigProvider, CSRFFilter}
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.logging.SessionId
