@@ -98,8 +98,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       ),
       "requestDetail" -> Json.obj(
         "customerReference" -> Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false),
-        "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
-        "contactDetails" -> Json.obj(),
+        "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+        "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
         "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "NON_EU Only", "onwardTravelGBNI" -> "GB", "uccRelief" -> false, "ukVATPaid" -> false, "ukExcisePaid" -> false),
         "declarationTobacco" -> Json.obj(
           "totalExciseTobacco" -> "100.54",
@@ -315,8 +315,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           ),
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
-            "contactDetails" -> Json.obj(),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
             "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "08:02", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "EU Only", "onwardTravelGBNI" -> "GB", "uccRelief" -> false, "ukVATPaid" -> false, "ukExcisePaid" -> false),
             "declarationAlcohol" -> Json.obj(
               "totalExciseAlcohol" -> "100.54",
@@ -436,8 +436,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           ),
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
-            "contactDetails" -> Json.obj(),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
             "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "NON_EU Only", "onwardTravelGBNI" -> "NI", "uccRelief" -> false, "ukVATPaid" -> false, "ukExcisePaid" -> false),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
@@ -688,8 +688,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           ),
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
-            "contactDetails" -> Json.obj(),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
             "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "Great Britain", "onwardTravelGBNI" -> "NI", "uccRelief" -> true, "ukVATPaid" -> true, "ukExcisePaid" -> true),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
@@ -904,8 +904,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           ),
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("idType" -> "telephone", "idValue" -> "XPASSID7417532125", "ukResident" -> true),
-            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter", "emailAddress" -> "abc@gmail.com"),
-            "contactDetails" -> Json.obj(),
+            "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+            "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
             "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "08:02", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "Great Britain", "onwardTravelGBNI" -> "NI", "uccRelief" -> false, "ukVATPaid" -> true, "ukExcisePaid" -> false),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",

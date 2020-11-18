@@ -86,7 +86,9 @@ class DeclarationService @Inject()(
         "ukResident" -> getBooleanValue(journeyData.isUKResident))
     })
 
-    val personalDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("firstName" -> o.firstName, "lastName" -> o.lastName, "emailAddress" -> o.emailAddress))
+    val personalDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("firstName" -> o.firstName, "lastName" -> o.lastName))
+
+    val contactDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("emailAddress" -> o.emailAddress))
 
     val declarationHeader: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
 
@@ -244,7 +246,7 @@ class DeclarationService @Inject()(
         "requestDetail" -> Json.obj(
           "customerReference" -> customerReference,
           "personalDetails" -> personalDetails,
-          "contactDetails" -> Json.obj(),
+          "contactDetails" -> contactDetails,
           "declarationHeader" -> declarationHeader,
           "declarationTobacco" -> declarationTobacco,
           "declarationAlcohol" -> declarationAlcohol,
