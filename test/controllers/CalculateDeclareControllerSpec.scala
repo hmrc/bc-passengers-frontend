@@ -5,7 +5,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
@@ -61,7 +60,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   trait LocalSetup {
 
     def payApiResponse: PayApiServiceResponse
-
     def declarationServiceResponse: DeclarationServiceResponse
 
     def cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(Some("nonEuOnly"), Some(true), None, None, Some(true))))
@@ -103,7 +101,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "9.00"),
@@ -125,7 +123,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "97000.00"),
@@ -147,7 +145,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "97000.01"),
@@ -184,12 +182,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
-      when(injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
-      when(injected[UserInformationService].storeUserInformation(any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
+      when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
+      when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any())(any(), any())) thenReturn Future.successful(payApiResponse)
       when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
-      when(injected[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
+      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
+      when(injected[DeclarationService].storeChargeReference(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
       when(injected[DateTimeProviderService].now) thenReturn dt
       when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)))
       when(injected[CalculatorService].storeCalculatorResponse(any(), any())(any())) thenReturn Future.successful(JourneyData())
@@ -677,9 +676,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful from GB to NI" in new LocalSetup {
 
-        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
-        override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
-        override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), chargeReference= Some("XJPR5768524625"), userInformation = Some(ui))))
+      override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
         val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
           .withFormUrlEncodedBody(
@@ -724,6 +723,38 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       doc.text() should include("these goods are for my own use or to give away as a gift")
       doc.text() shouldNot include ("I must pay duty and tax on these goods if I bring them into the UK")
     }
+
+    "Cache the submitted user information and redirect to Declaration page when tax to be paid is zero" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZero), chargeReference= Some("XJPR5768524625"), userInformation = Some(ui))))
+      override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        .withFormUrlEncodedBody(
+          "firstName" -> "Harry",
+          "lastName" -> "Potter",
+          "identification.identificationType" -> "telephone",
+          "identification.identificationNumber" -> "07884559563",
+          "emailAddress.email"-> "abc@gmail.com",
+          "emailAddress.confirmEmail"-> "abc@gmail.com",
+          "placeOfArrival.selectPlaceOfArrival" -> "",
+          "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
+          "dateTimeOfArrival.dateOfArrival.day" -> "23",
+          "dateTimeOfArrival.dateOfArrival.month" -> "11",
+          "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+          "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+          "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+          "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        )
+      ).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete"
+
+      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+    }
+
   }
 
     "calling GET .../ireland-to-northern-ireland" should {

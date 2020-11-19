@@ -71,6 +71,7 @@ case class JourneyData(
   workingInstance: Option[PurchasedProductInstance] = None,
   userInformation: Option[UserInformation] = None,
   calculatorResponse: Option[CalculatorResponse] = None,
+  chargeReference: Option[String] = None,
   defaultCountry: Option[String] = None,
   defaultCurrency: Option[String] = None
 ) {

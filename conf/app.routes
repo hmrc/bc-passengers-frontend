@@ -101,6 +101,8 @@ GET        /declare-your-goods                                                  
 GET        /user-information                                                           controllers.CalculateDeclareController.enterYourDetails
 POST       /user-information                                                           controllers.CalculateDeclareController.processEnterYourDetails
 
+GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage
+
 GET        /ireland-to-northern-ireland                                                controllers.CalculateDeclareController.irishBorder
 POST       /ireland-to-northern-ireland                                                controllers.CalculateDeclareController.irishBorderPost
 

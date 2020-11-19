@@ -47,3 +47,5 @@ case object UccReliefStep extends JourneyStep(preceeding = List(UKResidentStep),
 case object noNeedToUseServiceGbniStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> x.flatMap(_.isUKVatPaid) .contains(true) && x.flatMap(_.isUKExcisePaid) .contains(true) && x.flatMap(_.isUKResident) .contains(true))
 
 case object PrivateCraftStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)
+
+case object ZeroDeclarationStep extends JourneyStep(preceeding = List(DashboardStep), predicate = _ => _.flatMap(_.userInformation).isDefined)
