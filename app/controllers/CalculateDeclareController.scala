@@ -49,7 +49,7 @@ class CalculateDeclareController @Inject()(
   val zero_to_declare: views.html.purchased_products.zero_to_declare,
   val done: views.html.purchased_products.done,
   val over_ninety_seven_thousand_pounds: views.html.purchased_products.over_ninety_seven_thousand_pounds,
-
+  val zero_declaration: views.html.declaration.zero_declaration,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -110,13 +110,19 @@ class CalculateDeclareController @Inject()(
 
               case DeclarationServiceSuccessResponse(cr) =>
 
-                payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax)*100).toInt) map {
+                BigDecimal(calculatorResponse.calculation.allTax) match {
+                  case allTax if allTax <= appConfig.minPaymentAmount  && context.getJourneyData.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance =>
+                    declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
+                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+                    }
+                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt) map {
 
-                  case PayApiServiceFailureResponse =>
-                    InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+                    case PayApiServiceFailureResponse =>
+                      InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
 
-                  case PayApiServiceSuccessResponse(url) =>
-                    Redirect(url)
+                    case PayApiServiceSuccessResponse(url) =>
+                      Redirect(url)
+                  }
                 }
             }
           }
@@ -128,7 +134,7 @@ class CalculateDeclareController @Inject()(
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_)) =>
+        case Some(JourneyData(_, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_)) =>
           Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
         case _ =>
           Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))

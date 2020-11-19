@@ -255,6 +255,12 @@ class DeclarationService @Inject()(
     ).stripNulls
   }
 
+  def storeChargeReference(journeyData: JourneyData, userInformation: UserInformation, chargeReference: String)(implicit hc: HeaderCarrier): Future[JourneyData] = {
+
+    val updatedJourneyData = journeyData.copy(chargeReference = Some(chargeReference), userInformation = Some(userInformation))
+
+    cache.store( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
 }
 
 trait DeclarationServiceResponse

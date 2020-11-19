@@ -325,3 +325,13 @@ class NoNeedToUseServiceGbniAction @Inject()(journeyEnforcer: JourneyEnforcer, p
   }
 }
 
+@Singleton
+class ZeroDeclarationAction @Inject() (journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.ZeroDeclarationStep) {
+        block(context)
+      }
+    }
+  }
+}

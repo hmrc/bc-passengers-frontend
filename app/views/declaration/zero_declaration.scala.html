@@ -1,0 +1,77 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template)
+@(userInformation: Option[UserInformation], chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[_], messages: Messages)
+
+@import util._
+
+@main_template(title = messages("heading.declaration_complete")) {
+
+  <div class="govuk-panel govuk-panel--confirmation">
+     <h1 class="govuk-panel__title" style="font-size:48px">
+       @messages("heading.declaration_complete")
+     </h1>
+     <div class="govuk-panel__body" style="font-size:36px">
+       <div>@messages("heading.reference_number")</div>
+       <div class="bold">@chargeReference</div>
+       <strong></strong>
+     </div>
+  </div>
+
+  <p>@messages("label.declaration.first_message")</p>
+
+  <p>@messages("label.declaration.second_message")</p>
+
+  <table>
+     <tbody>
+       <tr>
+          <td class="bold">@messages("label.name")</td>
+          <td>@userInformation.get.firstName @userInformation.get.lastName</td>
+       </tr>
+
+       <tr>
+          <td class="bold">@messages("label.place_of_arrival_uk")</td>
+          <td>@messages(placeOfArrivalValue)</td>
+       </tr>
+
+       <tr>
+          <td class="bold">@messages("label.date_of_arrival")</td>
+          <td>@userInformation.get.dateOfArrival.toString("dd MMMM YYYY")</td>
+       </tr>
+
+       <tr>
+          <td class="bold">@messages("label.time_of_arrival")</td>
+          <td>@userInformation.get.timeOfArrival.toString("hh:mm aa")</td>
+       </tr>
+
+       <tr>
+          <td class="bold">@messages("label.reference_number")</td>
+          <td>@chargeReference</td>
+       </tr>
+
+       <tr>
+          <td class="bold">@messages("label.amount_paid")</td>
+          <td class="bold">&pound;0.00</td>
+       </tr>
+     </tbody>
+  </table>
+
+  <div class="panel panel-border-wide margin-top-30">@messages("label.declaration.third_message")</div>
+
+  <h2 class="heading-medium">@messages("heading.what_to_do_in_uk")</h2>
+
+  <p>@messages("label.declaration.fourth_message")</p>
+
+  <h2 class="heading-medium">@messages("heading.amending_declaration")</h2>
+
+  <p>@messages("label.declaration.fifth_message")</p>
+
+  <p>@messages("label.declaration.sixth_message")
+   <a href="https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt" target="_blank">@messages("text.read_more_about_refunds")</a></p>
+
+  <p>@messages("label.declaration.seventh_message")</p>
+
+}
