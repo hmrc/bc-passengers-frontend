@@ -9,7 +9,7 @@ import java.util.UUID
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction, DeclareAction}
+import controllers.enforce.{DashboardAction, DeclareAction, PublicAction}
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -202,7 +202,7 @@ class CalculateDeclareController @Inject()(
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
-          case allTax if (allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance) =>
+          case allTax if allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
           case allTax if allTax > appConfig.paymentLimit  =>

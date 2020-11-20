@@ -22,6 +22,7 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import util.{BaseSpec, _}
 
 import scala.concurrent.Future
@@ -32,6 +33,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[AuditConnector].toInstance(MockitoSugar.mock[AuditConnector]))
     .configure(
       "microservice.services.bc-passengers-declarations.host" -> "bc-passengers-declarations.service",
       "microservice.services.bc-passengers-declarations.port" -> "80"
@@ -39,8 +41,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     .build()
 
   override def beforeEach(): Unit = {
-    reset(app.injector.instanceOf[WsAllMethods])
-    reset(app.injector.instanceOf[Cache])
+    reset(
+      app.injector.instanceOf[WsAllMethods],
+      app.injector.instanceOf[Cache],
+      app.injector.instanceOf[AuditConnector])
     super.beforeEach()
   }
 
@@ -219,7 +223,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in {
 
-      when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse(BAD_REQUEST))
+      when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST,""))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
@@ -231,11 +235,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         meq(expectedSendJson), meq(Seq(
           "X-Correlation-ID" -> cid
         )))(any(), any(), any(), any())
+
+      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc),any())
     }
 
     "return a DeclarationServiceFailureResponse if the backend returns 500" in {
 
-      when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse(INTERNAL_SERVER_ERROR))
+      when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR,""))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
@@ -247,13 +253,15 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         meq(expectedSendJson), meq(Seq(
           "X-Correlation-ID" -> cid
         )))(any(), any(), any(), any())
+
+      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc),any())
     }
 
 
     "return a DeclarationServiceSuccessResponse if the backend returns 202" in {
 
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn
-        Future.successful(HttpResponse(ACCEPTED, Some(expectedJsObj)))
+        Future.successful(HttpResponse.apply(ACCEPTED, expectedJsObj.toString()))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
@@ -265,6 +273,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         meq(expectedSendJson), meq(Seq(
           "X-Correlation-ID" -> cid
         )))(any(), any(), any(), any())
+
+      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc),any())
     }
   }
 
