@@ -6,6 +6,7 @@
 package services
 
 
+import audit.AuditingTools
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
@@ -18,6 +19,7 @@ import util._
 import play.api.libs.json._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,6 +30,8 @@ class DeclarationService @Inject()(
   val cache: Cache,
   val wsAllMethods: WsAllMethods,
   servicesConfig: ServicesConfig,
+  auditConnector: AuditConnector,
+  auditingTools: AuditingTools,
   implicit val ec: ExecutionContext
 ) {
 
@@ -39,6 +43,8 @@ class DeclarationService @Inject()(
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
     val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, journeyData, rd)
+
+    auditConnector.sendExtendedEvent(auditingTools.buildDeclarationSubmittedDataEvent(partialDeclarationMessage))
 
     val headers = Seq(
       "X-Correlation-ID" -> correlationId
