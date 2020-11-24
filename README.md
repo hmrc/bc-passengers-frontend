@@ -26,7 +26,7 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    cd bc-passengers-stride-frontend
    sbt 'run 9083'
    ```
-4. To get to the first page of the service, you should be able to use the `where-goods-bought` endpoint (i.e. http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought)
+4. To get to the first page of the service, you should be able to use the `where-goods-bought` endpoint (i.e. http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought)
 
 ## Tests
 
