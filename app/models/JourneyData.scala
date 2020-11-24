@@ -6,14 +6,13 @@
 package models
 
 import org.joda.time.{LocalDate, LocalTime}
-import play.api.libs.json.Json
-
+import play.api.libs.json.{Json, OFormat}
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 
 
 object PurchasedProductInstance {
-  implicit val formats = Json.format[PurchasedProductInstance]
+  implicit val formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
 }
 case class PurchasedProductInstance(
   path: ProductPath,
@@ -26,7 +25,7 @@ case class PurchasedProductInstance(
 )
 
 object UserInformation {
-  implicit val formats = Json.format[UserInformation]
+  implicit val formats: OFormat[UserInformation] = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
     UserInformation(dto.firstName, dto.lastName, dto.identification.identificationType.getOrElse(""), dto.identification.identificationNumber , dto.emailAddress.email, dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""), dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""), dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
@@ -44,13 +43,19 @@ case class UserInformation(
 )
 
 object ProductAlias {
-  implicit val formats = Json.format[ProductAlias]
+  implicit val formats: OFormat[ProductAlias] = Json.format[ProductAlias]
 }
 
 case class ProductAlias(term: String, productPath: ProductPath)
 
+object PaymentNotification {
+  implicit val formats: OFormat[PaymentNotification] = Json.format[PaymentNotification]
+}
+
+case class PaymentNotification(status: String, reference: String)
+
 object JourneyData {
-  implicit val formats = Json.format[JourneyData]
+  implicit val formats: OFormat[JourneyData] = Json.format[JourneyData]
 }
 
 case class JourneyData(

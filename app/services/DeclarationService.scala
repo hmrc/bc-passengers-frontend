@@ -18,6 +18,7 @@ import play.api.libs.json.JodaWrites._
 import util._
 import play.api.libs.json._
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -269,6 +270,15 @@ class DeclarationService @Inject()(
 
     cache.store( updatedJourneyData ).map(_ => updatedJourneyData)
   }
+
+  def updateDeclaration(reference: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
+    wsAllMethods.POST[PaymentNotification, Unit](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/update-payment", PaymentNotification("Successful", reference))
+     .map(_ =>  DeclarationServiceSuccessResponse)
+    .recover {
+      case e => Logger.error(s"Status update failed for $reference in bc-passengers-declarations", e)
+        DeclarationServiceFailureResponse
+    }
+  }
 }
 
 trait DeclarationServiceResponse
@@ -276,3 +286,5 @@ trait DeclarationServiceResponse
 case object DeclarationServiceFailureResponse extends DeclarationServiceResponse
 
 case class DeclarationServiceSuccessResponse(chargeReference: ChargeReference) extends DeclarationServiceResponse
+
+case object DeclarationServiceSuccessResponse extends DeclarationServiceResponse
