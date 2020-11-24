@@ -48,7 +48,18 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     super.beforeEach()
   }
 
-  val declarationService: DeclarationService = app.injector.instanceOf[DeclarationService]
+ trait LocalSetup {
+   def journeyDataInCache: Option[JourneyData]
+
+   lazy val declarationService: DeclarationService = {
+     val service = app.injector.instanceOf[DeclarationService]
+     val mock = service.cache
+     when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
+     when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
+     when(mock.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
+     service
+   }
+ }
 
   val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
   
@@ -221,13 +232,15 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       arrivingNICheck = Some(false)
     )
 
-    "return a DeclarationServiceFailureResponse if the backend returns 400" in {
+    "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
 
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST,""))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
-      val r = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
+      val r: DeclarationServiceResponse = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
@@ -239,13 +252,15 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc),any())
     }
 
-    "return a DeclarationServiceFailureResponse if the backend returns 500" in {
+    "return a DeclarationServiceFailureResponse if the backend returns 500" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
 
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR,""))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
-      val r = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
+      val r: DeclarationServiceResponse = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
@@ -257,15 +272,16 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc),any())
     }
 
+    "return a DeclarationServiceSuccessResponse if the backend returns 202" in new LocalSetup {
 
-    "return a DeclarationServiceSuccessResponse if the backend returns 202" in {
+      override def journeyDataInCache: Option[JourneyData] = None
 
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn
         Future.successful(HttpResponse.apply(ACCEPTED, expectedJsObj.toString()))
 
       val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
-      val r = await(declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid))
+      val r: DeclarationServiceResponse = await(declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid))
 
       r shouldBe DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -283,13 +299,15 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
-    "truncate a product description to 40 characters if the product description is too big in the metadata." in {
+    "truncate a product description to 40 characters if the product description is too big in the metadata." in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
 
       val jd: JourneyData = JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false))
 
-      val userInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
 
-      val calculatorResponse = CalculatorResponse(
+      val calculatorResponse: CalculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
           List(
             Band("A",
@@ -309,7 +327,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isAnyItemOverAllowance = true
       )
 
-      val dm = declarationService.buildPartialDeclarationMessage(
+      val dm: JsObject = declarationService.buildPartialDeclarationMessage(
         userInformation,
         calculatorResponse,
         jd,
@@ -360,15 +378,17 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "generate the correct payload and set euCountryCheck is nonEuOnly and arrivingNI flag is true" in {
+    "generate the correct payload and set euCountryCheck is nonEuOnly and arrivingNI flag is true" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
 
       val jd: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"),
         arrivingNICheck = Some(true)
       )
 
-      val userInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-      val calculatorResponse = CalculatorResponse(
+      val calculatorResponse: CalculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
           List(
             Band("A",
@@ -430,7 +450,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
 
-      val dm = declarationService.buildPartialDeclarationMessage(
+      val dm: JsObject = declarationService.buildPartialDeclarationMessage(
         userInformation,
         calculatorResponse,
         jd,
@@ -607,7 +627,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in {
+    "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
 
       val jd: JourneyData = JourneyData(
         euCountryCheck = Some("greatBritain"),
@@ -618,9 +640,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isUccRelief = Some(true),
       )
 
-      val userInformation = UserInformation("Harry", "Potter", "passport", "SX12345", "abc@gmail.com", "", "LHR", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation: UserInformation = UserInformation("Harry", "Potter", "passport", "SX12345", "abc@gmail.com", "", "LHR", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-      val calculatorResponse = CalculatorResponse(
+      val calculatorResponse: CalculatorResponse = CalculatorResponse(
         alcohol = Some(Alcohol(
           List(
             Band("A",
@@ -682,7 +704,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
 
-      val dm = declarationService.buildPartialDeclarationMessage(
+      val dm: JsObject = declarationService.buildPartialDeclarationMessage(
         userInformation,
         calculatorResponse,
         jd,
@@ -859,7 +881,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "format the idValue if idType is telephone and generate the correct payload GBNI journey in " in {
+    "format the idValue if idType is telephone and generate the correct payload GBNI journey in " in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
 
       val jd: JourneyData = JourneyData(
         euCountryCheck = Some("greatBritain"),
@@ -869,9 +893,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isUKResident = Some(true)
       )
 
-      val userInformation = UserInformation("Harry", "Potter","telephone", "7417532125", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation: UserInformation = UserInformation("Harry", "Potter","telephone", "7417532125", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
 
-      val calculatorResponse = CalculatorResponse(
+      val calculatorResponse: CalculatorResponse = CalculatorResponse(
         alcohol = None,
         otherGoods = None,
         tobacco = Some(Tobacco(
@@ -898,7 +922,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isAnyItemOverAllowance = true
       )
 
-      val dm = declarationService.buildPartialDeclarationMessage(
+      val dm: JsObject = declarationService.buildPartialDeclarationMessage(
         userInformation,
         calculatorResponse,
         jd,
@@ -978,4 +1002,53 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     }
 
   }
+
+  "Calling DeclarationService.storeChargeReference" should {
+
+    "store charge reference information" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      await(declarationService.storeChargeReference(JourneyData(), userInformation, "XJPR5768524625" ))
+
+      verify(declarationService.cache, times(1)).store(meq(JourneyData(userInformation = Some(userInformation), chargeReference = Some("XJPR5768524625"))))(any())
+
+    }
+  }
+
+  "Calling DeclarationService.updateDeclaration" should {
+
+    "return a DeclarationServiceFailureResponse for update if the declaration returns 500" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PaymentNotification, Unit](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.failed(new Exception("Not able to update"))
+
+      val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, Unit](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
+        meq(PaymentNotification("Successful", "XJPR5768524625")), any()
+      )(any(), any(), any(), any())
+
+    }
+
+    "return a DeclarationServiceSuccessResponse for update if the declaration returns 202" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PaymentNotification, Unit](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(())
+
+      val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
+
+      r shouldBe DeclarationServiceSuccessResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, Unit](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
+        meq(PaymentNotification("Successful", "XJPR5768524625")), any()
+      )(any(), any(), any(), any())
+
+    }
+  }
+
 }
