@@ -445,6 +445,34 @@ class DtoTest extends BaseSpec {
       form.error("emailAddress").get.message shouldBe "error.required.emailAddress.email"
     }
 
+    "return validation errors if the Email and Confirm email length exceeds 132 " in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com",
+        "emailAddress.confirmEmail"-> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 2
+      form.error("emailAddress.email").get.message shouldBe "error.max-length.email"
+      form.error("emailAddress.confirmEmail").get.message shouldBe "error.max-length.email"
+    }
+
     "allow the placeOfArrival.selectPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",

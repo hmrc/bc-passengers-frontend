@@ -183,7 +183,7 @@ object EnterYourDetailsDto {
 
   def maxLength(length: Int , fieldName: String): Constraint[String] = Constraint("constraint.maxLength", length) {
     text =>
-      if (text.size <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
+      if (text.length <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
   }
 
   private def mandatoryDate(error: String) = tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
@@ -201,7 +201,7 @@ object EnterYourDetailsDto {
     )
     .verifying("error.only_whole_numbers", dateString => dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit))
     .transform[(String, String, String)](identity, identity)
-    .verifying("error.year_length", dateString => dateString._3.size == 4)
+    .verifying("error.year_length", dateString => dateString._3.length == 4)
     .transform[(Int, Int, Int)](dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt), dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString))
     .verifying("error.enter_a_real_date", dateInt => Try(new LocalDate(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess)
     .transform[LocalDate](
@@ -253,7 +253,7 @@ object EnterYourDetailsDto {
           case (x, y) if(x.isEmpty && y.isEmpty) => Valid
           case (x, y) if(!x.isEmpty && y.isEmpty) => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
           case (x, y) if(x.isEmpty && !y.isEmpty) => Invalid(ValidationError(s"error.required.emailAddress.email"))
-          case (x, y) if ((!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern) ))=>
+          case (x, y) if (!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern)) =>
             Invalid(s"error.format.emailAddress", emailAddressPattern)
           case (x, y) if( x != y) =>
             Invalid(ValidationError(s"error.required.emailAddress.no_match"))
@@ -273,8 +273,8 @@ object EnterYourDetailsDto {
       )(Identification.apply)(Identification.unapply)
         .verifying(verifyIdentificationNumberConstraint(telephoneNumberPattern)),
       "emailAddress" -> mapping(
-        "email" -> text,
-        "confirmEmail" -> text
+        "email" -> text.verifying(maxLength(132, "email")),
+        "confirmEmail" -> text.verifying(maxLength(132, "email"))
       )(EmailAddress.apply)(EmailAddress.unapply)
         .verifying(emailAddressMatchConstraint()),
       "placeOfArrival" -> mapping(
