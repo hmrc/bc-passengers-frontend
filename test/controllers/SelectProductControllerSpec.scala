@@ -144,7 +144,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/carpets-fabric")).get
 
       status(result) shouldBe OK
-      h1 shouldBe "What items of carpet or fabric are you bringing into the UK?"
+      h1 shouldBe "What items of carpet or fabric do you want to add?"
       forAll(List("carpets", "fabrics")) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
