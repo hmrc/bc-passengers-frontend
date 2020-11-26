@@ -865,6 +865,8 @@ head.error.required.emailAddress.confirmEmail = Confirm your email address
 error.required.emailAddress.confirmEmail = Confirm your email address
 head.error.required.emailAddress.no_match = The email addresses you entered do not match. Enter your correct email address.
 error.required.emailAddress.no_match = The email addresses you entered do not match. Enter your correct email address.
+error.max-length.email = Email address must be 132 characters or less
+head.error.max-length.email = Email address must be 132 characters or less
 head.error.telephone_number.format = Enter your selected identification number in the correct format
 error.telephone_number.format = Enter your selected identification number in the correct format
 
@@ -1640,4 +1642,3 @@ label.declaration.fifth_message = If you have additional goods to declare, go to
 label.declaration.sixth_message = If you need to remove goods from your declaration
 label.declaration.seventh_message = From February 2021, you will be able to use the online service to add goods to an existing declaration.
 text.read_more_about_refunds = visit GOV.UK to request a refund.
-

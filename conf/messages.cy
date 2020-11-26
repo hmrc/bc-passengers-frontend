@@ -865,6 +865,8 @@ head.error.required.emailAddress.confirmEmail = Cadarnhau’ch cyfeiriad e-bost
 error.required.emailAddress.confirmEmail = Cadarnhau’ch cyfeiriad e-bost
 head.error.required.emailAddress.no_match = Nid yw’r cyfeiriadau e-bost a nodwyd gennych yn cyd-fynd â’i gilydd. Nodwch eich cyfeiriad e-bost cywir.
 error.required.emailAddress.no_match = Nid yw’r cyfeiriadau e-bost a nodwyd gennych yn cyd-fynd â’i gilydd. Nodwch eich cyfeiriad e-bost cywir.
+error.max-length.email = (W)Email address must be 132 characters or less(W)
+head.error.max-length.email = (W)Email address must be 132 characters or less(W)
 head.error.telephone_number.format = Nodwch eich rhif adnabod dethol yn y fformat cywir
 error.telephone_number.format = Nodwch eich rhif adnabod dethol yn y fformat cywir
 
@@ -1640,4 +1642,3 @@ label.declaration.fifth_message = Os oes gennych nwyddau ychwanegol i’w datgan
 label.declaration.sixth_message = Os oes angen i chi dynnu nwyddau o’ch datganiad,
 label.declaration.seventh_message = O fis Chwefror 2021 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth ar-lein i ychwanegu nwyddau at ddatganiad sy’n bodoli eisoes.
 text.read_more_about_refunds = ewch GOV.UK i ofyn am ad-daliad
-
