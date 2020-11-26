@@ -95,7 +95,14 @@ class DeclarationService @Inject()(
 
     val personalDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("firstName" -> o.firstName, "lastName" -> o.lastName))
 
-    val contactDetails = Json.toJson(userInformation)((o: UserInformation) => Json.obj("emailAddress" -> o.emailAddress))
+    val contactDetails: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
+
+      if(o.emailAddress.nonEmpty) {
+        Json.obj("emailAddress" -> o.emailAddress)
+      } else {
+        Json.obj()
+      }
+    })
 
     val declarationHeader: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
 

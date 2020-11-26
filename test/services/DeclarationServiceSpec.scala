@@ -893,7 +893,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isUKResident = Some(true)
       )
 
-      val userInformation: UserInformation = UserInformation("Harry", "Potter","telephone", "7417532125", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
+      val userInformation: UserInformation = UserInformation("Harry", "Potter","telephone", "7417532125", "", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
         alcohol = None,
@@ -939,7 +939,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           "requestDetail" -> Json.obj(
             "customerReference" -> Json.obj("idType" -> "telephone", "idValue" -> "XPASSID7417532125", "ukResident" -> true),
             "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
-            "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
+            "contactDetails" -> Json.obj(),
             "declarationHeader" -> Json.obj("portOfEntry" -> "LHR", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "08:02", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "Great Britain", "onwardTravelGBNI" -> "NI", "uccRelief" -> false, "ukVATPaid" -> true, "ukExcisePaid" -> false),
             "declarationTobacco" -> Json.obj(
               "totalExciseTobacco" -> "100.54",
