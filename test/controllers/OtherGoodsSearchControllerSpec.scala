@@ -41,7 +41,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    val requiredJourneyData = JourneyData(
+    val requiredJourneyData: JourneyData = JourneyData(
       Some("nonEuOnly"),
       arrivingNICheck = Some(true),
       isVatResClaimed = None,
@@ -49,6 +49,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       bringingOverAllowance = Some(true),
       privateCraft = Some(false),
       ageOver17 = Some(true),
+      selectedAliases = List(ProductAlias("label.gold", ProductPath("other-goods/jewellery"))),
       purchasedProductInstances = List(PurchasedProductInstance(
         ProductPath("other-goods/books"),
         "iid0",
@@ -80,10 +81,6 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
   "Calling clearAndSearchGoods" should {
 
     "Clear the contents of selectedAliases then redirect to searchGoods" in new LocalSetup {
-
-      override lazy val cachedJourneyData = Some(requiredJourneyData.copy(selectedAliases = List(
-        ProductAlias("label.gold", ProductPath("other-goods/jewellery"))
-      )))
 
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/other-goods/add-new")).get
 
@@ -140,6 +137,14 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")
     }
 
+    "Return BAD_REQUEST when action=continue and an no goods are added" in new LocalSetup {
+      override lazy val cachedJourneyData = Some(requiredJourneyData.copy(selectedAliases = Nil))
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/other-goods/add").withFormUrlEncodedBody(
+        "action" -> "continue"
+      )).get
+
+      status(result) shouldBe BAD_REQUEST
+    }
 
     "Return BAD_REQUEST when action=add and an invalid searchTerm is supplied" in new LocalSetup {
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/other-goods/add").withFormUrlEncodedBody(
@@ -167,9 +172,9 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
-    "Return BAD_REQUEST when remove=astring" in new LocalSetup {
+    "Return BAD_REQUEST when remove=string" in new LocalSetup {
       val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/other-goods/add").withFormUrlEncodedBody(
-        "remove" -> "astring"
+        "remove" -> "string"
       )).get
 
       status(result) shouldBe BAD_REQUEST

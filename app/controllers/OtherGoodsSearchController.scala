@@ -44,10 +44,10 @@ class OtherGoodsSearchController @Inject()(
           val data = for(t <- List("searchTerm", "remove", "action")) yield body.get(t).map(_.mkString).mkString
           data.exists(t => !t.isEmpty)
         }
-      }).verifying("error.other_goods_search", _.fold(true) { term =>
-          !otherGoodsSearchItems.filter(_.name == term).isEmpty
+      }).verifying("error.other_goods_search", _.fold(context.getJourneyData.selectedAliases.nonEmpty) { term =>
+          otherGoodsSearchItems.exists(_.name == term)
         }
-      ).transform[Option[OtherGoodsSearchItem]](_.flatMap(term => otherGoodsSearchItems.filter(_.name == term).headOption), _.map(_.name)),
+      ).transform[Option[OtherGoodsSearchItem]](_.flatMap(term => otherGoodsSearchItems.find(_.name == term)), _.map(_.name)),
       "remove" -> optional(number),
       "action" -> optional(text).verifying("error.add", _ match {
         case Some("add") =>
@@ -87,36 +87,32 @@ class OtherGoodsSearchController @Inject()(
           BadRequest(other_goods_search(formWithErrors, otherGoodsSearchItems, context.getJourneyData.selectedAliases))
         }
       },
-      otherGoodsSearchDto =>  {
+      {
+        case OtherGoodsSearchDto(_, Some(removeIndex), _) =>
 
-        otherGoodsSearchDto match {
+          val updatedJourneyData = context.getJourneyData.copy(selectedAliases = context.getJourneyData.selectedAliases.patch(removeIndex, Nil, 1))
 
-          case OtherGoodsSearchDto(_, Some(removeIndex), _) =>
+          cache.storeJourneyData(updatedJourneyData) map { _ =>
+            Redirect(controllers.routes.OtherGoodsSearchController.searchGoods())
+          }
 
-            val updatedJourneyData = context.getJourneyData.copy(selectedAliases = context.getJourneyData.selectedAliases.patch(removeIndex, Nil, 1))
+        case OtherGoodsSearchDto(_, _, Some("continue")) =>
 
-            cache.storeJourneyData(updatedJourneyData) map { _ =>
-              Redirect(controllers.routes.OtherGoodsSearchController.searchGoods())
-            }
+          Future.successful {
+            Redirect(routes.SelectProductController.nextStep())
+          }
 
-          case OtherGoodsSearchDto(_, _, Some("continue")) =>
+        case OtherGoodsSearchDto(Some(otherGoodsSearchItem), _, _) =>
 
-            Future.successful {
-              Redirect(routes.SelectProductController.nextStep())
-            }
+          val productAlias = ProductAlias(otherGoodsSearchItem.name, otherGoodsSearchItem.path)
 
-          case OtherGoodsSearchDto(Some(otherGoodsSearchItem), _, _) =>
+          val updatedJourneyData = context.getJourneyData.copy(selectedAliases = (context.getJourneyData.selectedAliases :+ productAlias).take(appConfig.maxOtherGoods))
 
-            val productAlias = ProductAlias(otherGoodsSearchItem.name, otherGoodsSearchItem.path)
+          cache.storeJourneyData(updatedJourneyData) map { _ =>
 
-            val updatedJourneyData = context.getJourneyData.copy(selectedAliases = (context.getJourneyData.selectedAliases :+ productAlias).take(appConfig.maxOtherGoods))
+            Redirect(controllers.routes.OtherGoodsSearchController.searchGoods())
+          }
 
-            cache.storeJourneyData(updatedJourneyData) map { _ =>
-
-              Redirect(controllers.routes.OtherGoodsSearchController.searchGoods())
-            }
-
-        }
       }
     )
   }
