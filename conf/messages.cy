@@ -162,7 +162,7 @@ label.add_purchases_separately_=Ychwanegwch nwyddau ar wahân os gwnaethoch eu p
 select_products.heading.alcohol=Pa fath o alcohol rydych am ei ychwanegu?
 select_products.heading.alcohol.cider=Pa fath o seidr rydych yn dod ag ef i’r DU?
 select_products.heading.tobacco= Pa fath o dybaco rydych am ei ychwanegu?
-select_products.heading.other-goods=Pa ddillad neu esgidiau i oedolion rydych am eu hychwanegu?
+select_products.heading.other-goods=Pa fath o nwyddau eraill rydych am eu hychwanegu?
 select_products.heading.other-goods.adult=Pa ddillad neu esgidiau i oedolion rydych yn dod â nhw i’r DU?
 select_products.heading.other-goods.carpets-fabric=Pa eitemau o garped neu ffabrig rydych yn dod â nhw i’r DU?
 select_products.heading.other-goods.childrens=Pa ddillad neu esgidiau i blant rydych yn dod â nhw i’r DU?
@@ -283,7 +283,7 @@ label.you_can=Gallwch wneud y canlynol:
 label.go_back_and_change_the_items_value=mynd yn ôl a newid gwerth yr eitem
 label.go_to_the_red_channel_=mynd i’r sianel goch neu’r ffôn pwynt coch, neu siarad â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 
-label.what_other_goods_are_= Pa fath o nwyddau eraill rydych am eu hychwanegu?
+label.what_other_goods_are_= Pa nwyddau eraill rydych am eu hychwanegu?
 label.add_your_goods= Ychwanegu’ch nwyddau
 label.if_there_are_no_search_results_ = Os nad oes canlyniadau chwilio ar gyfer y nwyddau rydych am eu hychwanegu
 label.search_through_our_lists_and = Chwiliwch drwy ein rhestri a

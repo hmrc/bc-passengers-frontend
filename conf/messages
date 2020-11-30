@@ -283,9 +283,9 @@ label.you_can=You can:
 label.go_back_and_change_the_items_value=go back and change the item’s value
 label.go_to_the_red_channel_=go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
-label.what_other_goods_are_= What type of other goods do you want to add?
-label.add_your_goods= Add your goods
-label.if_there_are_no_search_results_ = If there are no search results for the goods you are bringing into the UK
+label.what_other_goods_are_= What other goods do you want to add?
+label.add_your_goods= Enter your goods
+label.if_there_are_no_search_results_ = If there are no search results for the goods you want to add
 label.search_through_our_lists_and = Search through our lists and
 label.categorise_your_goods_yourself= categorise your goods yourself.
 head.error.required.search_for_goods = Enter your other goods
