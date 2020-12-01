@@ -44,7 +44,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
   }
   "loadUKVatPaidPage" should {
     "load the page" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-check")).get
       status(result) shouldBe OK
 
@@ -55,7 +55,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"),Some(true),Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"),Some(true),Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-check")).get
       status(result) shouldBe OK
 
@@ -78,7 +78,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
     "redirect to .../gb-ni-excise-check when user says they have only arrived from GB and going to NI and has answered if they paid UK VAT" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKVatPaid(any())(any())(any())) thenReturn cachedJourneyData
@@ -94,7 +94,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
     "return a bad request when user selects an invalid value" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), Some(true),Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), Some(true),Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 

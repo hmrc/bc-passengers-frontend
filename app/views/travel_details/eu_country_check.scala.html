@@ -4,12 +4,12 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(f: Form[EuCountryCheckDto])(implicit request: Request[_], messages: Messages)
+@(f: Form[EuCountryCheckDto],backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util.prefixErrorMessage
 
 
-@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_goods_from_"), f.hasErrors), timeout = false) {
+@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_goods_from_"), f.hasErrors), timeout = false, backLink = backLink ) {
 
   @views.html.tags.errors(f)
 

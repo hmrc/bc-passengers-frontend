@@ -248,4 +248,22 @@ class TravelDetailsService @Inject() (
         Future.successful( journeyData )
     }
   }
+
+  def storePrevDeclaration(journeyData: Option[JourneyData])(prevDeclaration: Boolean)
+                    (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+
+    journeyData match {
+      case Some(journeyData) if !journeyData.prevDeclaration.contains(prevDeclaration) =>
+
+        cache.storeJourneyData(journeyData.copy(
+          prevDeclaration = Some(prevDeclaration)
+        ))
+
+      case None =>
+        cache.storeJourneyData( JourneyData(prevDeclaration = Some(prevDeclaration)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
 }

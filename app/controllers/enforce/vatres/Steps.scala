@@ -7,7 +7,7 @@ package controllers.enforce.vatres
 
 import controllers.enforce.JourneyStep
 
-case object WhereGoodsBoughtStep extends JourneyStep(Nil, _ => _ => true)
+case object WhereGoodsBoughtStep extends JourneyStep(preceeding = List(PreviousDeclarationStep), predicate = _ => _.flatMap(_.prevDeclaration).isDefined)
 
 case object DidYouClaimTaxBackEuOnlyStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("euOnly") && x.flatMap(_.arrivingNICheck).isDefined)
 
@@ -49,3 +49,5 @@ case object noNeedToUseServiceGbniStep extends JourneyStep(preceeding = List(UKR
 case object PrivateCraftStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)
 
 case object ZeroDeclarationStep extends JourneyStep(preceeding = List(DashboardStep), predicate = _ => _.flatMap(_.userInformation).isDefined)
+
+case object PreviousDeclarationStep extends JourneyStep(Nil, _ => _ => true)

@@ -35,7 +35,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
     def journeyDataInCache: Option[JourneyData]
 
-    lazy val selectProductService = {
+    lazy val selectProductService: SelectProductService = {
       val service = app.injector.instanceOf[SelectProductService]
       val mock = service.cache
       when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
@@ -43,7 +43,7 @@ class SelectProductServiceSpec extends BaseSpec {
       service
     }
 
-    lazy val cacheMock = selectProductService.cache
+    lazy val cacheMock: Cache = selectProductService.cache
 
   }
 
@@ -51,22 +51,22 @@ class SelectProductServiceSpec extends BaseSpec {
 
     "add selected products setting in keystore when journey data does exist there currently" in new LocalSetup {
 
-      override val journeyDataInCache = Some( JourneyData(Some("euOnly"), Some(false),Some(false),Some(false),Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(true), Nil) )
+      override val journeyDataInCache: Option[JourneyData] = Some( JourneyData(None, Some("euOnly"), Some(false),Some(false),Some(false),Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(true), Nil) )
 
-      var selectedAliases = List(
+      val selectedAliases = List(
         ProductAlias("Cigarettes", ProductPath("tobacco/cigarettes")),
         ProductAlias("Cigars", ProductPath("tobacco/cigars"))
       )
 
       await(selectProductService.addSelectedProductsAsAliases(journeyDataInCache.get, selectedAliases.map(_.productPath)))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(Some("euOnly"),Some(false), Some(false), Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(false), Some(true),
+      verify(cacheMock, times(1)).store( meq(JourneyData(None, Some("euOnly"),Some(false), Some(false), Some(false),Some(false),Some(false), Some(false), Some(false), Some(false), Some(false), Some(false), Some(true),
         List( ProductAlias("label.tobacco.cigarettes", ProductPath("tobacco/cigarettes")), ProductAlias("label.tobacco.cigars", ProductPath("tobacco/cigars")) ))) )(any())
     }
 
     "store selected products which are ProductTreeBranches at the start of the list in keystore, in the order they were sent, followed by ProductTreeLeaves" in new LocalSetup {
 
-      override val journeyDataInCache = Some(JourneyData(None, None,None, None,None,None, None, None, None, None, None, None, List()))
+      override val journeyDataInCache: Option[JourneyData] = Some(JourneyData(None, None, None,None, None,None,None, None, None, None, None, None, None, List()))
 
       val selectedProducts = List(
         ProductPath("other-goods/antiques"),
@@ -78,7 +78,7 @@ class SelectProductServiceSpec extends BaseSpec {
 
       await(selectProductService.addSelectedProductsAsAliases(journeyDataInCache.get, selectedProducts))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None,None,None,None,None,None, None, None, None, None, None, None,
+      verify(cacheMock, times(1)).store( meq(JourneyData(None,None,None,None,None,None,None, None, None, None, None, None, None,
         List(
           ProductAlias("label.other-goods.carpets-fabric", ProductPath("other-goods/carpets-fabric")),
           ProductAlias("label.other-goods.adult", ProductPath("other-goods/adult")),
@@ -94,12 +94,12 @@ class SelectProductServiceSpec extends BaseSpec {
 
     "remove the first selected product and update keystore" in new LocalSetup {
 
-      override val journeyDataInCache = Some(JourneyData(None,None,None,None,None,None, None, None, None, None, None, None,
+      override val journeyDataInCache: Option[JourneyData] = Some(JourneyData(None,None,None,None,None,None,None, None, None, None, None, None, None,
         List(ProductAlias("tobacco.cigarettes", ProductPath("tobacco/cigarettes")), ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))) ))
 
       await(selectProductService.removeSelectedAlias(journeyDataInCache.get))
 
-      verify(cacheMock, times(1)).store( meq(JourneyData(None, None,None,None,None,None,None, None, None, None, None, None,
+      verify(cacheMock, times(1)).store( meq(JourneyData(None,None, None,None,None,None,None,None, None, None, None, None, None,
         List(
           ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))
         ) ))

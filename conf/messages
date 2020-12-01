@@ -1642,3 +1642,7 @@ label.declaration.fifth_message = If you have additional goods to declare, go to
 label.declaration.sixth_message = If you need to remove goods from your declaration
 label.declaration.seventh_message = From February 2021, you will be able to use the online service to add goods to an existing declaration.
 text.read_more_about_refunds = visit GOV.UK to request a refund.
+
+heading.previous_declaration = Have you previously made a declaration for your journey?
+head.error.previous_declaration = Select yes if you have previously made a declaration for your journey
+error.previous_declaration = Select yes if you have previously made a declaration for your journey

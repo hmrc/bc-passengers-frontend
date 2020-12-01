@@ -9,6 +9,7 @@ import controllers.LocalContext
 import controllers.enforce.vatres._
 import models.JourneyData
 import org.scalatest.exceptions.TestFailedException
+import play.api.mvc.Result
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import play.api.test._
@@ -19,14 +20,14 @@ import scala.concurrent.Future
 
 class VatResJourneyEnforcerSpec extends BaseSpec {
 
-  lazy val enforcer = injected[JourneyEnforcer]
+  lazy val enforcer: JourneyEnforcer = injected[JourneyEnforcer]
 
   trait GridSetup {
 
     def journeyStep: JourneyStep
     def params: ListMap[String, List[Any]]
 
-    def res(implicit jd: JourneyData) = {
+    def res(implicit jd: JourneyData): Future[Result] = {
       lazy val context = LocalContext(FakeRequest("GET", "/"), "fake-session-id", Some(jd))
       enforcer.apply(journeyStep)(Future.successful(Ok("Ok")))(context)
     }
@@ -57,15 +58,28 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
     }
   }
 
-  "Calling VatResJourneyEnforcer.enforcePrereqs for WhereGoodsBoughtStep (Q1)" should {
+  "Calling VatResJourneyEnforcer.enforcePrereqs for PreviousDeclarationStep (Q0)" should {
 
     "pass with no journey data set" in new GridSetup {
 
-      override lazy val journeyStep = WhereGoodsBoughtStep
+      override lazy val journeyStep: JourneyStep = PreviousDeclarationStep
 
-      override lazy val params = ListMap[String, List[Any]]()
+      override lazy val params: ListMap[String, List[Any]] = ListMap[String, List[Any]]()
 
-      implicit val jd = JourneyData()
+      implicit val jd: JourneyData = JourneyData()
+      status(res) shouldBe OK
+    }
+  }
+
+  "Calling VatResJourneyEnforcer.enforcePrereqs for WhereGoodsBoughtStep (Q1)" should {
+
+    "pass if prevDeclaration  = false" in new GridSetup {
+
+      override lazy val journeyStep: JourneyStep = WhereGoodsBoughtStep
+
+      override lazy val params: ListMap[String, List[Any]] = ListMap[String, List[Any]]()
+
+      implicit val jd: JourneyData = JourneyData(prevDeclaration = Some(false))
       status(res) shouldBe OK
     }
   }
@@ -74,20 +88,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if euCountryCheck == euOnly" in new GridSetup {
 
-      override lazy val journeyStep = DidYouClaimTaxBackEuOnlyStep
+      override lazy val journeyStep: JourneyStep = DidYouClaimTaxBackEuOnlyStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String],arrivingNICheck: Option[Boolean]) =>
+        case List(prevDeclaration: Option[Boolean],euCountryCheck: Option[String],arrivingNICheck: Option[Boolean]) =>
 
-          implicit val jd = JourneyData(euCountryCheck,arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclaration,euCountryCheck,arrivingNICheck)
 
-          if (jd == JourneyData(Some("euOnly"),Some(true)) || jd == JourneyData(Some("euOnly"), Some(false)))
+          if (jd == JourneyData(Some(false),  Some("euOnly"),Some(true)) || jd == JourneyData(Some(false), Some("euOnly"), Some(false)))
             status(res) shouldBe OK
           else
             status(res) shouldBe SEE_OTHER
@@ -99,20 +114,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if euCountryCheck == nonEuOnly or greatBritain" in new GridSetup {
 
-      override lazy val journeyStep = GoodsBoughtIntoNIStep
+      override lazy val journeyStep: JourneyStep = GoodsBoughtIntoNIStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("greatBritain"), None),
-          "arrivingNICheck" -> List(Some(true), Some(false), None)
+        "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String],arrivingNICheck: Option[Boolean]) =>
+        case List(prevDeclaration: Option[Boolean],euCountryCheck: Option[String],arrivingNICheck: Option[Boolean]) =>
 
-          implicit val jd = JourneyData(euCountryCheck,arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck,arrivingNICheck)
 
-          if (jd == JourneyData(Some("nonEuOnly"),Some(true)) || jd == JourneyData(Some("greatBritain"), Some(true)))
+          if (jd == JourneyData(Some(false), Some("nonEuOnly"),Some(true)) || jd == JourneyData(Some(false), Some("greatBritain"), Some(true)))
             status(res) shouldBe OK
           else
             status(res) shouldBe SEE_OTHER
@@ -124,20 +140,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if euCountryCheck == both" in new GridSetup {
 
-      override lazy val journeyStep = DidYouClaimTaxBackBothStep
+      override lazy val journeyStep: JourneyStep = DidYouClaimTaxBackBothStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
-          "arrivingNICheck" -> List(Some(true), Some(false), None)
+        "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String],arrivingNICheck: Option[Boolean]) =>
+        case List(prevDeclaration: Option[Boolean],euCountryCheck: Option[String],arrivingNICheck: Option[Boolean]) =>
 
-          implicit val jd = JourneyData(euCountryCheck,arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclaration,euCountryCheck,arrivingNICheck)
 
-          if (jd == JourneyData(Some("both"), Some(true)) || jd == JourneyData(Some("both"), Some(false)))
+          if (jd == JourneyData(Some(false), Some("both"), Some(true)) || jd == JourneyData(Some(false), Some("both"), Some(false)))
             status(res) shouldBe OK
           else
             status(res) shouldBe SEE_OTHER
@@ -149,20 +166,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if user is coming from greatBritain and arrivingNICheck == true" in new GridSetup {
 
-      override lazy val journeyStep = UKVatPaidStep
+      override lazy val journeyStep: JourneyStep = UKVatPaidStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("greatBritain"), None),
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
+        case List(prevDeclaration: Option[Boolean], euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
 
-          implicit val jd = JourneyData(euCountryCheck, arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, arrivingNICheck)
 
-          if (jd == JourneyData(Some("greatBritain"), Some(true)))
+          if (jd == JourneyData(Some(false), Some("greatBritain"), Some(true)))
             status(res) shouldBe OK
           else
             status(res) shouldBe SEE_OTHER
@@ -174,20 +192,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if user is coming from euOnly and arrivingNICheck == true" in new GridSetup {
 
-      override lazy val journeyStep = GoodsBoughtInsideEuStep
+      override lazy val journeyStep: JourneyStep = GoodsBoughtInsideEuStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
+        case List(prevDeclaration: Option[Boolean], euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
 
-          implicit val jd = JourneyData(euCountryCheck, arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, arrivingNICheck)
 
-          if (jd == JourneyData(Some("euOnly"), Some(true)))
+          if (jd == JourneyData(Some(false), Some("euOnly"), Some(true)))
             status(res) shouldBe OK
           else
             status(res) shouldBe SEE_OTHER
@@ -199,9 +218,10 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if user is coming from a valid previous step and bringingOverAllowance == false" in new GridSetup {
 
-      override lazy val journeyStep = NoNeedToUseStep
+      override lazy val journeyStep: JourneyStep = NoNeedToUseStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "isVatResClaimed" -> List(Some(true), Some(false), None),
         "isBringingDutyFree" -> List(Some(true), Some(false), None),
@@ -210,13 +230,13 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], isVatResClaimed: Option[Boolean], isBringingDutyFree: Option[Boolean], bringingOverAllowance: Option[Boolean]) =>
+        case List(prevDeclaration: Option[Boolean], euCountryCheck: Option[String], isVatResClaimed: Option[Boolean], isBringingDutyFree: Option[Boolean], bringingOverAllowance: Option[Boolean]) =>
 
-          implicit val jd = JourneyData(euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance)
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance)
 
           jd match {
-            case JourneyData(Some("nonEuOnly"), _, _, _,_, _, _,_, Some(false), _, _, _, _, _, _, _, _, _, _, _)
-               | JourneyData(Some("euOnly"), _, _,_, _,_,Some(false), Some(true), Some(false), _, _, _, _, _, _, _, _, _, _, _) =>
+            case JourneyData(Some(false), Some("nonEuOnly"), _, _, _,_, _, _,_, Some(false), _, _, _, _, _, _, _, _, _, _, _)
+               | JourneyData(Some(false), Some("euOnly"), _, _,_, _,_,Some(false), Some(true), Some(false), _, _, _, _, _, _, _, _, _, _, _) =>
               status(res) shouldBe OK
             case _ =>
               status(res) shouldBe SEE_OTHER
@@ -229,30 +249,28 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if user is coming from a valid previous step" in new GridSetup {
 
-      override lazy val journeyStep = PrivateCraftStep
+      override lazy val journeyStep: JourneyStep = PrivateCraftStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "arrivingNICheck" -> List(Some(true), Some(false), None),
         "bringingOverAllowance" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { p =>
+      forEachInGrid(params) {
+        case List(prevDeclaration: Option[Boolean], euCountryCheck: Option[String], arrivingNICheck: Option[Boolean], bringingOverAllowance: Option[Boolean]) =>
 
-        p match {
-          case List(euCountryCheck: Option[String], arrivingNICheck: Option[Boolean], bringingOverAllowance: Option[Boolean]) =>
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, arrivingNICheck, bringingOverAllowance)
 
-            implicit val jd = JourneyData(euCountryCheck, arrivingNICheck,bringingOverAllowance)
-
-            jd match {
-              case  JourneyData(Some("euOnly"), Some(false),_,_, _, _, _,_,Some(true),  _, _, _, _, _, _, _, _, _, _, _) //Q2
-                   | JourneyData(Some("nonEuOnly"),Some(_),_, _,_, _, _,_,Some(true),  _, _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
-              =>
-                status(res) shouldBe OK
-              case _ =>
-                status(res) shouldBe SEE_OTHER
-            }
-        }
+          jd match {
+            case JourneyData(Some(false), Some("euOnly"), Some(false), _, _, _, _, _, _, Some(true), _, _, _, _, _, _, _, _, _, _, _) //Q2
+                 | JourneyData(Some(false), Some("nonEuOnly"), Some(_), _, _, _, _, _, _, Some(true), _, _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
+            =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
       }
     }
   }
@@ -261,9 +279,10 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if user is coming from PrivateCraftStep and they have answered the private craft question" in new GridSetup {
 
-      override lazy val journeyStep = Is17OrOverStep
+      override lazy val journeyStep: JourneyStep = Is17OrOverStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "isVatResClaimed" -> List(Some(true), Some(false), None),
         "isBringingDutyFree" -> List(Some(true), Some(false), None),
@@ -271,26 +290,23 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "privateCraft" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { p =>
+      forEachInGrid(params) {
+        case List(prevDeclaration: Option[Boolean], euCountryCheck: Option[String], isVatResClaimed: Option[Boolean], isBringingDutyFree: Option[Boolean], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean]) =>
 
-        p match {
-          case List(euCountryCheck: Option[String], isVatResClaimed: Option[Boolean], isBringingDutyFree: Option[Boolean], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean]) =>
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance, privateCraft)
 
-            implicit val jd = JourneyData(euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance, privateCraft)
-
-            jd match {
-              case
-                     JourneyData(Some("euOnly"),_,_,_,_,_, Some(false), Some(true), Some(false), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6, NoNeed
-                   | JourneyData(Some("nonEuOnly"),_,_,_,_, _, _,_, Some(false), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
-                   | JourneyData(Some("nonEuOnly"),_,_,_, _,_, _,_, Some(true), Some(_), _, _, _, _, _, _,_, _, _, _) //Q3
-                   | JourneyData(Some("euOnly"),_,_, _,_,_,Some(true), _, _, Some(_), _, _, _, _, _, _, _, _, _, _) //Q2
-                   | JourneyData(Some("euOnly"),_, _,_,_,_,Some(false), Some(true), Some(true), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6
-              =>
-                status(res) shouldBe OK
-              case _ =>
-                status(res) shouldBe SEE_OTHER
-            }
-        }
+          jd match {
+            case
+              JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(false), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6, NoNeed
+              | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(false), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
+              | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(true), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3
+              | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(true), _, _, Some(_), _, _, _, _, _, _, _, _, _, _) //Q2
+              | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(true), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6
+            =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
       }
     }
   }
@@ -299,9 +315,10 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
     "pass if user is coming from Is17OrOverStep and they have answered the 17 or over question" in new GridSetup {
 
-      override lazy val journeyStep = DashboardStep
+      override lazy val journeyStep: JourneyStep = DashboardStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
+        "prevDeclaration" -> List(Some(false)),
         "euCountryCheck" -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "isVatResClaimed" -> List(Some(true), Some(false), None),
         "isBringingDutyFree" -> List(Some(true), Some(false), None),
@@ -310,25 +327,22 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "ageOver17" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { p =>
+      forEachInGrid(params) {
+        case List(prevDeclaration: Option[Boolean], euCountryCheck: Option[String], isVatResClaimed: Option[Boolean], isBringingDutyFree: Option[Boolean], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean], ageOver17: Option[Boolean]) =>
 
-        p match {
-          case List(euCountryCheck: Option[String], isVatResClaimed: Option[Boolean], isBringingDutyFree: Option[Boolean], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean], ageOver17: Option[Boolean]) =>
+          implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance, privateCraft, ageOver17)
 
-            implicit val jd = JourneyData(euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance, privateCraft, ageOver17)
-
-            jd match {
-              case  JourneyData(Some("euOnly"),_,_,_,_,_, Some(false), Some(true), Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q6, NoNeed
-                   | JourneyData(Some("nonEuOnly"),_,_,_,_,_,_, _, Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q3, NoNeed
-                   | JourneyData(Some("nonEuOnly"), _,_,_,_,_, _,_, Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q3
-                   | JourneyData(Some("euOnly"),_,_,_,_, _,Some(true), _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q2
-                   | JourneyData(Some("euOnly"), _,_,_,_,_,Some(false), Some(true), Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q6
-              =>
-                status(res) shouldBe OK
-              case _ =>
-                status(res) shouldBe SEE_OTHER
-            }
-        }
+          jd match {
+            case JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q6, NoNeed
+                 | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q3, NoNeed
+                 | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q3
+                 | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(true), _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q2
+                 | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q6
+            =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
       }
     }
   }

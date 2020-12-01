@@ -72,7 +72,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
 
     "load the page" in {
       when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(DeclarationServiceSuccessResponse)
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference = Some("XJPR5768524625"), userInformation = Some(ui)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference= Some("XJPR5768524625"), userInformation = Some(ui)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
@@ -84,7 +84,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
 
     "loading the page and populate data from keyStore when place of arrival is selected" in {
       when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(DeclarationServiceSuccessResponse)
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference = Some("XJPR5768524625"), userInformation = Some(ui)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference= Some("XJPR5768524625"), userInformation = Some(ui)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
@@ -98,7 +98,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     "loading the page and populate data from keyStore when place of arrival is entered" in {
       when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(DeclarationServiceSuccessResponse)
       val userInformationMock = ui.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "Belfast Seaport")
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference = Some("XJPR5768524625"), userInformation = Some(userInformationMock)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference= Some("XJPR5768524625"), userInformation = Some(userInformationMock)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
@@ -120,7 +120,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
       when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(DeclarationServiceFailureResponse)
 
       val userInformationMock = ui.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "Belfast Seaport")
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference = Some("XJPR5768524625"), userInformation = Some(userInformationMock)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZeroTax), chargeReference = Some("XJPR5768524625"), userInformation = Some(userInformationMock)))))
       val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
 
       status(response) shouldBe INTERNAL_SERVER_ERROR

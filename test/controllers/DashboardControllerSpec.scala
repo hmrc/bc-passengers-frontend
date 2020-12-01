@@ -43,7 +43,7 @@ class DashboardControllerSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    def travelDetailsJourneyData: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
+    def travelDetailsJourneyData: JourneyData = JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
     def cachedJourneyData: Option[JourneyData]
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {

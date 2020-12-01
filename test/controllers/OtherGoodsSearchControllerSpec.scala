@@ -42,6 +42,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
   trait LocalSetup {
 
     val requiredJourneyData: JourneyData = JourneyData(
+      prevDeclaration = Some(false),
       Some("nonEuOnly"),
       arrivingNICheck = Some(true),
       isVatResClaimed = None,
@@ -63,7 +64,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[OtherGoodsDto]])
+    val formCaptor: ArgumentCaptor[Form[OtherGoodsDto]] = ArgumentCaptor.forClass(classOf[Form[OtherGoodsDto]])
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
