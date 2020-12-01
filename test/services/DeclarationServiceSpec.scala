@@ -222,6 +222,12 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     case ("acknowledgementReference", _) => None
   }
 
+  val expectedTelephoneValueSendJson: JsObject = expectedJsObj.alterFields {
+    case ("chargeReference", _) => None
+    case ("acknowledgementReference", _) => None
+    case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "telephone", "idValue" -> "XPASSID7417532125", "ukResident" -> false))
+  }
+
 
   "Calling DeclarationService.submitDeclaration" should {
 
@@ -238,14 +244,15 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST,""))
 
-      val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      val ui: UserInformation = userInformation.copy(identificationType = "telephone", identificationNumber = "7417532125")
 
-      val r: DeclarationServiceResponse = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
+      val r: DeclarationServiceResponse = declarationService.submitDeclaration(ui, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
       verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-declaration"),
-        meq(expectedSendJson), meq(Seq(
+        meq(expectedTelephoneValueSendJson), meq(Seq(
           "X-Correlation-ID" -> cid
         )))(any(), any(), any(), any())
 
@@ -258,7 +265,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR,""))
 
-      val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
       val r: DeclarationServiceResponse = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
 
@@ -279,7 +286,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn
         Future.successful(HttpResponse.apply(ACCEPTED, expectedJsObj.toString()))
 
-      val cid = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
       val r: DeclarationServiceResponse = await(declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid))
 

@@ -51,7 +51,7 @@ class AuditingToolsSpec extends BaseSpec{
       val result: ExtendedDataEvent = service.buildDeclarationSubmittedDataEvent(json)
 
       result.auditSource mustBe "bc-passengers-frontend"
-      result.auditType mustBe "passenger-declarations-submission"
+      result.auditType mustBe "PassengerDeclarations"
       result.tags("transactionName") mustBe "passenger-declarations-submission"
       result.detail mustBe Json.parse(
         """
