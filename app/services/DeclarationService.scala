@@ -15,6 +15,7 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.JodaWrites._
+import play.api.libs.json.Reads._
 import util._
 import play.api.libs.json._
 import services.http.WsAllMethods
@@ -45,7 +46,12 @@ class DeclarationService @Inject()(
 
     val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, journeyData, rd)
 
-    auditConnector.sendExtendedEvent(auditingTools.buildDeclarationSubmittedDataEvent(partialDeclarationMessage))
+    val auditDeclarationMessage = formatDeclarationMessage(userInformation.identificationType, userInformation.identificationNumber, rd)
+
+    partialDeclarationMessage.transform(auditDeclarationMessage) match {
+      case JsSuccess(auditJson, _) => auditConnector.sendExtendedEvent(auditingTools.buildDeclarationSubmittedDataEvent(auditJson))
+      case JsError(errors) => Logger.error(s"[DeclarationService][submitDeclaration] Transforming declaration message with errors : $errors")
+    }
 
     val headers = Seq(
       "X-Correlation-ID" -> correlationId
@@ -81,15 +87,15 @@ class DeclarationService @Inject()(
 
     val customerReference: JsValue = Json.toJson(userInformation)((o: UserInformation) => {
 
-      def getIdValue(idType: String, idValue: String): String = {
-        idType match {
-          case "telephone" => s"${servicesConfig.getString("declarations.telephonePrefix")}$idValue"
-          case _ => idValue
+      def getIdValue: String = {
+        o.identificationType match {
+          case "telephone" => s"${servicesConfig.getString("declarations.telephonePrefix")}${o.identificationNumber}"
+          case _ => o.identificationNumber
         }
       }
 
       Json.obj("idType" -> o.identificationType,
-        "idValue" -> getIdValue(o.identificationType, o.identificationNumber),
+        "idValue" -> getIdValue,
         "ukResident" -> getBooleanValue(journeyData.isUKResident))
     })
 
@@ -113,31 +119,31 @@ class DeclarationService @Inject()(
         }
       }
 
-      def getPlaceOfArrival(userInfo: UserInformation): String = {
-        if (userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
+      def getPlaceOfArrival: String = {
+        if (o.selectPlaceOfArrival.isEmpty) o.enterPlaceOfArrival else o.selectPlaceOfArrival
       }
 
-      def getTravellingFrom(travellingFrom: Option[String]): String = {
-        travellingFrom match {
+      def getTravellingFrom: String = {
+        journeyData.euCountryCheck match {
           case Some("euOnly") => servicesConfig.getString("declarations.euOnly")
           case Some("nonEuOnly") => servicesConfig.getString("declarations.nonEuOnly")
           case _ => servicesConfig.getString("declarations.greatBritain")
         }
       }
 
-      def getOnwardTravel(isArrivingNI: Option[Boolean]): String = {
-        isArrivingNI match {
+      def getOnwardTravel: String = {
+        journeyData.arrivingNICheck match {
           case Some(true) => ni
           case _ => gb
         }
       }
 
-      Json.obj("portOfEntry" -> getPlaceOfArrival(o),
+      Json.obj("portOfEntry" -> getPlaceOfArrival,
                       "expectedDateOfArrival" -> o.dateOfArrival,
                       "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}",
                       "messageTypes" -> Json.obj("messageType" -> servicesConfig.getString("declarations.create")),
-                      "travellingFrom" -> getTravellingFrom(journeyData.euCountryCheck),
-                      "onwardTravelGBNI" -> getOnwardTravel(journeyData.arrivingNICheck),
+                      "travellingFrom" -> getTravellingFrom,
+                      "onwardTravelGBNI" -> getOnwardTravel,
                       "uccRelief" -> getBooleanValue(journeyData.isUccRelief),
                       "ukVATPaid" -> getBooleanValue(journeyData.isUKVatPaid),
                       "ukExcisePaid" -> getBooleanValue(journeyData.isUKExcisePaid)
@@ -286,6 +292,41 @@ class DeclarationService @Inject()(
         DeclarationServiceFailureResponse
     }
   }
+
+  private def formatDeclarationMessage(idType: String, idValue: String, receiptDateTime: String): Reads[JsObject] = {
+
+    val localPath: JsPath = __ \ 'simpleDeclarationRequest
+
+    def getIdValue: String = {
+      idType match {
+        case "telephone" => s"${servicesConfig.getString("declarations.telephonePrefix")}$idValue"
+        case _ => idValue
+      }
+    }
+
+    (localPath.json
+      .copyFrom((localPath \ 'requestDetail).json.pick) andThen
+    (localPath \ 'requestCommon).json.prune andThen
+    (localPath \ 'requestDetail).json.prune) andThen
+    (localPath \ 'customerReference \ 'idType).json
+      .prune andThen
+    (localPath \ 'customerReference  \ 'idValue).json
+      .prune andThen
+    localPath.json
+      .update(
+        __.read[JsObject].map{ o => o ++ Json.obj("receiptDate" -> receiptDateTime)}
+      ) andThen
+    localPath.json
+      .update(
+        __.read[JsObject].map{ o => o ++ Json.obj("REGIME" -> "PNGR")  }
+      ) andThen
+    (localPath \ 'customerReference).json
+      .update(
+        __.read[JsObject].map{ o => o ++ Json.obj( idType -> getIdValue)  }
+      )
+
+  }
+
 }
 
 trait DeclarationServiceResponse

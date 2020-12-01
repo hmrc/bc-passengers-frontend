@@ -16,7 +16,7 @@ class AuditingTools @Inject()(
   def buildDeclarationSubmittedDataEvent(buildPartialDeclarationMessage: JsObject): ExtendedDataEvent = {
     ExtendedDataEvent(
       auditSource = appName,
-      auditType =  "passenger-declarations-submission",
+      auditType =  "PassengerDeclarations",
       tags = Map("transactionName" -> "passenger-declarations-submission"),
       detail = buildPartialDeclarationMessage
 
