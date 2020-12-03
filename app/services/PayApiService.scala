@@ -6,19 +6,17 @@
 package services
 
 
-import controllers.routes
-import javax.inject.{Inject, Singleton}
+import controllers.{LocalContext, routes}
 import models.{CalculatorResponse, ChargeReference, UserInformation}
-import org.joda.time.DateTime
-import play.api.libs.json.{JsArray, JsString, JsValue, Json}
-import play.api.Configuration
 import play.api.i18n.Messages
-import play.api.libs.json._
+import play.api.libs.json.{JsValue, Json}
+import play.api.{Configuration, Logger}
 import play.mvc.Http.Status._
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -29,55 +27,52 @@ class PayApiService @Inject()(
   servicesConfig: ServicesConfig,
   implicit val ec: ExecutionContext
 ) {
-
-
-  lazy val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
-
-  lazy val returnUrl: String = configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
-
-  lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation()
-  lazy val returnUrlCancelled: String = returnUrlFailed
-
+  lazy val tpsApiBaseUrl: String = servicesConfig.baseUrl("tps-payments-backend")
+  lazy val tpsFrontendBaseUrl: String = configuration.getOptional[String]("tps-payments-frontend.host").getOrElse("")
   lazy val backUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
+  lazy val resetUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage()
+  lazy val finishUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage()
+  lazy val callbackUrl: String =  servicesConfig.baseUrl("payments-processor") + "/payments/notifications/send-card-payments"
 
-  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier, messages: Messages, context: LocalContext
+  ): Future[PayApiServiceResponse] = {
 
-    def getPlaceOfArrival(userInfo: UserInformation) = {
-      if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
-    }
-
-    val requestBody: JsObject = Json.obj(
+    val paymentSpecificData = Json.obj(
       "chargeReference" -> chargeReference.value,
-      "taxToPayInPence" -> amountPence,
-      "dateOfArrival" -> userInformation.dateOfArrival.toDateTime(userInformation.timeOfArrival).toString("yyyy-MM-dd'T'HH:mm:ss"),
-      "passengerName" -> s"${userInformation.firstName} ${userInformation.lastName}",
-      "placeOfArrival" -> getPlaceOfArrival(userInformation),
-      "returnUrl" -> returnUrl,
-      "returnUrlFailed" -> returnUrlFailed,
-      "returnUrlCancelled" -> returnUrlCancelled,
-      "backUrl" -> backUrl,
-      "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
-        Json.obj(
-          "name" -> item.metadata.description,
-          "costInGbp" -> item.calculation.allTax,
-          "price" -> s"${item.metadata.cost} ${messages(item.metadata.currency.displayName)}",
-          "purchaseLocation" -> messages(item.metadata.country.countryName)
-        )
-      }),
-      "taxBreakdown" -> Json.obj(
-        "customsInGbp" -> calculatorResponse.calculation.customs,
-        "exciseInGbp"-> calculatorResponse.calculation.excise,
-        "vatInGbp"-> calculatorResponse.calculation.vat
-      )
+      "vat" -> calculatorResponse.calculation.vat,
+      "customs" -> calculatorResponse.calculation.customs,
+      "excise" -> calculatorResponse.calculation.excise
     )
 
-    wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/pngr/pngr/journey/start", requestBody) map { r =>
+    val payment = Json.obj(
+      "chargeReference" -> chargeReference.value,
+      "customerName" -> s"${userInformation.firstName} ${userInformation.lastName}",
+      "amount" -> calculatorResponse.calculation.allTax,
+      "taxRegimeDisplay" -> "PNGR",
+      "taxType" -> "PNGR",
+      "paymentSpecificData" -> paymentSpecificData
+    )
+
+    val navigation = Json.obj(
+      "back" -> backUrl,
+      "reset" -> resetUrl,
+      "finish" -> finishUrl,
+      "callback" -> callbackUrl
+    )
+    val json = Json.obj(
+      "pid" -> context.request.providerId,
+      "payments" -> Json.arr(payment),
+      "navigation" -> navigation
+    )
+
+    wsAllMethods.POST[JsValue, HttpResponse](s"$tpsApiBaseUrl/tps-payments-backend/tps-payments", json) map { r =>
+      Logger.debug(s"""called tps-payments-backend store with status $r.status""")
       r.status match {
-        case CREATED => PayApiServiceSuccessResponse((r.json \ "nextUrl").as[JsString].value)
+        case CREATED =>
+          PayApiServiceSuccessResponse(s"$tpsFrontendBaseUrl/tps-payments/make-payment/pngr/" + r.json.as[String])
         case _ => PayApiServiceFailureResponse
       }
     }
-
   }
 }
 
