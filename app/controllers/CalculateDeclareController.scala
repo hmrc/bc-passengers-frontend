@@ -115,7 +115,7 @@ class CalculateDeclareController @Inject()(
                     declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
                       Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
                     }
-                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt) map {
+                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse) map {
 
                     case PayApiServiceFailureResponse =>
                       InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))

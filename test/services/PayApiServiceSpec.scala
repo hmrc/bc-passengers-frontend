@@ -6,6 +6,7 @@
 package services
 
 import connectors.Cache
+import controllers.LocalContext
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
@@ -27,7 +28,7 @@ import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {
 
-  override lazy val app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -47,96 +48,35 @@ class PayApiServiceSpec extends BaseSpec {
 
   val exampleJson: JsValue = Json.parse(
     s"""{
-       |    "chargeReference": "XYPRRVWV52PVDI",
-       |    "taxToPayInPence": 9700000,
-       |    "dateOfArrival": "2018-11-12T12:20:00",
-       |    "passengerName": "Harry Potter",
-       |    "placeOfArrival": "LHR",
-       |    "returnUrl": "http://localhost:9514/feedback/passengers",
-       |    "returnUrlFailed": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/tax-due",
-       |    "returnUrlCancelled": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/tax-due",
-       |    "backUrl": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/user-information",
-       |    "items": [
-       |        {
-       |            "name": "5 litres cider",
-       |            "costInGbp": "21.00",
-       |            "price": "120.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
-       |        },
-       |        {
-       |            "name": "250 cigarettes",
-       |            "costInGbp": "244.49",
-       |            "price": "400.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
-       |        },
-       |        {
-       |            "name": "120g rolling tobacco",
-       |            "costInGbp": "198.91",
-       |            "price": "200.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
-       |        },
-       |        {
-       |            "name": "Televisions",
-       |            "costInGbp": "478.40",
-       |            "price": "1300.00 British pounds (GBP)",
-       |            "purchaseLocation": "United Kingdom of Great Britain and Northern Ireland"
-       |        }
-       |    ],
-       |    "taxBreakdown": {
-       |        "customsInGbp":"534.89",
-       |        "exciseInGbp":"102.54",
-       |        "vatInGbp":"725.03"
+       |  "pid": "somePID",
+       |  "payments": [
+       |    {
+       |      "chargeReference": "XYPRRVWV52PVDI",
+       |      "customerName": "Harry Potter",
+       |      "amount": "1362.46",
+       |      "taxRegimeDisplay": "PNGR",
+       |      "taxType": "PNGR",
+       |      "paymentSpecificData": {
+       |        "chargeReference": "XYPRRVWV52PVDI",
+       |        "vat": "725.03",
+       |        "customs": "534.89",
+       |        "excise": "102.54"
        |      }
-       |}
-    """.stripMargin)
-
-  val exampleJsonForBstArrival: JsValue = Json.parse(
-    s"""{
-       |    "chargeReference": "XYPRRVWV52PVDI",
-       |    "taxToPayInPence": 9700000,
-       |    "dateOfArrival": "2018-07-12T12:20:00",
-       |    "passengerName": "Harry Potter",
-       |    "placeOfArrival": "LHR",
-       |    "returnUrl": "http://localhost:9514/feedback/passengers",
-       |    "returnUrlFailed": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/tax-due",
-       |    "returnUrlCancelled": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/tax-due",
-       |    "backUrl": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/user-information",
-       |    "items": [
-       |        {
-       |            "name": "5 litres cider",
-       |            "costInGbp": "21.00",
-       |            "price": "120.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
-       |        },
-       |        {
-       |            "name": "250 cigarettes",
-       |            "costInGbp": "244.49",
-       |            "price": "400.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
-       |        },
-       |        {
-       |            "name": "120g rolling tobacco",
-       |            "costInGbp": "198.91",
-       |            "price": "200.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
-       |        },
-       |        {
-       |            "name": "Televisions",
-       |            "costInGbp": "478.40",
-       |            "price": "1300.00 British pounds (GBP)",
-       |            "purchaseLocation": "United Kingdom of Great Britain and Northern Ireland"
-       |        }
-       |    ],
-       |    "taxBreakdown": {
-       |        "customsInGbp":"534.89",
-       |        "exciseInGbp":"102.54",
-       |        "vatInGbp":"725.03"
-       |      }
+       |    }
+       |  ],
+       |  "navigation": {
+       |    "back": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk/user-information",
+       |    "reset": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk",
+       |    "finish": "http://localhost:9083/check-tax-on-goods-you-bring-into-the-uk",
+       |    "callback": "http://localhost:9211/payments/notifications/send-card-payments"
+       |  }
        |}
     """.stripMargin)
 
   trait LocalSetup {
     def httpResponse: HttpResponse
+    val ppi: PurchasedProductInstance = PurchasedProductInstance(ProductPath("some/item/path"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("USD"))
+    val localContext: LocalContext = LocalContext(IdentifierRequest(EnhancedFakeRequest("GET", "anything"), "somePID"), "123", Some(JourneyData(purchasedProductInstances = List(ppi))))
     val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
     val calculatorResponse: CalculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
       Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29"))), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
@@ -166,44 +106,29 @@ class PayApiServiceSpec extends BaseSpec {
 
     "return PayApiServiceFailureResponse when client returns 400" in new LocalSetup {
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
+      override lazy val httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST,"")
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse)(hc,messages,localContext))
       r shouldBe PayApiServiceFailureResponse
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://localhost:9125/tps-payments-backend/tps-payments"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return PayApiServiceFailureResponse when client returns 500" in new LocalSetup {
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
+      override lazy val httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST,"")
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse)(hc,messages,localContext))
       r shouldBe PayApiServiceFailureResponse
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://localhost:9125/tps-payments-backend/tps-payments"),meq(exampleJson),any())(any(),any(),any(),any())
     }
 
     "return a PayApiServiceSuccessResponse with a payment url when http client returns 201" in new LocalSetup {
+      val js : JsValue = Json.parse("\"tpsSessionId\"")
+      override lazy val httpResponse: HttpResponse = HttpResponse.apply(CREATED, js.toString())
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
-        Json.obj("nextUrl" -> "https://example.com")
-      ))
-
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000))
-      r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
-    }
-
-    "return a PayApiServiceSuccessResponse with a payment url when http client returns 201 (when in BST)" in new LocalSetup {
-
-      val uiWithBstArrival: UserInformation = userInformation.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "LHR", dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
-
-      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
-        Json.obj("nextUrl" -> "https://example.com")
-      ))
-
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000))
-      r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJsonForBstArrival),any())(any(),any(),any(),any())
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse)(hc,messages,localContext))
+      r shouldBe PayApiServiceSuccessResponse("http://localhost:9124/tps-payments/make-payment/pngr/tpsSessionId")
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://localhost:9125/tps-payments-backend/tps-payments"),meq(exampleJson),any())(any(),any(),any(),any())
     }
   }
 
