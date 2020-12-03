@@ -30,7 +30,7 @@ import scala.language.postfixOps
 
 class SelectProductControllerSpec extends BaseSpec {
 
-  val requiredJourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
+  val requiredJourneyData: JourneyData = JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))
 
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
@@ -46,7 +46,7 @@ class SelectProductControllerSpec extends BaseSpec {
   }
 
 
-  trait LocalSetup {
+  trait  LocalSetup {
 
     def result: Future[Result]
     def content: String = contentAsString(result)
@@ -78,13 +78,13 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "clear any selectedAliases from the Journey Data, cache it and redirect to askProductSelection with the correct path" in new LocalSetup {
 
-      val localRequiredJourneyData = requiredJourneyData.copy(selectedAliases = List(
+      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(selectedAliases = List(
         ProductAlias("alcohol.beer", ProductPath("alcohol/beer"))
       ))
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
@@ -100,7 +100,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What type of alcohol do you want to add?"
@@ -115,7 +115,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What type of tobacco do you want to add?"
@@ -130,7 +130,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What type of other goods do you want to add?"
@@ -141,7 +141,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/carpets-fabric")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/carpets-fabric")).get
 
       status(result) shouldBe OK
       h1 shouldBe "What items of carpet or fabric do you want to add?"
@@ -154,7 +154,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/invalid/path")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/invalid/path")).get
 
       status(result) shouldBe NOT_FOUND
       h1 shouldBe "Technical problem"
@@ -164,7 +164,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/beer")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/beer")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
       h1 shouldBe "Technical problem"
@@ -177,13 +177,13 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol").withFormUrlEncodedBody("value" -> "bad_value")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol").withFormUrlEncodedBody("value" -> "bad_value")).get
       status(result) shouldBe BAD_REQUEST
     }
 
     "addSelectedProducts to keystore and then redirect to nextStep given valid checkbox values" in new LocalSetup {
 
-      val localRequiredJourneyData = requiredJourneyData.copy(selectedAliases = List(
+      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(selectedAliases = List(
         ProductAlias("alcohol.beer", ProductPath("alcohol/beer")),
         ProductAlias("alcohol.cider", ProductPath("alcohol/cider")),
         ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))
@@ -191,7 +191,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol").withFormUrlEncodedBody("tokens[0]" -> "beer")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
@@ -208,20 +208,20 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("value" -> "bad_value")).get
+      override val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("value" -> "bad_value")).get
       status(result) shouldBe BAD_REQUEST
     }
 
     "addSelectedProducts to keystore and then redirect to searchGoods when the value is a ProductTreeBranch" in new LocalSetup {
 
-      override lazy val addSelectedProductsAsAliasesResult = JourneyData(selectedAliases = List(
+      override lazy val addSelectedProductsAsAliasesResult: JourneyData = JourneyData(selectedAliases = List(
         ProductAlias("label.carpets-fabric", ProductPath("other-goods/carpets-fabric"))
       ))
 
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("tokens[0]" -> "carpets-fabric")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("tokens[0]" -> "carpets-fabric")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
@@ -232,7 +232,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      val result = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("tokens[0]" -> "car-seats")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods").withFormUrlEncodedBody("tokens[0]" -> "car-seats")).get
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")
@@ -246,7 +246,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       def selectedProducts: List[ProductAlias]
 
-      lazy val response = {
+      lazy val response: Future[Result] = {
 
         import play.api.test.Helpers.route
 
@@ -263,7 +263,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "redirect to dashboard page when journeyData.selectedProducts returns an empty list" in new NextStepSetup {
 
-      override val selectedProducts = Nil
+      override val selectedProducts: List[ProductAlias] = Nil
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")

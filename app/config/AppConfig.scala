@@ -5,9 +5,6 @@
 
 package config
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
@@ -26,6 +23,7 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
   lazy val reportAProblemNonJSUrl = runMode.envPath(s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier")(other = contactHost)
 
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  lazy val declareGoodsUrl = servicesConfig.getString("external.url")
 
   lazy val maxOtherGoods: Int = runModeConfiguration.getOptional[Int]("max-other-goods-items").getOrElse(50)
   lazy val minPaymentAmount: Int = runModeConfiguration.getOptional[Int]("min-payment-amount").getOrElse(9)
@@ -34,6 +32,7 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, environment:
   // Feature Flags
   lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
   lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
+  lazy val isAmendmentsEnabled: Boolean = runModeConfiguration.get[Boolean]("features.amendments")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

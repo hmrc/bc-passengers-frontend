@@ -32,6 +32,11 @@ class BackLinkModel @Inject() (
     def call = location match {
       case "duty-free" =>
         Some(TravelDetailsController.didYouClaimTaxBack)
+      case "where-goods-bought" =>
+        if(appConfig.isAmendmentsEnabled)
+          Some(PreviousDeclarationController.loadPreviousDeclarationPage())
+        else
+          Some(appConfig.declareGoodsUrl)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>
@@ -78,6 +83,8 @@ class BackLinkModel @Inject() (
         Some(CalculateDeclareController.showCalculation())
       case "user-information" =>
         Some(CalculateDeclareController.declareYourGoods())
+      case "previous-declaration" =>
+        Some(appConfig.declareGoodsUrl)
       case _ =>
         None
     }

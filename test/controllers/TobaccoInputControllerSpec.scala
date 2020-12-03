@@ -53,6 +53,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
     def noOfSticks: Option[Int]
 
     lazy val cachedJourneyData = Some(JourneyData(
+      prevDeclaration = Some(false),
       Some("nonEuOnly"),
       arrivingNICheck = Some(true),
       isVatResClaimed = Some(true),
@@ -163,6 +164,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,
@@ -202,6 +204,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(150)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,
@@ -1018,6 +1021,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,
@@ -1049,6 +1053,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,
@@ -1080,6 +1085,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,
@@ -1111,6 +1117,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,
@@ -1142,6 +1149,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int] = Some(400)
 
       override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
         Some("nonEuOnly"),
         arrivingNICheck = Some(true),
         isVatResClaimed = None,

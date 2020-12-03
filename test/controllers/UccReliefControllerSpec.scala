@@ -44,7 +44,7 @@ class UccReliefControllerSpec extends BaseSpec {
   }
   "loadUccReliefPage" should {
     "load the page" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), Some(true), Some(true), Some(true),Some(false)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true), Some(true), Some(true),Some(false)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions")).get
       status(result) shouldBe OK
 
@@ -55,7 +55,7 @@ class UccReliefControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"),Some(true),Some(true),Some(true),Some(false),Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"),Some(true),Some(true),Some(true),Some(false),Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions")).get
       status(result) shouldBe OK
 
@@ -70,7 +70,7 @@ class UccReliefControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions")).get
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
     }
   }
 
@@ -78,7 +78,7 @@ class UccReliefControllerSpec extends BaseSpec {
 
     "return a bad request when user selects an invalid value" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), Some(true),Some(true),Some(true),Some(false))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), Some(true),Some(true),Some(true),Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 
@@ -98,7 +98,7 @@ class UccReliefControllerSpec extends BaseSpec {
 
     "redirect to .../goods-brought-into-northern-ireland when user non-UK Resident travels from GB to NI" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(true),Some(false))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(true),Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUccRelief(any())(any())(any())) thenReturn cachedJourneyData

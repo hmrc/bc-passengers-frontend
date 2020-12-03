@@ -26,9 +26,10 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    val m = injected[BackLinkModel]
+    val m: BackLinkModel = injected[BackLinkModel]
 
     def isIrishBorderQuestionEnabled: Boolean
+    def prevDeclaration: Option[Boolean] = None
     def euCountryCheck: Option[String]
     def arrivingNICheck: Option[Boolean] = None
     def isVatResClaimed: Option[Boolean]
@@ -38,22 +39,22 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
     def call: Call
 
-    lazy val journeyData = (euCountryCheck, arrivingNICheck, isVatResClaimed, isBringingDutyFree) match {
-      case (None,None, None, None) => None
-      case (euCountryCheck, arrivingNICheck, isVatResClaimed, isBringingDutyFree) =>
-        Some(JourneyData(euCountryCheck = euCountryCheck,arrivingNICheck = arrivingNICheck, isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree, bringingOverAllowance = bringingOverAllowance))
+    lazy val journeyData: Option[JourneyData] = (prevDeclaration, euCountryCheck, arrivingNICheck, isVatResClaimed, isBringingDutyFree) match {
+      case (None, None,None, None, None) => None
+      case (prevDeclaration, euCountryCheck, arrivingNICheck, isVatResClaimed, isBringingDutyFree) =>
+        Some(JourneyData(prevDeclaration = prevDeclaration, euCountryCheck = euCountryCheck,arrivingNICheck = arrivingNICheck, isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree, bringingOverAllowance = bringingOverAllowance))
     }
 
-    lazy val context = {
+    lazy val context: LocalContext = {
 
       when(injected[AppConfig].isVatResJourneyEnabled) thenReturn true
       when(injected[AppConfig].isIrishBorderQuestionEnabled) thenReturn isIrishBorderQuestionEnabled
 
-      new LocalContext(FakeRequest(call), "FAKESESSIONIN", journeyData)
+      LocalContext(FakeRequest(call), "FAKESESSIONIN", journeyData)
     }
   }
 
-  override def beforeEach = {
+  override def beforeEach: Unit = {
     reset(injected[AppConfig])
   }
 
@@ -64,14 +65,14 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "happen when on duty-free" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = TravelDetailsController.dutyFree
+      override def call: Call = TravelDetailsController.dutyFree()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.didYouClaimTaxBack.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.didYouClaimTaxBack().url)
     }
 
   }
@@ -81,53 +82,53 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "return user to no-need-to-use-this-service when euCountryCheck=both and isVatResClaimed=false and isBringingDutyFree=false and bringingOverAllowance = false" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = Some("both")
-      override val isVatResClaimed = Some(false)
-      override val isBringingDutyFree = Some(false)
-      override val bringingOverAllowance = Some(false)
+      override val euCountryCheck: Option[String] = Some("both")
+      override val isVatResClaimed: Option[Boolean] = Some(false)
+      override val isBringingDutyFree: Option[Boolean] = Some(false)
+      override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.privateTravel
+      override def call: Call = TravelDetailsController.privateTravel()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService().url)
     }
 
     "return user to no-need-to-use-this-service when euCountryCheck=both and isVatResClaimed=false and isBringingDutyFree=true and bringingOverAllowance=false" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = Some("both")
-      override val isVatResClaimed = Some(false)
-      override val isBringingDutyFree = Some(true)
-      override val bringingOverAllowance = Some(false)
+      override val euCountryCheck: Option[String] = Some("both")
+      override val isVatResClaimed: Option[Boolean] = Some(false)
+      override val isBringingDutyFree: Option[Boolean] = Some(true)
+      override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.privateTravel
+      override def call: Call = TravelDetailsController.privateTravel()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService().url)
     }
 
     "return user to goods-bought-outside-eu when euCountryCheck=nonEuOnly and bringingOverAllowance=false" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = Some("nonEuOnly")
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = Some(false)
+      override val euCountryCheck: Option[String] = Some("nonEuOnly")
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.privateTravel
+      override def call: Call = TravelDetailsController.privateTravel()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService().url)
     }
 
     "return user to no-need-to-use-this-service when euCountryCheck=euOnly and isVatResClaimed=false and bringingOverAllowance=false" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck  = Some("euOnly")
-      override val isVatResClaimed = Some(false)
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = Some(false)
+      override val euCountryCheck: Option[String] = Some("euOnly")
+      override val isVatResClaimed: Option[Boolean] = Some(false)
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.privateTravel
+      override def call: Call = TravelDetailsController.privateTravel()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService().url)
     }
   }
 
@@ -136,14 +137,14 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "return user to private-travel" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = TravelDetailsController.confirmAge
+      override def call: Call = TravelDetailsController.confirmAge()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.privateTravel.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.privateTravel().url)
     }
   }
 
@@ -152,14 +153,14 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "return user to confirm-age" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.DashboardController.showDashboard
+      override def call: Call = routes.DashboardController.showDashboard()
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge.url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge().url)
     }
   }
 
@@ -168,14 +169,14 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "return user to /tell-us" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.CalculateDeclareController.irishBorder
+      override def call: Call = routes.CalculateDeclareController.irishBorder()
 
-      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard().url)
     }
   }
 
@@ -184,41 +185,41 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "return user to /ireland-to-northern-ireland" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = true
-      override val euCountryCheck = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.CalculateDeclareController.showCalculation
+      override def call: Call = routes.CalculateDeclareController.showCalculation()
 
-      m.backLink(context) shouldBe Some(routes.CalculateDeclareController.irishBorder.url)
+      m.backLink(context) shouldBe Some(routes.CalculateDeclareController.irishBorder().url)
     }
 
     "return user to /tell-us" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.CalculateDeclareController.showCalculation
+      override def call: Call = routes.CalculateDeclareController.showCalculation()
 
-      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard().url)
     }
   }
   "Going back to where-goods-bought" should {
     "happen when on arriving-ni" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
-      override val euCountryCheck  = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = ArrivingNIController.loadArrivingNIPage
+      override def call: Call = ArrivingNIController.loadArrivingNIPage()
 
-      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
+      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought().url)
     }
   }
 
@@ -227,14 +228,14 @@ class VatResBackLinkModelSpec extends BaseSpec {
     "return user to gb-ni-uk-resident-check" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck = None
-      override val isVatResClaimed = None
-      override val isBringingDutyFree = None
-      override val bringingOverAllowance = None
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
 
       override def call: Call = TravelDetailsController.noNeedToUseServiceGbni()
 
-      m.backLink(context) shouldBe Some(UKResidentController.loadUKResidentPage.url)
+      m.backLink(context) shouldBe Some(UKResidentController.loadUKResidentPage().url)
     }
   }
 }

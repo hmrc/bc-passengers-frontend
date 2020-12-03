@@ -59,6 +59,7 @@ object JourneyData {
 }
 
 case class JourneyData(
+  prevDeclaration: Option[Boolean] = None,
   euCountryCheck: Option[String] = None,
   arrivingNICheck: Option[Boolean] = None,
   isUKVatPaid: Option[Boolean] = None,

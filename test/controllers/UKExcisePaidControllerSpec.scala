@@ -44,7 +44,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
   }
   "loadUKExcisePaidPage" should {
     "load the page" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"), Some(true), Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true), Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-excise-check")).get
       status(result) shouldBe OK
 
@@ -55,7 +55,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("greatBritain"),Some(true),Some(true),Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"),Some(true),Some(true),Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-excise-check")).get
       status(result) shouldBe OK
 
@@ -70,7 +70,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-excise-check")).get
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
     }
   }
 
@@ -78,7 +78,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
 
     "redirect to .../gb-ni-uk-resident-check when user says they have only arrived from GB and going to NI and has answered if they paid UK Excise" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"),Some(true),Some(true), Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true), Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKExcisePaid(any())(any())(any())) thenReturn cachedJourneyData
@@ -94,7 +94,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
 
     "return a bad request when user selects an invalid value" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), Some(true),Some(true),Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), Some(true),Some(true),Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 
@@ -109,7 +109,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#isUKExcisePaid]").html() shouldBe "Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco"
       doc.getElementById("isUKExcisePaid").getElementsByClass("error-message").html() shouldBe "Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco"
-      verify(mockTravelDetailService, times(0)).storeUKVatPaid(any())(any())(any())
+      verify(mockTravelDetailService, times(0)).storeUKExcisePaid(any())(any())(any())
     }
 
   }
