@@ -51,6 +51,7 @@ class CalculatorServiceSpec extends BaseSpec {
   "Calling CalculatorService.journeyDataToCalculatorRequest" should {
 
     val missingRateJourneyData = JourneyData(
+      None,
       Some("nonEuOnly"),
       None,
       None,

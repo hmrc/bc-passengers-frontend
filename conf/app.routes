@@ -2,6 +2,9 @@
 
 GET        /check-declare-goods-start-page                                             controllers.TravelDetailsController.checkDeclareGoodsStartPage
 
+GET        /previous-declaration                                                       controllers.PreviousDeclarationController.loadPreviousDeclarationPage
+POST       /previous-declaration                                                       controllers.PreviousDeclarationController.postPreviousDeclarationPage
+
 GET        /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBought
 POST       /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBoughtPost
 

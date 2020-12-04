@@ -36,7 +36,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
     .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[AppConfig].toInstance((mockAppConfig)))
+    .overrides(bind[AppConfig].toInstance(mockAppConfig))
     .build()
 
   override def beforeEach(): Unit = {
@@ -45,7 +45,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
   }
   "loadArrivingNIPage" should {
     "load the page" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("nonEuOnly")))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly")))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe OK
 
@@ -56,7 +56,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data from keyStore" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some("nonEuOnly"),Some(true)))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly"),Some(true)))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe OK
 
@@ -67,11 +67,11 @@ class ArrivingNIControllerSpec extends BaseSpec {
       doc.select("#arrivingNI-true").hasAttr("checked") shouldBe true
     }
 
-    "redirect the page" in {
+    "redirect to the start page where journey data is missing" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
     }
   }
 

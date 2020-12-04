@@ -1644,3 +1644,7 @@ label.declaration.fifth_message = Os oes gennych nwyddau ychwanegol i’w datgan
 label.declaration.sixth_message = Os oes angen i chi dynnu nwyddau o’ch datganiad,
 label.declaration.seventh_message = O fis Chwefror 2021 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth ar-lein i ychwanegu nwyddau at ddatganiad sy’n bodoli eisoes.
 text.read_more_about_refunds = ewch GOV.UK i ofyn am ad-daliad
+
+heading.previous_declaration = (W)Have you previously made a declaration for your journey?(W)
+head.error.previous_declaration = (W)Select yes if you have previously made a declaration for your journey(W)
+error.previous_declaration = (W)Select yes if you have previously made a declaration for your journey(W)

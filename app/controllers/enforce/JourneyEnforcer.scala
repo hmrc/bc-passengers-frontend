@@ -28,7 +28,7 @@ class JourneyEnforcer {
   def apply(q: JourneyStep*)(block: => Future[Result])(implicit context: LocalContext): Future[Result] = if(q.exists(_.meetsAllPrerequisites)) block else redirect
 
   def redirect(implicit context: LocalContext): Future[Result] =
-    logAndRedirect(s"Enforcer prerequisites not met for ${context.request.path}, redirecting", routes.TravelDetailsController.whereGoodsBought())
+    logAndRedirect(s"Enforcer prerequisites not met for ${context.request.path}, redirecting", routes.TravelDetailsController.newSession())
 }
 
 @Singleton
@@ -70,7 +70,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder)
 @Singleton
 class DashboardAction @Inject() (journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.DashboardStep else nonvatres.DashboardStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.DashboardStep else nonvatres.DashboardStep
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -84,7 +84,11 @@ class DashboardAction @Inject() (journeyEnforcer: JourneyEnforcer, appConfig: Ap
 @Singleton
 class WhereGoodsBoughtAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.WhereGoodsBoughtStep else nonvatres.WhereGoodsBoughtStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) {
+    if(appConfig.isAmendmentsEnabled) vatres.WhereGoodsBoughtAmendmentStep else vatres.WhereGoodsBoughtStep
+  } else {
+    nonvatres.WhereGoodsBoughtStep
+  }
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -96,7 +100,7 @@ class WhereGoodsBoughtAction @Inject()(journeyEnforcer: JourneyEnforcer, appConf
 }
 
 @Singleton
-class GoodsBoughtIntoGBAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class GoodsBoughtIntoGBAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -108,7 +112,7 @@ class GoodsBoughtIntoGBAction @Inject()(journeyEnforcer: JourneyEnforcer, appCon
 }
 
 @Singleton
-class GoodsBoughtIntoNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class GoodsBoughtIntoNIAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -122,7 +126,7 @@ class GoodsBoughtIntoNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appCon
 @Singleton
 class GoodsBoughtInsideEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInsideEuStep else nonvatres.GoodsBoughtInsideEuStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.GoodsBoughtInsideEuStep else nonvatres.GoodsBoughtInsideEuStep
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -136,7 +140,7 @@ class GoodsBoughtInsideEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appC
 @Singleton
 class NoNeedToUseServiceAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.NoNeedToUseStep else nonvatres.NoNeedToUseStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.NoNeedToUseStep else nonvatres.NoNeedToUseStep
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -150,7 +154,7 @@ class NoNeedToUseServiceAction @Inject()(journeyEnforcer: JourneyEnforcer, appCo
 @Singleton
 class PrivateCraftAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.PrivateCraftStep else nonvatres.PrivateCraftStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.PrivateCraftStep else nonvatres.PrivateCraftStep
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -164,7 +168,7 @@ class PrivateCraftAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: 
 @Singleton
 class Is17OrOverAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
 
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.Is17OrOverStep else nonvatres.Is17OrOverStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.Is17OrOverStep else nonvatres.Is17OrOverStep
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -176,7 +180,7 @@ class Is17OrOverAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: Ap
 }
 
 @Singleton
-class DidYouClaimTaxBackAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class DidYouClaimTaxBackAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -188,7 +192,7 @@ class DidYouClaimTaxBackAction @Inject()(journeyEnforcer: JourneyEnforcer, appCo
 }
 
 @Singleton
-class BringingDutyFreeAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class BringingDutyFreeAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -200,7 +204,7 @@ class BringingDutyFreeAction @Inject()(journeyEnforcer: JourneyEnforcer, appConf
 }
 
 @Singleton
-class DeclareDutyFreeMixAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class DeclareDutyFreeMixAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -212,7 +216,7 @@ class DeclareDutyFreeMixAction @Inject()(journeyEnforcer: JourneyEnforcer, appCo
 }
 
 @Singleton
-class DeclareDutyFreeEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class DeclareDutyFreeEuAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -224,7 +228,7 @@ class DeclareDutyFreeEuAction @Inject()(journeyEnforcer: JourneyEnforcer, appCon
 }
 
 @Singleton
-class DeclareDutyFreeAnyAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class DeclareDutyFreeAnyAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -237,14 +241,14 @@ class DeclareDutyFreeAnyAction @Inject()(journeyEnforcer: JourneyEnforcer, appCo
 
 
 @Singleton
-class DeclareAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+class DeclareAction @Inject()(appConfig: AppConfig, publicAction: PublicAction) {
 
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
 
       if (context.journeyData.isDefined &&
-        (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) >= appConfig.minPaymentAmount && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit)) ||
+        context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) >= appConfig.minPaymentAmount && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit) ||
         (context.getJourneyData.euCountryCheck.getOrElse("") == "greatBritain" && context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) <= appConfig.paymentLimit && x.isAnyItemOverAllowance))
       ){
         block(context)
@@ -260,7 +264,7 @@ class DeclareAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppCo
 
 @Singleton
 class ArrivingNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
-  val step = if(appConfig.isVatResJourneyEnabled) vatres.ArrivingNIStep else nonvatres.ArrivingNIStep
+  val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.ArrivingNIStep else nonvatres.ArrivingNIStep
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
       journeyEnforcer(step) {
@@ -331,6 +335,22 @@ class ZeroDeclarationAction @Inject() (journeyEnforcer: JourneyEnforcer, publicA
     publicAction { implicit context =>
       journeyEnforcer(vatres.ZeroDeclarationStep) {
         block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class PreviousDeclarationAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      if (appConfig.isAmendmentsEnabled) {
+        journeyEnforcer(vatres.PreviousDeclarationStep) {
+          block(context)
+        }
+      }
+      else {
+        Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
       }
     }
   }

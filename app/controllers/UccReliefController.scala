@@ -38,7 +38,7 @@ class UccReliefController @Inject()(
   val loadUccReliefPage: Action[AnyContent] = uccReliefAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_,_,_,_,Some(isUccRelief), _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        case Some(JourneyData(_, _,_,_,_,_,Some(isUccRelief), _, _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
           Ok(isUccReliefPage(UccReliefForm.form.fill(isUccRelief), backLinkModel.backLink))
         case _ =>
           Ok(isUccReliefPage(UccReliefForm.form, backLinkModel.backLink))
