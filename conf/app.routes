@@ -1,6 +1,6 @@
 # Travel Details
 
-GET        /check-declare-goods-start-page                                             controllers.TravelDetailsController.checkDeclareGoodsStartPage
+GET        /                                                                           controllers.TravelDetailsController.newSession
 
 GET        /previous-declaration                                                       controllers.PreviousDeclarationController.loadPreviousDeclarationPage
 POST       /previous-declaration                                                       controllers.PreviousDeclarationController.postPreviousDeclarationPage
