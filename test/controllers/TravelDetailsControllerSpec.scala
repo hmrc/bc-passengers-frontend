@@ -60,22 +60,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
   }
 
 
-  "Invoking checkDeclareGoodsStartPage" should {
-
-    "return the check declare goods start page" in new LocalSetup {
-
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-declare-goods-start-page")).get
-
-      status(response) shouldBe OK
-
-      val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
-
-      doc.getElementsByTag("h1").text() shouldBe "Check tax on goods you bring into the UK"
-    }
-  }
-
-
   "calling GET .../where-goods-bought" should {
 
     "return the select eu country check page with the previous choice populated if there is one in the keystore" in new LocalSetup {
@@ -583,14 +567,14 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
 
 
-  "Calling GET .../new-session" should {
+  "Calling GET .../check-tax-on-goods-you-bring-into-the-uk" should {
 
     "redirect to where-good-bought, changing session id, keep any session data for bcpaccess when amendments feature is off" in new LocalSetup {
 
 
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
 
-      val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk/new-session").withSession("bcpaccess" -> "true")
+      val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
       val sessionId = fakeRequest.session.get("sessionId")
       val response = route(app, fakeRequest).get
 
@@ -605,7 +589,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
 
-      val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk/new-session").withSession("bcpaccess" -> "true")
+      val fakeRequest = EnhancedFakeRequest("GET","/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
       val sessionId = fakeRequest.session.get("sessionId")
 
       val response = route(app, fakeRequest).get

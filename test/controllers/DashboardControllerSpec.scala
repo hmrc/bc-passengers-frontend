@@ -65,7 +65,7 @@ class DashboardControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/new-session")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
 
       verify(controller.cache, times(1)).fetch(any())
     }

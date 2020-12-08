@@ -32,8 +32,6 @@ class TravelDetailsController @Inject() (
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
   val backLinkModel: BackLinkModel,
-
-  val check_declare_goods_start_page: views.html.travel_details.check_declare_goods_start_page,
   val eu_country_check: views.html.travel_details.eu_country_check,
   val no_need_to_use_service: views.html.travel_details.no_need_to_use_service,
   val goods_brought_into_gb: views.html.travel_details.goods_bought_inside_and_outside_eu,
@@ -77,12 +75,6 @@ class TravelDetailsController @Inject() (
         Redirect(routes.TravelDetailsController.whereGoodsBought()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
       }
     }
-  }
-
-  val checkDeclareGoodsStartPage: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(
-      Ok(check_declare_goods_start_page())
-    )
   }
 
   val whereGoodsBought: Action[AnyContent] = whereGoodsBoughtAction { implicit context =>
