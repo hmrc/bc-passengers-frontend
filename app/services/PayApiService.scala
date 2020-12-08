@@ -30,8 +30,8 @@ class PayApiService @Inject()(
   lazy val tpsApiBaseUrl: String = servicesConfig.baseUrl("tps-payments-backend")
   lazy val tpsFrontendBaseUrl: String = configuration.getOptional[String]("tps-payments-frontend.host").getOrElse("")
   lazy val backUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
-  lazy val resetUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage()
-  lazy val finishUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.TravelDetailsController.checkDeclareGoodsStartPage()
+  lazy val resetUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.TravelDetailsController.newSession()
+  lazy val finishUrl: String = configuration.getOptional[String]("bc-passengers-stride-frontend.host").getOrElse("") + routes.TravelDetailsController.newSession()
   lazy val callbackUrl: String =  servicesConfig.baseUrl("payments-processor") + "/payments/notifications/send-card-payments"
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier, messages: Messages, context: LocalContext
