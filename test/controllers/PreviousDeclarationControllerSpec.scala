@@ -21,6 +21,7 @@ import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 
 import scala.concurrent.Future
 
@@ -36,6 +37,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(bind[AppConfig].toInstance(mockAppConfig))
+    .overrides(bind[IdentifierAction].to[FakeIdentifierAction])
     .build()
 
   override def beforeEach(): Unit = {
