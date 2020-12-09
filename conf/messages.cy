@@ -858,6 +858,12 @@ error.max-length.email = (W)Email address must be 132 characters or less(W)
 head.error.max-length.email = (W)Email address must be 132 characters or less(W)
 head.error.telephone_number.format = Nodwch eich rhif adnabod dethol yn y fformat cywir
 error.telephone_number.format = Nodwch eich rhif adnabod dethol yn y fformat cywir
+head.error.first_name.valid = (W)First name must only include letters a to z, hyphens, spaces and  apostrophes(W)
+error.first_name.valid = (W)First name must only include letters a to z, hyphens, spaces and  apostrophes(W)
+head.error.last_name.valid = (W)Last name must only include letters a to z, hyphens, spaces and  apostrophes(W)
+error.last_name.valid = (W)Last name must only include letters a to z, hyphens, spaces and  apostrophes(W)
+head.error.place_of_arrival.valid = (W)Place of arrival must only include letters a to z, hyphens, spaces and  apostrophes(W)
+error.place_of_arrival.valid = (W)Place of arrival must only include letters a to z, hyphens, spaces and  apostrophes(W)
 
 label.add_more.other-goods.adult.adult-clothing=Ychwanegu rhagor o ddillad i oedolion
 label.add_more.other-goods.adult.adult-footwear=Ychwanegu rhagor o esgidiau i oedolion

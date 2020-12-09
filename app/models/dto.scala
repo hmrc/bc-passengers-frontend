@@ -173,6 +173,7 @@ case class CalculatorResponseDto(items: List[Item], calculation: Calculation, al
 object EnterYourDetailsDto {
   val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
   val emailAddressPattern = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
+  val validInputText = "^[a-zA-Z- ']+$"
 
   private def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
     text =>
@@ -246,6 +247,14 @@ object EnterYourDetailsDto {
     }
   }
 
+  private def validateFieldsRegex(errorKey: String): Constraint[String] = {
+    Constraint {
+      text =>
+        if (text.isEmpty || text.matches(validInputText)) Valid
+        else Invalid(errorKey)
+    }
+  }
+
   private def emailAddressMatchConstraint(): Constraint[EmailAddress] = {
     Constraint {
       model =>
@@ -265,8 +274,8 @@ object EnterYourDetailsDto {
 
   def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
-      "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")),
-      "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")),
+      "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")).verifying(validateFieldsRegex("error.first_name.valid")),
+      "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")).verifying(validateFieldsRegex("error.last_name.valid")),
       "identification" -> mapping(
         "identificationType" -> optional(text).verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
         "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
@@ -279,7 +288,7 @@ object EnterYourDetailsDto {
         .verifying(emailAddressMatchConstraint()),
       "placeOfArrival" -> mapping(
         "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
-        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")))
+        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")).verifying(validateFieldsRegex("error.place_of_arrival.valid")))
       )(PlaceOfArrival.apply)(PlaceOfArrival.unapply).verifying()
         .verifying(placeOfArrivalConstraint("error.required.place_of_arrival")),
       "dateTimeOfArrival" -> mapping(
