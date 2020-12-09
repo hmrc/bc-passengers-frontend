@@ -67,6 +67,34 @@ class DtoTest extends BaseSpec {
       form.error("firstName").get.message shouldBe "error.max-length.first_name"
     }
 
+    "return validation errors if the firstName contains special characters" in {
+      val formData = Map(
+        "firstName" -> "Harry$&",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("firstName").get.message shouldBe "error.first_name.valid"
+    }
+
     "allow the lastName to be any string that is 35 characters or under" in {
       val formData = Map(
         "firstName" -> "Harry",
@@ -119,6 +147,34 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
       form.error("lastName").get.message shouldBe "error.max-length.last_name"
+    }
+
+    "return validation errors if the lastName contains special characters" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter&$",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("lastName").get.message shouldBe "error.last_name.valid"
     }
 
     "allow the identificationType to be any string that is 40 characters or under" in {
@@ -578,6 +634,34 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
       form.error("placeOfArrival.enterPlaceOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
+    }
+
+    "return validation errors if the placeOfArrival.enterPlaceOfArrival contains special characters" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "",
+        "placeOfArrival.enterPlaceOfArrival" -> "Heathrow&$",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("placeOfArrival.enterPlaceOfArrival").get.message shouldBe "error.place_of_arrival.valid"
     }
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival and placeOfArrival.selectPlaceOfArrival is empty" in {

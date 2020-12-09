@@ -858,6 +858,12 @@ error.max-length.email = Email address must be 132 characters or less
 head.error.max-length.email = Email address must be 132 characters or less
 head.error.telephone_number.format = Enter your selected identification number in the correct format
 error.telephone_number.format = Enter your selected identification number in the correct format
+head.error.first_name.valid = First name must only include letters a to z, hyphens, spaces and  apostrophes
+error.first_name.valid = First name must only include letters a to z, hyphens, spaces and  apostrophes
+head.error.last_name.valid = Last name must only include letters a to z, hyphens, spaces and  apostrophes
+error.last_name.valid = Last name must only include letters a to z, hyphens, spaces and  apostrophes
+head.error.place_of_arrival.valid = Place of arrival must only include letters a to z, hyphens, spaces and  apostrophes
+error.place_of_arrival.valid = Place of arrival must only include letters a to z, hyphens, spaces and  apostrophes
 
 label.add_more.other-goods.adult.adult-clothing = Add more adult clothing
 label.add_more.other-goods.adult.adult-footwear = Add more adult footwear
