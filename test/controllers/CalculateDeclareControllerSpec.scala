@@ -189,7 +189,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
       when(injected[PayApiService].requestPaymentUrl(any(),any(), any())(any(), any(),any())) thenReturn Future.successful(payApiResponse)
       when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
-      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
+      when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DeclarationService].storeChargeReference(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
       when(injected[DateTimeProviderService].now) thenReturn dt
       when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)))

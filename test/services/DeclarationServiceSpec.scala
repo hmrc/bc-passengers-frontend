@@ -247,7 +247,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
       val ui: UserInformation = userInformation.copy(identificationType = "telephone", identificationNumber = "7417532125")
 
-      val r: DeclarationServiceResponse = declarationService.submitDeclaration(ui, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
+      val r: DeclarationServiceResponse = declarationService.submitDeclaration(ui, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid, "somePID").futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
@@ -267,7 +267,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
-      val r: DeclarationServiceResponse = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
+      val r: DeclarationServiceResponse = declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid, "SomePID").futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
@@ -288,7 +288,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
 
-      val r: DeclarationServiceResponse = await(declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid))
+      val r: DeclarationServiceResponse = await(declarationService.submitDeclaration(userInformation, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid, "somePID"))
 
       r shouldBe DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 

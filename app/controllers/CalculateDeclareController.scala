@@ -103,7 +103,7 @@ class CalculateDeclareController @Inject()(
 
           requireCalculatorResponse { calculatorResponse =>
 
-            declarationService.submitDeclaration(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
+            declarationService.submitDeclaration(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId, context.request.providerId) flatMap {
 
               case DeclarationServiceFailureResponse =>
                 Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
