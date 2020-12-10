@@ -197,10 +197,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax less than minPaymentAmount" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when tax amount is 0.00" should {
 
-    "Display the where-goods-bought page" in new LocalSetup {
-      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crBelowLimit))))
+    "Display the declare-your-goods page" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZero))))
       override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -211,11 +211,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax less than minPaymentAmount" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when tax amount is 0.00" should {
 
     "Display the where-goods-bought page" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crBelowLimit))))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZero))))
       override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
@@ -705,6 +705,33 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
       }
     }
+
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when calculator response is null and eu country check is null " should {
+
+    "Display the where-goods-bought page when tax and eu country check are null " in new LocalSetup {
+
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = None, calculatorResponse = None)))
+      override lazy val payApiResponse: PayApiServiceResponse = null
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = null
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+      status(response) shouldBe SEE_OTHER
+
+      redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought"
+    }
+
+      "Display the where-goods-bought page when calculatorResponse is null" in new LocalSetup {
+
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), calculatorResponse = None)))
+        override lazy val payApiResponse: PayApiServiceResponse = null
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = null
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+        status(response) shouldBe SEE_OTHER
+
+        redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought"
+      }
+  }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with 0 tax " should {
 
