@@ -17,6 +17,7 @@ class AuditingToolsSpec extends BaseSpec{
     val service: AuditingTools = app.injector.instanceOf[AuditingTools]
 
     val json: JsObject = Json.obj(
+      "PID" -> "somePID",
       "identificationNumber" -> "1234",
       "firstName" -> "Jack",
       "lastName" -> "Jill",
@@ -56,7 +57,8 @@ class AuditingToolsSpec extends BaseSpec{
       result.detail mustBe Json.parse(
         """
           |{
-          |  "identificationNumber" : "1234",
+          |      "PID" : "somePID",
+          |      "identificationNumber" : "1234",
           |      "firstName" : "Jack",
           |      "lastName" : "Jill",
           |      "emailaddress" : "jackjill@myemail.com",

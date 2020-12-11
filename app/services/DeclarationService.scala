@@ -40,13 +40,13 @@ class DeclarationService @Inject()(
   lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 
 
-  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
+  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String, providerId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
     val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, journeyData, rd)
 
-    val auditDeclarationMessage = formatDeclarationMessage(userInformation.identificationType, userInformation.identificationNumber, rd)
+    val auditDeclarationMessage = formatDeclarationMessage(userInformation.identificationType, userInformation.identificationNumber, rd, providerId)
 
     partialDeclarationMessage.transform(auditDeclarationMessage) match {
       case JsSuccess(auditJson, _) => auditConnector.sendExtendedEvent(auditingTools.buildDeclarationSubmittedDataEvent(auditJson))
@@ -293,7 +293,7 @@ class DeclarationService @Inject()(
     }
   }
 
-  private def formatDeclarationMessage(idType: String, idValue: String, receiptDateTime: String): Reads[JsObject] = {
+  private def formatDeclarationMessage(idType: String, idValue: String, receiptDateTime: String, providerId: String): Reads[JsObject] = {
 
     val localPath: JsPath = __ \ 'simpleDeclarationRequest
 
@@ -319,6 +319,10 @@ class DeclarationService @Inject()(
     localPath.json
       .update(
         __.read[JsObject].map{ o => o ++ Json.obj("REGIME" -> "PNGR")  }
+      ) andThen
+    localPath.json
+      .update(
+        __.read[JsObject].map{ o => o ++ Json.obj("PID" -> providerId)  }
       ) andThen
     (localPath \ 'customerReference).json
       .update(
