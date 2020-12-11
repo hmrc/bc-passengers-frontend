@@ -63,7 +63,7 @@ class CalculateDeclareController @Inject()(
 
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
-      calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax <= appConfig.minPaymentAmount
+      calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax == 0
     }
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
@@ -111,7 +111,7 @@ class CalculateDeclareController @Inject()(
               case DeclarationServiceSuccessResponse(cr) =>
 
                 BigDecimal(calculatorResponse.calculation.allTax) match {
-                  case allTax if allTax <= appConfig.minPaymentAmount  && context.getJourneyData.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance =>
+                  case allTax if allTax == 0  && context.getJourneyData.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance =>
                     declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
                       Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
                     }
@@ -191,7 +191,7 @@ class CalculateDeclareController @Inject()(
 
     def checkZeroPoundCondition(calculatorResponse:CalculatorResponse):Boolean = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
-     calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax <= appConfig.minPaymentAmount
+     calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax == 0
     }
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
@@ -202,7 +202,7 @@ class CalculateDeclareController @Inject()(
           case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
-          case allTax if allTax > 0 && allTax < appConfig.minPaymentAmount || allTax == 0 && !calculatorResponse.withinFreeAllowance =>
+          case allTax if allTax == 0 && !calculatorResponse.withinFreeAllowance =>
             Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
           case allTax if allTax > appConfig.paymentLimit  =>
