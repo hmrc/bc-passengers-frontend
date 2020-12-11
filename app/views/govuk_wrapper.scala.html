@@ -4,7 +4,7 @@
  *@
 
 @this(appConfig: config.AppConfig,
-  layoutHead: uk.gov.hmrc.play.views.html.layouts.Head,
+  layoutHead: uk.gov.hmrc.play.views.html.layouts.HeadWithTrackingConsent,
   layoutHeaderNav: uk.gov.hmrc.play.views.html.layouts.HeaderNav,
   layoutFooter: uk.gov.hmrc.play.views.html.layouts.Footer,
   layoutBetaBanner: uk.gov.hmrc.play.views.html.layouts.BetaBanner,
@@ -29,20 +29,6 @@
 )(implicit request: Request[_], messages: Messages)
 
 @head = {
-  @if(appConfig.googleTagManagerId != "N/A") {
-    <script src="@routes.Assets.versioned("javascripts/gtm.js")"></script>
-
-    <script>
-      window.dataLayer = window.dataLayer || []
-      window.dataLayer.push(
-        {
-          'Session id (cd67)': '@request.session.get("sessionId")',
-          'Timestamp (cd68)': (new Date()).getTime()
-        }
-      );
-    </script>
-  }
-
   @layoutHead(
     linkElem = linkElem,
     headScripts = None)
@@ -62,14 +48,7 @@
       navLinks = None)
 }
 
-@afterHeader = {
-  @if(appConfig.googleTagManagerId != "N/A") {
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@appConfig.googleTagManagerId" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-  }
-
-}
+@afterHeader = {}
 
 @bodyEnd = {
     @layoutFooter(
