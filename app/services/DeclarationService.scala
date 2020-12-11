@@ -320,10 +320,10 @@ class DeclarationService @Inject()(
       .update(
         __.read[JsObject].map{ o => o ++ Json.obj("REGIME" -> "PNGR")  }
       ) andThen
-      localPath.json
-        .update(
-          __.read[JsObject].map{ o => o ++ Json.obj("PID" -> providerId)  }
-        ) andThen
+    localPath.json
+      .update(
+        __.read[JsObject].map{ o => o ++ Json.obj("PID" -> providerId)  }
+      ) andThen
     (localPath \ 'customerReference).json
       .update(
         __.read[JsObject].map{ o => o ++ Json.obj( idType -> getIdValue)  }
