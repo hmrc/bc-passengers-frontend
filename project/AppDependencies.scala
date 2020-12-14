@@ -8,11 +8,11 @@ object AppDependencies {
   val compile = Seq(
     "uk.gov.hmrc" %% "simple-reactivemongo" % "7.30.0-play-26",
     "uk.gov.hmrc" %% "govuk-template" % "5.58.0-play-26",
-    "uk.gov.hmrc" %% "play-ui" % "8.13.0-play-26",
+    "uk.gov.hmrc" %% "play-ui" % "8.18.0-play-26",
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "2.0.0",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "2.2.0",
     "com.typesafe.play" %% "play-json-joda" % "2.6.14",
-    "uk.gov.hmrc" %% "play-language" % "4.4.0-play-26",
+    "uk.gov.hmrc" %% "play-language" % "4.5.0-play-26",
     "org.mindrot" % "jbcrypt" % "0.4",
     "org.webjars.npm" % "accessible-autocomplete" % "2.0.3"
   )
