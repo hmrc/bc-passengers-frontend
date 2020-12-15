@@ -17,7 +17,9 @@
 @form(action = routes.UKExcisePaidController.postUKExcisePaidPage()){
 
 <fieldset>
-    <h1 class="heading-xlarge">@messages("heading.is_uk_excise_paid")</h1>
+    <legend>
+        <h1 class="heading-xlarge">@messages("heading.is_uk_excise_paid")</h1>
+    </legend>
     <p>@messages("text.excise_duty_will_usually")
         <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a></p>
 
