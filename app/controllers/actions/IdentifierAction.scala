@@ -12,6 +12,7 @@ import models.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
+import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -37,7 +38,7 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(Enrolment(appConfig.role)).retrieve(credentials) {
+    authorised(AuthProviders(PrivilegedApplication) and Enrolment(appConfig.role)).retrieve(credentials) {
       case Some(Credentials(providerId, _)) =>
         block(IdentifierRequest(request, providerId))
       case None =>
@@ -49,7 +50,7 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
         toStrideLogin(appConfig.loginContinueUrl)
       case _: AuthorisationException =>
         Logger.warn("[IdentifierAction][invokeBlock] Unauthorised user")
-        Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.unauthorisedUrl)))
+        Redirect(routes.UnauthorisedController.show())
     }
   }
 }
