@@ -203,6 +203,7 @@ object EnterYourDetailsDto {
     .verifying("error.only_whole_numbers", dateString => dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit))
     .transform[(String, String, String)](identity, identity)
     .verifying("error.year_length", dateString => dateString._3.length == 4)
+    .verifying("error.enter_a_real_date", dateString => dateString._2.length >= 1 && dateString._2.length <= 2 && dateString._1.length >=1 && dateString._1.length <= 2)
     .transform[(Int, Int, Int)](dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt), dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString))
     .verifying("error.enter_a_real_date", dateInt => Try(new LocalDate(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess)
     .transform[LocalDate](
@@ -218,6 +219,7 @@ object EnterYourDetailsDto {
       timeString => (Some(timeString._1), Some(timeString._2), Some(timeString._3))
     )
     .verifying("error.enter_a_real_time", timeString => timeString._1.forall(_.isDigit) && timeString._2.forall(_.isDigit))
+    .verifying("error.enter_a_real_time", timeString => timeString._1.length >=1 && timeString._1.length <= 2 && timeString._2.length >=1 && timeString._2.length <= 2)
     .transform[(Int, Int, String)](
       timeString => (timeString._1.toInt, timeString._2.toInt, timeString._3),
       time => (time._1.toString, time._2.toString, time._3)
@@ -231,7 +233,7 @@ object EnterYourDetailsDto {
 
   private def placeOfArrivalConstraint(message: String): Constraint[PlaceOfArrival] = Constraint {
     model => (model.selectPlaceOfArrival, model.enterPlaceOfArrival) match {
-      case (x, y) if(x.isEmpty && y.isEmpty) => Invalid(message, "selectPlaceOfArrival")
+      case (x, y) if x.isEmpty && y.isEmpty => Invalid(message, "selectPlaceOfArrival")
       case _ => Valid
     }
   }
@@ -240,8 +242,8 @@ object EnterYourDetailsDto {
     Constraint {
       model =>
         (model.identificationType, model.identificationNumber) match {
-          case (x, y) if (!x.contains("telephone") && !y.isEmpty) => Valid
-          case (x, y) if (x.contains("telephone") && y.matches(pattern)  ) => Valid
+          case (x, y) if !x.contains("telephone") && !y.isEmpty => Valid
+          case (x, y) if x.contains("telephone") && y.matches(pattern)   => Valid
           case _ => Invalid(ValidationError(s"error.telephone_number.format"))
         }
     }
@@ -259,12 +261,12 @@ object EnterYourDetailsDto {
     Constraint {
       model =>
         (model.email, model.confirmEmail) match {
-          case (x, y) if(x.isEmpty && y.isEmpty) => Valid
-          case (x, y) if(!x.isEmpty && y.isEmpty) => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
-          case (x, y) if(x.isEmpty && !y.isEmpty) => Invalid(ValidationError(s"error.required.emailAddress.email"))
+          case (x, y) if x.isEmpty && y.isEmpty => Valid
+          case (x, y) if !x.isEmpty && y.isEmpty => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
+          case (x, y) if x.isEmpty && !y.isEmpty => Invalid(ValidationError(s"error.required.emailAddress.email"))
           case (x, y) if (!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern)) =>
             Invalid(s"error.format.emailAddress", emailAddressPattern)
-          case (x, y) if( x != y) =>
+          case (x, y) if  x != y =>
             Invalid(ValidationError(s"error.required.emailAddress.no_match"))
           case _ => Valid
         }
