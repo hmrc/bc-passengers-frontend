@@ -719,6 +719,33 @@ class DtoTest extends BaseSpec {
       form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
     }
 
+    "return validation errors if the dateOfArrival has more than 2 characters in day and month field" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "9876543210",
+        "dateTimeOfArrival.dateOfArrival.month" -> "9876543210",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
+    }
+
 
 
     "return validation errors if the dateOfArrival is using special characters in any field" in {
@@ -1009,6 +1036,33 @@ class DtoTest extends BaseSpec {
       form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_real_time"
     }
 
+    "return a validation error if the dateTimeOfArrival.timeOfArrival has more than 2 characters" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "SX12345",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "9876543210",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "9876543210",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_real_time"
+    }
 
     "allow the timeOfArrival to be after the declaration time" in {
       val formData = Map(
