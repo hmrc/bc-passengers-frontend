@@ -48,8 +48,8 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
       case _: NoActiveSession =>
         Logger.info("[IdentifierAction][invokeBlock] No active session found - redirecting to login")
         toStrideLogin(appConfig.loginContinueUrl)
-      case _: AuthorisationException =>
-        Logger.warn("[IdentifierAction][invokeBlock] Unauthorised user")
+      case e: AuthorisationException =>
+        Logger.error(s"[IdentifierAction][invokeBlock] Unauthorised user: ${e.getMessage}")
         Redirect(routes.UnauthorisedController.show())
     }
   }
