@@ -72,7 +72,7 @@ class ProductTreeService {
                 ProductTreeLeaf("other", "label.other-goods.electronic-devices.other", "OGD/DIGI/MISC", "other-goods", Nil)
               )
             ),
-            ProductTreeLeaf("furniture", "label.other-goods.furniture", "OGD/ORN/MISC", "other-goods", Nil),
+            ProductTreeLeaf("furniture", "label.other-goods.furniture", "OGD/FURN", "other-goods", Nil),
             ProductTreeLeaf("glassware", "label.other-goods.glassware", "OGD/GLASS", "other-goods", Nil),
             ProductTreeLeaf("jewellery", "label.other-goods.jewellery","OGD/ORN/MISC","other-goods", Nil),
             ProductTreeLeaf("mobility-aids", "label.other-goods.mobility-aids", "OGD/MOB/MISC", "other-goods", Nil),
