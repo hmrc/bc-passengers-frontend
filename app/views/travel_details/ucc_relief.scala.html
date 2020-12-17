@@ -16,10 +16,8 @@
 
 @form(action = routes.UccReliefController.postUccReliefPage()){
 
-<fieldset>
-    <legend>
-        <h1 class="heading-xlarge">@messages("heading.ucc")</h1>
-    </legend>
+
+    <h1 class="heading-xlarge">@messages("heading.ucc")</h1>
 
     <p>@messages("label.ucc.first_message")</p>
 
@@ -46,20 +44,20 @@
 
     <p>@messages("label.ucc.third_message")</p>
 
-    <legend class="heading-medium">@messages("heading.ucc.all_goods_qs")</legend>
+    <fieldset>
+        <legend class="heading-medium">@messages("heading.ucc.all_goods_qs")</legend>
 
-    @components.input_radio_group(
-    uccReliefForm("isUccRelief"),
-    Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-    '_labelClass -> "block-label inputLabelBeforeError",
-    '_inline -> true
-    )
+        @components.input_radio_group(
+        uccReliefForm("isUccRelief"),
+        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+        '_labelClass -> "block-label inputLabelBeforeError",
+        '_inline -> true
+        )
 
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
-
-</fieldset>
+        <div class="form-group">
+            <button class="button" type="submit">@messages("label.continue")</button>
+        </div>
+    </fieldset>
 
 }
 
