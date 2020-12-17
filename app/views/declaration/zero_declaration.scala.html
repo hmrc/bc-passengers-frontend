@@ -21,9 +21,9 @@
      </div>
   </div>
 
-  <p>@messages("label.declaration.first_message")</p>
+  <p>@messages("label.declaration.note_reference_number")</p>
 
-  <p>@messages("label.declaration.second_message")</p>
+  <p>@messages("label.declaration.provided_email_address")</p>
 
   <table>
      <tbody>
@@ -77,7 +77,7 @@
     <tr role="row">
         <th scope="row" role="gridcell">
             <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
-            @item.metadata.description
+            @messages(item.metadata.description)
         </th>
         <td role="gridcell">
             <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
@@ -134,19 +134,28 @@
   </div>
 
 
-  <div class="panel panel-border-wide margin-top-30">@messages("label.declaration.third_message")</div>
+  <div class="panel panel-border-wide margin-top-30">@messages("label.declaration.no_tax_duty")</div>
 
   <h2 class="heading-medium">@messages("heading.what_to_do_in_uk")</h2>
 
-  <p>@messages("label.declaration.fourth_message")</p>
+  <p>@messages("label.declaration.go_to_green")</p>
 
   <h2 class="heading-medium">@messages("heading.amending_declaration")</h2>
 
-  <p>@messages("label.declaration.fifth_message")</p>
+  <p>@messages("label.declaration.use_online_service")</p>
 
-  <p>@messages("label.declaration.sixth_message")
+  <p>@messages("label.declaration.goods_to_declare")</p>
+
+  <p>@messages("label.declaration.remove_goods")
    <a href="https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt" target="_blank">@messages("text.read_more_about_refunds")</a></p>
+  <br>
 
-  <p>@messages("label.declaration.seventh_message")</p>
+  <p>
+    <a href="https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt" target="_blank">@messages("label.declaration.what_you_think_of_service")</a>
+      @messages("label.declaration.take_x_seconds")
+  </p>
+
+
+
 
 }

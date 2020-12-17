@@ -28,11 +28,11 @@
       window.GOVUK.timeoutDialog({
          timeout: 900,
          countdown: 120,
-         message: 'For your security, we will delete your answers in',
+         message: '@messages("label.timeout_message")',
          keepAliveUrl: '@routes.TravelDetailsController.keepAlive',
          signOutUrl: '@routes.PublicController.timeOut',
-         keepAliveButtonText: 'Continue declaring the goods you are bringing into the UK',
-         signOutButtonText: 'Delete your answers',
+         keepAliveButtonText: '@messages("label.keep_page_alive")',
+         signOutButtonText: '@messages("label.delete_your_answer")',
       });
     </script>
   }
