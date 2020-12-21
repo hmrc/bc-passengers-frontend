@@ -113,7 +113,6 @@ GET        /assets/*file                                                        
 
 GET        /time-out                                                                   controllers.PublicController.timeOut()
 
-GET        /accessibility-statement                                                    controllers.PublicController.accessibilityStatement()
 
 GET        /other-goods/add-new                                                        controllers.OtherGoodsSearchController.clearAndSearchGoods
 GET        /other-goods/add                                                            controllers.OtherGoodsSearchController.searchGoods

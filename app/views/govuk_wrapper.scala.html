@@ -98,7 +98,7 @@
 }
 
 @fLinks = {
-  @footerLinks(accessibilityFooterUrl = Some(controllers.routes.PublicController.accessibilityStatement().url))
+  @footerLinks()
 }
 
 @govUkTemplate(Some(title + " - Check tax on goods you bring into the UK - GOV.UK"), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, footerLinks = Some(fLinks), nav = true)(content)
