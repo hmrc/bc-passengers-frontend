@@ -24,7 +24,6 @@ class PublicController @Inject() (
   val calculatorService: CalculatorService,
 
   val error_template: views.html.error_template,
-  val accessibility_statement: views.html.accessibility_statement_en,
   val time_out: views.html.time_out,
 
   override val controllerComponents: MessagesControllerComponents,
@@ -39,8 +38,4 @@ class PublicController @Inject() (
   }
 
 
-  def accessibilityStatement: Action[AnyContent] = Action.async { implicit context =>
-    Future.successful(Ok(accessibility_statement()))
-
-  }
 }
