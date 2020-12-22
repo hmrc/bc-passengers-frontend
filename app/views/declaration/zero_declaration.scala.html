@@ -25,45 +25,63 @@
 
   <p>@messages("label.declaration.provided_email_address")</p>
 
-  <table>
-     <tbody>
-       <tr>
-          <td class="bold">@messages("label.name")</td>
-          <td>@userInformation.get.firstName @userInformation.get.lastName</td>
-       </tr>
-
-       <tr>
-          <td class="bold">@messages("label.place_of_arrival_uk")</td>
-          <td>@messages(placeOfArrivalValue)</td>
-       </tr>
-
-       <tr>
-          <td class="bold">@messages("label.date_of_arrival")</td>
-          <td>@userInformation.get.dateOfArrival.toString("dd MMMM YYYY")</td>
-       </tr>
-
-       <tr>
-          <td class="bold">@messages("label.time_of_arrival")</td>
-          <td>@userInformation.get.timeOfArrival.toString("hh:mm aa")</td>
-       </tr>
-
-       <tr>
-          <td class="bold">@messages("label.reference_number")</td>
-          <td>@chargeReference</td>
-       </tr>
-
-       <tr>
-          <td class="bold">@messages("label.amount_paid")</td>
-          <td class="bold">&pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)</td>
-       </tr>
-     </tbody>
-  </table>
+  <body class="govuk-template__body app-example-page">
+  <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key bold">
+              @messages("label.name")
+          </dt>
+          <dd class="govuk-summary-list__value">
+              @userInformation.get.firstName @userInformation.get.lastName
+          </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key bold">
+              @messages("label.place_of_arrival_uk")
+          </dt>
+          <dd class="govuk-summary-list__value">
+              @messages(placeOfArrivalValue)
+          </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key bold">
+              @messages("label.date_of_arrival")
+          </dt>
+          <dd class="govuk-summary-list__value">
+              @userInformation.get.dateOfArrival.toString("dd MMMM YYYY")
+          </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key bold">
+              @messages("label.time_of_arrival")
+          </dt>
+          <dd class="govuk-summary-list__value">
+              @userInformation.get.timeOfArrival.toString("hh:mm aa")
+          </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key bold">
+              @messages("label.reference_number")
+          </dt>
+          <dd class="govuk-summary-list__value">
+              @chargeReference
+          </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key bold">
+              @messages("label.amount_paid")
+          </dt>
+          <dd class="govuk-summary-list__value bold">
+              &pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)
+          </dd>
+      </div>
+  </dl>
 
   <h2>@messages("label.items_declared")</h2>
 
-  <table class="responsive-table" role="grid">
+  <table class="responsive-table">
     <thead>
-    <tr role="row">
+    <tr>
         <th scope="col">@messages("label.item")</th>
         <th scope="col">@messages("label.price")</th>
         <th scope="col">@messages("label.purchased_in")</th>
@@ -74,37 +92,36 @@
     </thead>
     <tbody>
     @calculatorResponseDto.items.map { item =>
-    <tr role="row">
-        <th scope="row" role="gridcell">
+    <tr>
+        <th scope="row">
             <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
             @messages(item.metadata.description)
         </th>
-        <td role="gridcell">
+        <td>
             <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
             @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
         </td>
-        <td role="gridcell">
+        <td>
             <span class="table-heading" aria-hidden="true">@messages("label.purchased_in")</span>
             @messages(item.metadata.country.countryName)
         </td>
-        <td role="gridcell" class="numeric">
+        <td class="numeric">
             <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
             &pound;@formatMonetaryValue(item.calculation.allTax)
         </td>
     </tr>
     }
+    <tr>
+        <td class="total table-foot" colspan="3">@messages("label.total")</td>
+        <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
+    </tr>
     </tbody>
 </table>
 
-  <div class="table-foot margin-bottom-30">
-    <span class="total">@messages("label.total")</span>
-    <span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span>
-  </div>
-
   <h2>@messages("label.payment_breakdown")</h2>
-  <table>
+  <table class="responsive-table margin-bottom-30">
     <thead>
-    <tr role="row">
+    <tr>
         <th scope="col">@messages("label.tax_type")</th>
         <th class="numeric" scope="col">
             <span class="table-25">@messages("label.amount_paid")</span></th>
@@ -126,12 +143,13 @@
         <td>@messages("label.vat")</td>
         <td class="numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.vat)</td>
     </tr>
+    <tr>
+        <td class="total table-foot">@messages("label.total")</td>
+        <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)</td>
+    </tr>
     </tbody>
   </table>
-  <div class="table-foot margin-bottom-30">
-    <span class="total">@messages("label.total")</span>
-    <span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)</span>
-  </div>
+
 
 
   <div class="panel panel-border-wide margin-top-30">@messages("label.declaration.no_tax_duty")</div>
