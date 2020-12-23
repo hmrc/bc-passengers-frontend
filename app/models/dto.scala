@@ -25,7 +25,9 @@ object OtherGoodsDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
-  } yield OtherGoodsDto("", country.code, currency, purchasedProductInstance.cost.toList)
+   // isVatPaid <- purchasedProductInstance.isVatPaid
+  //  isUccRelief <- purchasedProductInstance.isUccRelief
+  } yield OtherGoodsDto("", country.code, currency, purchasedProductInstance.cost.toList)// Some(isVatPaid), Some(isUccRelief))
 }
 
 case class OtherGoodsDto(
@@ -33,6 +35,8 @@ case class OtherGoodsDto(
   country: String,
   currency: String,
   costs: List[BigDecimal] = List()
+ // isVatPaid: Option[Boolean],
+ // isUccRelief: Option[Boolean],
 )
 
 object AlcoholDto {
@@ -41,7 +45,9 @@ object AlcoholDto {
     currency <- purchasedProductInstance.currency
     weightOrVolume <- purchasedProductInstance.weightOrVolume
     cost <- purchasedProductInstance.cost
-  } yield AlcoholDto(weightOrVolume, country.code, currency, cost)
+   // isVatPaid <- purchasedProductInstance.isVatPaid
+   // isExcise <- purchasedProductInstance.isExcisePaid
+  } yield AlcoholDto(weightOrVolume, country.code, currency, cost)// Some(isVatPaid), Some(isExcise))
 }
 
 case class AlcoholDto(
@@ -49,6 +55,8 @@ case class AlcoholDto(
   country: String,
   currency: String,
   cost: BigDecimal
+  //isVatPaid: Option[Boolean],
+  //isExcisePaid: Option[Boolean]
 )
 
 object TobaccoDto {
@@ -58,7 +66,9 @@ object TobaccoDto {
     cost <- purchasedProductInstance.cost
     noOfSticks = purchasedProductInstance.noOfSticks
     weightOrVolume = purchasedProductInstance.weightOrVolume
-  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, currency, cost)
+  //  isVatPaid <- purchasedProductInstance.isVatPaid
+   // isExcise <- purchasedProductInstance.isExcisePaid
+  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, currency, cost)// Some(isVatPaid), Some(isExcise))
 }
 
 case class TobaccoDto(
@@ -67,6 +77,8 @@ case class TobaccoDto(
   country: String,
   currency: String,
   cost: BigDecimal
+ // isVatPaid: Option[Boolean],
+ // isExcisePaid: Option[Boolean]
 )
 
 object EuCountryCheckDto {

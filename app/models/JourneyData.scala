@@ -21,7 +21,10 @@ case class PurchasedProductInstance(
   noOfSticks: Option[Int] = None,
   country: Option[Country] = None,
   currency: Option[String] = None,
-  cost: Option[BigDecimal] = None
+  cost: Option[BigDecimal] = None,
+  isVatPaid: Option[Boolean] = None,
+  isExcisePaid: Option[Boolean] = None,
+  isUccRelief: Option[Boolean] = None
 )
 
 object UserInformation {

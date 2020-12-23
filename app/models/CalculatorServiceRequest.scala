@@ -27,6 +27,9 @@ object CalculatorServiceRequest {
         "rateId" -> item.productTreeLeaf.rateID,
         "weightOrVolume" -> item.purchasedProductInstance.weightOrVolume,
         "noOfUnits" -> item.purchasedProductInstance.noOfSticks,
+        "isVatPaid" -> item.purchasedProductInstance.isVatPaid,
+        "isExcisePaid" -> item.purchasedProductInstance.isExcisePaid,
+        "isUccRelief" -> item.purchasedProductInstance.isUccRelief,
         "metadata" -> Json.obj(
           "description" -> description,
           "name" -> item.name,
@@ -45,10 +48,7 @@ case class CalculatorServiceRequest(
   isPrivateCraft: Boolean,
   isAgeOver17: Boolean,
   isArrivingNI: Boolean,
-  isUKVatPaid: Option[Boolean],
-  isUKExcisePaid: Option[Boolean],
   isUKResident: Option[Boolean],
-  isUccRelief: Option[Boolean],
   items: List[PurchasedItem]
 )
 

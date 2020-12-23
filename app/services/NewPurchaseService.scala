@@ -17,7 +17,7 @@ class NewPurchaseService @Inject() (
   countriesService: CountriesService
 ) {
 
-  def insertPurchases(path: ProductPath, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryCode: String, currency: String, costs: List[BigDecimal], rand: Random = Random)(implicit context: LocalContext): JourneyData = {
+  def insertPurchases(path: ProductPath, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryCode: String, currency: String, costs: List[BigDecimal], isVatPaid: Option[Boolean] = Some(false), isExcisePaid: Option[Boolean] = Some(false), isUccRelief: Option[Boolean] = Some(false), rand: Random = Random)(implicit context: LocalContext): JourneyData = {
 
     val journeyData = context.journeyData.getOrElse(JourneyData())
 
@@ -25,7 +25,7 @@ class NewPurchaseService @Inject() (
       cost <- costs
       iid = rand.alphanumeric.filter(_.isLetter).take(6).mkString
       country = countriesService.getCountryByCode(countryCode)
-    } yield PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost))
+    } yield PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost), isVatPaid, isExcisePaid, isUccRelief)
 
     journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd,
       defaultCountry = Some(countryCode),

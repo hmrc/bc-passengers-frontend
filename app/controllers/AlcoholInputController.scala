@@ -64,7 +64,7 @@ class AlcoholInputController @Inject()(
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue)
-
+      // TODO Add validations for vat and excise
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
@@ -98,7 +98,7 @@ class AlcoholInputController @Inject()(
             Future.successful(BadRequest(alcohol_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
           },
           dto => {
-            cache.store( newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost)) ) map { _ =>
+            cache.store( newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost), isVatPaid = Some(true), isExcisePaid = Some(false)) ) map { _ =>
               Redirect(routes.SelectProductController.nextStep())
             }
           }

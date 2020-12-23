@@ -51,6 +51,7 @@ class OtherGoodsInputController @Inject()(
           _.map(s => Try(BigDecimal(s.filter(_ != ','))).toOption.getOrElse(BigDecimal(0))),
           _.map(bd => if(bd>0) formatMonetaryValue(bd) else "")
         )
+      // TODO Add validations for vat and uccRelief
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
@@ -105,7 +106,7 @@ class OtherGoodsInputController @Inject()(
           Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
         },
         dto => {
-          val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.currency, dto.costs)
+          val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.currency, dto.costs, isVatPaid = Some(true), isUccRelief = Some(true))
           cache.store(jd) map {_ =>
             Redirect(routes.SelectProductController.nextStep())
           }

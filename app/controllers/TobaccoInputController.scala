@@ -89,6 +89,7 @@ class TobaccoInputController @Inject()(
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue)
+      // TODO Add validations for vat and excise
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
@@ -107,6 +108,7 @@ class TobaccoInputController @Inject()(
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue)
+      // TODO Add validations for vat and excise
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
   
@@ -167,7 +169,7 @@ class TobaccoInputController @Inject()(
               Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
             },
             dto => {
-              cache.store( newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost)) ) map { _ =>
+              cache.store( newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost), isVatPaid = Some(false), isExcisePaid = Some(true)) ) map { _ =>
                 Redirect(routes.SelectProductController.nextStep())
               }
             }
