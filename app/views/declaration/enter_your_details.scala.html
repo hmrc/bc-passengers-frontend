@@ -56,36 +56,38 @@
         '_labelTextClass -> "form-label-bold",
         '_inputClass -> "form-control-3-4"
       )
-      <span class="form-label-bold">@messages("label.select_identification_type")</span>
-      <span class="form-hint" style="color: #6f777b;">@messages("label.choose_identification_type")</span>
+      <fieldset>
+          <legend><span class="form-label-bold">@messages("label.select_identification_type")</span></legend>
+          <span class="form-hint" style="color: #6f777b;">@messages("label.choose_identification_type")</span>
 
-      <div class="form-group @{if(f("identification").hasErrors) "form-group-error" else "" }" id="identification">
+          <div class="form-group @{if(f("identification").hasErrors) "form-group-error" else "" }" id="identification">
 
-        @if(journeyStart.contains("greatBritain")){
-           @components.input_radio_group(
-             f("identification.identificationType"),
-             Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_licence_number"), "telephone" -> Messages("label.telephone_number")),
-             '_labelClass -> "block-label inputLabelBeforeError",
-             Symbol("telephone") -> messages("label.telephone_number_hint")
-           )
-        } else {
-           @components.input_radio_group(
-             f("identification.identificationType"),
-             Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
-             '_labelClass -> "block-label inputLabelBeforeError"
-           )
-        }
-        @f.errors.filter(_.key == "identification").map { error =>
-             <span class="error-message">@messages(error.message)</span>
-        }
-        @components.input(
-            f("identification.identificationNumber"),
-            '_label -> messages("label.identification_number"),
-            '_labelTextClass -> "form-label-bold",
-            '_inputHint -> messages("label.enter_identification_number"),
-            '_inputClass -> "form-control-3-4"
-        )
-      </div>
+            @if(journeyStart.contains("greatBritain")){
+               @components.input_radio_group(
+                 f("identification.identificationType"),
+                 Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_licence_number"), "telephone" -> Messages("label.telephone_number")),
+                 '_labelClass -> "block-label inputLabelBeforeError",
+                 Symbol("telephone") -> messages("label.telephone_number_hint")
+               )
+            } else {
+               @components.input_radio_group(
+                 f("identification.identificationType"),
+                 Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
+                 '_labelClass -> "block-label inputLabelBeforeError"
+               )
+            }
+            @f.errors.filter(_.key == "identification").map { error =>
+                 <span class="error-message">@messages(error.message)</span>
+            }
+            @components.input(
+                f("identification.identificationNumber"),
+                '_label -> messages("label.identification_number"),
+                '_labelTextClass -> "form-label-bold",
+                '_inputHint -> messages("label.enter_identification_number"),
+                '_inputClass -> "form-control-3-4"
+            )
+          </div>
+      </fieldset>
 
     <div class="form-group @{if(f("emailAddress").hasErrors) "form-group-error" else "" }" id="emailAddress">
         @f.errors.filter(_.key == "emailAddress").map { error =>
