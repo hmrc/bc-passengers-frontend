@@ -1,6 +1,6 @@
 # PAS-(StoryNumberHere)
 
-##Bug fix / New feature (delete as appropriate)
+## Bug fix / New feature (delete as appropriate)
 
 Please include a summary / description of the change and which issue it fixes.  Include any relevant user needs, context or links to other PRs related to this PR (eg. acceptance tests, environment config).
 
