@@ -53,7 +53,7 @@ class PortsOfArrivalService {
     PortsOfArrival("LDY", "title.derry_port", isGB=false,List("Foyle Port", "Londonderry Port")),
     PortsOfArrival("DSA", "title.doncaster_sheffield_airport", isGB=true, List("Robin Hood Airport", "DSA")),
     PortsOfArrival("DVR", "title.dover", isGB=true, List("Port of Dover")),
-    PortsOfArrival("DUN", "title.dundee_aiport", isGB=true, List("DND")),
+    PortsOfArrival("DUN", "title.dundee_airport", isGB=true, List("DND")),
     PortsOfArrival("EMA", "title.east_midlands_airport", isGB=true, List("EMA")),
     PortsOfArrival("EBD", "title.ebbsfleet", isGB=true, Nil),
     PortsOfArrival("EDI", "title.edinburgh_airport", isGB=true, List("EDI")),
