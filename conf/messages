@@ -21,6 +21,7 @@ text.eu_countries= Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, 
 text.non_eu_countries = Any other country.
 text.channel_bot_canary = This includes the Channel Islands, British Overseas Territories (including Gibraltar), the north of Cyprus and the Canary Islands.
 label.if_you_are_bringing_in_goods_from_both = If you are bringing in goods from both EU and non-EU countries, only select non-EU countries below.
+label.if_you_are_bringing_in_goods_from_eu = If you are bringing in goods that originate in the EU, select EU countries below. If you are bringing in goods that originate outside the EU, select non-EU countries below.
 error.eu_check=Select where you are bringing in goods from
 head.error.eu_check = Select where you are bringing in goods from
 heading.goods_brought_into_ni = Goods brought into Northern Ireland

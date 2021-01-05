@@ -21,7 +21,10 @@
   <h2 class="heading-medium">@messages("heading.non_eu_countries")</h2>
   <p>@messages("text.non_eu_countries")</p>
   <p>@messages("text.channel_bot_canary")</p>
-  <div class="panel panel-border-wide">@messages("label.if_you_are_bringing_in_goods_from_both")</div>
+  <div class="panel panel-border-wide">
+    <p>@messages("label.if_you_are_bringing_in_goods_from_both")</p>
+    <p>@messages("label.if_you_are_bringing_in_goods_from_eu")</p>
+  </div>
 
   @form(action = routes.TravelDetailsController.whereGoodsBoughtPost()) {
 
