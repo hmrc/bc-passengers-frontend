@@ -21,6 +21,7 @@ text.eu_countries=Yr Almaen, Awstria, Bwlgaria, Croatia, Cyprus, Denmarc, yr Eid
 text.non_eu_countries = Unrhyw wlad arall.
 text.channel_bot_canary = Mae hyn yn cynnwys Ynysoedd y Sianel, Tiriogaethau Tramor Prydain (gan gynnwys Gibraltar), gogledd Cyprus a’r Ynysoedd Dedwydd.
 label.if_you_are_bringing_in_goods_from_both = Os ydych yn dod â nwyddau i mewn o wledydd yn yr UE a hefyd o wledydd y tu allan i’r UE, dewiswch ‘gwledydd y tu allan i’r UE’ yn unig isod.
+label.if_you_are_bringing_in_goods_from_eu = Os ydych yn dod â nwyddau i mewn o wledydd yn yr UE, dewiswch ‘gwledydd yn yr UE’ isod. Os ydych yn dod â nwyddau i mewn o wledydd y tu allan i’r UE, dewiswch ‘gwledydd nad ydynt yn rhan o’r UE’ isod.
 error.eu_check=Dewiswch o ble rydych yn dod â nwyddau i mewn
 head.error.eu_check=Dewiswch o ble rydych yn dod â nwyddau i mewn
 heading.goods_brought_into_ni = Nwyddau sy’n dod i mewn i Ogledd Iwerddon

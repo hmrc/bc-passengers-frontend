@@ -20,14 +20,16 @@ class TravelDetailsService @Inject() (
 
   def storeEuCountryCheck(journeyData: Option[JourneyData])(countryChoice: String)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
+    val isCustomsExempt: Option[Boolean] = if (countryChoice == "euOnly") Some(true) else None
+
     journeyData match {
-      case Some(jd) if !jd.euCountryCheck.contains(countryChoice) =>
+      case  Some(jd) if !jd.euCountryCheck.contains(countryChoice) =>
 
         cache.storeJourneyData(jd.copy(
           euCountryCheck = Some(countryChoice),
           isUKVatPaid = None,
           isUKExcisePaid = None,
-          isUKResident = None,
+          isUKResident = isCustomsExempt,
           isUccRelief = None,
           isVatResClaimed = None,
           isBringingDutyFree = None,
@@ -40,7 +42,7 @@ class TravelDetailsService @Inject() (
         ))
 
       case None =>
-        cache.storeJourneyData( JourneyData(euCountryCheck = Some(countryChoice)) )
+        cache.storeJourneyData( JourneyData(euCountryCheck = Some(countryChoice), isUKResident = isCustomsExempt) )
 
       case _ =>
         Future.successful( journeyData )

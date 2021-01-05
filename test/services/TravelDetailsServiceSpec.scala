@@ -13,9 +13,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import util.BaseSpec
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
+import util.BaseSpec
 
 import scala.concurrent.Future
 
@@ -32,8 +32,6 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
 
   trait LocalSetup {
-
-//    def journeyDataInCache: Option[JourneyData]
 
     val dummyPpi = List(PurchasedProductInstance(ProductPath("path"), "iid", Some(1.0), Some(100),
       Some(Country("AU", "Australia", "A2", isEu = false, Nil)), Some("AUD"), Some(100.25)))
@@ -77,6 +75,13 @@ class TravelDetailsServiceSpec extends BaseSpec {
       await(travelDetailsService.storeEuCountryCheck(journeyData)("nonEuOnly"))
 
       verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("nonEuOnly"),Some(true), None,None,None,None,None, None, None, None, None, None, Nil, Nil, defaultCountry = None, defaultCurrency = None)) )(any())
+    }
+
+    "store the eu country check and isUKResident in keystore when bringing goods from EU countries" in new LocalSetup {
+
+      await(travelDetailsService.storeEuCountryCheck(None)("euOnly"))
+
+      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("euOnly"),None,None,None,Some(true),None, None, None, None, None, None, None, Nil, Nil)) )(any())
     }
   }
 
