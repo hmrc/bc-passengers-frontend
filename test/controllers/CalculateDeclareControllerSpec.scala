@@ -197,6 +197,21 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when there is no journey data" should {
+
+    "Display the declare-your-goods page" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Option.empty)
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+    }
+  }
+
+
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when tax amount is 0.00" should {
 
     "Display the declare-your-goods page" in new LocalSetup {
@@ -205,6 +220,21 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+    }
+  }
+
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when there is no journey data" should {
+
+    "Display the where-goods-bought page" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Option.empty)
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
