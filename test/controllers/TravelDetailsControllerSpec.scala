@@ -81,9 +81,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
 
-      doc.getElementById("hint-greatBritain").text() shouldBe "If you are bringing goods from Great Britain or the Isle of Man to Northern Ireland only, select this option."
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe true
-      doc.text() should include("If you are bringing in goods that originate in the EU, select EU countries below. If you are bringing in goods that originate outside the EU, select non-EU countries below.")
 
       verify(controller.cache, times(1)).fetch(any())
     }
