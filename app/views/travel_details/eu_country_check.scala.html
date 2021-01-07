@@ -22,8 +22,9 @@
   <p>@messages("text.non_eu_countries")</p>
   <p>@messages("text.channel_bot_canary")</p>
   <div class="panel panel-border-wide">
-    <p>@messages("label.if_you_are_bringing_in_goods_from_both")</p>
     <p>@messages("label.if_you_are_bringing_in_goods_from_eu")</p>
+    <p>@messages("label.if_you_are_bringing_in_goods_from_gb")</p>
+    <p>@messages("label.if_you_are_bringing_in_goods_from_non_eu")</p>
   </div>
 
   @form(action = routes.TravelDetailsController.whereGoodsBoughtPost()) {
@@ -33,8 +34,7 @@
 
       @components.input_radio_group(
         f("euCountryCheck"),
-        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "greatBritain" -> Messages("label.great_britain")),
-        Symbol("greatBritain") -> messages("label.if_you_are_bringing_good_from_Great_Britain")
+        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "greatBritain" -> Messages("label.great_britain"))
       )
     </fieldset>
 
