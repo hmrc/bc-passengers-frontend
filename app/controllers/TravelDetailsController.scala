@@ -82,7 +82,7 @@ class TravelDetailsController @Inject() (
       context.journeyData match {
         case Some(JourneyData(_, Some(countryCheck), _, _,_,_, _, _, _, _, _, _,_, _, _, _, _, _,_,_,_,_)) =>
             Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck)),
-              backLinkModel.backLink))
+              backLinkModel.backLink, timeout = true))
         case _ =>
             Ok(eu_country_check(EuCountryCheckDto.form, backLinkModel.backLink))
       }
