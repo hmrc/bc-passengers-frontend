@@ -53,3 +53,5 @@ case object PrivateCraftStep extends JourneyStep(preceeding = List(ArrivingNISte
 case object ZeroDeclarationStep extends JourneyStep(preceeding = List(DashboardStep), predicate = _ => _.flatMap(_.userInformation).isDefined)
 
 case object PreviousDeclarationStep extends JourneyStep(Nil, _ => _ => true)
+
+case object DeclarationRetrievalStep extends JourneyStep(preceeding = List(PreviousDeclarationStep), predicate = _ => _.flatMap(_.prevDeclaration).contains(true))

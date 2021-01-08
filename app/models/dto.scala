@@ -170,17 +170,33 @@ case class SelectProductsDto(tokens: List[String])
 
 case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 
-object EnterYourDetailsDto {
-  val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
-  val emailAddressPattern = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
+trait Validators {
   val validInputText = "^[a-zA-Z- ']+$"
-
-  private def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
+  def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
     text =>
       if (text.isEmpty) Invalid(ValidationError(s"error.required.$fieldName"))
       else if (text.length > maxLength) Invalid(ValidationError(s"error.max-length.$fieldName"))
       else Valid
   }
+
+  def nonEmpty(fieldName: String): Constraint[String] = Constraint("constraint.required") {
+    text =>
+      if (text.isEmpty) Invalid(ValidationError(s"error.required.$fieldName"))
+      else Valid
+  }
+
+  def validateFieldsRegex(errorKey: String, pattern: String): Constraint[String] = {
+    Constraint {
+      text =>
+        if (text.isEmpty || text.matches(pattern)) Valid
+        else Invalid(errorKey)
+    }
+  }
+}
+
+object EnterYourDetailsDto extends Validators {
+  val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
+  val emailAddressPattern = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
 
   def maxLength(length: Int , fieldName: String): Constraint[String] = Constraint("constraint.maxLength", length) {
     text =>
@@ -249,14 +265,6 @@ object EnterYourDetailsDto {
     }
   }
 
-  private def validateFieldsRegex(errorKey: String): Constraint[String] = {
-    Constraint {
-      text =>
-        if (text.isEmpty || text.matches(validInputText)) Valid
-        else Invalid(errorKey)
-    }
-  }
-
   private def emailAddressMatchConstraint(): Constraint[EmailAddress] = {
     Constraint {
       model =>
@@ -276,8 +284,8 @@ object EnterYourDetailsDto {
 
   def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
-      "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")).verifying(validateFieldsRegex("error.first_name.valid")),
-      "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")).verifying(validateFieldsRegex("error.last_name.valid")),
+      "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")).verifying(validateFieldsRegex("error.first_name.valid",validInputText)),
+      "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name")).verifying(validateFieldsRegex("error.last_name.valid",validInputText)),
       "identification" -> mapping(
         "identificationType" -> optional(text).verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
         "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
@@ -290,7 +298,7 @@ object EnterYourDetailsDto {
         .verifying(emailAddressMatchConstraint()),
       "placeOfArrival" -> mapping(
         "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
-        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")).verifying(validateFieldsRegex("error.place_of_arrival.valid")))
+        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")).verifying(validateFieldsRegex("error.place_of_arrival.valid",validInputText)))
       )(PlaceOfArrival.apply)(PlaceOfArrival.unapply).verifying()
         .verifying(placeOfArrivalConstraint("error.required.place_of_arrival")),
       "dateTimeOfArrival" -> mapping(
@@ -302,8 +310,28 @@ object EnterYourDetailsDto {
   )
 }
 
+object DeclarationRetrievalDto extends Validators {
+
+  def fromPreviousDeclarationDetails(previousDeclarationDetails: PreviousDeclarationDetails): DeclarationRetrievalDto = {
+    DeclarationRetrievalDto(previousDeclarationDetails.lastName,
+      previousDeclarationDetails.identificationNumber,
+      previousDeclarationDetails.referenceNumber)
+  }
+  private val chargeReferencePattern = """^X([A-Z])PR(\d{10})$"""
+  def form(): Form[DeclarationRetrievalDto] = Form(
+    mapping(
+      "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name"))
+        .verifying(validateFieldsRegex("error.last_name.valid",validInputText)),
+      "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number_previous")),
+      "referenceNumber" -> text.verifying(validateFieldsRegex("error.referenceNumber.invalid",chargeReferencePattern))
+        .verifying(nonEmpty("referenceNumber"))
+    )(DeclarationRetrievalDto.apply)(DeclarationRetrievalDto.unapply)
+  )
+}
+
 case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
 case class Identification(identificationType: Option[String], identificationNumber: String)
 case class EmailAddress(email: String, confirmEmail: String)
 case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification , emailAddress: EmailAddress, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
+case class DeclarationRetrievalDto(lastName: String, identificationNumber: String , referenceNumber: String)

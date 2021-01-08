@@ -6,8 +6,9 @@
 package services
 
 import connectors.Cache
+
 import javax.inject.Inject
-import models.JourneyData
+import models.{JourneyData, PreviousDeclarationDetails}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -258,11 +259,28 @@ class TravelDetailsService @Inject() (
       case Some(journeyData) if !journeyData.prevDeclaration.contains(prevDeclaration) =>
 
         cache.storeJourneyData(journeyData.copy(
-          prevDeclaration = Some(prevDeclaration)
+          prevDeclaration = Some(prevDeclaration),
+          previousDeclarationDetails = None
         ))
 
       case None =>
-        cache.storeJourneyData( JourneyData(prevDeclaration = Some(prevDeclaration)) )
+        cache.storeJourneyData( JourneyData(
+          prevDeclaration = Some(prevDeclaration)) )
+
+      case _ =>
+        Future.successful( journeyData )
+    }
+  }
+
+  def storePrevDeclarationDetails(journeyData: Option[JourneyData])(previousDeclarationDetails: PreviousDeclarationDetails)
+                          (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+    journeyData match {
+      case Some(journeyData) =>
+        cache.storeJourneyData(journeyData.copy(
+          previousDeclarationDetails = Some(previousDeclarationDetails)
+        ))
+      case None =>
+        cache.storeJourneyData( JourneyData(previousDeclarationDetails = Some(previousDeclarationDetails)) )
 
       case _ =>
         Future.successful( journeyData )

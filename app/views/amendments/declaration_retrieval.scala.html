@@ -1,0 +1,51 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
+@(f: Form[DeclarationRetrievalDto])(implicit request: Request[_], messages: Messages)
+
+@import util.prefixErrorMessage
+
+
+
+@main_template(
+  title = prefixErrorMessage(messages("heading.declaration_retrieval"), f.hasErrors), bodyClasses = None) {
+
+  <a class="link-back" id="back" href="@routes.PreviousDeclarationController.loadPreviousDeclarationPage()">@messages("label.back")</a>
+  @views.html.tags.errors(f)
+
+  <h1 class="heading-xlarge">@messages("heading.declaration_retrieval")</h1>
+
+  <p>@messages("text.declaration_retrieval")</p>
+  @form(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage()) {
+      @components.input(
+        f("lastName"),
+        '_label -> messages("label.last_name"),
+        '_labelTextClass -> "form-label-bold",
+        '_inputClass -> "form-control-3-4"
+      )
+
+      @components.input(
+          f("identificationNumber"),
+          '_label -> messages("label.identification_number_previous"),
+          '_labelTextClass -> "form-label-bold",
+          '_inputClass -> "form-control-3-4",
+          '_inputHint -> messages("label.identification_hint"),
+      )
+
+      @components.input(
+          f("referenceNumber"),
+          '_label -> messages("label.reference_previous_declaration"),
+          '_labelTextClass -> "form-label-bold",
+          '_inputClass -> "form-control-3-4",
+          '_inputHint -> messages("label.reference_number_hint"),
+      )
+
+      <div class="form-group">
+        <button type="submit" class="button">@messages("label.retrieve_declaration")</button>
+      </div>
+
+  }
+}

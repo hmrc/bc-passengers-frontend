@@ -28,7 +28,14 @@ object UserInformation {
   implicit val formats: OFormat[UserInformation] = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
-    UserInformation(dto.firstName, dto.lastName, dto.identification.identificationType.getOrElse(""), dto.identification.identificationNumber , dto.emailAddress.email, dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""), dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""), dto.dateTimeOfArrival.dateOfArrival, dto.dateTimeOfArrival.timeOfArrival)
+    UserInformation(dto.firstName,
+      dto.lastName,
+      dto.identification.identificationType.getOrElse(""),
+      dto.identification.identificationNumber ,
+      dto.emailAddress.email,dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
+      dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
+      dto.dateTimeOfArrival.dateOfArrival,
+      dto.dateTimeOfArrival.timeOfArrival)
 }
 case class UserInformation(
   firstName: String,
@@ -41,6 +48,18 @@ case class UserInformation(
   dateOfArrival: LocalDate,
   timeOfArrival: LocalTime
 )
+
+object PreviousDeclarationDetails {
+  implicit val formats: OFormat[PreviousDeclarationDetails] = Json.format[PreviousDeclarationDetails]
+
+  def build(dto: DeclarationRetrievalDto): PreviousDeclarationDetails =
+    PreviousDeclarationDetails(dto.lastName, dto.identificationNumber, dto.referenceNumber)
+}
+case class PreviousDeclarationDetails(
+                            lastName: String,
+                            identificationNumber: String,
+                            referenceNumber: String
+                          )
 
 object ProductAlias {
   implicit val formats: OFormat[ProductAlias] = Json.format[ProductAlias]
@@ -79,7 +98,8 @@ case class JourneyData(
   calculatorResponse: Option[CalculatorResponse] = None,
   chargeReference: Option[String] = None,
   defaultCountry: Option[String] = None,
-  defaultCurrency: Option[String] = None
+  defaultCurrency: Option[String] = None,
+  previousDeclarationDetails: Option[PreviousDeclarationDetails] = None
 ) {
 
   val selectedProducts: List[List[String]] = selectedAliases.map(_.productPath.components)

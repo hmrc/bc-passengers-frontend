@@ -77,6 +77,41 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
     }
   }
 
+  "Calling VatResJourneyEnforcer.enforcePrereqs for DeclarationRetrievalStep when amendments feature is on" should {
+
+    when(mockAppConfig.isAmendmentsEnabled) thenReturn true
+
+    "not pass with no journey data set" in new GridSetup {
+
+      override lazy val journeyStep: JourneyStep = DeclarationRetrievalStep
+
+      override lazy val params: ListMap[String, List[Any]] = ListMap[String, List[Any]]()
+
+      implicit val jd: JourneyData = JourneyData()
+      status(res) shouldBe SEE_OTHER
+    }
+
+    "not pass when previous declaration question answered false" in new GridSetup {
+
+      override lazy val journeyStep: JourneyStep = DeclarationRetrievalStep
+
+      override lazy val params: ListMap[String, List[Any]] = ListMap[String, List[Any]]()
+
+      implicit val jd: JourneyData = JourneyData(prevDeclaration = Some(false))
+      status(res) shouldBe SEE_OTHER
+    }
+
+    "pass when previous declaration question answered true" in new GridSetup {
+
+      override lazy val journeyStep: JourneyStep = DeclarationRetrievalStep
+
+      override lazy val params: ListMap[String, List[Any]] = ListMap[String, List[Any]]()
+
+      implicit val jd: JourneyData = JourneyData(prevDeclaration = Some(true))
+      status(res) shouldBe OK
+    }
+  }
+
   "Calling VatResJourneyEnforcer.enforcePrereqs for WhereGoodsBoughtAmendmentStep (Q1) when amendments feature is on" should {
 
     when(mockAppConfig.isAmendmentsEnabled) thenReturn true
@@ -260,8 +295,8 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance)
 
           jd match {
-            case JourneyData(Some(false), Some("nonEuOnly"), _, _, _,_, _, _,_, Some(false), _, _, _, _, _, _, _, _, _, _, _)
-               | JourneyData(Some(false), Some("euOnly"), _, _,_, _,_,Some(false), Some(true), Some(false), _, _, _, _, _, _, _, _, _, _, _) =>
+            case JourneyData(Some(false), Some("nonEuOnly"), _, _, _,_, _, _,_, Some(false), _, _, _, _, _, _, _, _, _, _, _,_)
+               | JourneyData(Some(false), Some("euOnly"), _, _,_, _,_,Some(false), Some(true), Some(false), _, _, _, _, _, _, _, _, _, _, _,_) =>
               status(res) shouldBe OK
             case _ =>
               status(res) shouldBe SEE_OTHER
@@ -289,8 +324,8 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, arrivingNICheck, bringingOverAllowance)
 
           jd match {
-            case JourneyData(Some(false), Some("euOnly"), Some(false), _, _, _, _, _, _, Some(true), _, _, _, _, _, _, _, _, _, _, _) //Q2
-                 | JourneyData(Some(false), Some("nonEuOnly"), Some(_), _, _, _, _, _, _, Some(true), _, _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
+            case JourneyData(Some(false), Some("euOnly"), Some(false), _, _, _, _, _, _, Some(true), _, _, _, _, _, _, _, _, _, _, _,_) //Q2
+                 | JourneyData(Some(false), Some("nonEuOnly"), Some(_), _, _, _, _, _, _, Some(true), _, _, _, _, _, _, _, _, _, _, _,_) //Q3, NoNeed
             =>
               status(res) shouldBe OK
             case _ =>
@@ -322,11 +357,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
           jd match {
             case
-              JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(false), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6, NoNeed
-              | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(false), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
-              | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(true), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3
-              | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(true), _, _, Some(_), _, _, _, _, _, _, _, _, _, _) //Q2
-              | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(true), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6
+              JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(false), Some(_), _, _, _, _, _, _, _, _, _, _,_) //Q6, NoNeed
+              | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(false), Some(_), _, _, _, _, _, _, _, _, _, _,_) //Q3, NoNeed
+              | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(true), Some(_), _, _, _, _, _, _, _, _, _, _,_) //Q3
+              | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(true), _, _, Some(_), _, _, _, _, _, _, _, _, _, _,_) //Q2
+              | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(true), Some(_), _, _, _, _, _, _, _, _, _, _,_) //Q6
             =>
               status(res) shouldBe OK
             case _ =>
@@ -358,11 +393,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(prevDeclaration, euCountryCheck, isVatResClaimed, isBringingDutyFree, bringingOverAllowance, privateCraft, ageOver17)
 
           jd match {
-            case JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q6, NoNeed
-                 | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q3, NoNeed
-                 | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q3
-                 | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(true), _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q2
-                 | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _) //Q6
+            case JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6, NoNeed
+                 | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(false), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3, NoNeed
+                 | JourneyData(Some(false), Some("nonEuOnly"), _, _, _, _, _, _, _, Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _) //Q3
+                 | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(true), _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _, _) //Q2
+                 | JourneyData(Some(false), Some("euOnly"), _, _, _, _, _, Some(false), Some(true), Some(true), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _) //Q6
             =>
               status(res) shouldBe OK
             case _ =>

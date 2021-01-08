@@ -106,6 +106,22 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       verify(mockTravelDetailService, times(1)).storePrevDeclaration(any())(meq(false))(any())
     }
 
+    "redirect to .../declaration-retrieval when user selects they have made a previous declaration" in  {
+
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+        .withFormUrlEncodedBody("prevDeclaration" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+
+      verify(mockTravelDetailService, times(1)).storePrevDeclaration(any())(meq(true))(any())
+    }
+
     "return a bad request when user selects an invalid value in Previous Declaration page" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = None)))
@@ -145,5 +161,4 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     }
 
   }
-
 }
