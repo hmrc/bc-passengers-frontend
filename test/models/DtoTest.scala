@@ -1144,4 +1144,47 @@ class DtoTest extends BaseSpec {
     }
   }
 
+  "Validating the DeclarationRetrievalDto form" should {
+
+    "not return errors when all fields are correct" in {
+      val formData = Map(
+        "lastName" -> "Smith",
+        "identificationNumber" -> "1234",
+        "referenceNumber" -> "XAPR1234567890"
+      )
+      val form = DeclarationRetrievalDto.form().bind(formData)
+      form.hasErrors shouldBe false
+    }
+
+    "not allow the lastName to be any string that is over 35 characters" in {
+      val formData = Map(
+        "lastName" -> "Smithasdasdasdasdasdasdasdasdasdasdasdasdasdasdsdsdsdsd",
+        "identificationNumber" -> "1234",
+        "referenceNumber" -> "XAPR1234567890"
+      )
+      val form = DeclarationRetrievalDto.form().bind(formData)
+      form.hasErrors shouldBe true
+    }
+
+    "not allow the identificationNumber to be any string that is over 40 characters" in {
+      val formData = Map(
+        "lastName" -> "Smith",
+        "identificationNumber" -> "1234234234234234234234234234234234234234234234234",
+        "referenceNumber" -> "XAPR1234567890"
+      )
+      val form = DeclarationRetrievalDto.form().bind(formData)
+      form.hasErrors shouldBe true
+    }
+
+    "not allow the referenceNumber to be any format than the correct format" in {
+      val formData = Map(
+        "lastName" -> "Smith",
+        "identificationNumber" -> "1234",
+        "referenceNumber" -> "XAXR1234567890"
+      )
+      val form = DeclarationRetrievalDto.form().bind(formData)
+      form.hasErrors shouldBe true
+    }
+  }
+
 }

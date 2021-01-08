@@ -5,6 +5,9 @@ GET        /                                                                    
 GET        /previous-declaration                                                       controllers.PreviousDeclarationController.loadPreviousDeclarationPage
 POST       /previous-declaration                                                       controllers.PreviousDeclarationController.postPreviousDeclarationPage
 
+GET        /declaration-retrieval                                                      controllers.DeclarationRetrievalController.loadDeclarationRetrievalPage
+POST       /declaration-retrieval                                                      controllers.DeclarationRetrievalController.postDeclarationRetrievalPage
+
 GET        /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBought
 POST       /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBoughtPost
 

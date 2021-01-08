@@ -355,3 +355,19 @@ class PreviousDeclarationAction @Inject()(journeyEnforcer: JourneyEnforcer, appC
     }
   }
 }
+
+@Singleton
+class DeclarationRetrievalAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      if (appConfig.isAmendmentsEnabled) {
+        journeyEnforcer(vatres.DeclarationRetrievalStep) {
+          block(context)
+        }
+      }
+      else {
+        Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+      }
+    }
+  }
+}
