@@ -31,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationService @Inject()(
   val cache: Cache,
   val wsAllMethods: WsAllMethods,
+  val portsOfArrivalService: PortsOfArrivalService,
   servicesConfig: ServicesConfig,
   auditConnector: AuditConnector,
   auditingTools: AuditingTools,
@@ -119,8 +120,12 @@ class DeclarationService @Inject()(
         }
       }
 
-      def getPlaceOfArrival: String = {
+      def getPlaceOfArrivalCode: String = {
         if (o.selectPlaceOfArrival.isEmpty) o.enterPlaceOfArrival else o.selectPlaceOfArrival
+      }
+
+      def getPlaceOfArrival: String = {
+        if (o.selectPlaceOfArrival.isEmpty) o.enterPlaceOfArrival else messages(portsOfArrivalService.getDisplayNameByCode(o.selectPlaceOfArrival).getOrElse(""))
       }
 
       def getTravellingFrom: String = {
@@ -138,7 +143,8 @@ class DeclarationService @Inject()(
         }
       }
 
-      Json.obj("portOfEntry" -> getPlaceOfArrival,
+      Json.obj("portOfEntry" -> getPlaceOfArrivalCode,
+                      "portOfEntryName" -> getPlaceOfArrival,
                       "expectedDateOfArrival" -> o.dateOfArrival,
                       "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}",
                       "messageTypes" -> Json.obj("messageType" -> servicesConfig.getString("declarations.create")),
@@ -172,7 +178,9 @@ class DeclarationService @Inject()(
                 "weight" -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString((x * 1000).toString())),
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
+                "valueCurrencyName" -> messages(item.metadata.currency.displayName),
                 "originCountry" -> item.metadata.country.alphaTwoCode,
+                "originCountryName" -> messages(item.metadata.country.countryName),
                 "exchangeRate" -> {
                   val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
                   if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
@@ -205,7 +213,9 @@ class DeclarationService @Inject()(
                 "volume" -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString(x.toString())),
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
+                "valueCurrencyName" -> messages(item.metadata.currency.displayName),
                 "originCountry" -> item.metadata.country.alphaTwoCode,
+                "originCountryName" -> messages(item.metadata.country.countryName),
                 "exchangeRate" -> {
                   val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
                   if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
@@ -238,7 +248,9 @@ class DeclarationService @Inject()(
                 "quantity" -> "1",
                 "goodsValue" -> item.metadata.cost,
                 "valueCurrency" -> item.metadata.currency.code,
+                "valueCurrencyName" -> messages(item.metadata.currency.displayName),
                 "originCountry" -> item.metadata.country.alphaTwoCode,
+                "originCountryName" -> messages(item.metadata.country.countryName),
                 "exchangeRate" -> {
                   val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
                   if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
