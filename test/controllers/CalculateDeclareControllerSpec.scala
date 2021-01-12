@@ -673,6 +673,68 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
       }
 
+      "Return Hint Text When telephone number is entered" in new LocalSetup {
+
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          .withFormUrlEncodedBody(
+            "firstName" -> "Harry",
+            "lastName" -> "Potter",
+            "identification.identificationType" -> "telephone",
+            "identification.identificationNumber" -> "08765432190",
+            "emailAddress.email" -> "abc@gmail.com",
+            "emailAddress.confirmEmail" -> "abc@gmail.com",
+            "placeOfArrival.selectPlaceOfArrival" -> "",
+            "placeOfArrival.enterPlaceOfArrival" -> "",
+            "dateTimeOfArrival.dateOfArrival.day" -> "23",
+            "dateTimeOfArrival.dateOfArrival.month" -> "11",
+            "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+          )
+        ).get
+
+        val content: String = contentAsString(response)
+        val doc: Document = Jsoup.parse(content)
+
+       doc.getElementById("telephone").text() shouldBe "For international numbers this will need to include the country code, for example +33 for France."
+      }
+
+      "Return Hint Text When euId is entered" in new LocalSetup {
+
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          .withFormUrlEncodedBody(
+            "firstName" -> "Harry",
+            "lastName" -> "Potter",
+            "identification.identificationType" -> "euId",
+            "identification.identificationNumber" -> "ABC3456",
+            "emailAddress.email" -> "abc@gmail.com",
+            "emailAddress.confirmEmail" -> "abc@gmail.com",
+            "placeOfArrival.selectPlaceOfArrival" -> "",
+            "placeOfArrival.enterPlaceOfArrival" -> "",
+            "dateTimeOfArrival.dateOfArrival.day" -> "23",
+            "dateTimeOfArrival.dateOfArrival.month" -> "11",
+            "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour" -> "12",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+          )
+        ).get
+
+        val content: String = contentAsString(response)
+        val doc: Document = Jsoup.parse(content)
+
+        doc.getElementById("euId").text() shouldBe "You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK. Check the latest rules prior to your arrival in the UK (opens in a new tab)."
+      }
+
       "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {
 
         override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
