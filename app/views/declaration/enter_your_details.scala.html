@@ -63,17 +63,19 @@
           <div class="form-group @{if(f("identification").hasErrors) "form-group-error" else "" }" id="identification">
 
             @if(journeyStart.contains("greatBritain")){
-               @components.input_radio_group(
+               @components.govuk_radios(
                  f("identification.identificationType"),
                  Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_licence_number"), "telephone" -> Messages("label.telephone_number")),
                  '_labelClass -> "block-label inputLabelBeforeError",
-                 Symbol("telephone") -> messages("label.telephone_number_hint")
+                 Symbol("telephone") -> messages("label.telephone_number_hint"),
+                 Symbol("euId") -> Html(s"${messages("label.euId_hint")} ${<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}")
                )
             } else {
-               @components.input_radio_group(
+               @components.govuk_radios(
                  f("identification.identificationType"),
                  Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
-                 '_labelClass -> "block-label inputLabelBeforeError"
+                 '_labelClass -> "block-label inputLabelBeforeError",
+                 Symbol("euId") -> Html(s"${messages("label.euId_hint")} ${<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}")
                )
             }
             @f.errors.filter(_.key == "identification").map { error =>
@@ -175,7 +177,7 @@
             "dateTimeOfArrival.timeOfArrival",
             '_inputHint -> messages("label.for_example_930"),
             '_legendSpanClass -> "form-label-bold",
-            '_legend -> messages("label.time_of_arrival")
+            '_legend -> messages("label.scheduled_time_of_arrival")
           )
 
       </div>

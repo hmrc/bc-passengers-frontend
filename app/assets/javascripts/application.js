@@ -14,6 +14,11 @@ $(document).ready(function () {
     // =====================================================
     GOVUK.details.init();
 
+    if (typeof GOVUK.ShowHideContent !== 'undefined') {
+          var showHideContent = new GOVUK.ShowHideContent();
+          showHideContent.init();
+    }
+
     $('input[type=submit], button[type=submit]').data('ignore-double-submit', 'true');
 })
 
