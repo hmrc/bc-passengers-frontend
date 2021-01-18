@@ -82,7 +82,7 @@ case class JourneyData(
   euCountryCheck: Option[String] = None,
   arrivingNICheck: Option[Boolean] = None,
   isUKVatPaid: Option[Boolean] = None,
-  isUKExcisePaid: Option[Boolean] = None,
+  isUKVatExcisePaid: Option[Boolean] = None,
   isUKResident: Option[Boolean] = None,
   isUccRelief: Option[Boolean] = None,
   isVatResClaimed: Option[Boolean] = None,

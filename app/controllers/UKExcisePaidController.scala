@@ -34,8 +34,8 @@ class UKExcisePaidController @Inject()(
   val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_, _, _,Some(isUKExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_)) =>
-          Ok(isUKExcisePaidPage(UKExcisePaidForm.form.fill(isUKExcisePaid), backLinkModel.backLink))
+        case Some(JourneyData(_,_, _, _,Some(isUKVatExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_)) =>
+          Ok(isUKExcisePaidPage(UKExcisePaidForm.form.fill(isUKVatExcisePaid), backLinkModel.backLink))
         case _ =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form, backLinkModel.backLink))
       }
@@ -51,9 +51,13 @@ class UKExcisePaidController @Inject()(
           )
       },
       success = {
-        isUKExcisePaid =>
-          travelDetailsService.storeUKExcisePaid(context.journeyData)(isUKExcisePaid).map(_ =>
-            Redirect(routes.UKResidentController.loadUKResidentPage())
+        isUKVatExcisePaid =>
+          travelDetailsService.storeUKExcisePaid(context.journeyData)(isUKVatExcisePaid).map(_ =>
+            (context.getJourneyData.isUKResident,isUKVatExcisePaid) match {
+              case (Some(true),true) => Redirect(routes.TravelDetailsController.noNeedToUseServiceGbni())
+              case (Some(true),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
+              case _ => Redirect(routes.TravelDetailsController.whereGoodsBought())
+            }
           )
       })
   }

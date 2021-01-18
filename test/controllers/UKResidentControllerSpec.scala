@@ -76,25 +76,25 @@ class UKResidentControllerSpec extends BaseSpec {
 
   "postUKResidentPage" should {
 
-    "redirect to .../goods-brought-into-northern-ireland when user travels from GB to NI and answered NO for UK VAT paid and YES for Excise paid and UK resident" in  {
+    "redirect to .../goods-brought-into-northern-ireland when non-UK resident travels from GB to NI " in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(false),Some(true),Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),None,None,Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
-        .withFormUrlEncodedBody("isUKResident" -> "true")).get
+        .withFormUrlEncodedBody("isUKResident" -> "false")).get
 
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
 
-      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
+      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(false))(any())
     }
 
-    "redirect to .../goods-brought-into-northern-ireland when user travels from GB to NI and answered NO for Excise paid and YES for UK VAT paid and UK resident" in  {
+    "redirect to .../gb-ni-vat-excise-check when UK resident travels from GB to NI" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true),Some(false),Some(true))))
+      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),None,None,Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
@@ -103,26 +103,12 @@ class UKResidentControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody("isUKResident" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
 
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
     }
 
-    "redirect to .../gb-ni-no-need-to-use-service when user has paid UK VAT and Excise and is a UK Resident" in  {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true), Some(true), Some(true))))
-
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
-        .withFormUrlEncodedBody("isUKResident" -> "true")).get
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-no-need-to-use-service")
-
-      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
-    }
 
     "return a bad request when user selects an invalid value" in  {
 
@@ -142,22 +128,6 @@ class UKResidentControllerSpec extends BaseSpec {
       doc.getElementById("errors").select("a[href=#isUKResident]").html() shouldBe "Select yes if you are a UK resident"
       doc.getElementById("isUKResident").getElementsByClass("error-message").html() shouldBe "Select yes if you are a UK resident"
       verify(mockTravelDetailService, times(0)).storeUKResident(any())(any())(any())
-    }
-
-    "redirect to .../gb-ni-exemptions when user says they have only arrived from GB and going to NI and is NOT UK Resident" in  {
-
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true), Some(true),Some(false))))
-
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
-        .withFormUrlEncodedBody("isUKResident" -> "false")).get
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-exemptions")
-
-      verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(false))(any())
     }
 
   }

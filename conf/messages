@@ -1578,10 +1578,10 @@ heading.is_uk_vat_paid = Did you, or will you pay UK VAT when buying all of your
 head.error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying all of your goods
 error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying all of your goods
 
-heading.is_uk_excise_paid = Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?
-head.error.is_uk_excise_paid = Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco
-error.is_uk_excise_paid = Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco
-text.excise_duty_will_usually = Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.
+heading.is_uk_vat_excise_paid = Did you, or will you pay both UK VAT and excise duty when buying all of your goods?
+head.error.is_uk_vat_excise_paid = Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods
+error.is_uk_vat_excise_paid = Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods
+text.excise_duty_will_usually = Excise duty only applies to alcohol and tobacco. It will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.
 text.read_more = Read more about alcohol and tobacco duties (opens in new tab).
 text.excise_duty_selection = If you are not bringing in any alcohol or tobacco select yes below.
 

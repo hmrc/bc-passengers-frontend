@@ -223,19 +223,4 @@ class VatResBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  "Going back from gb-ni-no-need-to-use-service" should {
-
-    "return user to gb-ni-uk-resident-check" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck: Option[String] = None
-      override val isVatResClaimed: Option[Boolean] = None
-      override val isBringingDutyFree: Option[Boolean] = None
-      override val bringingOverAllowance: Option[Boolean] = None
-
-      override def call: Call = TravelDetailsController.noNeedToUseServiceGbni()
-
-      m.backLink(context) shouldBe Some(UKResidentController.loadUKResidentPage().url)
-    }
-  }
 }

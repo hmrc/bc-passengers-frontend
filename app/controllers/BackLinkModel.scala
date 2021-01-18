@@ -39,24 +39,22 @@ class BackLinkModel @Inject() (
           Some(appConfig.declareGoodsUrl)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
-      case "gb-ni-vat-check" =>
-        Some(ArrivingNIController.loadArrivingNIPage)
       case "goods-bought-into-northern-ireland-inside-eu" =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "gb-ni-excise-check" =>
-        Some(UKVatPaidController.loadUKVatPaidPage)
+      case "gb-ni-vat-excise-check" =>
+        Some(UKResidentController.loadUKResidentPage)
       case "gb-ni-uk-resident-check" =>
-        Some(UKExcisePaidController.loadUKExcisePaidPage)
+        Some(ArrivingNIController.loadArrivingNIPage)
       case "gb-ni-exemptions" =>
         Some(UKResidentController.loadUKResidentPage())
       case "gb-ni-no-need-to-use-service" =>
-        Some(UKResidentController.loadUKResidentPage)
+        Some(UKExcisePaidController.loadUKExcisePaidPage)
       case "goods-brought-into-northern-ireland" if eucc!=Some("greatBritain") =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & ukr =>
-        Some(UKResidentController.loadUKResidentPage)
       case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & !ukr =>
-        Some(UccReliefController.loadUccReliefPage())
+        Some(UKResidentController.loadUKResidentPage)
+      case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & ukr =>
+        Some(UKExcisePaidController.loadUKExcisePaidPage())
       case "goods-brought-into-great-britain-iom" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "private-travel" if arN & boa =>

@@ -78,7 +78,7 @@ class CalculatorServiceSpec extends BaseSpec {
       arrivingNICheck = Some(false),
       irishBorder = Some(false),
       isUKVatPaid = None,
-      isUKExcisePaid = Some(true),
+      isUKVatExcisePaid = Some(true),
       isUKResident = Some(false),
       isUccRelief = Some(true),
       purchasedProductInstances = List(
@@ -102,7 +102,7 @@ class CalculatorServiceSpec extends BaseSpec {
       arrivingNICheck = Some(false),
       irishBorder = Some(false),
       isUKVatPaid = None,
-      isUKExcisePaid = Some(true),
+      isUKVatExcisePaid = Some(true),
       isUKResident = Some(false),
       isUccRelief = Some(true),
       purchasedProductInstances = List(
@@ -211,7 +211,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "transform journey data with excise paid = Some(true) to a calculator request with the isUKExcisePaid parameter true" in new LocalSetup {
 
-      val isUKExcisePaidJourneyData: JourneyData = goodJourneyData.copy(isUKExcisePaid = Some(true))
+      val isUKExcisePaidJourneyData: JourneyData = goodJourneyData.copy(isUKVatExcisePaid = Some(true))
 
       val isUKExcisePaidCalcRequest: CalculatorServiceRequest = calcRequest.copy(isUKExcisePaid = Some(true))
 
@@ -225,7 +225,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "transform journey data with excise paid = false to a calculator request with the isUKExcisePaid parameter false" in new LocalSetup {
 
-      val isUKExcisePaidJourneyData: JourneyData = goodJourneyData.copy(isUKExcisePaid = Some(false))
+      val isUKExcisePaidJourneyData: JourneyData = goodJourneyData.copy(isUKVatExcisePaid = Some(false))
 
       val isUKExcisePaidCalcRequest: CalculatorServiceRequest = calcRequest.copy(isUKExcisePaid = Some(false))
 

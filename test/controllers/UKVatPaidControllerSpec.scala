@@ -76,7 +76,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
   "postUKVatPaidPage" should {
 
-    "redirect to .../gb-ni-excise-check when user says they have only arrived from GB and going to NI and has answered if they paid UK VAT" in  {
+    "redirect to .../gb-ni-vat-excise-check when user says they have only arrived from GB and going to NI and has answered if they paid UK VAT" in  {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),Some(true))))
 
@@ -87,7 +87,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
                                                                           .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-excise-check")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
 
       verify(mockTravelDetailService, times(1)).storeUKVatPaid(any())(meq(true))(any())
     }

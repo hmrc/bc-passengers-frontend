@@ -9,7 +9,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import util.prefixErrorMessage
 
-@main_template(title = prefixErrorMessage(messages("heading.is_uk_excise_paid"), uKExcisePaidForm.hasErrors), backLink = backLink) {
+@main_template(title = prefixErrorMessage(messages("heading.is_uk_vat_excise_paid"), uKExcisePaidForm.hasErrors), backLink = backLink) {
 
 @views.html.tags.errors(uKExcisePaidForm)
 
@@ -18,15 +18,14 @@
 
 <fieldset>
     <legend>
-        <h1 class="heading-xlarge">@messages("heading.is_uk_excise_paid")</h1>
+        <h1 class="heading-xlarge">@messages("heading.is_uk_vat_excise_paid")</h1>
     </legend>
     <p>@messages("text.excise_duty_will_usually")
         <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a></p>
 
-    <div class="panel panel-border-wide">@messages("text.excise_duty_selection")</div>
 
     @components.input_radio_group(
-    uKExcisePaidForm("isUKExcisePaid"),
+    uKExcisePaidForm("isUKVatExcisePaid"),
     Seq("true" -> Messages("label.yes"),
     "false" -> Messages("label.no")),
     '_labelClass -> "block-label inputLabelBeforeError",

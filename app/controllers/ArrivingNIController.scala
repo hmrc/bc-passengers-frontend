@@ -55,7 +55,7 @@ class ArrivingNIController @Inject()(
         arrivingNI =>
           travelDetailsService.storeArrivingNI(context.journeyData)(arrivingNI).map(_ =>
             (context.getJourneyData.euCountryCheck,arrivingNI) match {
-              case (Some("greatBritain"),_) => Redirect(routes.UKVatPaidController.loadUKVatPaidPage())
+              case (Some("greatBritain"),_) => Redirect(routes.UKResidentController.loadUKResidentPage())
               case (Some("nonEuOnly"),true) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
               case (Some("nonEuOnly"),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoGB())
               case (Some("euOnly"),true) => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
