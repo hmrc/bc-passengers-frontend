@@ -66,6 +66,26 @@ class AlcoholInputControllerSpec extends BaseSpec {
       ))
     ))
 
+    lazy val cachedGBNIJourneyData: Option[JourneyData] = Some(JourneyData(
+      prevDeclaration = Some(false),
+      Some("greatBritain"),
+      arrivingNICheck= Some(true),
+      isVatResClaimed = None,
+      isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = List(PurchasedProductInstance(
+        ProductPath("alcohol/beer"),
+        "iid0",
+        Some(20.0),
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+        Some("EUR"),
+        Some(BigDecimal(12.99))
+      ))
+    ))
+
     val formCaptor: ArgumentCaptor[Form[AlcoholDto]] = ArgumentCaptor.forClass(classOf[Form[AlcoholDto]])
 
     def fakeLimits: Map[String, String]
@@ -75,9 +95,23 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
-
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      val insertedPurchase = (cachedJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+
+      rt(app, req)
+    }
+
+    def gbNIRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
+      val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
 
       when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -479,6 +513,23 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       verify(injected[Cache], times(1)).store(any())(any())
     }
+
+    "add a PPI to the JourneyData and redirect to UK VAT Paid page for GBNI Journey" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/gb-ni-vat-check")
+
+    }
   }
 
   "Posting processEditForm" should {
@@ -540,6 +591,23 @@ class AlcoholInputControllerSpec extends BaseSpec {
       )(any())
 
       verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "modify the relevant PPI in the JourneyData and redirect to UK VAT Paid page for GBNI Journey" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "13.0",
+        "cost" -> "50.00"
+      )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/gb-ni-vat-check")
+
     }
   }
 }

@@ -18,7 +18,7 @@ class UKVatPaidFormSpec extends  BaseSpec{
     }
     "return error if the user selects invalid value" in {
       UKVatPaidForm.form.bind(Map("isUKVatPaid"-> ""))
-        .errors.exists(_.message == "error.is_uk_vat_paid") shouldBe true
+        .errors.exists(_.message == "error.is_uk_vat_paid_item") shouldBe true
     }
   }
 

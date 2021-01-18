@@ -1575,8 +1575,11 @@ head.error.arriving_gb=Nid oes angen i chi ddatgan eich nwyddau os ydych yn teit
 error.arriving_gb=Nid oes angen i chi ddatgan eich nwyddau os ydych yn teithio o fewn Prydain Fawr yn unig. Dewiswch ‘Iawn’ os mai Gogledd Iwerddon yw pen eich taith.
 
 heading.is_uk_vat_paid = A wnaethoch dalu, neu a fyddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau?
+heading.is_uk_vat_paid_item = (W) Did you, or will you pay UK VAT when buying this item?
 head.error.is_uk_vat_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau
+head.error.is_uk_vat_paid_item = (W) Select yes if you have, or will pay UK VAT when buying this item
 error.is_uk_vat_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau
+error.is_uk_vat_paid_item = (W) Select yes if you have, or will pay UK VAT when buying this item
 
 heading.is_uk_vat_excise_paid = (W)Did you, or will you pay both UK VAT and excise duty when buying all of your goods?(W)
 head.error.is_uk_vat_excise_paid = (W)Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods(W)

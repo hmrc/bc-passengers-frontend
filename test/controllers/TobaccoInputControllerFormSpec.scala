@@ -234,7 +234,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
         "cost" -> "4,444.00"
       ))
       form.hasErrors shouldBe false
-      form.value.get shouldBe TobaccoDto(None, Some(0.5), "FR", "EUR", 4444)
+      form.value.get shouldBe TobaccoDto(None, Some(0.5), "FR", "EUR", 4444, None, None)
     }
 
     "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
@@ -245,7 +245,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
         "cost" -> "4500.00"
       ))
       form.hasErrors shouldBe false
-      form.value.get shouldBe TobaccoDto(Some(1000), None, "IN", "INR", 4500)
+      form.value.get shouldBe TobaccoDto(Some(1000), None, "IN", "INR", 4500, None, None)
     }
 
   }

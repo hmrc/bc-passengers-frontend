@@ -64,14 +64,46 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       ))
     ))
 
+    lazy val cachedGBNIJourneyData: Option[JourneyData] = Some(JourneyData(
+      prevDeclaration = Some(false),
+      Some("greatBritain"),
+      arrivingNICheck = Some(true),
+      isVatResClaimed = None,
+      isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = List(PurchasedProductInstance(
+        ProductPath("other-goods/books"),
+        "iid0",
+        None,
+        None,
+        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some("EUR"),
+        Some(BigDecimal(12.99))
+      ))
+    ))
+
     val formCaptor: ArgumentCaptor[Form[OtherGoodsDto]] = ArgumentCaptor.forClass(classOf[Form[OtherGoodsDto]])
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
-
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
+      val insertedPurchase = (cachedJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
+
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+
+      rt(app, req)
+    }
+
+    def gbNIRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+      val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedGBNIJourneyData.get
 
       when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -475,6 +507,20 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[Cache], times(1)).store(any())(any())
     }
+
+    "add a PPI to the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+        "action" -> "continue",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "costs[0]" -> "12.12"
+      )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/pid/gb-ni-vat-check")
+    }
   }
 
   "Posting processEditForm" should {
@@ -517,6 +563,20 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       )(any())
 
       verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
+        "action" -> "continue",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "costs[0]" -> "12.12"
+      )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/iid0/gb-ni-vat-check")
     }
 
   }

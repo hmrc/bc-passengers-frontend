@@ -1575,8 +1575,11 @@ head.error.arriving_gb = You do not need to declare your goods if you are only t
 error.arriving_gb = You do not need to declare your goods if you are only travelling within Great Britain. Select yes if your final destination is Northern Ireland.
 
 heading.is_uk_vat_paid = Did you, or will you pay UK VAT when buying all of your goods?
+heading.is_uk_vat_paid_item = Did you, or will you pay UK VAT when buying this item?
 head.error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying all of your goods
+head.error.is_uk_vat_paid_item = Select yes if you have, or will pay UK VAT when buying this item
 error.is_uk_vat_paid = Select yes if you have, or will pay UK VAT when buying all of your goods
+error.is_uk_vat_paid_item = Select yes if you have, or will pay UK VAT when buying this item
 
 heading.is_uk_vat_excise_paid = Did you, or will you pay both UK VAT and excise duty when buying all of your goods?
 head.error.is_uk_vat_excise_paid = Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods

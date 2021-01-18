@@ -9,12 +9,12 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.UKVatPaidAction
 import forms.UKVatPaidForm
+
 import javax.inject.Inject
-import models.JourneyData
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -22,7 +22,7 @@ class UKVatPaidController @Inject()(
                                       val cache: Cache,
                                       uKVatPaidAction: UKVatPaidAction,
                                       val error_template: views.html.error_template,
-                                      val isUKVatPaidPage: views.html.travel_details.ukvat_paid,
+                                      val isUKVatPaidItemPage: views.html.travel_details.ukvat_paid_item,
                                       override val controllerComponents: MessagesControllerComponents,
                                       implicit val appConfig: AppConfig,
                                       val backLinkModel: BackLinkModel,
@@ -32,32 +32,35 @@ class UKVatPaidController @Inject()(
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
 
-  val loadUKVatPaidPage: Action[AnyContent] = uKVatPaidAction { implicit context =>
+  def loadItemUKVatPaidPage(path: ProductPath, iid: String): Action[AnyContent] = uKVatPaidAction { implicit context =>
     Future.successful {
-      context.journeyData match {
-        case Some(JourneyData(_, _,_,Some(isUKVatPaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_)) =>
-          Ok(isUKVatPaidPage(UKVatPaidForm.form.fill(isUKVatPaid), backLinkModel.backLink))
+      val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
+      ppInstance match {
+        case Some(PurchasedProductInstance(_, _,_,_,_,_,_,Some(isVatPaid),_,_)) =>
+          Ok(isUKVatPaidItemPage(UKVatPaidForm.form.fill(isVatPaid), backLinkModel.backLink,path,iid))
         case _ =>
-          Ok(isUKVatPaidPage(UKVatPaidForm.form, backLinkModel.backLink))
+          Ok(isUKVatPaidItemPage(UKVatPaidForm.form, backLinkModel.backLink,path,iid))
       }
     }
   }
 
-  def postUKVatPaidPage(): Action[AnyContent] = uKVatPaidAction { implicit context =>
+  def postItemUKVatPaidPage(path: ProductPath, iid: String): Action[AnyContent] = uKVatPaidAction { implicit context =>
     UKVatPaidForm.form.bindFromRequest().fold(
       hasErrors = {
         formWithErrors =>
           Future.successful(
-            BadRequest(isUKVatPaidPage(formWithErrors, backLinkModel.backLink))
+            BadRequest(isUKVatPaidItemPage(formWithErrors, backLinkModel.backLink,path,iid))
           )
       },
       success = {
-        isUKVatPaid =>
-          travelDetailsService.storeUKVatPaid(context.journeyData)(isUKVatPaid).map(_ =>
-            Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage())
+        isVatPaid =>
+          val ppInstances = context.getJourneyData.purchasedProductInstances.map(ppi => {
+              if(ppi.iid == iid) ppi.copy(isVatPaid = Some(isVatPaid)) else ppi
+            })
+          cache.store(context.getJourneyData.copy(purchasedProductInstances = ppInstances)).map(_ =>
+            Redirect(routes.SelectProductController.nextStep())
           )
       })
   }
-
 }
 
