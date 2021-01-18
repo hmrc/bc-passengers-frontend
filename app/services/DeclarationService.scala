@@ -152,7 +152,7 @@ class DeclarationService @Inject()(
                       "onwardTravelGBNI" -> getOnwardTravel,
                       "uccRelief" -> getBooleanValue(journeyData.isUccRelief),
                       "ukVATPaid" -> getBooleanValue(journeyData.isUKVatPaid),
-                      "ukExcisePaid" -> getBooleanValue(journeyData.isUKExcisePaid)
+                      "ukExcisePaid" -> getBooleanValue(journeyData.isUKVatExcisePaid)
               )
     })
 

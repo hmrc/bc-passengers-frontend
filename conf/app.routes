@@ -17,8 +17,8 @@ POST       /arriving-ni                                                         
 GET        /gb-ni-vat-check                                                            controllers.UKVatPaidController.loadUKVatPaidPage
 POST       /gb-ni-vat-check                                                            controllers.UKVatPaidController.postUKVatPaidPage
 
-GET        /gb-ni-excise-check                                                         controllers.UKExcisePaidController.loadUKExcisePaidPage
-POST       /gb-ni-excise-check                                                         controllers.UKExcisePaidController.postUKExcisePaidPage
+GET        /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.loadUKExcisePaidPage
+POST       /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.postUKExcisePaidPage
 
 GET        /gb-ni-uk-resident-check                                                    controllers.UKResidentController.loadUKResidentPage
 POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage

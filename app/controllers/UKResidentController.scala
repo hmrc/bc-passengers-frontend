@@ -53,11 +53,9 @@ class UKResidentController @Inject()(
       success = {
         isUKResident =>
           travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(f = _ =>
-            (context.getJourneyData.isUKVatPaid, context.getJourneyData.isUKExcisePaid, isUKResident) match {
-              case (Some(false), _, true) | (_, Some(false), true) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
-              case (_, _, false) => Redirect(routes.UccReliefController.loadUccReliefPage())
-              case (Some(true), Some(true), true) => Redirect(routes.TravelDetailsController.noNeedToUseServiceGbni())
-              case _ => Redirect(routes.TravelDetailsController.whereGoodsBought())
+            isUKResident match {
+              case true => Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage())
+              case false => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
             }
           )
       })

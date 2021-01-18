@@ -672,7 +672,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),
         isUKVatPaid = Some(true),
-        isUKExcisePaid = Some(true),
+        isUKVatExcisePaid = Some(true),
         isUKResident = Some(false),
         isUccRelief = Some(true),
       )
@@ -944,7 +944,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),
         isUKVatPaid = Some(true),
-        isUKExcisePaid = Some(false),
+        isUKVatExcisePaid = Some(false),
         isUKResident = Some(true)
       )
 

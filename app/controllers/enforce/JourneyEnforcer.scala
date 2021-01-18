@@ -274,6 +274,7 @@ class ArrivingNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: Ap
   }
 }
 
+
 @Singleton
 class UKVatPaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
@@ -285,6 +286,7 @@ class UKVatPaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: 
   }
 }
 
+
 @Singleton
 class UKExcisePaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
@@ -295,6 +297,8 @@ class UKExcisePaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicActio
     }
   }
 }
+
+
 
 @Singleton
 class UKResidentAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {

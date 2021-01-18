@@ -1578,10 +1578,10 @@ heading.is_uk_vat_paid = A wnaethoch dalu, neu a fyddwch yn talu, TAW yn y DU wr
 head.error.is_uk_vat_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau
 error.is_uk_vat_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau
 
-heading.is_uk_excise_paid = A wnaethoch dalu, neu a fyddwch yn talu, toll ecséis y DU wrth brynu’ch holl alcohol a thybaco?
-head.error.is_uk_excise_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, toll ecséis y DU wrth brynu’ch holl alcohol a thybaco, neu os nad ydych yn dod ag unrhyw alcohol na thybaco i mewn
-error.is_uk_excise_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, toll ecséis y DU wrth brynu’ch holl alcohol a thybaco, neu os nad ydych yn dod ag unrhyw alcohol na thybaco i mewn
-text.excise_duty_will_usually = Caiff toll ecséis ei chynnwys yng nghost alcohol a thybaco fel arfer, oni bai eich bod yn eu prynu mewn siop ‘ddi-doll’ neu ‘ddi-dreth’, megis mewn maes awyr neu borthladd fferi.
+heading.is_uk_vat_excise_paid = (W)Did you, or will you pay both UK VAT and excise duty when buying all of your goods?(W)
+head.error.is_uk_vat_excise_paid = (W)Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods(W)
+error.is_uk_vat_excise_paid = (W)Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods(W)
+text.excise_duty_will_usually = (W)Excise duty only applies to alcohol and tobacco. It will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.(W)
 text.read_more = Darllenwch ragor am dollau alcohol a thybaco (yn agor tab newydd).
 text.excise_duty_selection = Os nad ydych yn dod ag unrhyw alcohol na thybaco i mewn, dewiswch ‘Iawn’ isod.
 

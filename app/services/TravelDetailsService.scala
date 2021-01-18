@@ -29,7 +29,7 @@ class TravelDetailsService @Inject() (
         cache.storeJourneyData(jd.copy(
           euCountryCheck = Some(countryChoice),
           isUKVatPaid = None,
-          isUKExcisePaid = None,
+          isUKVatExcisePaid = None,
           isUKResident = isCustomsExempt,
           isUccRelief = None,
           isVatResClaimed = None,
@@ -199,18 +199,18 @@ class TravelDetailsService @Inject() (
     }
   }
 
-  def storeUKExcisePaid(journeyData: Option[JourneyData])(isUKExcisePaid: Boolean)
+  def storeUKExcisePaid(journeyData: Option[JourneyData])(isUKVatExcisePaid: Boolean)
                     (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
 
     journeyData match {
-      case Some(journeyData) if !journeyData.isUKExcisePaid.contains(isUKExcisePaid) =>
+      case Some(journeyData) if !journeyData.isUKVatExcisePaid.contains(isUKVatExcisePaid) =>
 
         cache.storeJourneyData(journeyData.copy(
-          isUKExcisePaid = Some(isUKExcisePaid)
+          isUKVatExcisePaid = Some(isUKVatExcisePaid)
         ))
 
       case None =>
-        cache.storeJourneyData( JourneyData(isUKExcisePaid = Some(isUKExcisePaid)) )
+        cache.storeJourneyData( JourneyData(isUKVatExcisePaid = Some(isUKVatExcisePaid)) )
 
       case _ =>
         Future.successful( journeyData )

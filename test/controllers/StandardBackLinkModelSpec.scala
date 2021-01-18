@@ -34,7 +34,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
     def euCountryCheck: Option[String]
     def isArrivingNi: Option[Boolean] = None
     def isUKVatPaid: Option[Boolean] = None
-    def isUKExcisePaid: Option[Boolean] = None
+    def isUKVatExcisePaid: Option[Boolean] = None
     def isUKResident: Option[Boolean] = None
     def isUccRelief: Option[Boolean] = None
     def isVatResClaimed: Option[Boolean]= None
@@ -44,10 +44,10 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
     def call: Call
 
-    lazy val journeyData: Option[JourneyData] = (prevDeclaration, euCountryCheck, isArrivingNi,isUKVatPaid,isUKExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree, calculatorResponse) match {
+    lazy val journeyData: Option[JourneyData] = (prevDeclaration, euCountryCheck, isArrivingNi,isUKVatPaid,isUKVatExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree, calculatorResponse) match {
       case (None, None, None, None, None,None, None, None, None, None) => None
-      case (prevDeclaration, euCountryCheck, isArrivingNi,isUKVatPaid,isUKExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree, calculatorResponse) =>
-        Some(JourneyData(prevDeclaration = prevDeclaration, euCountryCheck = euCountryCheck, arrivingNICheck = isArrivingNi, isUKVatPaid = isUKVatPaid,isUKExcisePaid=isUKExcisePaid,
+      case (prevDeclaration, euCountryCheck, isArrivingNi,isUKVatPaid,isUKVatExcisePaid,isUKResident,isUccRelief, isVatResClaimed, isBringingDutyFree, calculatorResponse) =>
+        Some(JourneyData(prevDeclaration = prevDeclaration, euCountryCheck = euCountryCheck, arrivingNICheck = isArrivingNi, isUKVatPaid = isUKVatPaid,isUKVatExcisePaid=isUKVatExcisePaid,
           isUKResident=isUKResident,isUccRelief=isUccRelief,isVatResClaimed = isVatResClaimed, isBringingDutyFree = isBringingDutyFree,
           bringingOverAllowance = bringingOverAllowance, calculatorResponse = calculatorResponse))
     }
@@ -185,13 +185,13 @@ class StandardBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
     }
 
-    "happen when on gb-ni-vat-check and GB journey to NI" in new LocalSetup {
+    "happen when on gb-ni-uk-resident-check and GB journey to NI" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck: Option[String] = Some("greatBritain")
       override val isArrivingNi: Option[Boolean] = Some(true)
 
-      override def call: Call = UKVatPaidController.loadUKVatPaidPage()
+      override def call: Call = UKResidentController.loadUKResidentPage()
 
       m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
     }
@@ -208,27 +208,15 @@ class StandardBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  "Going back to gb-ni-vat-check" should {
-    "happen when on gb-ni-excise-check" in new LocalSetup {
+  "Going back to gb-ni-uk-resident-check" should {
+    "happen when on gb-ni-vat-excise-check" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck: Option[String] = None
 
       override def call: Call = UKExcisePaidController.loadUKExcisePaidPage()
 
-      m.backLink(context) shouldBe Some(routes.UKVatPaidController.loadUKVatPaidPage().url)
-    }
-  }
-
-  "Going back to gb-ni-excise-check" should {
-    "happen when on gb-ni-uk-resident-check" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled  = false
-      override val euCountryCheck: Option[String] = None
-
-      override def call: Call = UKResidentController.loadUKResidentPage()
-
-      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage().url)
+      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
     }
   }
 
@@ -251,7 +239,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.noNeedToUseServiceGbni()
 
-      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
+      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage().url)
     }
 
     "happen when on goods-brought-into-northern-ireland for UK Resident in GB-NI flow" in new LocalSetup {
@@ -259,17 +247,16 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck: Option[String] = Some("greatBritain")
       override val isArrivingNi: Option[Boolean] = Some(true)
-      override val isUKVatPaid: Option[Boolean] = Some(true)
-      override val isUKExcisePaid: Option[Boolean] = Some(false)
+      override val isUKVatExcisePaid: Option[Boolean] = Some(false)
       override val isUKResident: Option[Boolean] = Some(true)
 
       override def call: Call = TravelDetailsController.goodsBoughtIntoNI()
 
-      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
+      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage().url)
     }
   }
 
-  "Going back to gb-ni-exemptions" should {
+  "Going back to gb-ni-uk-resident-check" should {
     "happen when on goods-brought-into-northern-ireland in GB-NI flow for non-UK Resident" in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
@@ -278,7 +265,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = TravelDetailsController.goodsBoughtIntoNI()
 
-      m.backLink(context) shouldBe Some(routes.UccReliefController.loadUccReliefPage().url)
+      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
     }
   }
 

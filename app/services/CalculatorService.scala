@@ -139,7 +139,7 @@ class CalculatorService @Inject() (
           isAgeOver17,
           isArrivingNI,
           journeyData.isUKVatPaid,
-          journeyData.isUKExcisePaid,
+          journeyData.isUKVatExcisePaid,
           journeyData.isUKResident,
           journeyData.isUccRelief,
           purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))

@@ -13,8 +13,8 @@ import scala.util.Try
 object UKExcisePaidForm {
   val form: Form[Boolean] = Form(
     single(
-      "isUKExcisePaid" -> optional(text)
-        .verifying("error.is_uk_excise_paid", x => x.fold(false)(y => y.nonEmpty && Try(y.toBoolean).toOption.isDefined))
+      "isUKVatExcisePaid" -> optional(text)
+        .verifying("error.is_uk_vat_excise_paid", x => x.fold(false)(y => y.nonEmpty && Try(y.toBoolean).toOption.isDefined))
         .transform[Boolean](_.get.toBoolean, s => Some(s.toString))
     )
   )

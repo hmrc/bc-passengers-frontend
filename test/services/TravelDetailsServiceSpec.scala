@@ -235,31 +235,31 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
   "Calling storeUKExcisePaid" should {
 
-    "store isUKExcisePaid when no journey data there currently" in new LocalSetup {
+    "store isUKVatExcisePaid when no journey data there currently" in new LocalSetup {
 
-      await(travelDetailsService.storeUKExcisePaid(None)(isUKExcisePaid = true))
+      await(travelDetailsService.storeUKExcisePaid(None)(isUKVatExcisePaid = true))
 
       verify(cacheMock, times(1)).storeJourneyData(
-        meq(JourneyData(isUKExcisePaid = Some(true))) )(any())
+        meq(JourneyData(isUKVatExcisePaid = Some(true))) )(any())
     }
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData: Option[JourneyData] = Some( JourneyData(isUKVatPaid = Some(true), isUKExcisePaid = Some(true)) )
+      val journeyData: Option[JourneyData] = Some( JourneyData(isUKVatPaid = Some(true), isUKVatExcisePaid = Some(true)) )
 
-      await(travelDetailsService.storeUKExcisePaid(journeyData)(isUKExcisePaid = true))
+      await(travelDetailsService.storeUKExcisePaid(journeyData)(isUKVatExcisePaid = true))
 
       verify(cacheMock, times(0)).storeJourneyData(any())(any())
     }
 
-    "store isUKExcisePaid when journey data does exist, keeping existing journey data if the isUKExcisePaid has changed" in new LocalSetup {
+    "store isUKVatExcisePaid when journey data does exist, keeping existing journey data if the isUKVatExcisePaid has changed" in new LocalSetup {
 
-      val journeyData: Option[JourneyData] = Some(JourneyData(isUKVatPaid = Some(true), isUKExcisePaid = Some(false)))
+      val journeyData: Option[JourneyData] = Some(JourneyData(isUKVatPaid = Some(true), isUKVatExcisePaid = Some(false)))
 
-      await(travelDetailsService.storeUKExcisePaid(journeyData)(isUKExcisePaid = true))
+      await(travelDetailsService.storeUKExcisePaid(journeyData)(isUKVatExcisePaid = true))
 
       verify(cacheMock, times(1)).storeJourneyData(
-        meq(JourneyData(isUKVatPaid = Some(true), isUKExcisePaid = Some(true)) ))(any())
+        meq(JourneyData(isUKVatPaid = Some(true), isUKVatExcisePaid = Some(true)) ))(any())
     }
   }
 
@@ -275,7 +275,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "not update the journey data if the answer has not changed" in new LocalSetup {
 
-      val journeyData: Option[JourneyData] = Some( JourneyData(isUKExcisePaid = Some(true), isUKResident = Some(true)))
+      val journeyData: Option[JourneyData] = Some( JourneyData(isUKVatExcisePaid = Some(true), isUKResident = Some(true)))
 
       await(travelDetailsService.storeUKResident(journeyData)(isUKResident = true))
 
@@ -284,12 +284,12 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store isUKResident when journey data does exist, keeping existing journey data if the isUKResident has changed" in new LocalSetup {
 
-      val journeyData: Option[JourneyData] = Some(JourneyData(isUKExcisePaid = Some(true), isUKResident = Some(false)))
+      val journeyData: Option[JourneyData] = Some(JourneyData(isUKVatExcisePaid = Some(true), isUKResident = Some(false)))
 
       await(travelDetailsService.storeUKResident(journeyData)(isUKResident = true))
 
       verify(cacheMock, times(1)).storeJourneyData(
-        meq(JourneyData(isUKExcisePaid = Some(true), isUKResident = Some(true))))(any())
+        meq(JourneyData(isUKVatExcisePaid = Some(true), isUKResident = Some(true))))(any())
     }
   }
 
