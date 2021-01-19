@@ -14,11 +14,11 @@ POST       /where-goods-bought                                                  
 GET        /arriving-ni                                                                controllers.ArrivingNIController.loadArrivingNIPage
 POST       /arriving-ni                                                                controllers.ArrivingNIController.postArrivingNIPage
 
-GET        /gb-ni-vat-check                                                            controllers.UKVatPaidController.loadUKVatPaidPage
-POST       /gb-ni-vat-check                                                            controllers.UKVatPaidController.postUKVatPaidPage
-
 GET        /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.loadUKExcisePaidPage
 POST       /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.postUKExcisePaidPage
+
+GET        /enter-goods/$path<.+>/:iid/gb-ni-vat-check                                  controllers.UKVatPaidController.loadItemUKVatPaidPage(path: ProductPath, iid: String)
+POST       /enter-goods/$path<.+>/:iid/gb-ni-vat-check                                  controllers.UKVatPaidController.postItemUKVatPaidPage(path: ProductPath, iid: String)
 
 GET        /gb-ni-uk-resident-check                                                    controllers.UKResidentController.loadUKResidentPage
 POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage

@@ -7,18 +7,18 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction}
+import controllers.enforce.DashboardAction
+
 import javax.inject.Inject
-import models.{OtherGoodsDto, OtherGoodsSearchDto, ProductAlias, ProductPath, ProductTreeNode}
+import models.{OtherGoodsDto, ProductPath}
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.{optional, _}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import util._
 
-import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -30,7 +30,6 @@ class OtherGoodsInputController @Inject()(
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
 
-  publicAction: PublicAction,
   dashboardAction: DashboardAction,
 
   val other_goods_input: views.html.other_goods.other_goods_input,
@@ -50,7 +49,9 @@ class OtherGoodsInputController @Inject()(
         .transform[List[BigDecimal]](
           _.map(s => Try(BigDecimal(s.filter(_ != ','))).toOption.getOrElse(BigDecimal(0))),
           _.map(bd => if(bd>0) formatMonetaryValue(bd) else "")
-        )
+        ),
+      "isVatPaid" -> optional(boolean),
+      "isUccRelief" ->  optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
@@ -71,7 +72,9 @@ class OtherGoodsInputController @Inject()(
       )
       .transform[List[String]](_.map(_.filter(_ != ','))filter(!_.isEmpty), identity)
       .verifying("error.required.cost."+path.toMessageKey, c => c.size > 0)
-      .transform[List[BigDecimal]](_.map(s => BigDecimal(s)), _.map(formatMonetaryValue))
+      .transform[List[BigDecimal]](_.map(s => BigDecimal(s)), _.map(formatMonetaryValue)),
+      "isVatPaid" -> optional(boolean),
+      "isUccRelief" ->  optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
@@ -106,8 +109,11 @@ class OtherGoodsInputController @Inject()(
         },
         dto => {
           val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.currency, dto.costs)
-          cache.store(jd) map {_ =>
-            Redirect(routes.SelectProductController.nextStep())
+          cache.store(jd._1) map {_ =>
+            (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+              case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,jd._2))
+              case _ => Redirect(routes.SelectProductController.nextStep())
+            }
           }
         }
       )
@@ -137,7 +143,10 @@ class OtherGoodsInputController @Inject()(
           dto => {
             val jd = newPurchaseService.updatePurchase(ppi.path, iid, None, None, dto.country, dto.currency, dto.costs.head)
             cache.store(jd) map { _ =>
-              Redirect(routes.SelectProductController.nextStep())
+              (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
+                case _ => Redirect(routes.SelectProductController.nextStep())
+              }
             }
           }
         )

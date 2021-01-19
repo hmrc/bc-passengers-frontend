@@ -9,8 +9,8 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
-import models.{AlcoholDto, OtherGoodsDto, ProductPath}
-import play.api.data.Forms.{list, mapping, text}
+import models.{AlcoholDto, ProductPath}
+import play.api.data.Forms.{mapping, text}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
@@ -46,7 +46,9 @@ class AlcoholInputController @Inject()(
       "weightOrVolume" -> optional(text).transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), _ => None),
       "country"        -> ignored(""),
       "currency"       -> ignored(""),
-      "cost"           -> ignored(BigDecimal(0))
+      "cost"           -> ignored(BigDecimal(0)),
+      "isVatPaid"      -> optional(boolean),
+      "isExcisePaid"   -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
@@ -63,8 +65,9 @@ class AlcoholInputController @Inject()(
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
-        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue)
-
+        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
+      "isVatPaid" -> optional(boolean),
+      "isExcisePaid" -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
@@ -90,7 +93,7 @@ class AlcoholInputController @Inject()(
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireLimitUsage({
       val dto = resilientForm.bindFromRequest.value.get
-      newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))
+      newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))._1
     }) { limits =>
       requireProduct(path) { product =>
         alcoholForm(path, limits, product.applicableLimits).bindFromRequest.fold(
@@ -98,8 +101,12 @@ class AlcoholInputController @Inject()(
             Future.successful(BadRequest(alcohol_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
           },
           dto => {
-            cache.store( newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost)) ) map { _ =>
-              Redirect(routes.SelectProductController.nextStep())
+            val item = newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))
+            cache.store(item._1) map { _ =>
+              (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,item._2))
+                case _ => Redirect(routes.SelectProductController.nextStep())
+              }
             }
           }
         )
@@ -122,7 +129,10 @@ class AlcoholInputController @Inject()(
             },
             dto => {
               cache.store( newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.currency, dto.cost) ) map { _ =>
-                Redirect(routes.SelectProductController.nextStep())
+                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                  case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
+                  case _ => Redirect(routes.SelectProductController.nextStep())
+                }
               }
             }
           )

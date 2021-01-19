@@ -6,7 +6,7 @@
 package controllers
 
 import config.AppConfig
-import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, Tobacco}
+import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, ProductPath, Tobacco}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -469,6 +469,57 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override def call: Call = routes.CalculateDeclareController.irishBorder()
 
       m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard().url)
+    }
+  }
+
+  "Going back from gb-ni-vat-check for alcohol" should {
+
+    "return user to the edit alcohol page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = Some("greatBritain")
+      override val isArrivingNi: Option[Boolean] = Some(true)
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.UKVatPaidController.loadItemUKVatPaidPage(ProductPath("alcohol"),"iid")
+
+      m.backLink(context) shouldBe Some(routes.AlcoholInputController.displayEditForm("iid").url)
+    }
+  }
+
+  "Going back from gb-ni-vat-check for tobacco" should {
+
+    "return user to the edit tobacco page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = Some("greatBritain")
+      override val isArrivingNi: Option[Boolean] = Some(true)
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.UKVatPaidController.loadItemUKVatPaidPage(ProductPath("tobacco"),"iid")
+
+      m.backLink(context) shouldBe Some(routes.TobaccoInputController.displayEditForm("iid").url)
+    }
+  }
+
+  "Going back from gb-ni-vat-check for other goods" should {
+
+    "return user to the edit other goods page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = Some("greatBritain")
+      override val isArrivingNi: Option[Boolean] = Some(true)
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.UKVatPaidController.loadItemUKVatPaidPage(ProductPath("other-goods"),"iid")
+
+      m.backLink(context) shouldBe Some(routes.OtherGoodsInputController.displayEditForm("iid").url)
     }
   }
 }

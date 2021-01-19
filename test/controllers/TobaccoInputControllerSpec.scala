@@ -16,7 +16,8 @@ import play.api.data.Form
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
@@ -72,6 +73,26 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ))
     ))
 
+    lazy val cachedGBNIJourneyData = Some(JourneyData(
+      prevDeclaration = Some(false),
+      Some("greatBritain"),
+      arrivingNICheck = Some(true),
+      isVatResClaimed = Some(true),
+      isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = List(PurchasedProductInstance(
+        productPath,
+        "iid0",
+        weightOrVolume,
+        noOfSticks,
+        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some("EUR"),
+        Some(BigDecimal(12.99))
+      ))
+    ))
+
     def fakeLimits: Map[String, String]
 
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[TobaccoDto]])
@@ -81,9 +102,25 @@ class TobaccoInputControllerSpec extends BaseSpec {
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
-
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      val insertedPurchase = (cachedJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+
+      when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+
+      rt(app, req)
+    }
+
+    def gbNIRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
+      val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
 
       when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
       when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
@@ -412,6 +449,27 @@ class TobaccoInputControllerSpec extends BaseSpec {
       )(any())
 
       verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "add a PPI to the JourneyData and redirect to UK VAT PAid question for GBNI Journey" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigarettes")
+      override def weightOrVolume: Option[BigDecimal] = None
+      override def noOfSticks: Option[Int] = Some(400)
+
+      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "noOfSticks" -> "400",
+        "cost" -> "92.50"
+      )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/pid/gb-ni-vat-check")
+
     }
 
     "return a 400 when country not present for heated tobacco" in new LocalSetup {
@@ -1226,6 +1284,26 @@ class TobaccoInputControllerSpec extends BaseSpec {
       )(any())
 
       verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigars")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(20.0))
+      override def noOfSticks: Option[Int] = Some(150)
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "400.0",
+        "noOfSticks" -> "50",
+        "cost" -> "98.00"
+      )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/iid0/gb-ni-vat-check")
     }
   }
 }

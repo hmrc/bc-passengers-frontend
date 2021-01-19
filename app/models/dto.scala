@@ -25,14 +25,18 @@ object OtherGoodsDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
-  } yield OtherGoodsDto("", country.code, currency, purchasedProductInstance.cost.toList)
+  } yield OtherGoodsDto("", country.code, currency, purchasedProductInstance.cost.toList,purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief)
+
+
 }
 
 case class OtherGoodsDto(
   action: String,
   country: String,
   currency: String,
-  costs: List[BigDecimal] = List()
+  costs: List[BigDecimal] = List(),
+  isVatPaid: Option[Boolean],
+  isUccRelief: Option[Boolean]
 )
 
 object AlcoholDto {
@@ -41,14 +45,16 @@ object AlcoholDto {
     currency <- purchasedProductInstance.currency
     weightOrVolume <- purchasedProductInstance.weightOrVolume
     cost <- purchasedProductInstance.cost
-  } yield AlcoholDto(weightOrVolume, country.code, currency, cost)
+  } yield AlcoholDto(weightOrVolume, country.code, currency, cost,purchasedProductInstance.isVatPaid, purchasedProductInstance.isExcisePaid)
 }
 
 case class AlcoholDto(
   weightOrVolume: BigDecimal,
   country: String,
   currency: String,
-  cost: BigDecimal
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean]
 )
 
 object TobaccoDto {
@@ -58,7 +64,7 @@ object TobaccoDto {
     cost <- purchasedProductInstance.cost
     noOfSticks = purchasedProductInstance.noOfSticks
     weightOrVolume = purchasedProductInstance.weightOrVolume
-  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, currency, cost)
+  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, currency, cost, purchasedProductInstance.isVatPaid, purchasedProductInstance.isExcisePaid)
 }
 
 case class TobaccoDto(
@@ -66,7 +72,9 @@ case class TobaccoDto(
   weightOrVolume: Option[BigDecimal],
   country: String,
   currency: String,
-  cost: BigDecimal
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean]
 )
 
 object EuCountryCheckDto {

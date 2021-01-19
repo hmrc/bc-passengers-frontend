@@ -100,12 +100,6 @@
       <div class="panel panel-border-wide">
         <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
       </div>
-    } else {
-      <div class="form-group">
-        @if(iid.isEmpty) {
-          <button type="submit" class="button btn-link" name="action" value="add-cost">@messages(s"label.add_more.${path.toMessageKey}")</button>
-        }
-      </div>
     }
 
     <div class="form-group">

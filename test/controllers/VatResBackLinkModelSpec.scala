@@ -222,5 +222,4 @@ class VatResBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought().url)
     }
   }
-
 }
