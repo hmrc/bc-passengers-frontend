@@ -1008,6 +1008,67 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
+    "format the idValue to uppercase if idType is telephone and contains lowercase characters in " in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      val jd: JourneyData = JourneyData(
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        isUKVatPaid = Some(true),
+        isUKExcisePaid = Some(false),
+        isUKResident = Some(true)
+      )
+
+      val userInformation: UserInformation = UserInformation("Harry", "Potter","telephone", "74a17b53c2125", "", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
+
+      val dm: JsObject = declarationService.buildPartialDeclarationMessage(
+        userInformation,
+        calculatorResponse,
+        jd,
+        "2018-05-31T12:14:08Z"
+      )
+
+      val idValue: String = dm.value.apply("simpleDeclarationRequest")
+        .\("requestDetail")
+        .\("customerReference")
+        .\("idValue").asOpt[String]
+        .getOrElse("")
+
+      idValue shouldEqual "XPASSID74A17B53C2125"
+
+    }
+
+    "format the idValue to uppercase if idType is not telephone and contains lowercase characters in " in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      val jd: JourneyData = JourneyData(
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        isUKVatPaid = Some(true),
+        isUKExcisePaid = Some(false),
+        isUKResident = Some(true)
+      )
+
+      val userInformation: UserInformation = UserInformation("Harry", "Potter","other", "74a17b53c2125", "", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
+
+      val dm: JsObject = declarationService.buildPartialDeclarationMessage(
+        userInformation,
+        calculatorResponse,
+        jd,
+        "2018-05-31T12:14:08Z"
+      )
+
+      val idValue: String = dm.value.apply("simpleDeclarationRequest")
+        .\("requestDetail")
+        .\("customerReference")
+        .\("idValue").asOpt[String]
+        .getOrElse("")
+
+      idValue shouldEqual "74A17B53C2125"
+    }
+
   }
 
   "Calling DeclarationService.storeChargeReference" should {
