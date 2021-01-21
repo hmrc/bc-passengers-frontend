@@ -96,7 +96,7 @@ class DeclarationService @Inject()(
       }
 
       Json.obj("idType" -> o.identificationType,
-        "idValue" -> getIdValue,
+        "idValue" -> getIdValue.toUpperCase,
         "ukResident" -> getBooleanValue(journeyData.isUKResident))
     })
 
