@@ -6,7 +6,7 @@
 package controllers
 
 import config.AppConfig
-import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, ProductPath, Tobacco}
+import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, ProductPath, PurchasedProductInstance, Tobacco}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -221,16 +221,6 @@ class StandardBackLinkModelSpec extends BaseSpec {
   }
 
   "Going back to gb-ni-uk-resident-check" should {
-
-    "happen when on gb-ni-exemptions" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled  = false
-      override val euCountryCheck: Option[String] = None
-
-      override def call: Call = UccReliefController.loadUccReliefPage()
-
-      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
-    }
 
     "happen when on gb-ni-no-need-to-use-service" in new LocalSetup {
 
@@ -520,6 +510,27 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override def call: Call = routes.UKVatPaidController.loadItemUKVatPaidPage(ProductPath("other-goods"),"iid")
 
       m.backLink(context) shouldBe Some(routes.OtherGoodsInputController.displayEditForm("iid").url)
+    }
+  }
+
+  "Going back from gb-ni-exemptions in itemization journey" should {
+
+    "return user to gb-ni-vat-check" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      val path = "other-goods"
+      val iid = "someIid"
+      val ppis: List[PurchasedProductInstance] = List(PurchasedProductInstance(path = ProductPath(path), iid = iid))
+      override lazy val journeyData: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = ppis))
+
+      override def call: Call = UccReliefController.loadUccReliefItemPage(ProductPath(path), iid)
+
+      m.backLink(context) shouldBe Some(UKVatPaidController.loadItemUKVatPaidPage(ProductPath(path), iid).url)
     }
   }
 }

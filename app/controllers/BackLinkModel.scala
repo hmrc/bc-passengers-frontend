@@ -40,8 +40,7 @@ class BackLinkModel @Inject() (
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>{
-        val items = context.request.path.split('/')
-        val iid = items(items.length-2)
+        val iid = getIid(context.request.path)
         context.request.path match {
           case path if path.contains("enter-goods/alcohol") => Some(AlcoholInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/tobacco") => Some(TobaccoInputController.displayEditForm(iid))
@@ -54,8 +53,13 @@ class BackLinkModel @Inject() (
         Some(UKResidentController.loadUKResidentPage)
       case "gb-ni-uk-resident-check" =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "gb-ni-exemptions" =>
-        Some(UKResidentController.loadUKResidentPage())
+      case "gb-ni-exemptions" =>{
+        val iid = getIid(context.request.path)
+        context.request.path match {
+          case path if path.contains("enter-goods/other-goods") =>
+            Some(UKVatPaidController.loadItemUKVatPaidPage(context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path, iid))
+        }
+      }
       case "gb-ni-no-need-to-use-service" =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
       case "goods-brought-into-northern-ireland" if eucc!=Some("greatBritain") =>
@@ -102,5 +106,10 @@ class BackLinkModel @Inject() (
 
   def backLinkStandard(context: LocalContext): Option[String] = {
     backLinkVatRes(context)
+  }
+
+  private def getIid(path: String): String ={
+    val items = path.split('/')
+    items(items.length-2)
   }
 }

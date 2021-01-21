@@ -1592,27 +1592,26 @@ heading.uk-resident = A ydych yn breswylydd yn y DU?
 head.error.is_uk_resident = Dewiswch ‘Iawn’ os ydych yn breswylydd yn y DU
 error.is_uk_resident = Dewiswch ‘Iawn’ os ydych yn breswylydd yn y DU
 
-heading.ucc = Eithriadau treth a thollau ar gyfer y rhai nad ydynt yn breswyl yn y DU
-head.error.ucc = Dewiswch ‘Iawn’ os yw’r eithriadau treth a thollau yn berthnasol i’ch holl nwyddau
-error.ucc = Dewiswch ‘Iawn’ os yw’r eithriadau treth a thollau yn berthnasol i’ch holl nwyddau
-
-label.ucc.first_message = Er y bydd angen i chi ddatgan eich nwyddau o hyd, ni fydd angen i chi dalu treth na thollau arnynt, os mai unrhyw rai o’r canlynol ydynt:
-label.ucc.second_message = Bydd hefyd angen i chi ddatgan eich nwyddau, ond ni fydd angen i chi dalu treth na thollau arnynt, os ydych yn:
-label.ucc.third_message = Bydd angen i chi dalu unrhyw dreth a/neu dollau o hyd ar unrhyw nwyddau nad yw’r eithriadau uchod yn berthnasol iddynt.
-text.ucc.item_1 = eirch, yrnau ac eitemau sy’n gysylltiedig ag angladdau
-text.ucc.item_2 = tanwydd ac ireidiau o fewn cerbydau modur tir a chynwysyddion arbennig
-text.ucc.item_3 = rhoddion a gafwyd yng nghyd-destun cysylltiadau rhyngwladol
-text.ucc.item_4 = eitemau sy’n gysylltiedig â gwobrau neu anrhydeddau, megis medalau
-text.ucc.item_5 = gwasarn a bwyd ar gyfer anifeiliaid wrth eu cludo
-text.ucc.item_6 = deunyddiau ar gyfer adeiladu, cynnal a chadw, neu addurno cofebion neu fynwentydd dioddefwyr rhyfel
-text.ucc.item_7 = eiddo a gafwyd drwy etifeddu
-text.ucc.item_8 = gwisgoedd ysgol, deunyddiau addysg ac eitemau cysylltiedig i’r tŷ
-text.ucc.item_9 = rhoddion priodas sy’n werth llai na 1,000 Ewro yr un (ac eithrio alcohol a thybaco)
-text.ucc.item_10 = berson sy’n mwynhau breinryddid a breintiau penodol
-text.ucc.item_11 = ailfewnforio nwyddau i mewn i Ogledd Iwerddon
-text.ucc.item_12 = dychwelyd eiddo personol sydd wedi’i atgyweirio i Ogledd Iwerddon
-text.ucc.item_13 = trosglwyddo’ch preswyliaeth i Ogledd Iwerddon
-heading.ucc.all_goods_qs = A yw’r eithriadau treth a thollau yn berthnasol i’ch holl nwyddau?
+#ucc_relief_item page
+heading.ucc_item = (W)Tax and duty exemptions for non-UK residents(W)
+head.error.ucc_item = (W)Select yes if this item is covered by the tax and duty exemptions for non-UK residents(W)
+error.ucc_item = (W)Select yes if this item is covered by the tax and duty exemptions for non-UK residents(W)
+label.ucc.first_message_item = (W)Whilst you will still need to declare this item, you do not have to pay tax and duty on it if it is any of the following:(W)
+label.ucc.second_message_item = (W)You will also need to declare your item, but not pay tax and duty on it, if you are:(W)
+text.ucc.item_name_1 = (W)coffins, urns and items related to funerals(W)
+text.ucc.item_name_2 = (W)fuel and lubricants present in land motor vehicles and special containers(W)
+text.ucc.item_name_3 = (W)gifts received in the context of international relations(W)
+text.ucc.item_name_4 = (W)items related to awards or honours, such as medals(W)
+text.ucc.item_name_5 = (W)litter and food for animals during their transport(W)
+text.ucc.item_name_6 = (W)materials for the construction, upkeep or decoration of war victim memorials or cemeteries(W)
+text.ucc.item_name_7 = (W)property acquired by inheritance(W)
+text.ucc.item_name_8 = (W)school outfits, educational materials and related household items(W)
+text.ucc.item_name_9 = (W)wedding gifts under the value of 1,000 Euros each (excluding alcohol and tobacco)(W)
+text.ucc.item_name_10 = (W)a person enjoying certain immunities and privileges(W)
+text.ucc.item_name_11 = (W)re-importing goods into Northern Ireland(W)
+text.ucc.item_name_12 = (W)returning repaired personal property to Northern Ireland(W)
+text.ucc.item_name_13 = (W)transferring your residency to Northern Ireland(W)
+heading.ucc.is_this_item_covered_qs = (W)Is this item covered by the tax and duty exemptions?(W)
 
 heading.no_need_to_use = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn
 text.you_do_not_need_to_declare_goods = Nid oes angen i chi ddatgan eich nwyddau na defnyddio’r gwasanaeth hwn, ar yr amod:
