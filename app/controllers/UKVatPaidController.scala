@@ -49,20 +49,23 @@ class UKVatPaidController @Inject()(
       hasErrors = {
         formWithErrors =>
           Future.successful(
-            BadRequest(isUKVatPaidItemPage(formWithErrors, backLinkModel.backLink,path,iid))
+            BadRequest(isUKVatPaidItemPage(formWithErrors, backLinkModel.backLink, path, iid))
           )
       },
       success = {
         isVatPaid =>
           val ppInstances = context.getJourneyData.purchasedProductInstances.map(ppi => {
-              if(ppi.iid == iid) ppi.copy(isVatPaid = Some(isVatPaid)) else ppi
-            })
+            if (ppi.iid == iid) ppi.copy(isVatPaid = Some(isVatPaid)) else ppi
+          })
           cache.store(context.getJourneyData.copy(purchasedProductInstances = ppInstances)).map(_ =>
-            path.toString.contains("other-goods") && (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) match {
+            path.toString.contains("other-goods") match {
               case true =>
-                Redirect (routes.UccReliefController.loadUccReliefItemPage(path, iid))
+                if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get)
+                  Redirect (routes.UccReliefController.loadUccReliefItemPage(path, iid))
+                else
+                  Redirect(routes.SelectProductController.nextStep())
               case false =>
-                Redirect(routes.SelectProductController.nextStep())
+                Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))
             }
           )
       })

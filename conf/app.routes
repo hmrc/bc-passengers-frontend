@@ -20,6 +20,12 @@ POST       /gb-ni-vat-excise-check                                              
 GET        /enter-goods/$path<.+>/:iid/gb-ni-vat-check                                  controllers.UKVatPaidController.loadItemUKVatPaidPage(path: ProductPath, iid: String)
 POST       /enter-goods/$path<.+>/:iid/gb-ni-vat-check                                  controllers.UKVatPaidController.postItemUKVatPaidPage(path: ProductPath, iid: String)
 
+GET        /enter-goods/$path<.+>/:iid/gb-ni-excise-check                              controllers.UKExcisePaidController.loadUKExcisePaidItemPage(path: ProductPath, iid: String)
+POST       /enter-goods/$path<.+>/:iid/gb-ni-excise-check                              controllers.UKExcisePaidController.postUKExcisePaidItemPage(path: ProductPath, iid: String)
+
+GET        /gb-ni-excise-check                                                         controllers.UKExcisePaidController.loadUKExcisePaidPage
+POST       /gb-ni-excise-check                                                         controllers.UKExcisePaidController.postUKExcisePaidPage
+
 GET        /gb-ni-uk-resident-check                                                    controllers.UKResidentController.loadUKResidentPage
 POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage
 

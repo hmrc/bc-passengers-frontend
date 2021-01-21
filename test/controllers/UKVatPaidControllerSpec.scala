@@ -100,7 +100,37 @@ class UKVatPaidControllerSpec extends BaseSpec {
         .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
 
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check")
+
+    }
+
+    "redirect to the excise page in the add alcohol journey when successfully submitted" in  {
+
+      val ppi = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("alcohol/beer"), isVatPaid = Some(false))
+      val jd = JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(ppi))
+      val cachedJourneyData = Future.successful(Some(jd))
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-vat-check")
+        .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check")
+
+    }
+
+    "redirect to the excise page in the add tobacco journey when successfully submitted" in  {
+
+      val ppi = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("tobacco/cigarette"), isVatPaid = Some(false))
+      val jd = JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(ppi))
+      val cachedJourneyData = Future.successful(Some(jd))
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/brTuNh/gb-ni-vat-check")
+        .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/brTuNh/gb-ni-excise-check")
 
     }
 
@@ -153,7 +183,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#isUKVatPaid]").html() shouldBe "Select yes if you have, or will pay UK VAT when buying this item"
       doc.getElementById("isUKVatPaid").getElementsByClass("error-message").html() shouldBe "Select yes if you have, or will pay UK VAT when buying this item"
-      verify(mockTravelDetailService, times(0)).storeUKVatPaid(any())(any())(any())
+      verify(mockCache, times(0)).store(any())(any())
     }
   }
 }
