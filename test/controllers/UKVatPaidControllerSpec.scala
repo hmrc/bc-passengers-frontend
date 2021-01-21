@@ -9,7 +9,7 @@ import config.AppConfig
 import connectors.Cache
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Matchers._
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -97,6 +97,36 @@ class UKVatPaidControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-vat-check")
+        .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+    }
+
+    "redirect to the ucc relief page in the add other goods journey when successfully submitted and non uk resident" in  {
+
+      val ppi = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("other-goods/adult/adult-clothing"), isVatPaid = Some(false))
+      val jd = JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi))
+      val cachedJourneyData = Future.successful(Some(jd))
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/brTuNh/gb-ni-vat-check")
+        .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/brTuNh/gb-ni-exemptions")
+
+    }
+
+    "redirect to the tell us page in the add other goods journey when successfully submitted and uk resident" in  {
+
+      val ppi = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("other-goods/adult/adult-clothing"), isVatPaid = Some(false))
+      val jd = JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(true), purchasedProductInstances = List(ppi))
+      val cachedJourneyData = Future.successful(Some(jd))
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/brTuNh/gb-ni-vat-check")
         .withFormUrlEncodedBody("isUKVatPaid" -> "true")).get
 
       status(response) shouldBe SEE_OTHER

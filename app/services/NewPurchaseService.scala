@@ -5,7 +5,6 @@
 
 package services
 
-import connectors.Cache
 import controllers.LocalContext
 import javax.inject.Inject
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
@@ -13,7 +12,6 @@ import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import scala.util.Random
 
 class NewPurchaseService @Inject() (
-  cache: Cache,
   countriesService: CountriesService
 ) {
 
@@ -35,7 +33,7 @@ class NewPurchaseService @Inject() (
     val journeyData = context.getJourneyData
     val country = countriesService.getCountryByCode(countryCode)
     journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances
-      .map(ppi => if (ppi.iid == iid) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost), ppi.isVatPaid) else ppi),
+      .map(ppi => if (ppi.iid == iid) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, Some(currency), Some(cost), ppi.isVatPaid, ppi.isExcisePaid, ppi.isUccRelief) else ppi),
       defaultCountry = Some(countryCode),
       defaultCurrency = Some(currency))
   }

@@ -23,8 +23,8 @@ POST       /enter-goods/$path<.+>/:iid/gb-ni-vat-check                          
 GET        /gb-ni-uk-resident-check                                                    controllers.UKResidentController.loadUKResidentPage
 POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage
 
-GET        /gb-ni-exemptions                                                           controllers.UccReliefController.loadUccReliefPage
-POST       /gb-ni-exemptions                                                           controllers.UccReliefController.postUccReliefPage
+GET        /enter-goods/$path<.+>/:iid/gb-ni-exemptions                                controllers.UccReliefController.loadUccReliefItemPage(path: ProductPath, iid: String)
+POST       /enter-goods/$path<.+>/:iid/gb-ni-exemptions                                controllers.UccReliefController.postUccReliefItemPage(path: ProductPath, iid: String)
 
 GET        /gb-ni-no-need-to-use-service                                               controllers.TravelDetailsController.noNeedToUseServiceGbni
 

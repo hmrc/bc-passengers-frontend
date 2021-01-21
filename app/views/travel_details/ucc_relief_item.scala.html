@@ -1,0 +1,62 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(uccReliefItemForm: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("heading.ucc_item"), uccReliefItemForm.hasErrors), backLink = backLink) {
+
+@views.html.tags.errors(uccReliefItemForm)
+
+
+@form(action = routes.UccReliefController.postUccReliefItemPage(path, iid)){
+
+
+    <h1 class="heading-xlarge">@messages("heading.ucc_item")</h1>
+
+    <p>@messages("label.ucc.first_message_item")</p>
+
+    <ul class="list list-bullet">
+        <li>@messages("text.ucc.item_name_1")</li>
+        <li>@messages("text.ucc.item_name_2")</li>
+        <li>@messages("text.ucc.item_name_3")</li>
+        <li>@messages("text.ucc.item_name_4")</li>
+        <li>@messages("text.ucc.item_name_5")</li>
+        <li>@messages("text.ucc.item_name_6")</li>
+        <li>@messages("text.ucc.item_name_7")</li>
+        <li>@messages("text.ucc.item_name_8")</li>
+        <li>@messages("text.ucc.item_name_9")</li>
+    </ul>
+
+    <p>@messages("label.ucc.second_message_item")</p>
+
+    <ul class="list list-bullet">
+        <li>@messages("text.ucc.item_name_10")</li>
+        <li>@messages("text.ucc.item_name_11")</li>
+        <li>@messages("text.ucc.item_name_12")</li>
+        <li>@messages("text.ucc.item_name_13")</li>
+    </ul>
+
+    <fieldset>
+        <legend class="heading-medium">@messages("heading.ucc.is_this_item_covered_qs")</legend>
+
+        @components.input_radio_group(
+        uccReliefItemForm("isUccRelief"),
+        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+        '_labelClass -> "block-label inputLabelBeforeError",
+        '_inline -> true
+        )
+
+        <div class="form-group">
+            <button class="button" type="submit">@messages("label.continue")</button>
+        </div>
+    </fieldset>
+
+}
+
+}

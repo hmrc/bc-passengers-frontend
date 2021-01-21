@@ -11,7 +11,7 @@ import controllers.enforce.UKVatPaidAction
 import forms.UKVatPaidForm
 
 import javax.inject.Inject
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -58,7 +58,12 @@ class UKVatPaidController @Inject()(
               if(ppi.iid == iid) ppi.copy(isVatPaid = Some(isVatPaid)) else ppi
             })
           cache.store(context.getJourneyData.copy(purchasedProductInstances = ppInstances)).map(_ =>
-            Redirect(routes.SelectProductController.nextStep())
+            path.toString.contains("other-goods") && (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) match {
+              case true =>
+                Redirect (routes.UccReliefController.loadUccReliefItemPage(path, iid))
+              case false =>
+                Redirect(routes.SelectProductController.nextStep())
+            }
           )
       })
   }

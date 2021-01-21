@@ -1592,27 +1592,26 @@ heading.uk-resident = Are you a UK resident?
 head.error.is_uk_resident = Select yes if you are a UK resident
 error.is_uk_resident = Select yes if you are a UK resident
 
-heading.ucc = Tax and duty exemptions for non-UK residents
-head.error.ucc = Select yes if all of your goods are covered by the tax and duty exemptions
-error.ucc = Select yes if all of your goods are covered by the tax and duty exemptions
-
-label.ucc.first_message = Whilst you will still need to declare your goods, you do not have to pay tax and duty on them if they are any of the following:
-label.ucc.second_message = You will also need to declare your goods, but not pay tax and duty on them, if you are:
-label.ucc.third_message = You will still need to pay tax and/or duty on any goods not covered by the above exemptions.
-text.ucc.item_1 = coffins, urns and items related to funerals
-text.ucc.item_2 = fuel and lubricants present in land motor vehicles and special containers
-text.ucc.item_3 = gifts received in the context of international relations
-text.ucc.item_4 = items related to awards or honours, such as medals
-text.ucc.item_5 = litter and food for animals during their transport
-text.ucc.item_6 = materials for the construction, upkeep or decoration of war victim memorials or cemeteries
-text.ucc.item_7 = property acquired by inheritance
-text.ucc.item_8 = school outfits, educational materials and related household items
-text.ucc.item_9 = wedding gifts under the value of 1,000 Euros each (excluding alcohol and tobacco)
-text.ucc.item_10 = a person enjoying certain immunities and privileges
-text.ucc.item_11 = re-importing goods into Northern Ireland
-text.ucc.item_12 = returning repaired personal property to Northern Ireland
-text.ucc.item_13 = transferring your residency to Northern Ireland
-heading.ucc.all_goods_qs = Are all of your goods covered by the tax and duty exemptions?
+#ucc_relief_item page
+heading.ucc_item = Tax and duty exemptions for non-UK residents
+head.error.ucc_item = Select yes if this item is covered by the tax and duty exemptions for non-UK residents
+error.ucc_item = Select yes if this item is covered by the tax and duty exemptions for non-UK residents
+label.ucc.first_message_item = Whilst you will still need to declare this item, you do not have to pay tax and duty on it if it is any of the following:
+label.ucc.second_message_item = You will also need to declare your item, but not pay tax and duty on it, if you are:
+text.ucc.item_name_1 = coffins, urns and items related to funerals
+text.ucc.item_name_2 = fuel and lubricants present in land motor vehicles and special containers
+text.ucc.item_name_3 = gifts received in the context of international relations
+text.ucc.item_name_4 = items related to awards or honours, such as medals
+text.ucc.item_name_5 = litter and food for animals during their transport
+text.ucc.item_name_6 = materials for the construction, upkeep or decoration of war victim memorials or cemeteries
+text.ucc.item_name_7 = property acquired by inheritance
+text.ucc.item_name_8 = school outfits, educational materials and related household items
+text.ucc.item_name_9 = wedding gifts under the value of 1,000 Euros each (excluding alcohol and tobacco)
+text.ucc.item_name_10 = a person enjoying certain immunities and privileges
+text.ucc.item_name_11 = re-importing goods into Northern Ireland
+text.ucc.item_name_12 = returning repaired personal property to Northern Ireland
+text.ucc.item_name_13 = transferring your residency to Northern Ireland
+heading.ucc.is_this_item_covered_qs = Is this item covered by the tax and duty exemptions?
 
 heading.no_need_to_use = You do not need to use this service
 text.you_do_not_need_to_declare_goods = You do not need to declare your goods or use this service as long as you:
