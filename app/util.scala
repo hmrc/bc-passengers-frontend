@@ -140,6 +140,14 @@ package object util {
     }
   }
 
+  def formatYesNo(value: Boolean)(implicit messages: Messages) : String = {
+    if(value){
+      messages("label.yes")
+    } else {
+      messages("label.no")
+    }
+  }
+
   def prefixErrorMessage(title: String, hasError: Boolean)(implicit messages: Messages): String = {
     if(hasError) {
       messages("label.error") + " " + title

@@ -1676,3 +1676,7 @@ head.error.required.identification_number_previous = (W)Enter the identification
 head.error.required.referenceNumber = (W)Enter your reference number
 head.error.referenceNumber.invalid = (W)Enter your reference number in the correct format
 error.referenceNumber.invalid = (W)Enter your reference number in the correct format
+
+label.vat_paid = (W)VAT paid(W)
+label.excise_paid = (W)Excise paid(W)
+label.tax_exempt = (W)Tax exempt(W)
