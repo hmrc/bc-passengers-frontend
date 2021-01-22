@@ -42,6 +42,8 @@ case object UKVatPaidStep extends JourneyStep(preceeding = List(ArrivingNIStep),
 
 case object UKExcisePaidStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => _.flatMap(_.isUKResident).contains(true))
 
+case object UKExcisePaidItemStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("greatBritain") && x.flatMap(_.arrivingNICheck).contains(true))
+
 case object UKResidentStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("greatBritain") && x.flatMap(_.arrivingNICheck).contains(true))
 
 case object UccReliefStep extends JourneyStep(preceeding = List(UKResidentStep), predicate = _ => x=> x.flatMap(_.isUKResident).contains(false))

@@ -533,4 +533,46 @@ class StandardBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(UKVatPaidController.loadItemUKVatPaidPage(ProductPath(path), iid).url)
     }
   }
+
+  "Going back from gb-ni-excise-check for alcohol in itemization journey" should {
+
+    "return user to gb-ni-vat-check" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      val path = "alcohol"
+      val iid = "someIid"
+      val ppis: List[PurchasedProductInstance] = List(PurchasedProductInstance(path = ProductPath(path), iid = iid))
+      override lazy val journeyData: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = ppis))
+
+      override def call: Call = UKExcisePaidController.loadUKExcisePaidItemPage(ProductPath(path), iid)
+
+      m.backLink(context) shouldBe Some(UKVatPaidController.loadItemUKVatPaidPage(ProductPath(path), iid).url)
+    }
+  }
+
+  "Going back from gb-ni-excise-check for tobacco in itemization journey" should {
+
+    "return user to gb-ni-vat-check" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      val path = "tobacco"
+      val iid = "someIid"
+      val ppis: List[PurchasedProductInstance] = List(PurchasedProductInstance(path = ProductPath(path), iid = iid))
+      override lazy val journeyData: Option[JourneyData] = Some(JourneyData(purchasedProductInstances = ppis))
+
+      override def call: Call = UKExcisePaidController.loadUKExcisePaidItemPage(ProductPath(path), iid)
+
+      m.backLink(context) shouldBe Some(UKVatPaidController.loadItemUKVatPaidPage(ProductPath(path), iid).url)
+    }
+  }
 }

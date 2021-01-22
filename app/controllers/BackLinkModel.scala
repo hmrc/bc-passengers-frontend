@@ -47,6 +47,13 @@ class BackLinkModel @Inject() (
           case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
         }
       }
+      case "gb-ni-excise-check" => {
+        val iid = getIid(context.request.path)
+        context.request.path match {
+          case path if path.contains("enter-goods/alcohol") || path.contains("enter-goods/tobacco") =>
+            Some(UKVatPaidController.loadItemUKVatPaidPage(context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path, iid))
+        }
+      }
       case "goods-bought-into-northern-ireland-inside-eu" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "gb-ni-vat-excise-check" =>
