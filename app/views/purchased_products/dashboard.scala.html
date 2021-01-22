@@ -10,7 +10,9 @@
   otherGoodsPurchasedItemList: List[PurchasedItem],
   showCalculate: Boolean,
   backLink: Option[String],
-  isIrishBorderQuestionEnabled: Boolean
+  isIrishBorderQuestionEnabled: Boolean,
+  isGbNi: Boolean,
+  isUkResident: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
@@ -52,6 +54,20 @@
                 @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
               </dd>
             </div>
+            @if(isGbNi) {
+              <div class="vat-paid">
+                <dt class="cya-question">@messages("label.vat_paid")</dt>
+                <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
+                </dd>
+              </div>
+              <div class="excise-paid">
+                <dt class="cya-question">@messages("label.excise_paid")</dt>
+                <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.isExcisePaid.map(formatYesNo)
+                </dd>
+              </div>
+            }
           </dl>
           <div class="margin-bottom-20">
             <a href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
@@ -96,6 +112,21 @@
                 @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
               </dd>
             </div>
+
+            @if(isGbNi) {
+              <div class="vat-paid">
+                <dt class="cya-question">@messages("label.vat_paid")</dt>
+                <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
+                </dd>
+              </div>
+              <div class="excise-paid">
+                <dt class="cya-question">@messages("label.excise_paid")</dt>
+                <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.isExcisePaid.map(formatYesNo)
+                </dd>
+              </div>
+            }
           </dl>
           <div class="margin-bottom-20">
             <a href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
@@ -145,6 +176,22 @@
                 @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
             </dd>
           </div>
+          @if(isGbNi) {
+            <div class="vat-paid">
+              <dt class="cya-question">@messages("label.vat_paid")</dt>
+              <dd class="cya-answer">
+              @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
+              </dd>
+            </div>
+            @if(!isUkResident) {
+              <div class="tax-exempt">
+                <dt class="cya-question">@messages("label.tax_exempt")</dt>
+                <dd class="cya-answer">
+                @purchasedItem.purchasedProductInstance.isUccRelief.map(formatYesNo)
+                </dd>
+              </div>
+            }
+          }
         </dl>
         <div class="margin-bottom-20">
           <a href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
