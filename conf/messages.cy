@@ -1601,6 +1601,7 @@ text.excise_duty_selection = Os nad ydych yn dod ag unrhyw alcohol na thybaco i 
 heading.is_uk_excise_paid_item = (W)Did you, or will you pay UK excise duty when buying this item?(W)
 head.error.is_uk_excise_paid_item = (W)Select yes if you have, or will pay UK excise duty when buying this item(W)
 error.is_uk_excise_paid_item = (W)Select yes if you have, or will pay UK excise duty when buying this item(W)
+text.excise_duty_will_usually_item = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.(W)
 
 heading.uk-resident = A ydych yn breswylydd yn y DU?
 head.error.is_uk_resident = Dewiswch ‘Iawn’ os ydych yn breswylydd yn y DU
