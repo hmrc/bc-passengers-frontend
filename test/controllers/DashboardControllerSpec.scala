@@ -94,7 +94,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
-          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil),
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "1.00", "1.00", "3.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -121,7 +121,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
-          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil),
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -152,7 +152,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
-          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP"), Nil), Country("UK", "UK", "UK", isEu = false, Nil),
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP"), Nil), Country("UK", "UK", "UK", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -178,7 +178,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
-          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil),
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -206,7 +206,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
       calculatorResponse = Some(CalculatorResponse(
-        Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil),
+        Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -232,7 +232,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
       euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), calculatorResponse = Some(CalculatorResponse(
-        Some(Alcohol(List(Band("A",List(Item("Adult Clothing", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("Adult clothing", "Adult clothing", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil),
+        Some(Alcohol(List(Band("A",List(Item("Adult Clothing", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("Adult clothing", "Adult clothing", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
@@ -259,7 +259,7 @@ class DashboardControllerSpec extends BaseSpec {
       calculatorResponse = Some(CalculatorResponse(
         Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-        Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP"), Nil), Country("GBP", "Barbados", "GBP", isEu = false, Nil),
+        Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP"), Nil), Country("GBP", "Barbados", "GBP", isEu = false, isCountry = true, Nil),
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
         withinFreeAllowance = false,
@@ -283,10 +283,10 @@ class DashboardControllerSpec extends BaseSpec {
 
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
       calculatorResponse = Some(CalculatorResponse(
-        Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP"), Nil), Country("UK", "UK", "UK", isEu = false, Nil),
+        Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP"), Nil), Country("UK", "UK", "UK", isEu = false, isCountry = true, Nil),
           ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-        Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP"), Nil), Country("GBP", "Barbados", "GBP", isEu = false, Nil),
+        Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP"), Nil), Country("GBP", "Barbados", "GBP", isEu = false, isCountry = true, Nil),
           ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("1.00", "1.00", "1.00", "300.00"),
         withinFreeAllowance = false,
@@ -307,9 +307,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the vat,excise and tax exempt flags as No against items for GBNI Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(false),Some(false),Some(false))
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(false),Some(false),Some(false))
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432),Some(false),Some(false),Some(false))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(false),None,Some(false),Some(false))
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(false),None,Some(false),Some(false))
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(5432),Some(false),None,Some(false),Some(false))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -344,9 +344,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the vat,excise and tax exempt flags as Yes against items for GBNI Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432),Some(true),None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("CHF"), Some(5432),Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -380,9 +380,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the vat, excise and tax exempt flags as Empty against items for GBNI Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None,None,None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)),None,None,None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432),None,None,None)
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None,None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None,None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(5432),None,None,None)
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -416,9 +416,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "not display the vat, excise and tax exempt flags as Empty against items for non GBNI Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None,None,None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("AUD"), Some(BigDecimal(10.234)),None,None,None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432),None,None,None)
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None,None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None,None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None,Some("CHF"), Some(5432),None,None,None)
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -452,7 +452,7 @@ class DashboardControllerSpec extends BaseSpec {
 
   "not display the tax exempt flags against other items for GBNI Journey for UK Residents" in new LocalSetup {
 
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, Nil)), Some("CHF"), Some(5432),Some(true),None,Some(true))
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry =  true, Nil)), None, Some("CHF"), Some(5432),Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(true), purchasedProductInstances = List(other)
     ))

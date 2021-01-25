@@ -38,7 +38,7 @@ class UKExcisePaidController @Inject()(
   val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_, _, _,Some(isUKVatExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_)) =>
+        case Some(JourneyData(_,_, _, _,Some(isUKVatExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_, _)) =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form.fill(isUKVatExcisePaid), backLinkModel.backLink))
         case _ =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form, backLinkModel.backLink))
@@ -70,7 +70,7 @@ class UKExcisePaidController @Inject()(
     Future.successful {
       val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
       ppInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _, Some(isExcisePaid),_)) =>
+        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _,_,_, Some(isExcisePaid),_)) =>
           Ok(isUKExcisePaidItemPage(UKExcisePaidItemForm.form.fill(isExcisePaid), backLinkModel.backLink, path, iid))
         case _ =>
           Ok(isUKExcisePaidItemPage(UKExcisePaidItemForm.form, backLinkModel.backLink, path, iid))

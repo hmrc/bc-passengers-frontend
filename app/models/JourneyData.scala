@@ -7,6 +7,7 @@ package models
 
 import org.joda.time.{LocalDate, LocalTime}
 import play.api.libs.json.{Json, OFormat}
+import ai.x.play.json.Jsonx
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 
@@ -20,11 +21,13 @@ case class PurchasedProductInstance(
   weightOrVolume: Option[BigDecimal] = None,
   noOfSticks: Option[Int] = None,
   country: Option[Country] = None,
+  originCountry: Option[Country] = None,
   currency: Option[String] = None,
   cost: Option[BigDecimal] = None,
   isVatPaid: Option[Boolean] = None,
+  isCustomPaid: Option[Boolean] = None,
   isExcisePaid: Option[Boolean] = None,
-  isUccRelief: Option[Boolean] = None
+  isUccRelief: Option[Boolean] = None,
 )
 
 object UserInformation {
@@ -77,7 +80,7 @@ object PaymentNotification {
 case class PaymentNotification(status: String, reference: String)
 
 object JourneyData {
-  implicit val formats: OFormat[JourneyData] = Json.format[JourneyData]
+  implicit val format: OFormat[JourneyData] = Jsonx.formatCaseClass
 }
 
 case class JourneyData(
@@ -101,6 +104,7 @@ case class JourneyData(
   calculatorResponse: Option[CalculatorResponse] = None,
   chargeReference: Option[String] = None,
   defaultCountry: Option[String] = None,
+  defaultOriginCountry: Option[String] = None,
   defaultCurrency: Option[String] = None,
   previousDeclarationDetails: Option[PreviousDeclarationDetails] = None
 ) {

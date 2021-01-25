@@ -56,7 +56,8 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
         "iid0",
         None,
         None,
-        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -70,7 +71,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].storeJourneyData(any())(any())) thenReturn Future.successful(cachedJourneyData)
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }

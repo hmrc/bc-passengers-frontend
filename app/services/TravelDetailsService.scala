@@ -39,6 +39,7 @@ class TravelDetailsService @Inject() (
           ageOver17 = None,
           purchasedProductInstances = Nil,
           defaultCountry = None,
+          defaultOriginCountry = None,
           defaultCurrency = None
         ))
 

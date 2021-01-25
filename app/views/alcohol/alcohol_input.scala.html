@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(dtoForm: Form[AlcoholDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], currencies: List[Currency])(implicit request: Request[_], messages: Messages)
+@(dtoForm: Form[AlcoholDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
@@ -21,8 +21,12 @@
       if (version !== 11) {
         var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
         enhanceSelectIntoAutoComplete("country", countrySynonymsData);
+
         var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
         enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData);
+
+        var countryEUSynonymsData = @Html( Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString )
+        enhanceSelectIntoAutoComplete("originCountry", countryEUSynonymsData);
       }
     })
   </script>
@@ -62,6 +66,16 @@
       '_inputHint -> messages("label.if_you_bought_this_alcohol_"),
       '_errorsAboveInput -> true
     )
+
+    @if(journeyStart.contains("euOnly")){
+      @components.select(
+        field = dtoForm("originCountry"),
+        elementOptions = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
+        displayEmptyValue = true,
+        '_label -> messages("label.country_this_alcohol_was_produced"),
+        '_inputHint -> messages("label.country_this_alcohol_was_produced_hint")
+      )
+    }
 
     @components.select(
       field = dtoForm("currency"),

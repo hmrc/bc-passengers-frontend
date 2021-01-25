@@ -134,7 +134,7 @@ class CalculateDeclareController @Inject()(
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_,_)) =>
+        case Some(JourneyData(_, _, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_,_,_)) =>
           Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
         case _ =>
           Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))
@@ -161,7 +161,14 @@ class CalculateDeclareController @Inject()(
 
   def calculate: Action[AnyContent] = dashboardAction { implicit context =>
 
-    doCalculateAction(context.getJourneyData)
+    if (context.getJourneyData.euCountryCheck.contains("greatBritain")) {
+      val updatedJourneyData = context.getJourneyData.copy(purchasedProductInstances = context.getJourneyData.purchasedProductInstances
+        .map(product => product.copy(isCustomPaid = context.getJourneyData.isUKResident)))
+      cache.store(updatedJourneyData).flatMap(_ =>
+        doCalculateAction(updatedJourneyData))
+    } else {
+      doCalculateAction(context.getJourneyData)
+    }
   }
 
   private def doCalculateAction(journeyData: JourneyData)(implicit context: LocalContext): Future[Result] = {

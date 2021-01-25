@@ -264,8 +264,10 @@ label.if_you_do_not_know_the_exact_number_weight_or_price=Os nad ydych yn gwybod
 label.if_you_do_not_know_the_exact_weight_or_price=Os nad ydych yn gwybod yr union bwysau neu’r union bris
 label.if_you_do_not_know_the_exact_volume_or_price=Os nad ydych yn gwybod yr union gyfaint neu’r union bris
 label.country_this_tobacco_was_=Y wlad lle y prynwyd y tybaco hwn
+label.country_this_tobacco_was_produced = (W)Country this tobacco was originally produced in(W)
 label.currency_used_to_buy_this_tobacco=Yr arian cyfred a ddefnyddiwyd i brynu’r tybaco hwn
 label.if_you_bought_this_tobacco_=Os prynoch y tybaco hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
+label.country_this_tobacco_was_produced_hint = (W)If you are unsure where this tobacco was originally produced, leave this box blank. If the tobacco is identified as being produced in the EU but not a specific country, enter ''European Union''.(W)
 label.total_weight_in_grams=Cyfanswm y pwysau mewn gramau
 
 label.you_cannot_use_this_service=Ni allwch ddefnyddio’r gwasanaeth hwn
@@ -438,14 +440,18 @@ other-goods.volume_input.panel.2=Os yw cyfanswm gwerth eich nwyddau eraill dros 
 
 label.tell_us_about_the=Rhowch y manylion canlynol:
 label.country_the_item_was_bought_in=Y wlad lle y prynwyd yr eitem
+label.country_the_item_was_produced_in = (W)Country this item was originally made in(W)
 label.if_you_bought_this_item_=Os prynoch yr eitem hon ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
 label.currency_used_to_buy_the_item=Yr arian cyfred a ddefnyddiwyd i brynu’r eitem
 label.price_paid_for_this_item=Y pris a dalwyd am yr eitem hon
+label.country_the_item_was_produced_hint = (W)If you are unsure where this item was originally made, leave this box blank. If the item is identified as being made in the EU but not a specific country, enter ''European Union''.(W)
 label.tell_us_about_the_goods_=Rhowch wybod i ni am eich nwyddau
 
 label.price_paid=Y pris a dalwyd
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
+label.country_this_alcohol_was_produced = (W)Country this alcohol was originally produced in(W)
 label.if_you_bought_this_alcohol_=Os prynoch yr alcohol hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
+label.country_this_alcohol_was_produced_hint = (W)If you are unsure where this alcohol was originally produced, leave this box blank. If the alcohol is identified as being produced in the EU but not a specific country, enter ''European Union''.(W)
 label.currency_used_to_buy_this_alcohol=Yr arian cyfred a ddefnyddiwyd i brynu’r alcohol hwn
 label.alcohol.beer=Cwrw
 label.alcohol.cider=Seidr
@@ -1203,6 +1209,7 @@ title.western_sahara=Gorllewin Sahara
 title.yemen=Yemen
 title.zambia=Zambia
 title.zimbabwe=Zimbabwe
+title.european_union=(W)European Union(W)
 
 title.united_arab_emirates_dirham_aed=Dirham yr Emiraethau Arabaidd Unedig (AED)
 title.albanian_lek_all=Lek Albania (ALL)

@@ -36,7 +36,7 @@ class UKVatPaidController @Inject()(
     Future.successful {
       val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
       ppInstance match {
-        case Some(PurchasedProductInstance(_, _,_,_,_,_,_,Some(isVatPaid),_,_)) =>
+        case Some(PurchasedProductInstance(_, _,_,_,_,_,_,_,Some(isVatPaid),_,_, _)) =>
           Ok(isUKVatPaidItemPage(UKVatPaidForm.form.fill(isVatPaid), backLinkModel.backLink,path,iid))
         case _ =>
           Ok(isUKVatPaidItemPage(UKVatPaidForm.form, backLinkModel.backLink,path,iid))

@@ -58,7 +58,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "iid0",
         None,
         None,
-        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -78,7 +79,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "iid0",
         None,
         None,
-        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -90,10 +92,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
       val insertedPurchase = (cachedJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(),any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -102,10 +104,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
       val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedGBNIJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(),any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -136,6 +138,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           None,
           None,
           None,
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -162,7 +165,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           None,
           Some(BigDecimal(12.99))
         ))
@@ -189,7 +193,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -239,7 +244,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         )),
@@ -251,7 +257,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -273,7 +279,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -283,7 +290,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
@@ -310,7 +317,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe OK
 
-      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -379,7 +386,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe OK
 
-      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -500,6 +507,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any(),
         any(),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(List(BigDecimal(12.12), BigDecimal(13.13))),
         any()
@@ -558,6 +566,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any(),
         any(),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(BigDecimal(12.12))
       )(any())
