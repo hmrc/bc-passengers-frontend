@@ -60,7 +60,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
         "iid0",
         Some(20.0),
         None,
-        Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true,isCountry=true, Nil)),
+        Some(Country("IT", "title.italy", "IT", isEu=true, isCountry=true, Nil)),
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -80,7 +81,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
         "iid0",
         Some(20.0),
         None,
-        Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -96,10 +98,10 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -110,10 +112,10 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -148,6 +150,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
           Some(20.0),
           None,
           None,
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -176,7 +179,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           Some(20.0),
           None,
-          Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           None,
           Some(BigDecimal(12.99))
         ))
@@ -205,7 +209,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -234,7 +239,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           None,
-          Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -290,7 +296,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           Some(20.0),
           None,
-          Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         )),
@@ -302,10 +309,47 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
+    }
+
+    "display default origin country if set in euOnly JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("euOnly"),
+        arrivingNICheck = Some(true),
+        isVatResClaimed = None,
+        isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(PurchasedProductInstance(
+          ProductPath("alcohol/beer"),
+          "iid0",
+          Some(20.0),
+          None,
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          Some(Country("IT", "title.italy", "IT", isEu=true, isCountry=true, Nil)),
+          Some("EUR"),
+          Some(BigDecimal(12.99))
+        )),
+        defaultCountry = Some("FR"),
+        defaultOriginCountry = Some("IT"),
+        defaultCurrency = Some("EUR")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+
+      status(result) shouldBe OK
+
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+
+      formCaptor.getValue.data("originCountry") shouldBe "IT"
     }
 
     "not display default country and currency if not set in JourneyData" in new LocalSetup {
@@ -326,7 +370,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
           "iid0",
           Some(20.0),
           None,
-          Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -336,7 +381,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
@@ -506,6 +551,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         meq(Some(BigDecimal(20.0))),
         any(),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(List(BigDecimal(12.50))),
         any()
@@ -586,6 +632,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         meq(Some(BigDecimal(13.0))),
         any(),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(BigDecimal(50.00))
       )(any())

@@ -67,7 +67,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
         "iid0",
         weightOrVolume,
         noOfSticks,
-        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -87,7 +88,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
         "iid0",
         weightOrVolume,
         noOfSticks,
-        Some(Country("FR", "title.france", "FR", true, Nil)),
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
         Some("EUR"),
         Some(BigDecimal(12.99))
       ))
@@ -103,12 +105,12 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
-      when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
-      when(injected[no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -119,12 +121,12 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
-      when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
-      when(injected[no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[weight_or_volume_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[no_of_sticks_weight_or_volume_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -214,7 +216,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           weightOrVolume,
           noOfSticks,
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         )),
@@ -226,7 +229,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -254,7 +257,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           weightOrVolume,
           noOfSticks,
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(12.99))
         ))
@@ -264,7 +268,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
@@ -443,6 +447,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         any(),
         meq(Some(400)),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -629,6 +634,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         any(),
         meq(Some(400)),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -794,6 +800,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         meq(Some(BigDecimal(0.4))),
         any(),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -1047,6 +1054,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         meq(Some(BigDecimal(0.4))),
         meq(Some(50)),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any()
@@ -1093,6 +1101,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
           None,
           Some(400),
           None,
+          None,
           Some("EUR"),
           Some(BigDecimal(92.50))
         ))
@@ -1124,7 +1133,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           None,
           Some(BigDecimal(92.50))
         ))
@@ -1156,7 +1166,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(92.50))
         ))
@@ -1188,7 +1199,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(92.50))
         ))
@@ -1220,7 +1232,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           "iid0",
           None,
           Some(400),
-          Some(Country("FR", "title.france", "FR", true, Nil)),
+          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          None,
           Some("EUR"),
           Some(BigDecimal(92.50))
         ))
@@ -1279,6 +1292,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
         meq(Some(BigDecimal(0.4))),
         meq(Some(50)),
         meq("FR"),
+        any(),
         meq("EUR"),
         meq(BigDecimal(98.00))
       )(any())

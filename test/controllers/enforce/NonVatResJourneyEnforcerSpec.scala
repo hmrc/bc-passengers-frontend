@@ -164,7 +164,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance)
 
           jd match {
-            case  JourneyData(_, Some("nonEuOnly"), _, _,_, _, _, _, _, Some(false), _, _, _, _, _, _, _, _, _, _,_,_)
+            case  JourneyData(_, Some("nonEuOnly"), _, _,_, _, _, _, _, Some(false), _, _, _, _, _, _, _, _, _, _,_,_,_)
             =>
               status(res) shouldBe OK
             case _ =>
@@ -191,7 +191,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance)
 
           jd match {
-            case JourneyData(_, Some("nonEuOnly"), _, _, _, _, _, _, _, Some(_), _, _, _, _, _, _, _, _, _, _, _,_) =>
+            case JourneyData(_, Some("nonEuOnly"), _, _, _, _, _, _, _, Some(_), _, _, _, _, _, _, _, _, _, _, _,_, _) =>
               status(res) shouldBe OK
             case _ =>
               status(res) shouldBe SEE_OTHER
@@ -218,7 +218,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance, privateCraft)
 
           jd match {
-            case JourneyData(_, Some("nonEuOnly"), _, _, _, _, _, _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _, _, _)
+            case JourneyData(_, Some("nonEuOnly"), _, _, _, _, _, _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _, _, _, _)
             =>
               status(res) shouldBe OK
             case _ =>
@@ -247,7 +247,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
           implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance, privateCraft, ageOver17)
 
           jd match {
-            case JourneyData(_, Some("nonEuOnly"), _, _, _,_, _, _,_, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _)
+            case JourneyData(_, Some("nonEuOnly"), _, _, _,_, _, _,_, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _, _)
             =>
               status(res) shouldBe OK
             case _ =>

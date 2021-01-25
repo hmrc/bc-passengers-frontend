@@ -34,7 +34,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
   trait LocalSetup {
 
     val dummyPpi = List(PurchasedProductInstance(ProductPath("path"), "iid", Some(1.0), Some(100),
-      Some(Country("AU", "Australia", "A2", isEu = false, Nil)), Some("AUD"), Some(100.25)))
+      Some(Country("AU", "Australia", "A2", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(100.25)))
     val dummySelectedProducts = List(List("some product"), List("some other product"))
 
     lazy val travelDetailsService: TravelDetailsService = {
@@ -81,7 +81,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
       await(travelDetailsService.storeEuCountryCheck(None)("euOnly"))
 
-      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("euOnly"),None,None,None,Some(true),None, None, None, None, None, None, None, Nil, Nil)) )(any())
+      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("euOnly"),None,None,None,Some(true),None, None, None, None, None, None, None, Nil, Nil,None,None,None,None,None,None,None,None)) )(any())
     }
   }
 

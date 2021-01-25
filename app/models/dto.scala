@@ -25,7 +25,7 @@ object OtherGoodsDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
-  } yield OtherGoodsDto("", country.code, currency, purchasedProductInstance.cost.toList,purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief)
+  } yield OtherGoodsDto("", country.code, purchasedProductInstance.originCountry.map(_.code), currency, purchasedProductInstance.cost.toList,purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief, purchasedProductInstance.isCustomPaid)
 
 
 }
@@ -33,10 +33,12 @@ object OtherGoodsDto {
 case class OtherGoodsDto(
   action: String,
   country: String,
+  originCountry: Option[String],
   currency: String,
   costs: List[BigDecimal] = List(),
   isVatPaid: Option[Boolean],
-  isUccRelief: Option[Boolean]
+  isUccRelief: Option[Boolean],
+  isCustomPaid: Option[Boolean]
 )
 
 object AlcoholDto {
@@ -45,16 +47,18 @@ object AlcoholDto {
     currency <- purchasedProductInstance.currency
     weightOrVolume <- purchasedProductInstance.weightOrVolume
     cost <- purchasedProductInstance.cost
-  } yield AlcoholDto(weightOrVolume, country.code, currency, cost,purchasedProductInstance.isVatPaid, purchasedProductInstance.isExcisePaid)
+  } yield AlcoholDto(weightOrVolume, country.code, purchasedProductInstance.originCountry.map(_.code), currency, cost,purchasedProductInstance.isVatPaid, purchasedProductInstance.isExcisePaid, purchasedProductInstance.isCustomPaid)
 }
 
 case class AlcoholDto(
   weightOrVolume: BigDecimal,
   country: String,
+  originCountry: Option[String],
   currency: String,
   cost: BigDecimal,
   isVatPaid: Option[Boolean],
-  isExcisePaid: Option[Boolean]
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean]
 )
 
 object TobaccoDto {
@@ -64,17 +68,19 @@ object TobaccoDto {
     cost <- purchasedProductInstance.cost
     noOfSticks = purchasedProductInstance.noOfSticks
     weightOrVolume = purchasedProductInstance.weightOrVolume
-  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, currency, cost, purchasedProductInstance.isVatPaid, purchasedProductInstance.isExcisePaid)
+  } yield TobaccoDto(noOfSticks, weightOrVolume, country.code, purchasedProductInstance.originCountry.map(_.code), currency, cost, purchasedProductInstance.isVatPaid, purchasedProductInstance.isExcisePaid, purchasedProductInstance.isCustomPaid)
 }
 
 case class TobaccoDto(
   noOfSticks: Option[Int],
   weightOrVolume: Option[BigDecimal],
   country: String,
+  originCountry: Option[String],
   currency: String,
   cost: BigDecimal,
   isVatPaid: Option[Boolean],
-  isExcisePaid: Option[Boolean]
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean]
 )
 
 object EuCountryCheckDto {

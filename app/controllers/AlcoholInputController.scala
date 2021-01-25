@@ -45,10 +45,12 @@ class AlcoholInputController @Inject()(
     mapping(
       "weightOrVolume" -> optional(text).transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), _ => None),
       "country"        -> ignored(""),
+      "originCountry"  -> optional(text),
       "currency"       -> ignored(""),
       "cost"           -> ignored(BigDecimal(0)),
       "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean)
+      "isExcisePaid"   -> optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
@@ -61,20 +63,22 @@ class AlcoholInputController @Inject()(
         .verifying("error.max.decimal.places.volume", _.scale  <= 3).transform[BigDecimal](identity, identity)
         .verifying(calculatorLimitConstraintBigDecimal(limits, applicableLimits)),
       "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "originCountry" -> optional(text),
       "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
-      "isExcisePaid" -> optional(boolean)
+      "isExcisePaid" -> optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
-        Future.successful(Ok(alcohol_input(alcoholForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+        Future.successful(Ok(alcohol_input(alcoholForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
       }
     }
   }
@@ -83,7 +87,7 @@ class AlcoholInputController @Inject()(
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         AlcoholDto.fromPurchasedProductInstance(ppi) match {
-          case Some(dto) => Future.successful( Ok( alcohol_input(alcoholForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies) ) )
+          case Some(dto) => Future.successful( Ok( alcohol_input(alcoholForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ) )
           case None => logAndRenderError("Unable to construct dto from PurchasedProductInstance")
         }
       }
@@ -93,15 +97,15 @@ class AlcoholInputController @Inject()(
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireLimitUsage({
       val dto = resilientForm.bindFromRequest.value.get
-      newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))._1
+      newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.originCountry, dto.currency, List(dto.cost))._1
     }) { limits =>
       requireProduct(path) { product =>
         alcoholForm(path, limits, product.applicableLimits).bindFromRequest.fold(
           formWithErrors => {
-            Future.successful(BadRequest(alcohol_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+            Future.successful(BadRequest(alcohol_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
           },
           dto => {
-            val item = newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.currency, List(dto.cost))
+            val item = newPurchaseService.insertPurchases(path, Some(dto.weightOrVolume), None, dto.country, dto.originCountry, dto.currency, List(dto.cost))
             cache.store(item._1) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                 case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,item._2))
@@ -121,14 +125,14 @@ class AlcoholInputController @Inject()(
 
         requireLimitUsage({
           val dto = resilientForm.bindFromRequest.value.get
-          newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.currency, dto.cost)
+          newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.originCountry, dto.currency, dto.cost)
         }) { limits =>
           alcoholForm(ppi.path, limits, product.applicableLimits).bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(alcohol_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
+              Future.successful(BadRequest(alcohol_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
             },
             dto => {
-              cache.store( newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.currency, dto.cost) ) map { _ =>
+              cache.store( newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.originCountry, dto.currency, dto.cost) ) map { _ =>
                 (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                   case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
                   case _ => Redirect(routes.SelectProductController.nextStep())

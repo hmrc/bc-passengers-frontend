@@ -14,7 +14,8 @@ object AppDependencies {
     "com.typesafe.play" %% "play-json-joda" % "2.6.14",
     "uk.gov.hmrc" %% "play-language" % "4.5.0-play-26",
     "org.mindrot" % "jbcrypt" % "0.4",
-    "org.webjars.npm" % "accessible-autocomplete" % "2.0.3"
+    "org.webjars.npm" % "accessible-autocomplete" % "2.0.3",
+    "ai.x" %% "play-json-extensions" % "0.10.0"
   )
 
   val test = Seq(
@@ -25,7 +26,8 @@ object AppDependencies {
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test,it",
     "org.mockito" % "mockito-all" % "2.0.2-beta" % "test",  //required??
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.3" % "test,it",
-    "com.networknt" % "json-schema-validator" % "1.0.44" exclude("org.slf4j", "slf4j-nop")
+    "com.networknt" % "json-schema-validator" % "1.0.44" exclude("org.slf4j", "slf4j-nop"),
+    "ai.x" %% "play-json-extensions" % "0.10.0"
   )
 }
 

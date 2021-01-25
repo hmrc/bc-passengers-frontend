@@ -44,6 +44,7 @@ class OtherGoodsInputController @Inject()(
     mapping(
       "action" -> nonEmptyText,
       "country" -> text,
+      "originCountry" -> optional(text),
       "currency" -> text,
       "costs" -> list(text)
         .transform[List[BigDecimal]](
@@ -51,7 +52,8 @@ class OtherGoodsInputController @Inject()(
           _.map(bd => if(bd>0) formatMonetaryValue(bd) else "")
         ),
       "isVatPaid" -> optional(boolean),
-      "isUccRelief" ->  optional(boolean)
+      "isUccRelief" ->  optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
@@ -60,6 +62,7 @@ class OtherGoodsInputController @Inject()(
       "action" -> nonEmptyText,
       "country" -> text
         .verifying("error.country.invalid", name => countriesService.isValidCountryCode(name)),
+      "originCountry" -> optional(text),
       "currency" -> text
         .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "costs" -> list(
@@ -74,15 +77,16 @@ class OtherGoodsInputController @Inject()(
       .verifying("error.required.cost."+path.toMessageKey, c => c.size > 0)
       .transform[List[BigDecimal]](_.map(s => BigDecimal(s)), _.map(formatMonetaryValue)),
       "isVatPaid" -> optional(boolean),
-      "isUccRelief" ->  optional(boolean)
+      "isUccRelief" ->  optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
-          Future.successful(Ok(other_goods_input(continueForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          Future.successful(Ok(other_goods_input(continueForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
       }
     }
   }
@@ -92,7 +96,7 @@ class OtherGoodsInputController @Inject()(
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         OtherGoodsDto.fromPurchasedProductInstance(ppi) match {
-          case Some(dto) => Future.successful( Ok( other_goods_input(addCostForm.fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies) ) )
+          case Some(dto) => Future.successful( Ok( other_goods_input(addCostForm.fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ) )
           case None => logAndRenderError("Unable to construct dto from PurchasedProductInstance")
         }
       }
@@ -105,10 +109,10 @@ class OtherGoodsInputController @Inject()(
 
       def processContinue = continueForm(path).bindFromRequest.fold(
         formWithErrors => {
-          Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+          Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ))
         },
         dto => {
-          val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.currency, dto.costs)
+          val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.originCountry, dto.currency, dto.costs)
           cache.store(jd._1) map {_ =>
             (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
               case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,jd._2))
@@ -119,10 +123,10 @@ class OtherGoodsInputController @Inject()(
       )
 
       def processAddCost = addCostForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) )),
+        formWithErrors => Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) )),
         dto => {
           val f = addCostForm.fill( dto.copy(costs = (dto.costs :+ BigDecimal(0)).take(50)) )
-          Future.successful(Ok( other_goods_input(f, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+          Future.successful(Ok( other_goods_input(f, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ))
         }
       )
 
@@ -139,9 +143,9 @@ class OtherGoodsInputController @Inject()(
       requireProduct(ppi.path) { product =>
 
         def processContinue = continueForm(ppi.path).bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(other_goods_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies))),
+          formWithErrors => Future.successful(BadRequest(other_goods_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))),
           dto => {
-            val jd = newPurchaseService.updatePurchase(ppi.path, iid, None, None, dto.country, dto.currency, dto.costs.head)
+            val jd = newPurchaseService.updatePurchase(ppi.path, iid, None, None, dto.country, dto.originCountry, dto.currency, dto.costs.head)
             cache.store(jd) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                 case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
@@ -152,10 +156,10 @@ class OtherGoodsInputController @Inject()(
         )
 
         def processAddCost = addCostForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(other_goods_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies))),
+          formWithErrors => Future.successful(BadRequest(other_goods_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))),
           dto => {
             val f = addCostForm.fill(dto.copy(costs = dto.costs :+ BigDecimal(0)))
-            Future.successful(Ok(other_goods_input(f, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
+            Future.successful(Ok(other_goods_input(f, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
           }
         )
 

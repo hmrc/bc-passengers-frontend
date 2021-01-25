@@ -48,10 +48,12 @@ class TobaccoInputController @Inject()(
       "noOfSticks" -> optional(text).transform[Option[Int]](_.fold(Some(0))(x => Some(Try(x.toInt).getOrElse(Int.MaxValue))), _.map(_.toString)),
       "weightOrVolume" -> optional(text).transform[Option[BigDecimal]](_.map(x => Try(BigDecimal(x)/1000).getOrElse(0)), _.map(_.toString)),
       "country" -> ignored(""),
+      "originCountry" -> optional(text),
       "currency" -> ignored(""),
       "cost" -> ignored(BigDecimal(0)),
       "isVatPaid" -> optional(boolean),
-      "isExcisePaid" -> optional(boolean)
+      "isExcisePaid" -> optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
@@ -69,13 +71,15 @@ class TobaccoInputController @Inject()(
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale  <= 2))
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble/1000))), kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))),
       "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "originCountry" -> optional(text),
       "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
-      "isExcisePaid" -> optional(boolean)
+      "isExcisePaid" -> optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
@@ -88,13 +92,15 @@ class TobaccoInputController @Inject()(
         .verifying(calculatorLimitConstraintOptionInt(limits, applicableLimits)),
       "weightOrVolume" -> ignored[Option[BigDecimal]](None),
       "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "originCountry" -> optional(text),
       "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
-      "isExcisePaid" -> optional(boolean)
+      "isExcisePaid" -> optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
@@ -108,20 +114,22 @@ class TobaccoInputController @Inject()(
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble/1000))), kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000))))
         .verifying(calculatorLimitConstraintOptionBigDecimal(limits, applicableLimits)),
       "country" -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
+      "originCountry" -> optional(text),
       "currency" -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
-      "isExcisePaid" -> optional(boolean)
+      "isExcisePaid" -> optional(boolean),
+      "isCustomPaid" -> optional(boolean)
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
   
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
-        Future.successful(Ok( no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies) ))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+        Future.successful(Ok( no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""),"currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ))
       }
     }
   }
@@ -129,16 +137,16 @@ class TobaccoInputController @Inject()(
 
   def displayWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
-          Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
       }
     }
   }
 
   def displayNoOfSticksWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultCurrency =>
-          Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
       }
     }
   }
@@ -150,11 +158,11 @@ class TobaccoInputController @Inject()(
           Future.successful {
             product.templateId match {
               case "cigarettes" =>
-                Ok(no_of_sticks_input(noOfSticksForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies))
+                Ok(no_of_sticks_input(noOfSticksForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))
               case "tobacco" =>
-                Ok(weight_or_volume_input(weightOrVolumeForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies))
+                Ok(weight_or_volume_input(weightOrVolumeForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))
               case _ =>
-                Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies))
+                Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))
             }
           }
         }
@@ -166,16 +174,16 @@ class TobaccoInputController @Inject()(
 
     requireLimitUsage({
       val dto = resilientForm.bindFromRequest.value.get
-      newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))._1
+      newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, List(dto.cost))._1
     }) { limits =>
       requireProduct(path) { product =>
         def processNoOfSticksAddForm = {
           noOfSticksForm(path, limits, product.applicableLimits).bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+              Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
             },
             dto => {
-              val item =  newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+              val item =  newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, List(dto.cost))
               cache.store( item._1 ) map { _ =>
                 (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                   case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,item._2))
@@ -188,10 +196,10 @@ class TobaccoInputController @Inject()(
         def processWeightAddForm = {
           weightOrVolumeForm(path, limits, product.applicableLimits).bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+              Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
             },
             dto => {
-              val item = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+              val item = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, List(dto.cost))
                 cache.store( item._1 ) map { _ =>
                   (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                     case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,item._2))
@@ -204,10 +212,10 @@ class TobaccoInputController @Inject()(
         def processNoOfSticksWeightAddForm = {
           weightOrVolumeNoOfSticksForm(path, limits, product.applicableLimits).bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, currencyService.getAllCurrencies)))
+              Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
             },
             dto => {
-              val item = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, List(dto.cost))
+              val item = newPurchaseService.insertPurchases(path, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, List(dto.cost))
               cache.store( item._1 ) map { _ =>
                 (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                   case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,item._2))
@@ -238,16 +246,16 @@ class TobaccoInputController @Inject()(
 
         requireLimitUsage({
           val dto = resilientForm.bindFromRequest.value.get
-          newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost)
+          newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, dto.cost)
         }) { limits =>
 
             def processCigarettesEditForm = {
               noOfSticksForm(ppi.path, limits, product.applicableLimits).bindFromRequest.fold(
                 formWithErrors => {
-                  Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
+                  Future.successful(BadRequest(no_of_sticks_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
                 },
                 dto => {
-                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost) ) map { _ =>
+                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, dto.cost) ) map { _ =>
                     (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                       case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
                       case _ => Redirect(routes.SelectProductController.nextStep())
@@ -260,10 +268,10 @@ class TobaccoInputController @Inject()(
             def processTobaccoEditForm = {
               weightOrVolumeForm(ppi.path, limits, product.applicableLimits).bindFromRequest.fold(
                 formWithErrors => {
-                  Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
+                  Future.successful(BadRequest(weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
                 },
                 dto => {
-                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost) ) map { _ =>
+                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, dto.cost) ) map { _ =>
                     (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                       case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
                       case _ => Redirect(routes.SelectProductController.nextStep())
@@ -276,10 +284,10 @@ class TobaccoInputController @Inject()(
             def processOtherTobaccoEditForm = {
               weightOrVolumeNoOfSticksForm(ppi.path, limits, product.applicableLimits).bindFromRequest.fold(
                 formWithErrors => {
-                  Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, currencyService.getAllCurrencies)))
+                  Future.successful(BadRequest(no_of_sticks_weight_or_volume_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
                 },
                 dto => {
-                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.currency, dto.cost) ) map { _ =>
+                  cache.store( newPurchaseService.updatePurchase(ppi.path, iid, dto.weightOrVolume, dto.noOfSticks, dto.country, dto.originCountry, dto.currency, dto.cost) ) map { _ =>
                     (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                       case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
                       case _ => Redirect(routes.SelectProductController.nextStep())

@@ -47,17 +47,17 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
   lazy val crZeroTax: CalculatorResponse = CalculatorResponse(
     Some(Alcohol(List(
       Band("A", List(
-        Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))
     ), Calculation("0.00", "0.00", "0.00", "0.00"))),
     Some(Tobacco(List(
       Band("A", List(
-        Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))
     ), Calculation("0.00", "0.00", "0.00", "0.00"))),
     Some(OtherGoods(List(
       Band("A", List(
-        Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, Nil), ExchangeRate("1.20", "2018-10-29")))
+        Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))
     ), Calculation("0.00", "0.00", "0.00", "0.00"))),
     Calculation("0.00", "0.00", "0.00", "0.00"),

@@ -41,7 +41,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
               "iid0",
               weightOrVolume,
               noOfSticks,
-              Some(Country("EG", "Egypt", "EG", isEu = false, Nil)),
+              Some(Country("EG", "Egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
               Some("CAD"),
               Some(BigDecimal("2.00"))
             ),
@@ -86,6 +87,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
+          |        "isCountry" : true,
           |        "countrySynonyms" : [ ]
           |      },
           |      "exchangeRate" : {
@@ -135,6 +137,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
+          |        "isCountry" : true,
           |        "countrySynonyms" : [ ]
           |      },
           |      "exchangeRate" : {
@@ -183,6 +186,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
+          |        "isCountry" : true,
           |        "countrySynonyms" : [ ]
           |      },
           |      "exchangeRate" : {
@@ -231,6 +235,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
+          |        "isCountry" : true,
           |        "countrySynonyms" : [ ]
           |      },
           |      "exchangeRate" : {
@@ -278,6 +283,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |        "countryName" : "Egypt",
           |        "alphaTwoCode" : "EG",
           |        "isEu" : false,
+          |        "isCountry" : true,
           |        "countrySynonyms" : [ ]
           |      },
           |      "exchangeRate" : {
