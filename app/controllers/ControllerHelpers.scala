@@ -100,12 +100,41 @@ trait ControllerHelpers extends MessagesBaseController
     }
   }
 
+  private[controllers] def isCompleteProduct(ppi: PurchasedProductInstance, gbNi: Boolean, ukResident: Boolean) : Boolean = {
+    val isOther = ppi.path.toString.contains("other-goods")
+    if (gbNi) {
+      if (ppi.isVatPaid.isEmpty || (!isOther && ppi.isExcisePaid.isEmpty) || (isOther && !ukResident && ppi.isUccRelief.isEmpty)) false else true
+    } else {
+      true
+    }
+  }
+
+  private[controllers] def isGbNi(jd: JourneyData): Boolean = {
+    jd.euCountryCheck.contains("greatBritain") && (jd.arrivingNICheck.isDefined && jd.arrivingNICheck.get)
+  }
+
+  def withCompletedProductCheck(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
+    val gbNi = isGbNi(context.getJourneyData)
+    val ukResident = context.getJourneyData.isUKResident.getOrElse(false)
+    val filtered = context.getJourneyData.purchasedProductInstances.filter(ppi => isCompleteProduct(ppi,gbNi,ukResident))
+    if(filtered.length != context.getJourneyData.purchasedProductInstances.length) {
+      cache.store(context.getJourneyData.copy(purchasedProductInstances = filtered)).flatMap(_ =>
+        block
+      )
+    }else{
+      block
+    }
+  }
 
   def withNextSelectedProductAlias(block: Option[ProductAlias] => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
-    context.getJourneyData.selectedAliases match {
-      case Nil => block(None)
-      case productAlias :: _ => block(Some(productAlias))
+
+    withCompletedProductCheck {
+      context.getJourneyData.selectedAliases match {
+        case Nil => block(None)
+        case productAlias :: _ => block(Some(productAlias))
+      }
     }
+
   }
 
   def requireProductOrCategory(path: ProductPath)(block: ProductTreeNode => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
