@@ -66,10 +66,10 @@ class DeclarationService @Inject()(
       case HttpResponse(ACCEPTED, declaration, _) =>
         DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
       case HttpResponse(BAD_REQUEST, _, _) =>
-        Logger.error("BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted")
+        Logger.error("DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted")
         DeclarationServiceFailureResponse
       case HttpResponse(status, _, _) =>
-        Logger.error("Unexpected status of " + status + " received from bc-passengers-declarations, unable to proceed")
+        Logger.error(s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed")
         DeclarationServiceFailureResponse
     }
   }
@@ -297,10 +297,17 @@ class DeclarationService @Inject()(
   }
 
   def updateDeclaration(reference: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
-    wsAllMethods.POST[PaymentNotification, Unit](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/update-payment", PaymentNotification("Successful", reference))
-     .map(_ =>  DeclarationServiceSuccessResponse)
-    .recover {
-      case e => Logger.error(s"Status update failed for $reference in bc-passengers-declarations", e)
+    wsAllMethods.POST[PaymentNotification, HttpResponse](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/update-payment", PaymentNotification("Successful", reference)) map {
+      case HttpResponse(ACCEPTED, _, _) =>
+        DeclarationServiceSuccessResponse
+      case HttpResponse(BAD_REQUEST, _, _) =>
+        Logger.error("ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] BAD_REQUEST received from bc-passengers-declarations ")
+        DeclarationServiceFailureResponse
+      case HttpResponse(NOT_FOUND, _, _) =>
+        Logger.error("ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] NOT_FOUND received from bc-passengers-declarations")
+        DeclarationServiceFailureResponse
+      case HttpResponse(status, _, _) =>
+        Logger.error(s"ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed")
         DeclarationServiceFailureResponse
     }
   }

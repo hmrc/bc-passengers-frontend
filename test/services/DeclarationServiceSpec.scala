@@ -1142,29 +1142,63 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(injected[WsAllMethods].POST[PaymentNotification, Unit](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.failed(new Exception("Not able to update"))
+      when(injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR,""))
 
       val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, Unit](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
+      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
         meq(PaymentNotification("Successful", "XJPR5768524625")), any()
       )(any(), any(), any(), any())
 
     }
 
+    "return a DeclarationServiceFailureResponse for update if declaration returns a bad request" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST, ""))
+
+      val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
+        meq(PaymentNotification("Successful", "XJPR5768524625")), any()
+      )(any(), any(), any(), any())
+
+    }
+
+    "return a DeclarationServiceFailureResponse for update if the declaration is not found" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(NOT_FOUND,""))
+
+      val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
+        meq(PaymentNotification("Successful", "XJPR5768524625")), any()
+      )(any(), any(), any(), any())
+
+    }
+
+
+
     "return a DeclarationServiceSuccessResponse for update if the declaration returns 202" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(injected[WsAllMethods].POST[PaymentNotification, Unit](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(())
+      when(injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(ACCEPTED,""))
 
       val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
 
       r shouldBe DeclarationServiceSuccessResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, Unit](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
+      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
         meq(PaymentNotification("Successful", "XJPR5768524625")), any()
       )(any(), any(), any(), any())
 
