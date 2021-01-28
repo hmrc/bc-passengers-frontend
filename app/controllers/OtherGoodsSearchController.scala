@@ -110,7 +110,7 @@ class OtherGoodsSearchController @Inject()(
 
           cache.storeJourneyData(updatedJourneyData) map { _ =>
 
-            Redirect(controllers.routes.OtherGoodsSearchController.searchGoods())
+            Redirect(controllers.routes.OtherGoodsSearchController.searchGoods().withFragment("searchTerm"))
           }
 
       }
