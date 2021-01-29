@@ -223,9 +223,13 @@ class TravelDetailsService @Inject() (
     journeyData match {
       case Some(journeyData) if !journeyData.isUKResident.contains(isUKResident) =>
 
-        cache.storeJourneyData(journeyData.copy(
-          isUKResident = Some(isUKResident)
-        ))
+        val resetJourneyData = JourneyData(
+          isUKResident = Some(isUKResident),
+          euCountryCheck = journeyData.euCountryCheck,
+          arrivingNICheck = journeyData.arrivingNICheck
+        )
+
+        cache.storeJourneyData(resetJourneyData)
 
       case None =>
         cache.storeJourneyData( JourneyData(isUKResident = Some(isUKResident)) )

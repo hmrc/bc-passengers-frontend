@@ -282,14 +282,15 @@ class TravelDetailsServiceSpec extends BaseSpec {
       verify(cacheMock, times(0)).storeJourneyData(any())(any())
     }
 
-    "store isUKResident when journey data does exist, keeping existing journey data if the isUKResident has changed" in new LocalSetup {
+    "store isUKResident when journey data does exist, reset existing journey data if the isUKResident has changed" in new LocalSetup {
 
-      val journeyData: Option[JourneyData] = Some(JourneyData(isUKVatExcisePaid = Some(true), isUKResident = Some(false)))
+      val ppi = PurchasedProductInstance(iid = "someId", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
+      val journeyData: Option[JourneyData] = Some(JourneyData(isUKVatExcisePaid = Some(true), euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi), bringingOverAllowance = Some(true)))
 
       await(travelDetailsService.storeUKResident(journeyData)(isUKResident = true))
 
       verify(cacheMock, times(1)).storeJourneyData(
-        meq(JourneyData(isUKVatExcisePaid = Some(true), isUKResident = Some(true))))(any())
+        meq(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(true))))(any())
     }
   }
 
