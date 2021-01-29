@@ -52,9 +52,8 @@
 
     @components.input(
       field = dtoForm("weightOrVolume"),
-      '_inputDetails -> messages(s"label.if_you_do_not_know_the_exact_volume_or_price"),
-      '_inputDetailsHidden -> messages(s"label.you_cannot_use_this_service_"),
-      '_label -> messages(s"label.total_volume_in_litres"),
+      '_label -> messages("label.total_volume_in_litres"),
+      '_inputHint -> messages("label.you_cannot_use_this_service_"),
       '_labelTextClass -> "form-label"
     )
 
