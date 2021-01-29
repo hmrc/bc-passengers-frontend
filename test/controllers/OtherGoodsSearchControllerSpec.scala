@@ -127,7 +127,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       )).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add#searchTerm")
     }
 
     "Return SEE_OTHER when action is not supplied and a valid searchTerm is supplied" in new LocalSetup {
@@ -136,7 +136,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       )).get
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/other-goods/add#searchTerm")
     }
 
     "Return BAD_REQUEST when action=continue and an no goods are added" in new LocalSetup {
