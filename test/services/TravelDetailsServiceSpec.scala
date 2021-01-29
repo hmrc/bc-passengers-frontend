@@ -77,11 +77,11 @@ class TravelDetailsServiceSpec extends BaseSpec {
       verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("nonEuOnly"),Some(true), None,None,None,None,None, None, None, None, None, None, Nil, Nil, defaultCountry = None, defaultCurrency = None)) )(any())
     }
 
-    "store the eu country check and isUKResident in keystore when bringing goods from EU countries" in new LocalSetup {
+    "store the eu country check in keystore when bringing goods from EU countries" in new LocalSetup {
 
       await(travelDetailsService.storeEuCountryCheck(None)("euOnly"))
 
-      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("euOnly"),None,None,None,Some(true),None, None, None, None, None, None, None, Nil, Nil,None,None,None,None,None,None,None,None)) )(any())
+      verify(cacheMock, times(1)).storeJourneyData( meq(JourneyData(None,Some("euOnly"),None,None,None,None,None, None, None, None, None, None, None, Nil, Nil,None,None,None,None,None,None,None,None)) )(any())
     }
   }
 

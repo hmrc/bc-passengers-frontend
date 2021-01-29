@@ -30,6 +30,7 @@ object CalculatorServiceRequest {
         "isVatPaid" -> item.purchasedProductInstance.isVatPaid,
         "isExcisePaid" -> item.purchasedProductInstance.isExcisePaid,
         "isUccRelief" -> item.purchasedProductInstance.isUccRelief,
+        "isCustomPaid" -> item.purchasedProductInstance.isCustomPaid,
         "metadata" -> Json.obj(
           "description" -> description,
           "name" -> item.name,
@@ -48,10 +49,6 @@ case class CalculatorServiceRequest(
   isPrivateCraft: Boolean,
   isAgeOver17: Boolean,
   isArrivingNI: Boolean,
-  isUKVatPaid: Option[Boolean],
-  isUKExcisePaid: Option[Boolean],
-  isUKResident: Option[Boolean],
-  isUccRelief: Option[Boolean],
   items: List[PurchasedItem]
 )
 

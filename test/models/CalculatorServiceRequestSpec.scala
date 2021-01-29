@@ -30,10 +30,6 @@ class CalculatorServiceRequestSpec extends BaseSpec {
       lazy val cr: CalculatorServiceRequest = CalculatorServiceRequest(isPrivateCraft = false,
         isAgeOver17 = true,
         isArrivingNI = false,
-        isUKVatPaid = None,
-        isUKExcisePaid = Some(false),
-        isUKResident = Some(true),
-        isUccRelief = Some(false),
         List(
           PurchasedItem(
             PurchasedProductInstance(
@@ -44,7 +40,11 @@ class CalculatorServiceRequestSpec extends BaseSpec {
               Some(Country("EG", "Egypt", "EG", isEu = false, isCountry = true, Nil)),
               None,
               Some("CAD"),
-              Some(BigDecimal("2.00"))
+              Some(BigDecimal("2.00")),
+              Some(true),
+              Some(true),
+              Some(false),
+              None
             ),
             ProductTreeLeaf("dummy-product", "Dummy product name", "DUMMY/RATE/ID", templateId, Nil),
             Currency("CAD", "Canadian dollars (CAD)", Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate)
@@ -65,13 +65,13 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isUKExcisePaid" : false,
-          |  "isUKResident" : true,
-          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
           |    "noOfUnits" : 200,
+          |    "isVatPaid":true,
+          |    "isExcisePaid":false,
+          |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "200 dummy product name",
           |      "name" : "Dummy product name",
@@ -114,14 +114,14 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isUKExcisePaid" : false,
-          |  "isUKResident" : true,
-          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
           |    "weightOrVolume" : 1,
           |    "noOfUnits" : 50,
+          |    "isVatPaid":true,
+          |    "isExcisePaid":false,
+          |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "50 dummy product name",
           |      "name" : "Dummy product name",
@@ -164,13 +164,13 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isUKExcisePaid" : false,
-          |  "isUKResident" : true,
-          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
           |    "weightOrVolume" : 1,
+          |    "isVatPaid":true,
+          |    "isExcisePaid":false,
+          |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "1000g of dummy product name",
           |      "name" : "Dummy product name",
@@ -213,13 +213,13 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isUKExcisePaid" : false,
-          |  "isUKResident" : true,
-          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
           |    "weightOrVolume" : 1,
+          |    "isVatPaid":true,
+          |    "isExcisePaid":false,
+          |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "1.0 litre dummy product name",
           |      "name" : "Dummy product name",
@@ -262,12 +262,12 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
-          |  "isUKExcisePaid" : false,
-          |  "isUKResident" : true,
-          |  "isUccRelief" : false,
           |  "items" : [ {
           |    "purchaseCost" : "1.13",
           |    "rateId" : "DUMMY/RATE/ID",
+          |    "isVatPaid":true,
+          |    "isExcisePaid":false,
+          |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "Dummy product name",
           |      "name" : "Dummy product name",
