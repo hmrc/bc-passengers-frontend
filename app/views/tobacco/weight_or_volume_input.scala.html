@@ -11,11 +11,10 @@
 
 @tobacco_input(dtoForm, product, path, iid, countries, countriesEU, currencies, journeyStart) {
   @components.input(
-    field = dtoForm("weightOrVolume"),
-    '_inputDetails -> messages(s"label.if_you_do_not_know_the_exact_weight_or_price"),
-    '_inputDetailsHidden -> messages(s"label.you_cannot_use_this_service_"),
-    '_label -> messages(s"label.total_weight_in_grams"),
+    field = dtoForm("weightOrVolume"), 
+    '_label -> messages("label.total_weight_in_grams"),
+    '_inputHint -> messages("label.you_cannot_use_this_service_"),
     '_labelTextClass -> "form-label",
-    '_inputSuffix ->  messages(s"label.grams")
+    '_inputSuffix ->  messages("label.grams")
   )
 }

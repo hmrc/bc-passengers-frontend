@@ -15,9 +15,8 @@
 
   @components.input(
     field = dtoForm("noOfSticks"),
-    '_inputDetails -> messages(s"label.if_you_do_not_know_the_exact_number_or_price"),
-    '_inputDetailsHidden -> messages(s"label.you_cannot_use_this_service_"),
     '_label -> messages(s"label.total_number_of_" + path.toMessageKey),
+    '_inputHint -> messages("label.you_cannot_use_this_service_"),
     '_labelTextClass -> "form-label"
   )
 
