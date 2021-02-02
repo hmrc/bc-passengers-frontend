@@ -190,7 +190,11 @@ class DeclarationService @Inject()(
                 "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
-                "vatGBP" -> item.calculation.vat
+                "vatGBP" -> item.calculation.vat,
+                "ukVATPaid" -> item.isVatPaid,
+                "ukExcisePaid" -> item.isExcisePaid,
+                "madeIn" -> item.metadata.originCountry.map(_.alphaTwoCode),
+                "euCustomsRelief" -> item.isCustomPaid
               )
             }
           }
@@ -225,7 +229,11 @@ class DeclarationService @Inject()(
                 "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
-                "vatGBP" -> item.calculation.vat
+                "vatGBP" -> item.calculation.vat,
+                "ukVATPaid" -> item.isVatPaid,
+                "ukExcisePaid" -> item.isExcisePaid,
+                "madeIn" -> item.metadata.originCountry.map(_.alphaTwoCode),
+                "euCustomsRelief" -> item.isCustomPaid
               )
             }
           }
@@ -260,7 +268,11 @@ class DeclarationService @Inject()(
                 "VATRESClaimed" -> false,
                 "exciseGBP" -> item.calculation.excise,
                 "customsGBP" -> item.calculation.customs,
-                "vatGBP" -> item.calculation.vat
+                "vatGBP" -> item.calculation.vat,
+                "ukVATPaid" -> item.isVatPaid,
+                "uccRelief" -> item.isUccRelief,
+                "madeIn" -> item.metadata.originCountry.map(_.alphaTwoCode),
+                "euCustomsRelief" -> item.isCustomPaid
               )
             }
           }

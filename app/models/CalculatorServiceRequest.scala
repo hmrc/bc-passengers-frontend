@@ -37,7 +37,8 @@ object CalculatorServiceRequest {
           "cost" -> item.purchasedProductInstance.cost.map(_.setScale(2, RoundingMode.DOWN).toString),
           "currency" -> item.currency,
           "country" -> item.purchasedProductInstance.country,
-          "exchangeRate" -> item.exchangeRate
+          "exchangeRate" -> item.exchangeRate,
+          "originCountry" -> item.purchasedProductInstance.originCountry
         )
       ).stripNulls
     }
