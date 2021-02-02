@@ -138,10 +138,6 @@ class CalculatorService @Inject() (
           isPrivateCraft,
           isAgeOver17,
           isArrivingNI,
-          journeyData.isUKVatPaid,
-          journeyData.isUKVatExcisePaid,
-          journeyData.isUKResident,
-          journeyData.isUccRelief,
           purchasedItems.filter(i => i.productTreeLeaf.isValid(i.purchasedProductInstance)))
       }
     }
