@@ -95,7 +95,7 @@ class DashboardControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "1.00", "1.00", "3.00"))),
+            ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "1.00", "1.00", "3.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "1.00", "1.00", "3.00"),
@@ -122,7 +122,7 @@ class DashboardControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
+            ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "7.00", "90000.00", "98000.00"),
@@ -153,7 +153,7 @@ class DashboardControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP"), Nil), Country("UK", "UK", "UK", isEu = false, isCountry = true, Nil),
-            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
+            ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "1.00", "1.00", "300.00"), withinFreeAllowance = false,
@@ -179,7 +179,7 @@ class DashboardControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-            ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
+            ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
           Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("1.00", "1.00", "1.00", "300.00"), withinFreeAllowance = false,
@@ -207,7 +207,7 @@ class DashboardControllerSpec extends BaseSpec {
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
       calculatorResponse = Some(CalculatorResponse(
         Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+          ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
@@ -233,7 +233,7 @@ class DashboardControllerSpec extends BaseSpec {
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
       euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), calculatorResponse = Some(CalculatorResponse(
         Some(Alcohol(List(Band("A",List(Item("Adult Clothing", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","3.00"),Metadata("Adult clothing", "Adult clothing", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+          ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
@@ -260,7 +260,7 @@ class DashboardControllerSpec extends BaseSpec {
         Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP"), Nil), Country("GBP", "Barbados", "GBP", isEu = false, isCountry = true, Nil),
-          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+          ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
         withinFreeAllowance = false,
         limits = Map.empty,
@@ -284,10 +284,10 @@ class DashboardControllerSpec extends BaseSpec {
     override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
       calculatorResponse = Some(CalculatorResponse(
         Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","1.00","1.00","300.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("GBP", "Great British Pounds (GBP)", Some("GBP"), Nil), Country("UK", "UK", "UK", isEu = false, isCountry = true, Nil),
-          ExchangeRate("1.20", "2018-10-29")))), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
+          ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","300.00"))), Calculation("1.00", "1.00", "1.00", "300.00"))),
         Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(List(Band("B",List(Item("OGD/CLTHS/CHILD", "500.00",None,Some(5), Calculation("0.00","0.00","0.00","0.00"),Metadata("1 Children's clothing", "Children's clothing", "500.00",Currency("GBP", "British Pound (GBP)", Some("GBP"), Nil), Country("GBP", "Barbados", "GBP", isEu = false, isCountry = true, Nil),
-          ExchangeRate("1.20", "2018-10-29")))), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
+          ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("0.00","0.00","0.00","0.00"))), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("1.00", "1.00", "1.00", "300.00"),
         withinFreeAllowance = false,
         limits = Map.empty,

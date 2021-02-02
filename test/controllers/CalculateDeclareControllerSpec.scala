@@ -69,17 +69,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     lazy val crBelowLimit: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "8.99"),
@@ -91,17 +91,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     lazy val crWithinLimitLow: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "9.00"),
@@ -113,17 +113,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     lazy val crWithinLimitHigh: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "97000.00"),
@@ -135,17 +135,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     lazy val crAboveLimit: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc","100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "97000.01"),
@@ -157,17 +157,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     lazy val crZero: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(List(
         Band("A", List(
-          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(List(
         Band("A", List(
-          Item("Adult clothing", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Adult clothing", "Adult clothing", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+          Item("Adult clothing", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Adult clothing", "Adult clothing", "100.00", Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
         ), Calculation("0.00", "0.00", "0.00", "0.00"))
       ), Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "0.00"),

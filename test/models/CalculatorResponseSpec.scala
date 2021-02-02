@@ -16,17 +16,17 @@ class CalculatorResponseSpec extends BaseSpec {
       lazy val cr: CalculatorResponse = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
-            Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("100.00", "0.00", "0.00", "100.00"))
         ), Calculation("100.00", "0.00", "0.00", "100.00"))),
         Some(Tobacco(List(
           Band("A", List(
-            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(List(
           Band("A", List(
-            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("100.00", "0.00", "0.00", "100.00"),
@@ -40,7 +40,7 @@ class CalculatorResponseSpec extends BaseSpec {
 
       cr.getItemsWithTaxToPay shouldBe List(
 
-        Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+        Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
       )
     }
   }
@@ -55,17 +55,17 @@ class CalculatorResponseSpec extends BaseSpec {
       lazy val cr: CalculatorResponse = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
-            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", alcoholCurrency, Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", alcoholCurrency, Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(List(
           Band("A", List(
-            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", tobaccoCurrency, Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", tobaccoCurrency, Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(List(
           Band("A", List(
-            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", otherGoodsCurrency, Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ANYTHING", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("Desc", "Desc", "100.00", otherGoodsCurrency, Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "0.00"),
@@ -119,18 +119,18 @@ class CalculatorResponseSpec extends BaseSpec {
       val calculatorResponseDto = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
-            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"))),
-            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("another alcohol item", "another alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None),
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("another alcohol item", "another alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(Tobacco(List(
           Band("A", List(
-            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(List(
           Band("A", List(
-            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "100.00"),
@@ -153,18 +153,18 @@ class CalculatorResponseSpec extends BaseSpec {
       val calculatorResponseDto = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
-            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"))),
-            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an alcohol item with duty", "an alcohol item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None),
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an alcohol item with duty", "an alcohol item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "100.00"))
         ), Calculation("0.00", "0.00", "0.00", "100.00"))),
         Some(Tobacco(List(
           Band("A", List(
-            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Some(OtherGoods(List(
           Band("A", List(
-            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "0.00"))
         ), Calculation("0.00", "0.00", "0.00", "0.00"))),
         Calculation("0.00", "0.00", "0.00", "100.00"),
@@ -186,20 +186,20 @@ class CalculatorResponseSpec extends BaseSpec {
       val calculatorResponseDto = CalculatorResponse(
         Some(Alcohol(List(
           Band("A", List(
-            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"))),
-            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an alcohol item with duty", "an alcohol item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an alcohol item", "an alcohol item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None),
+            Item("ALC", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an alcohol item with duty", "an alcohol item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "100.00"))
         ), Calculation("0.00", "0.00", "0.00", "100.00"))),
         Some(Tobacco(List(
           Band("A", List(
-            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"))),
-            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("a tobacco item with duty", "a tobacco item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("a tobacco item", "a tobacco item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None),
+            Item("TOB", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("a tobacco item with duty", "a tobacco item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "100.00"))
         ), Calculation("0.00", "0.00", "0.00", "100.00"))),
         Some(OtherGoods(List(
           Band("A", List(
-            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"))),
-            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an other-goods item with duty", "an other-goods item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29")))
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "0.00"), Metadata("an other-goods item", "an other-goods item", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None),
+            Item("OGD", "100.00", Some(1), None, Calculation("0.00", "0.00", "0.00", "100.00"), Metadata("an other-goods item with duty", "an other-goods item with duty", "100.00", Currency("GBP", "British Pound (GBP)", None, Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
           ), Calculation("0.00", "0.00", "0.00", "100.00"))
         ), Calculation("0.00", "0.00", "0.00", "100.00"))),
         Calculation("0.00", "0.00", "0.00", "300.00"),
