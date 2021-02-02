@@ -16,22 +16,21 @@
 
 @form(action = routes.PreviousDeclarationController.postPreviousDeclarationPage()){
 
-<fieldset>
-    <h1 class="heading-xlarge">@messages("heading.previous_declaration")</h1>
+    <fieldset>
+        <h1 class="heading-xlarge">@messages("heading.previous_declaration")</h1>
 
-    @components.input_radio_group(
-        previousDeclarationForm("prevDeclaration"),
-        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true
-    )
+        @components.input_radio_group(
+            previousDeclarationForm("prevDeclaration"),
+            Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+            '_labelClass -> "block-label inputLabelBeforeError",
+            '_inline -> true
+        )
+    </fieldset>
+
 
     <div class="form-group">
         <button class="button" type="submit">@messages("label.continue")</button>
     </div>
-
-</fieldset>
-
 }
 
 }

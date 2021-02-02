@@ -16,27 +16,26 @@
 
 @form(action = routes.UKExcisePaidController.postUKExcisePaidPage()){
 
-<fieldset>
-    <legend>
-        <h1 class="heading-xlarge">@messages("heading.is_uk_vat_excise_paid")</h1>
-    </legend>
-    <p>@messages("text.excise_duty_will_usually")
-        <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a></p>
+    <fieldset>
+        <legend>
+            <h1 class="heading-xlarge">@messages("heading.is_uk_vat_excise_paid")</h1>
+        </legend>
+        <p>@messages("text.excise_duty_will_usually")
+            <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a></p>
 
 
-    @components.input_radio_group(
-    uKExcisePaidForm("isUKVatExcisePaid"),
-    Seq("true" -> Messages("label.yes"),
-    "false" -> Messages("label.no")),
-    '_labelClass -> "block-label inputLabelBeforeError",
-    '_inline -> true
-    )
+        @components.input_radio_group(
+        uKExcisePaidForm("isUKVatExcisePaid"),
+        Seq("true" -> Messages("label.yes"),
+        "false" -> Messages("label.no")),
+        '_labelClass -> "block-label inputLabelBeforeError",
+        '_inline -> true
+        )
+    </fieldset>
 
     <div class="form-group">
         <button class="button" type="submit">@messages("label.continue")</button>
     </div>
-
-</fieldset>
 
 }
 

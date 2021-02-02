@@ -16,23 +16,19 @@
 
 @form(action = routes.ArrivingNIController.postArrivingNIPage()){
 
-<fieldset>
-    <legend>
-        <h1 class="heading-xlarge">@messages("heading.arriving-ni")</h1>
-    </legend>
-
-    @components.input_radio_group(
-    arrivingNIForm("arrivingNI"),
-    Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-    '_labelClass -> "block-label inputLabelBeforeError",
-    '_inline -> true
-    )
+    <fieldset>
+        <legend><h1 class="heading-xlarge">@messages("heading.arriving-ni")</h1></legend>
+        @components.input_radio_group(
+        arrivingNIForm("arrivingNI"),
+        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+        '_labelClass -> "block-label inputLabelBeforeError",
+        '_inline -> true
+        )
+    </fieldset>
 
     <div class="form-group">
         <button class="button" type="submit">@messages("label.continue")</button>
     </div>
-
-</fieldset>
 
 }
 
