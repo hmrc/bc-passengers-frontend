@@ -14,6 +14,8 @@ $(document).ready(function () {
     // =====================================================
     GOVUK.details.init();
 
+    GOVUK.shimLinksWithButtonRole.init()
+
     if (typeof GOVUK.ShowHideContent !== 'undefined') {
           var showHideContent = new GOVUK.ShowHideContent();
           showHideContent.init();
