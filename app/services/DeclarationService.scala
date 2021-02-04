@@ -282,6 +282,7 @@ class DeclarationService @Inject()(
     }
 
     Json.obj(
+      "journeyData" -> Json.toJsObject(journeyData),
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate" -> rd,
