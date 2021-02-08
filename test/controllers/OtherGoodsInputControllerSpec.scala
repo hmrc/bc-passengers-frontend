@@ -571,7 +571,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         meq(BigDecimal(12.12))
       )(any())
 
-      verify(injected[Cache], times(1)).store(any())(any())
+      verify(injected[Cache], times(2)).store(any())(any())
     }
 
     "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {

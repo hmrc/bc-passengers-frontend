@@ -26,6 +26,8 @@ class NewPurchaseService @Inject() (
     } yield PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, countryEU, Some(currency), Some(cost), isCustomPaid = Some(isCustomsExempt(journeyData.euCountryCheck, originCountryCode, journeyData.isUKResident)))
 
     (journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd,
+      //Added partial working instance to differenciate between new item and existing in ControllerHelpers.revertWorkingInstance
+      workingInstance = Some(PurchasedProductInstance(dataToAdd.head.path,dataToAdd.head.iid)),
       defaultCountry = Some(countryCode),
       defaultOriginCountry = Some(originCountryCode.getOrElse("")),
       defaultCurrency = Some(currency)),iid)

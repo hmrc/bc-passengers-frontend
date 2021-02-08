@@ -42,33 +42,34 @@ class DashboardController @Inject() (
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
+    revertWorkingInstance {
+      cache.fetch flatMap { journeyData: Option[JourneyData] =>
 
-    cache.fetch flatMap { journeyData: Option[JourneyData] =>
+        val jd = journeyData.getOrElse(JourneyData())
+        calculatorService.journeyDataToCalculatorRequest(jd) map { maybeCalculatorRequest =>
 
-      val jd = journeyData.getOrElse(JourneyData())
-      calculatorService.journeyDataToCalculatorRequest(jd) map { maybeCalculatorRequest =>
+          val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
-        val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
+          val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+            case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "alcohol" => item
+          }
 
-        val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "alcohol" => item
+          val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+            case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "cigarettes" | tid == "cigars" | tid == "tobacco" => item
+          }
+
+          val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+            case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "other-goods" => item
+          }
+
+          val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
+
+          Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate,
+            backLinkModel.backLink,
+            appConfig.isIrishBorderQuestionEnabled,
+            jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
+            jd.isUKResident.contains(true)))
         }
-
-        val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "cigarettes" | tid == "cigars" | tid == "tobacco" => item
-        }
-
-        val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-          case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "other-goods" => item
-        }
-
-        val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
-
-        Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate,
-          backLinkModel.backLink,
-          appConfig.isIrishBorderQuestionEnabled,
-          jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
-          jd.isUKResident.contains(true)))
       }
     }
   }

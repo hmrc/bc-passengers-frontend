@@ -637,7 +637,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         meq(BigDecimal(50.00))
       )(any())
 
-      verify(injected[Cache], times(1)).store(any())(any())
+      verify(injected[Cache], times(2)).store(any())(any())
     }
 
     "modify the relevant PPI in the JourneyData and redirect to UK VAT Paid page for GBNI Journey" in new LocalSetup {
