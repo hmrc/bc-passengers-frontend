@@ -99,146 +99,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     isAnyItemOverAllowance = true
   )
 
-  val expectedJsObj: JsObject = Json.obj(
-    "simpleDeclarationRequest" -> Json.obj(
-      "requestCommon" -> Json.obj(
-        "receiptDate" -> "2018-05-31T12:14:08Z",
-        "acknowledgementReference" -> "XJPR57685246250",
-        "requestParameters" -> Json.arr(
-          Json.obj(
-            "paramName" -> "REGIME",
-            "paramValue" -> "PNGR"
-          )
-        )
-      ),
-      "requestDetail" -> Json.obj(
-        "customerReference" -> Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false),
-        "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
-        "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
-        "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "LHR", "portOfEntryName" -> "Heathrow Airport", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "NON_EU Only", "onwardTravelGBNI" -> "GB", "uccRelief" -> false, "ukVATPaid" -> false, "ukExcisePaid" -> false),
-        "declarationTobacco" -> Json.obj(
-          "totalExciseTobacco" -> "100.54",
-          "totalCustomsTobacco" -> "192.94",
-          "totalVATTobacco" -> "149.92",
-          "declarationItemTobacco" -> Json.arr(
-            Json.obj(
-              "commodityDescription" -> "Cigarettes",
-              "quantity" -> "250",
-              "goodsValue" -> "400.00",
-              "valueCurrency" -> "USD",
-              "valueCurrencyName" -> "USA dollars (USD)",
-              "originCountry" -> "US",
-              "originCountryName" -> "United States of America",
-              "exchangeRate" -> "1.20",
-              "exchangeRateDate" -> "2018-10-29",
-              "goodsValueGBP" -> "304.11",
-              "VATRESClaimed" -> false,
-              "exciseGBP" -> "74.00",
-              "customsGBP" -> "79.06",
-              "vatGBP" -> "91.43"
-            ),
-            Json.obj(
-              "commodityDescription" -> "Rolling tobacco",
-              "weight" -> "120.00",
-              "goodsValue" -> "200.00",
-              "valueCurrency" -> "USD",
-              "valueCurrencyName" -> "USA dollars (USD)",
-              "originCountry" -> "US",
-              "originCountryName" -> "United States of America",
-              "exchangeRate" -> "1.20",
-              "exchangeRateDate" -> "2018-10-29",
-              "goodsValueGBP" -> "152.05",
-              "VATRESClaimed" -> false,
-              "exciseGBP" -> "26.54",
-              "customsGBP" -> "113.88",
-              "vatGBP" -> "58.49"
-            )
-          )
-        ),
-        "declarationAlcohol" -> Json.obj(
-          "totalExciseAlcohol" -> "2.00",
-          "totalCustomsAlcohol" -> "0.30",
-          "totalVATAlcohol" -> "18.70",
-          "declarationItemAlcohol" -> Json.arr(
-            Json.obj(
-              "commodityDescription" -> "Cider",
-              "volume" -> "5",
-              "goodsValue" -> "120.00",
-              "valueCurrency" -> "USD",
-              "valueCurrencyName" -> "USA dollars (USD)",
-              "originCountry" -> "US",
-              "originCountryName" -> "United States of America",
-              "exchangeRate" -> "1.20",
-              "exchangeRateDate" -> "2018-10-29",
-              "goodsValueGBP" -> "91.23",
-              "VATRESClaimed" -> false,
-              "exciseGBP" -> "2.00",
-              "customsGBP" -> "0.30",
-              "vatGBP" -> "18.70"
-            )
-          )
-        ),
-        "declarationOther" -> Json.obj(
-          "totalExciseOther" -> "0.00",
-          "totalCustomsOther" -> "341.65",
-          "totalVATOther" -> "556.41",
-          "declarationItemOther" -> Json.arr(
-            Json.obj(
-              "commodityDescription" -> "Television",
-              "quantity" -> "1",
-              "goodsValue" -> "1500.00",
-              "valueCurrency" -> "USD",
-              "valueCurrencyName" -> "USA dollars (USD)",
-              "originCountry" -> "US",
-              "originCountryName" -> "United States of America",
-              "exchangeRate" -> "1.20",
-              "exchangeRateDate" -> "2018-10-29",
-              "goodsValueGBP" -> "1140.42",
-              "VATRESClaimed" -> false,
-              "exciseGBP" -> "0.00",
-              "customsGBP" -> "159.65",
-              "vatGBP" -> "260.01"
-            ),
-            Json.obj(
-              "commodityDescription" -> "Television",
-              "quantity" -> "1",
-              "goodsValue" -> "1300.00",
-              "valueCurrency" -> "GBP",
-              "valueCurrencyName" -> "British pounds (GBP)",
-              "originCountry" -> "GB",
-              "originCountryName" -> "United Kingdom",
-              "exchangeRate" -> "1.20",
-              "exchangeRateDate" -> "2018-10-29",
-              "goodsValueGBP" -> "1300.00",
-              "VATRESClaimed" -> false,
-              "exciseGBP" -> "0.00",
-              "customsGBP" -> "182.00",
-              "vatGBP" -> "296.40"
-            )
-          )
-        ),
-        "liabilityDetails" -> Json.obj(
-          "totalExciseGBP" -> "102.54",
-          "totalCustomsGBP" -> "534.89",
-          "totalVATGBP" -> "725.03",
-          "grandTotalGBP" -> "1362.46"
-        )
-      )
-    )
-  )
-
-  val expectedSendJson: JsObject = expectedJsObj.alterFields {
-    case ("chargeReference", _) => None
-    case ("acknowledgementReference", _) => None
-  }
-
-  val expectedTelephoneValueSendJson: JsObject = expectedJsObj.alterFields {
-    case ("chargeReference", _) => None
-    case ("acknowledgementReference", _) => None
-    case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "telephone", "idValue" -> "XPASSID7417532125", "ukResident" -> false))
-  }
-
-
   "Calling DeclarationService.submitDeclaration" should {
 
     implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
@@ -247,6 +107,146 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       euCountryCheck = Some("nonEuOnly"),
       arrivingNICheck = Some(false)
     )
+
+    val expectedJsObj: JsObject = Json.obj(
+      "journeyData" -> Json.toJsObject(jd),
+      "simpleDeclarationRequest" -> Json.obj(
+        "requestCommon" -> Json.obj(
+          "receiptDate" -> "2018-05-31T12:14:08Z",
+          "acknowledgementReference" -> "XJPR57685246250",
+          "requestParameters" -> Json.arr(
+            Json.obj(
+              "paramName" -> "REGIME",
+              "paramValue" -> "PNGR"
+            )
+          )
+        ),
+        "requestDetail" -> Json.obj(
+          "customerReference" -> Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false),
+          "personalDetails" -> Json.obj("firstName" -> "Harry", "lastName" -> "Potter"),
+          "contactDetails" -> Json.obj("emailAddress" -> "abc@gmail.com"),
+          "declarationHeader" -> Json.obj("chargeReference" -> "XJPR5768524625", "portOfEntry" -> "LHR", "portOfEntryName" -> "Heathrow Airport", "expectedDateOfArrival" -> "2018-05-31", "timeOfEntry" -> "13:20", "messageTypes" -> Json.obj("messageType" -> "DeclarationCreate"), "travellingFrom" -> "NON_EU Only", "onwardTravelGBNI" -> "GB", "uccRelief" -> false, "ukVATPaid" -> false, "ukExcisePaid" -> false),
+          "declarationTobacco" -> Json.obj(
+            "totalExciseTobacco" -> "100.54",
+            "totalCustomsTobacco" -> "192.94",
+            "totalVATTobacco" -> "149.92",
+            "declarationItemTobacco" -> Json.arr(
+              Json.obj(
+                "commodityDescription" -> "Cigarettes",
+                "quantity" -> "250",
+                "goodsValue" -> "400.00",
+                "valueCurrency" -> "USD",
+                "valueCurrencyName" -> "USA dollars (USD)",
+                "originCountry" -> "US",
+                "originCountryName" -> "United States of America",
+                "exchangeRate" -> "1.20",
+                "exchangeRateDate" -> "2018-10-29",
+                "goodsValueGBP" -> "304.11",
+                "VATRESClaimed" -> false,
+                "exciseGBP" -> "74.00",
+                "customsGBP" -> "79.06",
+                "vatGBP" -> "91.43"
+              ),
+              Json.obj(
+                "commodityDescription" -> "Rolling tobacco",
+                "weight" -> "120.00",
+                "goodsValue" -> "200.00",
+                "valueCurrency" -> "USD",
+                "valueCurrencyName" -> "USA dollars (USD)",
+                "originCountry" -> "US",
+                "originCountryName" -> "United States of America",
+                "exchangeRate" -> "1.20",
+                "exchangeRateDate" -> "2018-10-29",
+                "goodsValueGBP" -> "152.05",
+                "VATRESClaimed" -> false,
+                "exciseGBP" -> "26.54",
+                "customsGBP" -> "113.88",
+                "vatGBP" -> "58.49"
+              )
+            )
+          ),
+          "declarationAlcohol" -> Json.obj(
+            "totalExciseAlcohol" -> "2.00",
+            "totalCustomsAlcohol" -> "0.30",
+            "totalVATAlcohol" -> "18.70",
+            "declarationItemAlcohol" -> Json.arr(
+              Json.obj(
+                "commodityDescription" -> "Cider",
+                "volume" -> "5",
+                "goodsValue" -> "120.00",
+                "valueCurrency" -> "USD",
+                "valueCurrencyName" -> "USA dollars (USD)",
+                "originCountry" -> "US",
+                "originCountryName" -> "United States of America",
+                "exchangeRate" -> "1.20",
+                "exchangeRateDate" -> "2018-10-29",
+                "goodsValueGBP" -> "91.23",
+                "VATRESClaimed" -> false,
+                "exciseGBP" -> "2.00",
+                "customsGBP" -> "0.30",
+                "vatGBP" -> "18.70"
+              )
+            )
+          ),
+          "declarationOther" -> Json.obj(
+            "totalExciseOther" -> "0.00",
+            "totalCustomsOther" -> "341.65",
+            "totalVATOther" -> "556.41",
+            "declarationItemOther" -> Json.arr(
+              Json.obj(
+                "commodityDescription" -> "Television",
+                "quantity" -> "1",
+                "goodsValue" -> "1500.00",
+                "valueCurrency" -> "USD",
+                "valueCurrencyName" -> "USA dollars (USD)",
+                "originCountry" -> "US",
+                "originCountryName" -> "United States of America",
+                "exchangeRate" -> "1.20",
+                "exchangeRateDate" -> "2018-10-29",
+                "goodsValueGBP" -> "1140.42",
+                "VATRESClaimed" -> false,
+                "exciseGBP" -> "0.00",
+                "customsGBP" -> "159.65",
+                "vatGBP" -> "260.01"
+              ),
+              Json.obj(
+                "commodityDescription" -> "Television",
+                "quantity" -> "1",
+                "goodsValue" -> "1300.00",
+                "valueCurrency" -> "GBP",
+                "valueCurrencyName" -> "British pounds (GBP)",
+                "originCountry" -> "GB",
+                "originCountryName" -> "United Kingdom",
+                "exchangeRate" -> "1.20",
+                "exchangeRateDate" -> "2018-10-29",
+                "goodsValueGBP" -> "1300.00",
+                "VATRESClaimed" -> false,
+                "exciseGBP" -> "0.00",
+                "customsGBP" -> "182.00",
+                "vatGBP" -> "296.40"
+              )
+            )
+          ),
+          "liabilityDetails" -> Json.obj(
+            "totalExciseGBP" -> "102.54",
+            "totalCustomsGBP" -> "534.89",
+            "totalVATGBP" -> "725.03",
+            "grandTotalGBP" -> "1362.46"
+          )
+        )
+      )
+    )
+
+    val expectedSendJson: JsObject = expectedJsObj.alterFields {
+      case ("chargeReference", _) => None
+      case ("acknowledgementReference", _) => None
+    }
+
+    val expectedTelephoneValueSendJson: JsObject = expectedJsObj.alterFields {
+      case ("chargeReference", _) => None
+      case ("acknowledgementReference", _) => None
+      case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "telephone", "idValue" -> "XPASSID7417532125", "ukResident" -> false))
+    }
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
 
@@ -352,7 +352,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-
+        "journeyData" -> Json.toJsObject(jd),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -477,7 +477,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-
+        "journeyData" -> Json.toJsObject(jd),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -749,7 +749,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-
+        "journeyData" -> Json.toJsObject(jd),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -1021,7 +1021,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-
+        "journeyData" -> Json.toJsObject(jd),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -1277,7 +1277,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-
+        "journeyData" -> Json.toJsObject(jd),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
