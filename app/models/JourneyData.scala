@@ -126,6 +126,21 @@ case class JourneyData(
     val newPdList = block(getOrCreatePurchasedProductInstance(path, iid)) :: purchasedProductInstances.filterNot(_.path == path)
     this.copy(purchasedProductInstances = newPdList)
   }
+  def revertPurchasedProductInstance(): JourneyData = {
+    val workingInstance = this.workingInstance
+    if(workingInstance.isDefined){
+      val ppis = this.purchasedProductInstances.map(ppi => {
+        if(ppi.iid == workingInstance.get.iid){
+          workingInstance.get
+        }else{
+          ppi
+        }
+      })
+      this.copy(purchasedProductInstances = ppis)
+    }else{
+      this
+    }
+  }
 
   def removePurchasedProductInstance(iid: String): JourneyData = {
     this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid==iid))

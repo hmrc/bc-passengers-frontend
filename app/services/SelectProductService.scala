@@ -43,7 +43,7 @@ class SelectProductService @Inject()(
   }
 
   def removeSelectedAlias(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] = {
-    cache.store(journeyData.copy(selectedAliases = journeyData.selectedAliases.tail))
+    cache.store(journeyData.copy(workingInstance = None, selectedAliases = journeyData.selectedAliases.tail))
   }
 
 

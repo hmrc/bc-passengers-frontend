@@ -78,12 +78,33 @@ trait ControllerHelpers extends MessagesBaseController
     }
   }
 
+  def revertWorkingInstance(block: => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+
+    val edit = context.getJourneyData.workingInstance.exists(_.cost.isDefined)
+    val workingIid = context.getJourneyData.workingInstance.map(_.iid)
+    if(workingIid.isDefined){
+      if(edit){
+        cache.store(context.getJourneyData.revertPurchasedProductInstance()).flatMap(_ => block)
+      }else{
+        cache.store(context.getJourneyData.removePurchasedProductInstance(workingIid.get)).flatMap(_ => block)
+      }
+    }else{
+      block
+    }
+  }
+
   def requirePurchasedProductInstance(iid: String)(block: PurchasedProductInstance => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
     requireJourneyData { journeyData =>
-
       journeyData.getPurchasedProductInstance(iid) match {
-        case Some(ppi) => block(ppi)
+        case Some(ppi) =>
+          if(context.getJourneyData.workingInstance.isEmpty){
+            cache.store(context.getJourneyData.copy(workingInstance = Some(ppi))).flatMap(_ =>
+              block(ppi)
+            )
+          }else{
+            block(ppi)
+          }
         case None => logAndRenderError(s"No purchasedProductInstance found in journeyData for iid: $iid!", NotFound)
       }
     }
@@ -100,35 +121,13 @@ trait ControllerHelpers extends MessagesBaseController
     }
   }
 
-  private[controllers] def isCompleteProduct(ppi: PurchasedProductInstance, gbNi: Boolean, ukResident: Boolean) : Boolean = {
-    val isOther = ppi.path.toString.contains("other-goods")
-    if (gbNi) {
-      if (ppi.isVatPaid.isEmpty || (!isOther && ppi.isExcisePaid.isEmpty) || (isOther && !ukResident && ppi.isUccRelief.isEmpty)) false else true
-    } else {
-      true
-    }
-  }
-
-  private[controllers] def isGbNi(jd: JourneyData): Boolean = {
-    jd.euCountryCheck.contains("greatBritain") && (jd.arrivingNICheck.isDefined && jd.arrivingNICheck.get)
-  }
-
-  def withCompletedProductCheck(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
-    val gbNi = isGbNi(context.getJourneyData)
-    val ukResident = context.getJourneyData.isUKResident.getOrElse(false)
-    val filtered = context.getJourneyData.purchasedProductInstances.filter(ppi => isCompleteProduct(ppi,gbNi,ukResident))
-    if(filtered.length != context.getJourneyData.purchasedProductInstances.length) {
-      cache.store(context.getJourneyData.copy(purchasedProductInstances = filtered)).flatMap(_ =>
-        block
-      )
-    }else{
-      block
-    }
+  def withClearWorkingInstance(block: => Future[Result])(implicit context: LocalContext): Future[Result] = {
+    cache.store(context.getJourneyData.copy(workingInstance = None)).flatMap(_ => block)
   }
 
   def withNextSelectedProductAlias(block: Option[ProductAlias] => Future[Result])(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
 
-    withCompletedProductCheck {
+    withClearWorkingInstance {
       context.getJourneyData.selectedAliases match {
         case Nil => block(None)
         case productAlias :: _ => block(Some(productAlias))

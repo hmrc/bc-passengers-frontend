@@ -314,105 +314,58 @@ class SelectProductControllerSpec extends BaseSpec {
       verify(injected[SelectProductService], times(1)).removeSelectedAlias(any())(any())
     }
 
-    "invoke cache.store to remove incomplete products for GBNI Journey" in new NextStepSetup {
+  }
+
+  "Invoking cancel" should {
+
+    trait CancelSetup {
+
+      def selectedProducts: List[ProductAlias]
+
+      def journeyData: JourneyData = requiredJourneyData
+
+      lazy val response: Future[Result] = {
+        import play.api.test.Helpers.route
+
+        when(injected[Cache].fetch(any())) thenReturn {
+          Future.successful(Some(journeyData.copy(selectedAliases = selectedProducts)))
+        }
+        when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn {
+          Future.successful(JourneyData())
+        }
+        when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get
+      }
+    }
+
+    "redirect to next step after clearing working instance from cache when adding a product" in new CancelSetup {
+
       override val selectedProducts = List(ProductAlias("alcohol", ProductPath("alcohol")))
+      val workingInstance = PurchasedProductInstance(iid = "iid",path = ProductPath("alcohol"))
       val incompleteGbNiPpi: PurchasedProductInstance = PurchasedProductInstance(iid = "iid",path = ProductPath("alcohol"))
-      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(
+      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(workingInstance = Some(workingInstance),
         euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true),purchasedProductInstances = List(incompleteGbNiPpi)
       )
       override val journeyData: JourneyData = localRequiredJourneyData
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
       verify(injected[Cache], times(1)).store(any())(any())
     }
 
-    "not invoke cache.store to remove incomplete products for GBNI Journey when product is complete" in new NextStepSetup {
+    "redirect to next step after clearing working instance from cache when editing a product" in new CancelSetup {
+
       override val selectedProducts = List(ProductAlias("alcohol", ProductPath("alcohol")))
-      val incompleteGbNiPpi: PurchasedProductInstance = PurchasedProductInstance(iid = "iid",path = ProductPath("alcohol"),isVatPaid = Some(true),isExcisePaid = Some(false))
-      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(
+      val workingInstance = PurchasedProductInstance(iid = "iid",path = ProductPath("alcohol"),cost = Some(BigDecimal(100)))
+      val incompleteGbNiPpi: PurchasedProductInstance = PurchasedProductInstance(iid = "iid",path = ProductPath("alcohol"))
+      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(workingInstance = Some(workingInstance),
         euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true),purchasedProductInstances = List(incompleteGbNiPpi)
       )
       override val journeyData: JourneyData = localRequiredJourneyData
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
-      verify(injected[Cache], times(0)).store(any())(any())
-    }
-
-    "not invoke cache.store to remove incomplete products for non GBNI Journey" in new NextStepSetup {
-      override val selectedProducts = List(ProductAlias("alcohol", ProductPath("alcohol")))
-      val incompleteGbNiPpi: PurchasedProductInstance = PurchasedProductInstance(iid = "iid",path = ProductPath("alcohol"),isVatPaid = Some(true),isExcisePaid = Some(false))
-      val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(purchasedProductInstances = List(incompleteGbNiPpi)
-      )
-      override val journeyData: JourneyData = localRequiredJourneyData
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
-      verify(injected[Cache], times(0)).store(any())(any())
-    }
-
-  }
-
-  "isCompleteProduct " should {
-
-    "return false for gbni journey when isVatPaid is not populated for alcohol" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("alcohol"),isVatPaid = None)
-      controllerHelpers.isCompleteProduct(ppi,gbNi = true,ukResident = false) shouldBe false
-    }
-    "return true for non gbni journey when isVatPaid is not populated for alcohol" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("alcohol"),isVatPaid = None)
-      controllerHelpers.isCompleteProduct(ppi,gbNi = false,ukResident = false) shouldBe true
-    }
-    "return false for gbni journey when isVatPaid is not populated for tobacco" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("tobacco"),isVatPaid = None)
-      controllerHelpers.isCompleteProduct(ppi,gbNi = true,ukResident = false) shouldBe false
-    }
-    "return true for non gbni journey when isVatPaid is not populated for tobacco" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("tobacco"),isVatPaid = None)
-      controllerHelpers.isCompleteProduct(ppi,gbNi = false,ukResident = false) shouldBe true
-    }
-
-    "return false for gbni journey when isExcisePaid is not populated for alcohol" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("alcohol"),isExcisePaid = None, isVatPaid = Some(false))
-      controllerHelpers.isCompleteProduct(ppi,gbNi = true,ukResident = false) shouldBe false
-    }
-    "return true for non gbni journey when isExcisePaid is not populated for alcohol" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("alcohol"),isExcisePaid = None, isVatPaid = Some(false))
-      controllerHelpers.isCompleteProduct(ppi,gbNi = false,ukResident = false) shouldBe true
-    }
-
-    "return false for gbni journey when isExcisePaid is not populated for tobacco" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("tobacco"),isExcisePaid = None, isVatPaid = Some(false))
-      controllerHelpers.isCompleteProduct(ppi,gbNi = true,ukResident = false) shouldBe false
-    }
-    "return true for non gbni journey when isExcisePaid is not populated for tobacco" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("tobacco"),isExcisePaid = None, isVatPaid = Some(false))
-      controllerHelpers.isCompleteProduct(ppi,gbNi = false,ukResident = false) shouldBe true
-    }
-
-    "return true for gbni journey when isExcisePaid is not populated for other goods" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("other-goods"),isExcisePaid = None, isVatPaid = Some(false))
-      controllerHelpers.isCompleteProduct(ppi,gbNi = true,ukResident = true) shouldBe true
-    }
-
-    "return true for non gbni journey when isVatPaid is not populated for other goods" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("other-goods"),isVatPaid = None)
-      controllerHelpers.isCompleteProduct(ppi,gbNi = false,ukResident = false) shouldBe true
-    }
-
-    "return false for gbni journey when isUccRelief is not populated for other goods for non UK resident" in {
-      val ppi = PurchasedProductInstance(iid="",path = ProductPath("other-goods"),isUccRelief = None, isVatPaid = Some(false))
-      controllerHelpers.isCompleteProduct(ppi,gbNi = true,ukResident = false) shouldBe false
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      verify(injected[Cache], times(1)).store(any())(any())
     }
   }
 
-  "isGbNi " should {
-    "return true when flags are set" in{
-      controllerHelpers.isGbNi(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true))) shouldBe true
-    }
-    "return false when euCountryCheck is not greatBritain set" in{
-      controllerHelpers.isGbNi(JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(true))) shouldBe false
-    }
-    "return false when arrivingNICheck is false" in{
-      controllerHelpers.isGbNi(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(false))) shouldBe false
-    }
-  }
 }

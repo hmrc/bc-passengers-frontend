@@ -38,6 +38,12 @@ class SelectProductController @Inject()(
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
+  def cancel():  Action[AnyContent] = dashboardAction { implicit context =>
+    revertWorkingInstance {
+      Future.successful(Redirect(routes.SelectProductController.nextStep()))
+    }
+  }
+
   def nextStep(): Action[AnyContent] = dashboardAction { implicit context =>
 
     withNextSelectedProductAlias {

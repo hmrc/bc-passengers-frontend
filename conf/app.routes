@@ -74,6 +74,7 @@ GET        /remove-goods/$path<.+>/:iid/remove                                  
 POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
 GET        /select-goods/next-step                                                     controllers.SelectProductController.nextStep
+GET        /select-goods/cancel                                                        controllers.SelectProductController.cancel
 
 GET        /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.AlcoholInputController.displayAddForm(path: ProductPath)
 POST       /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.AlcoholInputController.processAddForm(path: ProductPath)
