@@ -46,11 +46,7 @@ class OtherGoodsInputController @Inject()(
       "country" -> text,
       "originCountry" -> optional(text),
       "currency" -> text,
-      "costs" -> list(text)
-        .transform[List[BigDecimal]](
-          _.map(s => Try(BigDecimal(s.filter(_ != ','))).toOption.getOrElse(BigDecimal(0))),
-          _.map(bd => if(bd>0) formatMonetaryValue(bd) else "")
-        ),
+      "cost" -> bigDecimal(0,2),
       "isVatPaid" -> optional(boolean),
       "isUccRelief" ->  optional(boolean),
       "isCustomPaid" -> optional(boolean)
@@ -65,17 +61,10 @@ class OtherGoodsInputController @Inject()(
       "originCountry" -> optional(text),
       "currency" -> text
         .verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "costs" -> list(
-        text
-          .transform[String](
-            s => if(s.lastOption == Some('.')) s+"0" else s,
-            s => s
-          )
-          .verifying(blankOkCostCheckConstraint(path.toMessageKey))
-      )
-      .transform[List[String]](_.map(_.filter(_ != ','))filter(!_.isEmpty), identity)
-      .verifying("error.required.cost."+path.toMessageKey, c => c.size > 0)
-      .transform[List[BigDecimal]](_.map(s => BigDecimal(s)), _.map(formatMonetaryValue)),
+      "cost" -> text
+        .transform[String](s => s.filter(_ != ','), identity)
+        .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
+        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
       "isUccRelief" ->  optional(boolean),
       "isCustomPaid" -> optional(boolean)
@@ -112,7 +101,7 @@ class OtherGoodsInputController @Inject()(
           Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ))
         },
         dto => {
-          val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.originCountry, dto.currency, dto.costs)
+          val jd = newPurchaseService.insertPurchases(path, None, None, dto.country, dto.originCountry, dto.currency, List(dto.cost))
           cache.store(jd._1) map {_ =>
             (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
               case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,jd._2))
@@ -121,17 +110,7 @@ class OtherGoodsInputController @Inject()(
           }
         }
       )
-
-      def processAddCost = addCostForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest( other_goods_input(formWithErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) )),
-        dto => {
-          val f = addCostForm.fill( dto.copy(costs = (dto.costs :+ BigDecimal(0)).take(50)) )
-          Future.successful(Ok( other_goods_input(f, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ))
-        }
-      )
-
-      if (context.getFormParam("action") == Some("add-cost")) processAddCost
-      else processContinue
+      processContinue
     }
 
   }
@@ -145,7 +124,7 @@ class OtherGoodsInputController @Inject()(
         def processContinue = continueForm(ppi.path).bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(other_goods_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))),
           dto => {
-            val jd = newPurchaseService.updatePurchase(ppi.path, iid, None, None, dto.country, dto.originCountry, dto.currency, dto.costs.head)
+            val jd = newPurchaseService.updatePurchase(ppi.path, iid, None, None, dto.country, dto.originCountry, dto.currency, dto.cost)
             cache.store(jd) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                 case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
@@ -154,17 +133,7 @@ class OtherGoodsInputController @Inject()(
             }
           }
         )
-
-        def processAddCost = addCostForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(other_goods_input(formWithErrors, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck))),
-          dto => {
-            val f = addCostForm.fill(dto.copy(costs = dto.costs :+ BigDecimal(0)))
-            Future.successful(Ok(other_goods_input(f, product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
-          }
-        )
-
-        if (context.getFormParam("action") == Some("add-cost")) processAddCost
-        else processContinue
+        processContinue
       }
     }
   }
