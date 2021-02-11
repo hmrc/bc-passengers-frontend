@@ -773,7 +773,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.only_whole_numbers"
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
     }
 
 
@@ -899,7 +899,7 @@ class DtoTest extends BaseSpec {
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.only_whole_numbers")
+      form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
     }
 
     "allow the dateOfArrival if it is a valid date" in {

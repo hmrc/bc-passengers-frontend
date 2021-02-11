@@ -25,7 +25,8 @@ object OtherGoodsDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
-  } yield OtherGoodsDto("", country.code, purchasedProductInstance.originCountry.map(_.code), currency, purchasedProductInstance.cost.toList,purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief, purchasedProductInstance.isCustomPaid)
+    cost <- purchasedProductInstance.cost
+  } yield OtherGoodsDto("", country.code, purchasedProductInstance.originCountry.map(_.code), currency, cost, purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief, purchasedProductInstance.isCustomPaid)
 
 
 }
@@ -35,7 +36,7 @@ case class OtherGoodsDto(
   country: String,
   originCountry: Option[String],
   currency: String,
-  costs: List[BigDecimal] = List(),
+  cost: BigDecimal,
   isVatPaid: Option[Boolean],
   isUccRelief: Option[Boolean],
   isCustomPaid: Option[Boolean]
@@ -230,7 +231,7 @@ object EnterYourDetailsDto extends Validators {
       maybeDateString => (maybeDateString._1.get, maybeDateString._2.get, maybeDateString._3.get),
       dateString => (Some(dateString._1), Some(dateString._2), Some(dateString._3))
     )
-    .verifying("error.only_whole_numbers", dateString => dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit))
+    .verifying("error.enter_a_real_date", dateString => dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit))
     .transform[(String, String, String)](identity, identity)
     .verifying("error.year_length", dateString => dateString._3.length == 4)
     .verifying("error.enter_a_real_date", dateString => dateString._2.length >= 1 && dateString._2.length <= 2 && dateString._1.length >=1 && dateString._1.length <= 2)

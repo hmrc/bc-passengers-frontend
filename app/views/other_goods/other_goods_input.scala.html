@@ -85,37 +85,12 @@
       'name -> "currency_source"
     )
 
-    <div class="form-group @{if(dtoForm("costs").hasErrors) "form-group-error" else "" }" id="costs">
-
-        @dtoForm("costs").errors.map { error =>
-          <span class="error-message">@messages(error.message)</span>
-        }
-
-        @if(dtoForm.data.keys.filter(_.startsWith("costs")).size <= 1) {
-
-          @components.input(
-            field = dtoForm("costs[0]"),
-            '_label -> messages(s"label.price_paid_for_this_item"),
-            '_labelTextClass -> "form-label"
-          )
-        } else {
-
-          @helper.repeatWithIndex(dtoForm("costs")) { (field, i) =>
-            @components.input(
-              field,
-             '_label -> messages(s"label.price_paid_for_item_", i+1),
-             '_labelTextClass -> "form-label"
-            )
-          }
-        }
-
-    </div>
-
-    @if(dtoForm.value.fold(0)(_.costs.size) >= 50) {
-      <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
-      </div>
-    }
+    @components.input(
+      field = dtoForm("cost"),
+      '_label -> messages(s"label.price_paid"),
+      '_labelTextClass -> "form-label",
+      '_inputmode -> "decimal"
+    )
 
     <div class="form-group">
       <button type="submit" class="button" name="action" value="continue">@messages("label.continue")</button>

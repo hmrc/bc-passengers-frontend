@@ -305,97 +305,6 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       status(result) shouldBe NOT_FOUND
     }
 
-    "render the form with an extra cost input when action == add-cost" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
-        "action" -> "add-cost",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "costs[0]" -> "12.12"
-      )
-
-      val result: Future[Result] = route(app, req).get
-      status(result) shouldBe OK
-
-      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
-
-      formCaptor.getValue.data("country") shouldBe "FR"
-      formCaptor.getValue.data("currency") shouldBe "EUR"
-      formCaptor.getValue.data("costs[0]") shouldBe "12.12"
-      formCaptor.getValue.data("costs[1]") shouldBe ""
-    }
-
-    "only render the form with up to 50 inputs when action == add-cost" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
-        "action" -> "add-cost",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "costs[0]" -> "12.10",
-        "costs[1]" -> "12.11",
-        "costs[2]" -> "12.12",
-        "costs[3]" -> "12.13",
-        "costs[4]" -> "12.14",
-        "costs[5]" -> "12.15",
-        "costs[6]" -> "12.16",
-        "costs[7]" -> "12.17",
-        "costs[8]" -> "12.18",
-        "costs[9]" -> "12.17",
-        "costs[10]" -> "12.18",
-        "costs[11]" -> "12.19",
-        "costs[12]" -> "12.20",
-        "costs[13]" -> "12.21",
-        "costs[14]" -> "12.22",
-        "costs[15]" -> "12.23",
-        "costs[16]" -> "12.24",
-        "costs[17]" -> "12.25",
-        "costs[18]" -> "12.26",
-        "costs[19]" -> "12.27",
-        "costs[20]" -> "12.28",
-        "costs[21]" -> "12.29",
-        "costs[22]" -> "12.30",
-        "costs[23]" -> "12.31",
-        "costs[24]" -> "12.32",
-        "costs[25]" -> "12.33",
-        "costs[26]" -> "12.34",
-        "costs[27]" -> "12.35",
-        "costs[28]" -> "12.36",
-        "costs[29]" -> "12.37",
-        "costs[30]" -> "12.38",
-        "costs[31]" -> "12.39",
-        "costs[32]" -> "12.40",
-        "costs[33]" -> "12.41",
-        "costs[34]" -> "12.42",
-        "costs[35]" -> "12.43",
-        "costs[36]" -> "12.44",
-        "costs[37]" -> "12.45",
-        "costs[38]" -> "12.46",
-        "costs[39]" -> "12.47",
-        "costs[40]" -> "12.48",
-        "costs[41]" -> "12.49",
-        "costs[42]" -> "12.50",
-        "costs[43]" -> "12.51",
-        "costs[44]" -> "12.52",
-        "costs[45]" -> "12.53",
-        "costs[46]" -> "12.54",
-        "costs[47]" -> "12.55",
-        "costs[48]" -> "12.56",
-        "costs[49]" -> "12.57"
-      )
-
-      val result: Future[Result] = route(app, req).get
-      status(result) shouldBe OK
-
-      verify(injected[views.html.other_goods.other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
-
-      formCaptor.getValue.data("country") shouldBe "FR"
-      formCaptor.getValue.data("currency") shouldBe "EUR"
-      formCaptor.getValue.data("costs[0]") shouldBe "12.10"
-      formCaptor.getValue.data("costs[49]") shouldBe "12.57"
-      formCaptor.getValue.data.get("costs[50]") shouldBe None
-
-    }
-
     "return a 400 if no action is supplied" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
@@ -413,8 +322,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12",
-        "costs[1]" -> "13.13"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = route(app, req).get
@@ -427,8 +335,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "Not a real country",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12",
-        "costs[1]" -> "13.13"
+        "cost" -> "12.12",
       )
 
       val result: Future[Result] = route(app, req).get
@@ -441,8 +348,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "",
-        "costs[0]" -> "12.12",
-        "costs[1]" -> "13.13"
+        "cost" -> "12.12",
       )
 
       val result: Future[Result] = route(app, req).get
@@ -455,8 +361,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "XXX",
-        "costs[0]" -> "12.12",
-        "costs[1]" -> "13.13"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = route(app, req).get
@@ -481,7 +386,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
-        "costs[0]" -> ","
+        "cost" -> ","
       )
 
       val result: Future[Result] = route(app, req).get
@@ -494,8 +399,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12",
-        "costs[1]" -> "13.13"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = route(app, req).get
@@ -509,7 +413,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         meq("FR"),
         any(),
         meq("EUR"),
-        meq(List(BigDecimal(12.12), BigDecimal(13.13))),
+        meq(List(BigDecimal(12.12))),
         any()
       )(any())
 
@@ -522,7 +426,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = gbNIRoute(app, req).get
@@ -539,7 +443,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = route(app, req).get
@@ -553,7 +457,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = route(app, req).get
@@ -580,7 +484,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
-        "costs[0]" -> "12.12"
+        "cost" -> "12.12"
       )
 
       val result: Future[Result] = gbNIRoute(app, req).get
