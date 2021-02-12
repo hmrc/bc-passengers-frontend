@@ -3,29 +3,25 @@
  *
  */
 
-/*
- * Copyright 2020 HM Revenue & Customs
- *
- */
 package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.UccReliefAction
-import forms.UccReliefItemForm
+import controllers.enforce.EUEvidenceItemAction
+import forms.EUEvidenceItemForm
 import javax.inject.Inject
-import models.{ProductPath, PurchasedProductInstance}
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UccReliefController @Inject()(
+class EUEvidenceController @Inject()(
                                      val cache: Cache,
-                                     uccReliefAction: UccReliefAction,
+                                     eUEvidenceItemAction: EUEvidenceItemAction,
                                      val error_template: views.html.error_template,
-                                     val isUccReliefItemPage: views.html.travel_details.ucc_relief_item,
+                                     val euEvidenceItem: views.html.travel_details.eu_evidence_item,
                                      override val controllerComponents: MessagesControllerComponents,
                                      implicit val appConfig: AppConfig,
                                      val backLinkModel: BackLinkModel,
@@ -35,30 +31,31 @@ class UccReliefController @Inject()(
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
 
-  def loadUccReliefItemPage(path: ProductPath, iid: String): Action[AnyContent] = uccReliefAction { implicit context =>
+  def loadEUEvidenceItemPage(path: ProductPath, iid: String): Action[AnyContent] = eUEvidenceItemAction { implicit context =>
     Future.successful {
       val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
       ppInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _, _, _ ,_, Some(isUccRelief),_)) =>
-          Ok(isUccReliefItemPage(UccReliefItemForm.form.fill(isUccRelief), backLinkModel.backLink, path, iid))
+        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _,_,_, _,_,Some(hasEvidence))) =>
+          Ok(euEvidenceItem(EUEvidenceItemForm.form.fill(hasEvidence), backLinkModel.backLink, path, iid))
         case _ =>
-          Ok(isUccReliefItemPage(UccReliefItemForm.form, backLinkModel.backLink, path, iid))
+          Ok(euEvidenceItem(EUEvidenceItemForm.form, backLinkModel.backLink, path, iid))
       }
     }
   }
 
-  def postUccReliefItemPage(path: ProductPath, iid: String): Action[AnyContent] = uccReliefAction { implicit context =>
-    UccReliefItemForm.form.bindFromRequest().fold(
+  def postEUEvidenceItemPage(path: ProductPath, iid: String): Action[AnyContent] = eUEvidenceItemAction { implicit context =>
+    EUEvidenceItemForm.form.bindFromRequest().fold(
       hasErrors = {
         formWithErrors =>
           Future.successful(
-            BadRequest(isUccReliefItemPage(formWithErrors, backLinkModel.backLink, path, iid))
+            BadRequest(euEvidenceItem(formWithErrors, backLinkModel.backLink, path, iid))
           )
       },
       success = {
-        isUccRelief =>
+        euEvidence =>
           val ppInstances = context.getJourneyData.purchasedProductInstances.map(ppi => {
-            if(ppi.iid == iid) ppi.copy(isUccRelief = Some(isUccRelief)) else ppi
+            if(ppi.iid == iid) ppi.copy(hasEvidence = Some(euEvidence), isCustomPaid = Some(euEvidence))
+            else ppi
           })
           cache.store(context.getJourneyData.copy(purchasedProductInstances = ppInstances)).map(_ =>
             Redirect(routes.SelectProductController.nextStep())
@@ -66,5 +63,5 @@ class UccReliefController @Inject()(
       })
   }
 
-}
 
+}

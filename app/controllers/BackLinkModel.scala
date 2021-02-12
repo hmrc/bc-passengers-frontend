@@ -67,6 +67,14 @@ class BackLinkModel @Inject() (
             Some(UKVatPaidController.loadItemUKVatPaidPage(context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path, iid))
         }
       }
+      case "eu-evidence-check" if eucc==Some("euOnly") & !arN => {
+        val iid = getIid(context.request.path)
+        context.request.path match {
+          case path if path.contains("enter-goods/alcohol") => Some(AlcoholInputController.displayEditForm(iid))
+          case path if path.contains("enter-goods/tobacco") => Some(TobaccoInputController.displayEditForm(iid))
+          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+        }
+      }
       case "gb-ni-no-need-to-use-service" =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
       case "goods-brought-into-northern-ireland" if eucc!=Some("greatBritain") =>

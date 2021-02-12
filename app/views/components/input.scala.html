@@ -28,7 +28,8 @@
     }
 
     @if(elements.args.contains('_inputHint) ){
-    <span class="form-hint">
+      <span class="form-hint" @if(elements.args.contains('_hintId)) {
+        id="@elements.args.get('_hintId)"}>
         @elements.args.get('_inputHint)
       </span>
     }

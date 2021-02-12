@@ -575,4 +575,55 @@ class StandardBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(UKVatPaidController.loadItemUKVatPaidPage(ProductPath(path), iid).url)
     }
   }
+
+  "Going back from eu-evidence-check for alcohol" should {
+
+    "return user to the edit alcohol page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = Some("euOnly")
+      override val isArrivingNi: Option[Boolean] = Some(false)
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.EUEvidenceController.loadEUEvidenceItemPage(ProductPath("alcohol"),"iid")
+
+      m.backLink(context) shouldBe Some(routes.AlcoholInputController.displayEditForm("iid").url)
+    }
+  }
+
+  "Going back from eu-evidence-check for tobacco" should {
+
+    "return user to the edit tobacco page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = Some("euOnly")
+      override val isArrivingNi: Option[Boolean] = Some(false)
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.EUEvidenceController.loadEUEvidenceItemPage(ProductPath("tobacco"),"iid")
+
+      m.backLink(context) shouldBe Some(routes.TobaccoInputController.displayEditForm("iid").url)
+    }
+  }
+
+  "Going back from eu-evidence-check for other goods" should {
+
+    "return user to the edit other goods page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = Some("euOnly")
+      override val isArrivingNi: Option[Boolean] = Some(false)
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.EUEvidenceController.loadEUEvidenceItemPage(ProductPath("other-goods"),"iid")
+
+      m.backLink(context) shouldBe Some(routes.OtherGoodsInputController.displayEditForm("iid").url)
+    }
+  }
 }
