@@ -50,7 +50,8 @@ class AlcoholInputController @Inject()(
       "cost"           -> ignored(BigDecimal(0)),
       "isVatPaid"      -> optional(boolean),
       "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid" -> optional(boolean)
+      "isCustomPaid" -> optional(boolean),
+      "hasEvidence" -> optional(boolean),
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
@@ -71,7 +72,8 @@ class AlcoholInputController @Inject()(
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
       "isExcisePaid" -> optional(boolean),
-      "isCustomPaid" -> optional(boolean)
+      "isCustomPaid" -> optional(boolean),
+      "hasEvidence" -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
@@ -109,6 +111,13 @@ class AlcoholInputController @Inject()(
             cache.store(item._1) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                 case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,item._2))
+                case (Some(false), Some("euOnly")) => {
+                  if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                    Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
+                  } else {
+                    Redirect(routes.SelectProductController.nextStep())
+                  }
+                }
                 case _ => Redirect(routes.SelectProductController.nextStep())
               }
             }
@@ -135,6 +144,13 @@ class AlcoholInputController @Inject()(
               cache.store( newPurchaseService.updatePurchase(ppi.path, iid, Some(dto.weightOrVolume), None, dto.country, dto.originCountry, dto.currency, dto.cost) ) map { _ =>
                 (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                   case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
+                  case (Some(false), Some("euOnly")) => {
+                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path,iid))
+                    } else {
+                      Redirect(routes.SelectProductController.nextStep())
+                    }
+                  }
                   case _ => Redirect(routes.SelectProductController.nextStep())
                 }
               }
