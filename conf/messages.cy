@@ -1688,3 +1688,15 @@ error.referenceNumber.invalid = (W)Enter your reference number in the correct fo
 label.vat_paid = (W)VAT paid(W)
 label.excise_paid = (W)Excise paid(W)
 label.tax_exempt = (W)Tax exempt(W)
+
+#eu_evidence_item
+heading.evidence_eu_item = (W)Do you have evidence this item was originally produced in the EU?(W)
+text.made_in_eu = (W)You will not have to pay customs duty on this item as you have stated it was originally produced or made in the EU.(W)
+text.however_item_may_be_seized = (W)However, if you do not have any of the following evidence to prove this, your item may be seized:(W)
+label.evidence_1 = (W)evidence 1(W)
+label.evidence_2 = (W)or evidence 2(W)
+text.declare_over_1000 = (W)If you intend to declare over £1,000 worth of goods originally produced or made in the EU, you may also need to provide the following:(W)
+label.evidence_3 = (W)evidence 3(W)
+label.evidence_4 = (W)or evidence 4(W)
+head.error.evidence_eu_item = (W)Select yes if you have evidence this item was originally made in the EU(W)
+error.evidence_eu_item = (W)Select yes if you have evidence this item was originally made in the EU(W)

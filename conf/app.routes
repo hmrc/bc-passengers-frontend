@@ -32,6 +32,9 @@ POST       /gb-ni-uk-resident-check                                             
 GET        /enter-goods/$path<.+>/:iid/gb-ni-exemptions                                controllers.UccReliefController.loadUccReliefItemPage(path: ProductPath, iid: String)
 POST       /enter-goods/$path<.+>/:iid/gb-ni-exemptions                                controllers.UccReliefController.postUccReliefItemPage(path: ProductPath, iid: String)
 
+GET        /enter-goods/$path<.+>/:iid/eu-evidence-check                               controllers.EUEvidenceController.loadEUEvidenceItemPage(path: ProductPath, iid: String)
+POST       /enter-goods/$path<.+>/:iid/eu-evidence-check                               controllers.EUEvidenceController.postEUEvidenceItemPage(path: ProductPath, iid: String)
+
 GET        /gb-ni-no-need-to-use-service                                               controllers.TravelDetailsController.noNeedToUseServiceGbni
 
 GET        /goods-bought-into-northern-ireland-inside-eu                               controllers.TravelDetailsController.goodsBoughtInsideEu

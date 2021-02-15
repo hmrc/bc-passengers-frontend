@@ -49,7 +49,8 @@ class OtherGoodsInputController @Inject()(
       "cost" -> bigDecimal(0,2),
       "isVatPaid" -> optional(boolean),
       "isUccRelief" ->  optional(boolean),
-      "isCustomPaid" -> optional(boolean)
+      "isCustomPaid" -> optional(boolean),
+      "hasEvidence" -> optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
@@ -67,7 +68,8 @@ class OtherGoodsInputController @Inject()(
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid" -> optional(boolean),
       "isUccRelief" ->  optional(boolean),
-      "isCustomPaid" -> optional(boolean)
+      "isCustomPaid" -> optional(boolean),
+      "hasEvidence" -> optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
 
@@ -105,6 +107,13 @@ class OtherGoodsInputController @Inject()(
           cache.store(jd._1) map {_ =>
             (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
               case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path,jd._2))
+              case (Some(false), Some("euOnly")) => {
+                if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                  Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, jd._2))
+                } else {
+                  Redirect(routes.SelectProductController.nextStep())
+                }
+              }
               case _ => Redirect(routes.SelectProductController.nextStep())
             }
           }
@@ -128,6 +137,13 @@ class OtherGoodsInputController @Inject()(
             cache.store(jd) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                 case (Some(true), Some("greatBritain")) => Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path,iid))
+                case (Some(false), Some("euOnly")) => {
+                  if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                    Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path,iid))
+                  } else {
+                    Redirect(routes.SelectProductController.nextStep())
+                  }
+                }
                 case _ => Redirect(routes.SelectProductController.nextStep())
               }
             }

@@ -57,3 +57,5 @@ case object ZeroDeclarationStep extends JourneyStep(preceeding = List(DashboardS
 case object PreviousDeclarationStep extends JourneyStep(Nil, _ => _ => true)
 
 case object DeclarationRetrievalStep extends JourneyStep(preceeding = List(PreviousDeclarationStep), predicate = _ => _.flatMap(_.prevDeclaration).contains(true))
+
+case object EUEvidenceItemStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("euOnly") && x.flatMap(_.arrivingNICheck).contains(false))

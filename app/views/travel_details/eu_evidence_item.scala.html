@@ -1,0 +1,59 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@(eUEvidenceItemForm: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util.prefixErrorMessage
+
+@main_template(title = prefixErrorMessage(messages("heading.evidence_eu_item"), eUEvidenceItemForm.hasErrors), backLink = backLink) {
+
+@views.html.tags.errors(eUEvidenceItemForm)
+
+
+@form(action = routes.EUEvidenceController.postEUEvidenceItemPage(path,iid)){
+
+<fieldset>
+    <legend>
+        <h1 class="heading-xlarge">@messages("heading.evidence_eu_item")</h1>
+    </legend>
+    <p>@messages("text.made_in_eu")</p>
+    <p>@messages("text.however_item_may_be_seized")</p>
+    <ul class="list list-bullet">
+        <li>
+            @messages("label.evidence_1")
+        </li>
+        <li>
+            @messages("label.evidence_2")
+        </li>
+    </ul>
+    <p>@messages("text.declare_over_1000")</p>
+    <ul class="list list-bullet">
+        <li>
+            @messages("label.evidence_3")
+        </li>
+        <li>
+            @messages("label.evidence_4")
+        </li>
+    </ul>
+
+    @components.input_radio_group(
+    eUEvidenceItemForm("eUEvidenceItem"),
+    Seq("true" -> Messages("label.yes"),
+    "false" -> Messages("label.no")),
+    '_labelClass -> "block-label inputLabelBeforeError",
+    '_inline -> true
+    )
+
+    <div class="form-group">
+        <button class="button" type="submit">@messages("label.continue")</button>
+    </div>
+
+</fieldset>
+
+}
+
+}

@@ -28,6 +28,7 @@ case class PurchasedProductInstance(
   isCustomPaid: Option[Boolean] = None,
   isExcisePaid: Option[Boolean] = None,
   isUccRelief: Option[Boolean] = None,
+  hasEvidence: Option[Boolean] = None
 )
 
 object UserInformation {

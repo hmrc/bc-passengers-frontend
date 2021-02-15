@@ -89,7 +89,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         "cost" -> "4,444.00"
       ))
       form.hasErrors shouldBe false
-      form.value.get shouldBe AlcoholDto(90, "FR", None, "EUR", 4444,None,None, None)
+      form.value.get shouldBe AlcoholDto(90, "FR", None, "EUR", 4444,None,None, None, None)
 
     }
 
@@ -101,7 +101,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         "cost" -> "5000.00"
       ))
       form.hasErrors shouldBe false
-      form.value.get shouldBe AlcoholDto(300, "IN", None, "INR", 5000, None, None, None)
+      form.value.get shouldBe AlcoholDto(300, "IN", None, "INR", 5000, None, None, None, None)
 
     }
 

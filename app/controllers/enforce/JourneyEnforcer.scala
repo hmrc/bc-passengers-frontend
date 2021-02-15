@@ -386,3 +386,14 @@ class DeclarationRetrievalAction @Inject()(journeyEnforcer: JourneyEnforcer, app
     }
   }
 }
+
+@Singleton
+class EUEvidenceItemAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.EUEvidenceItemStep) {
+        block(context)
+      }
+    }
+  }
+}

@@ -88,6 +88,27 @@ class AlcoholInputControllerSpec extends BaseSpec {
       ))
     ))
 
+    lazy val cachedEUGBJourneyData: Option[JourneyData] = Some(JourneyData(
+      prevDeclaration = Some(false),
+      Some("euOnly"),
+      arrivingNICheck= Some(false),
+      isVatResClaimed = None,
+      isBringingDutyFree = None,
+      bringingOverAllowance = Some(true),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = List(PurchasedProductInstance(
+        ProductPath("alcohol/beer"),
+        "iid0",
+        Some(20.0),
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        None,
+        Some("EUR"),
+        Some(BigDecimal(12.99))
+      ))
+    ))
+
     val formCaptor: ArgumentCaptor[Form[AlcoholDto]] = ArgumentCaptor.forClass(classOf[Form[AlcoholDto]])
 
     def fakeLimits: Map[String, String]
@@ -114,6 +135,20 @@ class AlcoholInputControllerSpec extends BaseSpec {
       val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
       when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
+
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+
+      rt(app, req)
+    }
+
+    def euGBRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedEUGBJourneyData)
+      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
+      val insertedPurchase = (cachedEUGBJourneyData.get,"pid")
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedEUGBJourneyData.get
 
       when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -576,6 +611,62 @@ class AlcoholInputControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/gb-ni-vat-check")
 
     }
+
+    "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "originCountry" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = euGBRoute(app, req).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/eu-evidence-check")
+
+    }
+
+    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "originCountry" -> "IN",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = euGBRoute(app, req).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+    }
+
+    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = euGBRoute(app, req).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+    }
   }
 
   "Posting processEditForm" should {
@@ -654,6 +745,62 @@ class AlcoholInputControllerSpec extends BaseSpec {
       val result: Future[Result] = gbNIRoute(app, req).get
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/gb-ni-vat-check")
+
+    }
+
+    "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "originCountry" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = euGBRoute(app, req).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/eu-evidence-check")
+
+    }
+
+    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "originCountry" -> "IN",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = euGBRoute(app, req).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+    }
+
+    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "weightOrVolume" -> "20.0",
+        "cost" -> "12.50"
+      )
+
+      val result: Future[Result] = euGBRoute(app, req).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
     }
   }
