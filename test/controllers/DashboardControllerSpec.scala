@@ -341,6 +341,154 @@ class DashboardControllerSpec extends BaseSpec {
     otherItem.getElementsByClass("tax-exempt").text() shouldBe "Tax exempt No"
 
   }
+  "display the produced_in and made_in flags with desired values against items for EU Journey" in new LocalSetup {
+
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+
+    alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    otherItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+
+    alcoholItem.getElementsByClass("producedin-country").text() shouldBe "Produced in Egypt"
+    tobaccoItem.getElementsByClass("producedin-country").text() shouldBe "Produced in Egypt"
+    otherItem.getElementsByClass("madein-country").text() shouldBe "Made in Egypt"
+  }
+
+
+  "Display only purchased in and don't display the produced_in and made_in flags when they don't have any desired values against items for EU Journey" in new LocalSetup {
+
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+
+    alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    otherItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+
+    alcoholItem.getElementsByClass("producedin-country").text() shouldBe ""
+    tobaccoItem.getElementsByClass("producedin-country").text() shouldBe ""
+    otherItem.getElementsByClass("madein-country").text() shouldBe ""
+  }
+
+  "display the purchased in, produced_in flags with desired values against items for EU Journey, when the made_in flag has no data against it" in new LocalSetup {
+
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+
+    alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    otherItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+
+    alcoholItem.getElementsByClass("producedin-country").text() shouldBe "Produced in Egypt"
+    tobaccoItem.getElementsByClass("producedin-country").text() shouldBe "Produced in Egypt"
+    otherItem.getElementsByClass("madein-country").text() shouldBe ""
+  }
+
+  "Display the purchased in, made_in flags with desired values against items for EU Journey, when the produced_in flag has no data against it" in new LocalSetup {
+
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+      .getElementsByClass("govuk-check-your-answers").get(0)
+
+    alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+    otherItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
+
+    alcoholItem.getElementsByClass("producedin-country").text() shouldBe ""
+    tobaccoItem.getElementsByClass("producedin-country").text() shouldBe ""
+    otherItem.getElementsByClass("madein-country").text() shouldBe "Made in Egypt"
+  }
+
+
+
+
 
   "display the vat,excise and tax exempt flags as Yes against items for GBNI Journey" in new LocalSetup {
 
