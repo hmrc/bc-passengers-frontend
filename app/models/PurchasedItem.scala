@@ -20,6 +20,7 @@ case class PurchasedItem(
   def countryName: Option[String] = purchasedProductInstance.country.map(_.countryName)
   def countryCode: Option[String] = purchasedProductInstance.country.map(_.code)
   def originCountry: Option[String] = purchasedProductInstance.originCountry.map(_.countryName)
+  def hasEvidence: Option[Boolean] = purchasedProductInstance.hasEvidence
 }
 
 case class SpeculativeItem(
