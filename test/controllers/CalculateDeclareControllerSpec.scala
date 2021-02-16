@@ -328,6 +328,54 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         doc.getElementsByTag("h1").text() shouldBe "Enter your details"
       }
+
+      "populate user-information page if user-information data is present in db" in new LocalSetup {
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), userInformation = Some(ui), calculatorResponse = Some(crWithinLimitLow))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+
+
+        val content: String = contentAsString(response)
+        val doc: Document = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+        doc.getElementById("firstName").`val`() shouldBe "Harry"
+        doc.getElementById("lastName").`val`() shouldBe "Potter"
+        doc.getElementById("identification.identificationNumber").`val`() shouldBe "SX12345"
+        doc.getElementById("emailAddress.email").`val`() shouldBe "abc@gmail.com"
+        doc.getElementById("dateTimeOfArrival.dateOfArrival.day").`val`() shouldBe "12"
+        doc.getElementById("dateTimeOfArrival.dateOfArrival.month").`val`() shouldBe "11"
+        doc.getElementById("dateTimeOfArrival.dateOfArrival.year").`val`() shouldBe "2018"
+        doc.getElementById("dateTimeOfArrival.timeOfArrival.hour").`val`() shouldBe "12"
+        doc.getElementById("dateTimeOfArrival.timeOfArrival.minute").`val`() shouldBe "20"
+        doc.getElementById("am_pm").getElementsByAttribute("selected").`val`() shouldBe "pm"
+      }
+
+      "populate user-information page if user-information data is present in db for GB NI journey" in new LocalSetup {
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), userInformation = Some(ui), calculatorResponse = Some(crWithinLimitLow))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+
+
+        val content: String = contentAsString(response)
+        val doc: Document = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+        doc.getElementById("firstName").`val`() shouldBe "Harry"
+        doc.getElementById("lastName").`val`() shouldBe "Potter"
+        doc.getElementById("identification.identificationNumber").`val`() shouldBe "SX12345"
+        doc.getElementById("emailAddress.email").`val`() shouldBe "abc@gmail.com"
+        doc.getElementById("dateTimeOfArrival.dateOfArrival.day").`val`() shouldBe "12"
+        doc.getElementById("dateTimeOfArrival.dateOfArrival.month").`val`() shouldBe "11"
+        doc.getElementById("dateTimeOfArrival.dateOfArrival.year").`val`() shouldBe "2018"
+        doc.getElementById("dateTimeOfArrival.timeOfArrival.hour").`val`() shouldBe "12"
+        doc.getElementById("dateTimeOfArrival.timeOfArrival.minute").`val`() shouldBe "20"
+        doc.getElementById("am_pm").getElementsByAttribute("selected").`val`() shouldBe "pm"
+      }
     }
 
     "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with tax greater than £90,000" should {
