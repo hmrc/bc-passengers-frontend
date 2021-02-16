@@ -12,6 +12,7 @@
   backLink: Option[String],
   isIrishBorderQuestionEnabled: Boolean,
   isGbNi: Boolean,
+  isEU: Boolean,
   isUkResident: Boolean
 )(implicit request: Request[_], messages: Messages)
 
@@ -45,9 +46,15 @@
               <dd class="cya-answer">@description</dd>
             </div>
             <div class="product-country">
-              <dt class="cya-question">@messages("label.country")</dt>
+              <dt class="cya-question">@messages("label.purchased_in")</dt>
               <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
             </div>
+            @if(isEU && purchasedItem.originCountry.isDefined) {
+            <div class="producedin-country">
+              <dt class="cya-question">@messages("label.produced_in")</dt>
+              <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
+            </div>
+            }
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
@@ -103,9 +110,15 @@
               <dd class="cya-answer">@description</dd>
             </div>
             <div class="product-country">
-              <dt class="cya-question">@messages("label.country")</dt>
+              <dt class="cya-question">@messages("label.purchased_in")</dt>
               <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
             </div>
+            @if(isEU && purchasedItem.originCountry.isDefined) {
+            <div class="producedin-country">
+              <dt class="cya-question">@messages("label.produced_in")</dt>
+              <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)
+            </div>
+            }
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
@@ -167,9 +180,15 @@
             <dd class="cya-answer">@description</dd>
           </div>
           <div class="product-country">
-            <dt class="cya-question">@messages("label.country")</dt>
+            <dt class="cya-question">@messages("label.purchased_in")</dt>
             <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
           </div>
+          @if(isEU && purchasedItem.originCountry.isDefined) {
+          <div class="madein-country">
+            <dt class="cya-question">@messages("label.made_in")</dt>
+            <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)
+          </div>
+          }
           <div class="product-price">
             <dt class="cya-question">@messages("label.price")</dt>
             <dd class="cya-answer">
