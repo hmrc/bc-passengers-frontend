@@ -77,9 +77,20 @@ class CalculateDeclareController @Inject()(
   }
 
   def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
-    context.getJourneyData.euCountryCheck match {
-      case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
-      case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
+    context.getJourneyData.userInformation match {
+
+      case Some(userInformation) => {
+        context.getJourneyData.euCountryCheck match {
+          case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime).fill(EnterYourDetailsDto.fromUserInformation(userInformation)), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink) ) )
+          case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime).fill(EnterYourDetailsDto.fromUserInformation(userInformation)), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
+        }
+      }
+      case _ => {
+        context.getJourneyData.euCountryCheck match {
+          case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
+          case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
+        }
+      }
     }
   }
 

@@ -41,8 +41,8 @@ object UserInformation {
       dto.identification.identificationNumber ,
       dto.emailAddress.email,dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
       dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
-      dto.dateTimeOfArrival.dateOfArrival,
-      dto.dateTimeOfArrival.timeOfArrival)
+      new LocalDate(dto.dateTimeOfArrival.dateOfArrival),
+      LocalTime.parse(dto.dateTimeOfArrival.timeOfArrival, org.joda.time.format.DateTimeFormat.forPattern("hh:mm aa")))
 }
 case class UserInformation(
   firstName: String,

@@ -90,7 +90,7 @@ case class TobaccoDto(
 object EuCountryCheckDto {
   val form: Form[EuCountryCheckDto] = Form(
     mapping(
-     "euCountryCheck" -> optional(text).verifying("error.eu_check", x => x.fold(false)(_.nonEmpty)).transform[String](_.get, s => Some(s))
+      "euCountryCheck" -> optional(text).verifying("error.eu_check", x => x.fold(false)(_.nonEmpty)).transform[String](_.get, s => Some(s))
     )(EuCountryCheckDto.apply)(EuCountryCheckDto.unapply)
   )
 }
@@ -221,7 +221,7 @@ object EnterYourDetailsDto extends Validators {
       if (text.length <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
   }
 
-  private def mandatoryDate(error: String) = tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
+  private def mandatoryDate(error: String): Mapping[String] = tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
     .verifying("error.enter_a_date", dateParts => {
       val definedParts: Int = dateParts.productIterator.collect { case o@Some(_) => o }.size
       definedParts > 0
@@ -240,13 +240,15 @@ object EnterYourDetailsDto extends Validators {
     .verifying("error.enter_a_real_date", dateString => dateString._2.length >= 1 && dateString._2.length <= 2 && dateString._1.length >=1 && dateString._1.length <= 2)
     .transform[(Int, Int, Int)](dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt), dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString))
     .verifying("error.enter_a_real_date", dateInt => Try(new LocalDate(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess)
-    .transform[LocalDate](
-      dateInt => LocalDate.parse(s"${dateInt._3.toString}-${dateInt._2.toString}-${dateInt._1.toString}"),
-      localDate => (localDate.getDayOfMonth, localDate.getMonthOfYear, localDate.getDayOfYear)
+    .transform[String](
+      dateInt => s"${dateInt._3.toString}-${dateInt._2.toString}-${dateInt._1.toString}",
+      dateString => dateString.split("-") match {
+        case Array(dd, mm, yyyy) => (dd.toInt, mm.toInt, yyyy.toInt)
+      }
     )
 
 
-  private def mandatoryTime(error: String): Mapping[LocalTime] = tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
+  private def mandatoryTime(error: String): Mapping[String] = tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
     .verifying(error, maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty && maybeTimeString._3.nonEmpty)
     .transform[(String, String, String)](
       maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get, maybeTimeString._3.get),
@@ -260,9 +262,18 @@ object EnterYourDetailsDto extends Validators {
     )
     .verifying("error.enter_a_real_time", time => time._1>= 1 && time._1 <= 12 && time._2 >= 0 && time._2<= 59)
     .verifying("error.enter_a_real_time", time => time._3.toLowerCase == "am" || time._3.toLowerCase == "pm")
-    .transform[LocalTime](
-      time => LocalTime.parse(s"${time._1}:${time._2} ${time._3}", DateTimeFormat.forPattern("hh:mm aa")),
-      localTime => (localTime.getHourOfDay, localTime.getMinuteOfHour, if (localTime.getHourOfDay > 12) "pm" else "am")
+    .transform[String](
+      time => s"${time._1}:${time._2} ${time._3}",
+      localTime => localTime.split(":") match {
+        case Array(hours, minutesAndAmPm) => {
+          val x = minutesAndAmPm.split(" ") match {
+            case Array(minutes, ampm) => {
+              (minutes, ampm)
+            }
+          }
+          (hours.toInt, x._1.toInt, x._2)
+        }
+      }
     )
 
   private def placeOfArrivalConstraint(message: String): Constraint[PlaceOfArrival] = Constraint {
@@ -323,9 +334,20 @@ object EnterYourDetailsDto extends Validators {
         "dateOfArrival" -> mandatoryDate("error.enter_a_date"),
         "timeOfArrival" -> mandatoryTime("error.enter_a_time")
       )(DateTimeOfArrival.apply)(DateTimeOfArrival.unapply)
-        .verifying("error.72_hours", dto => dto.dateOfArrival.toDateTime(dto.timeOfArrival).isBefore(declarationTime.plus(Days.THREE)))
+        .verifying("error.72_hours", dto => new LocalDate(dto.dateOfArrival).toDateTime(LocalTime.parse(dto.timeOfArrival, DateTimeFormat.forPattern("hh:mm aa"))).isBefore(declarationTime.plus(Days.THREE)))
     )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
   )
+
+  def fromUserInformation(userInformation: UserInformation): EnterYourDetailsDto = {
+    EnterYourDetailsDto(
+      userInformation.firstName,
+      userInformation.lastName,
+      Identification(Some(userInformation.identificationType), userInformation.identificationNumber),
+      EmailAddress(userInformation.emailAddress, userInformation.emailAddress),
+      PlaceOfArrival(Some(userInformation.selectPlaceOfArrival), Some(userInformation.enterPlaceOfArrival)),
+      DateTimeOfArrival(userInformation.dateOfArrival.toString("dd-MM-yyyy"), userInformation.timeOfArrival.toString("hh:mm aa").toLowerCase))
+  }
+
 }
 
 object DeclarationRetrievalDto extends Validators {
@@ -347,7 +369,7 @@ object DeclarationRetrievalDto extends Validators {
   )
 }
 
-case class DateTimeOfArrival(dateOfArrival: LocalDate, timeOfArrival: LocalTime)
+case class DateTimeOfArrival(dateOfArrival: String, timeOfArrival: String)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
 case class Identification(identificationType: Option[String], identificationNumber: String)
 case class EmailAddress(email: String, confirmEmail: String)
