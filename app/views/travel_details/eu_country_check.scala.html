@@ -14,17 +14,8 @@
   @views.html.tags.errors(f)
 
   <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_goods_from_")</h1>
-
-  <h2 class="heading-medium margin-top-0">@messages("heading.eu_countries")</h2>
-  <p>@messages("text.eu_countries")</p>
-
-  <h2 class="heading-medium">@messages("heading.non_eu_countries")</h2>
-  <p>@messages("text.non_eu_countries")</p>
-  <p>@messages("text.channel_bot_canary")</p>
   <div class="panel panel-border-wide">
-    <p>@messages("label.if_you_are_bringing_in_goods_from_eu")</p>
-    <p>@messages("label.if_you_are_bringing_in_goods_from_gb")</p>
-    <p>@messages("label.if_you_are_bringing_in_goods_from_non_eu")</p>
+    <p>@messages("label.if_you_are_bringing_in_goods_from_both")</p>
   </div>
 
   @form(action = routes.TravelDetailsController.whereGoodsBoughtPost()) {
@@ -34,7 +25,10 @@
 
       @components.input_radio_group(
         f("euCountryCheck"),
-        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "greatBritain" -> Messages("label.great_britain"))
+        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "greatBritain" -> Messages("label.great_britain")),
+        Symbol("euOnly") -> messages("text.eu_countries"),
+        Symbol("nonEuOnly") -> messages("text.non_eu_countries"),
+        Symbol("greatBritain") -> messages("text.great_britain")
       )
     </fieldset>
 

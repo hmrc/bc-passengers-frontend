@@ -79,6 +79,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Where are you bringing in goods from?"
 
+      doc.getElementsByClass("panel").text() shouldBe "If you are bringing in goods from both EU and non-EU countries, only select non-EU countries below."
+
       doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
 
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe true
@@ -102,6 +104,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe false
       doc.select("#euCountryCheck-greatBritain").hasAttr("checked") shouldBe false
 
+      doc.getElementById("hint-euOnly").text() shouldBe "Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden."
+      doc.getElementById("hint-nonEuOnly").text() shouldBe "This includes the Channel Islands, British Overseas Territories (including Gibraltar), the north of Cyprus and the Canary Islands."
+      doc.getElementById("hint-greatBritain").text() shouldBe "This is only if you are bringing goods to Northern Ireland from Great Britain or the Isle of Man."
 
       verify(controller.cache, times(1)).fetch(any())
     }
