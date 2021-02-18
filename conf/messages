@@ -445,7 +445,7 @@ label.country_the_item_was_produced_hint = If you are unsure where this item was
 label.currency_used_to_buy_the_item = Currency used to buy the item
 label.price_paid_for_this_item = Price paid for this item
 label.tell_us_about_the_goods_ = Tell us about your goods
-
+label.about_foreign_currencies = Our online calculator accepts most foreign currencies and will work out the tax due in British pounds.
 label.price_paid = Price paid
 label.country_this_alcohol_was_ = Country this alcohol was bought in
 label.country_this_alcohol_was_produced = Country this alcohol was originally produced in

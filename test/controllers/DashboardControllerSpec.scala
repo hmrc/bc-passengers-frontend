@@ -87,6 +87,21 @@ class DashboardControllerSpec extends BaseSpec {
 
   }
 
+  "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(None)
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
+
+    status(result) shouldBe OK
+
+    val content: String = contentAsString(result)
+    val doc: Document = Jsoup.parse(content)
+
+    doc.getElementsByTag("p1").text() shouldBe "Our online calculator accepts most foreign currencies and will work out the tax due in British pounds."
+
+  }
+
 
   "Calling GET .../tax-due" should {
     "redirect to the under nine pounds page if the total to declare is under nine pounds" in new LocalSetup {
