@@ -55,6 +55,12 @@
               <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
             </div>
             }
+            @if(purchasedItem.hasEvidence.isDefined) {
+            <div class="has_got_evidence">
+              <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
+              <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
+            </div>
+            }
             <div class="product-price">
               <dt class="cya-question">@messages("label.price")</dt>
               <dd class="cya-answer">
@@ -117,6 +123,12 @@
             <div class="producedin-country">
               <dt class="cya-question">@messages("label.produced_in")</dt>
               <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)
+            </div>
+            }
+            @if(purchasedItem.hasEvidence.isDefined) {
+            <div class="has_got_evidence">
+              <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
+              <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
             </div>
             }
             <div class="product-price">
@@ -187,6 +199,12 @@
           <div class="madein-country">
             <dt class="cya-question">@messages("label.made_in")</dt>
             <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)
+          </div>
+          }
+          @if(purchasedItem.hasEvidence.isDefined) {
+          <div class="has_got_evidence">
+            <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
+            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
           </div>
           }
           <div class="product-price">

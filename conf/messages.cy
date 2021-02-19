@@ -144,6 +144,7 @@ label.price=Pris
 label.purchased_in = (W)Purchased in(W)
 label.produced_in = (W)Produced in(W)
 label.made_in = (W)Made in(W)
+label.evidence_of_origin = (W)Evidence of origin(W)
 label.add_alcohol=Ychwanegu alcohol
 label.add_tobacco=Ychwanegu tybaco
 label.add_other_goods=Ychwanegu nwyddau eraill

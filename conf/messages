@@ -144,6 +144,7 @@ label.price = Price
 label.purchased_in = Purchased in
 label.produced_in = Produced in
 label.made_in = Made in
+label.evidence_of_origin = Evidence of origin
 label.add_alcohol = Add alcohol
 label.add_tobacco = Add tobacco
 label.add_other_goods = Add other goods
