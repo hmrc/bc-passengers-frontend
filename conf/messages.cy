@@ -783,7 +783,6 @@ label.declare_your_goods=Datgan eich nwyddau
 text.i_understand_that=Rwy’n deall:
 text.i_must_pay_duty_=y bydd yn rhaid i mi dalu toll a threth ar y nwyddau hyn os byddaf yn dod â nhw i’r DU
 text.these_goods_are_for_my_own_=bod y nwyddau hyn at fy nefnydd fy hun neu i’w rhoi i ffwrdd fel rhodd
-text.this_is_my_only_online_declaration_=mai dyma fy unig ddatganiad ar-lein ar gyfer y daith hon
 text.i_will_need_to_show_my_declaration_receipt_=y bydd yn rhaid i mi ddangos fy nerbynneb datgan os byddaf yn cael fy atal gan Lu’r Ffiniau, a’i bod yn bosibl y bydd Llu’r Ffiniau yn gofyn am dderbynebau prynu hefyd
 text.you_risk_prosecution_and_imprisonment_=Mae perygl y gellir eich erlyn a’ch carcharu, eich gorfodi i dalu tollau neu drethi eto, ac mae perygl y gellir atafaelu eich nwyddau os byddwch yn rhoi gwybodaeth anwir neu’n defnyddio’r gwasanaeth ar-lein yn fwriadol er mwyn osgoi talu treth a thollau ar y nwyddau yr ydych yn dod â nhw i’r DU.
 text.you_risk_prosecution_and_imprisonment_zero_pound = Mae perygl y gellir eich erlyn a’ch carcharu, eich gorfodi i dalu tollau neu drethi, ac mae perygl y gellir atafaelu’ch nwyddau os byddwch yn rhoi gwybodaeth anwir neu’n defnyddio’r gwasanaeth ar-lein yn fwriadol er mwyn osgoi talu treth a thollau ar y nwyddau yr ydych yn dod â nhw i’r DU.
