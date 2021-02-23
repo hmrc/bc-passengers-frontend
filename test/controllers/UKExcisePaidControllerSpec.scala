@@ -51,7 +51,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay both UK VAT and excise duty when buying all of your goods?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay both UK VAT and excise duty when buying all of your goods?"
     }
 
     "loading the page and populate data" in {
@@ -62,7 +62,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay both UK VAT and excise duty when buying all of your goods?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay both UK VAT and excise duty when buying all of your goods?"
       doc.select("#isUKVatExcisePaid-true").hasAttr("checked") shouldBe true
     }
 
@@ -121,10 +121,10 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay both UK VAT and excise duty when buying all of your goods?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay both UK VAT and excise duty when buying all of your goods?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#isUKVatExcisePaid]").html() shouldBe "Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods"
-      doc.getElementById("isUKVatExcisePaid").getElementsByClass("error-message").html() shouldBe "Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods"
+      doc.getElementById("errors").select("a[href=#isUKVatExcisePaid]").html() shouldBe "Select yes if you paid both UK VAT and excise duty when buying all of your goods"
+      doc.getElementById("isUKVatExcisePaid").getElementsByClass("error-message").html() shouldBe "Select yes if you paid both UK VAT and excise duty when buying all of your goods"
       verify(mockTravelDetailService, times(0)).storeUKExcisePaid(any())(any())(any())
     }
 
@@ -140,7 +140,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK excise duty when buying this item?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay UK excise duty when buying this item?"
     }
 
     "load the page and populate isExcisePaid as true" in {
@@ -152,7 +152,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK excise duty when buying this item?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay UK excise duty when buying this item?"
       doc.select("#uKExcisePaidItem-true").hasAttr("checked") shouldBe true
     }
 
@@ -194,10 +194,10 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK excise duty when buying this item?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay UK excise duty when buying this item?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#uKExcisePaidItem]").html() shouldBe "Select yes if you have, or will pay UK excise duty when buying this item"
-      doc.getElementById("uKExcisePaidItem").getElementsByClass("error-message").html() shouldBe "Select yes if you have, or will pay UK excise duty when buying this item"
+      doc.getElementById("errors").select("a[href=#uKExcisePaidItem]").html() shouldBe "Select yes if you paid UK excise duty when buying this item"
+      doc.getElementById("uKExcisePaidItem").getElementsByClass("error-message").html() shouldBe "Select yes if you paid UK excise duty when buying this item"
       verify(mockCache, times(0)).store(any())(any())
     }
   }
