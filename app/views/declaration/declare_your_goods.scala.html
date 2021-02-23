@@ -4,15 +4,13 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@()(implicit request: Request[_], messages: Messages)
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
 
 
-@main_template(title = messages("label.declare_your_goods"), bodyClasses = None) {
-
-  <a class="link-back" id="back" href="@routes.CalculateDeclareController.showCalculation()">@messages("label.back")</a>
+@main_template(title = messages("label.declare_your_goods"), bodyClasses = None, backLink = backLink) {
 
   <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>
 

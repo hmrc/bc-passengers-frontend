@@ -28,6 +28,7 @@ class OtherGoodsSearchController @Inject()(
 
   val error_template: views.html.error_template,
   val other_goods_search: views.html.other_goods.other_goods_search,
+  val backLinkModel: BackLinkModel,
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -73,7 +74,7 @@ class OtherGoodsSearchController @Inject()(
 
     Future.successful {
 
-      Ok(other_goods_search(otherGoodsSearchForm(), productTreeService.otherGoodsSearchItems, context.getJourneyData.selectedAliases))
+      Ok(other_goods_search(otherGoodsSearchForm(), productTreeService.otherGoodsSearchItems, context.getJourneyData.selectedAliases, backLinkModel.backLink))
     }
   }
 
@@ -84,7 +85,7 @@ class OtherGoodsSearchController @Inject()(
     otherGoodsSearchForm(otherGoodsSearchItems).bindFromRequest.fold(
       formWithErrors => {
         Future.successful {
-          BadRequest(other_goods_search(formWithErrors, otherGoodsSearchItems, context.getJourneyData.selectedAliases))
+          BadRequest(other_goods_search(formWithErrors, otherGoodsSearchItems, context.getJourneyData.selectedAliases, backLinkModel.backLink))
         }
       },
       {
