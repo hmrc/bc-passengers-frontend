@@ -33,9 +33,9 @@ class DeclarationRetrievalController @Inject()(
     Future.successful {
       context.getJourneyData.previousDeclarationDetails match {
         case Some(previousDec) =>
-          Ok(declarationRetrievalPage(DeclarationRetrievalDto.form().fill(DeclarationRetrievalDto.fromPreviousDeclarationDetails(previousDec))))
+          Ok(declarationRetrievalPage(DeclarationRetrievalDto.form().fill(DeclarationRetrievalDto.fromPreviousDeclarationDetails(previousDec)), backLinkModel.backLink))
         case _ =>
-          Ok(declarationRetrievalPage(DeclarationRetrievalDto.form()))
+          Ok(declarationRetrievalPage(DeclarationRetrievalDto.form(), backLinkModel.backLink))
       }
     }
   }
@@ -45,7 +45,7 @@ class DeclarationRetrievalController @Inject()(
       hasErrors = {
         formWithErrors =>
           Future.successful(
-            BadRequest(declarationRetrievalPage(formWithErrors))
+            BadRequest(declarationRetrievalPage(formWithErrors, backLinkModel.backLink))
           )
       },
       success = {

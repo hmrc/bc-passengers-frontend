@@ -111,6 +111,8 @@ class BackLinkModel @Inject() (
         Some(CalculateDeclareController.declareYourGoods())
       case "previous-declaration" =>
         Some(appConfig.declareGoodsUrl)
+      case "add" =>
+        Some(DashboardController.showDashboard())
       case _ =>
         None
     }

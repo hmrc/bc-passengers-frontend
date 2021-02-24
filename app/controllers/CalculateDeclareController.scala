@@ -70,7 +70,7 @@ class CalculateDeclareController @Inject()(
         if (checkZeroPoundCondition(calculatorResponse))
           Ok(zero_to_declare_your_goods(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
         else {
-          Ok(you_need_to_declare())
+          Ok(you_need_to_declare(backLinkModel.backLink))
         }
       }
     }

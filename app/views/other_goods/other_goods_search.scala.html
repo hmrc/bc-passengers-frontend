@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input, appConfig: config.AppConfig)
-@(dtoForm: Form[OtherGoodsSearchDto], otherGoodsSearchItems: List[OtherGoodsSearchItem], productAliases: List[ProductAlias])(implicit request: Request[_], messages: Messages)
+@(dtoForm: Form[OtherGoodsSearchDto], otherGoodsSearchItems: List[OtherGoodsSearchItem], productAliases: List[ProductAlias], backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
@@ -47,9 +47,8 @@
 @main_template(
   title = messages("label.what_other_goods_are_"),
   inlineScript = Some(scriptElem),
-  inlineLinkElem = Some(linkElem)) {
-
-  <a class="link-back" id="back" href="@routes.DashboardController.showDashboard()">@messages("label.back")</a>
+  inlineLinkElem = Some(linkElem),
+  backLink = backLink) {
 
   @views.html.tags.errors(dtoForm)
 
