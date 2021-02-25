@@ -61,25 +61,33 @@ class PayApiServiceSpec extends BaseSpec {
        |            "name": "5 litres cider",
        |            "costInGbp": "21.00",
        |            "price": "120.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "Algeria",
+       |            "evidenceOfOrigin" : "N/A"
        |        },
        |        {
        |            "name": "250 cigarettes",
        |            "costInGbp": "244.49",
        |            "price": "400.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "France",
+       |            "evidenceOfOrigin" : "No"
        |        },
        |        {
        |            "name": "120g rolling tobacco",
        |            "costInGbp": "198.91",
        |            "price": "200.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "N/A",
+       |            "evidenceOfOrigin" : "N/A"
        |        },
        |        {
        |            "name": "Televisions",
        |            "costInGbp": "478.40",
        |            "price": "1300.00 British pounds (GBP)",
-       |            "purchaseLocation": "United Kingdom of Great Britain and Northern Ireland"
+       |            "purchaseLocation": "United Kingdom of Great Britain and Northern Ireland",
+       |            "producedIn" : "Germany",
+       |            "evidenceOfOrigin" : "Yes"
        |        }
        |    ],
        |    "taxBreakdown": {
@@ -106,25 +114,33 @@ class PayApiServiceSpec extends BaseSpec {
        |            "name": "5 litres cider",
        |            "costInGbp": "21.00",
        |            "price": "120.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "Algeria",
+       |            "evidenceOfOrigin" : "N/A"
        |        },
        |        {
        |            "name": "250 cigarettes",
        |            "costInGbp": "244.49",
        |            "price": "400.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "France",
+       |            "evidenceOfOrigin" : "No"
        |        },
        |        {
        |            "name": "120g rolling tobacco",
        |            "costInGbp": "198.91",
        |            "price": "200.00 USA dollars (USD)",
-       |            "purchaseLocation": "United States of America"
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "N/A",
+       |            "evidenceOfOrigin" : "N/A"
        |        },
        |        {
        |            "name": "Televisions",
        |            "costInGbp": "478.40",
        |            "price": "1300.00 British pounds (GBP)",
-       |            "purchaseLocation": "United Kingdom of Great Britain and Northern Ireland"
+       |            "purchaseLocation": "United Kingdom of Great Britain and Northern Ireland",
+       |            "producedIn" : "Germany",
+       |            "evidenceOfOrigin" : "Yes"
        |        }
        |    ],
        |    "taxBreakdown": {
@@ -138,11 +154,11 @@ class PayApiServiceSpec extends BaseSpec {
   trait LocalSetup {
     def httpResponse: HttpResponse
     val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-11-12"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
-    val calculatorResponse: CalculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
-      Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
+    val calculatorResponse: CalculatorResponse = CalculatorResponse(Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "91.23",None,Some(5), Calculation("2.00","0.30","18.70","21.00"),Metadata("5 litres cider", "Cider", "120.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),Some(Country("DZ", "Algeria", "DZ", isEu=false, isCountry=true, Nil))),None,None,None,None)), Calculation("2.00","0.30","18.70","21.00"))), Calculation("2.00","0.30","18.70","21.00"))),
+      Some(Tobacco(List(Band("B",List(Item("TOB/A1/CIGRT","304.11",Some(250),None, Calculation("74.00","79.06","91.43","244.49"),Metadata("250 cigarettes", "Cigarettes", "400.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),Some(Country("FR", "France", "FR", isEu=true, isCountry=true,Nil))),None,Some(false),None,None), Item("TOB/A1/HAND","152.05",Some(0),Some(0.12), Calculation("26.54","113.88","58.49","198.91"), Metadata("120g rolling tobacco", "Rolling Tobacco", "200.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,Some(true),None,None)), Calculation("100.54","192.94","149.92","443.40"))), Calculation("100.54","192.94","149.92","443.40"))),
       Some(OtherGoods(List(Band("C",List(Item("OGD/DIGI/TV","1140.42",None,None,
-        Calculation("0.00","0.00","0.00","0.00"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None), Item("OGD/DIGI/TV","1300.00",None,None,
-        Calculation("0.00","182.00","296.40","478.40"),Metadata("Televisions", "Televisions","1300.00",Currency("GBP", "British pounds (GBP)", None, Nil), Country("GB", "United Kingdom of Great Britain and Northern Ireland", "GB", isEu = true, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)),
+        Calculation("0.00","0.00","0.00","0.00"),Metadata("Televisions", "Televisions","1500.00",Currency("USD", "USA dollars (USD)", Some("USD"), Nil), Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),Some(Country("DE", "Germany", "DE", isEu=true, isCountry=true, List("Deutschland")))),None,Some(true),None,None), Item("OGD/DIGI/TV","1300.00",None,None,
+        Calculation("0.00","182.00","296.40","478.40"),Metadata("Televisions", "Televisions","1300.00",Currency("GBP", "British pounds (GBP)", None, Nil), Country("GB", "United Kingdom of Great Britain and Northern Ireland", "GB", isEu = true, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),Some(Country("DE", "Germany", "DE", isEu=true, isCountry=true, List("Deutschland")))),None,Some(true),None,None)),
         Calculation("0.00","341.65","556.41","898.06"))),
         Calculation("0.00","341.65","556.41","898.06"))
       ),
