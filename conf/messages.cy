@@ -1580,15 +1580,15 @@ head.error.arriving_gb=Nid oes angen i chi ddatgan eich nwyddau os ydych yn teit
 error.arriving_gb=Nid oes angen i chi ddatgan eich nwyddau os ydych yn teithio o fewn Prydain Fawr yn unig. Dewiswch ‘Iawn’ os mai Gogledd Iwerddon yw pen eich taith.
 
 heading.is_uk_vat_paid = A wnaethoch dalu, neu a fyddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau?
-heading.is_uk_vat_paid_item = (W) Did you, or will you pay UK VAT when buying this item?
+heading.is_uk_vat_paid_item = (W) Did you pay UK VAT when buying this item? (W)
 head.error.is_uk_vat_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau
-head.error.is_uk_vat_paid_item = (W) Select yes if you have, or will pay UK VAT when buying this item
+head.error.is_uk_vat_paid_item = (W) Select yes if you paid UK VAT when buying this item (W)
 error.is_uk_vat_paid = Dewiswch ‘Iawn’ os ydych wedi talu, neu os byddwch yn talu, TAW yn y DU wrth brynu’ch holl nwyddau
-error.is_uk_vat_paid_item = (W) Select yes if you have, or will pay UK VAT when buying this item
+error.is_uk_vat_paid_item = (W) Select yes if you paid UK VAT when buying this item (W)
 
-heading.is_uk_vat_excise_paid = (W)Did you, or will you pay both UK VAT and excise duty when buying all of your goods?(W)
-head.error.is_uk_vat_excise_paid = (W)Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods(W)
-error.is_uk_vat_excise_paid = (W)Select yes if you have, or will pay UK VAT and excise duty when buying all of your goods(W)
+heading.is_uk_vat_excise_paid = (W)Did you pay both UK VAT and excise duty when buying all of your goods?(W)
+head.error.is_uk_vat_excise_paid = (W)Select yes if you paid both UK VAT and excise duty when buying all of your goods(W)
+error.is_uk_vat_excise_paid = (W)Select yes if you paid both UK VAT and excise duty when buying all of your goods(W)
 heading.is_uk_excise_paid = Did you, or will you pay UK excise duty when buying all of your alcohol and tobacco?
 head.error.is_uk_excise_paid = Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco
 error.is_uk_excise_paid = Select yes if you have, or will pay UK excise duty when buying all of your alcohol and tobacco, or if you are not bringing in any alcohol or tobacco
@@ -1596,9 +1596,9 @@ text.excise_duty_will_usually = (W)Excise duty only applies to alcohol and tobac
 text.read_more = Darllenwch ragor am dollau alcohol a thybaco (yn agor tab newydd).
 text.excise_duty_selection = Os nad ydych yn dod ag unrhyw alcohol na thybaco i mewn, dewiswch ‘Iawn’ isod.
 
-heading.is_uk_excise_paid_item = (W)Did you, or will you pay UK excise duty when buying this item?(W)
-head.error.is_uk_excise_paid_item = (W)Select yes if you have, or will pay UK excise duty when buying this item(W)
-error.is_uk_excise_paid_item = (W)Select yes if you have, or will pay UK excise duty when buying this item(W)
+heading.is_uk_excise_paid_item = (W)Did you pay UK excise duty when buying this item?(W)
+head.error.is_uk_excise_paid_item = (W)Select yes if you paid UK excise duty when buying this item(W)
+error.is_uk_excise_paid_item = (W)Select yes if you paid UK excise duty when buying this item(W)
 text.excise_duty_will_usually_item = (W)Excise duty will usually be included in the cost of alcohol and tobacco, unless you are purchasing them in a ‘duty-free’ or ‘tax-free’ shop, such as at an airport or ferry port.(W)
 
 heading.uk-resident = A ydych yn breswylydd yn y DU?

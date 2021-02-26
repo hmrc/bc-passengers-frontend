@@ -54,7 +54,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK VAT when buying this item?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay UK VAT when buying this item?"
     }
     "load the page and populate uKVatPaid as true" in {
       val ppi = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
@@ -65,7 +65,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK VAT when buying this item?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay UK VAT when buying this item?"
       doc.select("#isUKVatPaid-true").hasAttr("checked") shouldBe true
     }
 
@@ -179,10 +179,10 @@ class UKVatPaidControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Did you, or will you pay UK VAT when buying this item?"
+      doc.getElementsByTag("h1").text() shouldBe "Did you pay UK VAT when buying this item?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#isUKVatPaid]").html() shouldBe "Select yes if you have, or will pay UK VAT when buying this item"
-      doc.getElementById("isUKVatPaid").getElementsByClass("error-message").html() shouldBe "Select yes if you have, or will pay UK VAT when buying this item"
+      doc.getElementById("errors").select("a[href=#isUKVatPaid]").html() shouldBe "Select yes if you paid UK VAT when buying this item"
+      doc.getElementById("isUKVatPaid").getElementsByClass("error-message").html() shouldBe "Select yes if you paid UK VAT when buying this item"
       verify(mockCache, times(0)).store(any())(any())
     }
   }
