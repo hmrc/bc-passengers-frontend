@@ -1697,3 +1697,7 @@ label.evidence_3 = evidence 3
 label.evidence_4 = or evidence 4
 head.error.evidence_eu_item = Select yes if you have evidence this item was originally made in the EU
 error.evidence_eu_item = Select yes if you have evidence this item was originally made in the EU
+
+label.change_your_goods = Change your goods
+label.breakdown_of_tax_and_duty_due = Breakdown of tax and duty due
+label.amount_due = Amount due
