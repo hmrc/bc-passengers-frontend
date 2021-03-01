@@ -17,16 +17,14 @@
     field = dtoForm("noOfSticks"),
     '_label -> messages(s"label.total_number_of_" + path.toMessageKey),
     '_inputHint -> messages("label.you_cannot_use_this_service_"),
-    '_labelTextClass -> "form-label",
-    '_inputmode -> "decimal"
+    '_labelTextClass -> "form-label"
   )
 
   @components.input(
     field = dtoForm("weightOrVolume"),
     '_label -> messages("label.total_weight_in_grams"),
     '_labelTextClass -> "form-label",
-    '_inputSuffix ->  messages("label.grams"),
-    '_inputmode -> "decimal"
+    '_inputSuffix ->  messages("label.grams")
   )
 
 }

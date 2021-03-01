@@ -54,8 +54,7 @@
       field = dtoForm("weightOrVolume"),
       '_label -> messages("label.total_volume_in_litres"),
       '_inputHint -> messages("label.you_cannot_use_this_service_"),
-      '_labelTextClass -> "form-label",
-      '_inputmode -> "decimal"
+      '_labelTextClass -> "form-label"
     )
 
     @components.select(
@@ -89,7 +88,6 @@
       field = dtoForm("cost"),
       '_label -> messages(s"label.price_paid"),
       '_labelTextClass -> "form-label",
-      '_inputmode -> "decimal"
     )
 
     <div class="form-group">
