@@ -52,18 +52,14 @@
     </tbody>
   </table>
 
-  <details role="group">
-    <summary role="button" aria-controls="details-content-0" aria-expanded="false">
-      <span class="summary">@messages("label.how_the_tax_was_calculated")</span>
-    </summary>
-    <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
-
+  <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
+  <h2 class="heading-medium">@messages("label.breakdown_of_tax_and_duty_due")</h2>
       <table class="responsive-table">
         <thead>
           <tr>
             <th scope="col">@messages("label.tax_type")</th>
             <th scope="col" class="numeric">
-              <span class="table-25">@messages("label.tax_due")</span>
+              <span class="table-25">@messages("label.amount_due")</span>
             </th>
           </tr>
         </thead>
@@ -98,14 +94,11 @@
           @messages("label.to_make_this_calculation")
         </p>
       }
-    </div>
-  </details>
 
   <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
 
   <p>@messages("label.green_channel")</p>
   <p>@messages("label.import_export_licence")</p>
 
-<p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_answers")</a></p>
-<p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
+  <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
 }
