@@ -8,7 +8,7 @@ package services
 
 import controllers.routes
 import javax.inject.{Inject, Singleton}
-import models.{CalculatorResponse, ChargeReference, UserInformation}
+import models.{CalculatorResponse, ChargeReference, Country, UserInformation}
 import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.libs.json._
@@ -25,6 +25,7 @@ class PayApiService @Inject()(
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
   servicesConfig: ServicesConfig,
+  val countriesService: CountriesService,
   implicit val ec: ExecutionContext
 ) {
 
@@ -44,6 +45,18 @@ class PayApiService @Inject()(
       if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
     }
 
+    def formatYesNo(customValue: Boolean, country: Option[Country])(implicit messages: Messages) : String = {
+      if (countriesService.isInEu(country.map(_.code).getOrElse(""))) {
+        if (customValue) {
+          messages("label.yes")
+        } else {
+          messages("label.no")
+        }
+      } else {
+        messages("label.na")
+      }
+    }
+
     val requestBody: JsObject = Json.obj(
       "chargeReference" -> chargeReference.value,
       "taxToPayInPence" -> amountPence,
@@ -59,7 +72,9 @@ class PayApiService @Inject()(
           "name" -> item.metadata.description,
           "costInGbp" -> item.calculation.allTax,
           "price" -> s"${item.metadata.cost} ${messages(item.metadata.currency.displayName)}",
-          "purchaseLocation" -> messages(item.metadata.country.countryName)
+          "purchaseLocation" -> messages(item.metadata.country.countryName),
+          "producedIn" -> messages(item.metadata.originCountry.map(_.countryName).getOrElse(messages("label.na"))),
+          "evidenceOfOrigin" -> formatYesNo(item.isCustomPaid.getOrElse(false),item.metadata.originCountry)
         )
       }),
       "taxBreakdown" -> Json.obj(
@@ -68,7 +83,7 @@ class PayApiService @Inject()(
         "vatInGbp"-> calculatorResponse.calculation.vat
       )
     )
-
+    
     wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/pngr/pngr/journey/start", requestBody) map { r =>
       r.status match {
         case CREATED => PayApiServiceSuccessResponse((r.json \ "nextUrl").as[JsString].value)

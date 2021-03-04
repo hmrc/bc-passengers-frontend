@@ -1701,3 +1701,5 @@ error.evidence_eu_item = (W)Select yes if you have evidence this item was origin
 label.change_your_goods=(W)Change your goods(W)
 label.breakdown_of_tax_and_duty_due=(W)Breakdown of tax and duty due(W)
 label.amount_due = (W)Amount due(W)
+
+label.na = (W)N/A(W)
