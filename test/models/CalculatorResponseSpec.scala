@@ -36,11 +36,11 @@ class CalculatorResponseSpec extends BaseSpec {
       )
     }
 
-    "return a list of only items chere tax is payable" in new LocalSetup {
+    "return a list of all the items where tax liability is Zero pounds or the tax is payable" in new LocalSetup {
 
       cr.getItemsWithTaxToPay shouldBe List(
 
-        Item("ANYTHING", "100.00", Some(1), None, Calculation("100.00", "0.00", "0.00", "100.00"), Metadata("Desc", "Desc", "100.00", Currency("USD", "US Dollars", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil), ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)
+        Item("ANYTHING","100.00",Some(1),None,Calculation("100.00", "0.00", "0.00", "100.00"),Metadata("Desc","Desc","100.00",Currency("USD","US Dollars",Some("USD"),List()),Country("US","United States of America (the)","US",false,true,List()),ExchangeRate("1.20","2018-10-29"),None),None,None,None,None), Item("ANYTHING","100.00",Some(1),None,Calculation("0.00","0.00","0.00","0.00"),Metadata("Desc","Desc","100.00",Currency("USD","US Dollars",Some("USD"),List()),Country("US","United States of America (the)","US",false,true,List()),ExchangeRate("1.20","2018-10-29"),None),None,None,None,None), Item("ANYTHING","100.00",Some(1),None,Calculation("0.00","0.00","0.00","0.00"),Metadata("Desc","Desc","100.00",Currency("USD","US Dollars",Some("USD"),List()),Country("US","United States of America (the)","US",false,true,List()),ExchangeRate("1.20","2018-10-29"),None),None,None,None,None)
       )
     }
   }

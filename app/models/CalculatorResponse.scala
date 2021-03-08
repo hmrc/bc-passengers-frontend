@@ -89,13 +89,13 @@ case class CalculatorResponse(
 
   def getItemsWithTaxToPay: List[Item] = {
 
-    val alcoholItems = for(typ <- alcohol.toList; items <- typ.bands.map(_.items); item <- items if BigDecimal(item.calculation.allTax) > 0) yield item
-    val tobaccoItems = for(typ <- tobacco.toList; items <- typ.bands.map(_.items); item <- items if BigDecimal(item.calculation.allTax) > 0) yield item
-    val otherGoodsItems = for(typ <- otherGoods.toList; items <- typ.bands.map(_.items); item <- items if BigDecimal(item.calculation.allTax) > 0) yield item
+    val alcoholItems = for(typ <- alcohol.toList; items <- typ.bands.map(_.items); item <- items if BigDecimal(item.calculation.allTax) >= 0) yield item
+    val tobaccoItems = for(typ <- tobacco.toList; items <- typ.bands.map(_.items); item <- items if BigDecimal(item.calculation.allTax) >= 0) yield item
+    val otherGoodsItems = for(typ <- otherGoods.toList; items <- typ.bands.map(_.items); item <- items if BigDecimal(item.calculation.allTax) >= 0) yield item
 
     val allItems = alcoholItems ++ tobaccoItems ++ otherGoodsItems
 
-    allItems.filter(item => BigDecimal(item.calculation.allTax) > 0)
+    allItems.filter(item => BigDecimal(item.calculation.allTax) >= 0)
   }
 
 

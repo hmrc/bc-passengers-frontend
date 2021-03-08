@@ -81,6 +81,13 @@ class PayApiServiceSpec extends BaseSpec {
        |            "producedIn" : "N/A",
        |            "evidenceOfOrigin" : "N/A"
        |        },
+       |        {   "name": "Televisions",
+       |            "costInGbp": "0.00",
+       |            "price": "1500.00 USA dollars (USD)",
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn": "Germany",
+       |            "evidenceOfOrigin": "Yes"
+       |        },
        |        {
        |            "name": "Televisions",
        |            "costInGbp": "478.40",
@@ -133,6 +140,13 @@ class PayApiServiceSpec extends BaseSpec {
        |            "purchaseLocation": "United States of America",
        |            "producedIn" : "N/A",
        |            "evidenceOfOrigin" : "N/A"
+       |        },
+       |        {   "name": "Televisions",
+       |            "costInGbp": "0.00",
+       |            "price": "1500.00 USA dollars (USD)",
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn": "Germany",
+       |            "evidenceOfOrigin": "Yes"
        |        },
        |        {
        |            "name": "Televisions",
