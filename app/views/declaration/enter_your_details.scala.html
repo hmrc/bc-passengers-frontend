@@ -47,14 +47,18 @@
         f("firstName"),
         '_label -> messages("label.first_name"),
         '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4"
+        '_inputClass -> "form-control-3-4",
+        '_error_id -> "firstName-error-message",
+        '_errorPrefix -> messages("label.error"),
       )
 
       @components.input(
         f("lastName"),
         '_label -> messages("label.last_name"),
         '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4"
+        '_inputClass -> "form-control-3-4",
+        '_error_id -> "lastName-error-message",
+        '_errorPrefix -> messages("label.error")
       )
       <fieldset>
           <legend><span class="form-label-bold">@messages("label.select_identification_type")</span></legend>
@@ -79,7 +83,7 @@
                )
             }
             @f.errors.filter(_.key == "identification").map { error =>
-                 <span class="error-message">@messages(error.message)</span>
+                <span class="error-message">@messages(error.message)</span>
             }
             @components.input(
                 f("identification.identificationNumber"),
@@ -94,7 +98,7 @@
 
     <div class="form-group @{if(f("emailAddress").hasErrors) "form-group-error" else "" }" id="emailAddress">
         @f.errors.filter(_.key == "emailAddress").map { error =>
-        <span class="error-message">@messages(error.message)</span>
+            <span class="error-message">@messages(error.message)</span>
         }
         @components.input(
             f("emailAddress.email"),
@@ -106,10 +110,10 @@
         )
 
         @components.input(
-        f("emailAddress.confirmEmail"),
-        '_label -> messages("label.confirm_email_address"),
-        '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4"
+            f("emailAddress.confirmEmail"),
+            '_label -> messages("label.confirm_email_address"),
+            '_labelTextClass -> "form-label-bold",
+            '_inputClass -> "form-control-3-4"
         )
     </div>
 
@@ -150,10 +154,10 @@
             <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
                 <p>
                     @components.input(
-                    f("placeOfArrival.enterPlaceOfArrival"),
-                    '_label -> messages("label.enter_place_of_arrival"),
-                    '_labelTextClass -> "form-label-bold",
-                    '_inputClass -> "form-control-3-4"
+                        f("placeOfArrival.enterPlaceOfArrival"),
+                        '_label -> messages("label.enter_place_of_arrival"),
+                        '_labelTextClass -> "form-label-bold",
+                        '_inputClass -> "form-control-3-4"
                     )
                 </p>
             </div>
@@ -163,7 +167,7 @@
       <div class="form-group @{if(f("dateTimeOfArrival").hasErrors) "form-group-error" else "" }" id="dateTimeOfArrival">
 
           @f.errors.filter(_.key == "dateTimeOfArrival").map { error =>
-            <span class="error-message">@messages(error.message)</span>
+                <span class="error-message">@messages(error.message)</span>
           }
 
           @components.dateFieldsFreeInlineLegend(

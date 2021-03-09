@@ -139,7 +139,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Have you previously made a declaration for your journey?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#prevDeclaration]").html() shouldBe "Select yes if you have previously made a declaration for your journey"
-      doc.getElementById("prevDeclaration").getElementsByClass("error-message").html() shouldBe "Select yes if you have previously made a declaration for your journey"
+      doc.getElementById("prevDeclaration").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you have previously made a declaration for your journey"
       verify(mockTravelDetailService, times(0)).storePrevDeclaration(any())(any())(any())
     }
 

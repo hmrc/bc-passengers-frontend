@@ -61,7 +61,9 @@
         bringingOverAllowance("bringingOverAllowance"),
         Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
         '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true
+        '_inline -> true,
+        '_error_id -> "bringingOverAllowance-error-message",
+        '_errorPrefix -> messages("label.error")
       )
     </fieldset>
 

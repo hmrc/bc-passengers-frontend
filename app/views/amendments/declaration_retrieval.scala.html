@@ -23,7 +23,9 @@
         f("lastName"),
         '_label -> messages("label.last_name"),
         '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4"
+        '_inputClass -> "form-control-3-4",
+        '_error_id -> "lastName-error-message",
+        '_errorPrefix -> messages("label.error")
       )
 
       @components.input(
@@ -32,6 +34,8 @@
           '_labelTextClass -> "form-label-bold",
           '_inputClass -> "form-control-3-4",
           '_inputHint -> messages("label.identification_hint"),
+          '_error_id -> "identificationNumber-error-message",
+          '_errorPrefix -> messages("label.error")
       )
 
       @components.input(
@@ -40,6 +44,8 @@
           '_labelTextClass -> "form-label-bold",
           '_inputClass -> "form-control-3-4",
           '_inputHint -> messages("label.reference_number_hint"),
+          '_error_id -> "referenceNumber-error-message",
+          '_errorPrefix -> messages("label.error")
       )
 
       <div class="form-group">
