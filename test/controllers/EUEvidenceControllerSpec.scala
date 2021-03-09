@@ -54,7 +54,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced in the EU?"
+      doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced or made in the EU?"
     }
     "load the page and populate hasEvidence as true" in {
       val ppi = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("alcohol/beer"), originCountry = Some(Country("ES0", "Spain", "ES", isEu=true, isCountry=true, Nil)), hasEvidence = Some(true))
@@ -65,7 +65,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced in the EU?"
+      doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced or made in the EU?"
       doc.select("#eUEvidenceItem-true").hasAttr("checked") shouldBe true
     }
 
@@ -164,10 +164,10 @@ class EUEvidenceControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced in the EU?"
+      doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced or made in the EU?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#eUEvidenceItem]").html() shouldBe "Select yes if you have evidence this item was originally made in the EU"
-      doc.getElementById("eUEvidenceItem").getElementsByClass("error-message").html() shouldBe "Select yes if you have evidence this item was originally made in the EU"
+      doc.getElementById("errors").select("a[href=#eUEvidenceItem]").html() shouldBe "Select yes if you have evidence this item was originally produced or made in the EU"
+      doc.getElementById("eUEvidenceItem").getElementsByClass("error-message").html() shouldBe "Select yes if you have evidence this item was originally produced or made in the EU"
       verify(mockCache, times(0)).store(any())(any())
     }
   }

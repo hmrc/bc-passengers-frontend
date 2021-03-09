@@ -20,25 +20,25 @@
     <legend>
         <h1 class="heading-xlarge">@messages("heading.evidence_eu_item")</h1>
     </legend>
-    <p>@messages("text.made_in_eu")</p>
-    <p>@messages("text.however_item_may_be_seized")</p>
+    <p>@messages("text.evidence_include")</p>
     <ul class="list list-bullet">
         <li>
-            @messages("label.evidence_1")
+            @messages("label.packaging_or_label")
         </li>
         <li>
-            @messages("label.evidence_2")
+            @messages("label.item_is_handmade")
+        </li>
+        <li>
+            @messages("label.documents_by_seller")
+        </li>
+        <li>
+            @messages("label.statement_on_origin")
         </li>
     </ul>
-    <p>@messages("text.declare_over_1000")</p>
-    <ul class="list list-bullet">
-        <li>
-            @messages("label.evidence_3")
-        </li>
-        <li>
-            @messages("label.evidence_4")
-        </li>
-    </ul>
+
+    <div class="panel panel-border-wide">
+        <p>@messages("label.appropriate_evidence")</p>
+    </div>
 
     @components.input_radio_group(
     eUEvidenceItemForm("eUEvidenceItem"),

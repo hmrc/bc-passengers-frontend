@@ -1687,16 +1687,15 @@ label.excise_paid = (W)Excise paid(W)
 label.tax_exempt = (W)Tax exempt(W)
 
 #eu_evidence_item
-heading.evidence_eu_item = (W)Do you have evidence this item was originally produced in the EU?(W)
-text.made_in_eu = (W)You will not have to pay customs duty on this item as you have stated it was originally produced or made in the EU.(W)
-text.however_item_may_be_seized = (W)However, if you do not have any of the following evidence to prove this, your item may be seized:(W)
-label.evidence_1 = (W)evidence 1(W)
-label.evidence_2 = (W)or evidence 2(W)
-text.declare_over_1000 = (W)If you intend to declare over £1,000 worth of goods originally produced or made in the EU, you may also need to provide the following:(W)
-label.evidence_3 = (W)evidence 3(W)
-label.evidence_4 = (W)or evidence 4(W)
-head.error.evidence_eu_item = (W)Select yes if you have evidence this item was originally made in the EU(W)
-error.evidence_eu_item = (W)Select yes if you have evidence this item was originally made in the EU(W)
+heading.evidence_eu_item = A oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol?
+text.evidence_include = (W)Evidence may include one of the following:(W)
+label.packaging_or_label = (W)packaging or a label attached to the item showing that it was produced or made in the EU(W)
+label.item_is_handmade = (W)evidence the item is handmade or homegrown in the EU(W)
+label.documents_by_seller = (W)documents given to you by the seller that show the item was produced or made in the EU(W)
+label.statement_on_origin = (W)a ''statement on origin'' from the supplier of the item(W)
+label.appropriate_evidence = (W)If you do not have the appropriate evidence you will have to pay customs duty on this item.(W)
+head.error.evidence_eu_item = Dewiswch ‘Iawn’ os oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol
+error.evidence_eu_item = Dewiswch ‘Iawn’ os oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol
 
 label.change_your_goods=(W)Change your goods(W)
 label.breakdown_of_tax_and_duty_due=(W)Breakdown of tax and duty due(W)
