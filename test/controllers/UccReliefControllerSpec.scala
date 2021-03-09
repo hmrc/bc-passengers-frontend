@@ -121,7 +121,7 @@ class UccReliefControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#isUccRelief]").html() shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
-      doc.getElementById("isUccRelief").getElementsByClass("error-message").html() shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+      doc.getElementById("isUccRelief").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
       verify(mockTravelDetailService, times(0)).storeUccRelief(any())(any())(any())
     }
   }

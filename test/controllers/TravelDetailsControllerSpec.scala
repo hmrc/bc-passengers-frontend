@@ -222,7 +222,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select where you are bringing in goods from"
+      doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select where you are bringing in goods from"
 
     }
   }
@@ -450,7 +450,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are arriving in the UK by private transport"
+      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are arriving in the UK by private transport"
 
     }
 
@@ -567,7 +567,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select yes if you are aged 17 or over"
+      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are aged 17 or over"
     }
 
   }

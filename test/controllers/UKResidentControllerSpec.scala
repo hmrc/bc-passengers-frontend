@@ -126,7 +126,7 @@ class UKResidentControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Are you a UK resident?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#isUKResident]").html() shouldBe "Select yes if you are a UK resident"
-      doc.getElementById("isUKResident").getElementsByClass("error-message").html() shouldBe "Select yes if you are a UK resident"
+      doc.getElementById("isUKResident").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are a UK resident"
       verify(mockTravelDetailService, times(0)).storeUKResident(any())(any())(any())
     }
 

@@ -281,7 +281,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
     }
   }
 
@@ -315,7 +315,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
     }
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {
@@ -369,7 +369,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
+      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
     }
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {

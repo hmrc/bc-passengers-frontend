@@ -130,7 +130,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Is your final destination Northern Ireland?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#arrivingNI]").html() shouldBe "Select yes if your final destination is Northern Ireland"
-      doc.getElementById("arrivingNI").getElementsByClass("error-message").html() shouldBe "Select yes if your final destination is Northern Ireland"
+      doc.getElementById("arrivingNI").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if your final destination is Northern Ireland"
       verify(mockTravelDetailService, times(0)).storeArrivingNI(any())(any())(any())
     }
 

@@ -182,7 +182,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Did you pay UK VAT when buying this item?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#isUKVatPaid]").html() shouldBe "Select yes if you paid UK VAT when buying this item"
-      doc.getElementById("isUKVatPaid").getElementsByClass("error-message").html() shouldBe "Select yes if you paid UK VAT when buying this item"
+      doc.getElementById("isUKVatPaid").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you paid UK VAT when buying this item"
       verify(mockCache, times(0)).store(any())(any())
     }
   }

@@ -167,7 +167,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Do you have evidence this item was originally produced or made in the EU?"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#eUEvidenceItem]").html() shouldBe "Select yes if you have evidence this item was originally produced or made in the EU"
-      doc.getElementById("eUEvidenceItem").getElementsByClass("error-message").html() shouldBe "Select yes if you have evidence this item was originally produced or made in the EU"
+      doc.getElementById("eUEvidenceItem").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you have evidence this item was originally produced or made in the EU"
       verify(mockCache, times(0)).store(any())(any())
     }
   }

@@ -131,9 +131,9 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Enter your last name"
       doc.getElementById("errors").select("a[href=#identificationNumber]").html() shouldBe "Enter the identification number you used for your previous declaration"
       doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number"
-      doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "Enter your last name"
-      doc.getElementById("identificationNumber").parent().getElementsByClass("error-message").html() shouldBe "Enter the identification number you used for your previous declaration"
-      doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "Enter your reference number"
+      doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your last name"
+      doc.getElementById("identificationNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter the identification number you used for your previous declaration"
+      doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your reference number"
 
     }
 
@@ -158,9 +158,9 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Last name must be 35 characters or less"
       doc.getElementById("errors").select("a[href=#identificationNumber]").html() shouldBe "Identification number must be 40 characters or less"
       doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number in the correct format"
-      doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "Last name must be 35 characters or less"
-      doc.getElementById("identificationNumber").parent().getElementsByClass("error-message").html() shouldBe "Identification number must be 40 characters or less"
-      doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "Enter your reference number in the correct format"
+      doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Last name must be 35 characters or less"
+      doc.getElementById("identificationNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Identification number must be 40 characters or less"
+      doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your reference number in the correct format"
       verify(mockTravelDetailService, times(0)).storePrevDeclaration(any())(any())(any())
 
     }

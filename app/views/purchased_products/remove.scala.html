@@ -30,7 +30,9 @@
       @components.input_radio_group(
         confirmRemoveForm("confirmRemove"),
         Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError"
+        '_labelClass -> "block-label inputLabelBeforeError",
+        '_error_id -> "confirmRemove-error-message",
+        '_errorPrefix -> messages("label.error")
       )
     </fieldset>
 

@@ -88,7 +88,9 @@
     @components.input(
       field = dtoForm("cost"),
       '_label -> messages(s"label.price_paid"),
-      '_labelTextClass -> "form-label"
+      '_labelTextClass -> "form-label",
+      '_error_id -> "cost-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     <div class="form-group">

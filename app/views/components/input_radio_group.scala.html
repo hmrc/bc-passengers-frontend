@@ -14,7 +14,13 @@
 
     <div id="@elements.field.name" class="form-group @if(elements.hasErrors){ form-group-error} @if(elements.args.contains('_inline)){inline}">
 
-        @elements.errors.map{error => <span class="error-message">@Messages(error)</span>}
+        @elements.errors.map{error =>
+            <span class="error-message" @if(elements.args.contains('_error_id)) {
+            id="@elements.args.get('_error_id)" }>
+                @if(elements.args.contains('_errorPrefix) ){<span class="visually-hidden">@elements.args.get('_errorPrefix) </span>}
+                    @Messages(error)
+            </span>
+        }
 
         @radioOptions.map { case (value, label) =>
             @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ","_")}")  { inputId =>
@@ -25,6 +31,7 @@
                     name="@elements.field.name"
                     value="@value"
                         @elements.args.get('_inputClass).map{inputClass => class="@inputClass"}
+                        @if(elements.args.get('_error_id).isDefined) { aria-labeledby="@elements.args.get('_error_id)" }
                         @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
                         @field.value.filter( _ == value).map{_ => checked="checked"}/>
 
