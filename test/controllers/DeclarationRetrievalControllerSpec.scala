@@ -7,7 +7,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import models.{JourneyData, PreviousDeclarationRequest}
+import models.{Calculation, Country, DeclarationResponse, JourneyData, PreviousDeclarationRequest, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.mockito.Matchers._
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -15,6 +15,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
@@ -165,7 +166,39 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to where goods both following a successful POST" in  {
+    "redirect to tell us page following a successful retrieval" in  {
+
+      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+      val calculation = Calculation("160.45","25012.50","15134.59","40307.54")
+      val productPath = ProductPath("other-goods/adult/adult-footwear")
+      val country = Country("IN","title.india","IN",false,true,List())
+      val purchasedProductInstances = List(
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))
+      )
+      val declarationResponse = DeclarationResponse(calculation, purchasedProductInstances)
+      val retrievedJourneyData: JourneyData = JourneyData(prevDeclaration = Some(true),
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        ageOver17 = Some(true),
+        isUKResident = Some(false),
+        privateCraft = Some(true),
+        previousDeclarationRequest = Some(previousDeclarationRequest),
+        declarationResponse = Some(declarationResponse)
+      )
+      when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn Future.successful(Some(retrievedJourneyData))
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        .withFormUrlEncodedBody("" +
+          "lastName" -> "Smith",
+          "identificationNumber" -> "12345",
+          "referenceNumber" -> "XXPR0123456789")).get
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+      verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())}
+
+
+    "redirect to declaration not found on an unsuccessful POST" in  {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
@@ -176,8 +209,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
           "identificationNumber" -> "12345",
           "referenceNumber" -> "XXPR0123456789")).get
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
-      verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
     }
   }
 

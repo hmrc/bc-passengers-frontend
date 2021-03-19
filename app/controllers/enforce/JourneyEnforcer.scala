@@ -334,6 +334,17 @@ class UccReliefAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: 
 }
 
 @Singleton
+class DeclarationNotFoundAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.declarationNotFoundStep) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
 class NoNeedToUseServiceGbniAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
@@ -343,6 +354,7 @@ class NoNeedToUseServiceGbniAction @Inject()(journeyEnforcer: JourneyEnforcer, p
     }
   }
 }
+
 
 @Singleton
 class ZeroDeclarationAction @Inject() (journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {

@@ -37,6 +37,8 @@ POST       /enter-goods/$path<.+>/:iid/eu-evidence-check                        
 
 GET        /gb-ni-no-need-to-use-service                                               controllers.TravelDetailsController.noNeedToUseServiceGbni
 
+GET        /declaration-not-found                                                      controllers.DeclarationRetrievalController.declarationNotFound
+
 GET        /goods-bought-into-northern-ireland-inside-eu                               controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /goods-brought-into-northern-ireland                                        controllers.TravelDetailsController.goodsBoughtIntoNI

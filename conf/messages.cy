@@ -1696,9 +1696,19 @@ label.statement_on_origin = '‘datganiad tarddiad’' gan gyflenwr yr eitem
 label.appropriate_evidence = Os nad oes gennych y dystiolaeth briodol, bydd yn rhaid i chi dalu toll dramor ar yr eitem hon.
 head.error.evidence_eu_item = Dewiswch ‘Iawn’ os oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol
 error.evidence_eu_item = Dewiswch ‘Iawn’ os oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol
+heading.evidence_eu_item = (W)Do you have evidence this item was originally produced in the EU?(W)
+text.made_in_eu = (W)You will not have to pay customs duty on this item as you have stated it was originally produced or made in the EU.(W)
+text.however_item_may_be_seized = (W)However, if you do not have any of the following evidence to prove this, your item may be seized:(W)
+text.declare_over_1000 = (W)If you intend to declare over £1,000 worth of goods originally produced or made in the EU, you may also need to provide the following:(W)
 
 label.change_your_goods=Newid eich nwyddau
 label.breakdown_of_tax_and_duty_due=Dadansoddiad o’r dreth a’r tollau sy’n ddyledus
 label.amount_due = Swm sy’n ddyledus
 
 label.na = N/A
+
+#declaration not found page
+heading.declaration_not_found = (W)Your declaration cannot be found(W)
+text.may_be_because = (W)This may be because:(W)
+label.no_existing_declaration = (W)the details you have entered do not match an existing declaration - go back, check your details and try again(W)
+label.already_passed_custom = (W)you have already passed through UK customs and can no longer declare goods for your journey(W)

@@ -657,4 +657,21 @@ class StandardBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(routes.OtherGoodsInputController.displayEditForm("iid").url)
     }
   }
+
+  "Going back from declaration-not-found for declaration-retrieval page" should {
+
+    "return user to the edit declaration-retrieval page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = None
+      override val isArrivingNi: Option[Boolean] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.DeclarationRetrievalController.declarationNotFound()
+
+      m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
+    }
+  }
 }
