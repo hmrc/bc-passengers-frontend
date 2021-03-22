@@ -149,22 +149,6 @@ class VatResBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  "Going back from tell-us" should {
-
-    "return user to confirm-age" in new LocalSetup {
-
-      override val isIrishBorderQuestionEnabled = false
-      override val euCountryCheck: Option[String] = None
-      override val isVatResClaimed: Option[Boolean] = None
-      override val isBringingDutyFree: Option[Boolean] = None
-      override val bringingOverAllowance: Option[Boolean] = None
-
-      override def call: Call = routes.DashboardController.showDashboard()
-
-      m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge().url)
-    }
-  }
-
   "Going back from ireland-to-northern-ireland" should {
 
     "return user to /tell-us" in new LocalSetup {

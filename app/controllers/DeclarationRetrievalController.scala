@@ -8,7 +8,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DeclarationRetrievalAction
-import models.{DeclarationRetrievalDto, PreviousDeclarationDetails}
+import models.{DeclarationRetrievalDto, PreviousDeclarationRequest}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -23,7 +23,7 @@ class DeclarationRetrievalController @Inject()(
    override val controllerComponents: MessagesControllerComponents,
    implicit val appConfig: AppConfig,
    val backLinkModel: BackLinkModel,
-   val travelDetailsService: services.TravelDetailsService,
+   val previousDeclarationService: services.PreviousDeclarationService,
    implicit val ec: ExecutionContext
    ) extends FrontendController(controllerComponents) with I18nSupport {
 
@@ -31,7 +31,7 @@ class DeclarationRetrievalController @Inject()(
 
   val loadDeclarationRetrievalPage: Action[AnyContent] = declarationRetrievalAction { implicit context =>
     Future.successful {
-      context.getJourneyData.previousDeclarationDetails match {
+      context.getJourneyData.previousDeclarationRequest match {
         case Some(previousDec) =>
           Ok(declarationRetrievalPage(DeclarationRetrievalDto.form().fill(DeclarationRetrievalDto.fromPreviousDeclarationDetails(previousDec)), backLinkModel.backLink))
         case _ =>
@@ -50,8 +50,8 @@ class DeclarationRetrievalController @Inject()(
       },
       success = {
         previousDeclarationDetails =>
-          travelDetailsService.storePrevDeclarationDetails(context.journeyData)(PreviousDeclarationDetails.build(previousDeclarationDetails)).map(_ =>
-            Redirect(routes.TravelDetailsController.whereGoodsBought())
+          previousDeclarationService.storePrevDeclarationDetails(context.journeyData)(PreviousDeclarationRequest.build(previousDeclarationDetails)).map(_ =>
+            Redirect(routes.DashboardController.showDashboard())
           )
       })
   }

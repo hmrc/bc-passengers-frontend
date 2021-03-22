@@ -8,7 +8,7 @@ package services
 import connectors.Cache
 
 import javax.inject.Inject
-import models.{JourneyData, PreviousDeclarationDetails}
+import models.JourneyData
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,9 @@ class TravelDetailsService @Inject() (
           purchasedProductInstances = Nil,
           defaultCountry = None,
           defaultOriginCountry = None,
-          defaultCurrency = None
+          defaultCurrency = None,
+          previousDeclarationRequest = None,
+          declarationResponse = None
         ))
 
       case None =>
@@ -222,6 +224,7 @@ class TravelDetailsService @Inject() (
       case Some(journeyData) if !journeyData.isUKResident.contains(isUKResident) =>
 
         val resetJourneyData = JourneyData(
+          prevDeclaration = journeyData.prevDeclaration,
           isUKResident = Some(isUKResident),
           euCountryCheck = journeyData.euCountryCheck,
           arrivingNICheck = journeyData.arrivingNICheck
@@ -249,41 +252,6 @@ class TravelDetailsService @Inject() (
 
       case None =>
         cache.storeJourneyData( JourneyData(isUccRelief = Some(isUccRelief)) )
-
-      case _ =>
-        Future.successful( journeyData )
-    }
-  }
-
-  def storePrevDeclaration(journeyData: Option[JourneyData])(prevDeclaration: Boolean)
-                    (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
-
-    journeyData match {
-      case Some(journeyData) if !journeyData.prevDeclaration.contains(prevDeclaration) =>
-
-        cache.storeJourneyData(journeyData.copy(
-          prevDeclaration = Some(prevDeclaration),
-          previousDeclarationDetails = None
-        ))
-
-      case None =>
-        cache.storeJourneyData( JourneyData(
-          prevDeclaration = Some(prevDeclaration)) )
-
-      case _ =>
-        Future.successful( journeyData )
-    }
-  }
-
-  def storePrevDeclarationDetails(journeyData: Option[JourneyData])(previousDeclarationDetails: PreviousDeclarationDetails)
-                          (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
-    journeyData match {
-      case Some(journeyData) =>
-        cache.storeJourneyData(journeyData.copy(
-          previousDeclarationDetails = Some(previousDeclarationDetails)
-        ))
-      case None =>
-        cache.storeJourneyData( JourneyData(previousDeclarationDetails = Some(previousDeclarationDetails)) )
 
       case _ =>
         Future.successful( journeyData )

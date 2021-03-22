@@ -109,7 +109,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     )
 
     val expectedJsObj: JsObject = Json.obj(
-      "journeyData" -> Json.toJsObject(jd),
+      "journeyData" -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -245,7 +245,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     val expectedTelephoneValueSendJson: JsObject = expectedJsObj.alterFields {
       case ("chargeReference", _) => None
       case ("acknowledgementReference", _) => None
-      case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "telephone", "idValue" -> "XPASSID7417532125", "ukResident" -> false))
+      case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false))
     }
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
@@ -255,7 +255,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       when(injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST,""))
 
       val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
-      val ui: UserInformation = userInformation.copy(identificationType = "telephone", identificationNumber = "7417532125")
+      val ui: UserInformation = userInformation.copy(identificationType = "passport", identificationNumber = "SX12345")
 
       val r: DeclarationServiceResponse = declarationService.submitDeclaration(ui, calculatorResponse, jd, DateTime.parse("2018-05-31T13:14:08+0100"), cid).futureValue
 
@@ -352,7 +352,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData" -> Json.toJsObject(jd),
+        "journeyData" -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -477,7 +477,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData" -> Json.toJsObject(jd),
+        "journeyData" -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -749,7 +749,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData" -> Json.toJsObject(jd),
+        "journeyData" -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -1021,7 +1021,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData" -> Json.toJsObject(jd),
+        "journeyData" -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -1277,7 +1277,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData" -> Json.toJsObject(jd),
+        "journeyData" -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate" -> "2018-05-31T12:14:08Z",
@@ -1493,6 +1493,118 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
         meq(PaymentNotification("Successful", "XJPR5768524625")), any()
       )(any(), any(), any(), any())
+
+    }
+  }
+
+  "Calling DeclarationService.retrieveDeclaration" should {
+
+    implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+
+    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+
+    "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST,""))
+
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
+        meq(previousDeclarationRequest), any())(any(), any(), any(), any())
+
+    }
+
+    "return a DeclarationServiceFailureResponse if the backend returns 500" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR,""))
+
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
+        meq(previousDeclarationRequest), any())(any(), any(), any(), any())
+
+    }
+
+    "return a DeclarationServiceFailureResponse if the backend returns NOT FOUND" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      when(injected[WsAllMethods].POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn Future.successful(HttpResponse.apply(NOT_FOUND,""))
+
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
+        meq(previousDeclarationRequest), any())(any(), any(), any(), any())
+
+    }
+
+    "return a DeclarationServiceSuccessResponse if the backend returns 200" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      val expectedJson = Json.obj("euCountryCheck" -> "greatBritain",
+        "arrivingNI" -> true,
+        "isOver17" -> true,
+        "isUKResident" -> false,
+        "isPrivateTravel" -> true,
+        "calculation" -> Json.obj("excise" -> "160.45","customs" -> "25012.50","vat" -> "15134.59","allTax" -> "40307.54"),
+        "oldPurchaseProductInstances" -> Json.arr(
+          Json.obj("path" -> "other-goods/adult/adult-footwear",
+            "iid" -> "UnOGll",
+            "country" -> Json.obj("code" -> "IN",
+              "countryName" -> "title.india",
+              "alphaTwoCode" -> "IN",
+              "isEu" -> false,
+              "isCountry" -> true,
+              "countrySynonyms" -> Json.arr()),
+            "currency" -> "GBP",
+            "cost" -> 500,
+            "isVatPaid"-> false,
+            "isCustomPaid" -> false,
+            "isUccRelief" -> false),
+          ))
+
+      val calculation = Calculation("160.45","25012.50","15134.59","40307.54")
+
+      val productPath = ProductPath("other-goods/adult/adult-footwear")
+
+      val country = Country("IN","title.india","IN",false,true,List())
+
+      val purchasedProductInstances = List(
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,None)
+      )
+
+      val declarationResponse = DeclarationResponse(calculation, purchasedProductInstances)
+
+      val jd: JourneyData = JourneyData(prevDeclaration = Some(true),
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        ageOver17 = Some(true),
+        isUKResident = Some(false),
+        privateCraft = Some(true),
+        previousDeclarationRequest = Some(previousDeclarationRequest),
+        declarationResponse = Some(declarationResponse)
+      )
+
+      when(injected[WsAllMethods].POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn
+        Future.successful(HttpResponse.apply(OK, expectedJson.toString()))
+
+      val r: DeclarationServiceResponse = await(declarationService.retrieveDeclaration(previousDeclarationRequest))
+
+      r shouldBe DeclarationServiceRetrieveSuccessResponse(jd)
+
+      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
+        meq(previousDeclarationRequest), any())(any(), any(), any(), any())
 
     }
   }

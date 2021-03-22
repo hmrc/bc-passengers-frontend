@@ -352,12 +352,12 @@ object EnterYourDetailsDto extends Validators {
 
 object DeclarationRetrievalDto extends Validators {
 
-  def fromPreviousDeclarationDetails(previousDeclarationDetails: PreviousDeclarationDetails): DeclarationRetrievalDto = {
+  def fromPreviousDeclarationDetails(previousDeclarationDetails: PreviousDeclarationRequest): DeclarationRetrievalDto = {
     DeclarationRetrievalDto(previousDeclarationDetails.lastName,
       previousDeclarationDetails.identificationNumber,
       previousDeclarationDetails.referenceNumber)
   }
-  private val chargeReferencePattern = """^X([A-Z])PR(\d{10})$"""
+  private val chargeReferencePattern = """^[Xx]([A-Za-z])[Pp][Rr](\d{10})$"""
   def form(): Form[DeclarationRetrievalDto] = Form(
     mapping(
       "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name"))

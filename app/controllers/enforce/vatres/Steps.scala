@@ -34,7 +34,7 @@ case object NoNeedToUseStep extends JourneyStep(preceeding = List(GoodsBoughtInt
 
 case object Is17OrOverStep extends JourneyStep(preceeding = List(PrivateCraftStep), predicate = _ => _.flatMap(_.privateCraft).isDefined)
 
-case object DashboardStep extends JourneyStep(preceeding = List(Is17OrOverStep), predicate = _ => _.flatMap(_.ageOver17).isDefined)
+case object DashboardStep extends JourneyStep(preceeding = List(DeclarationRetrievalStep, Is17OrOverStep), predicate = _ => _.flatMap(_.ageOver17).isDefined)
 
 case object ArrivingNIStep extends JourneyStep(preceeding = List(WhereGoodsBoughtStep), predicate = _ => _.flatMap(_.euCountryCheck).isDefined)
 

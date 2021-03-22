@@ -40,6 +40,37 @@ class DeclarationService @Inject()(
 
   lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 
+  def retrieveDeclaration(previousDeclarationDetails: PreviousDeclarationRequest)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
+
+    def constructJourneyDataFromDeclarationResponse(declarationResponse: JsValue): JourneyData = {
+      JourneyData(prevDeclaration = Some(true),
+        euCountryCheck = (declarationResponse \ "euCountryCheck").asOpt[String],
+        arrivingNICheck = (declarationResponse \ "arrivingNI").asOpt[Boolean],
+        ageOver17 = (declarationResponse \ "isOver17").asOpt[Boolean],
+        isUKResident = (declarationResponse \ "isUKResident").asOpt[Boolean],
+        privateCraft = (declarationResponse \ "isPrivateTravel").asOpt[Boolean],
+        previousDeclarationRequest = Some(previousDeclarationDetails),
+        declarationResponse = Some(DeclarationResponse(
+          (declarationResponse \ "calculation").as[Calculation],
+          (declarationResponse \ "oldPurchaseProductInstances").as[List[PurchasedProductInstance]]
+        ))
+      )
+    }
+
+    wsAllMethods.POST[PreviousDeclarationRequest, HttpResponse](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/retrieve-declaration", previousDeclarationDetails) map {
+      case HttpResponse(OK, declarationResponse, _) =>
+        DeclarationServiceRetrieveSuccessResponse(constructJourneyDataFromDeclarationResponse(Json.parse(declarationResponse)))
+      case HttpResponse(BAD_REQUEST, _, _) =>
+        Logger.error("DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] BAD_REQUEST received from bc-passengers-declarations ")
+        DeclarationServiceFailureResponse
+      case HttpResponse(NOT_FOUND, _, _) =>
+        Logger.error("DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] NOT_FOUND received from bc-passengers-declarations")
+        DeclarationServiceFailureResponse
+      case HttpResponse(status, _, _) =>
+        Logger.error(s"DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed")
+        DeclarationServiceFailureResponse
+    }
+  }
 
   def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
 
@@ -282,7 +313,7 @@ class DeclarationService @Inject()(
     }
 
     Json.obj(
-      "journeyData" -> Json.toJsObject(journeyData),
+      "journeyData" -> Json.toJsObject(journeyData.copy(userInformation = Some(userInformation))),
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate" -> rd,
@@ -366,5 +397,7 @@ trait DeclarationServiceResponse
 case object DeclarationServiceFailureResponse extends DeclarationServiceResponse
 
 case class DeclarationServiceSuccessResponse(chargeReference: ChargeReference) extends DeclarationServiceResponse
+
+case class DeclarationServiceRetrieveSuccessResponse(jd: JourneyData) extends DeclarationServiceResponse
 
 case object DeclarationServiceSuccessResponse extends DeclarationServiceResponse
