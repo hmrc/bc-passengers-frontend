@@ -290,7 +290,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
+        doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
         doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
       }
     }
@@ -307,7 +307,36 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
     }
+
+    "Display the Amend-your-declaration page when at the higher end of the range" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData( euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh),declarationResponse = Some(declarationResponse))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
+    }
+
+    "display the Amend-your-declaration page, when tax to be paid is zero in amendment journey" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZero), chargeReference= Some("XJPR5768524625"), userInformation = Some(ui), declarationResponse = Some(declarationResponse), deltaCalculation = Some(zeroDeltaCalculation))))
+      override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
+    }
   }
+
+
 
     "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax greater than nine pounds and less than 90,000" should {
 
@@ -972,7 +1001,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
       doc.text() should include("these goods are for my own use or to give away as a gift")
-      doc.text() shouldNot include ("I must pay duty and tax on these goods if I bring them into the UK")
+      doc.text() should include ("I must pay duty and tax on these goods if I bring them into the UK")
     }
 
     "Cache the submitted user information and redirect to Declaration page when tax to be paid is zero" in new LocalSetup {
@@ -1021,9 +1050,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
+      doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
       doc.text() should include("these goods are for my own use or to give away as a gift")
-      doc.text() shouldNot include ("I must pay duty and tax on these goods if I bring them into the UK")
+      doc.text() should include ("I must pay duty and tax on these goods if I bring them into the UK")
       doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
     }
   }

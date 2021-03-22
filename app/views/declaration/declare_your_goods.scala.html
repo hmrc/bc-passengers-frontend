@@ -9,10 +9,10 @@
 @import uk.gov.hmrc.play.views.html._
 
 
-
-@main_template(title = messages("label.declare_your_goods"), bodyClasses = None, backLink = backLink) {
-
-  <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>
+@main_template(title = if(isAmendment) messages("label.amend_your_goods") else messages("label.declare_your_goods"), bodyClasses = None, backLink = backLink) {
+    @if(isAmendment){
+    <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.amend_your_goods")</h1>} else{
+    <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>}
 
   <p>@messages("text.i_understand_that")</p>
   <ul class="list-bullet" style="margin-bottom: 15px;">
@@ -33,7 +33,7 @@
   @if(isAmendment) {
     <p class="margin-top-30">
       <a href="@routes.CalculateDeclareController.processAmendment" class="button" role="button">
-        @messages("label.declare_your_goods_and_pay_online")</a>
+        @messages("label.amend_your_goods_and_pay_online")</a>
     </p>
   }else {
     <p class="margin-top-30">

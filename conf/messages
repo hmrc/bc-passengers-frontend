@@ -1710,6 +1710,8 @@ label.amount_paid_previously = Amount paid previously
 label.total_due_now = Total due now
 label.na = N/A
 
+label.amend_your_goods = Amend your declaration
+label.amend_your_goods_and_pay_online = Amend your declaration and pay online
 #declaration not found page
 heading.declaration_not_found = Your declaration cannot be found
 text.may_be_because = This may be because:
