@@ -28,7 +28,8 @@ case class PurchasedProductInstance(
   isCustomPaid: Option[Boolean] = None,
   isExcisePaid: Option[Boolean] = None,
   isUccRelief: Option[Boolean] = None,
-  hasEvidence: Option[Boolean] = None
+  hasEvidence: Option[Boolean] = None,
+  isEditable: Option[Boolean] = Some(true)
 )
 
 object UserInformation {
@@ -56,13 +57,13 @@ case class UserInformation(
   timeOfArrival: LocalTime
 )
 
-object PreviousDeclarationDetails {
-  implicit val formats: OFormat[PreviousDeclarationDetails] = Json.format[PreviousDeclarationDetails]
+object PreviousDeclarationRequest {
+  implicit val formats: OFormat[PreviousDeclarationRequest] = Json.format[PreviousDeclarationRequest]
 
-  def build(dto: DeclarationRetrievalDto): PreviousDeclarationDetails =
-    PreviousDeclarationDetails(dto.lastName, dto.identificationNumber, dto.referenceNumber)
+  def build(dto: DeclarationRetrievalDto): PreviousDeclarationRequest =
+    PreviousDeclarationRequest(dto.lastName, dto.identificationNumber, dto.referenceNumber)
 }
-case class PreviousDeclarationDetails(
+case class PreviousDeclarationRequest(
                             lastName: String,
                             identificationNumber: String,
                             referenceNumber: String
@@ -107,7 +108,8 @@ case class JourneyData(
   defaultCountry: Option[String] = None,
   defaultOriginCountry: Option[String] = None,
   defaultCurrency: Option[String] = None,
-  previousDeclarationDetails: Option[PreviousDeclarationDetails] = None
+  previousDeclarationRequest: Option[PreviousDeclarationRequest] = None,
+  declarationResponse: Option[DeclarationResponse] = None
 ) {
 
   val selectedProducts: List[List[String]] = selectedAliases.map(_.productPath.components)

@@ -340,6 +340,22 @@ class StandardBackLinkModelSpec extends BaseSpec {
     }
   }
 
+  "Going back from declaration-retrieval" should {
+
+    "return user to previous-declaration" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = DeclarationRetrievalController.loadDeclarationRetrievalPage()
+
+      m.backLink(context) shouldBe Some(PreviousDeclarationController.loadPreviousDeclarationPage.url)
+    }
+  }
+
   "Going back from confirm-age" should {
 
     "return user to private-travel" in new LocalSetup {
@@ -358,17 +374,32 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
   "Going back from tell-us" should {
 
-    "return user to confirm-age" in new LocalSetup {
+    "return user to confirm-age for normal journey " in new LocalSetup {
 
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck: Option[String] = None
       override val isVatResClaimed: Option[Boolean] = None
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
+      override val prevDeclaration: Option[Boolean] = Some(false)
 
       override def call: Call = routes.DashboardController.showDashboard()
 
       m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge().url)
+    }
+
+    "return user to declaration-retrieval for amendment journey " in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled  = false
+      override val euCountryCheck: Option[String] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+      override val prevDeclaration: Option[Boolean] = Some(true)
+
+      override def call: Call = routes.DashboardController.showDashboard()
+
+      m.backLink(context) shouldBe Some(DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
     }
   }
 

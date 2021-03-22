@@ -18,7 +18,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
-import services.TravelDetailsService
+import services.PreviousDeclarationService
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -26,13 +26,13 @@ import scala.concurrent.Future
 
 class PreviousDeclarationControllerSpec extends BaseSpec {
 
-  val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
+  val mockPreviousDeclarationService: PreviousDeclarationService = MockitoSugar.mock[PreviousDeclarationService]
   val mockCache: Cache = MockitoSugar.mock[Cache]
   val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
+    .overrides(bind[PreviousDeclarationService].toInstance(mockPreviousDeclarationService))
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(bind[AppConfig].toInstance(mockAppConfig))
@@ -40,7 +40,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTravelDetailService, mockCache, mockAppConfig)
+    reset(mockPreviousDeclarationService, mockCache, mockAppConfig)
     when(injected[AppConfig].declareGoodsUrl) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
   }
@@ -95,7 +95,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
         .withFormUrlEncodedBody("prevDeclaration" -> "false")).get
@@ -103,7 +103,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
 
-      verify(mockTravelDetailService, times(1)).storePrevDeclaration(any())(meq(false))(any())
+      verify(mockPreviousDeclarationService, times(1)).storePrevDeclaration(any())(meq(false))(any())
     }
 
     "redirect to .../declaration-retrieval when user selects they have made a previous declaration" in  {
@@ -111,7 +111,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
         .withFormUrlEncodedBody("prevDeclaration" -> "true")).get
@@ -119,7 +119,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
 
-      verify(mockTravelDetailService, times(1)).storePrevDeclaration(any())(meq(true))(any())
+      verify(mockPreviousDeclarationService, times(1)).storePrevDeclaration(any())(meq(true))(any())
     }
 
     "return a bad request when user selects an invalid value in Previous Declaration page" in  {
@@ -140,7 +140,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#prevDeclaration]").html() shouldBe "Select yes if you have previously made a declaration for your journey"
       doc.getElementById("prevDeclaration").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you have previously made a declaration for your journey"
-      verify(mockTravelDetailService, times(0)).storePrevDeclaration(any())(any())(any())
+      verify(mockPreviousDeclarationService, times(0)).storePrevDeclaration(any())(any())(any())
     }
 
     "return error summary box on the page head when trying to submit a blank form" in {

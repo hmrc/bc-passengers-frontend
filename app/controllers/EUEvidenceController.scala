@@ -35,7 +35,7 @@ class EUEvidenceController @Inject()(
     Future.successful {
       val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
       ppInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _,_,_, _,_,Some(hasEvidence))) =>
+        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _,_,_, _,_,Some(hasEvidence),_)) =>
           Ok(euEvidenceItem(EUEvidenceItemForm.form.fill(hasEvidence), backLinkModel.backLink, path, iid))
         case _ =>
           Ok(euEvidenceItem(EUEvidenceItemForm.form, backLinkModel.backLink, path, iid))

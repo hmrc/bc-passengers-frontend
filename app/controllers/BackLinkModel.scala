@@ -28,6 +28,7 @@ class BackLinkModel @Inject() (
     def boa = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
     def ukr = context.journeyData.flatMap(_.isUKResident).getOrElse(false)
     def arN = context.journeyData.flatMap(_.arrivingNICheck).getOrElse(false)
+    def prevDecl = context.journeyData.flatMap(_.prevDeclaration).getOrElse(false)
 
     def call = location match {
       case "duty-free" =>
@@ -97,8 +98,12 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.goodsBoughtIntoGB())
       case "confirm-age" =>
         Some(TravelDetailsController.privateTravel)
-      case "tell-us" =>
-        Some(TravelDetailsController.confirmAge)
+      case "tell-us" => {
+        if (prevDecl)
+          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
+        else
+          Some(TravelDetailsController.confirmAge)
+      }
       case "ireland-to-northern-ireland" =>
         Some(DashboardController.showDashboard)
       case "tax-due" if appConfig.isIrishBorderQuestionEnabled =>
@@ -111,6 +116,8 @@ class BackLinkModel @Inject() (
         Some(CalculateDeclareController.declareYourGoods())
       case "previous-declaration" =>
         Some(appConfig.declareGoodsUrl)
+      case "declaration-retrieval" =>
+        Some(PreviousDeclarationController.loadPreviousDeclarationPage)
       case "add" =>
         Some(DashboardController.showDashboard())
       case _ =>

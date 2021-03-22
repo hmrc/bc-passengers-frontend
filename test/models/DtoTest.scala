@@ -1185,6 +1185,16 @@ class DtoTest extends BaseSpec {
       val form = DeclarationRetrievalDto.form().bind(formData)
       form.hasErrors shouldBe true
     }
+
+    "allow the referenceNumber to be case insensitive and correct format" in {
+      val formData = Map(
+        "lastName" -> "Smith",
+        "identificationNumber" -> "1234",
+        "referenceNumber" -> "xvpr1234567890"
+      )
+      val form = DeclarationRetrievalDto.form().bind(formData)
+      form.hasErrors shouldBe false
+    }
   }
 
 }
