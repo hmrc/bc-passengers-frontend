@@ -38,6 +38,8 @@ class BackLinkModel @Inject() (
           Some(PreviousDeclarationController.loadPreviousDeclarationPage())
         else
           Some(appConfig.declareGoodsUrl)
+      case "declaration-not-found" =>
+        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage())
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>{

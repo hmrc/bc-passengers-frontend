@@ -1,0 +1,22 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template)
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@main_template(title = messages("heading.declaration_not_found"), bodyClasses = None, backLink = backLink) {
+<fieldset>
+    <legend>
+        <h1 class="heading-xlarge">@messages("heading.declaration_not_found")</h1>
+    </legend>
+
+    <p>@messages("text.may_be_because")</p>
+
+    <ul class="list list-bullet">
+        <li>@messages("label.no_existing_declaration")</li>
+        <li>@messages("label.already_passed_custom")</li>
+    </ul>
+</fieldset>
+}
