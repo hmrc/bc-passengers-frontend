@@ -1,0 +1,92 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this()
+@(purchasedItem: PurchasedItem, description: String, isEU: Boolean, isGbNi: Boolean, isUkResident:Boolean, category: String)(implicit messages: Messages)
+
+@import uk.gov.hmrc.play.views.html._
+@import util._
+
+
+
+    <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
+      <div class="product-item">
+        <dt class="cya-question">@messages("label.item")</dt>
+        <dd class="cya-answer">@description</dd>
+      </div>
+      <div class="product-country">
+        <dt class="cya-question">@messages("label.purchased_in")</dt>
+        <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
+      </div>
+      @if(isEU && purchasedItem.originCountry.isDefined) {
+        @if(category.contains("alcohol") || category.contains("tobacco")){
+          <div class="producedin-country">
+            <dt class="cya-question">@messages("label.produced_in")</dt>
+            <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
+          </div>
+        } else {
+            <div class="madein-country">
+                <dt class="cya-question">@messages("label.made_in")</dt>
+                <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
+            </div>
+        }
+      }
+      @if(purchasedItem.hasEvidence.isDefined) {
+          <div class="has_got_evidence">
+            <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
+            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
+          </div>
+      }
+      <div class="product-price">
+        <dt class="cya-question">@messages("label.price")</dt>
+        <dd class="cya-answer">
+          @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
+        </dd>
+      </div>
+      @if(isGbNi) {
+          <div class="vat-paid">
+            <dt class="cya-question">@messages("label.vat_paid")</dt>
+            <dd class="cya-answer">
+              @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
+            </dd>
+          </div>
+          @if(category.contains("alcohol") || category.contains("tobacco")){
+              <div class="excise-paid">
+                <dt class="cya-question">@messages("label.excise_paid")</dt>
+                <dd class="cya-answer">
+                  @purchasedItem.purchasedProductInstance.isExcisePaid.map(formatYesNo)
+                </dd>
+              </div>
+          }
+          @if(!isUkResident && category.contains("otherGoods")) {
+              <div class="tax-exempt">
+                <dt class="cya-question">@messages("label.tax_exempt")</dt>
+                <dd class="cya-answer">
+                    @purchasedItem.purchasedProductInstance.isUccRelief.map(formatYesNo)
+                </dd>
+              </div>
+          }
+      }
+    </dl>
+    @if(purchasedItem.purchasedProductInstance.isEditable.contains(false)) {
+        <br>
+    }
+
+    @if(purchasedItem.purchasedProductInstance.isEditable.contains(true)) {
+        <div class="margin-bottom-20 edit-link">
+            @if(category.contains("alcohol")){
+                <a href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+            } else if(category.contains("otherGoods")) {
+                <a href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+            } else if(category.contains("tobacco")) {
+                <a href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+            }
+        </div>
+        <div class="margin-bottom-50">
+          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
+        </div>
+    }
+
+

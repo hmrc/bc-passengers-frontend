@@ -151,7 +151,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "return None if there was a missing rate, making a call to the currency-conversion service" in new LocalSetup {
 
-      val response: Option[CalculatorServiceRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData))
+      val response: Option[CalculatorServiceRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData, missingRateJourneyData.purchasedProductInstances))
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(), any(), any())
@@ -161,7 +161,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "skip invalid instances (instances with missing required data)" in new LocalSetup {
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(imperfectJourneyData)).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(imperfectJourneyData, imperfectJourneyData.purchasedProductInstances)).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
@@ -171,7 +171,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "transform journey data to a calculator request, making a call to the currency-conversion service" in new LocalSetup {
 
-      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData)).get
+      val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData, goodJourneyData.purchasedProductInstances)).get
 
       verify(injected[Cache], times(0)).fetch(any())
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
