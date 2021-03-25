@@ -255,7 +255,7 @@ class DeclareAction @Inject()(appConfig: AppConfig, publicAction: PublicAction) 
       }
 
       else {
-       Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+        if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
      }
     }
   }
