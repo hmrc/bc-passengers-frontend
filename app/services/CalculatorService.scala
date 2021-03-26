@@ -72,7 +72,7 @@ class CalculatorService @Inject() (
 
   def calculate(journeyData: JourneyData)(implicit hc: HeaderCarrier, messages: Messages): Future[CalculatorServiceResponse] = {
 
-    journeyDataToCalculatorRequest(journeyData) flatMap {
+    journeyDataToCalculatorRequest(journeyData, journeyData.purchasedProductInstances) flatMap {
 
       case Some(calculatorRequest) =>
 
@@ -112,12 +112,12 @@ class CalculatorService @Inject() (
       } yield LimitRequest(isPrivateCraft, isAgeOver17, isArrivingNI, speculativeItems)
   }
 
-  def journeyDataToCalculatorRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[CalculatorServiceRequest]] = {
+  def journeyDataToCalculatorRequest(journeyData: JourneyData, purchasedProductInstance: List[PurchasedProductInstance])(implicit hc: HeaderCarrier): Future[Option[CalculatorServiceRequest]] = {
 
-    getCurrencyConversionRates(journeyData) map { ratesMap =>
+    getCurrencyConversionRates(journeyData, purchasedProductInstance) map { ratesMap =>
 
       val purchasedItems: List[PurchasedItem] = for {
-        purchasedProductInstance <- journeyData.purchasedProductInstances
+        purchasedProductInstance <- purchasedProductInstance
         productTreeLeaf <- productTreeService.productTree.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
         curCode <- purchasedProductInstance.currency
         currency <- currencyService.getCurrencyByCode(curCode)
@@ -145,9 +145,9 @@ class CalculatorService @Inject() (
   }
 
 
-  private def getCurrencyConversionRates(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Map[String, BigDecimal]] = {
+  private def getCurrencyConversionRates(journeyData: JourneyData, purchasedProductInstance: List[PurchasedProductInstance])(implicit hc: HeaderCarrier): Future[Map[String, BigDecimal]] = {
 
-    val allCurrencies: Set[Currency] = journeyData.allCurrencyCodes.flatMap(currencyService.getCurrencyByCode)
+    val allCurrencies: Set[Currency] = journeyData.allCurrencyCodes(purchasedProductInstance).flatMap(currencyService.getCurrencyByCode)
 
 
     implicit val formats: Reads[CurrencyConversionRate] = Json.reads[CurrencyConversionRate]

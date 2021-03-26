@@ -46,32 +46,46 @@ class DashboardController @Inject() (
       cache.fetch flatMap { journeyData: Option[JourneyData] =>
 
         val jd = journeyData.getOrElse(JourneyData())
-        calculatorService.journeyDataToCalculatorRequest(jd) map { maybeCalculatorRequest =>
+        val allPurchasedProductInstances = jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances
+          calculatorService.journeyDataToCalculatorRequest(jd, allPurchasedProductInstances) map { maybeCalculatorRequest =>
+            val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
-          val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
-          val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-            case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "alcohol" => item
+            val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "alcohol" && ppi.isEditable.contains(true) => item
+            }
+
+            val previousAlcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "alcohol" && ppi.isEditable.contains(false) => item
+            }
+
+            val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(true) => item
+            }
+
+            val previousTobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(false) => item
+            }
+
+            val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "other-goods" && ppi.isEditable.contains(true) => item
+            }
+
+            val previousOtherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "other-goods" && ppi.isEditable.contains(false) => item
+            }
+
+            val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
+
+            Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse,
+              previousAlcoholPurchasedItemList.reverse, previousTobaccoPurchasedItemList.reverse, previousOtherGoodsPurchasedItemList.reverse, showCalculate,
+              backLinkModel.backLink,
+              appConfig.isIrishBorderQuestionEnabled,
+              jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
+              jd.euCountryCheck.contains("euOnly"),
+              jd.isUKResident.contains(true)))
           }
-
-          val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-            case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "cigarettes" | tid == "cigars" | tid == "tobacco" => item
-          }
-
-          val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-            case item@PurchasedItem(_, ProductTreeLeaf(_, _, _, tid, _), _, _, _) if tid == "other-goods" => item
-          }
-
-          val showCalculate = !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
-
-          Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse, showCalculate,
-            backLinkModel.backLink,
-            appConfig.isIrishBorderQuestionEnabled,
-            jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
-            jd.euCountryCheck.contains("euOnly"),
-            jd.isUKResident.contains(true)))
         }
-      }
     }
   }
 

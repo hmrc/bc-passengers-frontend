@@ -75,7 +75,7 @@ class DashboardControllerSpec extends BaseSpec {
   "respond with 200 and display the page if all travel details exist" in new LocalSetup {
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(None)
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(None)
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
 
     status(result) shouldBe OK
@@ -90,7 +90,7 @@ class DashboardControllerSpec extends BaseSpec {
   "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(None)
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(None)
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody("firstName" -> "Harry", "lastName" -> "Potter", "passportNumber" -> "801375812", "placeOfArrival" -> "Newcastle airport")).get
 
     status(result) shouldBe OK
@@ -332,7 +332,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -368,7 +368,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -405,7 +405,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -441,7 +441,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -477,7 +477,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -513,7 +513,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -546,7 +546,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -580,7 +580,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -616,7 +616,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -652,7 +652,7 @@ class DashboardControllerSpec extends BaseSpec {
       List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
         PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -685,7 +685,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
       List(PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any())(any())) thenReturn Future.successful(Some(csr))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
 
     val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
@@ -700,4 +700,132 @@ class DashboardControllerSpec extends BaseSpec {
     otherItem.getElementsByClass("vat-paid").isEmpty shouldBe false
     otherItem.getElementsByClass("tax-exempt").isEmpty shouldBe true
   }
+
+  "display edit links for new items for GBNI Journey for UK Residents" in new LocalSetup {
+
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(true))
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None, isEditable = Some(true))
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None,Some("CHF"), Some(5432),None,None,None, isEditable = Some(true))
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(purchasedProductInstances = List(alcohol,tobacco,other)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = alcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = tobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = other, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+
+    alcoholItem.getElementsByClass("edit-link").isEmpty shouldBe false
+    tobaccoItem.getElementsByClass("edit-link").isEmpty shouldBe false
+    otherItem.getElementsByClass("edit-link").isEmpty shouldBe false
+  }
+
+  "display old items(amendment journey) for GBNI Journey for UK Residents" in new LocalSetup {
+
+    val oldAlcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(false))
+    val oldTobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None, isEditable = Some(false))
+    val oldOther: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None,Some("CHF"), Some(5432),None,None,None, isEditable = Some(false))
+
+    val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol, oldTobacco, oldOther)
+
+    val calculation = Calculation("1.00","1.00","1.00","3.00")
+
+    val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances)
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), declarationResponse =  Some(declarationResponse)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = oldAlcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = oldTobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = oldOther, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+
+    alcoholItem.getElementsByClass("previous-alcohol").text() shouldBe "Previously declared alcohol"
+    tobaccoItem.getElementsByClass("previous-tobacco").text() shouldBe "Previously declared tobacco"
+    otherItem.getElementsByClass("previous-othergoods").text() shouldBe "Previously declared other goods"
+
+    alcoholItem.getElementsByClass("edit-link").isEmpty shouldBe true
+    tobaccoItem.getElementsByClass("edit-link").isEmpty shouldBe true
+    otherItem.getElementsByClass("edit-link").isEmpty shouldBe true
+
+    val alcoholItemCheck: Element = alcoholItem.getElementsByClass("govuk-check-your-answers").get(0)
+    val tobaccoItemCheck: Element = tobaccoItem.getElementsByClass("govuk-check-your-answers").get(0)
+    val otherItemCheck: Element = otherItem.getElementsByClass("govuk-check-your-answers").get(0)
+
+    alcoholItemCheck.getElementsByClass("vat-paid").isEmpty shouldBe false
+    tobaccoItemCheck.getElementsByClass("vat-paid").isEmpty shouldBe false
+    otherItemCheck.getElementsByClass("vat-paid").isEmpty shouldBe false
+
+    alcoholItemCheck.getElementsByClass("excise-paid").isEmpty shouldBe false
+    tobaccoItemCheck.getElementsByClass("excise-paid").isEmpty shouldBe false
+    otherItemCheck.getElementsByClass("tax-exempt").isEmpty shouldBe false
+  }
+
+  "display old items(amendment journey) for EU Journey" in new LocalSetup {
+
+    val oldAlcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(false))
+    val oldTobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),None,None,None, isEditable = Some(false))
+    val oldOther: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),Some("CHF"), Some(5432),None,None,None, isEditable = Some(false))
+
+    val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol, oldTobacco, oldOther)
+
+    val calculation = Calculation("1.00","1.00","1.00","3.00")
+
+    val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances)
+
+    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), declarationResponse =  Some(declarationResponse)))
+
+    val csr: CalculatorServiceRequest  = CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = false, isArrivingNI = false,
+      List(PurchasedItem(purchasedProductInstance = oldAlcohol, productTreeLeaf = ProductTreeLeaf("","","","alcohol",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = oldTobacco, productTreeLeaf = ProductTreeLeaf("","","","tobacco",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10)),
+        PurchasedItem(purchasedProductInstance = oldOther, productTreeLeaf = ProductTreeLeaf("","","","other-goods",List.empty), exchangeRate = ExchangeRate("",""), currency = Currency("","",None, List.empty), gbpCost = BigDecimal(10))))
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(Some(csr))
+
+    val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+    status(result) shouldBe OK
+    val content: String = contentAsString(result)
+
+    val doc: Document = Jsoup.parse(content)
+    val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
+    val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
+    val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
+
+    alcoholItem.getElementsByClass("previous-alcohol").text() shouldBe "Previously declared alcohol"
+    tobaccoItem.getElementsByClass("previous-tobacco").text() shouldBe "Previously declared tobacco"
+    otherItem.getElementsByClass("previous-othergoods").text() shouldBe "Previously declared other goods"
+
+    alcoholItem.getElementsByClass("edit-link").isEmpty shouldBe true
+    tobaccoItem.getElementsByClass("edit-link").isEmpty shouldBe true
+    otherItem.getElementsByClass("edit-link").isEmpty shouldBe true
+
+    val alcoholItemCheck: Element = alcoholItem.getElementsByClass("govuk-check-your-answers").get(0)
+    val tobaccoItemCheck: Element = tobaccoItem.getElementsByClass("govuk-check-your-answers").get(0)
+    val otherItemCheck: Element = otherItem.getElementsByClass("govuk-check-your-answers").get(0)
+
+    alcoholItemCheck.getElementsByClass("producedin-country").isEmpty shouldBe false
+    tobaccoItemCheck.getElementsByClass("producedin-country").isEmpty shouldBe false
+    otherItemCheck.getElementsByClass("madein-country").isEmpty shouldBe false
+  }
+
 }

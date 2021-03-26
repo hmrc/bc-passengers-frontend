@@ -114,7 +114,7 @@ case class JourneyData(
 
   val selectedProducts: List[List[String]] = selectedAliases.map(_.productPath.components)
 
-  def allCurrencyCodes: Set[String] = (for {
+  def allCurrencyCodes(purchasedProductInstances: List[PurchasedProductInstance]): Set[String] = (for {
     purchasedProductInstances <- purchasedProductInstances
     currencyCode <- purchasedProductInstances.currency
   } yield currencyCode).toSet

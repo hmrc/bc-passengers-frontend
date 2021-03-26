@@ -3,11 +3,14 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, appConfig: config.AppConfig)
+@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, appConfig: config.AppConfig, displayItem: views.html.components.display_item)
 @(journeyData: JourneyData,
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
+  previousAlcoholPurchasedItemList: List[PurchasedItem],
+  previousTobaccoPurchasedItemList: List[PurchasedItem],
+  previousOtherGoodsPurchasedItemList: List[PurchasedItem],
   showCalculate: Boolean,
   backLink: Option[String],
   isIrishBorderQuestionEnabled: Boolean,
@@ -28,148 +31,61 @@
 
   <div class="alcohol">
     <h2 class="heading-medium">@messages("label.alcohol")</h2>
-
-    @if(alcoholPurchasedItemList.isEmpty){
+    @if(alcoholPurchasedItemList.isEmpty && previousAlcoholPurchasedItemList.isEmpty){
       <p>
         <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
       </p>
     } else {
-
       <div class="add-more">
         <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
       </div>
-
       @alcoholPurchasedItemList.map { purchasedItem =>
         @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
-          <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-            <div class="product-item">
-              <dt class="cya-question">@messages("label.item")</dt>
-              <dd class="cya-answer">@description</dd>
-            </div>
-            <div class="product-country">
-              <dt class="cya-question">@messages("label.purchased_in")</dt>
-              <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
-            </div>
-            @if(isEU && purchasedItem.originCountry.isDefined) {
-            <div class="producedin-country">
-              <dt class="cya-question">@messages("label.produced_in")</dt>
-              <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
-            </div>
-            }
-            @if(purchasedItem.hasEvidence.isDefined) {
-            <div class="has_got_evidence">
-              <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
-              <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
-            </div>
-            }
-            <div class="product-price">
-              <dt class="cya-question">@messages("label.price")</dt>
-              <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
-              </dd>
-            </div>
-            @if(isGbNi) {
-              <div class="vat-paid">
-                <dt class="cya-question">@messages("label.vat_paid")</dt>
-                <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
-                </dd>
-              </div>
-              <div class="excise-paid">
-                <dt class="cya-question">@messages("label.excise_paid")</dt>
-                <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.isExcisePaid.map(formatYesNo)
-                </dd>
-              </div>
-            }
-          </dl>
-          <div class="margin-bottom-20">
-            <a href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
-          </div>
-          <div class="margin-bottom-50">
-            <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
-          </div>
+          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "alcohol")
+        }
+      }
+      @if(previousAlcoholPurchasedItemList.length > 0){
+        <p class="heading-small previous-alcohol">@messages("label.previously_declared_alcohol")</p>
+        <br>
+      }
+      @previousAlcoholPurchasedItemList.map { purchasedItem =>
+        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
+          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "alcohol")
         }
       }
     }
-
   </div>
 
   <div class="tobacco">
-
     <h2 class="heading-medium">@messages("label.tobacco")</h2>
-
-    @if(tobaccoPurchasedItemList.isEmpty){
+    @if(tobaccoPurchasedItemList.isEmpty && previousTobaccoPurchasedItemList.isEmpty){
       <p>
         <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
       </p>
     } else {
-
-      <div class="add-more">
-        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
-      </div>
-
-      @tobaccoPurchasedItemList.map { purchasedItem =>
-        @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
-          <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-            <div class="product-item">
-              <dt class="cya-question">@messages("label.item")</dt>
-              <dd class="cya-answer">@description</dd>
-            </div>
-            <div class="product-country">
-              <dt class="cya-question">@messages("label.purchased_in")</dt>
-              <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
-            </div>
-            @if(isEU && purchasedItem.originCountry.isDefined) {
-            <div class="producedin-country">
-              <dt class="cya-question">@messages("label.produced_in")</dt>
-              <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)
-            </div>
-            }
-            @if(purchasedItem.hasEvidence.isDefined) {
-            <div class="has_got_evidence">
-              <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
-              <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
-            </div>
-            }
-            <div class="product-price">
-              <dt class="cya-question">@messages("label.price")</dt>
-              <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
-              </dd>
-            </div>
-
-            @if(isGbNi) {
-              <div class="vat-paid">
-                <dt class="cya-question">@messages("label.vat_paid")</dt>
-                <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
-                </dd>
-              </div>
-              <div class="excise-paid">
-                <dt class="cya-question">@messages("label.excise_paid")</dt>
-                <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.isExcisePaid.map(formatYesNo)
-                </dd>
-              </div>
-            }
-          </dl>
-          <div class="margin-bottom-20">
-            <a href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
-          </div>
-          <div class="margin-bottom-50">
-            <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
-          </div>
+        <div class="add-more">
+          <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
+        </div>
+        @tobaccoPurchasedItemList.map { purchasedItem =>
+          @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
+            @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "tobacco")
+          }
+        }
+        @if(previousTobaccoPurchasedItemList.length > 0){
+          <p class="heading-small previous-tobacco">@messages("label.previously_declared_tobacco")</p>
+          <br>
+        }
+        @previousTobaccoPurchasedItemList.map { purchasedItem =>
+          @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
+            @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "tobacco")
         }
       }
     }
-
   </div>
 
   <div class="other-goods">
     <h2 class="heading-medium">@messages("label.other_goods")</h2>
-
-    @if(otherGoodsPurchasedItemList.isEmpty) {
+    @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
       <p>
         <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>      </p>
     } else if(otherGoodsPurchasedItemList.size < appConfig.maxOtherGoods) {
@@ -185,65 +101,23 @@
         <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")</p>
       </div>
     }
-    @otherGoodsPurchasedItemList.map { purchasedItem =>
-      @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
-        <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-          <div class="product-item">
-            <dt class="cya-question">@messages("label.item")</dt>
-            <dd class="cya-answer">@description</dd>
-          </div>
-          <div class="product-country">
-            <dt class="cya-question">@messages("label.purchased_in")</dt>
-            <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
-          </div>
-          @if(isEU && purchasedItem.originCountry.isDefined) {
-          <div class="madein-country">
-            <dt class="cya-question">@messages("label.made_in")</dt>
-            <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)
-          </div>
-          }
-          @if(purchasedItem.hasEvidence.isDefined) {
-          <div class="has_got_evidence">
-            <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
-            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
-          </div>
-          }
-          <div class="product-price">
-            <dt class="cya-question">@messages("label.price")</dt>
-            <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
-            </dd>
-          </div>
-          @if(isGbNi) {
-            <div class="vat-paid">
-              <dt class="cya-question">@messages("label.vat_paid")</dt>
-              <dd class="cya-answer">
-              @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
-              </dd>
-            </div>
-            @if(!isUkResident) {
-              <div class="tax-exempt">
-                <dt class="cya-question">@messages("label.tax_exempt")</dt>
-                <dd class="cya-answer">
-                @purchasedItem.purchasedProductInstance.isUccRelief.map(formatYesNo)
-                </dd>
-              </div>
-            }
-          }
-        </dl>
-        <div class="margin-bottom-20">
-          <a href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
-        </div>
-        <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
-        </div>
+      @otherGoodsPurchasedItemList.map { purchasedItem =>
+        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
+          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "otherGoods")
+        }
+      }
+      @if(previousOtherGoodsPurchasedItemList.length > 0){
+        <p class="heading-small previous-othergoods">@messages("label.previously_declared_other_goods")</p>
+        <br>
+      }
+      @previousOtherGoodsPurchasedItemList.map { purchasedItem =>
+        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
+          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "otherGoods")
       }
     }
-
   </div>
 
   @if(showCalculate && otherGoodsPurchasedItemList.size <= appConfig.maxOtherGoods) {
-
     @if(isIrishBorderQuestionEnabled) {
       <a href="@routes.CalculateDeclareController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
     } else {
