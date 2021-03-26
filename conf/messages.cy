@@ -1711,4 +1711,5 @@ label.na = N/A
 heading.declaration_not_found = (W)Your declaration cannot be found(W)
 text.may_be_because = (W)This may be because:(W)
 label.no_existing_declaration = (W)the details you have entered do not match an existing declaration - go back, check your details and try again(W)
+label.payment_issue = (W)there was an issue with your payment when you previously tried to add goods to your declaration - you will need to go to the red ''goods to declare'' channel or use the red-point phone at your arrival location to declare any additional goods(W)
 label.already_passed_custom = (W)you have already passed through UK customs and can no longer declare goods for your journey(W)
