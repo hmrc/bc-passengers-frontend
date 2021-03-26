@@ -1670,7 +1670,7 @@ head.error.previous_declaration = Select yes if you have previously made a decla
 error.previous_declaration = Select yes if you have previously made a declaration for your journey
 
 heading.declaration_retrieval = Add goods to your previous declaration
-text.declaration_retrieval = Enter the required information to retrieve your declaration and add more goods. You can only amend an existing declaration once.
+text.declaration_retrieval = Enter the required information to retrieve your declaration and add more goods.
 label.identification_number_previous = Identification number used for your previous declaration
 label.reference_previous_declaration = Reference number
 label.identification_hint = For example passport number
