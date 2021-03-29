@@ -1670,7 +1670,7 @@ head.error.previous_declaration = Dewiswch ‘Iawn’ os ydych eisoes wedi gwneu
 error.previous_declaration = Dewiswch ‘Iawn’ os ydych eisoes wedi gwneud datganiad ar gyfer eich taith
 
 heading.declaration_retrieval = Ychwanegu nwyddau at eich datganiad blaenorol
-text.declaration_retrieval = Nodwch yr wybodaeth ofynnol i adfer eich datganiad ac ychwanegu rhagor o nwyddau.
+text.declaration_retrieval = (W)Enter the required information to retrieve your declaration and add more goods.(W)
 label.identification_number_previous = Rhif adnabod a ddefnyddiwyd ar gyfer eich hawliad blaenorol
 label.reference_previous_declaration = Cyfeirnod
 label.identification_hint = Er enghraifft, rhif pasbort
