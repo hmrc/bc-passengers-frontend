@@ -88,15 +88,15 @@
     @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
       <p>
         <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>      </p>
-    } else if(otherGoodsPurchasedItemList.size < appConfig.maxOtherGoods) {
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
       <div class="add-more">
         <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>
       </div>
-    } else if(otherGoodsPurchasedItemList.size == appConfig.maxOtherGoods) {
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">
         <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
       </div>
-    } else if(otherGoodsPurchasedItemList.size > appConfig.maxOtherGoods) {
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">
         <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")</p>
       </div>
@@ -117,7 +117,7 @@
     }
   </div>
 
-  @if(showCalculate && otherGoodsPurchasedItemList.size <= appConfig.maxOtherGoods) {
+  @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
       <a href="@routes.CalculateDeclareController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
     } else {

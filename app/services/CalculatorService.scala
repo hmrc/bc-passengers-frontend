@@ -99,9 +99,11 @@ class CalculatorService @Inject() (
   }
 
   def journeyDataToLimitsRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Option[LimitRequest] = {
+      val allPurchasedProductInstances = journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ journeyData.purchasedProductInstances
+
       val speculativeItems: List[SpeculativeItem] = for {
 
-        purchasedProductInstance <- journeyData.purchasedProductInstances
+        purchasedProductInstance <- allPurchasedProductInstances
         productTreeLeaf <- productTreeService.productTree.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
       } yield SpeculativeItem(purchasedProductInstance, productTreeLeaf, 0)
 
