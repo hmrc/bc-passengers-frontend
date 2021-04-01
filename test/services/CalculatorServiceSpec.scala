@@ -65,7 +65,8 @@ class CalculatorServiceSpec extends BaseSpec {
       Some(true),
       Some(true),
       Nil,
-      List(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(123)))
+      List(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(123))),
+      None
     )
 
     val goodJourneyData = JourneyData(
@@ -89,7 +90,8 @@ class CalculatorServiceSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(1234)),
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GBP"), Some(60)),
         PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GGP"), Some(123))
-      )
+      ),
+      deltaCalculation = None
     )
 
     val imperfectJourneyData = JourneyData(
@@ -399,9 +401,9 @@ class CalculatorServiceSpec extends BaseSpec {
   }
 
 
-  "Calling UserInformationService.storeCalculatorResponse" should {
+  "Calling CalculatorService.storeCalculatorResponse" should {
 
-    "store a new user information" in {
+    "store a new CalculatorServiceResponse in JourneyData" in {
 
       lazy val s: CalculatorService = {
         val service = app.injector.instanceOf[CalculatorService]
@@ -420,4 +422,50 @@ class CalculatorServiceSpec extends BaseSpec {
     }
 
   }
+
+  "Calling CalculatorService.storeCalculatorResponseWithDelta" should {
+
+    "store a new CalculatorServiceResponse along with deltaCalculation in JourneyData" in {
+
+      lazy val calcService: CalculatorService = {
+        val service = app.injector.instanceOf[CalculatorService]
+        val mock = service.cache
+        when(mock.fetch(any())) thenReturn Future.successful( None )
+        when(mock.store(any())(any())) thenReturn Future.successful( JourneyData() )
+        service
+      }
+
+      lazy val deltaCalc:Calculation = Calculation("96.27","150.00","109.25","355.52")
+
+      await(calcService.storeCalculatorResponseWithDelta(JourneyData(), deltaCalc, CalculatorResponse(None, None, None, Calculation("136.27", "150.00", "297.25", "583.52"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false)))
+
+      verify(calcService.cache, times(1)).store(
+        meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("136.27", "150.00", "297.25", "583.52"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false)), deltaCalculation = Some(deltaCalc)))
+      )(any())
+
+    }
+
+  }
+
+  "Calling CalculatorService.getDeltaCalculation with old and new Calculation" should {
+
+    "return deltaCalculation" in {
+
+      lazy val calcService: CalculatorService = {
+        val service = app.injector.instanceOf[CalculatorService]
+        val mock = service.cache
+        when(mock.fetch(any())) thenReturn Future.successful( None )
+        when(mock.store(any())(any())) thenReturn Future.successful( JourneyData() )
+        service
+      }
+
+      lazy val oldCalc:Calculation = Calculation("96.27","100.00","109.25","305.52")
+      lazy val newCalc:Calculation = Calculation("136.27", "150.00", "297.25", "583.52")
+      lazy val deltaProbable:Calculation = Calculation("40.00", "50.00", "188.00", "278.00")
+
+      val deltaCalc:Calculation = calcService.getDeltaCalculation(oldCalc,newCalc)
+
+      deltaCalc shouldBe deltaProbable
+
+    }}
 }

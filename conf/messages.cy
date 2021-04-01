@@ -1707,7 +1707,8 @@ text.declare_over_1000 = (W)If you intend to declare over £1,000 worth of goods
 label.change_your_goods=Newid eich nwyddau
 label.breakdown_of_tax_and_duty_due=Dadansoddiad o’r dreth a’r tollau sy’n ddyledus
 label.amount_due = Swm sy’n ddyledus
-
+label.amount_paid_previously = (W)Amount paid previously(W)
+label.total_due_now = (W)Total due now(W)
 label.na = N/A
 
 #declaration not found page

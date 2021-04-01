@@ -109,7 +109,8 @@ case class JourneyData(
   defaultOriginCountry: Option[String] = None,
   defaultCurrency: Option[String] = None,
   previousDeclarationRequest: Option[PreviousDeclarationRequest] = None,
-  declarationResponse: Option[DeclarationResponse] = None
+  declarationResponse: Option[DeclarationResponse] = None,
+  deltaCalculation: Option[Calculation] = None
 ) {
 
   val selectedProducts: List[List[String]] = selectedAliases.map(_.productPath.components)

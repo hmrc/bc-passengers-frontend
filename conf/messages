@@ -1706,7 +1706,8 @@ text.declare_over_1000 = If you intend to declare over £1,000 worth of goods or
 label.change_your_goods = Change your goods
 label.breakdown_of_tax_and_duty_due = Breakdown of tax and duty due
 label.amount_due = Amount due
-
+label.amount_paid_previously = Amount paid previously
+label.total_due_now = Total due now
 label.na = N/A
 
 #declaration not found page

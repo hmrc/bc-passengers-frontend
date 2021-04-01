@@ -38,7 +38,7 @@ class UKExcisePaidController @Inject()(
   val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_,_, _, _,Some(isUKVatExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_, _, _)) =>
+        case Some(JourneyData(_,_, _, _,Some(isUKVatExcisePaid),_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,_, _, _,_)) =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form.fill(isUKVatExcisePaid), backLinkModel.backLink))
         case _ =>
           Ok(isUKExcisePaidPage(UKExcisePaidForm.form, backLinkModel.backLink))

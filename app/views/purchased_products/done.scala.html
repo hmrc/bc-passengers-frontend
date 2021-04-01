@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template)
-@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
 
@@ -46,6 +46,21 @@
     </tbody>
   </table>
 
+@if(deltaCalc.isDefined){
+  <table class="responsive-table margin-bottom-30">
+    <tbody id="delta">
+      <tr>
+        <td colspan="2">@messages("label.amount_paid_previously")</td>
+        <td class="numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
+      </tr>
+
+      <tr>
+        <td class="total table-foot" colspan="2" >@messages("label.total_due_now")</td>
+        <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+      </tr>
+    </tbody>
+  </table>
+}
   <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
   <h2 class="heading-medium">@messages("label.breakdown_of_tax_and_duty_due")</h2>
 

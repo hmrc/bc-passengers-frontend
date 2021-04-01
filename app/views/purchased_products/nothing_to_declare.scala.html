@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template)
-@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
 
@@ -41,17 +41,31 @@
         </td>
         <td class="numeric">
           <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
-          &pound;0.00
+          &pound;@formatMonetaryValue(item.calculation.allTax)
         </td>
       </tr>
       }
       <tr>
         <td class="total table-foot" colspan="2">@messages("label.total")</td>
-        <td class="total-value numeric table-foot">&pound;0.00</td>
+        <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
       </tr>
     </tbody>
   </table>
+@if(deltaCalc.isDefined){
+<table class="responsive-table margin-bottom-30">
+  <tbody id="delta">
+  <tr>
+    <td colspan="2">@messages("label.amount_paid_previously")</td>
+    <td class="numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
+  </tr>
 
+  <tr>
+    <td class="total table-foot" colspan="2" >@messages("label.total_due_now")</td>
+    <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+  </tr>
+  </tbody>
+</table>
+}
   <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
   <h2 class="heading-medium">@messages("label.breakdown_of_tax_and_duty_due")</h2>
       <table class="responsive-table">
@@ -67,22 +81,22 @@
         <tbody>
           <tr>
             <td>@messages("label.customs")</td>
-            <td class="numeric">&pound;0.00</td>
+            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.customs)</td>
           </tr>
 
           <tr>
             <td>@messages("label.excise")</td>
-            <td class="numeric">&pound;0.00</td>
+            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.excise)</td>
           </tr>
 
           <tr>
             <td>@messages("label.vat")</td>
-            <td class="numeric">&pound;0.00</td>
+            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.vat)</td>
           </tr>
 
           <tr>
             <td class="total table-foot">@messages("label.total")</td>
-            <td class="total-value numeric table-foot">&pound;0.00</td>
+            <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
           </tr>
         </tbody>
       </table>
