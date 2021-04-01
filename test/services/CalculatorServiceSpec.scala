@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import connectors.Cache
-import models._
+import models.{PurchasedItem, _}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
@@ -177,6 +177,114 @@ class CalculatorServiceSpec extends BaseSpec {
       verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
 
       response shouldBe calcRequest
+    }
+  }
+
+  "Calling CalculatorService.journeyDataToLimitsRequest" should {
+
+    val amendJourneyData = JourneyData(
+      euCountryCheck = Some("nonEuOnly"),
+      isVatResClaimed = None,
+      isBringingDutyFree = Some(false),
+      bringingOverAllowance = None,
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      arrivingNICheck = Some(false),
+      irishBorder = Some(false),
+      isUKVatPaid = None,
+      isUKVatExcisePaid = Some(true),
+      isUKResident = Some(false),
+      isUccRelief = Some(true),
+      purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(33)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(1234)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GBP"), Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GGP"), Some(123))
+      ),
+      declarationResponse = Some(DeclarationResponse(oldPurchaseProductInstances = List(
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(false)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None, isEditable = Some(false)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid2", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None,Some("CHF"), Some(5432),None,None,None, isEditable = Some(false))
+
+      ), calculation = Calculation("1.00","1.00","1.00","3.00")))
+    )
+
+    val declareJourneyData = JourneyData(
+      euCountryCheck = Some("nonEuOnly"),
+      isVatResClaimed = None,
+      isBringingDutyFree = Some(false),
+      bringingOverAllowance = None,
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      arrivingNICheck = Some(false),
+      irishBorder = Some(false),
+      isUKVatPaid = None,
+      isUKVatExcisePaid = Some(true),
+      isUKResident = Some(false),
+      isUccRelief = Some(true),
+      purchasedProductInstances = List(
+        PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(74563)),
+        PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(33)),
+        PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(43)),
+        PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(1234)),
+        PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GBP"), Some(60)),
+        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GGP"), Some(123))
+      )
+    )
+
+    def getProductTreeLeaf(path: String): ProductTreeLeaf =  injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
+
+    val amendSpeculativeItem: List[SpeculativeItem] = List(
+      SpeculativeItem(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(false)), getProductTreeLeaf("alcohol/beer"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None, isEditable = Some(false)), getProductTreeLeaf("tobacco/cigarettes"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid2", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None,Some("CHF"), Some(5432),None,None,None, isEditable = Some(false)), getProductTreeLeaf("other-goods/antiques"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(74563)), getProductTreeLeaf("other-goods/car-seats"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(33)), getProductTreeLeaf("other-goods/antiques"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(43)), getProductTreeLeaf("tobacco/chewing-tobacco"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(1234)), getProductTreeLeaf("tobacco/cigars"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GBP"), Some(60)), getProductTreeLeaf("tobacco/cigarettes"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GGP"), Some(123)), getProductTreeLeaf("alcohol/beer"), 0),
+    )
+
+    val speculativeItem: List[SpeculativeItem] = List(
+      SpeculativeItem(PurchasedProductInstance(ProductPath("other-goods/car-seats"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(74563)), getProductTreeLeaf("other-goods/car-seats"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(33)), getProductTreeLeaf("other-goods/antiques"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/chewing-tobacco"), "iid0", Some(45), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(43)), getProductTreeLeaf("tobacco/chewing-tobacco"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/cigars"), "iid0", Some(40), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(1234)), getProductTreeLeaf("tobacco/cigars"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", None, Some(200), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GBP"), Some(60)), getProductTreeLeaf("tobacco/cigarettes"), 0),
+      SpeculativeItem(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(12), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("GGP"), Some(123)), getProductTreeLeaf("alcohol/beer"), 0),
+    )
+
+    val amendLimitRequest = LimitRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, items = amendSpeculativeItem )
+
+    val limitRequest = LimitRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, items = speculativeItem )
+
+    trait LocalSetup {
+
+      lazy val service: CalculatorService = {
+
+        injected[CalculatorService]
+      }
+    }
+
+    "transform journey data to a limit request for an amendment journey" in new LocalSetup {
+
+      val response: LimitRequest = service.journeyDataToLimitsRequest(amendJourneyData).get
+
+      verify(injected[Cache], times(0)).fetch(any())
+
+      response shouldBe amendLimitRequest
+    }
+
+    "transform journey data to a limit request for an original journey" in new LocalSetup {
+
+      val response: LimitRequest = service.journeyDataToLimitsRequest(declareJourneyData).get
+
+      verify(injected[Cache], times(0)).fetch(any())
+
+      response shouldBe limitRequest
     }
   }
 
