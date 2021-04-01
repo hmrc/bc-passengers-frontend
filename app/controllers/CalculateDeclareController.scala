@@ -65,9 +65,15 @@ class CalculateDeclareController @Inject()(
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax == 0
     }
+    def checkZeroPoundConditionForAmendment(calculatorResponse:CalculatorResponse, deltaAlltax:String):Boolean = {
+      calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && deltaAlltax == "0.00"
+    }
+
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
-        if (checkZeroPoundCondition(calculatorResponse))
+        if (checkZeroPoundCondition(calculatorResponse) ||
+          (context.getJourneyData.deltaCalculation.isDefined &&
+            checkZeroPoundConditionForAmendment(calculatorResponse,context.getJourneyData.deltaCalculation.get.allTax)))
           Ok(zero_to_declare_your_goods(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
         else {
           Ok(you_need_to_declare(backLinkModel.backLink))
@@ -79,18 +85,16 @@ class CalculateDeclareController @Inject()(
   def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
     context.getJourneyData.userInformation match {
 
-      case Some(userInformation) => {
+      case Some(userInformation) =>
         context.getJourneyData.euCountryCheck match {
           case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime).fill(EnterYourDetailsDto.fromUserInformation(userInformation)), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink) ) )
           case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime).fill(EnterYourDetailsDto.fromUserInformation(userInformation)), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
         }
-      }
-      case _ => {
+      case _ =>
         context.getJourneyData.euCountryCheck match {
           case Some("greatBritain") => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPortsNI, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
           case _ => Future.successful(Ok(enter_your_details(EnterYourDetailsDto.form(receiptDateTime), portsOfArrivalService.getAllPorts, context.getJourneyData.euCountryCheck, backLinkModel.backLink)))
         }
-      }
     }
   }
 
@@ -145,7 +149,7 @@ class CalculateDeclareController @Inject()(
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_,_,_,_)) =>
+        case Some(JourneyData(_, _, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_,_,_,_,_)) =>
           Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
         case _ =>
           Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))
@@ -180,9 +184,16 @@ class CalculateDeclareController @Inject()(
 
       case CalculatorServiceSuccessResponse(calculatorResponse) =>
 
-        calculatorService.storeCalculatorResponse(journeyData, calculatorResponse) map { _ =>
-          Redirect(routes.CalculateDeclareController.showCalculation())
+        val oldCalculation: Option[Calculation] = journeyData.declarationResponse.map(_.calculation)
+        val currentCalculation: Calculation = calculatorResponse.calculation
+
+        if(oldCalculation.isDefined){
+          val deltaCalculation:Calculation = calculatorService.getDeltaCalculation(oldCalculation.get,currentCalculation)
+          calculatorService.storeCalculatorResponseWithDelta(journeyData, deltaCalculation,calculatorResponse)
         }
+        else
+          calculatorService.storeCalculatorResponse(journeyData, calculatorResponse)
+        Future.successful(Redirect(routes.CalculateDeclareController.showCalculation()))
 
       case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
 
@@ -203,22 +214,49 @@ class CalculateDeclareController @Inject()(
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
      calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && calcTax == 0
     }
+    def checkZeroPoundConditionForAmendment(calculatorResponse:CalculatorResponse, deltaAlltax:String):Boolean = {
+      calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains("greatBritain") && deltaAlltax == "0.00"
+    }
+    val deltaCalc: Option[Calculation] = context.getJourneyData.deltaCalculation
+    val declarationResponse = context.getJourneyData.declarationResponse
     requireCalculatorResponse { calculatorResponse =>
       Future.successful {
-        BigDecimal(calculatorResponse.calculation.allTax) match {
-          case allTax if checkZeroPoundCondition(calculatorResponse) =>
-            Ok( zero_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+        if(declarationResponse.isDefined){
+          val oldTax = declarationResponse.get.calculation.allTax
+          BigDecimal(deltaCalc.get.allTax) match {
+            case _ if checkZeroPoundConditionForAmendment(calculatorResponse,deltaCalc.get.allTax) =>
+              Ok(zero_to_declare(calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
-          case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
+            case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
+              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
-          case allTax if allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-            Ok( nothing_to_declare(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
+            case allTax if allTax == 0 && !calculatorResponse.withinFreeAllowance =>
+              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
-          case allTax if allTax > appConfig.paymentLimit  =>
-            Ok( over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+            case allTax if allTax > appConfig.paymentLimit =>
+              Ok(over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
-          case _ => Ok( done(calculatorResponse.asDto(applySorting = true), calculatorResponse.allItemsUseGBP, backLinkModel.backLink) )
+            case _ =>
+              Ok(done(calculatorResponse.asDto(applySorting = true), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+          }
+        }
+        else {
+          BigDecimal(calculatorResponse.calculation.allTax) match {
+            case _ if checkZeroPoundCondition(calculatorResponse) =>
+              Ok(zero_to_declare(calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+
+            case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
+              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
+
+            case allTax if allTax == 0 && !calculatorResponse.withinFreeAllowance =>
+              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
+
+            case allTax if allTax > appConfig.paymentLimit =>
+              Ok(over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+
+            case _ =>
+              Ok(done(calculatorResponse.asDto(applySorting = true), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+          }
         }
       }
     }

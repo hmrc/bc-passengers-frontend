@@ -11,10 +11,10 @@ import java.time.format.DateTimeFormatter
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models._
+import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, Reads}
-import play.api.{Configuration, Environment, Logger}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -41,8 +41,6 @@ case class CurrencyConversionRate(startDate: LocalDate, endDate: LocalDate, curr
 class CalculatorService @Inject() (
   val cache: Cache,
   wsAllMethods: WsAllMethods,
-  configuration: Configuration,
-  environment: Environment,
   productTreeService: ProductTreeService,
   currencyService: CurrencyService,
   servicesConfig: ServicesConfig,
@@ -72,7 +70,9 @@ class CalculatorService @Inject() (
 
   def calculate(journeyData: JourneyData)(implicit hc: HeaderCarrier, messages: Messages): Future[CalculatorServiceResponse] = {
 
-    journeyDataToCalculatorRequest(journeyData, journeyData.purchasedProductInstances) flatMap {
+    val allPurchasedProductInstances = journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ journeyData.purchasedProductInstances
+
+    journeyDataToCalculatorRequest(journeyData, allPurchasedProductInstances) flatMap {
 
       case Some(calculatorRequest) =>
 
@@ -96,6 +96,21 @@ class CalculatorService @Inject() (
     val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse))
 
     cache.store( updatedJourneyData ).map(_ => updatedJourneyData)
+  }
+
+  def getDeltaCalculation(oldCalcObj:Calculation,currentCalculation:Calculation):Calculation = {
+    val deltaCustoms = (BigDecimal(currentCalculation.customs) - BigDecimal(oldCalcObj.customs)).setScale(2).toString
+    val deltaVat = (BigDecimal(currentCalculation.vat) - BigDecimal(oldCalcObj.vat)).setScale(2).toString
+    val deltaExcise = (BigDecimal(currentCalculation.excise) - BigDecimal(oldCalcObj.excise)).setScale(2).toString
+    val deltaTotal = (BigDecimal(currentCalculation.allTax) - BigDecimal(oldCalcObj.allTax)).setScale(2).toString
+    Calculation(deltaExcise,deltaCustoms,deltaVat,deltaTotal)
+  }
+
+  def storeCalculatorResponseWithDelta(journeyData: JourneyData, deltaCalc:Calculation,calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier): Future[JourneyData] = {
+
+    val newJourneyData = journeyData.copy(deltaCalculation = Some(deltaCalc),calculatorResponse = Some(calculatorResponse))
+
+    cache.store( newJourneyData )
   }
 
   def journeyDataToLimitsRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Option[LimitRequest] = {
