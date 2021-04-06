@@ -49,9 +49,11 @@ class DeclarationService @Inject()(
         ageOver17 = (declarationResponse \ "isOver17").asOpt[Boolean],
         isUKResident = (declarationResponse \ "isUKResident").asOpt[Boolean],
         privateCraft = (declarationResponse \ "isPrivateTravel").asOpt[Boolean],
+        userInformation = (declarationResponse \ "userInformation").asOpt[UserInformation],
         previousDeclarationRequest = Some(previousDeclarationDetails),
         declarationResponse = Some(DeclarationResponse(
           (declarationResponse \ "calculation").as[Calculation],
+          (declarationResponse \ "liabilityDetails").as[LiabilityDetails],
           (declarationResponse \ "oldPurchaseProductInstances").as[List[PurchasedProductInstance]]
         ))
       )
@@ -76,7 +78,7 @@ class DeclarationService @Inject()(
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-    val partialDeclarationMessage = buildPartialDeclarationMessage(userInformation, calculatorResponse, journeyData, rd)
+    val partialDeclarationMessage = buildPartialDeclarationOrAmendmentMessage(userInformation, calculatorResponse, journeyData, rd)
 
     val auditDeclarationMessage = formatDeclarationMessage(userInformation.identificationType, userInformation.identificationNumber, rd)
 
@@ -105,7 +107,40 @@ class DeclarationService @Inject()(
     }
   }
 
-  def buildPartialDeclarationMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, rd: String)(implicit messages: Messages): JsObject = {
+  def submitAmendment(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
+
+    val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+    val partialDeclarationMessage = buildPartialDeclarationOrAmendmentMessage(userInformation, calculatorResponse, journeyData, rd)
+
+    val auditDeclarationMessage = formatDeclarationMessage(userInformation.identificationType, userInformation.identificationNumber, rd)
+
+    partialDeclarationMessage.transform(auditDeclarationMessage) match {
+      case JsSuccess(auditJson, _) => auditConnector.sendExtendedEvent(auditingTools.buildDeclarationSubmittedDataEvent(auditJson))
+      case JsError(errors) => Logger.error(s"[DeclarationService][submitDeclaration] Transforming declaration message with errors : $errors")
+    }
+
+    val headers = Seq(
+      "X-Correlation-ID" -> correlationId
+    )
+
+    def extractChargeReference(declaration: JsValue) =
+      ChargeReference((declaration \ "simpleDeclarationRequest" \ "requestDetail" \ "declarationHeader" \ "chargeReference").as[JsString].value)
+
+    //First add correlation id etc
+    wsAllMethods.POST[JsObject, HttpResponse](passengersDeclarationsBaseUrl + "/bc-passengers-declarations/submit-amendment", partialDeclarationMessage, headers) map {
+      case HttpResponse(ACCEPTED, declaration, _) =>
+        DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
+      case HttpResponse(BAD_REQUEST, _, _) =>
+        Logger.error("DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted")
+        DeclarationServiceFailureResponse
+      case HttpResponse(status, _, _) =>
+        Logger.error(s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed")
+        DeclarationServiceFailureResponse
+    }
+  }
+
+  def buildPartialDeclarationOrAmendmentMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, rd: String)(implicit messages: Messages): JsObject = {
 
     val ni = "NI"
     val gb = "GB"
@@ -174,11 +209,16 @@ class DeclarationService @Inject()(
         }
       }
 
+      def getMessageTypes: String = journeyData.declarationResponse.isDefined match {
+        case true => servicesConfig.getString("declarations.amend")
+        case false => servicesConfig.getString("declarations.create")
+      }
+
       Json.obj("portOfEntry" -> getPlaceOfArrivalCode,
                       "portOfEntryName" -> getPlaceOfArrival,
                       "expectedDateOfArrival" -> o.dateOfArrival,
                       "timeOfEntry" -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}",
-                      "messageTypes" -> Json.obj("messageType" -> servicesConfig.getString("declarations.create")),
+                      "messageTypes" -> Json.obj("messageType" -> getMessageTypes),
                       "travellingFrom" -> getTravellingFrom,
                       "onwardTravelGBNI" -> getOnwardTravel,
                       "uccRelief" -> getBooleanValue(journeyData.isUccRelief),
@@ -187,12 +227,45 @@ class DeclarationService @Inject()(
               )
     })
 
-    val liabilityDetails = Json.toJson(calculatorResponse.calculation)((o: Calculation) => Json.obj(
-      "totalExciseGBP" -> o.excise,
-      "totalCustomsGBP" -> o.customs,
-      "totalVATGBP" -> o.vat,
-      "grandTotalGBP" -> o.allTax
-    ))
+    def getDeclarationHeader: JsValue = {
+      if(journeyData.previousDeclarationRequest.isDefined)
+        declarationHeader.as[JsObject].++(
+          Json.obj("chargeReference" -> journeyData.previousDeclarationRequest.get.referenceNumber)
+        )
+      else
+        declarationHeader
+    }
+
+    def getLiabilityDetails: JsValue = {
+      if (journeyData.declarationResponse.isDefined) {
+          Json.toJson(journeyData.declarationResponse.get.liabilityDetails)((l: LiabilityDetails) => Json.obj(
+            "totalExciseGBP" -> l.totalExciseGBP,
+            "totalCustomsGBP" -> l.totalCustomsGBP,
+            "totalVATGBP" -> l.totalVATGBP,
+            "grandTotalGBP" -> l.grandTotalGBP
+          ))
+      } else
+        Json.toJson(calculatorResponse.calculation)((o: Calculation) => Json.obj(
+          "totalExciseGBP" -> o.excise,
+          "totalCustomsGBP" -> o.customs,
+          "totalVATGBP" -> o.vat,
+          "grandTotalGBP" -> o.allTax
+        ))
+    }
+
+    def getAmendmentLiability: JsValue = {
+      if (journeyData.declarationResponse.isDefined) {
+        val liability = journeyData.declarationResponse.get.liabilityDetails
+          Json.toJson(journeyData.calculatorResponse.get.calculation)((total: Calculation) => Json.obj(
+            "additionalExciseGBP" -> (BigDecimal(total.excise) - BigDecimal(liability.totalExciseGBP)).setScale(2).toString(),
+            "additionalCustomsGBP" -> (BigDecimal(total.customs) - BigDecimal(liability.totalCustomsGBP)).setScale(2).toString(),
+            "additionalVATGBP" -> (BigDecimal(total.vat) - BigDecimal(liability.totalVATGBP)).setScale(2).toString(),
+            "additionalTotalGBP" -> (BigDecimal(total.allTax) - BigDecimal(liability.grandTotalGBP)).setScale(2).toString()
+          ))
+      }else{
+        Json.toJson(JsNull)
+      }
+    }
 
     val declarationTobacco = {
 
@@ -312,22 +385,47 @@ class DeclarationService @Inject()(
       }
     }
 
+    def getJourneyData = {
+      val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
+        journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
+
+      journeyData.copy(prevDeclaration = None,
+        previousDeclarationRequest = None,
+        userInformation = Some(userInformation),
+        purchasedProductInstances = cumulativePurchasedProductInstances,
+        declarationResponse = None,
+        deltaCalculation = None)
+    }
+
+    def getRequestCommon: JsValue = {
+
+      val requestCommon = Json.obj(
+        "receiptDate" -> rd,
+        "requestParameters" -> Json.arr(Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR"))
+      )
+
+      if(journeyData.previousDeclarationRequest.isDefined) {
+        requestCommon.++(Json.obj(
+          "acknowledgementReference" -> (journeyData.previousDeclarationRequest.get.referenceNumber+"0")
+        ))
+      }else
+        requestCommon
+    }
+
     Json.obj(
-      "journeyData" -> Json.toJsObject(journeyData.copy(userInformation = Some(userInformation))),
+      "journeyData" -> Json.toJsObject(getJourneyData),
       "simpleDeclarationRequest" -> Json.obj(
-        "requestCommon" -> Json.obj(
-          "receiptDate" -> rd,
-          "requestParameters" -> Json.arr(Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR"))
-        ),
+        "requestCommon" -> getRequestCommon,
         "requestDetail" -> Json.obj(
           "customerReference" -> customerReference,
           "personalDetails" -> personalDetails,
           "contactDetails" -> contactDetails,
-          "declarationHeader" -> declarationHeader,
+          "declarationHeader" -> getDeclarationHeader,
           "declarationTobacco" -> declarationTobacco,
           "declarationAlcohol" -> declarationAlcohol,
           "declarationOther" -> declarationOther,
-          "liabilityDetails" -> liabilityDetails
+          "liabilityDetails" -> getLiabilityDetails,
+          "amendmentLiabilityDetails" -> getAmendmentLiability
         )
       )
     ).stripNulls

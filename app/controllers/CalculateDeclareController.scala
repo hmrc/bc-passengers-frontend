@@ -70,13 +70,14 @@ class CalculateDeclareController @Inject()(
     }
 
     requireCalculatorResponse { calculatorResponse =>
+      val isAmendment = context.getJourneyData.declarationResponse.isDefined
       Future.successful {
         if (checkZeroPoundCondition(calculatorResponse) ||
           (context.getJourneyData.deltaCalculation.isDefined &&
             checkZeroPoundConditionForAmendment(calculatorResponse,context.getJourneyData.deltaCalculation.get.allTax)))
-          Ok(zero_to_declare_your_goods(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+          Ok(zero_to_declare_your_goods(calculatorResponse.asDto(applySorting = false), calculatorResponse.allItemsUseGBP, isAmendment, backLinkModel.backLink))
         else {
-          Ok(you_need_to_declare(backLinkModel.backLink))
+          Ok(you_need_to_declare(isAmendment, backLinkModel.backLink))
         }
       }
     }
@@ -130,7 +131,7 @@ class CalculateDeclareController @Inject()(
                     declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
                       Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
                     }
-                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt) map {
+                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt, false) map {
 
                     case PayApiServiceFailureResponse =>
                       InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
@@ -144,6 +145,39 @@ class CalculateDeclareController @Inject()(
         }
       }
     )
+  }
+
+  def processAmendment: Action[AnyContent] = dashboardAction { implicit context =>
+
+    val correlationId = UUID.randomUUID.toString
+    val userInformation = context.getJourneyData.userInformation.getOrElse(throw new RuntimeException("no user Information"))
+    //val deltaAllTax = context.getJourneyData.deltaCalculation.get.allTax
+
+    requireCalculatorResponse { calculatorResponse =>
+
+      declarationService.submitAmendment(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
+
+        case DeclarationServiceFailureResponse =>
+          Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+
+        case DeclarationServiceSuccessResponse(cr) =>
+
+          BigDecimal(context.getJourneyData.deltaCalculation.get.allTax) match {
+            case deltaAllTax if deltaAllTax == 0  && context.getJourneyData.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance =>
+              declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
+                Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+              }
+            case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true) map {
+
+              case PayApiServiceFailureResponse =>
+                InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+
+              case PayApiServiceSuccessResponse(url) =>
+                Redirect(url)
+            }
+          }
+      }
+    }
   }
 
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>

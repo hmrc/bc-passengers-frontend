@@ -37,9 +37,10 @@ class PayApiService @Inject()(
   lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation()
   lazy val returnUrlCancelled: String = returnUrlFailed
 
-  lazy val backUrl: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
+  lazy val backUrlDeclaration: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
+  lazy val backUrlAmendment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.declareYourGoods
 
-  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 
     def getPlaceOfArrival(userInfo: UserInformation) = {
       if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
@@ -57,6 +58,10 @@ class PayApiService @Inject()(
       }
     }
 
+    def geBackURL(isAmendment: Boolean) = {
+      if (isAmendment) backUrlAmendment else backUrlDeclaration
+    }
+
     val requestBody: JsObject = Json.obj(
       "chargeReference" -> chargeReference.value,
       "taxToPayInPence" -> amountPence,
@@ -66,7 +71,7 @@ class PayApiService @Inject()(
       "returnUrl" -> returnUrl,
       "returnUrlFailed" -> returnUrlFailed,
       "returnUrlCancelled" -> returnUrlCancelled,
-      "backUrl" -> backUrl,
+      "backUrl" -> geBackURL(isAmendment),
       "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
         Json.obj(
           "name" -> item.metadata.description,

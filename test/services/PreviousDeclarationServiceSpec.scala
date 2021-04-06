@@ -83,11 +83,13 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
 
       val country = Country("IN","title.india","IN",false,true,List())
 
+      val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+
       val editablePurchasedProductInstances = List(
         PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(true))
       )
 
-      val declarationResponse = DeclarationResponse(calculation, editablePurchasedProductInstances)
+      val declarationResponse = DeclarationResponse(calculation, liabilityDetails, editablePurchasedProductInstances)
 
       val retrievedJourneyData: JourneyData = JourneyData(prevDeclaration = Some(true),
         euCountryCheck = Some("greatBritain"),

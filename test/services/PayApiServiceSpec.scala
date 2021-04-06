@@ -16,7 +16,7 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
@@ -198,7 +198,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false))
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
@@ -207,7 +207,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false))
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
@@ -218,7 +218,7 @@ class PayApiServiceSpec extends BaseSpec {
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
@@ -231,9 +231,25 @@ class PayApiServiceSpec extends BaseSpec {
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, false))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJsonForBstArrival),any())(any(),any(),any(),any())
+    }
+
+    "return a PayApiServiceSuccessResponse with a declare-your-good back url in amendment journey" in new LocalSetup {
+
+      val uiWithBstArrival: UserInformation = userInformation.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "LHR", dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+
+      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
+        Json.obj("nextUrl" -> "https://example.com")
+      ))
+
+      val expectedExampleJsonForBstArrival = exampleJsonForBstArrival.as[JsObject].deepMerge(
+        Json.obj("backUrl"-> "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods"))
+
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, true))
+      r shouldBe PayApiServiceSuccessResponse("https://example.com")
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(expectedExampleJsonForBstArrival),any())(any(),any(),any(),any())
     }
   }
 

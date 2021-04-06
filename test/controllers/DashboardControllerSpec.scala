@@ -171,7 +171,9 @@ class DashboardControllerSpec extends BaseSpec {
           limits = Map.empty,
           isAnyItemOverAllowance = true
         )),
-        declarationResponse = Some(DeclarationResponse(Calculation("1.00", "7.00", "90000.00", "98000.00"), List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+        declarationResponse = Some(DeclarationResponse(Calculation("1.00", "7.00", "90000.00", "98000.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00"))
       ))
 
@@ -200,7 +202,9 @@ class DashboardControllerSpec extends BaseSpec {
           limits = Map.empty,
           isAnyItemOverAllowance = true
         )),
-        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"), List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       ))
 
@@ -229,7 +233,9 @@ class DashboardControllerSpec extends BaseSpec {
           limits = Map.empty,
           isAnyItemOverAllowance = true
         )),
-        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"), List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       ))
 
@@ -258,7 +264,9 @@ class DashboardControllerSpec extends BaseSpec {
           limits = Map.empty,
           isAnyItemOverAllowance = true
         )),
-        declarationResponse = Some(DeclarationResponse(Calculation("100.00", "100.00", "100.00", "300.00"), List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+        declarationResponse = Some(DeclarationResponse(Calculation("100.00", "100.00", "100.00", "300.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("100.00", "100.00", "100.00", "300.00"))
       ))
 
@@ -285,7 +293,9 @@ class DashboardControllerSpec extends BaseSpec {
           limits = Map.empty,
           isAnyItemOverAllowance = true
         )),
-        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"), List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       ))
 
@@ -312,7 +322,9 @@ class DashboardControllerSpec extends BaseSpec {
           limits = Map.empty,
           isAnyItemOverAllowance = true
         )),
-        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"), List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+        declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00")),
         euCountryCheck = Some("greatBritain")
       ))
@@ -909,7 +921,9 @@ class DashboardControllerSpec extends BaseSpec {
 
     val calculation = Calculation("1.00","1.00","1.00","3.00")
 
-    val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances)
+    val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+
+    val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances, liabilityDetails = liabilityDetails)
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), declarationResponse =  Some(declarationResponse)))
 
@@ -960,7 +974,9 @@ class DashboardControllerSpec extends BaseSpec {
 
     val calculation = Calculation("1.00","1.00","1.00","3.00")
 
-    val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances)
+    val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+
+    val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances, liabilityDetails = liabilityDetails)
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), declarationResponse =  Some(declarationResponse)))
 
