@@ -210,7 +210,9 @@ class CalculatorServiceSpec extends BaseSpec {
         PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid1", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),None,None,None, isEditable = Some(false)),
         PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid2", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None,Some("CHF"), Some(5432),None,None,None, isEditable = Some(false))
 
-      ), calculation = Calculation("1.00","1.00","1.00","3.00")))
+      ),
+    liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40"),
+    calculation = Calculation("1.00","1.00","1.00","3.00")))
     )
 
     val declareJourneyData = JourneyData(

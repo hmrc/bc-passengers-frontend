@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(isAmendment: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 
@@ -30,6 +30,15 @@
     </strong>
   </div>
 
-  <p class="margin-top-30"><a href="@routes.CalculateDeclareController.enterYourDetails" class="button" role="button">@messages("label.declare_your_goods_and_pay_online")</a></p>
-
+  @if(isAmendment) {
+    <p class="margin-top-30">
+      <a href="@routes.CalculateDeclareController.processAmendment" class="button" role="button">
+        @messages("label.declare_your_goods_and_pay_online")</a>
+    </p>
+  }else {
+    <p class="margin-top-30">
+      <a href="@routes.CalculateDeclareController.enterYourDetails" class="button" role="button">
+        @messages("label.declare_your_goods_and_pay_online")</a>
+    </p>
+  }
 }

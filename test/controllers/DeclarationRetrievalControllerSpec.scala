@@ -7,7 +7,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import models.{Calculation, Country, DeclarationResponse, JourneyData, PreviousDeclarationRequest, ProductPath, PurchasedProductInstance}
+import models.{Calculation, Country, DeclarationResponse, JourneyData, LiabilityDetails, PreviousDeclarationRequest, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.mockito.Matchers._
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -172,10 +172,11 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val calculation = Calculation("160.45","25012.50","15134.59","40307.54")
       val productPath = ProductPath("other-goods/adult/adult-footwear")
       val country = Country("IN","title.india","IN",false,true,List())
+      val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
       val purchasedProductInstances = List(
         PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))
       )
-      val declarationResponse = DeclarationResponse(calculation, purchasedProductInstances)
+      val declarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
       val retrievedJourneyData: JourneyData = JourneyData(prevDeclaration = Some(true),
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),

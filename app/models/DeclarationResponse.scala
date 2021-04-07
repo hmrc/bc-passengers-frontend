@@ -11,7 +11,19 @@ object DeclarationResponse {
   implicit val formats: OFormat[DeclarationResponse] = Json.format[DeclarationResponse]
 }
 
+object LiabilityDetails {
+  implicit val formats: OFormat[LiabilityDetails] = Json.format[LiabilityDetails]
+}
+
 case class DeclarationResponse(
-                               calculation: Calculation,
-                               oldPurchaseProductInstances: List[PurchasedProductInstance]
-)
+                                calculation: Calculation,
+                                liabilityDetails: LiabilityDetails,
+                                oldPurchaseProductInstances: List[PurchasedProductInstance]
+                              )
+
+case class LiabilityDetails(
+                             totalExciseGBP: String,
+                             totalCustomsGBP: String,
+                             totalVATGBP: String,
+                             grandTotalGBP: String
+                           )

@@ -118,6 +118,7 @@ GET        /declare-your-goods                                                  
 
 GET        /user-information                                                           controllers.CalculateDeclareController.enterYourDetails
 POST       /user-information                                                           controllers.CalculateDeclareController.processEnterYourDetails
+GET        /process-amendment                                                          controllers.CalculateDeclareController.processAmendment
 
 GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage
 
