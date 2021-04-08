@@ -8,12 +8,13 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DeclarationNotFoundAction, DeclarationRetrievalAction}
+import javax.inject.Inject
 import models.{DeclarationRetrievalDto, PreviousDeclarationRequest}
+import org.joda.time.DateTime
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationRetrievalController @Inject()(
@@ -57,7 +58,16 @@ class DeclarationRetrievalController @Inject()(
       success = {
         previousDeclarationDetails =>
           previousDeclarationService.storePrevDeclarationDetails(context.journeyData)(PreviousDeclarationRequest.build(previousDeclarationDetails)).map(journeyData => journeyData.get.declarationResponse.isDefined match{
-            case true => Redirect(routes.DashboardController.showDashboard())
+            case true =>
+              val date = journeyData.get.userInformation.get.dateOfArrival
+              val time = journeyData.get.userInformation.get.timeOfArrival
+              val dateTime  = new DateTime(date.getYear,date.getMonthOfYear,date.getDayOfMonth, time.getHourOfDay, time.getMinuteOfHour, time.getSecondOfMinute)
+
+              if (dateTime.plusHours(24).isBefore(DateTime.now())) {
+                Redirect(routes.DeclarationRetrievalController.declarationNotFound())
+              } else {
+                Redirect(routes.DashboardController.showDashboard())
+              }
             case false => Redirect(routes.DeclarationRetrievalController.declarationNotFound())}
           )
       })

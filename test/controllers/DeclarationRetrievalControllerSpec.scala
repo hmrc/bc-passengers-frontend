@@ -8,6 +8,9 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import models.{Calculation, Country, DeclarationResponse, JourneyData, LiabilityDetails, PreviousDeclarationRequest, ProductPath, PurchasedProductInstance}
+import models._
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{LocalDate, LocalTime}
 import org.jsoup.Jsoup
 import org.mockito.Matchers._
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -15,7 +18,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
@@ -104,7 +106,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
   }
 
   "postDeclarationRetrievalPage" should {
-    "redirect to .../where-goods-bought when user says they have not made any previous declaration" in  {
+    "redirect to .../where-goods-bought when user says they have not made any previous declaration" in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
@@ -114,13 +116,13 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     }
 
-    "return a bad request when user does not fill in required fields" in  {
+    "return a bad request when user does not fill in required fields" in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
 
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
-        .withFormUrlEncodedBody("lastName" -> "","identificationNumber" -> "","referenceNumber" -> "")).get
+        .withFormUrlEncodedBody("lastName" -> "", "identificationNumber" -> "", "referenceNumber" -> "")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -138,7 +140,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     }
 
-    "return a bad request when user enters invalid fields" in  {
+    "return a bad request when user enters invalid fields" in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
@@ -166,15 +168,16 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to tell us page following a successful retrieval" in  {
+    "redirect to tell us page following a successful retrieval" in {
 
       val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
-      val calculation = Calculation("160.45","25012.50","15134.59","40307.54")
+      val calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
       val productPath = ProductPath("other-goods/adult/adult-footwear")
       val country = Country("IN","title.india","IN",false,true,List())
       val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+      val userInformation = UserInformation("Harry", "Smith", "passport", "SX12345", "abc@gmail.com", "Newcastle Airport", "", LocalDate.now(), LocalTime.now().minusHours(23))
       val purchasedProductInstances = List(
-        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))
+        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(false), Some(false), None, Some(false), None, Some(false))
       )
       val declarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
       val retrievedJourneyData: JourneyData = JourneyData(prevDeclaration = Some(true),
@@ -184,7 +187,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         isUKResident = Some(false),
         privateCraft = Some(true),
         previousDeclarationRequest = Some(previousDeclarationRequest),
-        declarationResponse = Some(declarationResponse)
+        declarationResponse = Some(declarationResponse),
+        userInformation = Some(userInformation)
       )
       when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
@@ -196,11 +200,32 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
           "referenceNumber" -> "XXPR0123456789")).get
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
-      verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())}
+      verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())
+    }
 
 
-    "redirect to declaration not found on an unsuccessful POST" in  {
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
+    "redirect to declaration not found when a retrospective declaration of more than 24 hours is tried to retrieve" in {
+      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+      val calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
+      val productPath = ProductPath("other-goods/adult/adult-footwear")
+      val country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
+      val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+      val userInformation = UserInformation("Harry", "Smith", "passport", "SX12345", "abc@gmail.com", "Newcastle Airport", "", LocalDate.parse("2021-04-01"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+      val purchasedProductInstances = List(
+        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(false), Some(false), None, Some(false), None, Some(false))
+      )
+      val declarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
+      val cachedJourneyData = Future.successful(Some(JourneyData(
+        prevDeclaration = Some(true),
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        ageOver17 = Some(true),
+        isUKResident = Some(false),
+        privateCraft = Some(true),
+        previousDeclarationRequest = Some(previousDeclarationRequest),
+        declarationResponse = Some(declarationResponse),
+        userInformation = Some(userInformation)
+      )))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
       when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
@@ -212,6 +237,20 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
     }
+
+  "redirect to declaration not found on an unsuccessful POST " in {
+    val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
+    when(mockCache.fetch(any())) thenReturn cachedJourneyData
+    when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+    when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
+    val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+      .withFormUrlEncodedBody("" +
+        "lastName" -> "Smith",
+        "identificationNumber" -> "12345",
+        "referenceNumber" -> "XXPR0123456789")).get
+    status(response) shouldBe SEE_OTHER
+    redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
   }
+}
 
 }
