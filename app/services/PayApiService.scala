@@ -40,7 +40,7 @@ class PayApiService @Inject()(
   lazy val backUrlDeclaration: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
   lazy val backUrlAmendment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.declareYourGoods
 
-  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean, amountPaidPreviously : Option[String])(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 
     def getPlaceOfArrival(userInfo: UserInformation) = {
       if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
@@ -61,6 +61,8 @@ class PayApiService @Inject()(
     def geBackURL(isAmendment: Boolean) = {
       if (isAmendment) backUrlAmendment else backUrlDeclaration
     }
+
+    def previouslyPaidAmount: String = amountPaidPreviously.getOrElse("0.00")
 
     val requestBody: JsObject = Json.obj(
       "chargeReference" -> chargeReference.value,
@@ -87,8 +89,11 @@ class PayApiService @Inject()(
         "exciseInGbp"-> calculatorResponse.calculation.excise,
         "vatInGbp"-> calculatorResponse.calculation.vat
       )
-    )
-    
+    ) ++ (if (isAmendment)
+      Json.obj("totalPaidNow" -> BigDecimal(amountPence.toDouble / 100).setScale(2).toString,
+        "amountPaidPreviously" -> previouslyPaidAmount)
+    else Json.obj())
+
     wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/pngr/pngr/journey/start", requestBody) map { r =>
       r.status match {
         case CREATED => PayApiServiceSuccessResponse((r.json \ "nextUrl").as[JsString].value)

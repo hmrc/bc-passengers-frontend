@@ -131,7 +131,7 @@ class CalculateDeclareController @Inject()(
                     declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
                       Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
                     }
-                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt, false) map {
+                  case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt, false, None) map {
 
                     case PayApiServiceFailureResponse =>
                       InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
@@ -151,8 +151,7 @@ class CalculateDeclareController @Inject()(
 
     val correlationId = UUID.randomUUID.toString
     val userInformation = context.getJourneyData.userInformation.getOrElse(throw new RuntimeException("no user Information"))
-    //val deltaAllTax = context.getJourneyData.deltaCalculation.get.allTax
-
+    val amountPaidPreviously = context.getJourneyData.declarationResponse.get.calculation.allTax
     requireCalculatorResponse { calculatorResponse =>
 
       declarationService.submitAmendment(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
@@ -167,7 +166,7 @@ class CalculateDeclareController @Inject()(
               declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
                 Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
               }
-            case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true) map {
+            case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true, Some(amountPaidPreviously)) map {
 
               case PayApiServiceFailureResponse =>
                 InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))

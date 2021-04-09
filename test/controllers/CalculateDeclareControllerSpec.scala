@@ -191,7 +191,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[PurchasedProductService].removePurchasedProductInstance(any(),any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[UserInformationService].storeUserInformation(any(),any())(any(),any())) thenReturn Future.successful(JourneyData())
       when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
-      when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(payApiResponse)
+      when(injected[PayApiService].requestPaymentUrl(any(),any(), any(), any(), any(),any())(any(), any())) thenReturn Future.successful(payApiResponse)
       when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(Some(JourneyData()))
       when(injected[DeclarationService].submitDeclaration(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
       when(injected[DeclarationService].submitAmendment(any(),any(), any(), any(), any())(any(), any())) thenReturn Future.successful(declarationServiceResponse)
