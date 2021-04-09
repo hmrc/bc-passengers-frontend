@@ -198,7 +198,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
@@ -207,7 +207,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
@@ -218,7 +218,7 @@ class PayApiServiceSpec extends BaseSpec {
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJson),any())(any(),any(),any(),any())
     }
@@ -231,7 +231,7 @@ class PayApiServiceSpec extends BaseSpec {
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, false))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(exampleJsonForBstArrival),any())(any(),any(),any(),any())
     }
@@ -244,12 +244,12 @@ class PayApiServiceSpec extends BaseSpec {
         Json.obj("nextUrl" -> "https://example.com")
       ))
 
-      val expectedExampleJsonForBstArrival = exampleJsonForBstArrival.as[JsObject].deepMerge(
-        Json.obj("backUrl"-> "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods"))
+      val expectedJsonForAmendment = exampleJsonForBstArrival.as[JsObject].deepMerge(
+        Json.obj("backUrl"-> "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods", "amountPaidPreviously"-> "100.99", "totalPaidNow"->"97000.00"))
 
-      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, true))
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, true, Some("100.99")))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(expectedExampleJsonForBstArrival),any())(any(),any(),any(),any())
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(expectedJsonForAmendment),any())(any(),any(),any(),any())
     }
   }
 
