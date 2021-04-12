@@ -48,6 +48,7 @@
         '_label -> messages("label.first_name"),
         '_labelTextClass -> "form-label-bold",
         '_inputClass -> "form-control-3-4",
+        '_autoComplete -> "given-name",
         '_error_id -> "firstName-error-message",
         '_errorPrefix -> messages("label.error"),
       )
@@ -57,6 +58,7 @@
         '_label -> messages("label.last_name"),
         '_labelTextClass -> "form-label-bold",
         '_inputClass -> "form-control-3-4",
+        '_autoComplete -> "family-name",
         '_error_id -> "lastName-error-message",
         '_errorPrefix -> messages("label.error")
       )
@@ -106,14 +108,16 @@
             '_hintId -> "label-emailId-hint",
             '_labelTextClass -> "form-label-bold",
             '_inputHint -> messages("label.email_address_hint"),
-            '_inputClass -> "form-control-3-4"
+            '_inputClass -> "form-control-3-4",
+            '_autoComplete -> "email",
         )
 
         @components.input(
             f("emailAddress.confirmEmail"),
             '_label -> messages("label.confirm_email_address"),
             '_labelTextClass -> "form-label-bold",
-            '_inputClass -> "form-control-3-4"
+            '_inputClass -> "form-control-3-4",
+            '_autoComplete -> "email",
         )
     </div>
 
