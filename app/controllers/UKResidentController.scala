@@ -34,7 +34,7 @@ class UKResidentController @Inject()(
   val loadUKResidentPage: Action[AnyContent] = uKResidentAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _, _,Some(isUKResident),_,_, _, _, _, _, _, _, _, _, _, _, _, _, _,_, _, _,_)) =>
+        case Some(JourneyData(_, _, _, _, _,Some(isUKResident),_,_, _, _, _, _, _, _, _, _, _, _, _, _, _,_, _, _,_,_)) =>
           Ok(isUKResidentPage(UKResidentForm.form.fill(isUKResident), backLinkModel.backLink))
         case _ =>
           Ok(isUKResidentPage(UKResidentForm.form, backLinkModel.backLink))

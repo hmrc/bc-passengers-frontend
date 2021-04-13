@@ -34,7 +34,7 @@ class PreviousDeclarationController @Inject()(
   val loadPreviousDeclarationPage: Action[AnyContent] = previousDeclarationAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData( Some(prevDeclaration), _, _, _, _,_,_, _, _, _, _, _, _, _, _, _, _, _, _ ,_, _,_, _, _,_)) =>
+        case Some(JourneyData( Some(prevDeclaration), _, _, _, _,_,_, _, _, _, _, _, _, _, _, _, _, _, _ ,_, _,_, _, _,_,_)) =>
           Ok(previousDeclarationPage(PrevDeclarationForm.validateForm().fill(prevDeclaration), backLinkModel.backLink))
         case _ =>
           Ok(previousDeclarationPage(PrevDeclarationForm.validateForm(), backLinkModel.backLink))

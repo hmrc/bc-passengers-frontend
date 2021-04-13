@@ -18,7 +18,8 @@ object LiabilityDetails {
 case class DeclarationResponse(
                                 calculation: Calculation,
                                 liabilityDetails: LiabilityDetails,
-                                oldPurchaseProductInstances: List[PurchasedProductInstance]
+                                oldPurchaseProductInstances: List[PurchasedProductInstance],
+                                amendCount: Int = 0
                               )
 
 case class LiabilityDetails(
