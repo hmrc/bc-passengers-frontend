@@ -1711,6 +1711,8 @@ label.amount_paid_previously = (W)Amount paid previously(W)
 label.total_due_now = (W)Total due now(W)
 label.na = N/A
 
+label.amend_your_goods = (W)Amend your declaration(W)
+label.amend_your_goods_and_pay_online = (W)Amend your declaration and pay online(W)
 #declaration not found page
 heading.declaration_not_found = (W)Your declaration cannot be found(W)
 text.may_be_because = (W)This may be because:(W)

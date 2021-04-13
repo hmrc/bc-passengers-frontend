@@ -6,7 +6,6 @@
 package controllers
 
 import java.util.UUID
-
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction}
@@ -241,7 +240,7 @@ class CalculateDeclareController @Inject()(
     }
   }
 
-  def showCalculation: Action[AnyContent] = dashboardAction { implicit context =>
+  def showCalculation: Action[AnyContent] = dashboardAction {implicit context =>
 
     def checkZeroPoundCondition(calculatorResponse:CalculatorResponse):Boolean = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
