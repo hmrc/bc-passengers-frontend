@@ -55,7 +55,8 @@ class DeclarationService @Inject()(
         declarationResponse = Some(DeclarationResponse(
           (declarationResponse \ "calculation").as[Calculation],
           (declarationResponse \ "liabilityDetails").as[LiabilityDetails],
-          (declarationResponse \ "oldPurchaseProductInstances").as[List[PurchasedProductInstance]]
+          (declarationResponse \ "oldPurchaseProductInstances").as[List[PurchasedProductInstance]],
+          (declarationResponse \ "amendCount").as[Int]
         ))
       )
     }
@@ -387,6 +388,12 @@ class DeclarationService @Inject()(
     }
 
     def getJourneyData = {
+
+      val amendCount: Int =
+        if(journeyData.declarationResponse.isDefined)
+          journeyData.declarationResponse.get.amendCount + 1
+        else 0
+
       val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
         journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
 
@@ -395,7 +402,8 @@ class DeclarationService @Inject()(
         userInformation = Some(userInformation),
         purchasedProductInstances = cumulativePurchasedProductInstances,
         declarationResponse = None,
-        deltaCalculation = None)
+        deltaCalculation = None,
+        amendCount = Some(amendCount))
     }
 
     def getRequestCommon: JsValue = {
@@ -405,9 +413,9 @@ class DeclarationService @Inject()(
         "requestParameters" -> Json.arr(Json.obj("paramName" -> "REGIME", "paramValue" -> "PNGR"))
       )
 
-      if(journeyData.previousDeclarationRequest.isDefined) {
+      if(journeyData.previousDeclarationRequest.isDefined && journeyData.declarationResponse.isDefined) {
         requestCommon.++(Json.obj(
-          "acknowledgementReference" -> (journeyData.previousDeclarationRequest.get.referenceNumber+"0")
+          "acknowledgementReference" -> (journeyData.previousDeclarationRequest.get.referenceNumber + getJourneyData.amendCount.get)
         ))
       }else
         requestCommon
