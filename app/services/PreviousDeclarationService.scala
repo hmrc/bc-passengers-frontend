@@ -25,10 +25,11 @@ class PreviousDeclarationService @Inject()(
     journeyData match {
       case Some(journeyData) if !journeyData.prevDeclaration.contains(prevDeclaration) =>
 
-        cache.storeJourneyData(journeyData.copy(
-          prevDeclaration = Some(prevDeclaration),
-          previousDeclarationRequest = None
-        ))
+        val resetJourneyData = JourneyData(
+          prevDeclaration = Some(prevDeclaration)
+        )
+
+        cache.storeJourneyData(resetJourneyData)
 
       case None =>
         cache.storeJourneyData( JourneyData(

@@ -120,4 +120,35 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
     }
 
   }
+
+  "Calling storePrevDeclaration" should {
+
+    "store storePrevDeclaration when no journey data there currently" in new LocalSetup {
+
+      await(previousDeclarationService.storePrevDeclaration(None)(prevDeclaration = false))
+
+      verify(cacheMock, times(1)).storeJourneyData(
+        meq(JourneyData(prevDeclaration = Some(false))))(any())
+    }
+
+    "not update the journey data if the answer has not changed" in new LocalSetup {
+
+      val journeyData: Option[JourneyData] = Some( JourneyData(prevDeclaration = Some(true)))
+
+      await(previousDeclarationService.storePrevDeclaration(journeyData)(prevDeclaration = true))
+
+      verify(cacheMock, times(0)).storeJourneyData(any())(any())
+    }
+
+    "store prevDeclaration when journey data does exist, reset existing journey data if the prevDeclaration has changed" in new LocalSetup {
+
+      val ppi = PurchasedProductInstance(iid = "someId", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
+      val journeyData: Option[JourneyData] = Some(JourneyData(prevDeclaration= Some(false), isUKVatExcisePaid = Some(true), euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi), bringingOverAllowance = Some(true)))
+
+      await(previousDeclarationService.storePrevDeclaration(journeyData)(prevDeclaration = true))
+
+      verify(cacheMock, times(1)).storeJourneyData(
+        meq(JourneyData(prevDeclaration= Some(true), None, None, None, None, None, None)))(any())
+    }
+  }
 }
