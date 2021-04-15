@@ -111,7 +111,7 @@ case class JourneyData(
   previousDeclarationRequest: Option[PreviousDeclarationRequest] = None,
   declarationResponse: Option[DeclarationResponse] = None,
   deltaCalculation: Option[Calculation] = None,
-  amendCount: Option[Int] = None
+  amendmentCount: Option[Int] = None
 ) {
 
   val selectedProducts: List[List[String]] = selectedAliases.map(_.productPath.components)

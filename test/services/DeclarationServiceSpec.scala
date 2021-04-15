@@ -106,7 +106,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     val jd: JourneyData = JourneyData(
       euCountryCheck = Some("nonEuOnly"),
       arrivingNICheck = Some(false),
-      amendCount = Some(0)
+      amendmentCount = Some(0)
     )
 
     val expectedJsObj: JsObject = Json.obj(
@@ -351,7 +351,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       userInformation = Some(userInformation),
       calculatorResponse = Some(calculatorResponse),
       purchasedProductInstances = cumulativePPIs,
-      amendCount = Some(1)
+      amendmentCount = Some(1)
     )
 
     val expectedJsObj: JsObject = Json.obj(
@@ -484,10 +484,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             )
           ),
           "liabilityDetails" -> Json.obj(
-            "totalExciseGBP" -> "0.00",
-            "totalCustomsGBP" -> "12.50",
-            "totalVATGBP" -> "102.50",
-            "grandTotalGBP" -> "115.00"
+            "totalExciseGBP" -> "102.54",
+            "totalCustomsGBP" -> "534.89",
+            "totalVATGBP" -> "725.03",
+            "grandTotalGBP" -> "1362.46"
           ),
           "amendmentLiabilityDetails" -> Json.obj(
             "additionalExciseGBP" -> "102.54",
@@ -575,7 +575,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      val jd: JourneyData = JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), amendCount = Some(0))
+      val jd: JourneyData = JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), amendmentCount = Some(0))
 
       val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
 
@@ -668,7 +668,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val jd: JourneyData = JourneyData(euCountryCheck = Some("nonEuOnly"),
         arrivingNICheck = Some(true),
-        amendCount = Some(0)
+        amendmentCount = Some(0)
       )
 
       val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
@@ -951,7 +951,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isUKVatExcisePaid = Some(true),
         isUKResident = Some(false),
         isUccRelief = Some(true),
-        amendCount = Some(0)
+        amendmentCount = Some(0)
       )
 
       val userInformation: UserInformation = UserInformation("Harry", "Potter", "passport", "SX12345", "abc@gmail.com", "", "LHR", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
@@ -1231,7 +1231,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       val jd: JourneyData = JourneyData(euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),
         isUKResident = Some(true),
-        amendCount = Some(0)
+        amendmentCount = Some(0)
       )
 
       val userInformation: UserInformation = UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("01:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
@@ -1536,7 +1536,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isUKVatPaid = Some(true),
         isUKVatExcisePaid = Some(false),
         isUKResident = Some(true),
-        amendCount = Some(0)
+        amendmentCount = Some(0)
       )
 
       val userInformation: UserInformation = UserInformation("Harry", "Potter","telephone", "7417532125", "", "LHR", "", LocalDate.parse("2018-05-31"),  LocalTime.parse("8:2 am", DateTimeFormat.forPattern("hh:mm aa")))
@@ -1740,7 +1740,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,None)
       )
 
-      val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendCount = 2)
+      val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendmentCount = Some(2))
 
       val jd: JourneyData = JourneyData(
         euCountryCheck = Some("greatBritain"),
@@ -1912,7 +1912,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "isOver17" -> true,
         "isUKResident" -> false,
         "isPrivateTravel" -> true,
-        "amendCount" -> 1,
+        "amendmentCount" -> 1,
         "calculation" -> Json.obj("excise" -> "160.45","customs" -> "25012.50","vat" -> "15134.59","allTax" -> "40307.54"),
         "liabilityDetails" -> Json.obj(
           "totalExciseGBP" -> "32.0",
@@ -1947,7 +1947,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,None)
       )
 
-      val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendCount = 1)
+      val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendmentCount = Some(1))
 
       val jd: JourneyData = JourneyData(prevDeclaration = Some(true),
         euCountryCheck = Some("greatBritain"),
