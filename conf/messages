@@ -1671,16 +1671,12 @@ error.previous_declaration = Select yes if you have previously made a declaratio
 
 heading.declaration_retrieval = Add goods to your previous declaration
 text.declaration_retrieval = Enter the required information to retrieve your declaration and add more goods.
-label.identification_number_previous = Identification number used for your previous declaration
 label.reference_previous_declaration = Reference number
-label.identification_hint = For example passport number
 label.reference_number_hint = You can find this in your declaration confirmation email. It will be 14 characters, for example XAPR1234567890.
 label.retrieve_declaration = Retrieve your declaration and add goods
-error.required.identification_number_previous = Enter the identification number you used for your previous declaration
 head.error.max-length.identification_number_previous = Identification number must be 40 characters or less
 error.max-length.identification_number_previous = Identification number must be 40 characters or less
 error.required.referenceNumber = Enter your reference number
-head.error.required.identification_number_previous = Enter the identification number you used for your previous declaration
 head.error.required.referenceNumber = Enter your reference number
 head.error.referenceNumber.invalid = Enter your reference number in the correct format
 error.referenceNumber.invalid = Enter your reference number in the correct format

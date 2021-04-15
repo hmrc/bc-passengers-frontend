@@ -1671,16 +1671,12 @@ error.previous_declaration = Dewiswch ‘Iawn’ os ydych eisoes wedi gwneud dat
 
 heading.declaration_retrieval = Ychwanegu nwyddau at eich datganiad blaenorol
 text.declaration_retrieval = (W)Enter the required information to retrieve your declaration and add more goods.(W)
-label.identification_number_previous = Rhif adnabod a ddefnyddiwyd ar gyfer eich hawliad blaenorol
 label.reference_previous_declaration = Cyfeirnod
-label.identification_hint = Er enghraifft, rhif pasbort
 label.reference_number_hint = Gallwch ddod o hyd i hwn yn eich e-bost sy’n rhoi cadarnhad o’ch datganiad. Bydd yn 14 o gymeriadau, er enghraifft XAPR1234567890.
 label.retrieve_declaration = Adfer eich datganiad ac ychwanegu nwyddau
-error.required.identification_number_previous = Nodwch y rhif adnabod a ddefnyddioch ar gyfer eich datganiad blaenorol
 head.error.max-length.identification_number_previous = Mae’n rhaid i’r rhif adnabod fod yn 40 o gymeriadau neu lai
 error.max-length.identification_number_previous = Mae’n rhaid i’r rhif adnabod fod yn 40 o gymeriadau neu lai
 error.required.referenceNumber = Nodwch eich cyfeirnod
-head.error.required.identification_number_previous = Nodwch y rhif adnabod a ddefnyddioch ar gyfer eich datganiad blaenorol
 head.error.required.referenceNumber = Nodwch eich cyfeirnod
 head.error.referenceNumber.invalid = Nodwch eich cyfeirnod yn y fformat cywir
 error.referenceNumber.invalid = Nodwch eich cyfeirnod yn y fformat cywir

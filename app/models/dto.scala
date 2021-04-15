@@ -354,7 +354,6 @@ object DeclarationRetrievalDto extends Validators {
 
   def fromPreviousDeclarationDetails(previousDeclarationDetails: PreviousDeclarationRequest): DeclarationRetrievalDto = {
     DeclarationRetrievalDto(previousDeclarationDetails.lastName,
-      previousDeclarationDetails.identificationNumber,
       previousDeclarationDetails.referenceNumber)
   }
   private val chargeReferencePattern = """^[Xx]([A-Za-z])[Pp][Rr](\d{10})$"""
@@ -362,7 +361,6 @@ object DeclarationRetrievalDto extends Validators {
     mapping(
       "lastName" -> text.verifying(nonEmptyMaxLength(35, "last_name"))
         .verifying(validateFieldsRegex("error.last_name.valid",validInputText)),
-      "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number_previous")),
       "referenceNumber" -> text.verifying(validateFieldsRegex("error.referenceNumber.invalid",chargeReferencePattern))
         .verifying(nonEmpty("referenceNumber"))
     )(DeclarationRetrievalDto.apply)(DeclarationRetrievalDto.unapply)
@@ -374,4 +372,4 @@ case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArri
 case class Identification(identificationType: Option[String], identificationNumber: String)
 case class EmailAddress(email: String, confirmEmail: String)
 case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification , emailAddress: EmailAddress, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
-case class DeclarationRetrievalDto(lastName: String, identificationNumber: String , referenceNumber: String)
+case class DeclarationRetrievalDto(lastName: String, referenceNumber: String)

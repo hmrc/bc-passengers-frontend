@@ -53,7 +53,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
 
   "Calling storePrevDeclarationDetails" should {
 
-    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
 
     "store previousDeclarationRequest when no journey data there currently" in new LocalSetup {
 
