@@ -56,7 +56,7 @@ class DeclarationService @Inject()(
           (declarationResponse \ "calculation").as[Calculation],
           (declarationResponse \ "liabilityDetails").as[LiabilityDetails],
           (declarationResponse \ "oldPurchaseProductInstances").as[List[PurchasedProductInstance]],
-          (declarationResponse \ "amendCount").as[Int]
+          (declarationResponse \ "amendmentCount").asOpt[Int]
         ))
       )
     }
@@ -239,14 +239,6 @@ class DeclarationService @Inject()(
     }
 
     def getLiabilityDetails: JsValue = {
-      if (journeyData.declarationResponse.isDefined) {
-          Json.toJson(journeyData.declarationResponse.get.liabilityDetails)((l: LiabilityDetails) => Json.obj(
-            "totalExciseGBP" -> l.totalExciseGBP,
-            "totalCustomsGBP" -> l.totalCustomsGBP,
-            "totalVATGBP" -> l.totalVATGBP,
-            "grandTotalGBP" -> l.grandTotalGBP
-          ))
-      } else
         Json.toJson(calculatorResponse.calculation)((o: Calculation) => Json.obj(
           "totalExciseGBP" -> o.excise,
           "totalCustomsGBP" -> o.customs,
@@ -389,9 +381,9 @@ class DeclarationService @Inject()(
 
     def getJourneyData = {
 
-      val amendCount: Int =
-        if(journeyData.declarationResponse.isDefined)
-          journeyData.declarationResponse.get.amendCount + 1
+      val amendmentCount: Int =
+        if(journeyData.declarationResponse.isDefined && journeyData.declarationResponse.get.amendmentCount.isDefined)
+          journeyData.declarationResponse.get.amendmentCount.get + 1
         else 0
 
       val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
@@ -403,7 +395,7 @@ class DeclarationService @Inject()(
         purchasedProductInstances = cumulativePurchasedProductInstances,
         declarationResponse = None,
         deltaCalculation = None,
-        amendCount = Some(amendCount))
+        amendmentCount = Some(amendmentCount))
     }
 
     def getRequestCommon: JsValue = {
@@ -415,7 +407,7 @@ class DeclarationService @Inject()(
 
       if(journeyData.previousDeclarationRequest.isDefined && journeyData.declarationResponse.isDefined) {
         requestCommon.++(Json.obj(
-          "acknowledgementReference" -> (journeyData.previousDeclarationRequest.get.referenceNumber + getJourneyData.amendCount.get)
+          "acknowledgementReference" -> (journeyData.previousDeclarationRequest.get.referenceNumber + getJourneyData.amendmentCount.get)
         ))
       }else
         requestCommon

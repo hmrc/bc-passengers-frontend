@@ -19,7 +19,7 @@ case class DeclarationResponse(
                                 calculation: Calculation,
                                 liabilityDetails: LiabilityDetails,
                                 oldPurchaseProductInstances: List[PurchasedProductInstance],
-                                amendCount: Int = 0
+                                amendmentCount: Option[Int] = Some(0)
                               )
 
 case class LiabilityDetails(
