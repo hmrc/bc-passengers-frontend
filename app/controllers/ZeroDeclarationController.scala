@@ -9,6 +9,7 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.ZeroDeclarationAction
 import javax.inject.Inject
+import models.Calculation
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
@@ -42,9 +43,15 @@ class ZeroDeclarationController @Inject()(
         val placeOfArrivalValue = portsOfArrivalService.getDisplayNameByCode(context.getJourneyData.userInformation.get.selectPlaceOfArrival).getOrElse(context.getJourneyData.userInformation.get.enterPlaceOfArrival)
 
         requireCalculatorResponse { calculatorResponse =>
-          Future.successful {
-            Ok(isZeroDeclarationPage(context.getJourneyData.userInformation, calculatorResponse, calculatorResponse.asDto(applySorting = false), chargeReference, placeOfArrivalValue))
 
+          Future.successful {
+            if(context.getJourneyData.declarationResponse.isDefined) {
+              val deltaCalculation: Option[Calculation] = context.getJourneyData.deltaCalculation
+              val oldTax = context.getJourneyData.declarationResponse.get.calculation.allTax
+              Ok(isZeroDeclarationPage(true, deltaCalculation, Some(oldTax), context.getJourneyData.userInformation, calculatorResponse, calculatorResponse.asDto(applySorting = false), chargeReference, placeOfArrivalValue))
+            } else {
+              Ok(isZeroDeclarationPage(false, None, None, context.getJourneyData.userInformation, calculatorResponse, calculatorResponse.asDto(applySorting = false), chargeReference, placeOfArrivalValue))
+            }
           }
         }
     }
