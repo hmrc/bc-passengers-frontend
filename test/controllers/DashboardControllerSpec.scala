@@ -156,11 +156,13 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98,000.00"
       content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
+      content should include ("When you arrive in the UK, go to the red &#x27;goods to declare&#x27; channel or the red point phone, or speak to Border Force to declare these goods.")
 
     }
     "redirect to the over ninety seven thousand pounds page if the amendment total to declare is over ninety seven thousand pounds" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        prevDeclaration = Some(true),
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
@@ -186,12 +188,15 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98,000.00"
       content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
+      content should include ("When you arrive in the UK, go to the red &#x27;goods to declare&#x27; channel or the red point phone, or speak to Border Force to declare these additional goods.")
 
     }
 
     "redirect to the Zero to declare page if the amendment total zero pound" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
@@ -216,13 +221,16 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
-      content should include ("Go to the green ‘nothing to declare’ channel at your arrival location if these are the only goods you are bringing into the UK from abroad")
+      content should include ("You still need to declare your additional goods. You will not be charged anything when you amend your declaration.")
 
     }
 
     "redirect to the declaration page if the amendment total is zero pound" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        prevDeclaration = Some(true),
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
@@ -247,13 +255,15 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
-      content should include ("Go to the green ‘nothing to declare’ channel at your arrival location if these are the only goods you are bringing into the UK from abroad")
+      doc.getElementsByClass("button").text() shouldBe "Amend your declaration"
+      content should include ("You still need to declare your additional goods. You will not be charged anything when you amend your declaration.")
 
     }
 
     "redirect to the declaration page if the amendment total between 9 pound and 97k" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        prevDeclaration = Some(true),
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
@@ -278,11 +288,14 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £300.00"
+      content should include ("You can amend your declaration from 72 hours before arriving in the UK.")
+      doc.getElementsByClass("button").text() shouldBe "Amend your declaration and pay online"
     }
 
     "redirect to the declaration page if the amendment total is within free allowance" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        prevDeclaration = Some(true),
         calculatorResponse = Some(CalculatorResponse(
           Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
             ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
@@ -307,6 +320,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+      content should include ("All the items you added are included within your personal allowances")
     }
 
     "redirect to the declaration page if the amendment total is zero and declaration is over allowance" in new LocalSetup {

@@ -257,37 +257,37 @@ class CalculateDeclareController @Inject()(
           val oldTax = declarationResponse.get.calculation.allTax
           BigDecimal(deltaCalc.get.allTax) match {
             case _ if checkZeroPoundConditionForAmendment(calculatorResponse,deltaCalc.get.allTax) =>
-              Ok(zero_to_declare(calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+              Ok(zero_to_declare(true, calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
             case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
+              Ok(nothing_to_declare(true, calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
             case allTax if allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
+              Ok(nothing_to_declare(true, calculatorResponse.asDto(applySorting = false), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
             case allTax if allTax > appConfig.paymentLimit =>
-              Ok(over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+              Ok(over_ninety_seven_thousand_pounds(true, calculatorResponse.asDto(applySorting = true), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
             case _ =>
-              Ok(done(calculatorResponse.asDto(applySorting = true), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+              Ok(done(true, calculatorResponse.asDto(applySorting = true), deltaCalc, oldTax, calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
           }
         }
         else {
           BigDecimal(calculatorResponse.calculation.allTax) match {
             case _ if checkZeroPoundCondition(calculatorResponse) =>
-              Ok(zero_to_declare(calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+              Ok(zero_to_declare(false, calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
             case allTax if allTax == 0 && calculatorResponse.withinFreeAllowance =>
-              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
+              Ok(nothing_to_declare(false, calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, underNinePounds = false, backLinkModel.backLink))
 
             case allTax if allTax == 0 && !calculatorResponse.withinFreeAllowance =>
-              Ok(nothing_to_declare(calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
+              Ok(nothing_to_declare(false, calculatorResponse.asDto(applySorting = false), None, "", calculatorResponse.allItemsUseGBP, underNinePounds = true, backLinkModel.backLink))
 
             case allTax if allTax > appConfig.paymentLimit =>
-              Ok(over_ninety_seven_thousand_pounds(calculatorResponse.asDto(applySorting = true), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+              Ok(over_ninety_seven_thousand_pounds(false, calculatorResponse.asDto(applySorting = true), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
 
             case _ =>
-              Ok(done(calculatorResponse.asDto(applySorting = true), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
+              Ok(done(false, calculatorResponse.asDto(applySorting = true), None, "", calculatorResponse.allItemsUseGBP, backLinkModel.backLink))
           }
         }
       }
