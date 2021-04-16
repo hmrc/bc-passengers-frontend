@@ -78,7 +78,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
     }
 
     "load the page with values from keyStore" in {
-      val previousDeclarationDetails = PreviousDeclarationRequest("Smith","1234","XAPR1234567890")
+      val previousDeclarationDetails = PreviousDeclarationRequest("Smith","XAPR1234567890")
       val journeyData = JourneyData(prevDeclaration = Some(true), previousDeclarationRequest = Some(previousDeclarationDetails))
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
@@ -87,7 +87,6 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
       doc.getElementById("lastName").`val`() shouldBe "Smith"
-      doc.getElementById("identificationNumber").`val`() shouldBe "1234"
       doc.getElementById("referenceNumber").`val`() shouldBe "XAPR1234567890"
     }
 
@@ -100,7 +99,6 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
       doc.getElementById("lastName").`val`() shouldBe ""
-      doc.getElementById("identificationNumber").`val`() shouldBe ""
       doc.getElementById("referenceNumber").`val`() shouldBe ""
     }
   }
@@ -132,10 +130,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Enter your last name"
-      doc.getElementById("errors").select("a[href=#identificationNumber]").html() shouldBe "Enter the identification number you used for your previous declaration"
       doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number"
       doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your last name"
-      doc.getElementById("identificationNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter the identification number you used for your previous declaration"
       doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your reference number"
 
     }
@@ -148,7 +144,6 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
         .withFormUrlEncodedBody("" +
           "lastName" -> "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-          "identificationNumber" -> "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           "referenceNumber" -> "XXXX0123456789")).get
 
       status(response) shouldBe BAD_REQUEST
@@ -159,10 +154,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Last name must be 35 characters or less"
-      doc.getElementById("errors").select("a[href=#identificationNumber]").html() shouldBe "Identification number must be 40 characters or less"
       doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number in the correct format"
       doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Last name must be 35 characters or less"
-      doc.getElementById("identificationNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Identification number must be 40 characters or less"
       doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your reference number in the correct format"
       verify(mockPreviousDeclarationService, times(0)).storePrevDeclaration(any())(any())(any())
 
@@ -170,7 +163,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     "redirect to tell us page following a successful retrieval" in {
 
-      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
       val calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
       val productPath = ProductPath("other-goods/adult/adult-footwear")
       val country = Country("IN","title.india","IN",false,true,List())
@@ -205,7 +198,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
 
     "redirect to declaration not found when a retrospective declaration of more than 24 hours is tried to retrieve" in {
-      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
       val calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
       val productPath = ProductPath("other-goods/adult/adult-footwear")
       val country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())

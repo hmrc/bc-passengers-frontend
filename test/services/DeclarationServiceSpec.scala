@@ -334,7 +334,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None, isEditable = Some(false))
     )
     val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
-    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "XJPR5768524625")
+    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "XJPR5768524625")
     val jd: JourneyData = JourneyData(
       prevDeclaration = Some(true),
       previousDeclarationRequest = Some(previousDeclarationRequest),
@@ -1726,7 +1726,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "XJPR5768524625")
+      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "XJPR5768524625")
 
       val calculation: Calculation = Calculation("160.45","25012.50","15134.59","40307.54")
 
@@ -1856,7 +1856,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
-    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "SX12345", "someReference")
+    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
 
