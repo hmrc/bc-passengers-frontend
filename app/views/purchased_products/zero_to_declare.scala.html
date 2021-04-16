@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template)
-@(calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
 
@@ -97,25 +97,29 @@
                 </tr>
             </tbody>
         </table>
-        
-        <p class="margin-top-30">
-            @messages("label.we_use") <a href = "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" target="_blank">@messages("label.exchange_rates")</a>
-            @messages("label.to_make_this_calculation")
-        </p>
+        <br>
+        @if(!hideExchangeRateInfo) {
+            <p class="margin-top-30">
+                @messages("label.we_use") <a href = "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" target="_blank">@messages("label.exchange_rates")</a>
+                @messages("label.to_make_this_calculation")
+            </p>
+        }
 
 
-    <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
+        @if(previousDeclaration) {
+            <div class="panel panel-border-wide"><p>@messages("label.still_need_to_amend")</p></div>
 
-    <div class="panel panel-border-wide">
-        <p>@messages("label.still_need_to_declare")</p>
-    </div>
+            <p>@messages("label.amend_upto_72_hours")</p>
 
-    <p>@messages("label.declare_upto_72_hours")</p>
+            <p class="margin-bottom-30"><a class="button" role="button" href="@controllers.routes.CalculateDeclareController.declareYourGoods()">
+                @messages("label.amend_your_goods")</a></p>
+        } else {
+            <div class="panel panel-border-wide"><p>@messages("label.still_need_to_declare")</p></div>
 
-    <p class="margin-bottom-30">
-        <a class="button" role="button" href="@controllers.routes.CalculateDeclareController.declareYourGoods()">
-            @messages("label.declare_your_goods")</a>
-    </p>
+            <p>@messages("label.declare_upto_72_hours")</p>
 
-<p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
+            <p class="margin-bottom-30"><a class="button" role="button" href="@controllers.routes.CalculateDeclareController.declareYourGoods()">
+                @messages("label.declare_your_goods")</a></p>
+        }
+        <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
 }

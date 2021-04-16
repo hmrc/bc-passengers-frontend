@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template)
-@(calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
 
@@ -14,6 +14,11 @@
 
   @if(!underNinePounds){
     <p>@messages("label.personal_allowances")</p>
+  }
+
+  @if(previousDeclaration) {
+    <br>
+    <p>@messages("label.amend_personal_allowances")</p>
   }
 
   <table class="responsive-table margin-bottom-30">
@@ -100,9 +105,8 @@
           </tr>
         </tbody>
       </table>
-
+      <br>
       @if(!hideExchangeRateInfo) {
-        <br>
         <p class="margin-top-30">
           @messages("label.we_use") <a href = "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" target="_blank">@messages("label.exchange_rates")</a>
           @messages("label.to_make_this_calculation")
@@ -112,6 +116,7 @@
   <h2 class="heading-medium">@messages("label.what_you_need_to_do_next")</h2>
 
   <p>@messages("label.green_channel")</p>
+  <p>@messages("label.any_other_goods_to_declare")</p>
   <p>@messages("label.import_export_licence")</p>
 
   <p><a href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
