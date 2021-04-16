@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template)
-@(userInformation: Option[UserInformation], calculatorResponse: CalculatorResponse, calculatorResponseDto: CalculatorResponseDto, chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[_], messages: Messages)
+@(previousDeclaration: Boolean, deltaCalc: Option[Calculation], oldAllTax: Option[String], userInformation: Option[UserInformation], calculatorResponse: CalculatorResponse, calculatorResponseDto: CalculatorResponseDto, chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[_], messages: Messages)
 
 @import util._
 
@@ -21,9 +21,15 @@
      </div>
   </div>
 
-  <p>@messages("label.declaration.note_reference_number")</p>
+    @if(previousDeclaration) {
+        <p>@messages("label.amendment.note_reference_number")</p>
 
-  <p>@messages("label.declaration.provided_email_address")</p>
+        <p>@messages("label.amendment.email_receipt")</p>
+    } else {
+        <p>@messages("label.declaration.note_reference_number")</p>
+
+        <p>@messages("label.declaration.provided_email_address")</p>
+    }
 
   <body class="govuk-template__body app-example-page">
   <dl class="govuk-summary-list">
@@ -79,7 +85,7 @@
 
   <h2>@messages("label.items_declared")</h2>
 
-  <table class="responsive-table">
+  <table class="responsive-table margin-bottom-30">
     <thead>
     <tr>
         <th scope="col">@messages("label.item")</th>
@@ -117,6 +123,22 @@
     </tr>
     </tbody>
 </table>
+
+  @if(deltaCalc.isDefined && oldAllTax.isDefined){
+  <table class="responsive-table margin-bottom-30">
+      <tbody id="delta">
+      <tr>
+          <td colspan="2" id="prev-paid">@messages("label.amount_paid_previously")</td>
+          <td class="numeric" id="oldAllTax">&pound;@formatMonetaryValue(oldAllTax.get)</td>
+      </tr>
+
+      <tr>
+          <td class="total table-foot" colspan="2" id="total">@messages("label.total_due_now")</td>
+          <td class="total-value numeric table-foot" id="allTax">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+      </tr>
+      </tbody>
+  </table>
+  }
 
   <h2>@messages("label.payment_breakdown")</h2>
   <table class="responsive-table margin-bottom-30">
@@ -160,9 +182,12 @@
 
   <h2 class="heading-medium">@messages("heading.amending_declaration")</h2>
 
-  <p>@messages("label.declaration.use_online_service")</p>
-
-  <p>@messages("label.declaration.goods_to_declare")</p>
+  @if(previousDeclaration) {
+      <p>@messages("label.amendment.goods_to_existing_declaration")</p>
+  } else {
+      <p>@messages("label.declaration.use_online_service")</p>
+      <p>@messages("label.declaration.goods_to_declare")</p>
+  }
 
   <p>@messages("label.declaration.remove_goods")
    <a href="https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt" target="_blank">@messages("text.read_more_about_refunds")</a></p>
