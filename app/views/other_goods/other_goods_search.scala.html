@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input, appConfig: config.AppConfig)
-@(dtoForm: Form[OtherGoodsSearchDto], otherGoodsSearchItems: List[OtherGoodsSearchItem], productAliases: List[ProductAlias], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(dtoForm: Form[OtherGoodsSearchDto], otherGoodsSearchItems: List[OtherGoodsSearchItem], productAliases: List[ProductAlias], amendOtherGoodsCount: Int, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
@@ -57,7 +57,7 @@
 <fieldset>
 
   <legend class="heading-xlarge">@messages("label.what_other_goods_are_")</legend>
-      @if(productAliases.size < appConfig.maxOtherGoods){
+      @if(productAliases.size + amendOtherGoodsCount < appConfig.maxOtherGoods){
 
         @components.select(
           field = dtoForm("searchTerm"),
@@ -71,7 +71,7 @@
     }
   </fieldset>
 
-    @if(productAliases.size < appConfig.maxOtherGoods) {
+    @if(productAliases.size + amendOtherGoodsCount < appConfig.maxOtherGoods) {
       <details class="margin-bottom-20" role="group">
 
         <summary role="button" aria-controls="details-content-0" aria-expanded="false">
@@ -89,7 +89,7 @@
       </details>
     } else {
       <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
+        <p1>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p1>
       </div>
     }
 

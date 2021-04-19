@@ -7,6 +7,7 @@ package controllers
 
 import connectors.Cache
 import models._
+import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -15,11 +16,13 @@ import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
 import play.api.inject.bind
+import org.jsoup.nodes.Document
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
+import services.{DeclarationServiceSuccessResponse, PayApiServiceSuccessResponse}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.other_goods.other_goods_input
@@ -40,7 +43,11 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
   }
 
   trait LocalSetup {
-
+    lazy val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances, liabilityDetails = liabilityDetails)
+    lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks,oldBooks)
+    lazy val calculation = Calculation("1.00","1.00","1.00","3.00")
+    lazy val oldBooks: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/books"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(false))
+    lazy val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
     val requiredJourneyData: JourneyData = JourneyData(
       prevDeclaration = Some(false),
       Some("nonEuOnly"),
@@ -118,6 +125,14 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       )).get
 
       status(result) shouldBe BAD_REQUEST
+    }
+
+    "Return BAD_REQUEST when action=add but 50 items are already there in oldpurchasedproductinstance" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(prevDeclaration = Some(true), euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), declarationResponse = Some(declarationResponse)))
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")).get
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
+      doc.getElementsByTag("p1").text() shouldBe "You cannot use this service to declare more than 50 other goods. You must declare any goods over this limit in person to Border Force when you arrive in the UK. Use the red ‘goods to declare’ channel or the red-point phone."
     }
 
     "Return SEE_OTHER when action=add and a valid searchTerm is supplied" in new LocalSetup {

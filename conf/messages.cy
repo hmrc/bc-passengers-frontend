@@ -949,8 +949,8 @@ label.do_you_want_to_remove_.alcohol.spirits=A ydych am dynnu’r gwirodydd hyn?
 label.do_you_want_to_remove_.alcohol.wine=A ydych am dynnu’r gwin hwn?
 label.do_you_want_to_remove_.alcohol.other=A ydych am dynnu’r alcohol arall hwn?
 
-label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_=Gallwch barhau i gyfrifo trethi a thollau os nad oes gennych fwy na 50 o nwyddau eraill i’w datgan. Os oes gennych fwy na hynny, bydd angen i chi ddatgan eich holl nwyddau, alcohol a thybaco drwy fynd i’r sianel goch neu’r ffôn pwynt coch, neu drwy siarad ag aelod o Lu’r Ffiniau. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_=Gallwch ond cyfrifo trethi a thollau ar 50 o nwyddau eraill neu lai – tynnwch eitemau o’ch amcangyfrif tollau i fynd yn eich blaen. Os oes gennych fwy na hynny, ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
+label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 50 o nwyddau eraill. Mae’n rhaid i chi ddatgan unrhyw nwyddau dros y terfyn hwn yn bersonol i Lu’r Ffiniau pan fyddwch yn cyrraedd y DU. Defnyddiwch y sianel goch ar gyfer ‘nwyddau i’w datgan’ neu’r ffôn pwynt coch.
+label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 50 o nwyddau eraill. Mae’n rhaid i chi ddatgan unrhyw nwyddau dros y terfyn hwn yn bersonol i Lu’r Ffiniau pan fyddwch yn cyrraedd y DU. Defnyddiwch y sianel goch ar gyfer ‘nwyddau i’w datgan’ neu’r ffôn pwynt coch.
 
 label.X_litre_X={0} litr {1}
 label.X_litres_X={0} litr {1}

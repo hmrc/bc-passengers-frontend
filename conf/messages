@@ -949,8 +949,8 @@ label.do_you_want_to_remove_.alcohol.spirits = Do you want to remove these spiri
 label.do_you_want_to_remove_.alcohol.wine = Do you want to remove this wine?
 label.do_you_want_to_remove_.alcohol.other = Do you want to remove this other alcohol?
 
-label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_ = You can continue to calculate taxes and duties if you have no more than 50 other goods to declare. If you have more, you need to declare all your goods, alcohol and tobacco at the red channel, red-point phone or with a member of Border Force. If they are not available go to GOV.UK to find out what to do.
-label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_ = You can only calculate taxes and duties on 50 other goods or fewer - remove items from your duty estimate to continue. If you have more, go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
+label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_ = You cannot use this service to declare more than 50 other goods. You must declare any goods over this limit in person to Border Force when you arrive in the UK. Use the red ‘goods to declare’ channel or the red-point phone.
+label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_ = You cannot use this service to declare more than 50 other goods. You must declare any goods over this limit in person to Border Force when you arrive in the UK. Use the red ‘goods to declare’ channel or the red-point phone.
 
 label.X_litre_X = {0} litre {1}
 label.X_litres_X = {0} litres {1}
