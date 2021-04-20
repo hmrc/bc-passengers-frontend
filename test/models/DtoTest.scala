@@ -336,6 +336,60 @@ class DtoTest extends BaseSpec {
       form.error("identification").get.message shouldBe "error.telephone_number.format"
     }
 
+
+    "allow the identificationNumber to be correct if identificationType is other than telephone and in correct format" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "passport",
+        "identification.identificationNumber" -> "AB7 8b+",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if identificationType is other than telephone and identificationNumber is not in correct format" in {
+      val formData = Map(
+        "firstName" -> "Harry",
+        "lastName" -> "Potter",
+        "identification.identificationType" -> "driving",
+        "identification.identificationNumber" -> "BE4 8&#)",
+        "emailAddress.email"-> "",
+        "emailAddress.confirmEmail"-> "",
+        "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival" -> "",
+        "dateTimeOfArrival.dateOfArrival.day" -> "23",
+        "dateTimeOfArrival.dateOfArrival.month" -> "11",
+        "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15",
+        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+      )
+
+      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+
+      form.hasErrors shouldBe true
+      form.errors.size shouldBe 1
+      form.error("identification").get.message shouldBe "error.identification_number.format"
+    }
+
     "allow the same email and confirmEmail in valid format" in {
       val formData = Map(
         "firstName" -> "Harry",

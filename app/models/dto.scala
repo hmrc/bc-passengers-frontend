@@ -213,6 +213,7 @@ trait Validators {
 }
 
 object EnterYourDetailsDto extends Validators {
+  val identificationPattern = "^[a-zA-Z0-9- '+]+$"
   val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
   val emailAddressPattern = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
 
@@ -283,13 +284,14 @@ object EnterYourDetailsDto extends Validators {
     }
   }
 
-  private def verifyIdentificationNumberConstraint(pattern: String): Constraint[Identification] = {
+  private def verifyIdentificationNumberConstraint(idPattern: String, telephonePattern: String): Constraint[Identification] = {
     Constraint {
       model =>
         (model.identificationType, model.identificationNumber) match {
-          case (x, y) if !x.contains("telephone") && !y.isEmpty => Valid
-          case (x, y) if x.contains("telephone") && y.matches(pattern)   => Valid
-          case _ => Invalid(ValidationError(s"error.telephone_number.format"))
+          case (x, y) if !x.contains("telephone") && y.matches(idPattern) => Valid
+          case (x, y) if !x.contains("telephone") && !y.matches(idPattern) => Invalid(ValidationError(s"error.identification_number.format"))
+          case (x, y) if x.contains("telephone") && y.matches(telephonePattern)   => Valid
+          case (x, y) if x.contains("telephone") && !y.matches(telephonePattern) => Invalid(ValidationError(s"error.telephone_number.format"))
         }
     }
   }
@@ -319,7 +321,7 @@ object EnterYourDetailsDto extends Validators {
         "identificationType" -> optional(text).verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
         "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
       )(Identification.apply)(Identification.unapply)
-        .verifying(verifyIdentificationNumberConstraint(telephoneNumberPattern)),
+        .verifying(verifyIdentificationNumberConstraint(identificationPattern,telephoneNumberPattern)),
       "emailAddress" -> mapping(
         "email" -> text.verifying(maxLength(132, "email")),
         "confirmEmail" -> text.verifying(maxLength(132, "email"))
