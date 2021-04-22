@@ -295,6 +295,42 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       }
     }
 
+    "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with total tax greater than 97000 pounds and amendment is less than 90,000 pounds in amendments journey" should {
+
+      "Display the declare-your-goods page with process-amendment redirect url" in new LocalSetup {
+        override lazy val deltaCalculation = Calculation("70000.00","0.00","0.00","70000.00")
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(true), euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crAboveLimit), deltaCalculation = Some(deltaCalculation), declarationResponse = Some(declarationResponse))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+        val content: String = contentAsString(response)
+        val doc: Document = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
+        doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
+      }
+    }
+
+    "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with total tax is 0 pounds and amendment is 0 pound in amendments journey" should {
+
+      "Display the declare-your-goods page with process-amendment redirect url for GBNI" in new LocalSetup {
+        override lazy val deltaCalculation = Calculation("0.00","0.00","0.00","0.00")
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(true), euCountryCheck = Some("greatBritain"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crZero), deltaCalculation = Some(deltaCalculation), declarationResponse = Some(declarationResponse))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+
+        val content: String = contentAsString(response)
+        val doc: Document = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
+        doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
+      }
+    }
+
     "Display the declare-your-goods page when at the higher end of the range" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitHigh))))
       override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
