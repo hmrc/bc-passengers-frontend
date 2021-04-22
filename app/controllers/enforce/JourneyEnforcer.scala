@@ -247,18 +247,21 @@ class DeclareAction @Inject()(appConfig: AppConfig, publicAction: PublicAction) 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
 
-      if (context.journeyData.isDefined &&
-        (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit) ||
-        (context.getJourneyData.euCountryCheck.getOrElse("") == "greatBritain" && context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
-      ){
+      if (declarationJourney(context))
         block(context)
-      }
-
-      else {
-        if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
-     }
+      else if(amendmentJourney(context))
+        block(context)
+      else if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
     }
   }
+
+  private def declarationJourney(context: LocalContext): Boolean = context.journeyData.isDefined &&
+    (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit) ||
+      (context.getJourneyData.euCountryCheck.getOrElse("") == "greatBritain" && context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
+
+  private def amendmentJourney(context: LocalContext): Boolean = context.journeyData.isDefined && context.getJourneyData.calculatorResponse.isDefined &&
+    (context.getJourneyData.deltaCalculation.fold(false)(x => BigDecimal(x.allTax) > 0 && BigDecimal(x.allTax) <=  appConfig.paymentLimit) ||
+    (context.getJourneyData.euCountryCheck.getOrElse("") == "greatBritain" && context.getJourneyData.deltaCalculation.fold(false)(x => BigDecimal(x.allTax) == 0 && context.getJourneyData.calculatorResponse.get.isAnyItemOverAllowance)))
 
 }
 
