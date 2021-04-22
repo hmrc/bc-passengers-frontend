@@ -12,6 +12,7 @@
   previousTobaccoPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
   showCalculate: Boolean,
+  isAmendment: Boolean,
   backLink: Option[String],
   isIrishBorderQuestionEnabled: Boolean,
   isGbNi: Boolean,
@@ -120,7 +121,10 @@
   @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
       <a href="@routes.CalculateDeclareController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
-    } else {
+    }else if(isAmendment){
+      @form(action = routes.CalculateDeclareController.calculate()) {
+        <button id="calculate-btn1" type="submit" class="button margin-top-30">@messages("label.calculate_change_in_tax_and_duties")</button>}
+    }else {
       @form(action = routes.CalculateDeclareController.calculate()) {
         <button id="calculate-btn" type="submit" class="button margin-top-30">@messages("label.calculate")</button>
       }

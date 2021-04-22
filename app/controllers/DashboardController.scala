@@ -44,7 +44,7 @@ class DashboardController @Inject() (
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
       cache.fetch flatMap { journeyData: Option[JourneyData] =>
-
+        val isAmendment = context.getJourneyData.declarationResponse.isDefined
         val jd = journeyData.getOrElse(JourneyData())
         val allPurchasedProductInstances = jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances
           calculatorService.journeyDataToCalculatorRequest(jd, allPurchasedProductInstances) map { maybeCalculatorRequest =>
@@ -79,6 +79,7 @@ class DashboardController @Inject() (
 
             Ok(dashboard(jd, alcoholPurchasedItemList.reverse, tobaccoPurchasedItemList.reverse, otherGoodsPurchasedItemList.reverse,
               previousAlcoholPurchasedItemList.reverse, previousTobaccoPurchasedItemList.reverse, previousOtherGoodsPurchasedItemList.reverse, showCalculate,
+              isAmendment,
               backLinkModel.backLink,
               appConfig.isIrishBorderQuestionEnabled,
               jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
