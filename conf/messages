@@ -1707,9 +1707,6 @@ label.statement_on_origin = a ''statement on origin'' from the supplier of the i
 label.appropriate_evidence = If you do not have the appropriate evidence you will have to pay customs duty on this item.
 head.error.evidence_eu_item = Select yes if you have evidence this item was originally produced or made in the EU
 error.evidence_eu_item = Select yes if you have evidence this item was originally produced or made in the EU
-text.made_in_eu = You will not have to pay customs duty on this item as you have stated it was originally produced or made in the EU.
-text.however_item_may_be_seized = However, if you do not have any of the following evidence to prove this, your item may be seized:
-text.declare_over_1000 = If you intend to declare over £1,000 worth of goods originally produced or made in the EU, you may also need to provide the following:
 
 label.change_your_goods = Change your goods
 label.breakdown_of_tax_and_duty_due = Breakdown of tax and duty due
@@ -1718,8 +1715,6 @@ label.amount_paid_previously = Amount paid previously
 label.total_due_now = Total due now
 label.na = N/A
 
-label.amend_your_goods = Amend your declaration
-label.amend_your_goods_and_pay_online = Amend your declaration and pay online
 #declaration not found page
 heading.declaration_not_found = Your declaration cannot be found
 text.may_be_because = This may be because:
