@@ -1713,6 +1713,7 @@ label.breakdown_of_tax_and_duty_due=Dadansoddiad o’r dreth a’r tollau sy’n
 label.amount_due = Swm sy’n ddyledus
 label.amount_paid_previously =Swm a dalwyd yn flaenorol
 label.total_due_now =Cyfanswm sy’n ddyledus nawr
+label.total_paid_now = Cyfanswm wedi'i dalu nawr
 label.na = N/A
 
 #declaration not found page

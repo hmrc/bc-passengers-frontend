@@ -266,6 +266,27 @@ class DeclareAction @Inject()(appConfig: AppConfig, publicAction: PublicAction) 
 }
 
 @Singleton
+class UserInfoAction @Inject()(appConfig: AppConfig, publicAction: PublicAction) {
+
+
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+
+      if (context.journeyData.isDefined && context.getJourneyData.prevDeclaration.getOrElse(false) == false &&
+        (context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <=  appConfig.paymentLimit) ||
+        (context.getJourneyData.euCountryCheck.getOrElse("") == "greatBritain" && context.getJourneyData.calculatorResponse.fold(false)(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))) {
+        block(context)
+      }
+
+      else {
+        if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+      }
+    }
+  }
+
+}
+
+@Singleton
 class ArrivingNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
   val step: JourneyStep = if(appConfig.isVatResJourneyEnabled) vatres.ArrivingNIStep else nonvatres.ArrivingNIStep
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {

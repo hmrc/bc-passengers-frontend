@@ -1713,6 +1713,7 @@ label.breakdown_of_tax_and_duty_due = Breakdown of tax and duty due
 label.amount_due = Amount due
 label.amount_paid_previously = Amount paid previously
 label.total_due_now = Total due now
+label.total_paid_now = Total paid now
 label.na = N/A
 
 #declaration not found page
