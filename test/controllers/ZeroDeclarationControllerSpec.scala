@@ -109,7 +109,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
       content should include ("You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number.")
       doc.getElementById("prev-paid").text() shouldBe "Amount paid previously"
       doc.getElementById("oldAllTax").text() shouldBe "£3.00"
-      doc.getElementById("total").text() shouldBe "Total due now"
+      doc.getElementById("total").text() shouldBe "Total paid now"
       doc.getElementById("allTax").text() shouldBe "£3.00"
     }
 

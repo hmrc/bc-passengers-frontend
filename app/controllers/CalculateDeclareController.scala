@@ -8,7 +8,7 @@ package controllers
 import java.util.UUID
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, DeclareAction, PublicAction}
+import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
 import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
@@ -37,6 +37,7 @@ class CalculateDeclareController @Inject()(
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
   declareAction: DeclareAction,
+  userInfoAction: UserInfoAction,
 
   val you_need_to_declare: views.html.declaration.declare_your_goods,
   val zero_to_declare_your_goods: views.html.declaration.zero_to_declare_your_goods,
@@ -82,7 +83,7 @@ class CalculateDeclareController @Inject()(
     }
   }
 
-  def enterYourDetails: Action[AnyContent] = declareAction { implicit context =>
+  def enterYourDetails: Action[AnyContent] = userInfoAction { implicit context =>
     context.getJourneyData.userInformation match {
 
       case Some(userInformation) =>

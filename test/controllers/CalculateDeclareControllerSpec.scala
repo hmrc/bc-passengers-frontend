@@ -248,6 +248,21 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when in amendment journey" should {
+
+    "Display the previous-declaration page" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(true), euCountryCheck = Some("nonEuOnly"), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), userInformation = Some(ui),  calculatorResponse = Some(crWithinLimitLow))))
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
+  }
+
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when tax amount is 0.00" should {
 
     "Display the previous-declaration page" in new LocalSetup {
