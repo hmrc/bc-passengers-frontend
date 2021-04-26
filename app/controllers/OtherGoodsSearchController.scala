@@ -5,11 +5,13 @@
 
 package controllers
 
+
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
+
 import javax.inject.Inject
-import models.{OtherGoodsSearchDto, OtherGoodsSearchItem, ProductAlias}
+import models.{OtherGoodsSearchDto, OtherGoodsSearchItem, ProductAlias, ProductTreeLeaf, PurchasedItem, SpeculativeItem}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, number, optional, text}
 import play.api.i18n.I18nSupport
@@ -17,7 +19,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+
 import scala.concurrent.{ExecutionContext, Future}
+
 
 class OtherGoodsSearchController @Inject()(
   val cache: Cache,
@@ -73,19 +77,17 @@ class OtherGoodsSearchController @Inject()(
   val searchGoods: Action[AnyContent] = dashboardAction { implicit context =>
 
     Future.successful {
-
-      Ok(other_goods_search(otherGoodsSearchForm(), productTreeService.otherGoodsSearchItems, context.getJourneyData.selectedAliases, backLinkModel.backLink))
+      Ok(other_goods_search(otherGoodsSearchForm(), productTreeService.otherGoodsSearchItems, context.getJourneyData.selectedAliases, amendOtherGoodsCount(context), backLinkModel.backLink))
     }
   }
 
   val processSearchGoods: Action[AnyContent] = dashboardAction { implicit context =>
-
     val otherGoodsSearchItems: List[OtherGoodsSearchItem] = productTreeService.otherGoodsSearchItems
 
     otherGoodsSearchForm(otherGoodsSearchItems).bindFromRequest.fold(
       formWithErrors => {
         Future.successful {
-          BadRequest(other_goods_search(formWithErrors, otherGoodsSearchItems, context.getJourneyData.selectedAliases, backLinkModel.backLink))
+          BadRequest(other_goods_search(formWithErrors, otherGoodsSearchItems, context.getJourneyData.selectedAliases, amendOtherGoodsCount(context), backLinkModel.backLink))
         }
       },
       {
@@ -116,5 +118,16 @@ class OtherGoodsSearchController @Inject()(
 
       }
     )
+  }
+  private def amendOtherGoodsCount(context: LocalContext): Int ={
+    val i : BigDecimal = 0
+    val speculativeItems: List[SpeculativeItem] = for {
+      purchasedProductInstance <- context.getJourneyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
+      productTreeLeaf <- productTreeService.productTree.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
+    } yield SpeculativeItem(purchasedProductInstance, productTreeLeaf, 0)
+    val previousOtherGoodsPurchasedItemList: List[SpeculativeItem] = speculativeItems.collect {
+      case item@SpeculativeItem(ppi, ProductTreeLeaf(_, _, _, tid, _), i) if tid == "other-goods" && ppi.isEditable.contains(false) => item
+    }
+    previousOtherGoodsPurchasedItemList.size
   }
 }
