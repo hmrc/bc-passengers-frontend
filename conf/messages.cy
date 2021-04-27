@@ -959,6 +959,7 @@ label.X_X={0} {1}
 label.X_X_Xg={0} {1}, {2}g
 
 label.calculate=Cyfrifo trethi a thollau
+label.calculate_change_in_tax_and_duties = Cyfrifo’r newid mewn trethi a thollau
 
 title.afghanistan=Afghanistan
 title.aland_islands=Ynysoedd Åland
