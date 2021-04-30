@@ -1721,5 +1721,5 @@ label.na = N/A
 heading.declaration_not_found = Ni ellir canfod eich datganiad.
 text.may_be_because = Gall hyn fod oherwydd y canlynol:
 label.no_existing_declaration = nid yw’r manylion a nodwyd gennych yn cyd-fynd â datganiad sy’n bodoli eisoes - ewch yn ôl, gwiriwch eich manylion a rhowch gynnig arall arni
-label.payment_issue = roedd yna broblem gyda’ch taliad pan wnaethoch geisio ychwanegu nwyddau at eich datganiad yn flaenorol – bydd angen i chi fynd i’r sianel goch ar gyfer ‘nwyddau i’w datgan’ neu ddefnyddio’r ffôn pwynt coch yn eich man cyrraedd er mwyn datgan unrhyw nwyddau ychwanegol
-label.already_passed_custom = rydych eisoes wedi mynd drwy dollau’r DU ac ni allwch ddatgan nwyddau ar gyfer eich taith mwyach
+label.payment_issue = (W)there was an issue when you previously tried to add goods to your declaration and your payment was not completed - you will now need to speak to a border force officer at your arrival location to declare any additional goods(W)
+label.already_passed_custom = (W)your scheduled time of arrival is in the past - if your journey has been delayed and you have goods to declare, speak to a border force officer at your arrival location(W)
