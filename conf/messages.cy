@@ -256,6 +256,7 @@ label.tobacco.cigars.single=Sigâr
 label.tobacco.chewing-tobacco=Tybaco cetyn neu gnoi
 label.tobacco.rolling-tobacco=Tybaco rholio
 label.tobacco.heated-tobacco=Tybaco gwresogi nid llosgi
+label.tobacco.heated-tobacco.single=Tybaco gwresogi nid llosgi
 label.total_number_of_tobacco.cigarettes=Cyfanswm y sigaréts
 label.total_number_of_tobacco.cigarillos=Cyfanswm y sigarilos
 label.total_number_of_tobacco.cigars=Cyfanswm y sigârs

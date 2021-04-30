@@ -256,6 +256,7 @@ label.tobacco.cigars.single = Cigar
 label.tobacco.chewing-tobacco = Pipe or chewing tobacco
 label.tobacco.rolling-tobacco = Rolling tobacco
 label.tobacco.heated-tobacco = Heated tobacco
+label.tobacco.heated-tobacco.single = Heated tobacco
 label.total_number_of_tobacco.cigarettes = Total number of cigarettes
 label.total_number_of_tobacco.heated-tobacco = Total number of units of heated tobacco
 label.total_number_of_tobacco.cigarillos = Total number of cigarillos
