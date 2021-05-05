@@ -91,9 +91,9 @@ class CalculatorService @Inject() (
   }
 
 
-  def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier): Future[JourneyData] = {
+  def storeCalculatorResponse(journeyData: JourneyData, calculatorResponse: CalculatorResponse, deltaCalc: Option[Calculation] = None)(implicit hc: HeaderCarrier): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse))
+    val updatedJourneyData = journeyData.copy(calculatorResponse = Some(calculatorResponse), deltaCalculation = deltaCalc)
 
     cache.store( updatedJourneyData ).map(_ => updatedJourneyData)
   }
@@ -104,13 +104,6 @@ class CalculatorService @Inject() (
     val deltaExcise = (BigDecimal(currentCalculation.excise) - BigDecimal(oldCalcObj.excise)).setScale(2).toString
     val deltaTotal = (BigDecimal(currentCalculation.allTax) - BigDecimal(oldCalcObj.allTax)).setScale(2).toString
     Calculation(deltaExcise,deltaCustoms,deltaVat,deltaTotal)
-  }
-
-  def storeCalculatorResponseWithDelta(journeyData: JourneyData, deltaCalc:Calculation,calculatorResponse: CalculatorResponse)(implicit hc: HeaderCarrier): Future[JourneyData] = {
-
-    val newJourneyData = journeyData.copy(deltaCalculation = Some(deltaCalc),calculatorResponse = Some(calculatorResponse))
-
-    cache.store( newJourneyData )
   }
 
   def journeyDataToLimitsRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Option[LimitRequest] = {

@@ -198,7 +198,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[DeclarationService].storeChargeReference(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
       when(injected[DateTimeProviderService].now) thenReturn dt
       when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)))
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any())(any())) thenReturn Future.successful(JourneyData())
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
 
       rt(app, req)
     }
