@@ -62,7 +62,9 @@
       displayEmptyValue = true,
       '_label -> messages("label.country_the_item_was_bought_in"),
       '_inputHint -> messages("label.if_you_bought_this_item_"),
-      '_errorsAboveInput -> true
+      '_errorsAboveInput -> true,
+      '_error_id -> "country-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     @if(journeyStart.contains("euOnly")){
@@ -72,7 +74,9 @@
         displayEmptyValue = true,
         '_label -> messages("label.country_the_item_was_produced_in"),
         '_inputHint -> messages("label.country_the_item_was_produced_hint"),
-        '_errorsAboveInput -> true
+        '_errorsAboveInput -> true,
+        '_error_id -> "originCountry-error-message",
+        '_errorPrefix -> messages("label.error")
       )
     }
 
@@ -82,7 +86,9 @@
       displayEmptyValue = true,
       '_label -> messages("label.currency_used_to_buy_the_item"),
       '_errorsAboveInput -> true,
-      'name -> "currency_source"
+      'name -> "currency_source",
+      '_error_id -> "currency-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     @components.input(

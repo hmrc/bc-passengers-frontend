@@ -29,9 +29,16 @@
 
     @if(elements.args.contains('_additionalTitleText)){<p>@elements.args.get('_additionalTitleText)</p>}
     @if(elements.args.contains('_errorsAboveInput)){
-        @elements.errors.map { error => <span style="display: block" class="error-message">@Messages(error)</span>}
+        @elements.errors.map { error =>
+            <span style="display: block" class="error-message" @if(elements.args.contains('_error_id)) { id="@elements.args.get('_error_id)" }>
+                @if(elements.args.contains('_errorPrefix) ){
+                    <span class="visually-hidden">@elements.args.get('_errorPrefix) </span>
+                }
+                @Messages(error)</span>
+        }
     }
-    <select aria-describedby="hint-@elements.field.name" id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)">
+    <select aria-describedby="hint-@elements.field.name" id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)"
+            @if(elements.args.get('_error_id).isDefined) { aria-labeledby="@elements.args.get('_error_id)" }>
         @if(displayEmptyValue) {
             <option value="">@elements.args.get('_emptyValueText)</option>
         }

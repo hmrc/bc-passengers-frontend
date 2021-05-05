@@ -24,7 +24,9 @@
       @args.toMap.get('_inputHint).map { hint =>
         <span class="form-hint">@hint</span>
       }
-      @form.errors.filter(_.key == fieldName).map { error => <span class="error-message">@Messages(error.message)</span>}
+      @form.errors.filter(_.key == fieldName).map { error => <span class="error-message" @if(args.toMap.contains('_error_id)) {
+        id="@args.toMap.get('_error_id)" }>
+          @if(args.toMap.contains('_errorPrefix) ){<span class="visually-hidden">@args.toMap.get('_errorPrefix) </span>}@Messages(error.message)</span>}
     </legend>
 
     @input(
@@ -36,7 +38,9 @@
       '_type -> "tel",
       '_maxlength -> "2",
       '_hideErrors -> " ",
-      '_hideBar -> " "
+      '_hideBar -> " ",
+      '_error_id -> "timeOfArrival-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     @input(
@@ -48,7 +52,9 @@
       '_type -> "tel",
       '_maxlength -> "2",
       '_hideErrors -> " ",
-      '_hideBar -> " "
+      '_hideBar -> " ",
+      '_error_id -> "timeOfArrival-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     <div class="form-group form-group-time-am-pm">

@@ -32,7 +32,8 @@
                 @components.input_check_box(
                     selectProductsForm("tokens"),
                     inputs = checkboxes,
-                    Some(path)
+                    Some(path),
+                    errorPrefix = Some(messages("label.error"))
                 )
             </fieldset>
 
