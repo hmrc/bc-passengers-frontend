@@ -70,7 +70,7 @@ class UKExcisePaidController @Inject()(
     Future.successful {
       val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
       ppInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _,_,_, Some(isExcisePaid),_,_,_)) =>
+        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _, _,_,_, Some(isExcisePaid),_,_,_)) =>
           Ok(isUKExcisePaidItemPage(UKExcisePaidItemForm.form.fill(isExcisePaid), backLinkModel.backLink, path, iid))
         case _ =>
           Ok(isUKExcisePaidItemPage(UKExcisePaidItemForm.form, backLinkModel.backLink, path, iid))

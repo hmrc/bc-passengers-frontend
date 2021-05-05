@@ -41,6 +41,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
               None,
               Some("CAD"),
               Some(BigDecimal("2.00")),
+              None,
               Some(true),
               Some(true),
               Some(false),

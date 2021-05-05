@@ -120,8 +120,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
 
       when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -134,8 +134,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
 
       when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -148,8 +148,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
       val insertedPurchase = (cachedEUGBJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedEUGBJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(),any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedEUGBJourneyData.get
 
       when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
 
@@ -623,6 +623,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
         any(),
         meq("EUR"),
         meq(List(BigDecimal(12.50))),
+        any(),
         any()
       )(any())
 
@@ -760,7 +761,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
         meq("FR"),
         any(),
         meq("EUR"),
-        meq(BigDecimal(50.00))
+        meq(BigDecimal(50.00)),
+        any()
       )(any())
 
       verify(injected[Cache], times(2)).store(any())(any())

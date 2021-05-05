@@ -101,8 +101,8 @@ GET        /enter-goods/tobacco/:iid/edit                                       
 POST       /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.processEditForm(iid: String)
 
 
-GET        /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.OtherGoodsInputController.displayAddForm(path: ProductPath)
-POST       /enter-goods/$path<other-goods/.+>/tell-us                                  controllers.OtherGoodsInputController.processAddForm(path: ProductPath)
+GET        /enter-goods/other-goods/tell-us                                            controllers.OtherGoodsInputController.displayAddForm()
+POST       /enter-goods/other-goods/tell-us                                            controllers.OtherGoodsInputController.processAddForm()
 
 GET        /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.displayEditForm(iid: String)
 POST       /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.processEditForm(iid: String)
@@ -129,10 +129,5 @@ POST       /ireland-to-northern-ireland                                         
 GET        /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /time-out                                                                   controllers.PublicController.timeOut()
-
-
-GET        /other-goods/add-new                                                        controllers.OtherGoodsSearchController.clearAndSearchGoods
-GET        /other-goods/add                                                            controllers.OtherGoodsSearchController.searchGoods
-POST       /other-goods/add                                                            controllers.OtherGoodsSearchController.processSearchGoods
 
 GET        /language/:lang                                                             controllers.LocalLanguageController.switchToLanguage(lang: String)

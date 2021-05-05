@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(selectProductsForm: Form[SelectProductsDto], checkboxes: List[(String, String)], path: ProductPath)(implicit request: Request[_], messages: Messages)
+@(selectProductsForm: Form[SelectProductsDto], items: List[(String, String)], path: ProductPath)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import util.prefixErrorMessage
@@ -28,13 +28,22 @@
                 </legend>
 
                 <span id="product-hint" class="body-text">@messages("label.select_all_that_apply")</span>
-
-                @components.input_check_box(
+                @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
+                    @components.input_check_box(
                     selectProductsForm("tokens"),
-                    inputs = checkboxes,
+                    inputs = items,
                     Some(path),
-                    errorPrefix = Some(messages("label.error"))
-                )
+                    errorPrefix = Some(messages("label.error")))
+                }else{
+                    @components.input_radio_group_for_list(
+                    selectProductsForm("tokens"),
+                    items,
+                    path = Some(path),
+                    '_groupClass -> "form-group",
+                    '_error_id -> "othergoods-error-message",
+                    '_errorPrefix -> messages("label.error"))
+                }
+
             </fieldset>
 
         </div>

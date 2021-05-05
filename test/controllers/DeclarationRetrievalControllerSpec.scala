@@ -170,7 +170,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
       val userInformation = UserInformation("Harry", "Smith", "passport", "SX12345", "abc@gmail.com", "Newcastle Airport", "", LocalDate.now(), LocalTime.now().minusHours(23))
       val purchasedProductInstances = List(
-        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(false), Some(false), None, Some(false), None, Some(false))
+        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false), Some(false), None, Some(false), None, Some(false))
       )
       val declarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
       val retrievedJourneyData: JourneyData = JourneyData(prevDeclaration = Some(true),
@@ -205,7 +205,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
       val userInformation = UserInformation("Harry", "Smith", "passport", "SX12345", "abc@gmail.com", "Newcastle Airport", "", LocalDate.parse("2021-04-01"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
       val purchasedProductInstances = List(
-        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(false), Some(false), None, Some(false), None, Some(false))
+        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false), Some(false), None, Some(false), None, Some(false))
       )
       val declarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
       val cachedJourneyData = Future.successful(Some(JourneyData(

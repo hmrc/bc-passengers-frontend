@@ -27,11 +27,11 @@ class NewPurchaseServiceSpec extends BaseSpec {
 
       val localContext = LocalContext(EnhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = List(ppi))))
 
-      val modifiedJourneyData = s.insertPurchases(ProductPath("some/item/path"), Some(185.5), Some(100), "FR", None, "EUR", List(12.50), new Random(1))(localContext)._1
+      val modifiedJourneyData = s.insertPurchases(ProductPath("some/item/path"), Some(185.5), Some(100), "FR", None, "EUR", List(12.50), None, new Random(1))(localContext)._1
 
       modifiedJourneyData.purchasedProductInstances shouldBe List(
         ppi,
-        PurchasedProductInstance(ProductPath("some/item/path"), "NAvZuG", Some(185.5), Some(100), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("EUR"), Some(12.50), None, Some(false), None, None)
+        PurchasedProductInstance(ProductPath("some/item/path"), "NAvZuG", Some(185.5), Some(100), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("EUR"), Some(12.50), None, None, Some(false), None, None)
       )
     }
 
@@ -41,7 +41,7 @@ class NewPurchaseServiceSpec extends BaseSpec {
 
       val localContext = LocalContext(EnhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = List(ppi))))
 
-      val modifiedJourneyData = s.insertPurchases(ProductPath("some/item/path"), Some(185.5), Some(100), "FR", None, "EUR", List(12.50, 13.60, 14.70), new Random(1))(localContext)._1
+      val modifiedJourneyData = s.insertPurchases(ProductPath("some/item/path"), Some(185.5), Some(100), "FR", None, "EUR", List(12.50, 13.60, 14.70), None, new Random(1))(localContext)._1
 
       modifiedJourneyData.defaultCountry shouldBe Some("FR")
       modifiedJourneyData.defaultCurrency shouldBe Some("EUR")
@@ -63,7 +63,7 @@ class NewPurchaseServiceSpec extends BaseSpec {
 
       modifiedJourneyData.purchasedProductInstances shouldBe List(
         PurchasedProductInstance(ProductPath("some/item/path"), "iid0", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(1.69), None, None, None, None),
-        PurchasedProductInstance(ProductPath("some/item/path"), "iid1", Some(185.5), Some(100), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("EUR"), Some(14.70), None, Some(false), None, None)
+        PurchasedProductInstance(ProductPath("some/item/path"), "iid1", Some(185.5), Some(100), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("EUR"), Some(14.70), None, None, Some(false), None, None)
       )
 
     }

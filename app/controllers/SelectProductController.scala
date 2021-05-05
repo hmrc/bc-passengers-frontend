@@ -62,11 +62,11 @@ class SelectProductController @Inject()(
             case ProductTreeLeaf(_, _, _, templateId, _ ) =>
 
               templateId match {
-                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
-                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
-                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
-                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
-                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/"+productPath+"/tell-us"))
+                case "alcohol" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us"))
+                case "cigarettes" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us"))
+                case "cigars" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us"))
+                case "tobacco" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us"))
+                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
               }
 
           }
@@ -86,7 +86,7 @@ class SelectProductController @Inject()(
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
-        Future.successful(Ok(select_products(SelectProductsDto.form, children.map( i => ( i.name, i.token ) ), path)))
+        Future.successful(Ok(select_products(SelectProductsDto.form(path.toMessageKey), if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")) children.map( i => ( i.name, i.token ) ) else children.map( i => ( i.token,i.name ) ), path)))
       case _ =>
         Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
 
@@ -98,7 +98,7 @@ class SelectProductController @Inject()(
 
     requireCategory(path) { branch =>
 
-      SelectProductsDto.form.bindFromRequest.fold(
+      SelectProductsDto.form(path.toMessageKey).bindFromRequest.fold(
         formWithErrors => {
           Future.successful {
             BadRequest(select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
@@ -123,10 +123,10 @@ class SelectProductController @Inject()(
 
     requireCategory(path) { branch =>
 
-      SelectProductsDto.form.bindFromRequest.fold(
+      SelectProductsDto.form(path.toMessageKey).bindFromRequest.fold(
         formWithErrors => {
           Future.successful {
-            BadRequest(select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
+            BadRequest(select_products(formWithErrors, branch.children.map(i => (i.token, i.name)), path))
           }
         },
         selectProductsDto => {
@@ -143,7 +143,7 @@ class SelectProductController @Inject()(
 
               case _ =>
                 purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-                  Redirect(routes.OtherGoodsSearchController.searchGoods())
+                  Redirect(routes.OtherGoodsInputController.displayAddForm())
                 }
             }
           }

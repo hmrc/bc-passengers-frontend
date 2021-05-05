@@ -14,25 +14,19 @@ import services.CountriesService
 
 import scala.util.Try
 
-case class OtherGoodsSearchDto(
-  searchTerm: Option[OtherGoodsSearchItem],
-  remove: Option[Int],
-  action: Option[String]
-)
-
 object OtherGoodsDto {
 
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
     cost <- purchasedProductInstance.cost
-  } yield OtherGoodsDto("", country.code, purchasedProductInstance.originCountry.map(_.code), currency, cost, purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief, purchasedProductInstance.isCustomPaid, purchasedProductInstance.hasEvidence)
+  } yield OtherGoodsDto(purchasedProductInstance.searchTerm, country.code, purchasedProductInstance.originCountry.map(_.code), currency, cost, purchasedProductInstance.isVatPaid, purchasedProductInstance.isUccRelief, purchasedProductInstance.isCustomPaid, purchasedProductInstance.hasEvidence)
 
 
 }
 
 case class OtherGoodsDto(
-  action: String,
+  searchTerm: Option[OtherGoodsSearchItem],
   country: String,
   originCountry: Option[String],
   currency: String,
@@ -178,9 +172,12 @@ object SelectProductsDto {
     if (list.nonEmpty) Valid else Invalid(ValidationError("error.required"))
   }
 
-  val form: Form[SelectProductsDto] = Form(
+  def form(path: String): Form[SelectProductsDto] = Form(
     mapping(
-      "tokens" -> list(nonEmptyText).verifying(nonEmptyList)
+      if(path.contains("alcohol") || path.contains("tobacco"))
+        "tokens" -> list(nonEmptyText).verifying(nonEmptyList)
+      else
+        "tokens" -> optional(text).verifying("error.required.other", _.nonEmpty).transform[List[String]](item => List(item.get), _.headOption)
     )(SelectProductsDto.apply)(SelectProductsDto.unapply)
   )
 }

@@ -11,7 +11,6 @@ import ai.x.play.json.Jsonx
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 
-
 object PurchasedProductInstance {
   implicit val formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
 }
@@ -24,6 +23,7 @@ case class PurchasedProductInstance(
   originCountry: Option[Country] = None,
   currency: Option[String] = None,
   cost: Option[BigDecimal] = None,
+  searchTerm: Option[OtherGoodsSearchItem] = None,
   isVatPaid: Option[Boolean] = None,
   isCustomPaid: Option[Boolean] = None,
   isExcisePaid: Option[Boolean] = None,
