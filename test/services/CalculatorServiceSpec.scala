@@ -425,7 +425,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
   }
 
-  "Calling CalculatorService.storeCalculatorResponseWithDelta" should {
+  "Calling CalculatorService.storeCalculatorResponse" should {
 
     "store a new CalculatorServiceResponse along with deltaCalculation in JourneyData" in {
 
@@ -437,9 +437,9 @@ class CalculatorServiceSpec extends BaseSpec {
         service
       }
 
-      lazy val deltaCalc:Calculation = Calculation("96.27","150.00","109.25","355.52")
+      lazy val deltaCalc: Calculation = Calculation("96.27","150.00","109.25","355.52")
 
-      await(calcService.storeCalculatorResponseWithDelta(JourneyData(), deltaCalc, CalculatorResponse(None, None, None, Calculation("136.27", "150.00", "297.25", "583.52"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false)))
+      await(calcService.storeCalculatorResponse(JourneyData(), CalculatorResponse(None, None, None, Calculation("136.27", "150.00", "297.25", "583.52"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false), Some(deltaCalc)))
 
       verify(calcService.cache, times(1)).store(
         meq(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("136.27", "150.00", "297.25", "583.52"), withinFreeAllowance = true, limits = Map.empty, isAnyItemOverAllowance = false)), deltaCalculation = Some(deltaCalc)))

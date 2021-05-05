@@ -211,34 +211,32 @@ class CalculateDeclareController @Inject()(
       doCalculateAction(context.getJourneyData)
   }
 
-  private def doCalculateAction(journeyData: JourneyData)(implicit context: LocalContext): Future[Result] = {
+  private def doCalculateAction(journeyData: JourneyData)(implicit context: LocalContext): Future[Result] = calculatorService.calculate(journeyData) flatMap {
 
-    calculatorService.calculate(journeyData) flatMap {
+    case CalculatorServiceSuccessResponse(calculatorResponse) =>
 
-      case CalculatorServiceSuccessResponse(calculatorResponse) =>
+      val oldCalculation: Option[Calculation] = journeyData.declarationResponse.map(_.calculation)
+      val currentCalculation: Calculation = calculatorResponse.calculation
 
-        val oldCalculation: Option[Calculation] = journeyData.declarationResponse.map(_.calculation)
-        val currentCalculation: Calculation = calculatorResponse.calculation
-
-        if(oldCalculation.isDefined){
-          val deltaCalculation:Calculation = calculatorService.getDeltaCalculation(oldCalculation.get,currentCalculation)
-          calculatorService.storeCalculatorResponseWithDelta(journeyData, deltaCalculation,calculatorResponse)
+      if (!oldCalculation.isDefined) calculatorService.storeCalculatorResponse(journeyData, calculatorResponse) map { _ =>
+        Redirect(routes.CalculateDeclareController.showCalculation())
+      } else {
+        val deltaCalculation = calculatorService.getDeltaCalculation(oldCalculation.get, currentCalculation)
+        calculatorService.storeCalculatorResponse(journeyData, calculatorResponse, Some(deltaCalculation)) map { _ =>
+          Redirect(routes.CalculateDeclareController.showCalculation())
         }
-        else
-          calculatorService.storeCalculatorResponse(journeyData, calculatorResponse)
-        Future.successful(Redirect(routes.CalculateDeclareController.showCalculation()))
+      }
 
-      case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
+    case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
 
-        Future.successful {
-          BadRequest(purchase_price_out_of_bounds())
-        }
+      Future.successful {
+        BadRequest(purchase_price_out_of_bounds())
+      }
 
-      case _ =>
-        Future.successful {
-          InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
-        }
-    }
+    case _ =>
+      Future.successful {
+        InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+      }
   }
 
   def showCalculation: Action[AnyContent] = dashboardAction {implicit context =>
