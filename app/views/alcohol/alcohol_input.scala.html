@@ -65,7 +65,9 @@
       displayEmptyValue = true,
       '_label -> messages("label.country_this_alcohol_was_"),
       '_inputHint -> messages("label.if_you_bought_this_alcohol_"),
-      '_errorsAboveInput -> true
+      '_errorsAboveInput -> true,
+      '_error_id -> "country-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     @if(journeyStart.contains("euOnly")){
@@ -74,7 +76,9 @@
         elementOptions = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
         displayEmptyValue = true,
         '_label -> messages("label.country_this_alcohol_was_produced"),
-        '_inputHint -> messages("label.country_this_alcohol_was_produced_hint")
+        '_inputHint -> messages("label.country_this_alcohol_was_produced_hint"),
+        '_error_id -> "originCountry-error-message",
+        '_errorPrefix -> messages("label.error")
       )
     }
 
@@ -83,7 +87,9 @@
       elementOptions = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
       displayEmptyValue = true,
       '_label -> messages("label.currency_used_to_buy_this_alcohol"),
-      '_errorsAboveInput -> true
+      '_errorsAboveInput -> true,
+      '_error_id -> "currency-error-message",
+      '_errorPrefix -> messages("label.error")
     )
 
     @components.input(

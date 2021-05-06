@@ -73,6 +73,8 @@
                  f("identification.identificationType"),
                  Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_licence_number"), "telephone" -> Messages("label.telephone_number")),
                  '_labelClass -> "block-label inputLabelBeforeError",
+                 '_error_id -> "identification-error-message",
+                 '_errorPrefix -> messages("label.error"),
                  Symbol("telephone") -> messages("label.telephone_number_hint"),
                  Symbol("euId") -> Html(s"${messages("label.euId_hint")} ${<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}")
                )
@@ -81,11 +83,13 @@
                  f("identification.identificationType"),
                  Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
                  '_labelClass -> "block-label inputLabelBeforeError",
+                 '_error_id -> "identification-error-message",
+                 '_errorPrefix -> messages("label.error"),
                  Symbol("euId") -> Html(s"${messages("label.euId_hint")} ${<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}")
                )
             }
             @f.errors.filter(_.key == "identification").map { error =>
-                <span class="error-message">@messages(error.message)</span>
+                <span class="error-message" id="identificationNumber-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
             }
             @components.input(
                 f("identification.identificationNumber"),
@@ -93,14 +97,16 @@
                 '_hintId -> "label-identificationNumber-hint",
                 '_labelTextClass -> "form-label-bold",
                 '_inputHint -> messages("label.enter_identification_number"),
-                '_inputClass -> "form-control-3-4"
+                '_inputClass -> "form-control-3-4",
+                '_error_id -> "identificationNumber-error-message",
+                '_errorPrefix -> messages("label.error")
             )
           </div>
       </fieldset>
 
     <div class="form-group @{if(f("emailAddress").hasErrors) "form-group-error" else "" }" id="emailAddress">
         @f.errors.filter(_.key == "emailAddress").map { error =>
-            <span class="error-message">@messages(error.message)</span>
+            <span class="error-message" id="email-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
         }
         @components.input(
             f("emailAddress.email"),
@@ -110,6 +116,7 @@
             '_inputHint -> messages("label.email_address_hint"),
             '_inputClass -> "form-control-3-4",
             '_autoComplete -> "email",
+            '_error_id -> "email-error-message",
         )
 
         @components.input(
@@ -118,6 +125,7 @@
             '_labelTextClass -> "form-label-bold",
             '_inputClass -> "form-control-3-4",
             '_autoComplete -> "email",
+            '_error_id -> "email-error-message",
         )
     </div>
 
@@ -125,7 +133,7 @@
     <div class="form-group @{if(f("placeOfArrival").hasErrors) "form-group-error" else "" }" id="placeOfArrival">
 
         @f.errors.filter(_.key == "placeOfArrival").map { error =>
-            <span class="error-message">@messages(error.message)</span>
+            <span class="error-message" id="placeOfArrival-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
         }
         @if(journeyStart.contains("greatBritain")){
           @components.select(
@@ -135,7 +143,9 @@
             '_label -> messages("label.place_of_arrival_ni"),
             '_labelTextClass -> "form-label-bold",
             '_inputHint -> messages("label.for_example_belfast_international_airport"),
-            '_errorsAboveInput -> true
+            '_errorsAboveInput -> true,
+            '_error_id -> "placeOfArrival-error-message",
+            '_errorPrefix -> messages("label.error")
           )
         } else {
           @components.select(
@@ -145,7 +155,9 @@
             '_label -> messages("label.place_of_arrival_uk"),
             '_labelTextClass -> "form-label-bold",
             '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
-            '_errorsAboveInput -> true
+            '_errorsAboveInput -> true,
+            '_error_id -> "placeOfArrival-error-message",
+            '_errorPrefix -> messages("label.error")
           )
         }
 
@@ -171,7 +183,7 @@
       <div class="form-group @{if(f("dateTimeOfArrival").hasErrors) "form-group-error" else "" }" id="dateTimeOfArrival">
 
           @f.errors.filter(_.key == "dateTimeOfArrival").map { error =>
-                <span class="error-message">@messages(error.message)</span>
+                <span class="error-message" id="dateOfArrival-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
           }
 
           @components.dateFieldsFreeInlineLegend(
@@ -179,7 +191,9 @@
             "dateTimeOfArrival.dateOfArrival",
             '_inputHint -> messages("label.for_example_31_10_2021"),
             '_legendSpanClass -> "form-label-bold",
-            '_legend -> messages("label.date_of_arrival")
+            '_legend -> messages("label.date_of_arrival"),
+            '_error_id -> "dateOfArrival-error-message",
+            '_errorPrefix -> messages("label.error")
           )
 
           @components.timeFieldsFreeInlineLegend(
@@ -187,7 +201,9 @@
             "dateTimeOfArrival.timeOfArrival",
             '_inputHint -> messages("label.for_example_930"),
             '_legendSpanClass -> "form-label-bold",
-            '_legend -> messages("label.scheduled_time_of_arrival")
+            '_legend -> messages("label.scheduled_time_of_arrival"),
+            '_error_id -> "timeOfArrival-error-message",
+            '_errorPrefix -> messages("label.error")
           )
 
       </div>
