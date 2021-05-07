@@ -323,7 +323,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £300.00"
-      content should include ("You can amend your declaration from 72 hours before arriving in the UK.")
+      content should include ("You can amend your declaration from 5 days before your scheduled time of arrival in the UK.")
       doc.getElementsByClass("button").text() shouldBe "Amend your declaration and pay online"
     }
 
