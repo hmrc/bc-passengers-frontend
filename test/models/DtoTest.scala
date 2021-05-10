@@ -1169,7 +1169,7 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe false
     }
 
-    "return validation errors if the date/time of arrival is more than 72 hours after the declaration date" in {
+    "return validation errors if the date/time of arrival is more than 5 days after the declaration date" in {
       val formData = Map(
         "firstName" -> "Harry",
         "lastName" -> "Potter",
@@ -1179,11 +1179,11 @@ class DtoTest extends BaseSpec {
         "emailAddress.confirmEmail"-> "",
         "placeOfArrival.selectPlaceOfArrival" -> "LHR",
         "placeOfArrival.enterPlaceOfArrival" -> "",
-        "dateTimeOfArrival.dateOfArrival.day" -> "26",
+        "dateTimeOfArrival.dateOfArrival.day" -> "28",
         "dateTimeOfArrival.dateOfArrival.month" -> "11",
         "dateTimeOfArrival.dateOfArrival.year" -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour" -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute" -> "20",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "21",
         "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
       )
 
@@ -1193,12 +1193,38 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors shouldBe true
       form.errors.size shouldBe 1
-      form.error("dateTimeOfArrival").get.message shouldBe "error.72_hours"
+      form.error("dateTimeOfArrival").get.message shouldBe "error.5_days"
 
     }
   }
 
-  "Validating the DeclarationRetrievalDto form" should {
+    "Don't return any validation errors if the date/time of arrival is more than 5 days after the declaration date" in {
+    val formData = Map(
+      "firstName" -> "Harry",
+      "lastName" -> "Potter",
+      "identification.identificationType" -> "passport",
+      "identification.identificationNumber" -> "SX12345",
+      "emailAddress.email"-> "",
+      "emailAddress.confirmEmail"-> "",
+      "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+      "placeOfArrival.enterPlaceOfArrival" -> "",
+      "dateTimeOfArrival.dateOfArrival.day" -> "28",
+      "dateTimeOfArrival.dateOfArrival.month" -> "11",
+      "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+      "dateTimeOfArrival.timeOfArrival.hour" -> "09",
+      "dateTimeOfArrival.timeOfArrival.minute" -> "19",
+      "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+    )
+
+    val declarationTime = DateTime.parse("2018-11-23T09:20:00.000")
+
+    val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+
+    form.hasErrors shouldBe false
+
+  }
+
+    "Validating the DeclarationRetrievalDto form" should {
 
     "not return errors when all fields are correct" in {
       val formData = Map(
