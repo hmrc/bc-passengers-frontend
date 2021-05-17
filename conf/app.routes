@@ -74,6 +74,7 @@ GET        /keep-alive                                                          
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard
 POST       /tell-us                                                                    controllers.CalculateDeclareController.calculate
 
+GET        /goods/$path<.+>/upper-limits                                               controllers.LimitExceedController.loadLimitExceedPage(path: ProductPath)
 
 GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)

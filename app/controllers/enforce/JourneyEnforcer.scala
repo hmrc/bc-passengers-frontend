@@ -298,6 +298,17 @@ class ArrivingNIAction @Inject()(journeyEnforcer: JourneyEnforcer, appConfig: Ap
   }
 }
 
+@Singleton
+class LimitExceedAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.DashboardStep) {
+        block(context)
+      }
+    }
+  }
+}
+
 
 @Singleton
 class UKVatPaidAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {

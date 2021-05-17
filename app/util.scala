@@ -6,6 +6,7 @@
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
+import models.ProductPath
 import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
@@ -76,34 +77,31 @@ package object util {
   })
 
 
-  def calculatorLimitConstraintOptionInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Option[Int]] = Constraint("constraints.calclimit") { opt: Option[Int]  =>
+  def calculatorLimitConstraintOptionInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Boolean = {
 
     val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
 
-    if(errors.isEmpty) Valid
-    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
+    if (errors.nonEmpty) false else true
   }
 
-  def calculatorLimitConstraintOptionBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Option[BigDecimal]] = Constraint("constraints.calclimit") { opt: Option[BigDecimal]  =>
+  def calculatorLimitConstraintOptionBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Boolean = {
 
     val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
 
-    if(errors.isEmpty) Valid
-    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
+    if (errors.nonEmpty) false else true
   }
 
-  def calculatorLimitConstraintInt(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[Int] = Constraint("constraints.calclimit") {
+  def calculatorLimitConstraintBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil, path: ProductPath): Option[ProductPath] = {
 
-    calculatorLimitConstraintBigDecimal( limits, applicableLimits )(_)
-  }
+    val errors = for(limit <- applicableLimits; amount <- limits.get(limit); if amount > BigDecimal(1.0)) yield (limit, amount)
 
-  def calculatorLimitConstraintBigDecimal(limits: Map[String, BigDecimal] = Map.empty, applicableLimits: List[String] = Nil): Constraint[BigDecimal] = Constraint("constraints.calclimit") { _ =>
-
-    val errors = for(limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
-
-    if(errors.isEmpty) Valid
-    else Invalid(errors.sortBy(_._2).reverse.take(1).map(x => ValidationError(s"error.${x._1.toLowerCase}.limit-exceeded")))
-
+    if(errors.isEmpty) None
+    else Some(errors.sortBy(_._2).reverse.take(1).map { x =>
+      x._1.toLowerCase match {
+        case "l-wine" => ProductPath("alcohol/wine")
+        case _ => path
+      }
+    }.head)
   }
 
   def bigDecimalCostCheckConstraint(errorSubString: String): Constraint[String] = Constraint("constraints.bigdecimalcostcheck")({

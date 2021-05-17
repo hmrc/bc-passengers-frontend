@@ -40,30 +40,6 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigarettes"
     }
 
-    "fail on more than allowance (800) in CIGRT-noOfSticks" in {
-      val form = injected[TobaccoInputController].noOfSticksForm(path, Map("L-CIGRT" -> 1.1), List("L-CIGRT")).bind(Map(
-        "noOfSticks" -> "801",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "50"
-      ))
-      form.hasErrors shouldBe true
-      form.errors.size shouldBe 1
-      form.error("noOfSticks").get.message shouldBe "error.l-cigrt.limit-exceeded"
-    }
-
-    "fail on more than allowance (800) in HTB-noOfSticks" in {
-      val form = injected[TobaccoInputController].noOfSticksForm(path, Map("L-HTB" -> 1.1), List("L-HTB")).bind(Map(
-        "noOfSticks" -> "801",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "50"
-      ))
-      form.hasErrors shouldBe true
-      form.errors.size shouldBe 1
-      form.error("noOfSticks").get.message shouldBe "error.l-htb.limit-exceeded"
-    }
-
     "fail on empty string in country" in {
       val form = injected[TobaccoInputController].noOfSticksForm(path).bind(Map(
         "noOfSticks" -> "500",
@@ -178,18 +154,6 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       form.error("weightOrVolume").get.message shouldBe "error.max.decimal.places.weight"
     }
 
-        "fail on more than allowance 1000g in weightOrVolume" in {
-          val form = injected[TobaccoInputController].weightOrVolumeForm(path, Map("L-LOOSE" -> 1.1), List("L-LOOSE")).bind(Map(
-            "weightOrVolume" -> "1001",
-            "country" -> "FR",
-            "currency" -> "EUR",
-            "cost" -> "50"
-          ))
-          form.hasErrors shouldBe true
-          form.errors.size shouldBe 1
-          form.error("weightOrVolume").get.message shouldBe "error.l-loose.limit-exceeded"
-        }
-
     "fail on empty string in country" in {
       val form = injected[TobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "500",
@@ -226,7 +190,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       form.error("cost").get.message shouldBe "error.required.tobacco.rolling-tobacco"
     }
 
-    "pass on cost with comma seperated thousands" in {
+    "pass on cost with comma separated thousands" in {
       val form = injected[TobaccoInputController].weightOrVolumeForm(path).bind(Map(
         "weightOrVolume" -> "500",
         "country" -> "FR",

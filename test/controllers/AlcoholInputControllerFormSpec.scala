@@ -55,34 +55,8 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
 
     val path = ProductPath("alcohol/sparkling-wine")
 
-
-    "fail on more than allowance 60 litres in sparkling-wine" in {
-      val form = injected[AlcoholInputController].alcoholForm(path, Map("L-WINESP" -> 1.1), List("L-WINESP")).bind(Map(
-        "weightOrVolume" -> "65",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "50"
-      ))
-      form.hasErrors shouldBe true
-      form.errors.size shouldBe 1
-      form.error("weightOrVolume").get.message shouldBe "error.l-winesp.limit-exceeded"
-    }
-
-
-    "fail on more than allowance 90 litres in wine" in {
-      val form = injected[AlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.1), List("L-WINE")).bind(Map(
-        "weightOrVolume" -> "95",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "50"
-      ))
-      form.hasErrors shouldBe true
-      form.errors.size shouldBe 1
-      form.error("weightOrVolume").get.message shouldBe "error.l-wine.limit-exceeded"
-    }
-
-    "pass on cost with comma seperated thousands" in {
-      val form = injected[AlcoholInputController].alcoholForm(path, Map("L-WINE" -> 1.0), List("L-WINE")).bind(Map(
+    "pass on cost with comma separated thousands" in {
+      val form = injected[AlcoholInputController].alcoholForm(path).bind(Map(
         "weightOrVolume" -> "90",
         "country" -> "FR",
         "currency" -> "EUR",
