@@ -7,6 +7,7 @@ package controllers
 
 import connectors.Cache
 import models._
+import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -563,7 +564,40 @@ class AlcoholInputControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe BAD_REQUEST
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits")
+    }
+
+    "redirect to warning page on more than allowance 60 litres in sparkling-wine" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-WINESP" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/sparkling-wine/tell-us").withFormUrlEncodedBody(
+        "weightOrVolume" -> "65",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "cost" -> "50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits")
+    }
+
+    "redirect to warning page on more than allowance 90 litres in wine" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us").withFormUrlEncodedBody(
+        "weightOrVolume" -> "95",
+        "country" -> "FR",
+        "currency" -> "EUR",
+        "cost" -> "50"
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits")
     }
 
     "add a PPI to the JourneyData and redirect to next step" in new LocalSetup {
@@ -699,7 +733,8 @@ class AlcoholInputControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe BAD_REQUEST
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits")
     }
 
     "modify the relevant PPI in the JourneyData and redirect to next step" in new LocalSetup {

@@ -340,28 +340,6 @@ head.error.weight_or_volume.required.tobacco.cigars=Nodwch bwysau’r sigârs
 head.error.weight_or_volume.required.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
 head.error.weight_or_volume.required.tobacco.rolling-tobacco=Nodwch bwysau’r tybaco rholio â llaw
 
-error.l-cigrt.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 sigarét. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-crilo.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 400 sigarilo. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-cigar.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 200 sigâr. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-beer.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 110 litr o gwrw. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-winesp.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 60 litr o win pefriog. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-wine.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 90 litr o win arferol a phefriog. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-alcoth.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 20 litr o seidr a diodydd alcoholaidd eraill gyda’i gilydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-spirit.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 10 litr o wirodydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-loose.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 1,000g o dybaco rhydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-error.l-htb.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 darn o dybaco gwresogi nid llosgi. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-
-head.error.l-cigrt.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 sigarét. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-crilo.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 400 sigarilo. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-cigar.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 200 sigâr. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-beer.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 110 litr o gwrw. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-winesp.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 60 litr o win pefriog. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-wine.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 90 litr o win arferol a phefriog. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-alcoth.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 20 litr o seidr a diodydd alcoholaidd eraill gyda’i gilydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-spirit.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 10 litr o wirodydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-loose.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 1,000g o dybaco rhydd. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-head.error.l-htb.limit-exceeded=Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 uned o dybaco gwresogi nid llosgi. Ewch i’r sianel goch neu’r ffôn pwynt coch, neu siaradwch â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
-
 error.invalid.characters.noofsticks.tobacco.cigars=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, megis 12 neu 160
 error.invalid.characters.noofsticks.tobacco.cigarillos=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, megis 12 neu 160
 error.invalid.characters.noofsticks.tobacco.cigarettes=Mae’n rhaid i’r nifer gynnwys rhifau cyfan yn unig, fel 20 neu 300
@@ -1723,3 +1701,28 @@ text.may_be_because = Gall hyn fod oherwydd y canlynol:
 label.no_existing_declaration = nid yw’r manylion a nodwyd gennych yn cyd-fynd â datganiad sy’n bodoli eisoes - ewch yn ôl, gwiriwch eich manylion a rhowch gynnig arall arni
 label.payment_issue = roedd problem pan wnaethoch geisio ychwanegu nwyddau at eich datganiad yn flaenorol ac ni chwblhawyd eich taliad - bydd angen i chi nawr siarad â swyddog llu’r ffiniau yn eich man cyrraedd i ddatgan unrhyw nwyddau ychwanegol
 label.already_passed_custom = mae’ch amser cyrraedd disgwyliedig yn y gorffennol - os gohiriwyd eich taith a bod gennych nwyddau i'w datgan, siaradwch â swyddog llu’r ffiniau yn eich man cyrraedd
+
+#limit exceed page
+heading.l-cigrt.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 sigarét
+heading.l-cigar.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 200 sigâr
+heading.l-crilo.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 400 sigarilo
+heading.l-loose.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 1kg o dybaco rhydd
+heading.l-htb.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 darn o dybaco gwresogi
+heading.l-beer.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 110 litr o gwrw
+heading.l-wine.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 90 litr o win
+heading.l-winesp.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 60 litr o win pefriog
+heading.l-spirit.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na 10 litr o wirodydd
+heading.l-alcoth.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 20 litr o diodydd alcoholaidd eraill
+label.limit_exceed_alcohol = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na’r symiau canlynol o alcohol
+label.limit_exceed_tobacco = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na’r symiau canlynol o dybaco
+label.including_sparkling_wine = (gan gynnwys uchafswm o 60 litr o win pefriog)
+label.must_declare_over_limits_alcohol = Mae’n rhaid i chi ddatgan unrhyw alcohol sydd dros y terfynau hyn yn bersonol i Lu’r Ffiniau pan fyddwch yn cyrraedd y DU.
+label.must_declare_over_limits_tobacco = Mae’n rhaid i chi ddatgan unrhyw dybacoNi allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 darn o dybaco gwresogi sydd dros y terfynau hyn yn bersonol i Lu’r Ffiniau pan fyddwch yn cyrraedd y DU.
+label.bringing_for_personal_use_alcohol = Mae hyn oherwydd bod angen i Lu’r Ffiniau fod yn siŵr eich bod yn dod â’r alcohol i mewn ar gyfer defnydd personol yn unig.
+label.bringing_for_personal_use_tobacco = Mae hyn oherwydd bod angen i Lu’r Ffiniau fod yn siŵr eich bod yn dod â’r tybaco i mewn ar gyfer defnydd personol yn unig.
+label.border_force_officer_will_calculate = Unwaith bo swyddog Llu’r Ffiniau yn siŵr o hyn, bydd yn cyfrifo ac yn cymryd taliad o’r trethi a’r tollau sy’n ddyledus.
+text.warning_for_false_declaration_alcohol = Os nad ydych yn datgan alcohol dros y terfynau hyn yn bersonol, neu os gwnewch ddatganiad ffug, mae’n bosibl y bydd yn rhaid i chi dalu cosb ac mae’n bosibl y bydd eich alcohol yn cael ei atafaelu.
+text.warning_for_false_declaration_tobacco = Os nad ydych yn datgan tybaco dros y terfynau hyn yn bersonol, neu os gwnewch ddatganiad ffug, mae’n bosibl y bydd yn rhaid i chi dalu cosb ac mae’n bosibl y bydd eich tybaco yn cael ei atafaelu.
+label.continue_to_add_items = Yn eich blaen i ychwanegu eitemau
+label.type_of_alcohol = Math o alcohol
+label.type_of_tobacco = Math o dybaco

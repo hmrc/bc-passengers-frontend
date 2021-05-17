@@ -340,28 +340,6 @@ head.error.weight_or_volume.required.tobacco.cigars = Enter the weight of the ci
 head.error.weight_or_volume.required.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 head.error.weight_or_volume.required.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
 
-error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-wine.limit-exceeded =You cannot use this service to declare more than 90 litres of ordinary and sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-error.l-htb.limit-exceeded = You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-
-head.error.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-wine.limit-exceeded =You cannot use this service to declare more than 90 litres of ordinary and sparkling wine. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of cider and other alcoholic drinks combined. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-loose.limit-exceeded = You cannot use this service to declare more than 1,000g of loose tobacco. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-head.error.l-htb.limit-exceeded = You cannot use this service to declare more than 800 heated tobaccos. Go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
-
 error.invalid.characters.noofsticks.tobacco.cigars = Quantity must only include whole numbers, such as 12 or 160
 error.invalid.characters.noofsticks.tobacco.cigarillos = Quantity must only include whole numbers, such as 12 or 160
 error.invalid.characters.noofsticks.tobacco.cigarettes = Quantity must only include whole numbers, such as 20 or 300
@@ -1723,3 +1701,28 @@ text.may_be_because = This may be because:
 label.no_existing_declaration = the details you have entered do not match an existing declaration - go back, check your details and try again
 label.payment_issue = there was an issue when you previously tried to add goods to your declaration and your payment was not completed - you will now need to speak to a border force officer at your arrival location to declare any additional goods
 label.already_passed_custom = your scheduled time of arrival is in the past - if your journey has been delayed and you have goods to declare, speak to a border force officer at your arrival location
+
+#limit exceed page
+heading.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes
+heading.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars
+heading.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos
+heading.l-loose.limit-exceeded = You cannot use this service to declare more than 1kg of loose tobacco
+heading.l-htb.limit-exceeded = You cannot use this service to declare more than 800 sticks of tobacco for heating
+heading.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer
+heading.l-wine.limit-exceeded = You cannot use this service to declare more than 90 litres of wine
+heading.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine
+heading.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits
+heading.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of other alcoholic drinks
+label.limit_exceed_alcohol = You cannot use this service to declare more than the following amounts of alcohol:
+label.limit_exceed_tobacco = You cannot use this service to declare more than the following amounts of tobacco:
+label.including_sparkling_wine = (including a maximum of 60 litres of sparkling wine)
+label.must_declare_over_limits_alcohol = You must declare alcohol over these limits in person to Border Force when you arrive in the UK.
+label.must_declare_over_limits_tobacco = You must declare tobacco over these limits in person to Border Force when you arrive in the UK.
+label.bringing_for_personal_use_alcohol = This is because Border Force need to be sure you are bringing the alcohol in for personal use only.
+label.bringing_for_personal_use_tobacco = This is because Border Force need to be sure you are bringing the tobacco in for personal use only.
+label.border_force_officer_will_calculate = Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due.
+text.warning_for_false_declaration_alcohol = If you do not declare alcohol over these limits in person, or make a false declaration, you may have to pay a penalty and your alcohol may be seized.
+text.warning_for_false_declaration_tobacco = If you do not declare tobacco over these limits in person, or make a false declaration, you may have to pay a penalty and your tobacco may be seized.
+label.continue_to_add_items = Continue to add items
+label.type_of_alcohol = Type of alcohol
+label.type_of_tobacco = Type of tobacco
