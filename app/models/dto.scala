@@ -336,6 +336,7 @@ object EnterYourDetailsDto extends Validators {
         "dateOfArrival" -> mandatoryDate("error.enter_a_date"),
         "timeOfArrival" -> mandatoryTime("error.enter_a_time")
       )(DateTimeOfArrival.apply)(DateTimeOfArrival.unapply)
+        .verifying("error.5_days", dto => new LocalDate(dto.dateOfArrival).toDateTime(LocalTime.parse(dto.timeOfArrival, DateTimeFormat.forPattern("hh:mm aa"))).isAfter(declarationTime.minus(Hours.THREE)))
         .verifying("error.5_days", dto => new LocalDate(dto.dateOfArrival).toDateTime(LocalTime.parse(dto.timeOfArrival, DateTimeFormat.forPattern("hh:mm aa"))).isBefore(declarationTime.plus(Days.FIVE)))
     )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
   )
