@@ -828,8 +828,6 @@ head.error.enter_a_time=Nodwch eich amser cyrraedd disgwyliedig
 error.enter_a_time=Nodwch eich amser cyrraedd disgwyliedig
 head.error.5_days=Mae’n rhaid i’r dyddiad a’r amser cyrraedd disgwyliedig fod yn llai na 5 diwrnod yn y dyfodol
 error.5_days=Mae’n rhaid i’r dyddiad a’r amser cyrraedd disgwyliedig fod yn llai na 5 diwrnod yn y dyfodol
-head.error.not_in_past=Mae’n rhaid i’r dyddiad a’r amser cyrraedd fod yn y dyfodol
-error.not_in_past=Mae’n rhaid i’r dyddiad a’r amser cyrraedd fod yn y dyfodol
 error.include_day_month_and_year=Nodwch eich dyddiad cyrraedd, gan nodi diwrnod, mis a blwyddyn
 head.error.include_day_month_and_year=Nodwch eich dyddiad cyrraedd, gan nodi diwrnod, mis a blwyddyn
 error.only_whole_numbers=Mae’n rhaid i’r dyddiad cyrraedd gynnwys rhifau cyfan yn unig, fel 2 neu 11
@@ -1692,11 +1690,11 @@ label.breakdown_of_tax_and_duty_due=Dadansoddiad o’r dreth a’r tollau sy’n
 label.amount_due = Swm sy’n ddyledus
 label.amount_paid_previously =Swm a dalwyd yn flaenorol
 label.total_due_now =Cyfanswm sy’n ddyledus nawr
-label.total_paid_now = Cyfanswm wedi'i dalu nawr
+label.total_paid_now = Cyfanswm wedi’i dalu nawr
 label.na = N/A
 
 #declaration not found page
-heading.declaration_not_found = Ni ellir canfod eich datganiad.
+heading.declaration_not_found = Ni ellir canfod eich datganiad
 text.may_be_because = Gall hyn fod oherwydd y canlynol:
 label.no_existing_declaration = nid yw’r manylion a nodwyd gennych yn cyd-fynd â datganiad sy’n bodoli eisoes - ewch yn ôl, gwiriwch eich manylion a rhowch gynnig arall arni
 label.payment_issue = roedd problem pan wnaethoch geisio ychwanegu nwyddau at eich datganiad yn flaenorol ac ni chwblhawyd eich taliad - bydd angen i chi nawr siarad â swyddog llu’r ffiniau yn eich man cyrraedd i ddatgan unrhyw nwyddau ychwanegol

@@ -5,6 +5,7 @@
 
 package controllers
 
+
 import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
@@ -791,6 +792,69 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         ).get
 
         status(response) shouldBe BAD_REQUEST
+      }
+
+      "Return BAD REQUEST and display the user information when date entered is in past" in new LocalSetup {
+
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
+        override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          .withFormUrlEncodedBody(
+            "firstName" -> "Harry",
+            "lastName" -> "Potter",
+            "identification.identificationType" -> "passport",
+            "identification.identificationNumber" -> "SX12345",
+            "emailAddress.email" -> "abc@gmail.com",
+            "emailAddress.confirmEmail" -> "abc@gmail.com",
+            "placeOfArrival.selectPlaceOfArrival" -> "LHR",
+            "placeOfArrival.enterPlaceOfArrival" -> "",
+            "dateTimeOfArrival.dateOfArrival.day" -> "23",
+            "dateTimeOfArrival.dateOfArrival.month" -> "11",
+            "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour" -> "2",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+            "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+          )
+        ).get
+
+        status(response) shouldBe BAD_REQUEST
+
+        val content = contentAsString(response)
+        val doc = Jsoup.parse(content)
+
+        doc.getElementById("errors").select("a[href=#dateTimeOfArrival]").html() shouldBe "Scheduled date and time of arrival must be less than 5 days in the future"
+      }
+
+      "Redirect to next page when the schedule time of arrival is 2 hours in past" in new LocalSetup {
+
+        override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), calculatorResponse = Some(crWithinLimitLow), userInformation = Some(ui))))
+        override lazy val payApiResponse: PayApiServiceSuccessResponse = PayApiServiceSuccessResponse("http://example.com/payment-journey")
+        override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+        val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          .withFormUrlEncodedBody(
+            "firstName" -> "Harry",
+            "lastName" -> "Potter",
+            "identification.identificationType" -> "passport",
+            "identification.identificationNumber" -> "SX12345",
+            "emailAddress.email" -> "abc@gmail.com",
+            "emailAddress.confirmEmail" -> "abc@gmail.com",
+            "placeOfArrival.selectPlaceOfArrival" -> "",
+            "placeOfArrival.enterPlaceOfArrival" -> "Newcastle Airport",
+            "dateTimeOfArrival.dateOfArrival.day" -> "23",
+            "dateTimeOfArrival.dateOfArrival.month" -> "11",
+            "dateTimeOfArrival.dateOfArrival.year" -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour" -> "04",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00",
+            "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+          )
+        ).get
+
+        status(response) shouldBe SEE_OTHER
+        redirectLocation(response).get shouldBe "http://example.com/payment-journey"
+
       }
 
       "Return INTERNAL_SERVER_ERROR but still store valid user information, when the payment service request fails" in new LocalSetup {
