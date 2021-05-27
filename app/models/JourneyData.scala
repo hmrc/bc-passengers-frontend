@@ -61,7 +61,7 @@ object PreviousDeclarationRequest {
   implicit val formats: OFormat[PreviousDeclarationRequest] = Json.format[PreviousDeclarationRequest]
 
   def build(dto: DeclarationRetrievalDto): PreviousDeclarationRequest =
-    PreviousDeclarationRequest(dto.lastName, dto.referenceNumber)
+    PreviousDeclarationRequest(dto.lastName, dto.referenceNumber.toUpperCase)
 }
 case class PreviousDeclarationRequest(
                             lastName: String,
