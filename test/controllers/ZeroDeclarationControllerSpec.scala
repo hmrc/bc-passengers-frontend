@@ -89,7 +89,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Declaration complete"
       content should include ("Make a note of your reference number, you may need to provide it to Border Force.")
       content should include ("If you provided an email address, a copy of this receipt has been sent to you.")
-      content should include ("From April 2021, you will be able to use the online service to add goods to an existing declaration.")
+      content should include ("You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number.")
       content should not include ("Amount paid previously")
       content should not include ("Total due now")
     }
