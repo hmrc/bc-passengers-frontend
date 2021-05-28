@@ -79,12 +79,12 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
 
   if (document.querySelector('#' + selectElementId)) {
      var selectDescribedByValues = $('#' + selectElementId+'-select').attr('aria-describedby');
-     var selectLabeledByValues = $('#' + selectElementId+'-select').attr('aria-labeledby');
+     var selectLabeledByValues = $('#' + selectElementId+'-select').attr('aria-labelledby');
      if(selectDescribedByValues != undefined) {
         $(".autocomplete__wrapper #" + selectElementId).attr('aria-describedby', selectDescribedByValues);
      }
      if(selectLabeledByValues != undefined) {
-        $(".autocomplete__wrapper #" + selectElementId).attr('aria-labeledby', selectLabeledByValues);
+        $(".autocomplete__wrapper #" + selectElementId).attr('aria-labelledby', selectLabeledByValues);
      }
   }
 

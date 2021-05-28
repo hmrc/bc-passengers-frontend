@@ -37,8 +37,8 @@
                 @Messages(error)</span>
         }
     }
-    <select aria-describedby="hint-@elements.field.name" id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)"
-            @if(elements.args.get('_error_id).isDefined) { aria-labeledby="@elements.args.get('_error_id)" }>
+    <select @if(elements.args.contains('_inputHint) ){ aria-describedby="hint-@elements.field.name" } id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)"
+            @if(elements.args.get('_error_id).isDefined && elements.errors) { aria-labelledby="@elements.args.get('_error_id)" }>
         @if(displayEmptyValue) {
             <option value="">@elements.args.get('_emptyValueText)</option>
         }

@@ -27,7 +27,7 @@
 
   @for(((label, v), i) <- inputs.zipWithIndex) {
     <div class="multiple-choice">
-      <input id="@v"  @if(field.errors.length > 0) {aria-labeledby="error-message-@field.id-input"} type="checkbox" name="@field(s"[$i]").name" value="@v" data-journey-click="bc_passengers-frontend:click:@v" />
+      <input id="@v"  @if(field.errors.length > 0) {aria-labelledby="error-message-@field.id-input"} type="checkbox" name="@field(s"[$i]").name" value="@v" data-journey-click="bc_passengers-frontend:click:@v" />
       <label for="@v">@messages("select_products."+label)</label>
     </div>
   }

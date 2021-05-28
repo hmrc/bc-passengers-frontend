@@ -37,7 +37,7 @@
                 name="@elements.field.name"
                 value="@value"
                 @elements.args.get('_inputClass).map{inputClass => class="@inputClass"}
-                @if(elements.args.get('_error_id).isDefined) { aria-labeledby="@elements.args.get('_error_id)" }
+                @if(elements.args.get('_error_id).isDefined && elements.hasErrors) { aria-labelledby="@elements.args.get('_error_id)" }
                 @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
                 @field.value.filter( _ == value).map{_ => checked="checked"}/>
 
