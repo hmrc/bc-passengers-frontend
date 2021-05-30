@@ -115,12 +115,11 @@ class OtherGoodsSearchController @Inject()(
 
             Redirect(controllers.routes.OtherGoodsSearchController.searchGoods().withFragment("searchTerm"))
           }
-
+        case _ => throw new RuntimeException("Values not correct")
       }
     )
   }
   private def amendOtherGoodsCount(context: LocalContext): Int ={
-    val i : BigDecimal = 0
     val speculativeItems: List[SpeculativeItem] = for {
       purchasedProductInstance <- context.getJourneyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
       productTreeLeaf <- productTreeService.productTree.getDescendant(purchasedProductInstance.path).collect { case p: ProductTreeLeaf => p }
