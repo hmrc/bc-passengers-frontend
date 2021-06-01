@@ -132,7 +132,7 @@ class OtherGoodsSearchControllerSpec extends BaseSpec {
       val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/other-goods/add")).get
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
-      doc.getElementsByTag("p1").text() shouldBe "You cannot use this service to declare more than 50 other goods. You must declare any goods over this limit in person to Border Force when you arrive in the UK. Use the red ‘goods to declare’ channel or the red-point phone."
+      doc.getElementsByClass("panel-border-wide").text() shouldBe "You cannot use this service to declare more than 50 other goods. You must declare any goods over this limit in person to Border Force when you arrive in the UK. Use the red ‘goods to declare’ channel or the red-point phone."
     }
 
     "Return SEE_OTHER when action=add and a valid searchTerm is supplied" in new LocalSetup {

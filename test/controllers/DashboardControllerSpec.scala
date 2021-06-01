@@ -133,7 +133,7 @@ class DashboardControllerSpec extends BaseSpec {
     val content: String = contentAsString(result)
     val doc: Document = Jsoup.parse(content)
 
-    doc.getElementsByTag("p1").text() shouldBe "Our online calculator accepts most foreign currencies and will work out the tax due in British pounds."
+    doc.getElementById("foreign-currency").text() shouldBe "Our online calculator accepts most foreign currencies and will work out the tax due in British pounds."
 
   }
 

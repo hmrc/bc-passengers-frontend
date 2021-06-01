@@ -51,12 +51,12 @@
 <table class="responsive-table margin-bottom-30">
     <tbody id="delta">
     <tr>
-        <td colspan="2">@messages("label.amount_paid_previously")</td>
+        <td>@messages("label.amount_paid_previously")</td>
         <td class="numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
     </tr>
 
     <tr>
-        <td class="total table-foot" colspan="2" >@messages("label.total_due_now")</td>
+        <td class="total table-foot">@messages("label.total_due_now")</td>
         <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
     </tr>
     </tbody>
