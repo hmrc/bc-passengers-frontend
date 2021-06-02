@@ -8,9 +8,10 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DeclarationNotFoundAction, DeclarationRetrievalAction}
+
 import javax.inject.Inject
 import models.{DeclarationRetrievalDto, PreviousDeclarationRequest}
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -63,7 +64,7 @@ class DeclarationRetrievalController @Inject()(
               val time = journeyData.get.userInformation.get.timeOfArrival
               val dateTime  = new DateTime(date.getYear,date.getMonthOfYear,date.getDayOfMonth, time.getHourOfDay, time.getMinuteOfHour, time.getSecondOfMinute)
 
-              if (dateTime.plusHours(24).isBefore(DateTime.now())) {
+              if (dateTime.withZone(DateTimeZone.UTC).plusHours(24).isBefore(DateTime.now().withZone(DateTimeZone.UTC))) {
                 Redirect(routes.DeclarationRetrievalController.declarationNotFound())
               } else {
                 Redirect(routes.DashboardController.showDashboard())
