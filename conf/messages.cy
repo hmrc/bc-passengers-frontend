@@ -1652,9 +1652,9 @@ label.amendment.note_reference_number = Gwnewch nodyn o’ch cyfeirnod – mae�
 label.amendment.email_receipt = Os gwnaethoch roi cyfeiriad e-bost, mae derbynneb o’ch datganiad diwygiedig wedi’i hanfon atoch.
 label.amendment.goods_to_existing_declaration = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu nwyddau at eich datganiad presennol cyn i chi gyrraedd y DU. Bydd angen i chi nodi’ch cyfeirnod.
 
-heading.previous_declaration = A ydych eisoes wedi gwneud datganiad ar gyfer eich taith?
-head.error.previous_declaration = Dewiswch ‘Iawn’ os ydych eisoes wedi gwneud datganiad ar gyfer eich taith
-error.previous_declaration = Dewiswch ‘Iawn’ os ydych eisoes wedi gwneud datganiad ar gyfer eich taith
+heading.previous_declaration = Beth hoffech ei wneud?
+head.error.previous_declaration = Dewis os ydych am wirio’r dreth ar nwyddau a’u datgan neu ychwanegu nwyddau at ddatganiad blaenorol
+error.previous_declaration = Dewis os ydych am wirio’r dreth ar nwyddau a’u datgan neu ychwanegu nwyddau at ddatganiad blaenorol
 
 heading.declaration_retrieval = Ychwanegu nwyddau at eich datganiad blaenorol
 text.declaration_retrieval = Nodwch yr wybodaeth ofynnol i adfer eich datganiad ac ychwanegu rhagor o nwyddau.
@@ -1722,3 +1722,7 @@ text.warning_for_false_declaration_tobacco = Os nad ydych yn datgan tybaco dros 
 label.continue_to_add_items = Yn eich blaen i ychwanegu eitemau
 label.type_of_alcohol = Math o alcohol
 label.type_of_tobacco = Math o dybaco
+
+#Previous declaration page content change
+label.check_tax_and_declare = Gwirio’r dreth ar nwyddau a’u datgan
+label.add_goods_previous_declaration = Ychwanegu nwyddau at ddatganiad blaenorol

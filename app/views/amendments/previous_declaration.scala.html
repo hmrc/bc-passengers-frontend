@@ -21,7 +21,7 @@
 
         @components.input_radio_group(
             previousDeclarationForm("prevDeclaration"),
-            Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
+            Seq("false" -> Messages("label.check_tax_and_declare"), "true" -> Messages("label.add_goods_previous_declaration")),
             '_labelClass -> "block-label inputLabelBeforeError",
             '_inline -> true,
             '_error_id -> "prevDeclaration-error-message",

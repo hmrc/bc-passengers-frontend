@@ -1652,9 +1652,9 @@ label.amendment.note_reference_number = Make a note of your reference number, yo
 label.amendment.email_receipt = If you provided an email address, your amended declaration receipt has been sent to you.
 label.amendment.goods_to_existing_declaration = You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number.
 
-heading.previous_declaration = Have you previously made a declaration for your journey?
-head.error.previous_declaration = Select yes if you have previously made a declaration for your journey
-error.previous_declaration = Select yes if you have previously made a declaration for your journey
+heading.previous_declaration = What do you want to do?
+head.error.previous_declaration = Select if you want to check tax on goods and declare them or add goods to a previous declaration
+error.previous_declaration = Select if you want to check tax on goods and declare them or add goods to a previous declaration
 
 heading.declaration_retrieval = Add goods to your previous declaration
 text.declaration_retrieval = Enter the required information to retrieve your declaration and add more goods.
@@ -1722,3 +1722,7 @@ text.warning_for_false_declaration_tobacco = If you do not declare tobacco over 
 label.continue_to_add_items = Continue to add items
 label.type_of_alcohol = Type of alcohol
 label.type_of_tobacco = Type of tobacco
+
+#Previous declaration page content change
+label.check_tax_and_declare = Check tax on goods and declare them
+label.add_goods_previous_declaration = Add goods to a previous declaration
