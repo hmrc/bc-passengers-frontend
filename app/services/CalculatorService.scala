@@ -18,6 +18,7 @@ import play.api.libs.json.{JsObject, Json, Reads}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
