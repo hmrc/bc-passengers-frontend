@@ -1648,7 +1648,8 @@ label.amount_due = Amount due
 label.amount_paid_previously = Amount paid previously
 label.total_due_now = Total due now
 label.total_paid_now = Total paid now
-label.na = N/A
+label.na = Unknown
+label.not_required = Not required
 
 #declaration not found page
 heading.declaration_not_found = Your declaration cannot be found

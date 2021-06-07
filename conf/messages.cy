@@ -1648,7 +1648,8 @@ label.amount_due = Swm sy’n ddyledus
 label.amount_paid_previously =Swm a dalwyd yn flaenorol
 label.total_due_now =Cyfanswm sy’n ddyledus nawr
 label.total_paid_now = Cyfanswm wedi’i dalu nawr
-label.na = N/A
+label.na = Anhysbys
+label.not_required = Ddim yn ofynnol
 
 #declaration not found page
 heading.declaration_not_found = Ni ellir canfod eich datganiad

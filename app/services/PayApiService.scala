@@ -55,7 +55,7 @@ class PayApiService @Inject()(
           messages("label.no")
         }
       } else {
-        messages("label.na")
+        messages("label.not_required")
       }
     }
 
