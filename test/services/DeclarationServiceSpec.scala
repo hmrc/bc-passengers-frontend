@@ -329,9 +329,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     val calculation: Calculation = Calculation("0.00","12.50","102.50","115.00")
     val liabilityDetails: LiabilityDetails = LiabilityDetails("0.00","12.50","102.50","115.00")
     val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
+    val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
     val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
     val purchasedProductInstances = List(
-      PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None, isEditable = Some(false))
+      PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), Some(otherGoodsSearchItem), Some(false),Some(false),None,Some(false),None, isEditable = Some(false))
     )
     val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
     val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "XJPR5768524625")
@@ -1734,10 +1735,12 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
 
+      val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
+
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
       val purchasedProductInstances = List(
-        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,None)
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), Some(otherGoodsSearchItem), Some(false),Some(false),None,Some(false),None,None)
       )
 
       val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendmentCount = Some(2))
@@ -1941,10 +1944,12 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
 
+      val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
+
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
       val purchasedProductInstances = List(
-        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,None)
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), None, Some(false),Some(false),None,Some(false),None,None)
       )
 
       val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendmentCount = Some(1))

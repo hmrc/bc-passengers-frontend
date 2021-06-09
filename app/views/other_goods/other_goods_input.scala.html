@@ -4,7 +4,7 @@
  *@
 
 @this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(dtoForm: Form[OtherGoodsDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[_], messages: Messages)
+@(dtoForm: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import play.api.libs.json.{JsObject, Json}
@@ -19,6 +19,11 @@
       var version = detectIE();
 
       if (version !== 11) {
+      @if(otherItemMode.equals("create")){
+        var products = @Html(Json.toJson(otherGoodsSearchItems.map(_.toAutoCompleteJson)).toString );
+        enhanceSelectIntoAutoComplete("searchTerm", products);
+        }
+
         var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
         enhanceSelectIntoAutoComplete("country", countrySynonymsData)
 
@@ -27,13 +32,9 @@
 
         var countryEUSynonymsData = @Html( Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString )
         enhanceSelectIntoAutoComplete("originCountry", countryEUSynonymsData);
+
+
       }
-
-
-      $('button[type=submit]').on('click', function() {
-        $('<input>').attr({type: 'hidden', name: 'action', value: $(this).attr('value')}).appendTo('form');
-      })
-
     });
   </script>
 }
@@ -42,8 +43,10 @@
   <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
 }
 
+@title = @{ otherItemMode match { case "create" =>  messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods") case "edit" => messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}") case _ => messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods")}}
+@heading = @{ otherItemMode match { case "create" => messages("label.other-goods.item-of-other-goods") case "edit" => messages(s"label.${path.toMessageKey}") case _ => messages("label.other-goods.item-of-other-goods")}}
 @main_template(
-    title = prefixErrorMessage(messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase(), dtoForm.hasErrors),
+    title = prefixErrorMessage(title, dtoForm.hasErrors),
     inlineScript = Some(scriptElem),
     inlineLinkElem = Some(linkElem)) {
 
@@ -51,12 +54,29 @@
 
   <h1 class="heading-xlarge">
     <span class="heading-secondary">@messages("label.tell_us_about_the")</span>
-    @messages(s"label.${path.toMessageKey}")
+    @heading
   </h1>
 
-  @form(action = iid.fold(routes.OtherGoodsInputController.processAddForm(path))(iid => routes.OtherGoodsInputController.processEditForm(iid)) ) {
-
+  @form(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid)) ) {
+  @if(otherItemMode.equals("create")){
     @components.select(
+      field = dtoForm("searchTerm"),
+      elementOptions = ("","") :: otherGoodsSearchItems.map(p => (p.name, messages(p.name))),
+      displayEmptyValue = true,
+      '_label -> messages("label.add_your_goods"),
+      '_errorsAboveInput -> true,
+      '_error_id -> "search-error-message",
+      '_errorPrefix -> messages("label.error")
+    )
+
+     <div class="panel panel-border-narrow">
+        <p>
+          @messages("label.search_through_our_lists_and")
+          <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.categorise_your_goods_yourself")</a>
+        </p>
+      </div>
+  }
+     @components.select(
       field = dtoForm("country"),
       elementOptions = ("","") :: countries.map(c => (c.code, messages(c.countryName))),
       displayEmptyValue = true,
@@ -98,6 +118,7 @@
       '_error_id -> "cost-error-message",
       '_errorPrefix -> messages("label.error")
     )
+
 
     <div class="form-group">
       <button type="submit" id="other-goods-input-button" class="button" name="action" value="continue">@messages("label.continue")</button>

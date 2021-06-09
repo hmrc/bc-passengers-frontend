@@ -88,10 +88,10 @@
     <h2 class="heading-medium">@messages("label.other_goods")</h2>
     @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
       <p>
-        <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>      </p>
+        <a href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a>      </p>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
       <div class="add-more">
-        <a href="@routes.OtherGoodsSearchController.clearAndSearchGoods">@messages("label.add_other_goods")</a>
+        <a href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a>
       </div>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">

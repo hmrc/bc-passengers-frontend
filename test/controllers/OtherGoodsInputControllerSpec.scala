@@ -112,11 +112,12 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(injected[Cache].storeJourneyData(any())(any())) thenReturn Future.successful(cachedJourneyData)
       val insertedPurchase = (cachedJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(), any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(),any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -125,10 +126,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
       val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedGBNIJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(),any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -137,10 +138,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedEUGBJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
       val insertedPurchase = (cachedEUGBJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedEUGBJourneyData.get
+      when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
+      when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedEUGBJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(),any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -148,9 +149,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
   "Getting displayEditForm" should {
 
-    "return a 404 when given an invalid iid" in new LocalSetup {
+    "return a 404 when given missing iid" in new LocalSetup {
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit/missing-iid")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit")).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -210,7 +211,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "return a 404 when purchase has invalid product path" in new LocalSetup {
+    "return a 404 when purchase has invalid iid" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
         prevDeclaration = Some(false),
@@ -223,7 +224,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         ageOver17 = Some(true),
         purchasedProductInstances = List(PurchasedProductInstance(
           ProductPath("invalid/product/path"),
-          "iid0",
+          "iid1",
           None,
           None,
           Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
@@ -257,11 +258,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 200 when given a valid path" in new LocalSetup {
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")).get
       status(result) shouldBe OK
     }
 
-    "display default country and currency if set in JourneyData" in new LocalSetup {
+    "display default searchTerm, country and currency if set in JourneyData" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
         prevDeclaration = Some(false),
@@ -272,6 +273,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
+        selectedAliases = List(ProductAlias("Book", ProductPath("other-goods/books"))),
         purchasedProductInstances = List(PurchasedProductInstance(
           ProductPath("other-goods/books"),
           "iid0",
@@ -286,17 +288,18 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         defaultCurrency = Some("EUR")
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")).get
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(),any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
+      formCaptor.getValue.data("searchTerm") shouldBe "Book"
     }
 
-    "not display default country and currency if not set in JourneyData" in new LocalSetup {
+    "not display default searchTerm, country and currency if not set in JourneyData" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
         prevDeclaration = Some(false),
@@ -319,14 +322,15 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         ))
       ))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/tell-us")).get
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")).get
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(),any())(any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
+      formCaptor.getValue.data("searchTerm") shouldBe ""
     }
   }
 
@@ -340,7 +344,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 if no action is supplied" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "country" -> "",
         "currency" -> ""
       )
@@ -351,7 +355,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 when action == continue and country not present" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "",
         "currency" -> "EUR",
@@ -364,7 +368,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 when action == continue and country not valid" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "Not a real country",
         "currency" -> "EUR",
@@ -377,7 +381,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 when action == continue and currency not present" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "",
@@ -390,7 +394,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 when action == continue and currency not valid" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "XXX",
@@ -403,7 +407,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 when action == continue and cost not present" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR"
@@ -415,7 +419,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 400 when action == continue and cost contains ',' only" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
         "country" -> "FR",
         "currency" -> "EUR",
@@ -428,8 +432,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "add a number of PPIs to the JourneyData and redirect to next step when action == continue and iid is not present" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.womens_clothes",
         "country" -> "FR",
         "currency" -> "EUR",
         "cost" -> "12.12"
@@ -447,6 +452,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any(),
         meq("EUR"),
         meq(List(BigDecimal(12.12))),
+        any(),
         any()
       )(any())
 
@@ -455,8 +461,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.adult.adult-clothing",
         "country" -> "FR",
         "currency" -> "EUR",
         "cost" -> "12.12"
@@ -469,8 +476,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.adult.adult-clothing",
         "country" -> "FR",
         "originCountry" -> "FR",
         "currency" -> "EUR",
@@ -486,8 +494,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.adult.adult-clothing",
         "country" -> "FR",
         "originCountry" -> "IN",
         "currency" -> "EUR",
@@ -502,8 +511,9 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a null value" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.adult.adult-clothing",
         "country" -> "FR",
         "currency" -> "EUR",
         "cost" -> "12.12"
@@ -533,10 +543,25 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     }
 
+    "return a 400 when action == continue and currency not present" in new LocalSetup {
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
+        "action" -> "continue",
+        "searchTerm" -> "label.other-goods.book",
+        "country" -> "FR",
+        "currency" -> "",
+        "cost" -> "12.12",
+      )
+
+      val result: Future[Result] = route(app, req).get
+      status(result) shouldBe BAD_REQUEST
+    }
+
     "modify the relevant PPI in the JourneyData and redirect to next step when action == continue and iid is present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.book",
         "country" -> "FR",
         "currency" -> "EUR",
         "cost" -> "12.12"
@@ -554,7 +579,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         meq("FR"),
         any(),
         meq("EUR"),
-        meq(BigDecimal(12.12))
+        meq(BigDecimal(12.12)),
+        any()
       )(any())
 
       verify(injected[Cache], times(2)).store(any())(any())
@@ -564,6 +590,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.book",
         "country" -> "FR",
         "currency" -> "EUR",
         "cost" -> "12.12"
@@ -578,6 +605,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.book",
         "country" -> "FR",
         "originCountry" -> "FR",
         "currency" -> "EUR",
@@ -595,6 +623,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.adult.adult-clothing",
         "country" -> "FR",
         "originCountry" -> "IN",
         "currency" -> "EUR",
@@ -612,6 +641,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit").withFormUrlEncodedBody(
         "action" -> "continue",
+        "searchTerm" -> "label.other-goods.adult.adult-clothing",
         "country" -> "FR",
         "currency" -> "EUR",
         "cost" -> "12.12"

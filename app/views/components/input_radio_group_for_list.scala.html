@@ -1,0 +1,72 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@(field: Field, radioOptions: List[(String, String)], path: Option[ProductPath], args: (Symbol, Any)*)(implicit messages: Messages)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@elements = @{new FieldElements(field.id, field, null, args.toMap, messages) }
+@fieldsetClass = {@elements.args.get('_groupClass)}
+@labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
+
+<div id="@elements.field.name" class="form-group @if(elements.hasErrors){ form-group-error} @if(elements.args.contains('_inline)){inline}">
+
+    @elements.errors.map{error =>
+        <span class="error-message" @if(elements.args.contains('_error_id)) {
+            id="@elements.args.get('_error_id)" }>
+                @if(elements.args.contains('_errorPrefix) ){<span class="visually-hidden">@elements.args.get('_errorPrefix) </span>}
+            @{path match {
+            case Some(path) => messages(error+"."+path.toMessageKey)
+            case None => messages(error) }
+            }
+        </span>
+    }
+
+    @radioOptions.map { case (value, label) =>
+    @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ","_")}")  { inputId =>
+        <div class="multiple-choice">
+            <input
+                    type="radio"
+                    id="@inputId"
+                    name="@elements.field.name"
+                    value="@value"
+                    @elements.args.get('_inputClass).map{inputClass => class="@inputClass"}
+                    @if(elements.args.get('_error_id).isDefined && elements.hasErrors) { aria-labelledby="@elements.args.get('_error_id)" }
+                    @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
+                    @field.value.filter( _ == value).map{_ => checked="checked"}/>
+
+            <label for="@inputId"
+                   @elements.args.get('_labelClass).map{labelClass => class="@labelClass@field.value.filter( _ == value).map{_ => selected}"}>
+                    @if(!labelAfter) {
+                        @if(elements.args.get('_stackedLabel)) {
+                            @if(label.split(" ").length < 2) {<br>@Messages(label)
+                            } else {
+                                @for( (l, index) <- label.split(" ").zipWithIndex) {
+                                    @if(index != 0) {<br>}@l
+                                }
+                            }
+                        } else { @Messages(label) }
+                    }
+
+                    @if(labelAfter) {
+                        @if(elements.args.get('_stackedLabel)) {
+                            @if(label.split(" ").length < 2) {<br>@Messages(label)
+                            } else {
+                                @for( (l, index) <- label.split(" ").zipWithIndex) {
+                                    @if(index != 0) {<br>}@l
+                                }
+                            }
+                        } else { @Messages(label) }
+                    }
+                    @elements.args.get(Symbol(value)).map{label => <br>
+                        <span id="hint-@value" class="form-hint govuk-radios__hint">@label</span>}
+            </label>
+
+        </div>
+        }
+    }
+
+</div>

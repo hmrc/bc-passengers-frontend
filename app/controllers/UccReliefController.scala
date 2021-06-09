@@ -39,7 +39,7 @@ class UccReliefController @Inject()(
     Future.successful {
       val ppInstance =  context.journeyData.flatMap(jd => jd.purchasedProductInstances.find(p => p.iid == iid))
       ppInstance match {
-        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _, _, _ ,_, Some(isUccRelief),_,_)) =>
+        case Some(PurchasedProductInstance(_, _, _, _, _, _, _, _,_, _, _ ,_, Some(isUccRelief),_,_)) =>
           Ok(isUccReliefItemPage(UccReliefItemForm.form.fill(isUccRelief), backLinkModel.backLink, path, iid))
         case _ =>
           Ok(isUccReliefItemPage(UccReliefItemForm.form, backLinkModel.backLink, path, iid))

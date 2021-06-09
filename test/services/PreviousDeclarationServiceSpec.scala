@@ -81,12 +81,14 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
 
       val productPath = ProductPath("other-goods/adult/adult-footwear")
 
+      val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
+
       val country = Country("IN","title.india","IN",false,true,List())
 
       val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
 
       val editablePurchasedProductInstances = List(
-        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(true))
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), Some(otherGoodsSearchItem), Some(false),Some(false),None,Some(false),None,Some(true))
       )
 
       val declarationResponse = DeclarationResponse(calculation, liabilityDetails, editablePurchasedProductInstances)
@@ -102,7 +104,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
       )
 
       val nonEditablePurchasedProductInstances = List(
-        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), Some(otherGoodsSearchItem), Some(false),Some(false),None,Some(false),None,Some(false))
       )
 
       val expectedJourneyData = retrievedJourneyData.copy(

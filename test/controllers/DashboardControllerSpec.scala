@@ -72,9 +72,9 @@ class DashboardControllerSpec extends BaseSpec {
   }
 
   "respond with 200, display the page if all travel details exist & display button's text for declaration:Calculate taxes and duties" in new LocalSetup {
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -101,9 +101,9 @@ class DashboardControllerSpec extends BaseSpec {
     lazy val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
     lazy val declarationResponse = DeclarationResponse(calculation = calculation, oldPurchaseProductInstances = oldPurchasedProductInstances, liabilityDetails = liabilityDetails)
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false),purchasedProductInstances = List(alcohol,tobacco,other),declarationResponse=Some(declarationResponse)))
 
@@ -210,7 +210,7 @@ class DashboardControllerSpec extends BaseSpec {
         )),
         declarationResponse = Some(DeclarationResponse(Calculation("1.00", "7.00", "90000.00", "98000.00"),
           LiabilityDetails("32.0","0.0","126.4","158.40"),
-          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), None, Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00"))
       ))
 
@@ -244,7 +244,7 @@ class DashboardControllerSpec extends BaseSpec {
         )),
         declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
           LiabilityDetails("32.0","0.0","126.4","158.40"),
-          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       ))
 
@@ -278,7 +278,7 @@ class DashboardControllerSpec extends BaseSpec {
         )),
         declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
           LiabilityDetails("32.0","0.0","126.4","158.40"),
-          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       ))
 
@@ -311,7 +311,7 @@ class DashboardControllerSpec extends BaseSpec {
         )),
         declarationResponse = Some(DeclarationResponse(Calculation("100.00", "100.00", "100.00", "300.00"),
           LiabilityDetails("32.0","0.0","126.4","158.40"),
-          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("100.00", "100.00", "100.00", "300.00"))
       ))
 
@@ -343,7 +343,7 @@ class DashboardControllerSpec extends BaseSpec {
         )),
         declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
           LiabilityDetails("32.0","0.0","126.4","158.40"),
-          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       ))
 
@@ -373,7 +373,7 @@ class DashboardControllerSpec extends BaseSpec {
         )),
         declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
           LiabilityDetails("32.0","0.0","126.4","158.40"),
-          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500),Some(false),Some(false),None,Some(false),None,Some(false))))),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00")),
         euCountryCheck = Some("greatBritain")
       ))
@@ -552,9 +552,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the vat,excise and tax exempt flags as No against items for GBNI Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(false),None,Some(false),Some(false))
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(false),None,Some(false),Some(false))
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(5432),Some(false),None,Some(false),Some(false))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(false),None,Some(false),Some(false))
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(false),None,Some(false),Some(false))
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CHF"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(false),None,Some(false),Some(false))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -588,9 +588,9 @@ class DashboardControllerSpec extends BaseSpec {
   }
   "display the produced_in and made_in flags with desired values against items for EU Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -625,9 +625,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "Display only purchased in and don't display the produced_in and made_in flags when they don't have any desired values against items for EU Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -661,9 +661,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the purchased in, produced_in flags with desired values against items for EU Journey, when the made_in flag has no data against it" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -697,9 +697,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "Display the purchased in, made_in flags with desired values against items for EU Journey, when the produced_in flag has no data against it" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -733,9 +733,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the evidence flags with true values against items for EU Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,None,None,Some(true))
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,None,None,Some(true))
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,None,None,Some(true))
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,None,None,Some(true))
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -766,9 +766,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "Don't display the evidence flags when it has not been defined for EU Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,None,None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,None,None,None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432),Some(true),None,None,None,None)
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,None,None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,None,None,None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), Some("AUD"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,None,None)
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -800,9 +800,9 @@ class DashboardControllerSpec extends BaseSpec {
 
   "display the vat,excise and tax exempt flags as Yes against items for GBNI Journey" in new LocalSetup {
 
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), Some(true),None,Some(true),None)
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)),Some(true),None,Some(true),None)
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("CHF"), Some(5432),Some(true),None,None,Some(true))
+    val alcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val tobacco: PurchasedProductInstance = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0", Some(1.54332), Some(20), Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None, Some(true),None,Some(true),None)
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false,isCountry = true, Nil)), None, Some("CHF"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), purchasedProductInstances = List(alcohol,tobacco,other)))
 
@@ -908,7 +908,7 @@ class DashboardControllerSpec extends BaseSpec {
 
   "not display the tax exempt flags against other items for GBNI Journey for UK Residents" in new LocalSetup {
 
-    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry =  true, Nil)), None, Some("CHF"), Some(5432),Some(true),None,None,Some(true))
+    val other: PurchasedProductInstance = PurchasedProductInstance(ProductPath("other-goods/antiques"), "iid1", None, None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry =  true, Nil)), None, Some("CHF"), Some(5432), Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))), Some(true),None,None,Some(true))
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(true), purchasedProductInstances = List(other)
     ))
