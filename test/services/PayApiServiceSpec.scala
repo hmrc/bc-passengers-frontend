@@ -63,7 +63,7 @@ class PayApiServiceSpec extends BaseSpec {
        |            "price": "120.00 USA dollars (USD)",
        |            "purchaseLocation": "United States of America",
        |            "producedIn" : "Algeria",
-       |            "evidenceOfOrigin" : "N/A"
+       |            "evidenceOfOrigin" : "Not required"
        |        },
        |        {
        |            "name": "250 cigarettes",
@@ -78,8 +78,8 @@ class PayApiServiceSpec extends BaseSpec {
        |            "costInGbp": "198.91",
        |            "price": "200.00 USA dollars (USD)",
        |            "purchaseLocation": "United States of America",
-       |            "producedIn" : "N/A",
-       |            "evidenceOfOrigin" : "N/A"
+       |            "producedIn" : "Unknown",
+       |            "evidenceOfOrigin" : "Not required"
        |        },
        |        {   "name": "Televisions",
        |            "costInGbp": "0.00",
@@ -123,7 +123,7 @@ class PayApiServiceSpec extends BaseSpec {
        |            "price": "120.00 USA dollars (USD)",
        |            "purchaseLocation": "United States of America",
        |            "producedIn" : "Algeria",
-       |            "evidenceOfOrigin" : "N/A"
+       |            "evidenceOfOrigin" : "Not required"
        |        },
        |        {
        |            "name": "250 cigarettes",
@@ -138,8 +138,8 @@ class PayApiServiceSpec extends BaseSpec {
        |            "costInGbp": "198.91",
        |            "price": "200.00 USA dollars (USD)",
        |            "purchaseLocation": "United States of America",
-       |            "producedIn" : "N/A",
-       |            "evidenceOfOrigin" : "N/A"
+       |            "producedIn" : "Unknown",
+       |            "evidenceOfOrigin" : "Not required"
        |        },
        |        {   "name": "Televisions",
        |            "costInGbp": "0.00",
