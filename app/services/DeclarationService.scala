@@ -57,7 +57,9 @@ class DeclarationService @Inject()(
           (declarationResponse \ "liabilityDetails").as[LiabilityDetails],
           (declarationResponse \ "oldPurchaseProductInstances").as[List[PurchasedProductInstance]],
           (declarationResponse \ "amendmentCount").asOpt[Int]
-        ))
+        )),
+        amendState = (declarationResponse \ "amendState").asOpt[String],
+        deltaCalculation = if((declarationResponse \ "amendState").asOpt[String].getOrElse("").equals("pending-payment")) (declarationResponse \ "deltaCalculation").asOpt[Calculation] else None
       )
     }
 

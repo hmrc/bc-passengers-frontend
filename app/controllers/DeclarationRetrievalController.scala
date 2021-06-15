@@ -66,6 +66,8 @@ class DeclarationRetrievalController @Inject()(
 
               if (dateTime.withZone(DateTimeZone.UTC).plusHours(24).isBefore(DateTime.now().withZone(DateTimeZone.UTC))) {
                 Redirect(routes.DeclarationRetrievalController.declarationNotFound())
+              } else if(journeyData.get.amendState.getOrElse("").equals("pending-payment")){
+                Redirect(routes.DashboardController.showDashboard())
               } else {
                 Redirect(routes.DashboardController.showDashboard())
               }
