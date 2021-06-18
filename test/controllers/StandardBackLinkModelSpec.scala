@@ -674,4 +674,38 @@ class StandardBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
     }
   }
+
+  "Going back from pending-payment for pending-payment page" should {
+
+    "return user to the declaration-retrieval page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = None
+      override val isArrivingNi: Option[Boolean] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.PendingPaymentController.loadPendingPaymentPage()
+
+      m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
+    }
+  }
+
+  "Going back from no further amendment for pending-payment page" should {
+
+    "return user to the pending payment page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled = false
+      override val euCountryCheck: Option[String] = None
+      override val isArrivingNi: Option[Boolean] = None
+      override val isVatResClaimed: Option[Boolean] = None
+      override val isBringingDutyFree: Option[Boolean] = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.PendingPaymentController.noFurtherAmendment()
+
+      m.backLink(context) shouldBe Some(routes.PendingPaymentController.loadPendingPaymentPage().url)
+    }
+  }
 }

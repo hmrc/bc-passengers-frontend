@@ -107,6 +107,14 @@ class CalculatorService @Inject() (
     Calculation(deltaExcise,deltaCustoms,deltaVat,deltaTotal)
   }
 
+  def getPreviousPaidCalculation(deltaCalculation:Calculation, currentCalculation:Calculation):Calculation = {
+    val previousCustoms = (BigDecimal(currentCalculation.customs) - BigDecimal(deltaCalculation.customs)).setScale(2).toString
+    val previousVat = (BigDecimal(currentCalculation.vat) - BigDecimal(deltaCalculation.vat)).setScale(2).toString
+    val previousExcise = (BigDecimal(currentCalculation.excise) - BigDecimal(deltaCalculation.excise)).setScale(2).toString
+    val previousTotal = (BigDecimal(currentCalculation.allTax) - BigDecimal(deltaCalculation.allTax)).setScale(2).toString
+    Calculation(previousExcise,previousCustoms,previousVat,previousTotal)
+  }
+
   def journeyDataToLimitsRequest(journeyData: JourneyData)(implicit hc: HeaderCarrier): Option[LimitRequest] = {
       val allPurchasedProductInstances = journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ journeyData.purchasedProductInstances
 

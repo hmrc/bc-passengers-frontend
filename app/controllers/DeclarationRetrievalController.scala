@@ -63,9 +63,12 @@ class DeclarationRetrievalController @Inject()(
               val date = journeyData.get.userInformation.get.dateOfArrival
               val time = journeyData.get.userInformation.get.timeOfArrival
               val dateTime  = new DateTime(date.getYear,date.getMonthOfYear,date.getDayOfMonth, time.getHourOfDay, time.getMinuteOfHour, time.getSecondOfMinute)
+              val amendState = journeyData.get.amendState.getOrElse("")
 
               if (dateTime.withZone(DateTimeZone.UTC).plusHours(24).isBefore(DateTime.now().withZone(DateTimeZone.UTC))) {
                 Redirect(routes.DeclarationRetrievalController.declarationNotFound())
+              } else if(amendState.equals("pending-payment")){
+                Redirect(routes.PendingPaymentController.loadPendingPaymentPage())
               } else {
                 Redirect(routes.DashboardController.showDashboard())
               }

@@ -129,27 +129,33 @@ class TobaccoInputController @Inject()(
   
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-        Future.successful(Ok( no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""),"currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ))
+        withDefaults(context.getJourneyData) { defaultCountry =>
+          defaultOriginCountry =>
+            defaultCurrency =>
+              Future.successful(Ok(no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+        }
       }
-    }
   }
 
 
   def displayWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-          Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+        withDefaults(context.getJourneyData) { defaultCountry =>
+          defaultOriginCountry =>
+            defaultCurrency =>
+              Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+        }
       }
-    }
   }
 
   def displayNoOfSticksWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-          Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+        withDefaults(context.getJourneyData) { defaultCountry =>
+          defaultOriginCountry =>
+            defaultCurrency =>
+              Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+        }
       }
-    }
   }
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>

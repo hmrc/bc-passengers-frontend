@@ -1687,3 +1687,14 @@ label.type_of_tobacco = Math o dybaco
 #Previous declaration page content change
 label.check_tax_and_declare = Gwirio’r dreth ar nwyddau a’u datgan
 label.add_goods_previous_declaration = Ychwanegu nwyddau at ddatganiad blaenorol
+
+#No further amendment page
+heading.no_longer_declaration_available = (W)You can no longer use this service to add goods to your declaration(W)
+label.unless_you_go_back_and_pay = Oni bai eich bod yn mynd yn ôl ac yn talu nawr, ni allwch ddefnyddio’r gwasanaeth hwn mwyach. Bydd angen i chi siarad â swyddog Llu’r Ffiniau yn eich man cyrraedd i ddatgan unrhyw nwyddau ychwanegol.
+
+#Pending Payment page
+heading.incomplete_payment = Mae gennych daliad anghyflawn ar gyfer eich datganiad am
+label.want_to_pay_now = A hoffech dalu nawr?
+label.service_no_longer_available = Os na fyddwch yn talu nawr, ni fyddwch yn gallu defnyddio’r gwasanaeth hwn mwyach i ychwanegu nwyddau at eich datganiad.
+head.error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
+error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr

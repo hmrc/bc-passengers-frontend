@@ -120,6 +120,10 @@ class BackLinkModel @Inject() (
         Some(appConfig.declareGoodsUrl)
       case "declaration-retrieval" =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
+      case "pending-payment" =>
+        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage())
+      case "no-further-amendments" =>
+        Some(PendingPaymentController.loadPendingPaymentPage())
       case "add" =>
         Some(DashboardController.showDashboard())
       case _ =>

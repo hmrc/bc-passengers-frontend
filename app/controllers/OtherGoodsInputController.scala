@@ -81,16 +81,18 @@ class OtherGoodsInputController @Inject()(
   )
 
   val displayAddForm: Action[AnyContent] = dashboardAction { implicit context =>
-    withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-      val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
-      term.size match {
-        case 1 =>
-          cache.storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil)).map(_ =>
-            Ok(other_goods_input(continueForm.bind(Map("searchTerm" -> term.head, "country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck, productTreeService.otherGoodsSearchItems, "create", ProductPath.apply(Nil))))
-        case _ =>
-          cache.storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil)).map(_ =>
-            Ok(other_goods_input(continueForm.bind(Map("searchTerm" -> "", "country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck, productTreeService.otherGoodsSearchItems, "create", ProductPath.apply(Nil))))
-      }
+    withDefaults(context.getJourneyData) { defaultCountry =>
+        defaultOriginCountry =>
+          defaultCurrency =>
+            val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
+            term.size match {
+              case 1 =>
+                cache.storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil)).map(_ =>
+                  Ok(other_goods_input(continueForm.bind(Map("searchTerm" -> term.head, "country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck, productTreeService.otherGoodsSearchItems, "create", ProductPath.apply(Nil))))
+              case _ =>
+                cache.storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil)).map(_ =>
+                  Ok(other_goods_input(continueForm.bind(Map("searchTerm" -> "", "country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck, productTreeService.otherGoodsSearchItems, "create", ProductPath.apply(Nil))))
+            }
     }
   }
 

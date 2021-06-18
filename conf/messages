@@ -1687,3 +1687,14 @@ label.type_of_tobacco = Type of tobacco
 #Previous declaration page content change
 label.check_tax_and_declare = Check tax on goods and declare them
 label.add_goods_previous_declaration = Add goods to a previous declaration
+
+#No further amendment page
+heading.no_longer_declaration_available = You can no longer use this service to add goods to your declaration
+label.unless_you_go_back_and_pay = Unless you go back and pay now, you can no longer use this service. You will need to speak to a Border Force officer at your arrival location to declare any additional goods.
+
+#Pending Payment page
+heading.incomplete_payment = You have an incomplete payment for your declaration for
+label.want_to_pay_now = Do you want to pay now?
+label.service_no_longer_available = If you do not pay now, you will no longer be able to use this service to add goods to your declaration.
+head.error.pay_now_if_you_want_to = Select yes if you want to pay now
+error.pay_now_if_you_want_to = Select yes if you want to pay now

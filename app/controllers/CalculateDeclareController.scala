@@ -151,9 +151,9 @@ class CalculateDeclareController @Inject()(
 
     val correlationId = UUID.randomUUID.toString
     val userInformation = context.getJourneyData.userInformation.getOrElse(throw new RuntimeException("no user Information"))
-    val amountPaidPreviously = context.getJourneyData.declarationResponse.get.calculation.allTax
+    val amendState = context.getJourneyData.amendState.getOrElse("")
     requireCalculatorResponse { calculatorResponse =>
-
+      val amountPaidPreviously = if(amendState.equals("pending-payment")) calculatorService.getPreviousPaidCalculation(context.getJourneyData.deltaCalculation.get, calculatorResponse.calculation).allTax else context.getJourneyData.declarationResponse.get.calculation.allTax
       declarationService.submitAmendment(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
 
         case DeclarationServiceFailureResponse =>
@@ -166,7 +166,7 @@ class CalculateDeclareController @Inject()(
               declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
                 Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
               }
-            case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true, Some(amountPaidPreviously)) map {
+            case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true, Some(amountPaidPreviously), Some(amendState)) map {
 
               case PayApiServiceFailureResponse =>
                 InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
@@ -182,7 +182,7 @@ class CalculateDeclareController @Inject()(
   def irishBorder: Action[AnyContent] = publicAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_,_,_,_,_,_)) =>
+        case Some(JourneyData(_, _, _, _,_, _, _, _, _, _, _, _, Some(irishBorder), _, _, _, _, _, _,_,_,_,_,_,_,_, _, _)) =>
           Ok(irish_border(IrishBorderDto.form.bind(Map("irishBorder" -> irishBorder.toString)), backLinkModel.backLink))
         case _ =>
           Ok(irish_border(IrishBorderDto.form, backLinkModel.backLink))

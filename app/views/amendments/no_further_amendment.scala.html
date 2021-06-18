@@ -1,0 +1,15 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this(main_template: views.html.main_template)
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+
+@main_template(title = messages("heading.no_longer_declaration_available"), bodyClasses = None, backLink = backLink) {
+
+<h1 class="heading-xlarge">@messages("heading.no_longer_declaration_available")</h1>
+
+<p>@messages("label.unless_you_go_back_and_pay")</p>
+
+}

@@ -40,8 +40,9 @@ class PayApiService @Inject()(
 
   lazy val backUrlDeclaration: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
   lazy val backUrlAmendment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.declareYourGoods
+  lazy val backUrlPendingPayment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.PendingPaymentController.loadPendingPaymentPage()
 
-  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean, amountPaidPreviously : Option[String])(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean, amountPaidPreviously : Option[String], amendState: Option[String] = None)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 
     def getPlaceOfArrival(userInfo: UserInformation) = {
       if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
@@ -59,8 +60,8 @@ class PayApiService @Inject()(
       }
     }
 
-    def geBackURL(isAmendment: Boolean) = {
-      if (isAmendment) backUrlAmendment else backUrlDeclaration
+    def geBackURL(isAmendment: Boolean, amendState: String) = {
+      if(amendState.equals("pending-payment")) backUrlPendingPayment else if (isAmendment) backUrlAmendment else backUrlDeclaration
     }
 
     def previouslyPaidAmount: String = amountPaidPreviously.getOrElse("0.00")
@@ -74,7 +75,7 @@ class PayApiService @Inject()(
       "returnUrl" -> returnUrl,
       "returnUrlFailed" -> returnUrlFailed,
       "returnUrlCancelled" -> returnUrlCancelled,
-      "backUrl" -> geBackURL(isAmendment),
+      "backUrl" -> geBackURL(isAmendment, amendState.getOrElse("")),
       "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
         Json.obj(
           "name" -> item.metadata.description,

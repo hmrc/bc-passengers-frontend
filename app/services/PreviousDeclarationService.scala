@@ -46,7 +46,7 @@ class PreviousDeclarationService @Inject()(
       case Some(_) =>
         declarationService.retrieveDeclaration(previousDeclarationRequest) flatMap {
           case DeclarationServiceRetrieveSuccessResponse(retrievedJourneyData) =>
-            cache.storeJourneyData(retrievedJourneyData.copy(
+            cache.storeJourneyData(retrievedJourneyData.copy(pendingPayment = journeyData.get.pendingPayment,
               declarationResponse = retrievedJourneyData.declarationResponse.map { ds =>
                 ds.copy(oldPurchaseProductInstances = ds.oldPurchaseProductInstances.map(ppi =>
                   ppi.copy(isEditable = Some(false))
@@ -55,6 +55,7 @@ class PreviousDeclarationService @Inject()(
             )
           case DeclarationServiceFailureResponse =>
             cache.storeJourneyData(JourneyData(
+              pendingPayment = journeyData.get.pendingPayment,
               prevDeclaration = Some(true),
               previousDeclarationRequest = Some(previousDeclarationRequest)
             ))

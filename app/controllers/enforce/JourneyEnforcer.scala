@@ -74,8 +74,13 @@ class DashboardAction @Inject() (journeyEnforcer: JourneyEnforcer, appConfig: Ap
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
-      journeyEnforcer(step) {
-        block(context)
+      if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment") && context.getJourneyData.pendingPayment.isDefined && !context.getJourneyData.pendingPayment.get){
+        Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+      }
+      else{
+        journeyEnforcer(step) {
+          block(context)
+        }
       }
     }
   }
@@ -373,6 +378,28 @@ class DeclarationNotFoundAction @Inject()(journeyEnforcer: JourneyEnforcer, publ
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
       journeyEnforcer(vatres.declarationNotFoundStep) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class PendingPaymentAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.pendingPaymentStep) {
+        block(context)
+      }
+    }
+  }
+}
+
+@Singleton
+class NoFurtherAmendmentAction @Inject()(journeyEnforcer: JourneyEnforcer, publicAction: PublicAction) {
+  def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
+    publicAction { implicit context =>
+      journeyEnforcer(vatres.noFurtherAmendmentStep) {
         block(context)
       }
     }
