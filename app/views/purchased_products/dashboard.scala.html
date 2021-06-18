@@ -23,9 +23,10 @@
 @import uk.gov.hmrc.play.views.html._
 @import util._
 
-@main_template(title = messages("label.tell_us_about_the_goods_"), backLink = backLink) {
-
-  <h1 class="heading-xlarge">@messages("label.tell_us_about_the_goods_")</h1>
+@main_template(title = if(isAmendment) messages("label.tell_us_about_the_additional_goods_") else messages("label.tell_us_about_the_goods_"), backLink = backLink) {
+  @if(isAmendment){
+  <h1 class="heading-xlarge">@messages("label.tell_us_about_the_additional_goods_")</h1>} else{
+  <h1 class="heading-xlarge">@messages("label.tell_us_about_the_goods_")</h1>}
   <p id="foreign-currency"> @messages("label.about_foreign_currencies") </p>
 
   <dl class="govuk-check-your-answers cya-questions-short">  </dl>
