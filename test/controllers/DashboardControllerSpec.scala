@@ -233,6 +233,65 @@ class DashboardControllerSpec extends BaseSpec {
 
     }
 
+    "On the tax due page, for amendment, show the amount required for the current amendment and not the cumulative amount" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+        prevDeclaration = Some(true),
+        calculatorResponse = Some(CalculatorResponse(
+          Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+            ExchangeRate("1.20", "2021-06-21"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
+          Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Calculation("100.00", "100.00", "100.00", "300.00"),
+          withinFreeAllowance = false,
+          limits = Map.empty,
+          isAnyItemOverAllowance = true
+        )),
+        declarationResponse = Some(DeclarationResponse(Calculation("100.00", "100.00", "100.00", "300.00"),
+          LiabilityDetails("32.0","0.0","126.4","158.40"),
+          List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
+        deltaCalculation = Some(Calculation("102.00", "102.00", "102.00", "306.00"))
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £306.00"}
+
+      "On the tax due page, for Zero pound amendment, show the amount required for the current amendment as 0 and not the cumulative amount" in new LocalSetup {
+
+        override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
+          euCountryCheck = Some("greatBritain"),
+          arrivingNICheck = Some(true),
+          calculatorResponse = Some(CalculatorResponse(
+            Some(Alcohol(List(Band("B",List(Item("ALC/A1/CIDER", "1.00",None,Some(5), Calculation("1.00","7.00","90000.00","90000.00"),Metadata("5 litres cider", "Cider", "1.00",Currency("USD", "USA Dollar (USD)", Some("USD"), Nil), Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+              ExchangeRate("1.20", "2018-10-29"),None),None,None,None,None)), Calculation("1.00","1.00","1.00","3.00"))), Calculation("1.00", "7.00", "90000.00", "98000.00"))),
+            Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+            Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = false,
+            limits = Map.empty,
+            isAnyItemOverAllowance = true
+          )),
+          declarationResponse = Some(DeclarationResponse(Calculation("0.00", "0.00", "0.00", "0.00"),
+            LiabilityDetails("32.0","0.0","126.4","158.40"),
+            List(PurchasedProductInstance(ProductPath("other-goods/adult/adult-footwear"),"UnOGll",None,None,None,None,Some("GBP"),Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false),Some(false),None,Some(false),None,Some(false))))),
+          deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
+        ))
+
+        val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+
+        status(result) shouldBe OK
+
+        val content: String = contentAsString(result)
+        val doc: Document = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"}
+
     "redirect to the Zero to declare page if the amendment total zero pound" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(
