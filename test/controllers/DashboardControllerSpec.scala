@@ -119,7 +119,7 @@ class DashboardControllerSpec extends BaseSpec {
     val content: String = contentAsString(result)
     val doc: Document = Jsoup.parse(content)
 
-    doc.getElementsByTag("h1").text() shouldBe "Tell us about your goods"
+    doc.getElementsByTag("h1").text() shouldBe "Tell us about your additional goods"
     doc.getElementsByClass("button margin-top-30").text() shouldBe "Calculate change in taxes and duties"}
 
     "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {

@@ -429,6 +429,7 @@ label.currency_used_to_buy_the_item=Yr arian cyfred a ddefnyddiwyd i brynu’r e
 label.price_paid_for_this_item=Y pris a dalwyd am yr eitem hon
 label.country_the_item_was_produced_hint = Os nad ydych yn siŵr lle y cafodd yr eitem hon ei gwneud yn wreiddiol, gadewch hyn yn wag
 label.tell_us_about_the_goods_=Rhowch wybod i ni am eich nwyddau
+label.tell_us_about_the_additional_goods_ = Rhowch wybod i ni am eich nwyddau ychwanegol
 label.about_foreign_currencies = Mae ein cyfrifiannell ar-lein yn derbyn bron pob arian cyfred tramor, a bydd yn cyfrifo’r dreth sy’n ddyledus mewn punnoedd Prydeinig.
 label.price_paid=Y pris a dalwyd
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
