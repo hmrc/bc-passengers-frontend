@@ -39,6 +39,11 @@ GET        /gb-ni-no-need-to-use-service                                        
 
 GET        /declaration-not-found                                                      controllers.DeclarationRetrievalController.declarationNotFound
 
+GET        /pending-payment                                                            controllers.PendingPaymentController.loadPendingPaymentPage
+POST       /pending-payment                                                            controllers.PendingPaymentController.postPendingPaymentPage
+
+GET        /no-further-amendments                                                      controllers.PendingPaymentController.noFurtherAmendment
+
 GET        /goods-bought-into-northern-ireland-inside-eu                               controllers.TravelDetailsController.goodsBoughtInsideEu
 
 GET        /goods-brought-into-northern-ireland                                        controllers.TravelDetailsController.goodsBoughtIntoNI

@@ -60,4 +60,8 @@ case object DeclarationRetrievalStep extends JourneyStep(preceeding = List(Previ
 
 case object declarationNotFoundStep extends JourneyStep(preceeding = List(DeclarationRetrievalStep), predicate = _ => x=> x.flatMap(_.prevDeclaration).contains(true))
 
+case object noFurtherAmendmentStep extends JourneyStep(preceeding = List(DeclarationRetrievalStep), predicate = _ => x=> x.flatMap(_.prevDeclaration).contains(true))
+
+case object pendingPaymentStep extends JourneyStep(preceeding = List(DeclarationRetrievalStep), predicate = _ => x=> x.flatMap(_.prevDeclaration).contains(true))
+
 case object EUEvidenceItemStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> x.flatMap(_.euCountryCheck).contains("euOnly") && x.flatMap(_.arrivingNICheck).contains(false))

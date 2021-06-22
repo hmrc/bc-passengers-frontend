@@ -251,6 +251,22 @@ class PayApiServiceSpec extends BaseSpec {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(expectedJsonForAmendment),any())(any(),any(),any(),any())
     }
+
+    "return a PayApiServiceSuccessResponse with a pending-payment back url in pending payment journey" in new LocalSetup {
+
+      val uiWithBstArrival: UserInformation = userInformation.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "LHR", dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
+
+      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
+        Json.obj("nextUrl" -> "https://example.com")
+      ))
+
+      val expectedJsonForAmendment = exampleJsonForBstArrival.as[JsObject].deepMerge(
+        Json.obj("backUrl"-> "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/pending-payment", "amountPaidPreviously"-> "100.99", "totalPaidNow"->"97000.00"))
+
+      val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, true, Some("100.99"), Some("pending-payment")))
+      r shouldBe PayApiServiceSuccessResponse("https://example.com")
+      verify(s.wsAllMethods, times(1)).POST[JsValue,HttpResponse](meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),meq(expectedJsonForAmendment),any())(any(),any(),any(),any())
+    }
   }
 
   "Calling generateChargeRef" should {

@@ -231,6 +231,41 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
     }
 
+    "redirect to pending payment page following a successful retrieval" in {
+
+      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
+      val calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
+      val productPath = ProductPath("other-goods/adult/adult-footwear")
+      val country = Country("IN","title.india","IN",false,true,List())
+      val liabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+      val userInformation = UserInformation("Harry", "Smith", "passport", "SX12345", "abc@gmail.com", "Newcastle Airport", "", LocalDate.now(), LocalTime.now().minusHours(23))
+      val purchasedProductInstances = List(
+        PurchasedProductInstance(productPath, "UnOGll", None, None, Some(country), None, Some("GBP"), Some(500), Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))), Some(false), Some(false), None, Some(false), None, Some(false))
+      )
+      val declarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
+      val retrievedJourneyData: JourneyData = JourneyData(prevDeclaration = Some(true),
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        ageOver17 = Some(true),
+        isUKResident = Some(false),
+        privateCraft = Some(true),
+        previousDeclarationRequest = Some(previousDeclarationRequest),
+        declarationResponse = Some(declarationResponse),
+        userInformation = Some(userInformation),
+        amendState = Some("pending-payment")
+      )
+      when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn Future.successful(Some(retrievedJourneyData))
+      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        .withFormUrlEncodedBody("" +
+          "lastName" -> "Smith",
+          "referenceNumber" -> "XXPR0123456789")).get
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+      verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())
+    }
+
   "redirect to declaration not found on an unsuccessful POST " in {
     val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
     when(mockCache.fetch(any())) thenReturn cachedJourneyData

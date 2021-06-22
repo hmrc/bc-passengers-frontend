@@ -7,10 +7,8 @@
 @(backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("heading.declaration_not_found"), bodyClasses = None, backLink = backLink) {
-<fieldset>
-    <legend>
-        <h1 class="heading-xlarge">@messages("heading.declaration_not_found")</h1>
-    </legend>
+
+    <h1 class="heading-xlarge">@messages("heading.declaration_not_found")</h1>
 
     <p>@messages("text.may_be_because")</p>
 
@@ -19,5 +17,5 @@
         <li>@messages("label.payment_issue")</li>
         <li>@messages("label.already_passed_custom")</li>
     </ul>
-</fieldset>
+
 }

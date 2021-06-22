@@ -1975,6 +1975,83 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         meq(previousDeclarationRequest), any())(any(), any(), any(), any())
 
     }
+
+    "return a DeclarationServiceSuccessResponse with amend state and delta calculation if the backend returns 200" in new LocalSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      val expectedJson: JsObject = Json.obj("euCountryCheck" -> "greatBritain",
+        "arrivingNI" -> true,
+        "isOver17" -> true,
+        "isUKResident" -> false,
+        "isPrivateTravel" -> true,
+        "amendmentCount" -> 1,
+        "calculation" -> Json.obj("excise" -> "160.45","customs" -> "25012.50","vat" -> "15134.59","allTax" -> "40307.54"),
+        "liabilityDetails" -> Json.obj(
+          "totalExciseGBP" -> "32.0",
+          "totalCustomsGBP" -> "0.0",
+          "totalVATGBP" -> "126.4",
+          "grandTotalGBP" -> "158.40"),
+        "oldPurchaseProductInstances" -> Json.arr(
+          Json.obj("path" -> "other-goods/adult/adult-footwear",
+            "iid" -> "UnOGll",
+            "country" -> Json.obj("code" -> "IN",
+              "countryName" -> "title.india",
+              "alphaTwoCode" -> "IN",
+              "isEu" -> false,
+              "isCountry" -> true,
+              "countrySynonyms" -> Json.arr()),
+            "currency" -> "GBP",
+            "cost" -> 500,
+            "isVatPaid"-> false,
+            "isCustomPaid" -> false,
+            "isUccRelief" -> false)
+        ),
+        "amendState" -> Some("pending-payment"),
+        "deltaCalculation" -> Some(Calculation("0.00", "0.00", "0.00", "0.00"))
+      )
+
+      val calculation: Calculation = Calculation("160.45","25012.50","15134.59","40307.54")
+
+      val liabilityDetails: LiabilityDetails = LiabilityDetails("32.0","0.0","126.4","158.40")
+
+      val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
+
+      val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
+
+      val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
+
+      val deltaCalculation: Calculation = Calculation("0.00", "0.00", "0.00", "0.00")
+
+      val purchasedProductInstances = List(
+        PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), None, Some(false),Some(false),None,Some(false),None,None)
+      )
+
+      val declarationResponse: DeclarationResponse = DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances, amendmentCount = Some(1))
+
+      val jd: JourneyData = JourneyData(prevDeclaration = Some(true),
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        ageOver17 = Some(true),
+        isUKResident = Some(false),
+        privateCraft = Some(true),
+        previousDeclarationRequest = Some(previousDeclarationRequest),
+        declarationResponse = Some(declarationResponse),
+        amendState = Some("pending-payment"),
+        deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
+      )
+
+      when(injected[WsAllMethods].POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())) thenReturn
+        Future.successful(HttpResponse.apply(OK, expectedJson.toString()))
+
+      val r: DeclarationServiceResponse = await(declarationService.retrieveDeclaration(previousDeclarationRequest))
+
+      r shouldBe DeclarationServiceRetrieveSuccessResponse(jd)
+
+      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
+        meq(previousDeclarationRequest), any())(any(), any(), any(), any())
+
+    }
   }
 
 }

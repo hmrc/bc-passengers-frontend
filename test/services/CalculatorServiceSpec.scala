@@ -470,4 +470,26 @@ class CalculatorServiceSpec extends BaseSpec {
       deltaCalc shouldBe deltaProbable
 
     }}
+
+  "Calling CalculatorService.getPreviousPaidCalculation with delta and new Calculation" should {
+
+    "return previousPaidCalculation" in {
+
+      lazy val calcService: CalculatorService = {
+        val service = app.injector.instanceOf[CalculatorService]
+        val mock = service.cache
+        when(mock.fetch(any())) thenReturn Future.successful( None )
+        when(mock.store(any())(any())) thenReturn Future.successful( JourneyData() )
+        service
+      }
+
+      lazy val deltaCalc:Calculation = Calculation("96.27","100.00","109.25","305.52")
+      lazy val newCalc:Calculation = Calculation("136.27", "150.00", "297.25", "583.52")
+      lazy val previousPaidProbable:Calculation = Calculation("40.00", "50.00", "188.00", "278.00")
+
+      val previousPaidCalc:Calculation = calcService.getPreviousPaidCalculation(deltaCalc, newCalc)
+
+      previousPaidCalc shouldBe previousPaidProbable
+
+    }}
 }
