@@ -1616,11 +1616,11 @@ heading.previous_declaration = What do you want to do?
 head.error.previous_declaration = Select if you want to check tax on goods and declare them or add goods to a previous declaration
 error.previous_declaration = Select if you want to check tax on goods and declare them or add goods to a previous declaration
 
-heading.declaration_retrieval = Add goods to your previous declaration
+heading.declaration_retrieval = Get your previous declaration
 text.declaration_retrieval = Enter the required information to retrieve your declaration and add more goods.
 label.reference_previous_declaration = Reference number
 label.reference_number_hint = You can find this in your declaration confirmation email. It will be 14 characters, for example XAPR1234567890.
-label.retrieve_declaration = Retrieve your declaration and add goods
+label.retrieve_declaration = Get your declaration
 head.error.max-length.identification_number_previous = Identification number must be 40 characters or less
 error.max-length.identification_number_previous = Identification number must be 40 characters or less
 error.required.referenceNumber = Enter your reference number

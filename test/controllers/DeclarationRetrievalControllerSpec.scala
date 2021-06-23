@@ -56,7 +56,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
-      doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Get your previous declaration"
     }
 
     "redirect to start page when the amendments feature is off" in {
@@ -85,7 +85,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
-      doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Get your previous declaration"
       doc.getElementById("lastName").`val`() shouldBe "Smith"
       doc.getElementById("referenceNumber").`val`() shouldBe "XAPR1234567890"
     }
@@ -97,7 +97,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc = Jsoup.parse(content)
-      doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Get your previous declaration"
       doc.getElementById("lastName").`val`() shouldBe ""
       doc.getElementById("referenceNumber").`val`() shouldBe ""
     }
@@ -127,7 +127,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Get your previous declaration"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Enter your last name"
       doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number"
@@ -151,7 +151,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Get your previous declaration"
       doc.select("#error-heading").text() shouldBe "There is a problem"
       doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Last name must be 35 characters or less"
       doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number in the correct format"
