@@ -74,14 +74,9 @@ class DashboardAction @Inject() (journeyEnforcer: JourneyEnforcer, appConfig: Ap
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] = {
     publicAction { implicit context =>
-      if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment") && context.getJourneyData.pendingPayment.isDefined && !context.getJourneyData.pendingPayment.get){
-        Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
-      }
-      else{
-        journeyEnforcer(step) {
+      journeyEnforcer(step) {
           block(context)
         }
-      }
     }
   }
 }

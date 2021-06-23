@@ -311,6 +311,81 @@ class TobaccoInputControllerSpec extends BaseSpec {
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
     }
+
+    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigars")
+
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+
+      override def noOfSticks: Option[Int] = Some(150)
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        amendState = Some("pending-payment")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
+
+    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData for displayNoOfSticksAddForm" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigarettes")
+
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+
+      override def noOfSticks: Option[Int] = Some(150)
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        amendState = Some("pending-payment")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
+
+    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData for displayWeightAddForm" in new LocalSetup {
+
+      override lazy val fakeLimits = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/rolling-tobacco")
+
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+
+      override def noOfSticks: Option[Int] = Some(150)
+
+      override lazy val cachedJourneyData = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        amendState = Some("pending-payment")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
   }
 
   "Posting /enter-goods/tobacco/*/tell-us" should {

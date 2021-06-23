@@ -14,6 +14,7 @@ import models.{OtherGoodsDto, OtherGoodsSearchItem, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.{optional, _}
 import play.api.i18n.I18nSupport
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -81,7 +82,11 @@ class OtherGoodsInputController @Inject()(
   )
 
   val displayAddForm: Action[AnyContent] = dashboardAction { implicit context =>
-    withDefaults(context.getJourneyData) { defaultCountry =>
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else {
+      withDefaults(context.getJourneyData) { defaultCountry =>
         defaultOriginCountry =>
           defaultCurrency =>
             val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
@@ -93,6 +98,7 @@ class OtherGoodsInputController @Inject()(
                 cache.storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil)).map(_ =>
                   Ok(other_goods_input(continueForm.bind(Map("searchTerm" -> "", "country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck, productTreeService.otherGoodsSearchItems, "create", ProductPath.apply(Nil))))
             }
+      }
     }
   }
 

@@ -8,14 +8,16 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
+
 import javax.inject.{Inject, Singleton}
 import models.{ProductTreeLeaf, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 
@@ -42,11 +44,15 @@ class DashboardController @Inject() (
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
 
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
-    revertWorkingInstance {
-      cache.fetch flatMap { journeyData: Option[JourneyData] =>
-        val isAmendment = context.getJourneyData.declarationResponse.isDefined
-        val jd = journeyData.getOrElse(JourneyData())
-        val allPurchasedProductInstances = jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else {
+      revertWorkingInstance {
+        cache.fetch flatMap { journeyData: Option[JourneyData] =>
+          val isAmendment = context.getJourneyData.declarationResponse.isDefined
+          val jd = journeyData.getOrElse(JourneyData())
+          val allPurchasedProductInstances = jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances
           calculatorService.journeyDataToCalculatorRequest(jd, allPurchasedProductInstances) map { maybeCalculatorRequest =>
             val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
@@ -87,6 +93,7 @@ class DashboardController @Inject() (
               jd.isUKResident.contains(true)))
           }
         }
+      }
     }
   }
 

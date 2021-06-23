@@ -8,11 +8,13 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, PublicAction}
+
 import javax.inject.Inject
 import models.{ProductPath, TobaccoDto}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text, _}
 import play.api.i18n.I18nSupport
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -128,34 +130,49 @@ class TobaccoInputController @Inject()(
   )
   
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    requireProduct(path) { product =>
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else {
+      requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry =>
           defaultOriginCountry =>
             defaultCurrency =>
               Future.successful(Ok(no_of_sticks_input(noOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
         }
       }
+    }
   }
 
 
   def displayWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    requireProduct(path) { product =>
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else {
+      requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry =>
           defaultOriginCountry =>
             defaultCurrency =>
               Future.successful(Ok(weight_or_volume_input(weightOrVolumeForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
         }
       }
+    }
   }
 
   def displayNoOfSticksWeightAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    requireProduct(path) { product =>
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else {
+      requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry =>
           defaultOriginCountry =>
             defaultCurrency =>
               Future.successful(Ok(no_of_sticks_weight_or_volume_input(weightOrVolumeNoOfSticksForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
         }
       }
+    }
   }
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
