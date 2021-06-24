@@ -332,6 +332,23 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       formCaptor.getValue.data("currency") shouldBe ""
       formCaptor.getValue.data("searchTerm") shouldBe ""
     }
+
+    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        amendState = Some("pending-payment")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
   }
 
   "Posting processAddForm" should {

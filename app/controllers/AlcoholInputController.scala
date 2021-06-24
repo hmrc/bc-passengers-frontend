@@ -8,6 +8,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
+
 import javax.inject.Inject
 import models.{AlcoholDto, ProductPath}
 import play.api.data.Forms.{mapping, text}
@@ -18,6 +19,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import util._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.mvc.Results.Redirect
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -76,21 +78,33 @@ class AlcoholInputController @Inject()(
   )
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    requireProduct(path) { product =>
-      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-        Future.successful(Ok(alcohol_input(alcoholForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else {
+      requireProduct(path) { product =>
+        withDefaults(context.getJourneyData) { defaultCountry =>
+          defaultOriginCountry =>
+            defaultCurrency =>
+              Future.successful(Ok(alcohol_input(alcoholForm(path).bind(Map("country" -> defaultCountry.getOrElse(""), "originCountry" -> defaultOriginCountry.getOrElse(""), "currency" -> defaultCurrency.getOrElse(""))).discardingErrors, product, path, None, countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
+        }
       }
     }
   }
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    }
+    else{
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         AlcoholDto.fromPurchasedProductInstance(ppi) match {
-          case Some(dto) => Future.successful( Ok( alcohol_input(alcoholForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck) ) )
+          case Some(dto) => Future.successful(Ok(alcohol_input(alcoholForm(ppi.path).fill(dto), product, ppi.path, Some(iid), countriesService.getAllCountries, countriesService.getAllCountriesAndEu, currencyService.getAllCurrencies, context.getJourneyData.euCountryCheck)))
           case None => logAndRenderError("Unable to construct dto from PurchasedProductInstance")
         }
       }
+    }
     }
   }
 

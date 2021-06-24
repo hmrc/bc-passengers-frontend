@@ -1062,4 +1062,17 @@ class DashboardControllerSpec extends BaseSpec {
     otherItemCheck.getElementsByClass("madein-country").isEmpty shouldBe false
   }
 
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/tell-us when in pending payment journey" should {
+
+    "Display the previous-declaration page" in new LocalSetup {
+
+      override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(true), amendState = Some("pending-payment")))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
+  }
+
 }

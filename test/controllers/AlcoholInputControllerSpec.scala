@@ -294,6 +294,24 @@ class AlcoholInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
       status(result) shouldBe OK
     }
+
+    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        amendState = Some("pending-payment")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
   }
 
   "Getting displayAddForm" should {
@@ -421,6 +439,26 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
+    }
+
+    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        amendState = Some("pending-payment")
+      ))
+
+      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+
     }
   }
 
