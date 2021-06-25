@@ -3,7 +3,7 @@
  *
  *@
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, displayTaxBreakdown: views.html.components.display_tax_breakdown)
 @(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
@@ -61,41 +61,8 @@
     </tbody>
   </table>
 }
-  <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
-  <h2 class="heading-medium">@messages("label.breakdown_of_tax_and_duty_due")</h2>
-
-      <table class="responsive-table">
-        <thead>
-          <tr>
-            <th scope="col">@messages("label.tax_type")</th>
-            <th class="numeric" scope="col">
-                 <span class="table-25">@messages("label.amount_due")</span>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>@messages("label.customs")</td>
-            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.customs)</td>
-          </tr>
-
-          <tr>
-            <td>@messages("label.excise")</td>
-            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.excise)</td>
-          </tr>
-
-          <tr>
-            <td>@messages("label.vat")</td>
-            <td class="numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.vat)</td>
-          </tr>
-
-          <tr>
-            <td class="total table-foot">@messages("label.total")</td>
-            <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
-          </tr>
-        </tbody>
-      </table>
+      <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
+      @displayTaxBreakdown(calculatorResponseDto)
       <br>
 
       @if(!hideExchangeRateInfo) {
