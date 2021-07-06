@@ -1581,7 +1581,7 @@ text.are_uk_resident = a’ch bod yn breswylydd yn y DU
 label.zero_pound = £0.00
 label.no_tax_or_duty = Nid oes trethi na thollau i’w talu ar y nwyddau hyn ar gyfer eich taith.
 label.still_need_to_declare = Mae angen i chi ddatgan eich nwyddau o hyd. Ni chaiff unrhyw beth ei godi arnoch pan fyddwch yn datgan.
-label.still_need_to_amend = Mae angen i chi ddatgan eich nwyddau ychwanegol o hyd. Ni chaiff unrhyw beth ei godi arnoch pan fyddwch yn diwygio'ch datganiad.
+label.still_need_to_amend = Mae angen i chi ddatgan eich nwyddau ychwanegol o hyd. Ni chaiff unrhyw beth ei godi arnoch pan fyddwch yn diwygio’ch datganiad.
 label.declare_upto_5_days =Gallwch ddatgan eich nwyddau unrhyw bryd o 5 diwrnod cyn eich amser cyrraedd disgwyliedig yn y DU.
 text.cannot_currently_use_this_service = Ar hyn o bryd, ni allwch ddefnyddio’r gwasanaeth hwn i ychwanegu na dileu nwyddau o ddatganiad sydd wedi’i gwblhau. Gwnewch yn siŵr eich bod wedi gwirio’r dreth ar yr holl nwyddau rydych yn bwriadu dod â nhw i mewn i’r DU cyn datgan a thalu ar-lein.
 label.declare_your_goods = Datgan eich nwyddau
@@ -1689,7 +1689,7 @@ label.check_tax_and_declare = Gwirio’r dreth ar nwyddau a’u datgan
 label.add_goods_previous_declaration = Ychwanegu nwyddau at ddatganiad blaenorol
 
 #No further amendment page
-heading.no_longer_declaration_available = (W)You can no longer use this service to add goods to your declaration(W)
+heading.no_longer_declaration_available = Ni allwch ddefnyddio’r gwasanaeth hwn mwyach i ychwanegu nwyddau at eich datganiad
 label.unless_you_go_back_and_pay = Oni bai eich bod yn mynd yn ôl ac yn talu nawr, ni allwch ddefnyddio’r gwasanaeth hwn mwyach. Bydd angen i chi siarad â swyddog Llu’r Ffiniau yn eich man cyrraedd i ddatgan unrhyw nwyddau ychwanegol.
 
 #Pending Payment page
