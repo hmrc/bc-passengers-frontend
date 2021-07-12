@@ -19,6 +19,7 @@
     <tr>
         <th scope="col">@messages("label.item")</th>
         <th scope="col">@messages("label.price")</th>
+        <th scope="col">@messages("label.purchased_in")</th>
         <th class="numeric" scope="col">
             <span class="table-25">@messages("label.tax_due")</span>
         </th>
@@ -35,6 +36,10 @@
                 <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
                 @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
             </td>
+            <td>
+                <span class="table-heading" aria-hidden="true">@messages("label.purchased_in")</span>
+                @messages(item.metadata.country.countryName)
+            </td>
             <td class="numeric">
                 <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
                 &pound;@formatMonetaryValue(item.calculation.allTax)
@@ -42,7 +47,7 @@
         </tr>
         }
         <tr>
-            <td class="total table-foot" colspan="2">@messages("label.total")</td>
+            <td class="total table-foot" colspan="3">@messages("label.total")</td>
             <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
         </tr>
     </tbody>
@@ -62,6 +67,9 @@
     </tbody>
 </table>
 }
+    <div class="panel panel-border-wide">
+        <p>@messages("label.tax_on_all_if_go_over_allowance")</p>
+    </div>
     <p><a href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
     @displayTaxBreakdown(calculatorResponseDto)
     <br>
