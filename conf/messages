@@ -1692,3 +1692,4 @@ label.want_to_pay_now = Do you want to pay now?
 label.service_no_longer_available = If you do not pay now, you will no longer be able to use this service to add goods to your declaration.
 head.error.pay_now_if_you_want_to = Select yes if you want to pay now
 error.pay_now_if_you_want_to = Select yes if you want to pay now
+label.tax_on_all_if_go_over_allowance = You pay tax on all items within an allowance category if you go over that allowance.
