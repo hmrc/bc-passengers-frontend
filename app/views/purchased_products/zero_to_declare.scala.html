@@ -10,7 +10,9 @@
 
 @main_template(title = messages("label.tax_due_on_these_goods"), backLink = backLink) {
 
-<h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br><span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span></span></h1>
+@if(deltaCalc.isDefined){
+<h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br><span class="total-value numeric">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</span></h1>} else{
+<h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br><span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span></span></h1>}
 
 <p>@messages("label.no_tax_or_duty")</p>
 
