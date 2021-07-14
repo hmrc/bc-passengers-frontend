@@ -1610,11 +1610,11 @@ heading.previous_declaration = Beth hoffech ei wneud?
 head.error.previous_declaration = Dewis os ydych am wirio’r dreth ar nwyddau a’u datgan neu ychwanegu nwyddau at ddatganiad blaenorol
 error.previous_declaration = Dewis os ydych am wirio’r dreth ar nwyddau a’u datgan neu ychwanegu nwyddau at ddatganiad blaenorol
 
-heading.declaration_retrieval = Cael eich datganiad blaenorol
+heading.declaration_retrieval = Ychwanegu nwyddau at eich datganiad blaenorol
 text.declaration_retrieval = Nodwch yr wybodaeth ofynnol i adfer eich datganiad ac ychwanegu rhagor o nwyddau.
 label.reference_previous_declaration = Cyfeirnod
 label.reference_number_hint = Gallwch ddod o hyd i hwn yn eich e-bost sy’n rhoi cadarnhad o’ch datganiad. Bydd yn 14 o gymeriadau, er enghraifft XAPR1234567890.
-label.retrieve_declaration = Cael eich datganiad
+label.retrieve_declaration = Adfer eich datganiad ac ychwanegu nwyddau
 head.error.max-length.identification_number_previous = Mae’n rhaid i’r rhif adnabod fod yn 40 o gymeriadau neu lai
 error.max-length.identification_number_previous = Mae’n rhaid i’r rhif adnabod fod yn 40 o gymeriadau neu lai
 error.required.referenceNumber = Nodwch eich cyfeirnod
