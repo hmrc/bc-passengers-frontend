@@ -1,3 +1,4 @@
+service.name = Check tax on goods you bring into the UK
 heading.go_uk_wrapper_title = Check tax on goods you bring into the UK
 label.continue = Continue
 label.yes = Yes
@@ -1694,3 +1695,13 @@ head.error.pay_now_if_you_want_to = Select yes if you want to pay now
 error.pay_now_if_you_want_to = Select yes if you want to pay now
 label.tax_on_all_if_go_over_allowance = You pay tax on all items within an allowance category if you go over that allowance.
 label.additional_tax_due_on_these_goods = Additional tax due on these goods
+
+# BETA Banner
+feedback.before = This is a new service - your
+feedback.link = feedback
+feedback.after = will help us to improve it.
+
+error.summary.title = There is a problem
+error.browser.title.prefix = Error:
+
+site.govuk = GOV.UK

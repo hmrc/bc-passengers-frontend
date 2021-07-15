@@ -3,35 +3,27 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(arrivingNIForm: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button,
+    formHelper: FormWithCSRF
+)
 
-@main_template(title = prefixErrorMessage(messages("heading.arriving-ni"), arrivingNIForm.hasErrors), backLink = backLink) {
+@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@views.html.tags.errors(arrivingNIForm)
+@govukLayout(pageTitle = Some(title(form, "heading.arriving-ni")), backLink = backLink) {
 
+    @formHelper(action = routes.ArrivingNIController.postArrivingNIPage()) {
 
-@form(action = routes.ArrivingNIController.postArrivingNIPage()){
+        @errorSummary(form.errors)
 
-    <fieldset>
-        <legend><h1 class="heading-xlarge">@messages("heading.arriving-ni")</h1></legend>
-        @components.input_radio_group(
-        arrivingNIForm("arrivingNI"),
-        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true,
-        '_error_id -> "arrivingNI-error-message",
-        '_errorPrefix -> messages("label.error")
-        )
-    </fieldset>
+        @yesNoRadio(form, "heading.arriving-ni", name = "arrivingNI", isPageHeading= true)
 
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
+        @button("label.continue")
 
-}
-
+    }
 }

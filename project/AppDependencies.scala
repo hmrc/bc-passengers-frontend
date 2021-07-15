@@ -9,6 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "simple-reactivemongo" % "7.30.0-play-26",
     "uk.gov.hmrc" %% "govuk-template" % "5.58.0-play-26",
     "uk.gov.hmrc" %% "play-ui" % "8.18.0-play-26",
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.49.0-play-26",
     ws,
     "uk.gov.hmrc" %% "bootstrap-play-26" % "2.2.0",
     "com.typesafe.play" %% "play-json-joda" % "2.6.14",

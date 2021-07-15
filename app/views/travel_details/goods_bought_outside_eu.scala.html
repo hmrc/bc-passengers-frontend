@@ -3,72 +3,69 @@
  *
  *@
 
-@this(form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, main_template: views.html.main_template)
-@(bringingOverAllowance: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  summaryYesNo: components.summaryYesNo,
+  button: components.button,
+  formHelper: FormWithCSRF,
+  h1: components.h1,
+  h2: components.h2,
+  p: components.p,
+  panelIndent: components.panelIndent
+)
 
-@title = {
-  @messages("heading.goods_brought_into_ni")
-}
+@(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(title.toString, bringingOverAllowance.hasErrors), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "heading.goods_brought_into_ni")), backLink = backLink) {
 
-  @views.html.tags.errors(bringingOverAllowance)
+    @formHelper(action = routes.TravelDetailsController.goodsBoughtIntoNIPost()) {
 
-    <h1 class="heading-xlarge">@title</h1>
+    @errorSummary(form.errors)
 
-    <p>@messages("text.there_are_separate_allowances_")</p>
-    <h2 class="heading-medium">@messages("text.alcohol_allowance")</h2>
-      <p>@messages("text.you_can_bring_in")</p>
+    @h1(messages("heading.goods_brought_into_ni"))
 
-      <ul class="list list-bullet">
+    @p{@messages("text.there_are_separate_allowances_")}
+    @h2(messages("text.alcohol_allowance"))
+      @p{@messages("text.you_can_bring_in")}
+
+      <ul class="govuk-list govuk-list--bullet">
         <li>@messages("text.ni.allowance.alc_1")</li>
         <li>@messages("text.ni.allowance.alc_2")</li>
         <li>@messages("text.ni.allowance.alc_3")</li>
       </ul>
-      <p>@messages("text.ni.allowance.msg_1")</p>
-      <p>@messages("text.ni.allowance.msg_2")</p>
-      <div class="panel panel-border-wide">@messages("text.ni.allowance.msg_3")</div>
+      @p{@messages("text.ni.allowance.msg_1")}
+      @p{@messages("text.ni.allowance.msg_2")}
+      @panelIndent{
+         @p{@messages("text.ni.allowance.msg_3")}
+      }
 
-    <h2 class="heading-medium">@messages("text.tobacco_allowance")</h2>
-      <p>@messages("text.you_can_bring_in_either")</p>
-      <ul class="list list-bullet">
+      @h2(messages("text.tobacco_allowance"))
+      @p{@messages("text.you_can_bring_in_either")}
+      <ul class="govuk-list govuk-list--bullet">
         <li>@messages("text.allowance.tob_1")</li>
         <li>@messages("text.allowance.tob_2")</li>
         <li>@messages("text.allowance.tob_3")</li>
         <li>@messages("text.allowance.tob_4")</li>
         <li>@messages("text.allowance.tob_5")</li>
       </ul>
-      <p>@messages("text.allowance.msg_4")</p>
-      <p>@messages("text.allowance.msg_5")</p>
-      <div class="panel panel-border-wide">@messages("text.allowance.msg_6")</div>
+      @p{@messages("text.allowance.msg_4")}
+      @p{@messages("text.allowance.msg_5")}
+      @panelIndent{
+         @p{@messages("text.allowance.msg_6")}
+      }
 
-    <h2 class="heading-medium">@messages("text.other_goods_allowance")</h2>
-      <ul class="list list-bullet">
+      @h2(messages("text.other_goods_allowance"))
+      <ul class="govuk-list govuk-list--bullet">
         <li>@messages("text.allowance.otg_1")</li>
       </ul>
-      <p>@messages("text.allowance.msg_7")</p>
+      @p{@messages("text.allowance.msg_7")}
 
-    @form(action = routes.TravelDetailsController.goodsBoughtIntoNIPost()){
-      <fieldset>
-        <legend class="heading-medium">@messages("heading.are_you_bringing_in_goods_over_")</legend>
-        <div class="form-hint govuk-radios__hint">@messages("text.allowance.msg_8")</div>
+    @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages(s"text.allowance.msg_8")))
 
-        @components.input_radio_group(
-          bringingOverAllowance("bringingOverAllowance"),
-          Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-          '_labelClass -> "block-label inputLabelBeforeError",
-          '_inline -> true,
-          '_error_id -> "bringingOverAllowance-error-message",
-          '_errorPrefix -> messages("label.error")
-        )
+    @button("label.continue")
 
-      </fieldset>
-
-      <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-      </div>
-    }
+  }
 }

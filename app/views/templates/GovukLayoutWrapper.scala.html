@@ -1,0 +1,100 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.LanguageSelect
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+
+@this(
+    govukLayout: GovukLayout,
+    govukPhaseBanner: GovukPhaseBanner,
+    govukBackLink: GovukBackLink,
+    link: components.link,
+    phaseBanner: components.phaseBanner,
+    hmrcReportTechnicalIssue: hmrcReportTechnicalIssue,
+    languageSwitch: HmrcLanguageSelect,
+    header: HmrcHeader,
+    footer: HmrcStandardFooter,
+    hmrcTimeoutDialog: HmrcTimeoutDialog
+)
+
+@(pageTitle: Option[String] = None, signOut: Boolean = true, inlineScript: Option[Html] = None, inlineLinkElem: Option[Html] = None, backLink: Option[String] = None, timeout: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@head = {
+    @inlineLinkElem
+    <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
+    <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/passengers.css")" >
+
+    @if(timeout) {
+        @hmrcTimeoutDialog(TimeoutDialog(
+            message = Some(messages("label.timeout_message")),
+            keepAliveButtonText = Some(messages("label.keep_page_alive")),
+            signOutButtonText = Some(messages("label.delete_your_answer")),
+            timeout = Some(900),
+            countdown = Some(120),
+            keepAliveUrl = Some(controllers.routes.TravelDetailsController.keepAlive().url),
+            signOutUrl = Some(controllers.routes.PublicController.timeOut().url),
+            language = if (messages.lang.code == "cy") Some("cy") else Some("en")
+        ))
+    }
+}
+
+@scripts = {
+    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+    <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
+    <script>window.GOVUKFrontend.initAll();</script>
+    <script>window.HMRCFrontend.initAll();</script>
+
+    <script src='@routes.Assets.versioned("javascripts/application.js")'></script>
+    <script src='@routes.Assets.versioned("javascripts/show-hide-content.js")'></script>
+
+    @inlineScript
+}
+
+@beforeContentBlock = {
+
+    @phaseBanner("beta")
+
+    @backLink.map { x =>
+        @govukBackLink(BackLink(href = x, content = Text(messages("label.back")), attributes = Map("id" -> "back")))
+    }
+    @if(appConfig.languageTranslationEnabled) {
+        @languageSwitch(LanguageSelect(
+            if (messages.lang.code == "cy") Cy else En,
+            (En, controllers.routes.LocalLanguageController.switchToLanguage("english").url),
+            (Cy, controllers.routes.LocalLanguageController.switchToLanguage("cymraeg").url)
+        ))
+    }
+}
+
+@content = {
+    <div class="govuk-!-margin-bottom-6">
+        @contentBlock
+    </div>
+
+    <div class="govuk-!-font-size-19">
+        @hmrcReportTechnicalIssue(
+            uk.gov.hmrc.hmrcfrontend.views.html.components.ReportTechnicalIssue(
+                "bc-passengers-frontend", messages.lang.language,
+                if (messages.lang.code == "cy") Cy else En
+            )
+        )
+    </div>
+}
+
+
+
+@govukLayout(
+    pageTitle = pageTitle,
+    headBlock = Some(head),
+    beforeContentBlock = Some(beforeContentBlock),
+    footerBlock = Some(footer()),
+    bodyEndBlock = None,
+    scriptsBlock = Some(scripts)
+)(content)

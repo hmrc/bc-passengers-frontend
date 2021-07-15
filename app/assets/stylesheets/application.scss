@@ -1,0 +1,61 @@
+$govuk-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/govuk-frontend/govuk/assets/";
+$hmrc-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/hmrc-frontend/hmrc/";
+
+@import "lib/govuk-frontend/govuk/all";
+@import "lib/hmrc-frontend/hmrc/all";
+
+@import "timeout-dialog";
+@import "autocomplete";
+@import "currency-input";
+@import "percentage-input";
+@import "task-list";
+@import "summary-list";
+@import "language-switch";
+
+.govuk-fieldset__heading, .govuk-label-wrapper {
+  padding-bottom: 20px;
+  @include govuk-media-query($from: 40.0625em) {
+    padding-bottom: 40px;
+  }
+}
+
+.autocomplete__menu {
+  font-family: "GDS Transport", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: #0b0c0c;
+}
+
+.autocomplete__wrapper{
+  max-width: 52ex + 1ex;
+}
+
+.app-task-list__task-name{
+  width: 65%
+}
+
+.govuk-form-group--error .autocomplete__input {
+  border: 2px solid #d4351c;
+}
+
+.govuk-warning-text__icon {
+  position: absolute;
+    top: 50%;
+    transform: translate(0%, -40%);
+}
+
+.hmrc-add-to-a-list__contents {
+    padding-bottom: 35px;
+}
+
+.official-status-tag{
+ margin-bottom: -6px;
+}
+
+.govuk-\!-margin-bottom-6 {
+    margin-top: 20px !important;
+}

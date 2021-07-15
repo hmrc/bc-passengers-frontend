@@ -76,7 +76,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "What do you want to do?"
-      doc.select("#prevDeclaration-false").hasAttr("checked") shouldBe true
+      doc.select("#prevDeclaration-no").hasAttr("checked") shouldBe true
     }
 
     "redirect to start page when journey data is empty" in {
@@ -137,9 +137,9 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "What do you want to do?"
-      doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#prevDeclaration]").html() shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
-      doc.getElementById("prevDeclaration").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select if you want to check tax on goods and declare them or add goods to a previous declaration"
+      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.select("a[href=#prevDeclaration]").html() shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
+      doc.getElementById("prevDeclaration-error").getElementsByClass("govuk-visually-hidden").html() shouldBe "Error:"
       verify(mockPreviousDeclarationService, times(0)).storePrevDeclaration(any())(any())(any())
     }
 
@@ -154,10 +154,10 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#prevDeclaration]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#prevDeclaration]").html()).get shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+      Option(doc.getElementById("prevDeclaration-error").select("a[href=#prevDeclaration]")).isEmpty shouldBe false
+      Option(doc.select("a[href=#prevDeclaration]").html()).get shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
+      Option(doc.select("h2").hasClass("govuk-error-summary__title")).get shouldBe true
+      Option(doc.getElementById("error-summary-title").select("h2").html()).get shouldBe "There is a problem"
     }
 
   }

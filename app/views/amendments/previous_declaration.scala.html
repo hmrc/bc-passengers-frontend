@@ -3,36 +3,43 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(previousDeclarationForm: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    inputRadio: components.inputRadio,
+    button: components.button,
+    formHelper: FormWithCSRF,
+)
 
-@main_template(title = prefixErrorMessage(messages("heading.previous_declaration"), previousDeclarationForm.hasErrors), backLink = backLink) {
+@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@views.html.tags.errors(previousDeclarationForm)
+@govukLayout(pageTitle = Some(title(form, "heading.previous_declaration")), backLink = backLink) {
 
+    @formHelper(action = routes.PreviousDeclarationController.postPreviousDeclarationPage()) {
 
-@form(action = routes.PreviousDeclarationController.postPreviousDeclarationPage()){
+        @errorSummary(form.errors)
 
-    <fieldset>
-        <h1 class="heading-xlarge">@messages("heading.previous_declaration")</h1>
-
-        @components.input_radio_group(
-            previousDeclarationForm("prevDeclaration"),
-            Seq("false" -> Messages("label.check_tax_and_declare"), "true" -> Messages("label.add_goods_previous_declaration")),
-            '_labelClass -> "block-label inputLabelBeforeError",
-            '_inline -> true,
-            '_error_id -> "prevDeclaration-error-message",
-            '_errorPrefix -> messages("label.error")
+        @inputRadio(
+            form = form,
+            legend =messages("heading.previous_declaration"),
+            name = "prevDeclaration",
+            items = Seq(
+                    RadioItem(id = Some("prevDeclaration-no"),
+                        value = Some("false"),
+                        content = Text(messages("label.check_tax_and_declare")),
+                        checked = form("prevDeclaration").value.contains("false")
+                    ),
+                    RadioItem(id = Some("prevDeclaration-yes"),
+                        value = Some("true"),
+                        content = Text(messages("label.add_goods_previous_declaration")),
+                        checked = form("prevDeclaration").value.contains("true")
+                    )
+            ),
         )
-    </fieldset>
 
+        @button("label.continue")
 
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
-}
-
+    }
 }

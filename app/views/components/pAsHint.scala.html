@@ -1,0 +1,14 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this()
+
+@(messagePrefix: String, messageSuffix: String, messageArg: String = "", messageSecondArg: Option[String] = None, pClass: String = "govuk-body govuk-!-margin-top-5")(implicit messages: Messages)
+
+<p class=@pClass>
+    <span class="govuk-body">@messageSecondArg.fold(messages(s"$messagePrefix.$messageSuffix", messageArg))(
+        nonEmptySecondArg => messages(s"$messagePrefix.$messageSuffix", messageArg, nonEmptySecondArg))</span><br>
+</p>
+
