@@ -7,12 +7,11 @@
 @(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import util._
-
-@main_template(title = messages("label.tax_due_on_these_goods"), backLink = backLink) {
+@main_template(title = if(deltaCalc.isDefined){messages("label.additional_tax_due_on_these_goods")}else{messages("label.tax_due_on_these_goods")}, backLink = backLink) {
 
 @if(deltaCalc.isDefined){
-<h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br><span class="total-value numeric">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</span></h1>} else{
-<h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br><span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span></span></h1>}
+<h1 class="heading-xlarge margin-bottom-20">@messages("label.additional_tax_due_on_these_goods") <span class="total-value numeric">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</span></h1>} else{
+<h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods") <span class="total-value numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</span></span></h1>}
 
 <p>@messages("label.no_tax_or_duty")</p>
 

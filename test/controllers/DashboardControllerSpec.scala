@@ -225,7 +225,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98,000.00"
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £98,000.00"
       doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
       doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
@@ -260,7 +260,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £306.00"}
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £306.00"}
 
       "On the tax due page, for Zero pound amendment, show the amount required for the current amendment as 0 and not the cumulative amount" in new LocalSetup {
 
@@ -290,7 +290,7 @@ class DashboardControllerSpec extends BaseSpec {
         val content: String = contentAsString(result)
         val doc: Document = Jsoup.parse(content)
 
-        doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"}
+        doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"}
 
     "redirect to the Zero to declare page if the amendment total zero pound" in new LocalSetup {
 
@@ -320,7 +320,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
       doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You still need to declare your additional goods. You will not be charged anything when you amend your declaration.")
@@ -356,7 +356,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("button").text() shouldBe "Amend your declaration"
       doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
       doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
@@ -391,7 +391,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £300.00"
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £300.00"
       doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
       doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You can amend your declaration from 5 days before your scheduled time of arrival in the UK.")
@@ -425,7 +425,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due What you need to do next"
       doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("All the items you added are included within your personal allowances")
@@ -458,7 +458,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
+      doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
       doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
     }
