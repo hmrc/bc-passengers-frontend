@@ -3,12 +3,16 @@
  *
  *@
 
-@this(main_template: views.html.main_template)
-@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    h1: components.h1,
+    p: components.p
+)
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-
-@main_template(title = messages("heading.you_do_not_need_to_use_this_service"), bodyClasses = None, backLink = backLink) {
-  <h1 class="heading-xlarge">@messages("heading.you_do_not_need_to_use_this_service")</h1>
-  <p>@messages("text.if_you_are_sure_the_goods_")</p>
-  <p>@messages("text.if_you_want_to_see_the_tax_due_on_") <a href=@controllers.routes.TravelDetailsController.privateTravel()>@messages("text.continue_to_use_our_service_")</a>.</p>
+@govukLayout(pageTitle = Some(messages("heading.you_do_not_need_to_use_this_service") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+    @h1(messages("heading.you_do_not_need_to_use_this_service"))
+    @p{@messages("text.if_you_are_sure_the_goods_")}
+    @p{@messages("text.if_you_want_to_see_the_tax_due_on_") <a href=@controllers.routes.TravelDetailsController.privateTravel()>@messages("text.continue_to_use_our_service_")</a>.}
 }
