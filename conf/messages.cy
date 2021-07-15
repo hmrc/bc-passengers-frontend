@@ -1693,3 +1693,4 @@ label.service_no_longer_available = Os na fyddwch yn talu nawr, ni fyddwch yn ga
 head.error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
 error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
 label.tax_on_all_if_go_over_allowance = Rydych yn talu treth ar bob eitem o fewn categori lwfans, os byddwch yn mynd dros y lwfans hwnnw.
+label.additional_tax_due_on_these_goods = Treth ychwanegol sy’n ddyledus ar y nwyddau hyn

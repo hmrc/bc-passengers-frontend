@@ -8,11 +8,11 @@
 
 @import util._
 
-@main_template(title = messages("label.tax_due_on_these_goods"), backLink = backLink) {
+@main_template(title = if(deltaCalc.isDefined){messages("label.additional_tax_due_on_these_goods")}else{messages("label.tax_due_on_these_goods")}, backLink = backLink) {
 
   @if(deltaCalc.isDefined){
-  <h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br>&pound;@formatMonetaryValue(deltaCalc.get.allTax)</h1>} else{
-  <h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods")<br>&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</h1>}
+  <h1 class="heading-xlarge margin-bottom-20">@messages("label.additional_tax_due_on_these_goods") &pound;@formatMonetaryValue(deltaCalc.get.allTax)</h1>} else{
+  <h1 class="heading-xlarge margin-bottom-20">@messages("label.tax_due_on_these_goods") &pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</h1>}
 
   <table class="responsive-table margin-bottom-30">
     <thead>
