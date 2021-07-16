@@ -3,39 +3,54 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(f: Form[EuCountryCheckDto],backLink: Option[String], timeout: Boolean = false)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import util.prefixErrorMessage
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  inputRadioPanel: components.inputRadioPanel,
+  button: components.button,
+  formHelper: FormWithCSRF,
+  h1: components.h1
+)
 
+@(form: Form[EuCountryCheckDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_goods_from_"), f.hasErrors), timeout = timeout, backLink = backLink ) {
+@govukLayout(pageTitle = Some(title(form, "heading.are_you_bringing_in_goods_from_")), backLink = backLink) {
 
-  @views.html.tags.errors(f)
+    @formHelper(action = routes.TravelDetailsController.whereGoodsBoughtPost()) {
 
-  <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_goods_from_")</h1>
-  <div class="panel panel-border-wide">
-    <p>@messages("label.if_you_are_bringing_in_goods_from_both")</p>
-  </div>
+    @errorSummary(form.errors)
 
-  @form(action = routes.TravelDetailsController.whereGoodsBoughtPost()) {
+    @inputRadioPanel(
+        form = form,
+        legend = messages("heading.are_you_bringing_in_goods_from_"),
+        name = "euCountryCheck",
+        hint = Some(Html(messages(s"label.if_you_are_bringing_in_goods_from_both"))),
+        items = Seq(
+                RadioItem(id = Some("euCountryCheck-eu"),
+                  value = Some("euOnly"),
+                  content = Text(messages("label.eu_countries_only")),
+                  hint =  Some(Hint(content = Text(messages("text.eu_countries")))),
+                  checked = form("euCountryCheck").value.contains("euOnly")
+                ),
+                RadioItem(id = Some("euCountryCheck-nonEu"),
+                  value = Some("nonEuOnly"),
+                  content = Text(messages("label.non_eu_countries_only")),
+                  hint = Some(Hint(content = Text(messages("text.non_eu_countries")))),
+                  checked = form("euCountryCheck").value.contains("nonEuOnly")
+                ),
+                RadioItem(id = Some("euCountryCheck-gb"),
+                  value = Some("greatBritain"),
+                  content = Text(messages("label.great_britain")),
+                  hint = Some(Hint(content = Text(messages("text.great_britain")))),
+                  checked = form("euCountryCheck").value.contains("greatBritain")
+                )
+        ),
+    )
 
-    <fieldset>
-      <legend class="visually-hidden">@messages("heading.are_you_bringing_in_goods_from_")</legend>
+    @button("label.continue")
 
-      @components.input_radio_group(
-        f("euCountryCheck"),
-        Seq("euOnly" -> Messages("label.eu_countries_only"), "nonEuOnly" -> Messages("label.non_eu_countries_only"), "greatBritain" -> Messages("label.great_britain")),
-        Symbol("euOnly") -> messages("text.eu_countries"),
-        Symbol("nonEuOnly") -> messages("text.non_eu_countries"),
-        Symbol("greatBritain") -> messages("text.great_britain"),
-        '_error_id -> "euCountryCheck-error-message",
-        '_errorPrefix -> messages("label.error")
-      )
-    </fieldset>
-
-    <div class="form-group">
-      <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
   }
 }
+

@@ -64,7 +64,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Is your final destination Northern Ireland?"
-      doc.select("#arrivingNI-true").hasAttr("checked") shouldBe true
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
     }
 
     "redirect to the start page where journey data is missing" in {
@@ -128,9 +128,9 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Is your final destination Northern Ireland?"
-      doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#arrivingNI]").html() shouldBe "Select yes if your final destination is Northern Ireland"
-      doc.getElementById("arrivingNI").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if your final destination is Northern Ireland"
+      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.select("a[href=#arrivingNI]").html() shouldBe "Select yes if your final destination is Northern Ireland"
+      doc.getElementById("arrivingNI-error").getElementsByClass("govuk-visually-hidden").html() shouldBe "Error:"
       verify(mockTravelDetailService, times(0)).storeArrivingNI(any())(any())(any())
     }
 

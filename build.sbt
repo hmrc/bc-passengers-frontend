@@ -75,3 +75,21 @@ lazy val silencerSettings: Seq[Setting[_]] = {
     scalacOptions += s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
   )
 }
+TwirlKeys.templateImports ++= Seq(
+  "play.twirl.api.HtmlFormat",
+  "uk.gov.hmrc.govukfrontend.views.html.components._",
+  "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+  "views.ViewUtils._",
+  "controllers.routes._"
+)
+Concat.groups := Seq(
+  "javascripts/application.js" ->
+    group(Seq(
+      "lib/govuk-frontend/govuk/all.js",
+      "javascripts/jquery.min.js",
+      "javascripts/app.js",
+      "javascripts/autocomplete.js"
+    ))
+)
+pipelineStages in Assets := Seq(concat, uglify)
+includeFilter in uglify := GlobFilter("application.js")

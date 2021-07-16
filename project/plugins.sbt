@@ -19,8 +19,12 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "1.6.0")
 
-addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.12")
+addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.13")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.4")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.0")
+
+addSbtPlugin("net.ground5hark.sbt" % "sbt-concat" % "0.2.0")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "2.0.0")

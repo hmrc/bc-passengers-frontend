@@ -14,6 +14,8 @@ import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 @Singleton
 class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: RunMode, servicesConfig: ServicesConfig) {
 
+  lazy val host: String = servicesConfig.getString("host")
+
   private def loadConfig(key: String) = runModeConfiguration.get[String](key)
 
   private val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")

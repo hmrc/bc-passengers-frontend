@@ -79,11 +79,11 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Where are you bringing in goods from?"
 
-      doc.getElementsByClass("panel").text() shouldBe "If you are bringing in goods from both EU and non-EU countries, only select non-EU countries below."
+      doc.getElementById("euCountryCheck-hint").text() shouldBe "If you are bringing in goods from both EU and non-EU countries, only select non-EU countries below."
 
       doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
 
-      doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe true
+      doc.select("#euCountryCheck-nonEu").hasAttr("checked") shouldBe true
 
       verify(controller.cache, times(1)).fetch(any())
     }
@@ -104,9 +104,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
       doc.select("#euCountryCheck-noneuonly").hasAttr("checked") shouldBe false
       doc.select("#euCountryCheck-greatBritain").hasAttr("checked") shouldBe false
 
-      doc.getElementById("hint-euOnly").text() shouldBe "Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden."
-      doc.getElementById("hint-nonEuOnly").text() shouldBe "This includes the Channel Islands, British Overseas Territories (including Gibraltar), the north of Cyprus and the Canary Islands."
-      doc.getElementById("hint-greatBritain").text() shouldBe "This is only if you are bringing goods to Northern Ireland from Great Britain or the Isle of Man."
+      doc.getElementById("euCountryCheck-eu-item-hint").text() shouldBe "Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden."
+      doc.getElementById("euCountryCheck-nonEu-item-hint").text() shouldBe "This includes the Channel Islands, British Overseas Territories (including Gibraltar), the north of Cyprus and the Canary Islands."
+      doc.getElementById("euCountryCheck-gb-item-hint").text() shouldBe "This is only if you are bringing goods to Northern Ireland from Great Britain or the Isle of Man."
 
       verify(controller.cache, times(1)).fetch(any())
     }
@@ -203,10 +203,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#euCountryCheck]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#euCountryCheck]").html()).get shouldBe "Select where you are bringing in goods from"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+      Option(doc.getElementById("error-summary-title").select("a[href=#euCountryCheck]")).isEmpty shouldBe false
+      Option(doc.select("a[href=#euCountryCheck]").html()).get shouldBe "Select where you are bringing in goods from"
+      Option(doc.select("h2").hasClass("govuk-error-summary__title")).get shouldBe true
+      Option(doc.getElementById("error-summary-title").select("h2").html()).get shouldBe "There is a problem"
     }
 
 
@@ -221,9 +221,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=euCountryCheck]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select where you are bringing in goods from"
-
+      Option(doc.getElementById("error-summary-title").select("a[href=#euCountryCheck]")).isEmpty shouldBe false
+      doc.getElementById("euCountryCheck-error").getElementsByClass("govuk-visually-hidden").html() shouldBe "Error:"
     }
   }
 

@@ -1,0 +1,15 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this()
+
+@(
+        link: String,
+        messageKey: String,
+        id: Option[String] = None,
+        isExternal: Boolean = false
+)(implicit messages: Messages)
+
+<a href="@link" class="govuk-link" @id.map(x => s"id=$x") @if(isExternal) { target="_blank" }>@messages(messageKey)@if(isExternal)(" " + messages("site.opensInNewWindowOrTab"))</a>

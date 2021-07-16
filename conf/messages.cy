@@ -1,3 +1,4 @@
+service.name = Gwirio’r dreth ar datgan rydych yn dod â nhw i’r DU
 heading.go_uk_wrapper_title = Gwirio’r dreth ar datgan rydych yn dod â nhw i’r DU
 label.continue=Yn eich blaen
 label.yes=Iawn
@@ -1694,3 +1695,13 @@ head.error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
 error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
 label.tax_on_all_if_go_over_allowance = Rydych yn talu treth ar bob eitem o fewn categori lwfans, os byddwch yn mynd dros y lwfans hwnnw.
 label.additional_tax_due_on_these_goods = Treth ychwanegol sy’n ddyledus ar y nwyddau hyn
+
+# BETA Banner
+feedback.before = Gwasanaeth newydd yw hwn – bydd eich
+feedback.link = adborth
+feedback.after = yn ein helpu i’w wella.
+
+error.summary.title = Mae problem wedi codi
+error.browser.title.prefix = Gwall:
+
+site.govuk = GOV.UK/CYMRAEG
