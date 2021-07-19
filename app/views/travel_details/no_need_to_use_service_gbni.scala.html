@@ -3,16 +3,24 @@
  *
  *@
 
-@this(main_template: views.html.main_template)
-@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@main_template(title = messages("heading.no_need_to_use"), bodyClasses = None, backLink = backLink) {
-  <h1 class="heading-xlarge">@messages("heading.no_need_to_use")</h1>
-  <p>@messages("text.you_do_not_need_to_declare_goods")</p>
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    h1: components.h1,
+    p: components.p
+)
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-  <ul class=" list-bullet">
+@govukLayout(pageTitle = Some(messages("heading.no_need_to_use") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+
+  @h1(messages("heading.no_need_to_use"))
+
+  @p{@messages("text.you_do_not_need_to_declare_goods")}
+
+    <ul class="govuk-list govuk-list--bullet">
       <li>@messages("text.are_only_bringing_in_goods")</li>
       <li>@messages("text.have_paid_vat_excise")</li>
       <li>@messages("text.are_uk_resident")</li>
-  </ul>
+    </ul>
 }
