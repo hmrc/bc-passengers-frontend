@@ -1,0 +1,104 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.{components => hmrcComponent}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{toClasses => govukToClasses}
+@this(select: GovukSelect)
+
+
+@(form: Form[_],
+  id: String,
+  name: String,
+  label: String,
+  isPageHint: Boolean = true,
+  isPageHeading: Boolean = true,
+  headingMessageArgs: Seq[String] = Seq(),
+  hint: String,
+  hintText: String,
+  list: Seq[(String, String)],
+  jsonData: String)(implicit messages: Messages)
+
+<div class="@govukToClasses("govuk-form-group", if(form(id).hasErrors) "govuk-form-group--error" else "")">
+
+    @if(isPageHeading) {
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--xl" for=@name>
+                @messages(label, headingMessageArgs: _*)
+            </label>
+        </h1>
+    } else {
+        <label class="govuk-label" for=@id>
+            @messages(label, headingMessageArgs: _*)
+        </label>
+    }
+
+    @if(isPageHint){<span id="@id-hint" class="govuk-hint">@hint</span>}
+    @select(hmrcComponent.Select(
+        id = id,
+        name = name,
+        describedBy = Some(id + s"-hint"),
+        errorMessage = form(id).error.map(fe ⇒ ErrorMessage(content = HtmlContent(messages(fe.message)))),
+        items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
+        case (k,v) ⇒ SelectItem(
+            value = Some(k),
+            text = v,
+            selected = k == form(id).value.getOrElse(""),
+            attributes = Map("id" → (id + s"-$k")))
+        },
+        formGroupClasses = "form-field-group"
+    ))
+</div>
+
+<script src="@controllers.routes.Assets.versioned("javascripts/autocomplete.js")" ></script>
+<script>
+    accessibleAutocomplete.enhanceSelectElement({
+        selectElement: document.getElementById('@id'),
+        displayMenu: 'inline',
+        minLength: 2,
+        source: customSuggest,
+        confirmOnBlur: true,
+        onConfirm: function(confirmed) {
+
+          //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
+          let foundInData = Array.from(document.querySelectorAll("#@id-select > option")).find(e => e.displayName === document.getElementById('@id').value)
+          let element = !!confirmed ? confirmed : foundInData
+
+          if(!!element) {
+            $('select[name="@id"]').val(element.code);
+          }
+          else if(!element && $('select[name="originCountry"]').val == undefined) {
+            $('select[name="originCountry"]').val('')
+          }
+        },
+        templates: {
+          inputValue: function(result) {
+            return (!!result && result.displayName ? result.displayName : '');
+          },
+          suggestion: function(result) {
+            return !!result.displayName ? result.displayName : result;
+          }
+        }
+    })
+
+    function customSuggest (query, syncResults) {
+        var results = @Html(jsonData)
+        syncResults(query ? results.filter(function (result) {
+          return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+        }) : [])
+    }
+
+    if (document.getElementById('@id')) {
+        var selectDescribedByValues = document.getElementById("@id-select").getAttribute('aria-describedby');
+        var selectLabeledByValues = document.getElementById("@id-select").getAttribute('aria-labelledby');
+        if(selectDescribedByValues != undefined) {
+            document.getElementById("@id").setAttribute('aria-describedby', selectDescribedByValues);
+        }
+        if(selectLabeledByValues != undefined) {
+            document.getElementById("@id").setAttribute('aria-labelledby', selectLabeledByValues);
+        }
+    }
+</script>
+
+
