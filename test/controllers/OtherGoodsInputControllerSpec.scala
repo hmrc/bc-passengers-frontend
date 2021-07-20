@@ -117,7 +117,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(), any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -129,7 +129,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -141,7 +141,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(),any(),any(),any(),any(),any(),any(),any(),any())(any())) thenReturn cachedEUGBJourneyData.get
 
-      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any())) thenReturn Html("")
+      when(injected[other_goods_input].apply(any(), any(), any(), any(), any(), any(),any(), any(),any())(any(), any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -292,7 +292,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(),any())(any(), any())
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(),any())(any(), any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -326,7 +326,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(),any())(any(), any())
+      verify(injected[other_goods_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(),any())(any(), any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""

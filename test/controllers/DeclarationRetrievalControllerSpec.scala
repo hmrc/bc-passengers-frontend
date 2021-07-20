@@ -128,11 +128,11 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
-      doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Enter your last name"
-      doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number"
-      doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your last name"
-      doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your reference number"
+      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#lastName]").html() shouldBe "Enter your last name"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number"
+      doc.getElementById("lastName-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Enter your last name"
+      doc.getElementById("referenceNumber-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Enter your reference number"
 
     }
 
@@ -152,11 +152,11 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
-      doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#lastName]").html() shouldBe "Last name must be 35 characters or less"
-      doc.getElementById("errors").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number in the correct format"
-      doc.getElementById("lastName").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Last name must be 35 characters or less"
-      doc.getElementById("referenceNumber").parent().getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Enter your reference number in the correct format"
+      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#lastName]").html() shouldBe "Last name must be 35 characters or less"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number in the correct format"
+      doc.getElementById("lastName-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Last name must be 35 characters or less"
+      doc.getElementById("referenceNumber-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Enter your reference number in the correct format"
       verify(mockPreviousDeclarationService, times(0)).storePrevDeclaration(any())(any())(any())
 
     }

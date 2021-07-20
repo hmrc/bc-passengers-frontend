@@ -3,45 +3,53 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(f: Form[DeclarationRetrievalDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import util.prefixErrorMessage
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    fieldset: components.fieldset,
+)
 
+@(form: Form[DeclarationRetrievalDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
+@govukLayout(pageTitle = Some(title(form, "heading.declaration_retrieval")), backLink = backLink) {
 
-@main_template(
-  title = prefixErrorMessage(messages("heading.declaration_retrieval"), f.hasErrors), bodyClasses = None, backLink = backLink) {
+    @formHelper(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage()) {
 
-  @views.html.tags.errors(f)
+    @errorSummary(form.errors)
 
-  <h1 class="heading-xlarge">@messages("heading.declaration_retrieval")</h1>
+    @fieldset("heading.declaration_retrieval") {
+        @p{@messages("text.declaration_retrieval")}
 
-  <p>@messages("text.declaration_retrieval")</p>
-  @form(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage()) {
-      @components.input(
-        f("lastName"),
-        '_label -> messages("label.last_name"),
-        '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4",
-        '_error_id -> "lastName-error-message",
-        '_errorPrefix -> messages("label.error")
-      )
+        @inputText(
+            form,
+            id = "lastName",
+            name = "lastName",
+            label = "label.last_name",
+            isPageHeading = false,
+            classes = Some("govuk-input govuk-!-width-one-half"),
+            labelClasses = Some("govuk-!-font-weight-bold")
+        )
 
+        @inputText(
+            form,
+            id = "referenceNumber",
+            name = "referenceNumber",
+            label = "label.reference_previous_declaration",
+            isPageHeading = false,
+            hint = Some(Html(messages("label.reference_number_hint"))),
+            classes = Some("govuk-input govuk-!-width-one-half"),
+            labelClasses = Some("govuk-!-font-weight-bold")
+        )
+    }
 
-      @components.input(
-          f("referenceNumber"),
-          '_label -> messages("label.reference_previous_declaration"),
-          '_labelTextClass -> "form-label-bold",
-          '_inputClass -> "form-control-3-4",
-          '_inputHint -> messages("label.reference_number_hint"),
-          '_error_id -> "referenceNumber-error-message",
-          '_errorPrefix -> messages("label.error")
-      )
+    @button("label.retrieve_declaration")
 
-      <div class="form-group">
-        <button type="submit" class="button">@messages("label.retrieve_declaration")</button>
-      </div>
-
-  }
+    }
 }
+

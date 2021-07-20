@@ -3,23 +3,21 @@
  *
  *@
 
-@this(tobacco_input: views.html.tobacco.tobacco_input, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(dtoForm: Form[TobaccoDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import play.api.libs.json.{JsObject, Json}
+@this(tobacco_input: views.html.tobacco.tobacco_input, formHelper: FormWithCSRF, inputText: components.inputText)
+@(form: Form[TobaccoDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
+@tobacco_input(form, product, path, iid, countries, countriesEU, currencies, journeyStart) {
 
-@tobacco_input(dtoForm, product, path, iid, countries, countriesEU, currencies, journeyStart) {
-
-
-  @components.input(
-    field = dtoForm("noOfSticks"),
-    '_label -> messages(s"label.total_number_of_" + path.toMessageKey),
-    '_inputHint -> messages("label.you_cannot_use_this_service_"),
-    '_labelTextClass -> "form-label",
-    '_error_id -> "noOfSticks-error-message",
-    '_errorPrefix -> messages("label.error")
-  )
+    @inputText(
+        form,
+        id = "noOfSticks",
+        name = "noOfSticks",
+        label = messages(s"label.total_number_of_" + path.toMessageKey),
+        hint = Some(Html(messages("label.you_cannot_use_this_service_"))),
+        isPageHeading = false,
+        classes = Some("govuk-input govuk-!-width-one-half")
+    )
 
 }

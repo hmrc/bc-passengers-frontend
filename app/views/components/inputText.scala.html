@@ -1,0 +1,41 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@this(govukInput: GovukInput)
+
+@(
+        form: Form[_],
+        id: String,
+        name: String,
+        label: String,
+        isPageHeading: Boolean,
+        headingMessageArgs: Seq[String] = Seq(),
+        hint: Option[Html] = None,
+        classes: Option[String] = None,
+        stripWhitespace: Boolean = false,
+        inputType: String = "text",
+        isTelephone: Boolean = false,
+        labelClasses: Option[String] = None
+)(implicit messages: Messages)
+
+@govukInput(Input(
+  id,
+  name,
+  classes = classes.fold("")(x => x),
+  label = Label(
+    content = Text(messages(label, headingMessageArgs:_*)),
+    isPageHeading = isPageHeading,
+    classes = labelClasses.getOrElse("") + (if(isPageHeading) "govuk-label--xl" else "")
+  ),
+  hint = hint.map(hintHtml => Hint(
+      content = HtmlContent(hintHtml)
+  )),
+  value = form(name).value,
+  errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+  inputType = inputType,
+  inputmode = if(isTelephone) Some("tel") else None
+
+))
+

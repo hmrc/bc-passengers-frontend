@@ -14,8 +14,6 @@ import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 @Singleton
 class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: RunMode, servicesConfig: ServicesConfig) {
 
-  lazy val host: String = servicesConfig.getString("host")
-
   private def loadConfig(key: String) = runModeConfiguration.get[String](key)
 
   private val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
@@ -35,6 +33,8 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: Run
   lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
   lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
   lazy val isAmendmentsEnabled: Boolean = runModeConfiguration.get[Boolean]("features.amendments")
+  lazy val timeout: Int = servicesConfig.getInt("timeout.timeout")
+  lazy val countdown: Int = servicesConfig.getInt("timeout.countdown")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

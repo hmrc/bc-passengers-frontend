@@ -123,7 +123,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -137,7 +137,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -151,7 +151,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[NewPurchaseService].insertPurchases(any(),any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
       when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedEUGBJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())) thenReturn Html("")
+      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())) thenReturn Html("")
 
       rt(app, req)
     }
@@ -363,7 +363,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
 
       formCaptor.getValue.data("country") shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
@@ -401,7 +401,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
 
       formCaptor.getValue.data("originCountry") shouldBe "IT"
     }
@@ -435,7 +435,7 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
 
       formCaptor.getValue.data("country") shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""

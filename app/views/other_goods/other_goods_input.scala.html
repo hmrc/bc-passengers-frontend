@@ -3,131 +3,109 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(dtoForm: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath)(implicit request: Request[_], messages: Messages)
-
-@import uk.gov.hmrc.play.views.html._
+@import play.api.mvc.Call
+@import views.ViewUtils._
 @import play.api.libs.json.{JsObject, Json}
-@import util.prefixErrorMessage
 
-@scriptElem = {
-  <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-  <script>
-    $(document).ready(function () {
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    panelIndent: components.panelIndent,
+    link: components.link,
+    h1Product: components.h1Product,
+    autoCompleteList: components.autocompleteList
+)
 
-      // Get IE or Edge browser version
-      var version = detectIE();
+@(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-      if (version !== 11) {
-      @if(otherItemMode.equals("create")){
-        var products = @Html(Json.toJson(otherGoodsSearchItems.map(_.toAutoCompleteJson)).toString );
-        enhanceSelectIntoAutoComplete("searchTerm", products);
+@customTitle = @{ otherItemMode match { case "create" =>  messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods") case "edit" => messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}") case _ => messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods")}}
+
+@customHeading = @{ otherItemMode match { case "create" => messages("label.other-goods.item-of-other-goods") case "edit" => messages(s"label.${path.toMessageKey}") case _ => messages("label.other-goods.item-of-other-goods")}}
+
+@govukLayout(pageTitle = Some(title(form, customTitle))) {
+
+    @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
+
+        @errorSummary(form.errors)
+
+        @h1Product("label.tell_us_about_the", customHeading)
+        <br>
+        <br>
+
+        @if(otherItemMode.equals("create")){
+
+            @autoCompleteList(form,
+                id = "searchTerm",
+                name = "searchTerm",
+                isPageHint = false,
+                hint = "",
+                isPageHeading = false,
+                label = messages(s"label.add_your_goods"),
+                hintText = "",
+                list = ("","") :: otherGoodsSearchItems.map(c => (c.name,messages(c.name))),
+                jsonData = Json.toJson(otherGoodsSearchItems.map(_.toAutoCompleteJson)).toString
+            )
+            <div class="govuk-inset-text">
+                @p{@messages("label.search_through_our_lists_and")
+                    <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.categorise_your_goods_yourself")</a>}
+            </div>
         }
 
-        var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("country", countrySynonymsData)
+        @autoCompleteList(form,
+            id = "country",
+            name = "country",
+            isPageHint = true,
+            hint = messages("label.if_you_bought_this_item_"),
+            isPageHeading = false,
+            label = messages(s"label.country_the_item_was_bought_in"),
+            hintText = "",
+            list = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
+            jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
+        )
+        @if(journeyStart.contains("euOnly")){
+            @autoCompleteList(form,
+                id = "originCountry",
+                name = "originCountry",
+                isPageHint = true,
+                hint = messages("label.country_the_item_was_produced_hint"),
+                isPageHeading = false,
+                label = messages(s"label.country_the_item_was_produced_in"),
+                hintText = "",
+                list = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
+                jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
+            )
+        }
 
-        var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+        @autoCompleteList(form,
+            id = "currency",
+            name = "currency",
+            isPageHint = false,
+            hint = "",
+            isPageHeading = false,
+            label = messages(s"label.currency_used_to_buy_the_item"),
+            hintText = "",
+            list = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
+            jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
+        )
 
-        var countryEUSynonymsData = @Html( Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("originCountry", countryEUSynonymsData);
+        @inputText(
+            form,
+            id = "cost",
+            name = "cost",
+            label = "label.price_paid",
+            isPageHeading = false,
+            classes = Some("govuk-input govuk-!-width-one-half")
+        )
 
+        @button("label.continue")
 
-      }
-    });
-  </script>
-}
+        <div>
+            @link(controllers.routes.SelectProductController.cancel().url, "label.cancel", id=Some("cancelLink"))
+        </div>
 
-@linkElem = {
-  <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
-}
-
-@title = @{ otherItemMode match { case "create" =>  messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods") case "edit" => messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}") case _ => messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods")}}
-@heading = @{ otherItemMode match { case "create" => messages("label.other-goods.item-of-other-goods") case "edit" => messages(s"label.${path.toMessageKey}") case _ => messages("label.other-goods.item-of-other-goods")}}
-@main_template(
-    title = prefixErrorMessage(title, dtoForm.hasErrors),
-    inlineScript = Some(scriptElem),
-    inlineLinkElem = Some(linkElem)) {
-
-  @views.html.tags.errors(dtoForm)
-
-  <h1 class="heading-xlarge">
-    <span class="heading-secondary">@messages("label.tell_us_about_the")</span>
-    @heading
-  </h1>
-
-  @form(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid)) ) {
-  @if(otherItemMode.equals("create")){
-    @components.select(
-      field = dtoForm("searchTerm"),
-      elementOptions = ("","") :: otherGoodsSearchItems.map(p => (p.name, messages(p.name))),
-      displayEmptyValue = true,
-      '_label -> messages("label.add_your_goods"),
-      '_errorsAboveInput -> true,
-      '_error_id -> "search-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-     <div class="panel panel-border-narrow">
-        <p>
-          @messages("label.search_through_our_lists_and")
-          <a href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.categorise_your_goods_yourself")</a>
-        </p>
-      </div>
-  }
-     @components.select(
-      field = dtoForm("country"),
-      elementOptions = ("","") :: countries.map(c => (c.code, messages(c.countryName))),
-      displayEmptyValue = true,
-      '_label -> messages("label.country_the_item_was_bought_in"),
-      '_inputHint -> messages("label.if_you_bought_this_item_"),
-      '_errorsAboveInput -> true,
-      '_error_id -> "country-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-    @if(journeyStart.contains("euOnly")){
-      @components.select(
-        field = dtoForm("originCountry"),
-        elementOptions = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
-        displayEmptyValue = true,
-        '_label -> messages("label.country_the_item_was_produced_in"),
-        '_inputHint -> messages("label.country_the_item_was_produced_hint"),
-        '_errorsAboveInput -> true,
-        '_error_id -> "originCountry-error-message",
-        '_errorPrefix -> messages("label.error")
-      )
     }
-
-    @components.select(
-      field = dtoForm("currency"),
-      elementOptions = ("","") :: currencies.map(c => (c.code, messages(c.displayName))),
-      displayEmptyValue = true,
-      '_label -> messages("label.currency_used_to_buy_the_item"),
-      '_errorsAboveInput -> true,
-      'name -> "currency_source",
-      '_error_id -> "currency-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-    @components.input(
-      field = dtoForm("cost"),
-      '_label -> messages(s"label.price_paid"),
-      '_labelTextClass -> "form-label",
-      '_error_id -> "cost-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-
-    <div class="form-group">
-      <button type="submit" id="other-goods-input-button" class="button" name="action" value="continue">@messages("label.continue")</button>
-    </div>
-
-    <div class="form-group">
-      <a href="@routes.SelectProductController.cancel">@messages("label.cancel")</a>
-    </div>
-
-  }
-
 }

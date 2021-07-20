@@ -3,106 +3,87 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(dtoForm: Form[TobaccoDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(content: Html)(implicit request: Request[_], messages: Messages)
-
-@import uk.gov.hmrc.play.views.html._
+@import play.api.mvc.Call
+@import views.ViewUtils._
 @import play.api.libs.json.{JsObject, Json}
-@import util.prefixErrorMessage
 
-@scriptElem = {
-  <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-  <script>
-    $(document).ready(function () {
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    link: components.link,
+    h1Product: components.h1Product,
+    autoCompleteList: components.autocompleteList
+)
 
-      // Get IE or Edge browser version
-      var version = detectIE();
+@(form: Form[TobaccoDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(content: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-      if (version !== 11) {
-        var countrySynonymsData = @Html( Json.toJson(countries.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("country", countrySynonymsData)
+@govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase()))) {
 
-        var currenciesSynonymsData = @Html( Json.toJson(currencies.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("currency", currenciesSynonymsData)
+      @formHelper(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid))) {
 
-        var countryEUSynonymsData = @Html( Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("originCountry", countryEUSynonymsData);
+          @errorSummary(form.errors)
+
+          @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}")
+          <br>
+          <br>
+
+          @content
+
+          @autoCompleteList(form,
+              id = "country",
+              name = "country",
+              isPageHint = true,
+              hint = messages("label.if_you_bought_this_tobacco_"),
+              isPageHeading = false,
+              label = messages(s"label.country_this_tobacco_was_"),
+              hintText = "",
+              list = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
+              jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
+          )
+          @if(journeyStart.contains("euOnly")){
+              @autoCompleteList(form,
+                  id = "originCountry",
+                  name = "originCountry",
+                  isPageHint = true,
+                  hint = messages("label.country_this_tobacco_was_produced_hint"),
+                  isPageHeading = false,
+                  label = messages(s"label.country_this_tobacco_was_produced"),
+                  hintText = "",
+                  list = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
+                  jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
+              )
+          }
+
+          @autoCompleteList(form,
+              id = "currency",
+              name = "currency",
+              isPageHint = false,
+              hint = "",
+              isPageHeading = false,
+              label = messages(s"label.currency_used_to_buy_this_tobacco"),
+              hintText = "",
+              list = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
+              jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
+          )
+
+          @inputText(
+              form,
+              id = "cost",
+              name = "cost",
+              label = "label.price_paid",
+              isPageHeading = false,
+              classes = Some("govuk-input govuk-!-width-one-half")
+          )
+
+          @button("label.continue")
+
+          <div>
+            @link(controllers.routes.SelectProductController.cancel().url, "label.cancel", id=Some("cancelLink"))
+          </div>
+
       }
-    });
-  </script>
-}
-
-@linkElem = {
-  <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
-}
-
-@main_template(
-    title = prefixErrorMessage(messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase(), dtoForm.hasErrors),
-    inlineScript = Some(scriptElem),
-    inlineLinkElem = Some(linkElem)) {
-
-  @views.html.tags.errors(dtoForm, None)
-
-  <h1 class="heading-xlarge">
-    <span class="heading-secondary">@messages("label.tell_us_about_the")</span>
-    @messages(s"label.${path.toMessageKey}")
-  </h1>
-
-  @form(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid)) ) {
-
-    @content
-
-    @components.select(
-      field = dtoForm("country"),
-      elementOptions = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
-      displayEmptyValue = true,
-      '_label -> messages("label.country_this_tobacco_was_"),
-      '_inputHint -> messages("label.if_you_bought_this_tobacco_"),
-      '_errorsAboveInput -> true,
-      '_error_id -> "country-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-
-    @if(journeyStart.contains("euOnly")){
-      @components.select(
-        field = dtoForm("originCountry"),
-        elementOptions = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
-        displayEmptyValue = true,
-        '_label -> messages("label.country_this_tobacco_was_produced"),
-        '_inputHint -> messages("label.country_this_tobacco_was_produced_hint"),
-        '_errorsAboveInput -> true,
-        '_error_id -> "originCountry-error-message",
-        '_errorPrefix -> messages("label.error")
-      )
-    }
-
-    @components.select(
-      field = dtoForm("currency"),
-      elementOptions = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
-      displayEmptyValue = true,
-      '_label -> messages("label.currency_used_to_buy_this_tobacco"),
-      '_errorsAboveInput -> true,
-      '_error_id -> "currency-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-    @components.input(
-      field = dtoForm("cost"),
-      '_label -> messages(s"label.price_paid"),
-      '_labelTextClass -> "form-label",
-      '_error_id -> "cost-error-message",
-      '_errorPrefix -> messages("label.error")
-    )
-
-    <div class="form-group">
-      <button type="submit" class="button" name="action" value="continue">@messages("label.continue")</button>
-    </div>
-
-    <div class="form-group">
-      <a href="@routes.SelectProductController.cancel">@messages("label.cancel")</a>
-    </div>
-
-  }
-
 }
