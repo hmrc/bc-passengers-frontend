@@ -14,42 +14,32 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(uKExcisePaidForm: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+ govukLayout: templates.GovukLayoutWrapper,
+ errorSummary: components.errorSummary,
+ yesNoRadio: components.yesNoRadio,
+ button: components.button,
+ formHelper: FormWithCSRF,
+ p: components.p,
+ h1: components.h1
+)
 
-@main_template(title = prefixErrorMessage(messages("heading.is_uk_vat_excise_paid"), uKExcisePaidForm.hasErrors), backLink = backLink) {
+@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@views.html.tags.errors(uKExcisePaidForm)
+@govukLayout(pageTitle = Some(title(form, "heading.is_uk_vat_excise_paid")), backLink = backLink) {
 
+ @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidPage()) {
 
-@form(action = routes.UKExcisePaidController.postUKExcisePaidPage()){
+  @errorSummary(form.errors, Some("error"))
+  @h1("heading.is_uk_vat_excise_paid")
+  @p{@messages("text.excise_duty_will_usually") <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a>}
 
-    <fieldset>
-        <legend>
-            <h1 class="heading-xlarge">@messages("heading.is_uk_vat_excise_paid")</h1>
-        </legend>
-        <p>@messages("text.excise_duty_will_usually")
-            <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a></p>
+  @yesNoRadio(form, name = "isUKVatExcisePaid", isPageHeading= true)
 
+  @button("label.continue")
 
-        @components.input_radio_group(
-        uKExcisePaidForm("isUKVatExcisePaid"),
-        Seq("true" -> Messages("label.yes"),
-        "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true,
-        '_error_id -> "isUKVatExcisePaid-error-message",
-        '_errorPrefix -> messages("label.error")
-        )
-    </fieldset>
-
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
-
-}
+ }
 
 }

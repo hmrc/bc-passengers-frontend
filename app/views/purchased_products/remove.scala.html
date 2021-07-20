@@ -14,44 +14,29 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(confirmRemoveForm: Form[ConfirmRemoveDto], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+ govukLayout: templates.GovukLayoutWrapper,
+ errorSummary: components.errorSummary,
+ yesNoRadio: components.yesNoRadio,
+ button: components.button,
+ formHelper: FormWithCSRF
+)
 
-@title = {
-  @messages(s"label.do_you_want_to_remove_.${path.toMessageKey}")
-}
 
+@(form: Form[ConfirmRemoveDto], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(title.toString, confirmRemoveForm.hasErrors)) {
+@govukLayout(pageTitle = Some(title(form, messages(s"label.do_you_want_to_remove_.${path.toMessageKey}")))) {
 
-@form(action = routes.AlterProductsController.remove(path, iid)){
+ @formHelper(action = routes.AlterProductsController.remove(path, iid)){
 
-  @views.html.tags.errors(confirmRemoveForm)
+  @errorSummary(form.errors, Some("error"))
 
-  <div class="form-group inline">
+  @yesNoRadio(form, Some(s"label.do_you_want_to_remove_.${path.toMessageKey}"), name = "confirmRemove", isPageHeading= true)
 
-    <fieldset>
-      <legend>
-        <h1 class="heading-xlarge">@title.toString</h1>
-      </legend>
+  @button("label.continue")
 
-      @components.input_radio_group(
-        confirmRemoveForm("confirmRemove"),
-        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_error_id -> "confirmRemove-error-message",
-        '_errorPrefix -> messages("label.error")
-      )
-    </fieldset>
-
-  </div>
-
-  <div class="form-group">
-    <button class="button" type="submit">@messages("label.continue")</button>
-  </div>
-}
+ }
 
 }

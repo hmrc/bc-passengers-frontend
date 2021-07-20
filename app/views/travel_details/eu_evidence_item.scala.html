@@ -14,59 +14,51 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(eUEvidenceItemForm: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button,
+    formHelper: FormWithCSRF,
+    p: components.p,
+    fieldset: components.fieldset,
+    panelIndent: components.panelIndent
+)
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@(form: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(messages("heading.evidence_eu_item"), eUEvidenceItemForm.hasErrors), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "heading.evidence_eu_item")), backLink = backLink) {
 
-@views.html.tags.errors(eUEvidenceItemForm)
+    @formHelper(action = routes.EUEvidenceController.postEUEvidenceItemPage(path,iid)){
+        @errorSummary(form.errors, Some("error"))
+        @fieldset(s"heading.evidence_eu_item") {
 
+            @p{@messages("text.evidence_include")}
 
-@form(action = routes.EUEvidenceController.postEUEvidenceItemPage(path,iid)){
+            <ul class="govuk-list govuk-list--bullet">
+            <li>
+                @messages("label.packaging_or_label")
+            </li>
+            <li>
+                @messages("label.item_is_handmade")
+            </li>
+            <li>
+                @messages("label.documents_by_seller")
+            </li>
+            <li>
+                @messages("label.statement_on_origin")
+            </li>
+            </ul>
+            @panelIndent{
+            @p{@messages("label.appropriate_evidence")}
+            }
 
-<fieldset>
-    <legend>
-        <h1 class="heading-xlarge">@messages("heading.evidence_eu_item")</h1>
-    </legend>
-    <p>@messages("text.evidence_include")</p>
-    <ul class="list list-bullet">
-        <li>
-            @messages("label.packaging_or_label")
-        </li>
-        <li>
-            @messages("label.item_is_handmade")
-        </li>
-        <li>
-            @messages("label.documents_by_seller")
-        </li>
-        <li>
-            @messages("label.statement_on_origin")
-        </li>
-    </ul>
+        @yesNoRadio(form, name = "eUEvidenceItem", isPageHeading= true)
 
-    <div class="panel panel-border-wide">
-        <p>@messages("label.appropriate_evidence")</p>
-    </div>
+        @button("label.continue")
 
-    @components.input_radio_group(
-    eUEvidenceItemForm("eUEvidenceItem"),
-    Seq("true" -> Messages("label.yes"),
-    "false" -> Messages("label.no")),
-    '_labelClass -> "block-label inputLabelBeforeError",
-    '_inline -> true,
-    '_error_id -> "eUEvidenceItem-error-message",
-    '_errorPrefix -> messages("label.error")
-    )
-
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
-
-</fieldset>
-
-}
+        }
+    }
 
 }

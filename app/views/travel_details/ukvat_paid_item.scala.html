@@ -14,37 +14,28 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(uKVatPaidForm: Form[Boolean], backLink: Option[String],path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+ govukLayout: templates.GovukLayoutWrapper,
+ errorSummary: components.errorSummary,
+ yesNoRadio: components.yesNoRadio,
+ button: components.button,
+ formHelper: FormWithCSRF
+)
 
-@main_template(title = prefixErrorMessage(messages("heading.is_uk_vat_paid_item"), uKVatPaidForm.hasErrors), backLink = backLink) {
+@(form: Form[Boolean], backLink: Option[String],path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@views.html.tags.errors(uKVatPaidForm)
+@govukLayout(pageTitle = Some(title(form, "heading.is_uk_vat_paid_item")), backLink = backLink) {
 
-@form(action = routes.UKVatPaidController.postItemUKVatPaidPage(path,iid)){
+ @formHelper(action = routes.UKVatPaidController.postItemUKVatPaidPage(path,iid)) {
 
-    <fieldset>
-        <legend>
-            <h1 class="heading-xlarge">@messages("heading.is_uk_vat_paid_item")</h1>
-        </legend>
+  @errorSummary(form.errors, Some("error"))
 
-        @components.input_radio_group(
-        uKVatPaidForm("isUKVatPaid"),
-        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true,
-        '_error_id -> "isUKVatPaid-error-message",
-        '_errorPrefix -> messages("label.error")
-        )
-    </fieldset>
+  @yesNoRadio(form, Some("heading.is_uk_vat_paid_item"), name = "isUKVatPaid", isPageHeading= true)
 
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
+  @button("label.continue")
 
-}
+ }
 
 }

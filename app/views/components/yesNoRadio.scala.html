@@ -18,7 +18,7 @@
 
 @(
         form: Form[_],
-        headingKey: String,
+        headingKey: Option[String] = None,
         name: String,
         hint: Option[Html] = None,
         headingMessageArgs: Seq[String] = Seq(),
@@ -32,7 +32,7 @@
     name = name,
     fieldset = Some(Fieldset(
         legend = Some(Legend(
-            content = Text(messages(headingKey, headingMessageArgs:_*)),
+            content = Text(messages(headingKey.getOrElse(""), headingMessageArgs:_*)),
             isPageHeading = isPageHeading,
             classes = classes
         ))

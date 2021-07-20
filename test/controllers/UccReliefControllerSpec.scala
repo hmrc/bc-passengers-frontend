@@ -77,7 +77,7 @@ class UccReliefControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
-      doc.select("#isUccRelief-true").hasAttr("checked") shouldBe true
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
     }
 
     "redirect to start page when journey data is empty" in {
@@ -130,9 +130,9 @@ class UccReliefControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
-      doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#isUccRelief]").html() shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
-      doc.getElementById("isUccRelief").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.select("a[href=#isUccRelief-error]").html() shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+      doc.getElementById("isUccRelief-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
       verify(mockTravelDetailService, times(0)).storeUccRelief(any())(any())(any())
     }
   }

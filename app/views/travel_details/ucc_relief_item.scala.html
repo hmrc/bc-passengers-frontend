@@ -14,62 +14,52 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(uccReliefItemForm: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    summaryYesNo: components.summaryYesNo,
+    button: components.button,
+    formHelper: FormWithCSRF,
+    p: components.p,
+    fieldset: components.fieldset
+)
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@(form: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(messages("heading.ucc_item"), uccReliefItemForm.hasErrors), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "heading.ucc_item")), backLink = backLink) {
 
-@views.html.tags.errors(uccReliefItemForm)
+    @formHelper(action = routes.UccReliefController.postUccReliefItemPage(path, iid)){
 
+        @errorSummary(form.errors, Some("error"))
+        @fieldset(s"heading.ucc_item") {
 
-@form(action = routes.UccReliefController.postUccReliefItemPage(path, iid)){
+            @p{@messages("label.ucc.first_message_item")}
 
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("text.ucc.item_name_1")</li>
+                <li>@messages("text.ucc.item_name_2")</li>
+                <li>@messages("text.ucc.item_name_3")</li>
+                <li>@messages("text.ucc.item_name_4")</li>
+                <li>@messages("text.ucc.item_name_5")</li>
+                <li>@messages("text.ucc.item_name_6")</li>
+                <li>@messages("text.ucc.item_name_7")</li>
+                <li>@messages("text.ucc.item_name_8")</li>
+                <li>@messages("text.ucc.item_name_9")</li>
+            </ul>
 
-    <h1 class="heading-xlarge">@messages("heading.ucc_item")</h1>
+            @p{@messages("label.ucc.second_message_item")}
 
-    <p>@messages("label.ucc.first_message_item")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("text.ucc.item_name_10")</li>
+                <li>@messages("text.ucc.item_name_11")</li>
+                <li>@messages("text.ucc.item_name_12")</li>
+                <li>@messages("text.ucc.item_name_13")</li>
+            </ul>
 
-    <ul class="list list-bullet">
-        <li>@messages("text.ucc.item_name_1")</li>
-        <li>@messages("text.ucc.item_name_2")</li>
-        <li>@messages("text.ucc.item_name_3")</li>
-        <li>@messages("text.ucc.item_name_4")</li>
-        <li>@messages("text.ucc.item_name_5")</li>
-        <li>@messages("text.ucc.item_name_6")</li>
-        <li>@messages("text.ucc.item_name_7")</li>
-        <li>@messages("text.ucc.item_name_8")</li>
-        <li>@messages("text.ucc.item_name_9")</li>
-    </ul>
-
-    <p>@messages("label.ucc.second_message_item")</p>
-
-    <ul class="list list-bullet">
-        <li>@messages("text.ucc.item_name_10")</li>
-        <li>@messages("text.ucc.item_name_11")</li>
-        <li>@messages("text.ucc.item_name_12")</li>
-        <li>@messages("text.ucc.item_name_13")</li>
-    </ul>
-
-    <fieldset>
-        <legend class="heading-medium">@messages("heading.ucc.is_this_item_covered_qs")</legend>
-
-        @components.input_radio_group(
-        uccReliefItemForm("isUccRelief"),
-        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true,
-        '_error_id -> "isUccRelief-error-message",
-        '_errorPrefix -> messages("label.error")
-        )
-    </fieldset>
-
-    <div class="form-group">
-        <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
-
-}
+            @summaryYesNo(form = form, h2Message = Some("heading.ucc.is_this_item_covered_qs"), name = "isUccRelief")
+            @button("label.continue")
+        }
+    }
 
 }
