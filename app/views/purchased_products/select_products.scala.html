@@ -3,54 +3,46 @@
  *
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(selectProductsForm: Form[SelectProductsDto], items: List[(String, String)], path: ProductPath)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    button: components.button,
+    formHelper: FormWithCSRF,
+    h1: components.h1,
+    checkboxes: components.inputCheckboxes,
+    radios: components.otherGoodsInputRadio,
+    otherGoodsErrorSummary : components.otherGoodsErrorSummary,
+    p: components.p,
+)
 
-@title = {
-    @messages(s"select_products.heading.${path.toMessageKey}")
-}
+@(selectProductsForm: Form[SelectProductsDto], items: List[(String, String)], path: ProductPath)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(title.toString, selectProductsForm.hasErrors), bodyClasses = None) {
+@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}")))) {
 
-    @views.html.tags.errors(selectProductsForm, Some(path))
+    @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
 
-    @form(action = routes.SelectProductController.processProductSelection(path)){
+    @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey))
 
-        <div class="form-group">
+    @h1(messages(s"select_products.heading.${path.toMessageKey}"))
 
-            <fieldset aria-describedby="product-hint">
+    @p(Html(messages("label.select_all_that_apply")))
 
-                <legend>
-                    <h1 class="heading-xlarge">@title.toString</h1>
-                </legend>
-
-                <span id="product-hint" class="body-text">@messages("label.select_all_that_apply")</span>
-                @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
-                    @components.input_check_box(
-                    selectProductsForm("tokens"),
-                    inputs = items,
-                    Some(path),
-                    errorPrefix = Some(messages("label.error")))
-                }else{
-                    @components.input_radio_group_for_list(
-                    selectProductsForm("tokens"),
-                    items,
+            @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
+                @checkboxes(
+                    field = selectProductsForm("tokens"),
                     path = Some(path),
-                    '_groupClass -> "form-group",
-                    '_error_id -> "othergoods-error-message",
-                    '_errorPrefix -> messages("label.error"))
-                }
+                    inputs = checkBoxOptions(items)
+                )
+            } else {
+                    @radios(
+                        field = selectProductsForm("tokens"),
+                        items= radioOptions(items),
+                        name= "tokens",
+                        path= Some(path)
+                )
+            }
 
-            </fieldset>
-
-        </div>
-
-        <div class="form-group">
-            <button type="submit" class="button">@messages("label.continue")</button>
-        </div>
-
+    @button("label.continue")
     }
 }

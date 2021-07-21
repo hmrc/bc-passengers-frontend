@@ -5,14 +5,14 @@
 
 @this(govukRadios: GovukRadios)
 
-@(      form: Form[_],
-        legend: String,
-        items: Seq[RadioItem],
-        name: String,
-        legendAsHeading: Boolean = true,
-        hint: Option[Html] = None,
-        classes: String = "govuk-fieldset__legend--xl",
-        inline: Boolean = false
+@(form: Form[_],
+    legend: String,
+    items: Seq[RadioItem],
+    name: String,
+    legendAsHeading: Boolean = true,
+    hint: Option[Html] = None,
+    classes: String = "govuk-fieldset__legend--xl",
+    inline: Boolean = false
 )(implicit messages: Messages)
 
 @govukRadios(Radios(
