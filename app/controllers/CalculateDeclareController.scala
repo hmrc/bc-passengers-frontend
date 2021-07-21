@@ -1,6 +1,17 @@
 /*
  * Copyright 2021 HM Revenue & Customs
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package controllers
@@ -124,7 +135,7 @@ class CalculateDeclareController @Inject()(
             declarationService.submitDeclaration(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
 
               case DeclarationServiceFailureResponse =>
-                Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+                Future.successful(InternalServerError(error_template()))
 
               case DeclarationServiceSuccessResponse(cr) =>
 
@@ -136,7 +147,7 @@ class CalculateDeclareController @Inject()(
                   case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt, false, None) map {
 
                     case PayApiServiceFailureResponse =>
-                      InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+                      InternalServerError(error_template())
 
                     case PayApiServiceSuccessResponse(url) =>
                       Redirect(url)
@@ -159,7 +170,7 @@ class CalculateDeclareController @Inject()(
       declarationService.submitAmendment(userInformation, calculatorResponse, context.getJourneyData, receiptDateTime, correlationId) flatMap {
 
         case DeclarationServiceFailureResponse =>
-          Future.successful(InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem.")))
+          Future.successful(InternalServerError(error_template()))
 
         case DeclarationServiceSuccessResponse(cr) =>
 
@@ -171,7 +182,7 @@ class CalculateDeclareController @Inject()(
             case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true, Some(amountPaidPreviously), Some(amendState)) map {
 
               case PayApiServiceFailureResponse =>
-                InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+                InternalServerError(error_template())
 
               case PayApiServiceSuccessResponse(url) =>
                 Redirect(url)
@@ -237,7 +248,7 @@ class CalculateDeclareController @Inject()(
 
     case _ =>
       Future.successful {
-        InternalServerError(error_template("Technical problem", "Technical problem", "There has been a technical problem."))
+        InternalServerError(error_template())
       }
   }
 

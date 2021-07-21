@@ -1,6 +1,17 @@
 /*
  * Copyright 2021 HM Revenue & Customs
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package controllers
@@ -34,10 +45,9 @@ class ZeroDeclarationController @Inject()(
   def loadDeclarationPage(): Action[AnyContent] = zeroDeclarationAction { implicit context =>
 
     val chargeReference = context.getJourneyData.chargeReference.getOrElse("")
-
     declarationService.updateDeclaration(chargeReference) flatMap {
       case DeclarationServiceFailureResponse =>
-        Future.successful(InternalServerError(error_template("Sorry, we are experiencing technical difficulties - 500", "Sorry, we are experiencing technical difficulties", "Please try again in a few minutes")))
+        Future.successful(InternalServerError(error_template()))
 
       case DeclarationServiceSuccessResponse =>
         val placeOfArrivalValue = portsOfArrivalService.getDisplayNameByCode(context.getJourneyData.userInformation.get.selectPlaceOfArrival).getOrElse(context.getJourneyData.userInformation.get.enterPlaceOfArrival)
