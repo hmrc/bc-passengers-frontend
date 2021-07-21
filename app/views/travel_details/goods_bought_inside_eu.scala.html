@@ -6,79 +6,79 @@
 @import views.ViewUtils._
 
 @this(
-govukLayout: templates.GovukLayoutWrapper,
-formHelper: FormWithCSRF,
-h1: components.h1,
-h2: components.h2,
-p: components.p,
-link: components.link
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    h1: components.h1,
+    h2: components.h2,
+    p: components.p,
+    link: components.link
 )
 
 @(backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(messages("heading.you_do_not_need_to_tell_us_about_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
-@h1(messages("heading.you_do_not_need_to_tell_us_about_goods_"))
+    @h1(messages("heading.you_do_not_need_to_tell_us_about_goods_"))
 
-@p(Html(messages("text.you_do_not_pay_duty_or_tax_")))
+    @p(Html(messages("text.you_do_not_pay_duty_or_tax_")))
 
-<ul class="govuk-list govuk-list--bullet">
-    <li>@messages("text.transport_them_yourself")</li>
-    <li>@messages("text.will_use_them_yourself_or_give_")</li>
-    <li>@messages("text.paid_duty_and_tax_")</li>
-</ul>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("text.transport_them_yourself")</li>
+        <li>@messages("text.will_use_them_yourself_or_give_")</li>
+        <li>@messages("text.paid_duty_and_tax_")</li>
+    </ul>
 
-@h2(messages("label.customs_checks"))
-@p(Html(messages("text.customs_officers_are_more_likely_")))
+    @h2(messages("label.customs_checks"))
+    @p(Html(messages("text.customs_officers_are_more_likely_")))
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">@messages("label.type_of_goods")</th>
-        <th scope="col" class="govuk-table__header">@messages("label.amount")</th>
-    </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.beer")</td>
-        <td class="govuk-table__cell">@messages("label.110_litres")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.wine")</td>
-        <td class="govuk-table__cell">@messages("label.90_litres")<br>@messages("label.including_sparkling_wine")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.spirits")</td>
-        <td class="govuk-table__cell">@messages("label.10_litres")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.other_alcoholic_drinks")</td>
-        <td class="govuk-table__cell">@messages("label.20_litres")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.cigarettes")</td>
-        <td class="govuk-table__cell">@messages("label.800")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.cigars")</td>
-        <td class="govuk-table__cell">@messages("label.200")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.cigarillos")</td>
-        <td class="govuk-table__cell">@messages("label.400")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.loose_tobacco")</td>
-        <td class="govuk-table__cell">@messages("label.1_kg")</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell">@messages("label.tobacco_for_heating")</td>
-        <td class="govuk-table__cell">@messages("label.800_sticks")</td>
-    </tr>
-    </tbody>
-</table>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@messages("label.type_of_goods")</th>
+            <th scope="col" class="govuk-table__header">@messages("label.amount")</th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.beer")</td>
+            <td class="govuk-table__cell">@messages("label.110_litres")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.wine")</td>
+            <td class="govuk-table__cell">@messages("label.90_litres")<br>@messages("label.including_sparkling_wine")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.spirits")</td>
+            <td class="govuk-table__cell">@messages("label.10_litres")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.other_alcoholic_drinks")</td>
+            <td class="govuk-table__cell">@messages("label.20_litres")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.cigarettes")</td>
+            <td class="govuk-table__cell">@messages("label.800")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.cigars")</td>
+            <td class="govuk-table__cell">@messages("label.200")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.cigarillos")</td>
+            <td class="govuk-table__cell">@messages("label.400")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.loose_tobacco")</td>
+            <td class="govuk-table__cell">@messages("label.1_kg")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.tobacco_for_heating")</td>
+            <td class="govuk-table__cell">@messages("label.800_sticks")</td>
+        </tr>
+        </tbody>
+    </table>
 
-@p{
-@link("https://www.gov.uk/duty-free-goods", messages("label.more_info_about_bringing_goods_into_the_uk_"), Some("link"))
-}
+    @p{
+    @link("https://www.gov.uk/duty-free-goods", messages("label.more_info_about_bringing_goods_into_the_uk_"), Some("link"))
+    }
 }
