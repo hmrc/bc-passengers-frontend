@@ -381,8 +381,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe OK
       val doc: Document = Jsoup.parse(contentAsString(response))
 
-      doc.select("#privateCraft-true").hasAttr("checked") shouldBe false
-      doc.select("#privateCraft-false").hasAttr("checked") shouldBe true
+      doc.select("#value-yes").hasAttr("checked") shouldBe false
+      doc.select("#value-no").hasAttr("checked") shouldBe true
 
       verify(controller.cache, times(1)).fetch(any())
     }
@@ -396,8 +396,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
       status(response) shouldBe OK
       val doc: Document = Jsoup.parse(contentAsString(response))
 
-      doc.select("#privateCraft-true").hasAttr("checked") shouldBe true
-      doc.select("#privateCraft-false").hasAttr("checked") shouldBe false
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
+      doc.select("#value-no").hasAttr("checked") shouldBe false
 
       verify(controller.cache, times(1)).fetch(any())
     }
@@ -441,10 +441,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#privateCraft]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#privateCraft]").html()).get shouldBe "Select yes if you are arriving in the UK by private transport"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+      Option(doc.getElementsByClass("govuk-error-summary").select("a[href=#privateCraft-error]")).isEmpty shouldBe false
+      Option(doc.getElementsByClass("govuk-error-summary").select("a[href=#privateCraft-error]").html()).get shouldBe "Select yes if you are arriving in the UK by private transport"
+      Option(doc.getElementsByClass("govuk-error-summary").select("h2").hasClass("govuk-error-summary__title")).get shouldBe true
+      Option(doc.getElementsByClass("govuk-error-summary").select("h2").html()).get shouldBe "There is a problem"
     }
 
 
@@ -459,8 +459,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=privateCraft]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are arriving in the UK by private transport"
+      doc.getElementById("privateCraft-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are arriving in the UK by private transport"
 
     }
 
@@ -496,8 +495,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("#ageOver17-true").hasAttr("checked") shouldBe true
-      doc.select("#ageOver17-false").hasAttr("checked") shouldBe false
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
+      doc.select("#value-no").hasAttr("checked") shouldBe false
 
       verify(controller.cache, times(1)).fetch(any())
     }
@@ -513,8 +512,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("#ageOver17-true").hasAttr("checked") shouldBe false
-      doc.select("#ageOver17-false").hasAttr("checked") shouldBe true
+      doc.select("#value-yes").hasAttr("checked") shouldBe false
+      doc.select("#value-no").hasAttr("checked") shouldBe true
 
       verify(controller.cache, times(1)).fetch(any())
     }
@@ -558,10 +557,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#ageOver17]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#ageOver17]").html()).get shouldBe "Select yes if you are aged 17 or over"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+      Option(doc.getElementsByClass("govuk-error-summary").select("a[href=#ageOver17-error]")).isEmpty shouldBe false
+      Option(doc.getElementsByClass("govuk-error-summary").select("a[href=#ageOver17-error]").html()).get shouldBe "Select yes if you are aged 17 or over"
+      Option(doc.getElementsByClass("govuk-error-summary").select("h2").hasClass("govuk-error-summary__title")).get shouldBe true
+      Option(doc.getElementsByClass("govuk-error-summary").select("h2").html()).get shouldBe "There is a problem"
 
     }
 
@@ -576,8 +575,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=ageOver17]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are aged 17 or over"
+      doc.getElementById("ageOver17-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are aged 17 or over"
     }
 
   }

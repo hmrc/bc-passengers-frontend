@@ -14,37 +14,26 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(privateCraftForm: Form[PrivateCraftDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import util.prefixErrorMessage
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button,
+    formHelper: FormWithCSRF
+)
+@(form: Form[PrivateCraftDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = prefixErrorMessage(messages("label.did_you_arrive_in_the_uk_by_private_boat_"), privateCraftForm.hasErrors), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "label.did_you_arrive_in_the_uk_by_private_boat_")), backLink = backLink) {
 
-    @views.html.tags.errors(privateCraftForm)
+    @formHelper(action = routes.TravelDetailsController.privateTravelPost()){
 
-    @form(action = routes.TravelDetailsController.privateTravelPost()){
+        @errorSummary(form.errors, Some("error"))
 
-        <fieldset>
-            <legend>
-                <h1 class="heading-xlarge">@messages("label.did_you_arrive_in_the_uk_by_private_boat_")</h1>
-            </legend>
+        @yesNoRadio(form, Some("label.did_you_arrive_in_the_uk_by_private_boat_"), name = "privateCraft", isPageHeading= true)
 
-            @components.input_radio_group(
-                privateCraftForm("privateCraft"),
-                Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-                '_labelClass -> "block-label inputLabelBeforeError",
-                '_inline -> true,
-                '_error_id -> "privateCraft-error-message",
-                '_errorPrefix -> messages("label.error")
-            )
-
-        </fieldset>
-
-        <div class="form-group">
-            <button class="button" type="submit">@messages("label.continue")</button>
-        </div>
-
+        @button("label.continue")
     }
 
 }

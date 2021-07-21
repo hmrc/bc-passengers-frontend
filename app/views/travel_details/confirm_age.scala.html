@@ -14,37 +14,26 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(ageOver17Form: Form[AgeOver17Dto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button,
+    formHelper: FormWithCSRF
+)
 
-@main_template(title = prefixErrorMessage(messages("label.are_you_17_or_over"), ageOver17Form.hasErrors), backLink = backLink) {
+@(form: Form[AgeOver17Dto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-    @views.html.tags.errors(ageOver17Form)
+@govukLayout(pageTitle = Some(title(form, "label.are_you_17_or_over")), backLink = backLink) {
 
-    @form(action = routes.TravelDetailsController.confirmAgePost()){
+    @formHelper(action = routes.TravelDetailsController.confirmAgePost()){
+        @errorSummary(form.errors, Some("error"))
 
-        <fieldset>
-            <legend>
-                <h1 class="heading-xlarge">@messages("label.are_you_17_or_over")</h1>
-            </legend>
+        @yesNoRadio(form, Some("label.are_you_17_or_over"), name = "ageOver17", isPageHeading= true)
 
-            @components.input_radio_group(
-                ageOver17Form("ageOver17"),
-                Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-                '_labelClass -> "block-label inputLabelBeforeError",
-                '_inline -> true,
-                '_error_id -> "ageOver17-error-message",
-                '_errorPrefix -> messages("label.error")
-            )
-
-        </fieldset>
-
-        <div class="form-group">
-            <button class="button" type="submit">@messages("label.continue")</button>
-        </div>
+        @button("label.continue")
 
     }
 
