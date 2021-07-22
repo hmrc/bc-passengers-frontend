@@ -1705,3 +1705,8 @@ error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:
 
 site.govuk = GOV.UK/CYMRAEG
+
+# Technical Difficulties error page Messages
+technicalDifficultiesError.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth – Gwall
+technicalDifficultiesError.heading = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
+technicalDifficultiesError.p1 = Rhowch gynnig arall arni yn nes ymlaen

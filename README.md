@@ -2,10 +2,6 @@
 
 This is the frontend for the passengers declaration service.
 
-## Builds
-
-You can view either the [pipeline build](https://build.tax.service.gov.uk/job/Passengers/job/bc-passengers-frontend-pipeline/) or the specific [bc-passengers-frontend build](https://build.tax.service.gov.uk/job/Passengers/job/bc-passengers-frontend/) on the [jenkins build environment](https://build.tax.service.gov.uk/)
-
 ## Prerequisites
 
 This service is written in [Scala](https://www.scala-lang.org/) and the [Play Framework](https://www.playframework.com/), therefore you will need at least a [Java Runtime Environment](https://www.java.com/en/download/) to run it. You will also need [mongodb](https://mongodb.com) by either [locally installing it](https://docs.mongodb.com/guides/server/install/) or running a [mongo docker container](https://hub.docker.com/_/mongo).
@@ -32,3 +28,6 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
 
 To run the tests locally, simply run the `sbt test` command in the root of the repository
 
+### License
+
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

@@ -1705,3 +1705,8 @@ error.summary.title = There is a problem
 error.browser.title.prefix = Error:
 
 site.govuk = GOV.UK
+
+# Technical Difficulties error page Messages
+technicalDifficultiesError.title = Sorry, there is a problem with the service - Error
+technicalDifficultiesError.heading = Sorry, there is a problem with the service
+technicalDifficultiesError.p1 = Try again later.
