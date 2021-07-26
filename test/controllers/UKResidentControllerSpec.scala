@@ -74,7 +74,7 @@ class UKResidentControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Are you a UK resident?"
-      doc.select("#isUKResident-true").hasAttr("checked") shouldBe true
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
     }
 
     "redirect to start page when journey data is empty" in {
@@ -135,9 +135,9 @@ class UKResidentControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Are you a UK resident?"
-      doc.select("#error-heading").text() shouldBe "There is a problem"
-      doc.getElementById("errors").select("a[href=#isUKResident]").html() shouldBe "Select yes if you are a UK resident"
-      doc.getElementById("isUKResident").getElementsByClass("error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are a UK resident"
+      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.getElementsByClass("govuk-error-summary").select("a[href=#isUKResident-error]").html() shouldBe "Select yes if you are a UK resident"
+      doc.getElementById("isUKResident-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are a UK resident"
       verify(mockTravelDetailService, times(0)).storeUKResident(any())(any())(any())
     }
 

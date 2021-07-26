@@ -34,49 +34,49 @@
 
     @formHelper(action = routes.TravelDetailsController.goodsBoughtIntoNIPost()) {
 
-    @errorSummary(form.errors)
+        @errorSummary(form.errors, Some("error"))
 
-    @h1(messages("heading.goods_brought_into_ni"))
+        @h1(messages("heading.goods_brought_into_ni"))
 
-    @p{@messages("text.there_are_separate_allowances_")}
-    @h2(messages("text.alcohol_allowance"))
-      @p{@messages("text.you_can_bring_in")}
+        @p{@messages("text.there_are_separate_allowances_")}
+        @h2(messages("text.alcohol_allowance"))
+          @p{@messages("text.you_can_bring_in")}
 
-      <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("text.ni.allowance.alc_1")</li>
-        <li>@messages("text.ni.allowance.alc_2")</li>
-        <li>@messages("text.ni.allowance.alc_3")</li>
-      </ul>
-      @p{@messages("text.ni.allowance.msg_1")}
-      @p{@messages("text.ni.allowance.msg_2")}
-      @panelIndent{
-         @p{@messages("text.ni.allowance.msg_3")}
-      }
+          <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("text.ni.allowance.alc_1")</li>
+            <li>@messages("text.ni.allowance.alc_2")</li>
+            <li>@messages("text.ni.allowance.alc_3")</li>
+          </ul>
+          @p{@messages("text.ni.allowance.msg_1")}
+          @p{@messages("text.ni.allowance.msg_2")}
+          @panelIndent{
+             @p{@messages("text.ni.allowance.msg_3")}
+          }
 
-      @h2(messages("text.tobacco_allowance"))
-      @p{@messages("text.you_can_bring_in_either")}
-      <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("text.allowance.tob_1")</li>
-        <li>@messages("text.allowance.tob_2")</li>
-        <li>@messages("text.allowance.tob_3")</li>
-        <li>@messages("text.allowance.tob_4")</li>
-        <li>@messages("text.allowance.tob_5")</li>
-      </ul>
-      @p{@messages("text.allowance.msg_4")}
-      @p{@messages("text.allowance.msg_5")}
-      @panelIndent{
-         @p{@messages("text.allowance.msg_6")}
-      }
+          @h2(messages("text.tobacco_allowance"))
+          @p{@messages("text.you_can_bring_in_either")}
+          <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("text.allowance.tob_1")</li>
+            <li>@messages("text.allowance.tob_2")</li>
+            <li>@messages("text.allowance.tob_3")</li>
+            <li>@messages("text.allowance.tob_4")</li>
+            <li>@messages("text.allowance.tob_5")</li>
+          </ul>
+          @p{@messages("text.allowance.msg_4")}
+          @p{@messages("text.allowance.msg_5")}
+          @panelIndent{
+             @p{@messages("text.allowance.msg_6")}
+          }
 
-      @h2(messages("text.other_goods_allowance"))
-      <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("text.allowance.otg_1")</li>
-      </ul>
-      @p{@messages("text.allowance.msg_7")}
+          @h2(messages("text.other_goods_allowance"))
+          <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("text.allowance.otg_1")</li>
+          </ul>
+          @p{@messages("text.allowance.msg_7")}
 
-    @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages(s"text.allowance.msg_8")))
+        @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages(s"text.allowance.msg_8")))
 
-    @button("label.continue")
+        @button("label.continue")
 
   }
 }
