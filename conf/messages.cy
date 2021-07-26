@@ -1,5 +1,5 @@
-service.name = Gwirio’r dreth ar datgan rydych yn dod â nhw i’r DU
-heading.go_uk_wrapper_title = Gwirio’r dreth ar datgan rydych yn dod â nhw i’r DU
+service.name = Gwirio’r dreth ar nwyddau rydych yn dod â nhw i’r DU
+heading.go_uk_wrapper_title = Gwirio’r dreth ar nwyddau rydych yn dod â nhw i’r DU
 label.continue=Yn eich blaen
 label.yes=Iawn
 label.no=Na
@@ -286,7 +286,7 @@ label.what_other_goods_are_= Pa nwyddau eraill rydych am eu hychwanegu?
 label.add_your_goods= Nodwch eich eitem
 label.if_there_are_no_search_results_ = Os nad oes canlyniadau chwilio ar gyfer y nwyddau rydych am eu hychwanegu
 label.search_through_our_lists_and = Os na allwch ddod o hyd i’ch eitem, gallwch gategoreiddio’ch nwyddau eich hun.
-label.categorise_your_goods_yourself= chategoreiddiwch eich nwyddau eich hun.
+label.categorise_your_goods_yourself= categoreiddiwch eich nwyddau eich hun.
 head.error.required.enter_other_goods = Nodwch eich eitem
 error.required.enter_other_goods = Nodwch eich eitem
 
@@ -1651,8 +1651,8 @@ label.not_required = Ddim yn ofynnol
 heading.declaration_not_found = Ni ellir canfod eich datganiad
 text.may_be_because = Gall hyn fod oherwydd y canlynol:
 label.no_existing_declaration = nid yw’r manylion a nodwyd gennych yn cyd-fynd â datganiad sy’n bodoli eisoes - ewch yn ôl, gwiriwch eich manylion a rhowch gynnig arall arni
-label.payment_issue = roedd problem pan wnaethoch geisio ychwanegu datgan at eich datganiad yn flaenorol ac ni chwblhawyd eich taliad - bydd angen i chi nawr siarad â swyddog llu’r ffiniau yn eich man cyrraedd i ddatgan unrhyw datgan ychwanegol
-label.already_passed_custom = mae’ch amser cyrraedd disgwyliedig yn y gorffennol - os gohiriwyd eich taith a bod gennych datgan i’w datgan, siaradwch â swyddog Llu’r Ffiniau yn eich man cyrraedd
+label.payment_issue = roedd problem pan wnaethoch geisio ychwanegu nwyddau at eich datganiad yn flaenorol ac ni chwblhawyd eich taliad - bydd angen i chi nawr siarad â swyddog llu’r ffiniau yn eich man cyrraedd i ddatgan unrhyw nwyddau ychwanegol
+label.already_passed_custom = mae’ch amser cyrraedd disgwyliedig yn y gorffennol - os gohiriwyd eich taith a bod gennych datgan i’w nwyddau, siaradwch â swyddog Llu’r Ffiniau yn eich man cyrraedd
 
 #limit exceed page
 heading.l-cigrt.limit-exceeded = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy nag 800 sigarét
