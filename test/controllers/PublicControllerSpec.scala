@@ -45,7 +45,7 @@ class PublicControllerSpec extends BaseSpec {
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK
-      Jsoup.parse(contentAsString(result)).getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought"
+      Jsoup.parse(contentAsString(result)).body().html().contains("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
     }
 
     "return 200 and start button redirects to previous-declaration page when amendment feature is on" in {
@@ -53,7 +53,7 @@ class PublicControllerSpec extends BaseSpec {
       val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK
-      Jsoup.parse(contentAsString(result)).getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration"
+      Jsoup.parse(contentAsString(result)).body().html().contains("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
   }
 

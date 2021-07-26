@@ -14,12 +14,20 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template)
-@(previousDeclaration: Boolean, deltaCalc: Option[Calculation], oldAllTax: Option[String], userInformation: Option[UserInformation], calculatorResponse: CalculatorResponse, calculatorResponseDto: CalculatorResponseDto, chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    p: components.p,
+    h2: components.h2,
+    panelIndent: components.panelIndent
+)
+
+@(previousDeclaration: Boolean, deltaCalc: Option[Calculation], oldAllTax: Option[String], userInformation: Option[UserInformation], calculatorResponse: CalculatorResponse, calculatorResponseDto: CalculatorResponseDto, chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import util._
 
-@main_template(title = messages("heading.declaration_complete")) {
+@govukLayout(pageTitle = Some(messages("heading.declaration_complete") + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
 
   <div class="govuk-panel govuk-panel--confirmation">
      <h1 class="govuk-panel__title font-size-48">
@@ -33,13 +41,15 @@
   </div>
 
     @if(previousDeclaration) {
-        <p>@messages("label.amendment.note_reference_number")</p>
+        @p{@messages("label.amendment.note_reference_number")}
 
-        <p>@messages("label.amendment.email_receipt")</p>
+        @p{@messages("label.amendment.email_receipt")}
+
     } else {
-        <p>@messages("label.declaration.note_reference_number")</p>
+        @p{@messages("label.declaration.note_reference_number")}
 
-        <p>@messages("label.declaration.provided_email_address")</p>
+        @p{@messages("label.declaration.provided_email_address")}
+
     }
 
   <body class="govuk-template__body app-example-page">
@@ -94,117 +104,104 @@
       </div>
   </dl>
 
-  <h2>@messages("label.items_declared")</h2>
+  @h2(messages("label.items_declared"))
 
-  <table class="responsive-table margin-bottom-30">
-    <thead>
-    <tr>
-        <th scope="col">@messages("label.item")</th>
-        <th scope="col">@messages("label.price")</th>
-        <th scope="col">@messages("label.purchased_in")</th>
-        <th class="numeric" scope="col">
-            <span class="table-25">@messages("label.tax_paid")</span>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    @calculatorResponseDto.items.map { item =>
-    <tr>
-        <th scope="row">
-            <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
-            @messages(item.metadata.description)
-        </th>
-        <td>
-            <span class="table-heading" aria-hidden="true">@messages("label.price")</span>
-            @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
-        </td>
-        <td>
-            <span class="table-heading" aria-hidden="true">@messages("label.purchased_in")</span>
-            @messages(item.metadata.country.countryName)
-        </td>
-        <td class="numeric">
-            <span class="table-heading" aria-hidden="true">@messages("label.tax_due")</span>
-            &pound;@formatMonetaryValue(item.calculation.allTax)
-        </td>
-    </tr>
-    }
-    <tr>
-        <td class="total table-foot" colspan="3">@messages("label.total")</td>
-        <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
-    </tr>
+  <table class="govuk-table">
+      <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">@messages("label.item")</th>
+              <th scope="col" class="govuk-table__header">@messages("label.price")</th>
+              <th scope="col" class="govuk-table__header">@messages("label.purchased_in")</th>
+              <th scope="col" class="govuk-table__header govuk-table__cell--numeric govuk-!-font-weight-bold">@messages("label.tax_paid")</th>
+          </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        @calculatorResponseDto.items.map { item =>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                    @messages(item.metadata.description)
+                </td>
+                <td class="govuk-table__cell">
+                    @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
+                </td>
+                <td class="govuk-table__cell">
+                    @messages(item.metadata.country.countryName)
+                </td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                    &pound;@formatMonetaryValue(item.calculation.allTax)
+                </td>
+            </tr>
+        }
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell govuk-!-font-weight-bold" colspan="3">@messages("label.total")</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
+            </tr>
     </tbody>
-</table>
+  </table>
 
   @if(deltaCalc.isDefined && oldAllTax.isDefined){
-  <table class="responsive-table margin-bottom-30">
-      <tbody id="delta">
-      <tr>
-          <td colspan="2" id="prev-paid">@messages("label.amount_paid_previously")</td>
-          <td class="numeric" id="oldAllTax">&pound;@formatMonetaryValue(oldAllTax.get)</td>
-      </tr>
+      <table class="govuk-table">
+          <tbody class="govuk-table__body" id="delta">
+          <tr class="govuk-table__row">
+              <td class="govuk-table__cell" colspan="2" id="prev-paid">@messages("label.amount_paid_previously")</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric" id="oldAllTax">&pound;@formatMonetaryValue(oldAllTax.get)</td>
+          </tr>
 
-      <tr>
-          <td class="total table-foot" colspan="2" id="total">@messages("label.total_paid_now")</td>
-          <td class="total-value numeric table-foot" id="allTax">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
-      </tr>
-      </tbody>
-  </table>
+          <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold" colspan="2" id="total">@messages("label.total_paid_now")</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold" id="allTax">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+          </tr>
+          </tbody>
+      </table>
   }
 
-  <h2>@messages("label.payment_breakdown")</h2>
-  <table class="responsive-table margin-bottom-30">
-    <thead>
-    <tr>
-        <th scope="col">@messages("label.tax_type")</th>
-        <th class="numeric" scope="col">
-            <span class="table-25">@messages("label.amount_paid")</span></th>
-    </tr>
-    </thead>
+  @h2(messages("label.payment_breakdown"))
+  <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">@messages("label.tax_type")</th>
+          <th scope="col" class="govuk-table__header govuk-table__cell--numeric govuk-!-font-weight-bold">@messages("label.amount_paid")</th>
+      </tr>
+      </thead>
 
-    <tbody>
-    <tr>
-        <td>@messages("label.customs")</td>
-        <td class="numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.customs)</td>
-    </tr>
+      <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+              <td class="govuk-table__cell">@messages("label.customs")</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.customs)</td>
+          </tr>
 
-    <tr>
-        <td>@messages("label.excise_val")</td>
-        <td class="numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.excise)</td>
-    </tr>
+          <tr class="govuk-table__row">
+              <td class="govuk-table__cell">@messages("label.excise_val")</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.excise)</td>
+          </tr>
 
-    <tr>
-        <td>@messages("label.vat")</td>
-        <td class="numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.vat)</td>
-    </tr>
-    <tr>
-        <td class="total table-foot">@messages("label.total")</td>
-        <td class="total-value numeric table-foot">&pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)</td>
-    </tr>
-    </tbody>
+          <tr class="govuk-table__row">
+              <td class="govuk-table__cell">@messages("label.vat")</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.vat)</td>
+          </tr>
+          <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">@messages("label.total")</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)</td>
+          </tr>
+      </tbody>
   </table>
 
+  @panelIndent{
+  @p{@messages("label.declaration.no_tax_duty")}
+  }
 
+  @h2(messages("heading.what_to_do_in_uk"))
 
-  <div class="panel panel-border-wide margin-top-30">@messages("label.declaration.no_tax_duty")</div>
+  @p{@messages("label.declaration.go_to_green")}
 
-  <h2 class="heading-medium">@messages("heading.what_to_do_in_uk")</h2>
+  @h2(messages("heading.amending_declaration"))
 
-  <p>@messages("label.declaration.go_to_green")</p>
+  @p{@messages("label.amendment.goods_to_existing_declaration")}
 
-  <h2 class="heading-medium">@messages("heading.amending_declaration")</h2>
+  @p{@messages("label.declaration.remove_goods")
+  <a href="https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt" target="_blank">@messages("text.read_more_about_refunds")</a>}
 
-  <p>@messages("label.amendment.goods_to_existing_declaration")</p>
-
-  <p>@messages("label.declaration.remove_goods")
-   <a href="https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt" target="_blank">@messages("text.read_more_about_refunds")</a></p>
   <br>
-
-  <p>
-    <a href="https://www.tax.service.gov.uk/feedback/passengers" target="_blank">@messages("label.declaration.what_you_think_of_service")</a>
-      @messages("label.declaration.take_x_seconds")
-  </p>
-
-
-
-
-}
+  @p{<a href="https://www.tax.service.gov.uk/feedback/passengers" target="_blank">@messages("label.declaration.what_you_think_of_service")</a>
+  @messages("label.declaration.take_x_seconds")}
+  }
