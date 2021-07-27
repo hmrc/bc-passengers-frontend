@@ -14,214 +14,236 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, input: uk.gov.hmrc.play.views.html.helpers.Input)
-@(f: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String] )(implicit request: Request[_], messages: Messages)
-
-@import uk.gov.hmrc.play.views.html._
+@import play.api.mvc.Call
+@import views.ViewUtils._
 @import play.api.libs.json.{JsObject, Json}
-@import util.prefixErrorMessage
 
-@scriptElem = {
-<script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-  <script>
-    $(document).ready(function () {
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    fieldset: components.fieldset,
+    inputRadioH2: components.inputRadioH2,
+    inputDate: components.inputDate,
+    inputTime: components.inputTime,
+    autoCompleteList: components.autocompleteList
+)
 
-      // Get IE or Edge browser version
-      var version = detectIE()
+@(form: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-      if (version !== 11) {
-        var portOfArrivalSynonymsData = @Html( Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString )
-        enhanceSelectIntoAutoComplete("placeOfArrival.selectPlaceOfArrival", portOfArrivalSynonymsData);
-      }
-    })
-  </script>
-}
+@govukLayout(pageTitle = Some(title(form, "label.enter_your_details")), backLink = backLink) {
 
-@linkElem = {
-<link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
-}
+    @formHelper(action = routes.CalculateDeclareController.processEnterYourDetails) {
 
-@main_template(
-  title = prefixErrorMessage(messages("label.enter_your_details"), f.hasErrors), bodyClasses = None,
-  inlineScript = Some(scriptElem),
-  inlineLinkElem = Some(linkElem),
-  backLink = backLink) {
+    @errorSummary(form.errors, Some("error"))
 
+    @fieldset(s"label.enter_your_details") {
 
-  @views.html.tags.errors(f)
+        @inputText(
+            form,
+            id = "firstName",
+            name = "firstName",
+            label = "label.first_name",
+            isPageHeading = false,
+            autocomplete = Some("given-name"),
+            classes = Some("govuk-input govuk-!-width-one-half"),
+            labelClasses = Some("govuk-!-font-weight-bold")
+        )
 
-  <h1 class="heading-xlarge">@messages("label.enter_your_details")</h1>
-
-  @form(action = routes.CalculateDeclareController.processEnterYourDetails) {
-
-      @components.input(
-        f("firstName"),
-        '_label -> messages("label.first_name"),
-        '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4",
-        '_autoComplete -> "given-name",
-        '_error_id -> "firstName-error-message",
-        '_errorPrefix -> messages("label.error"),
-      )
-
-      @components.input(
-        f("lastName"),
-        '_label -> messages("label.last_name"),
-        '_labelTextClass -> "form-label-bold",
-        '_inputClass -> "form-control-3-4",
-        '_autoComplete -> "family-name",
-        '_error_id -> "lastName-error-message",
-        '_errorPrefix -> messages("label.error")
-      )
-      <fieldset>
-          <legend><span class="form-label-bold">@messages("label.select_identification_type")</span></legend>
-          <span class="form-hint" style="color: #6f777b;">@messages("label.choose_identification_type")</span>
-
-          <div class="form-group @{if(f("identification").hasErrors) "form-group-error" else "" }" id="identification">
+        @inputText(
+            form,
+            id = "lastName",
+            name = "lastName",
+            label = "label.last_name",
+            isPageHeading = false,
+            autocomplete = Some("family-name"),
+            classes = Some("govuk-input govuk-!-width-one-half"),
+            labelClasses = Some("govuk-!-font-weight-bold")
+        )
+        <div class="govuk-form-group @{if(form("identification").hasErrors) "govuk-form-group--error" else "" }" id="identification">
 
             @if(journeyStart.contains("greatBritain")){
-               @components.govuk_radios(
-                 f("identification.identificationType"),
-                 Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number"), "driving" -> Messages("label.driving_licence_number"), "telephone" -> Messages("label.telephone_number")),
-                 '_labelClass -> "block-label inputLabelBeforeError",
-                 '_error_id -> "identification-error-message",
-                 '_errorPrefix -> messages("label.error"),
-                 Symbol("telephone") -> messages("label.telephone_number_hint"),
-                 Symbol("euId") -> Html(s"${messages("label.euId_hint")} ${<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}")
-               )
-            } else {
-               @components.govuk_radios(
-                 f("identification.identificationType"),
-                 Seq("passport" -> Messages("label.passport_number"), "euId" -> Messages("label.euId_number")),
-                 '_labelClass -> "block-label inputLabelBeforeError",
-                 '_error_id -> "identification-error-message",
-                 '_errorPrefix -> messages("label.error"),
-                 Symbol("euId") -> Html(s"${messages("label.euId_hint")} ${<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}")
-               )
-            }
-            @f.errors.filter(_.key == "identification").map { error =>
-                <span class="error-message" id="identificationNumber-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
-            }
-            @components.input(
-                f("identification.identificationNumber"),
-                '_label -> messages("label.identification_number"),
-                '_hintId -> "label-identificationNumber-hint",
-                '_labelTextClass -> "form-label-bold",
-                '_inputHint -> messages("label.enter_identification_number"),
-                '_inputClass -> "form-control-3-4",
-                '_error_id -> "identificationNumber-error-message",
-                '_errorPrefix -> messages("label.error")
-            )
-          </div>
-      </fieldset>
-
-    <div class="form-group @{if(f("emailAddress").hasErrors) "form-group-error" else "" }" id="emailAddress">
-        @f.errors.filter(_.key == "emailAddress").map { error =>
-            <span class="error-message" id="email-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
-        }
-        @components.input(
-            f("emailAddress.email"),
-            '_label -> messages("label.email_address"),
-            '_hintId -> "label-emailId-hint",
-            '_labelTextClass -> "form-label-bold",
-            '_inputHint -> messages("label.email_address_hint"),
-            '_inputClass -> "form-control-3-4",
-            '_autoComplete -> "email",
-            '_error_id -> "email-error-message",
-        )
-
-        @components.input(
-            f("emailAddress.confirmEmail"),
-            '_label -> messages("label.confirm_email_address"),
-            '_labelTextClass -> "form-label-bold",
-            '_inputClass -> "form-control-3-4",
-            '_autoComplete -> "email",
-            '_error_id -> "email-error-message",
-        )
-    </div>
-
-
-    <div class="form-group @{if(f("placeOfArrival").hasErrors) "form-group-error" else "" }" id="placeOfArrival">
-
-        @f.errors.filter(_.key == "placeOfArrival").map { error =>
-            <span class="error-message" id="placeOfArrival-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
-        }
-        @if(journeyStart.contains("greatBritain")){
-          @components.select(
-            f("placeOfArrival.selectPlaceOfArrival"),
-            elementOptions = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
-            displayEmptyValue = true,
-            '_label -> messages("label.place_of_arrival_ni"),
-            '_labelTextClass -> "form-label-bold",
-            '_inputHint -> messages("label.for_example_belfast_international_airport"),
-            '_errorsAboveInput -> true,
-            '_error_id -> "placeOfArrival-error-message",
-            '_errorPrefix -> messages("label.error")
-          )
-        } else {
-          @components.select(
-            f("placeOfArrival.selectPlaceOfArrival"),
-            elementOptions = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
-            displayEmptyValue = true,
-            '_label -> messages("label.place_of_arrival_uk"),
-            '_labelTextClass -> "form-label-bold",
-            '_inputHint -> messages("label.for_example_heathrow_airport_or_dover"),
-            '_errorsAboveInput -> true,
-            '_error_id -> "placeOfArrival-error-message",
-            '_errorPrefix -> messages("label.error")
-          )
-        }
-
-      <details class="margin-bottom-20" role="group">
-
-            <summary role="button" aria-controls="details-content-0" aria-expanded="false">
-                <span class="summary">@messages("label.place_of_arrival_not_listed")</span>
-            </summary>
-
-            <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
-                <p>
-                    @components.input(
-                        f("placeOfArrival.enterPlaceOfArrival"),
-                        '_label -> messages("label.enter_place_of_arrival"),
-                        '_labelTextClass -> "form-label-bold",
-                        '_inputClass -> "form-control-3-4"
+                @inputRadioH2(
+                    form = form,
+                    h2Message = "label.select_identification_type",
+                    legendAsHeading = false,
+                    name = "identification.identificationType",
+                    hint = Some(Html(messages(s"label.choose_identification_type"))),
+                    items = Seq(
+                        RadioItem(id = Some("identificationType-passport"),
+                        value = Some("passport"),
+                        content = Text(messages("label.passport_number")),
+                        checked = form("identification.identificationType").value.contains("passport")
+                        ),
+                        RadioItem(id = Some("identificationType-euId"),
+                        value = Some("euId"),
+                        content = Text(messages("label.euId_number")),
+                        checked = form("identification.identificationType").value.contains("euId"),
+                        conditionalHtml = Some(Html(s"${<p class="govuk-hint">{messages("label.euId_hint")} {<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}</p>}"))
+                        ),
+                        RadioItem(id = Some("identificationType-driving"),
+                        value = Some("driving"),
+                        content = Text(messages("label.driving_licence_number")),
+                        checked = form("identification.identificationType").value.contains("driving")
+                        ),
+                        RadioItem(id = Some("identificationType-telephone"),
+                        value = Some("telephone"),
+                        content = Text(messages("label.telephone_number")),
+                        conditionalHtml =  Some(Html(s"${<p class="govuk-hint">{messages(s"label.telephone_number_hint")}</p>}")),
+                        checked = form("identification.identificationType").value.contains("telephone")
+                        )
                     )
-                </p>
-            </div>
-      </details>
-</div>
+                )
+            } else {
+                @inputRadioH2(
+                    form = form,
+                    h2Message = "label.select_identification_type",
+                    legendAsHeading = false,
+                    name = "identification.identificationType",
+                    hint = Some(Html(messages(s"label.choose_identification_type"))),
+                    items = Seq(
+                        RadioItem(id = Some("identificationType-passport"),
+                        value = Some("passport"),
+                        content = Text(messages("label.passport_number")),
+                        checked = form("identification.identificationType").value.contains("passport")
+                        ),
+                        RadioItem(id = Some("identificationType-euId"),
+                        value = Some("euId"),
+                        content = Text(messages("label.euId_number")),
+                        checked = form("identification.identificationType").value.contains("euId"),
+                        conditionalHtml = Some(Html(s"${<p class="govuk-hint">{messages("label.euId_hint")} {<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}</p>}"))
+                        )
+                    )
+                )
+            }
+        @form.errors.filter(_.key == "identification").map { error =>
+            <span class="govuk-error-message" id="identificationNumber-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+        }
+            @inputText(
+                form,
+                id = "identification.identificationNumber",
+                name = "identification.identificationNumber",
+                label = "label.identification_number",
+                hint = Some(Html(messages(s"label.enter_identification_number"))),
+                isPageHeading = false,
+                classes = Some("govuk-input govuk-!-width-one-half"),
+                labelClasses = Some("govuk-!-font-weight-bold")
+            )
+        </div>
 
-      <div class="form-group @{if(f("dateTimeOfArrival").hasErrors) "form-group-error" else "" }" id="dateTimeOfArrival">
+        <div class="govuk-form-group @{if(form("emailAddress").hasErrors) "govuk-form-group--error" else "" }" id="emailAddress">
+            @form.errors.filter(_.key == "emailAddress").map { error =>
+                <span class="govuk-error-message" id="email-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+            }
+            @inputText(
+                form,
+                id = "emailAddress.email",
+                name = "emailAddress.email",
+                label = "label.email_address",
+                isPageHeading = false,
+                autocomplete = Some("email"),
+                hint = Some(Html(messages(s"label.email_address_hint"))),
+                classes = Some("govuk-input govuk-!-width-one-half"),
+                labelClasses = Some("govuk-!-font-weight-bold")
+            )
 
-          @f.errors.filter(_.key == "dateTimeOfArrival").map { error =>
-                <span class="error-message" id="dateOfArrival-error-message"> <span class="visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
-          }
+            @inputText(
+                form,
+                id = "emailAddress.confirmEmail",
+                name = "emailAddress.confirmEmail",
+                label = "label.confirm_email_address",
+                isPageHeading = false,
+                autocomplete = Some("email"),
+                classes = Some("govuk-input govuk-!-width-one-half"),
+                labelClasses = Some("govuk-!-font-weight-bold")
+            )
+        </div>
 
-          @components.dateFieldsFreeInlineLegend(
-            f,
-            "dateTimeOfArrival.dateOfArrival",
-            '_inputHint -> messages("label.for_example_31_10_2021"),
-            '_legendSpanClass -> "form-label-bold",
-            '_legend -> messages("label.date_of_arrival"),
-            '_error_id -> "dateOfArrival-error-message",
-            '_errorPrefix -> messages("label.error")
-          )
+        <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
-          @components.timeFieldsFreeInlineLegend(
-            f,
-            "dateTimeOfArrival.timeOfArrival",
-            '_inputHint -> messages("label.for_example_930"),
-            '_legendSpanClass -> "form-label-bold",
-            '_legend -> messages("label.scheduled_time_of_arrival"),
-            '_error_id -> "timeOfArrival-error-message",
-            '_errorPrefix -> messages("label.error")
-          )
+            @form.errors.filter(_.key == "placeOfArrival").map { error =>
+                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+            }
+            @if(journeyStart.contains("greatBritain")){
+                @autoCompleteList(form,
+                    id = "placeOfArrival.selectPlaceOfArrival",
+                    name = "placeOfArrival.selectPlaceOfArrival",
+                    isPageHint = true,
+                    hint = messages("label.for_example_belfast_international_airport"),
+                    isPageHeading = false,
+                    label = messages(s"label.place_of_arrival_ni"),
+                    hintText = "",
+                    list = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
+                    labelClass = true
+                )
+            } else {
+                @autoCompleteList(form,
+                    id = "placeOfArrival.selectPlaceOfArrival",
+                    name = "placeOfArrival.selectPlaceOfArrival",
+                    isPageHint = true,
+                    hint = messages("label.for_example_heathrow_airport_or_dover"),
+                    isPageHeading = false,
+                    label = messages(s"label.place_of_arrival_uk"),
+                    hintText = "",
+                    list = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
+                    labelClass = true
+                )
+            }
+            <details class="govuk-details govuk-!-margin-bottom-6" role="group">
 
-      </div>
+                <summary class="govuk-details__summary" role="button" aria-controls="details-content-0" aria-expanded="false">
+                    <span class="govuk-details__summary-text">@messages("label.place_of_arrival_not_listed")</span>
+                </summary>
 
-      <div class="form-group">
-        <button type="submit" class="button">@messages("label.continue")</button>
-      </div>
+                <div class="govuk-details__text" id="details-content-0" aria-hidden="false">
+                    <p>
+                        @inputText(
+                            form,
+                            id = "placeOfArrival.enterPlaceOfArrival",
+                            name = "placeOfArrival.enterPlaceOfArrival",
+                            label = "label.enter_place_of_arrival",
+                            isPageHeading = false,
+                            classes = Some("govuk-input govuk-!-width-one-half"),
+                            labelClasses = Some("govuk-!-font-weight-bold")
+                        )
+                    </p>
+                </div>
+            </details>
+        </div>
 
-  }
+        <div class="govuk-form-group @{if(form("dateTimeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival">
+
+            @form.errors.filter(_.key == "dateTimeOfArrival").map { error =>
+                <span class="govuk-error-message" id="dateOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+            }
+            @inputDate(
+                form,
+                id = "dateTimeOfArrival.dateOfArrival",
+                legendContent = messages(s"label.date_of_arrival"),
+                legendClasses = "govuk-label govuk-!-margin-bottom-4 govuk-!-font-weight-bold",
+                hintMessage= Some((messages(s"label.for_example_31_10_2021"))),
+                hintHtml = None,
+                legendAsPageHeading = false,
+            )
+
+            @inputTime(
+                form = form,
+                id = "dateTimeOfArrival.timeOfArrival",
+                legendContent = messages("label.scheduled_time_of_arrival"),
+                legendClasses = "govuk-!-font-weight-bold",
+                legendAsPageHeading = false,
+                showSelectPeriod = true,
+                hintText = Some(messages("label.for_example_930")),
+            )
+        </div>
+    }
+
+    @button("label.continue")
+
+    }
 }

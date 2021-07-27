@@ -481,7 +481,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         doc.getElementById("dateTimeOfArrival.dateOfArrival.year").`val`() shouldBe "2018"
         doc.getElementById("dateTimeOfArrival.timeOfArrival.hour").`val`() shouldBe "12"
         doc.getElementById("dateTimeOfArrival.timeOfArrival.minute").`val`() shouldBe "20"
-        doc.getElementById("am_pm").getElementsByAttribute("selected").`val`() shouldBe "pm"
+        doc.getElementById("dateTimeOfArrival.timeOfArrival.halfday").getElementsByAttribute("selected").`val`() shouldBe "pm"
       }
 
       "populate user-information page if user-information data is present in db for GB NI journey" in new LocalSetup {
@@ -505,7 +505,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         doc.getElementById("dateTimeOfArrival.dateOfArrival.year").`val`() shouldBe "2018"
         doc.getElementById("dateTimeOfArrival.timeOfArrival.hour").`val`() shouldBe "12"
         doc.getElementById("dateTimeOfArrival.timeOfArrival.minute").`val`() shouldBe "20"
-        doc.getElementById("am_pm").getElementsByAttribute("selected").`val`() shouldBe "pm"
+        doc.getElementById("dateTimeOfArrival.timeOfArrival.halfday").getElementsByAttribute("selected").`val`() shouldBe "pm"
       }
     }
 
@@ -850,7 +850,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content = contentAsString(response)
         val doc = Jsoup.parse(content)
 
-        doc.getElementById("errors").select("a[href=#dateTimeOfArrival]").html() shouldBe "Scheduled date and time of arrival must be less than 5 days in the future"
+        doc.getElementById("dateOfArrival-error").text() shouldBe "Error: Scheduled date and time of arrival must be less than 5 days in the future"
       }
 
       "Redirect to next page when the schedule time of arrival is 2 hours in past" in new LocalSetup {
@@ -943,7 +943,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-       doc.getElementById("telephone").text() shouldBe "For international numbers this will need to include the country code, for example +33 for France."
+       doc.getElementById("conditional-identificationType-telephone").text() shouldBe "For international numbers this will need to include the country code, for example +33 for France."
       }
 
       "Return Hint Text When euId is entered" in new LocalSetup {
@@ -974,7 +974,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.getElementById("euId").text() shouldBe "You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK. Check the latest rules prior to your arrival in the UK (opens in a new tab)."
+        doc.getElementById("conditional-identificationType-euId").text() shouldBe "You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK. Check the latest rules prior to your arrival in the UK (opens in a new tab)."
       }
 
       "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {

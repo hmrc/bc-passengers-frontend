@@ -28,6 +28,7 @@
         stripWhitespace: Boolean = false,
         inputType: String = "text",
         isTelephone: Boolean = false,
+        autocomplete: Option[String] = None,
         labelClasses: Option[String] = None
 )(implicit messages: Messages)
 
@@ -41,12 +42,13 @@
     classes = labelClasses.getOrElse("") + (if(isPageHeading) "govuk-label--xl" else "")
   ),
   hint = hint.map(hintHtml => Hint(
-      content = HtmlContent(hintHtml)
+      content = HtmlContent(hintHtml),
   )),
   value = form(name).value,
   errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
   inputType = inputType,
-  inputmode = if(isTelephone) Some("tel") else None
+  inputmode = if(isTelephone) Some("tel") else None,
+  autocomplete = autocomplete
 
 ))
 

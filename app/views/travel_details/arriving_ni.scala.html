@@ -30,7 +30,7 @@
 
     @formHelper(action = routes.ArrivingNIController.postArrivingNIPage()) {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, Some("error"))
 
         @yesNoRadio(form, Some("heading.arriving-ni"), name = "arrivingNI", isPageHeading= true)
 
