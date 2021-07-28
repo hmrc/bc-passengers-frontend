@@ -14,49 +14,47 @@
  * limitations under the License.
  *@
 
-@this()
-@(calculatorResponseDto: CalculatorResponseDto)(implicit messages: Messages)
-
-@import uk.gov.hmrc.play.views.html._
+@import views.ViewUtils._
 @import util._
 
-<h2 class="heading-medium">@messages("label.breakdown_of_tax_and_duty_due")</h2>
+@this(
+    h2: components.h2,
+)
+@(calculatorResponseDto: CalculatorResponseDto)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-<table class="responsive-table">
-    <thead>
-    <tr>
-        <th scope="col" id="item">@messages("label.item")</th>
-        <th class="numeric" scope="col" id="customs">
-            <span >@messages("label.customs")</span>
-        </th>
-        <th class="numeric" scope="col" id="excise">
-            <span >@messages("label.excise_val")</span>
-        </th>
-        <th class="numeric" scope="col" id="vat">
-            <span >@messages("label.vat")</span>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    @calculatorResponseDto.items.map { item =>
-    <tr>
-        <th scope="row">
-            <span class="table-heading" aria-hidden="true">@messages("label.item")</span>
-            @messages(item.metadata.description)
-        </th>
-        <td class="numeric">
-            <span class="table-heading" aria-hidden="true">@messages("label.customs")</span>
-            &pound;@formatMonetaryValue(item.calculation.customs)
-        </td>
-        <td class="numeric">
-            <span class="table-heading" aria-hidden="true">@messages("label.excise_val")</span>
-            &pound;@formatMonetaryValue(item.calculation.excise)
-        </td>
-        <td class="numeric">
-            <span class="table-heading" aria-hidden="true">@messages("label.vat")</span>
-            &pound;@formatMonetaryValue(item.calculation.vat)
-        </td>
-    </tr>
-    }
-    </tbody>
-</table>
+@h2(messages("label.breakdown_of_tax_and_duty_due"))
+
+    <table class="govuk-table responsive-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col" id="item">@messages("label.item")</th>
+            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" scope="col" id="customs">
+                @messages("label.customs")
+            </th>
+            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" scope="col" id="excise">
+                @messages("label.excise_val")
+            </th>
+            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" scope="col" id="vat">
+                @messages("label.vat")
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @calculatorResponseDto.items.map { item =>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell" scope="row">
+                @messages(item.metadata.description)
+            </td>
+            <td class="govuk-table__cell numeric">
+                &pound;@formatMonetaryValue(item.calculation.customs)
+            </td>
+            <td class="govuk-table__cell numeric">
+                &pound;@formatMonetaryValue(item.calculation.excise)
+            </td>
+            <td class="govuk-table__cell numeric">
+                &pound;@formatMonetaryValue(item.calculation.vat)
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>

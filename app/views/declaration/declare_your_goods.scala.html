@@ -14,42 +14,47 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(isAmendment: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@import util._
 
-@import uk.gov.hmrc.play.views.html._
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    formHelper: FormWithCSRF,
+    h1: components.h1,
+    h2: components.h2,
+    p: components.p,
+    button: components.button,
+    warning: components.warning
+)
 
+@(isAmendment: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@main_template(title = if(isAmendment) messages("label.amend_your_goods") else messages("label.declare_your_goods"), bodyClasses = None, backLink = backLink) {
+@govukLayout(pageTitle = Some(if(isAmendment) messages("label.amend_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.declare_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
     @if(isAmendment){
-    <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.amend_your_goods")</h1>} else{
-    <h1 class="heading-xlarge" style="margin-bottom: 15px;">@messages("label.declare_your_goods")</h1>}
+        @h1(messages("label.amend_your_goods"))
+    } else{
+        @h1(messages("label.declare_your_goods"))
+    }
 
-  <p>@messages("text.i_understand_that")</p>
-  <ul class="list-bullet" style="margin-bottom: 15px;">
+  @p(Html(messages("text.i_understand_that")))
+  <ul class="govuk-list govuk-list--bullet" style="margin-bottom: 15px;">
     <li>@messages("text.i_must_pay_duty_")</li>
     <li>@messages("text.these_goods_are_for_my_own_")</li>
     <li>@messages("text.i_will_need_to_show_my_declaration_receipt_")</li>
   </ul>
 
-  <div class="notice">
-    <i class="icon icon-important">
-      <span class="visually-hidden">Warning</span>
-    </i>
-    <strong class="bold-small">
-      @messages("text.you_risk_prosecution_and_imprisonment_")
-    </strong>
-  </div>
+  @warning(Html(messages("text.you_risk_prosecution_and_imprisonment_")))
 
   @if(isAmendment) {
-    <p class="margin-top-30">
-      <a href="@routes.CalculateDeclareController.processAmendment" class="button" role="button">
-        @messages("label.amend_your_goods_and_pay_online")</a>
-    </p>
+    @formHelper(action = routes.CalculateDeclareController.processAmendment()) {
+        @button(messages("label.amend_your_goods"))
+    }
   }else {
     <p class="margin-top-30">
-      <a href="@routes.CalculateDeclareController.enterYourDetails" class="button" role="button">
-        @messages("label.declare_your_goods_and_pay_online")</a>
+        @formHelper(action = routes.CalculateDeclareController.enterYourDetails()) {
+            @button(messages("label.declare_your_goods_and_pay_online"))
+        }
     </p>
   }
 }

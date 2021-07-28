@@ -14,122 +14,107 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template)
-@(itemType: String, headerLabel: String)(implicit request: Request[_], messages: Messages)
-
+@import views.ViewUtils._
 @import util._
 
-@main_template(title = messages(headerLabel)) {
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    h1: components.h1,
+    p: components.p,
+    warning: components.warning,
+    button: components.button,
+    formHelper: FormWithCSRF,
+)
+@(itemType: String, headerLabel: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-    <h1 class="heading-xlarge margin-bottom-20">@messages(headerLabel)</h1>
-    <br>
+@govukLayout(pageTitle = Some(messages(headerLabel)  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
+
+    @h1(messages(headerLabel))
 
     @if(itemType.contains("tobacco")) {
 
-      <p id="table-heading-tobacco">@messages("label.limit_exceed_tobacco")</p>
-        <table>
-            <thead>
-            <tr>
-                <th class="table-60">@messages("label.type_of_tobacco")</th>
-                <th>@messages("label.amount")</th>
+        @p(Html(messages("label.limit_exceed_tobacco")), id=Some("table-heading-tobacco"))
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="table-60 govuk-table__header" >@messages("label.type_of_tobacco")</th>
+                <th class="govuk-table__header">@messages("label.amount")</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>@messages("label.cigarettes")</td>
-                <td>@messages("label.800")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.cigarettes")</td>
+                <td class="govuk-table__cell">@messages("label.800")</td>
             </tr>
-            <tr>
-                <td>@messages("label.cigars")</td>
-                <td>@messages("label.200")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.cigars")</td>
+                <td class="govuk-table__cell">@messages("label.200")</td>
             </tr>
-            <tr>
-                <td>@messages("label.cigarillos")</td>
-                <td>@messages("label.400")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.cigarillos")</td>
+                <td class="govuk-table__cell">@messages("label.400")</td>
             </tr>
-            <tr>
-                <td>@messages("label.loose_tobacco")</td>
-                <td>@messages("label.1_kg")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.loose_tobacco")</td>
+                <td class="govuk-table__cell">@messages("label.1_kg")</td>
             </tr>
-            <tr>
-                <td>@messages("label.tobacco_for_heating")</td>
-                <td>@messages("label.800_sticks")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.tobacco_for_heating")</td>
+                <td class="govuk-table__cell">@messages("label.800_sticks")</td>
             </tr>
             </tbody>
         </table>
-        <br>
 
-        <div class="panel panel-border-wide">
-            <p>@messages("label.must_declare_over_limits_tobacco")</p>
-            <p>@messages("label.bringing_for_personal_use_tobacco")</p>
-            <p>@messages("label.border_force_officer_will_calculate")</p>
+        <div class="govuk-inset-text">
+            @p(Html(messages("label.must_declare_over_limits_tobacco")))
+            @p(Html(messages("label.bringing_for_personal_use_tobacco")))
+            @p(Html(messages("label.border_force_officer_will_calculate")))
         </div>
 
-        <br>
-
-        <div class="notice">
-            <i class="icon icon-important">
-                <span class="visually-hidden">Warning</span>
-            </i>
-            <strong class="bold-small">
-                @messages("text.warning_for_false_declaration_tobacco")
-            </strong>
-        </div>
+    @warning(Html(messages("text.warning_for_false_declaration_tobacco")))
 
     } else if(itemType.contains("alcohol")) {
 
-      <p id="table-heading-alcohol">@messages("label.limit_exceed_alcohol")</p>
-        <table>
-            <thead>
-            <tr>
-                <th class="table-60">@messages("label.type_of_alcohol")</th>
-                <th>@messages("label.amount")</th>
+        @p(Html(messages("label.limit_exceed_alcohol")), id=Some("table-heading-alcohol"))
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="table-60 govuk-table__header">@messages("label.type_of_alcohol")</th>
+                <th class="govuk-table__header">@messages("label.amount")</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>@messages("label.beer")</td>
-                <td>@messages("label.110_litres")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.beer")</td>
+                <td class="govuk-table__cell">@messages("label.110_litres")</td>
             </tr>
-            <tr>
-                <td>@messages("label.wine")</td>
-                <td>@messages("label.90_litres")<br>@messages("label.including_sparkling_wine")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.wine")</td>
+                <td class="govuk-table__cell">@messages("label.90_litres")<br>@messages("label.including_sparkling_wine")</td>
             </tr>
-            <tr>
-                <td>@messages("label.spirits")</td>
-                <td>@messages("label.10_litres")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.spirits")</td>
+                <td class="govuk-table__cell">@messages("label.10_litres")</td>
             </tr>
-            <tr>
-                <td>@messages("label.other_alcoholic_drinks")</td>
-                <td>@messages("label.20_litres")</td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@messages("label.other_alcoholic_drinks")</td>
+                <td class="govuk-table__cell">@messages("label.20_litres")</td>
             </tr>
             </tbody>
         </table>
-        <br>
 
-        <div class="panel panel-border-wide">
-            <p>@messages("label.must_declare_over_limits_alcohol")</p>
-            <p>@messages("label.bringing_for_personal_use_alcohol")</p>
-            <p>@messages("label.border_force_officer_will_calculate")</p>
+        <div class="govuk-inset-text">
+            @p(Html(messages("label.must_declare_over_limits_alcohol")))
+            @p(Html(messages("label.bringing_for_personal_use_alcohol")))
+            @p(Html(messages("label.border_force_officer_will_calculate")))
         </div>
 
-        <br>
-
-        <div class="notice">
-            <i class="icon icon-important">
-                <span class="visually-hidden">Warning</span>
-            </i>
-            <strong class="bold-small">
-                @messages("text.warning_for_false_declaration_alcohol")
-            </strong>
-        </div>
+    @warning(Html(messages("text.warning_for_false_declaration_alcohol")))
     }
 
     <br>
 
-    <p class="margin-top-30">
-        <a href="@routes.SelectProductController.nextStep" class="button" role="button" id="continue-to-add-items">
-            @messages("label.continue_to_add_items")</a>
-    </p>
-
+    @formHelper(action = routes.SelectProductController.nextStep) {
+        @button(messages("label.continue_to_add_items"))
+    }
 }

@@ -14,7 +14,20 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF, appConfig: config.AppConfig, displayItem: views.html.components.display_item)
+@import views.ViewUtils._
+@import util._
+
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  formHelper: FormWithCSRF,
+  displayItem: components.display_item,
+  h1: components.h1,
+  h2: components.h2,
+  p: components.p,
+  button: components.button
+)
+
 @(journeyData: JourneyData,
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
@@ -29,28 +42,27 @@
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@import uk.gov.hmrc.play.views.html._
-@import util._
+@govukLayout(pageTitle = Some(if(isAmendment) messages("label.tell_us_about_the_additional_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.tell_us_about_the_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
-@main_template(title = if(isAmendment) messages("label.tell_us_about_the_additional_goods_") else messages("label.tell_us_about_the_goods_"), backLink = backLink) {
-  @if(isAmendment){
-  <h1 class="heading-xlarge">@messages("label.tell_us_about_the_additional_goods_")</h1>} else{
-  <h1 class="heading-xlarge">@messages("label.tell_us_about_the_goods_")</h1>}
-  <p id="foreign-currency"> @messages("label.about_foreign_currencies") </p>
+  @if(isAmendment) {
+    @h1(messages("label.tell_us_about_the_additional_goods_"))
+  } else {
+    @h1(messages("label.tell_us_about_the_goods_"))
+  }
 
-  <dl class="govuk-check-your-answers cya-questions-short">  </dl>
+  @p(Html(messages("label.about_foreign_currencies")), id=Some("foreign-currency"))
+  <br>
+
 
   <div class="alcohol">
-    <h2 class="heading-medium">@messages("label.alcohol")</h2>
-    @if(alcoholPurchasedItemList.isEmpty && previousAlcoholPurchasedItemList.isEmpty){
-      <p>
-        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
-      </p>
+    @h2(messages("label.alcohol"))
+    @if(alcoholPurchasedItemList.isEmpty && previousAlcoholPurchasedItemList.isEmpty) {
+      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
     } else {
       <div class="add-more">
-        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))" class="add">@messages("label.add_alcohol")</a>
+        <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
       </div>
       @alcoholPurchasedItemList.map { purchasedItem =>
         @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
@@ -58,7 +70,7 @@
         }
       }
       @if(previousAlcoholPurchasedItemList.length > 0){
-        <p class="heading-small previous-alcohol">@messages("label.previously_declared_alcohol")</p>
+        @p(Html(messages("label.previously_declared_alcohol")), classes="govuk-body govuk-!-font-weight-bold previous-alcohol")
         <br>
       }
       @previousAlcoholPurchasedItemList.map { purchasedItem =>
@@ -68,24 +80,23 @@
       }
     }
   </div>
+  <br>
 
   <div class="tobacco">
-    <h2 class="heading-medium">@messages("label.tobacco")</h2>
+    @h2(messages("label.tobacco"))
     @if(tobaccoPurchasedItemList.isEmpty && previousTobaccoPurchasedItemList.isEmpty){
-      <p>
-        <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
-      </p>
+      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
     } else {
-        <div class="add-more">
-          <a href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))" class="add">@messages("label.add_tobacco")</a>
-        </div>
+      <div class="add-more">
+        <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
+      </div>
         @tobaccoPurchasedItemList.map { purchasedItem =>
           @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
             @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "tobacco")
           }
         }
         @if(previousTobaccoPurchasedItemList.length > 0){
-          <p class="heading-small previous-tobacco">@messages("label.previously_declared_tobacco")</p>
+          @p(Html(messages("label.previously_declared_tobacco")), classes="govuk-body govuk-!-font-weight-bold previous-tobacco")
           <br>
         }
         @previousTobaccoPurchasedItemList.map { purchasedItem =>
@@ -95,23 +106,23 @@
       }
     }
   </div>
+  <br>
 
   <div class="other-goods">
-    <h2 class="heading-medium">@messages("label.other_goods")</h2>
+    @h2(messages("label.other_goods"))
     @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
-      <p>
-        <a href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a>      </p>
+      <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a></p>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
       <div class="add-more">
-        <a href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a>
+        <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a></p>
       </div>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")</p>
+        @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
       </div>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">
-        <p>@messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")</p>
+        @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
       </div>
     }
       @otherGoodsPurchasedItemList.map { purchasedItem =>
@@ -120,7 +131,7 @@
         }
       }
       @if(previousOtherGoodsPurchasedItemList.length > 0){
-        <p class="heading-small previous-othergoods">@messages("label.previously_declared_other_goods")</p>
+        @p(Html(messages("label.previously_declared_other_goods")), classes="govuk-body govuk-!-font-weight-bold previous-othergoods")
         <br>
       }
       @previousOtherGoodsPurchasedItemList.map { purchasedItem =>
@@ -129,16 +140,19 @@
       }
     }
   </div>
+  <br>
+
 
   @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
-      <a href="@routes.CalculateDeclareController.irishBorder()" class="button margin-top-30">@messages("label.calculate")</a>
-    }else if(isAmendment){
-      @form(action = routes.CalculateDeclareController.calculate()) {
-        <button id="calculate-btn1" type="submit" class="button margin-top-30">@messages("label.calculate_change_in_tax_and_duties")</button>}
-    }else {
-      @form(action = routes.CalculateDeclareController.calculate()) {
-        <button id="calculate-btn" type="submit" class="button margin-top-30">@messages("label.calculate")</button>
+      <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder()">@messages("label.calculate")</a>
+    } else if(isAmendment) {
+      @formHelper(action = routes.CalculateDeclareController.calculate()) {
+        @button(messages("label.calculate_change_in_tax_and_duties"))
+      }
+    } else {
+      @formHelper(action = routes.CalculateDeclareController.calculate()) {
+        @button(messages("label.calculate"))
       }
     }
   }
