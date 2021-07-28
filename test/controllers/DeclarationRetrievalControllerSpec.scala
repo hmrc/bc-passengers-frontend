@@ -140,8 +140,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
       doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#lastName]").html() shouldBe "Enter your last name"
-      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#lastName-error]").html() shouldBe "Enter your last name"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#referenceNumber-error]").html() shouldBe "Enter your reference number"
       doc.getElementById("lastName-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Enter your last name"
       doc.getElementById("referenceNumber-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Enter your reference number"
 
@@ -164,8 +164,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Add goods to your previous declaration"
       doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#lastName]").html() shouldBe "Last name must be 35 characters or less"
-      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#referenceNumber]").html() shouldBe "Enter your reference number in the correct format"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#lastName-error]").html() shouldBe "Last name must be 35 characters or less"
+      doc.getElementsByClass("govuk-error-summary__body").select("a[href=#referenceNumber-error]").html() shouldBe "Enter your reference number in the correct format"
       doc.getElementById("lastName-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Last name must be 35 characters or less"
       doc.getElementById("referenceNumber-error").parent().getElementsByClass("govuk-error-message").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Enter your reference number in the correct format"
       verify(mockPreviousDeclarationService, times(0)).storePrevDeclaration(any())(any())(any())

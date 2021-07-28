@@ -215,7 +215,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       Option(doc.getElementById("error-summary-title").select("a[href=#euCountryCheck]")).isEmpty shouldBe false
-      Option(doc.select("a[href=#euCountryCheck]").html()).get shouldBe "Select where you are bringing in goods from"
+      Option(doc.select("a[href=#euCountryCheck-error]").html()).get shouldBe "Select where you are bringing in goods from"
       Option(doc.select("h2").hasClass("govuk-error-summary__title")).get shouldBe true
       Option(doc.getElementById("error-summary-title").select("h2").html()).get shouldBe "There is a problem"
     }

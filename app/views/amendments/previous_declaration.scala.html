@@ -30,7 +30,7 @@
 
     @formHelper(action = routes.PreviousDeclarationController.postPreviousDeclarationPage()) {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, Some("error"))
 
         @inputRadio(
             form = form,

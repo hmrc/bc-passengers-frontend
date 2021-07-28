@@ -1706,6 +1706,9 @@ error.browser.title.prefix = Error:
 
 site.govuk = GOV.UK
 
+time.period.am = am
+time.period.pm = pm
+
 # Technical Difficulties error page Messages
 technicalDifficultiesError.title = Sorry, there is a problem with the service - Error
 technicalDifficultiesError.heading = Sorry, there is a problem with the service

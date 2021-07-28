@@ -29,7 +29,8 @@
   hint: String,
   hintText: String,
   list: Seq[(String, String)],
-  jsonData: String)(implicit messages: Messages)
+  jsonData: String,
+  labelClass: Boolean = false)(implicit messages: Messages)
 
 <div class="@govukToClasses("govuk-form-group", if(form(id).hasErrors) "govuk-form-group--error" else "")">
 
@@ -39,7 +40,11 @@
                 @messages(label, headingMessageArgs: _*)
             </label>
         </h1>
-    } else {
+    } else if(labelClass) {
+        <label class="govuk-label govuk-!-font-weight-bold" for=@id>
+            @messages(label, headingMessageArgs: _*)
+        </label>
+    }else {
         <label class="govuk-label" for=@id>
             @messages(label, headingMessageArgs: _*)
         </label>
@@ -71,17 +76,20 @@
         source: customSuggest,
         confirmOnBlur: true,
         onConfirm: function(confirmed) {
+          let newId = "@id".replace( /(:|\.|\[|\]|,|=)/g, "\\$1" )
 
           //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
-          let foundInData = Array.from(document.querySelectorAll("#@id-select > option")).find(e => e.displayName === document.getElementById('@id').value)
-          let element = !!confirmed ? confirmed : foundInData
+          let foundInData = Array.from(document.querySelectorAll("#" + newId+ "-select > option"))
+            .find(e => e.label === document.getElementById('@id').value)
+            let element = !!confirmed ? confirmed : foundInData
 
-          if(!!element) {
-            $('select[name="@id"]').val(element.code);
-          }
-          else if(!element && $('select[name="originCountry"]').val == undefined) {
-            $('select[name="originCountry"]').val('')
-          }
+            if(!!element) {
+              $('select[name="@id"]').val(element.code || element.value);
+            }
+            else {
+              $('select[name="@id"]').val('')
+            }
+
         },
         templates: {
           inputValue: function(result) {

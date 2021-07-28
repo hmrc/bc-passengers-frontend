@@ -1706,6 +1706,9 @@ error.browser.title.prefix = Gwall:
 
 site.govuk = GOV.UK/CYMRAEG
 
+time.period.am = am
+time.period.pm = pm
+
 # Technical Difficulties error page Messages
 technicalDifficultiesError.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth – Gwall
 technicalDifficultiesError.heading = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
