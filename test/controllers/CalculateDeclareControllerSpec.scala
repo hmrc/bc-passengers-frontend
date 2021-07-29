@@ -333,7 +333,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val doc: Document = Jsoup.parse(content)
 
         doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
-        doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
+        doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
       }
     }
 
@@ -351,7 +351,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val doc: Document = Jsoup.parse(content)
 
         doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
-        doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
+        doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
       }
     }
 
@@ -369,7 +369,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val doc: Document = Jsoup.parse(content)
 
         doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
-        doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
+        doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
       }
     }
 
@@ -1207,7 +1207,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
       doc.text() should include("these goods are for my own use or to give away as a gift")
       doc.text() should include ("I must pay duty and tax on these goods if I bring them into the UK")
-      doc.getElementsByClass("button").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/process-amendment"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
     }
   }
 

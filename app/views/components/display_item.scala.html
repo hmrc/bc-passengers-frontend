@@ -14,67 +14,66 @@
  * limitations under the License.
  *@
 
-@this()
-@(purchasedItem: PurchasedItem, description: String, isEU: Boolean, isGbNi: Boolean, isUkResident:Boolean, category: String)(implicit messages: Messages)
-
-@import uk.gov.hmrc.play.views.html._
+@import views.ViewUtils._
 @import util._
 
+@this()
+@(purchasedItem: PurchasedItem, description: String, isEU: Boolean, isGbNi: Boolean, isUkResident:Boolean, category: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 
-    <dl class="govuk-check-your-answers cya-questions-short margin-bottom-15">
-      <div class="product-item">
-        <dt class="cya-question">@messages("label.item")</dt>
-        <dd class="cya-answer">@description</dd>
+    <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+      <div class="govuk-summary-list__row product-item">
+        <dt class="govuk-summary-list__key">@messages("label.item")</dt>
+        <dd class="govuk-summary-list__value">@description</dd>
       </div>
-      <div class="product-country">
-        <dt class="cya-question">@messages("label.purchased_in")</dt>
-        <dd class="cya-answer">@messages(purchasedItem.countryName.mkString)</dd>
+      <div class="govuk-summary-list__row product-country">
+        <dt class="govuk-summary-list__key">@messages("label.purchased_in")</dt>
+        <dd class="govuk-summary-list__value">@messages(purchasedItem.countryName.mkString)</dd>
       </div>
       @if(isEU && purchasedItem.originCountry.isDefined) {
         @if(category.contains("alcohol") || category.contains("tobacco")){
-          <div class="producedin-country">
-            <dt class="cya-question">@messages("label.produced_in")</dt>
-            <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
+          <div class="govuk-summary-list__row producedin-country">
+            <dt class="govuk-summary-list__key">@messages("label.produced_in")</dt>
+            <dd class="govuk-summary-list__value">@messages(purchasedItem.originCountry.mkString)</dd>
           </div>
         } else {
-            <div class="madein-country">
-                <dt class="cya-question">@messages("label.made_in")</dt>
-                <dd class="cya-answer">@messages(purchasedItem.originCountry.mkString)</dd>
+            <div class="govuk-summary-list__row madein-country">
+                <dt class="govuk-summary-list__key">@messages("label.made_in")</dt>
+                <dd class="govuk-summary-list__value">@messages(purchasedItem.originCountry.mkString)</dd>
             </div>
         }
       }
       @if(purchasedItem.hasEvidence.isDefined) {
-          <div class="has_got_evidence">
-            <dt class="cya-question">@messages("label.evidence_of_origin")</dt>
-            <dd class="cya-answer">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
+          <div class="govuk-summary-list__row has_got_evidence">
+            <dt class="govuk-summary-list__key">@messages("label.evidence_of_origin")</dt>
+            <dd class="govuk-summary-list__value">@purchasedItem.purchasedProductInstance.hasEvidence.map(formatYesNo)</dd>
           </div>
       }
-      <div class="product-price">
-        <dt class="cya-question">@messages("label.price")</dt>
-        <dd class="cya-answer">
+      <div class="govuk-summary-list__row product-price">
+        <dt class="govuk-summary-list__key">@messages("label.price")</dt>
+        <dd class="govuk-summary-list__value">
           @purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)
         </dd>
       </div>
       @if(isGbNi) {
-          <div class="vat-paid">
-            <dt class="cya-question">@messages("label.vat_paid")</dt>
-            <dd class="cya-answer">
+          <div class="govuk-summary-list__row vat-paid">
+            <dt class="govuk-summary-list__key">@messages("label.vat_paid")</dt>
+            <dd class="govuk-summary-list__value">
               @purchasedItem.purchasedProductInstance.isVatPaid.map(formatYesNo)
             </dd>
           </div>
           @if(category.contains("alcohol") || category.contains("tobacco")){
-              <div class="excise-paid">
-                <dt class="cya-question">@messages("label.excise_paid")</dt>
-                <dd class="cya-answer">
+              <div class="govuk-summary-list__row excise-paid">
+                <dt class="govuk-summary-list__key">@messages("label.excise_paid")</dt>
+                <dd class="govuk-summary-list__value">
                   @purchasedItem.purchasedProductInstance.isExcisePaid.map(formatYesNo)
                 </dd>
               </div>
           }
           @if(!isUkResident && category.contains("otherGoods")) {
-              <div class="tax-exempt">
-                <dt class="cya-question">@messages("label.tax_exempt")</dt>
-                <dd class="cya-answer">
+              <div class="govuk-summary-list__row tax-exempt">
+                <dt class="govuk-summary-list__key">@messages("label.tax_exempt")</dt>
+                <dd class="govuk-summary-list__value">
                     @purchasedItem.purchasedProductInstance.isUccRelief.map(formatYesNo)
                 </dd>
               </div>
@@ -88,15 +87,19 @@
     @if(purchasedItem.purchasedProductInstance.isEditable.contains(true)) {
         <div class="margin-bottom-20 edit-link">
             @if(category.contains("alcohol")){
-                <a href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+                <p class="govuk-body"><a class="govuk-link" href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item")
+                <span class="govuk-visually-hidden">@description</span></a></p>
             } else if(category.contains("otherGoods")) {
-                <a href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+                <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item")
+                <span class="govuk-visually-hidden">@description</span></a></p>
             } else if(category.contains("tobacco")) {
-                <a href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item") <span class="visually-hidden">@description</span></a>
+                <p class="govuk-body"><a class="govuk-link" href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item")
+                <span class="govuk-visually-hidden">@description</span></a></p>
             }
         </div>
         <div class="margin-bottom-50">
-          <a href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item") <span class="visually-hidden">@description</span></a>
+            <p class="govuk-body"><a class="govuk-link" href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item")
+            <span class="govuk-visually-hidden">@description</span></a></p>
         </div>
     }
 

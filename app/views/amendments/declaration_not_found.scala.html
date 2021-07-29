@@ -14,16 +14,23 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template)
-@(backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
 
-@main_template(title = messages("heading.declaration_not_found"), bodyClasses = None, backLink = backLink) {
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    h1: components.h1,
+    p: components.p
+)
 
-    <h1 class="heading-xlarge">@messages("heading.declaration_not_found")</h1>
+@(backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-    <p>@messages("text.may_be_because")</p>
+@govukLayout(pageTitle = Some(messages("heading.declaration_not_found") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
-    <ul class="list list-bullet">
+    @h1(messages("heading.declaration_not_found"))
+
+    @p(Html(messages("text.may_be_because")))
+
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("label.no_existing_declaration")</li>
         <li>@messages("label.payment_issue")</li>
         <li>@messages("label.already_passed_custom")</li>

@@ -66,7 +66,6 @@ class LimitExceedControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare more than 20 litres of other alcoholic drinks"
       doc.getElementById("table-heading-alcohol").text() shouldBe "You cannot use this service to declare more than the following amounts of alcohol:"
-      doc.getElementById("continue-to-add-items").attr("href") shouldBe "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step"
       content should include ("You must declare alcohol over these limits in person to Border Force when you arrive in the UK.")
       content should include ("Type of alcohol")
       content should include ("This is because Border Force need to be sure you are bringing the alcohol in for personal use only.")

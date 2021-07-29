@@ -102,7 +102,7 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text() shouldBe "Tell us about your goods"
-    doc.getElementsByClass("button margin-top-30").text() shouldBe "Calculate taxes and duties"
+    doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
   }
 
   "respond with 200, display the page if all travel details exist & display button's text for Amendment:Calculate change in taxes and duties" in new LocalSetup {
@@ -131,7 +131,7 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text() shouldBe "Tell us about your additional goods"
-    doc.getElementsByClass("button margin-top-30").text() shouldBe "Calculate change in taxes and duties"}
+    doc.getElementsByClass("govuk-button").text() shouldBe "Calculate change in taxes and duties"}
 
     "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {
 
@@ -174,8 +174,8 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £3.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
     }
   }
 
@@ -203,10 +203,10 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £98,000.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
-      content should include ("When you arrive in the UK, go to the red &#x27;goods to declare&#x27; channel or the red point phone, or speak to Border Force to declare these goods.")
+      content should include ("When you arrive in the UK, go to the red 'goods to declare' channel or the red point phone, or speak to Border Force to declare these goods.")
 
     }
     "redirect to the over ninety seven thousand pounds page if the amendment total to declare is over ninety seven thousand pounds" in new LocalSetup {
@@ -237,10 +237,10 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £98,000.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You cannot make payments for tax and duty above £97,000 using this service.")
-      content should include ("When you arrive in the UK, go to the red &#x27;goods to declare&#x27; channel or the red point phone, or speak to Border Force to declare these additional goods.")
+      content should include ("When you arrive in the UK, go to the red 'goods to declare' channel or the red point phone, or speak to Border Force to declare these additional goods.")
 
     }
 
@@ -332,8 +332,8 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You still need to declare your additional goods. You will not be charged anything when you amend your declaration.")
 
     }
@@ -368,9 +368,9 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
-      doc.getElementsByClass("button").text() shouldBe "Amend your declaration"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You still need to declare your additional goods. You will not be charged anything when you amend your declaration.")
 
     }
@@ -403,10 +403,10 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £300.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("You can amend your declaration from 5 days before your scheduled time of arrival in the UK.")
-      doc.getElementsByClass("button").text() shouldBe "Amend your declaration and pay online"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration and pay online"
     }
 
     "redirect to the declaration page if the amendment total is within free allowance" in new LocalSetup {
@@ -437,8 +437,8 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due What you need to do next"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due What you need to do next"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content should include ("All the items you added are included within your personal allowances")
     }
 
@@ -470,8 +470,8 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text shouldBe "Additional tax due on these goods £0.00"
-      doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
-      doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
+      doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
     }
 
   }
@@ -500,7 +500,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      content should not include "We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\" target=\"_blank\">HMRC’s exchange rates"
+      content should not include "We use <a href=\"https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2019-monthly\">HMRC’s exchange rates"
       doc.title shouldBe  "Tax due on these goods - Check tax on goods you bring into the UK - GOV.UK"
     }
 
@@ -526,7 +526,7 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document = Jsoup.parse(content)
 
-      content should include ("<a href = \"https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat\" target=\"_blank\">HMRC’s exchange rates")
+      content should include ("href=\"https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat\"")
       doc.title shouldBe  "Tax due on these goods - Check tax on goods you bring into the UK - GOV.UK"
     }
   }
@@ -556,8 +556,8 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
-    doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due What you need to do next"
-    doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+    doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due What you need to do next"
+    doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
   }
 
   "redirect to declare your goods page if the total tax to pay is 0 and items were over free allowance in GB-NI journey and has zero tax liability" in new LocalSetup {
@@ -584,8 +584,8 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
-    doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
-    doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+    doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
+    doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
   }
 
   "redirect to the under nine pound page if the total tax to pay was 0 but items were not within the free allowance (0 rated)" in new LocalSetup {
@@ -611,8 +611,8 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £0.00"
-    doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due What you need to do next"
-    doc.getElementsByClass("table-heading").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+    doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due What you need to do next"
+    doc.getElementsByClass("govuk-table__header").text() shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
   }
 
 
@@ -640,7 +640,7 @@ class DashboardControllerSpec extends BaseSpec {
     val doc: Document = Jsoup.parse(content)
 
     doc.getElementsByTag("h1").text shouldBe "Tax due on these goods £300.00"
-    doc.getElementsByClass("heading-medium").text() shouldBe "Breakdown of tax and duty due"
+    doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
   }
 
   "display the vat,excise and tax exempt flags as No against items for GBNI Journey" in new LocalSetup {
@@ -664,11 +664,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("vat-paid").text() shouldBe "VAT paid No"
     tobaccoItem.getElementsByClass("vat-paid").text() shouldBe "VAT paid No"
@@ -700,11 +700,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
     tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
@@ -737,11 +737,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
     tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
@@ -773,11 +773,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
     tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
@@ -809,11 +809,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
     tobaccoItem.getElementsByClass("product-country").text() shouldBe "Purchased in France"
@@ -845,11 +845,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("has_got_evidence").text() shouldBe "Evidence of origin Yes"
     tobaccoItem.getElementsByClass("has_got_evidence").text() shouldBe "Evidence of origin Yes"
@@ -878,11 +878,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("has_got_evidence").text() shouldBe ""
     tobaccoItem.getElementsByClass("has_got_evidence").text() shouldBe ""
@@ -912,11 +912,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("vat-paid").text() shouldBe "VAT paid Yes"
     tobaccoItem.getElementsByClass("vat-paid").text() shouldBe "VAT paid Yes"
@@ -948,11 +948,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("vat-paid").text() shouldBe "VAT paid"
     tobaccoItem.getElementsByClass("vat-paid").text() shouldBe "VAT paid"
@@ -984,11 +984,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val alcoholItem: Element = doc.getElementsByClass("alcohol").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val tobaccoItem: Element = doc.getElementsByClass("tobacco").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItem.getElementsByClass("vat-paid").isEmpty shouldBe true
     tobaccoItem.getElementsByClass("vat-paid").isEmpty shouldBe true
@@ -1017,7 +1017,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     val doc: Document = Jsoup.parse(content)
     val otherItem: Element = doc.getElementsByClass("other-goods").get(0)
-      .getElementsByClass("govuk-check-your-answers").get(0)
+      .getElementsByClass("hmrc-add-to-a-list").get(0)
 
 
     otherItem.getElementsByClass("vat-paid").isEmpty shouldBe false
@@ -1093,9 +1093,9 @@ class DashboardControllerSpec extends BaseSpec {
     tobaccoItem.getElementsByClass("edit-link").isEmpty shouldBe true
     otherItem.getElementsByClass("edit-link").isEmpty shouldBe true
 
-    val alcoholItemCheck: Element = alcoholItem.getElementsByClass("govuk-check-your-answers").get(0)
-    val tobaccoItemCheck: Element = tobaccoItem.getElementsByClass("govuk-check-your-answers").get(0)
-    val otherItemCheck: Element = otherItem.getElementsByClass("govuk-check-your-answers").get(0)
+    val alcoholItemCheck: Element = alcoholItem.getElementsByClass("hmrc-add-to-a-list").get(0)
+    val tobaccoItemCheck: Element = tobaccoItem.getElementsByClass("hmrc-add-to-a-list").get(0)
+    val otherItemCheck: Element = otherItem.getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItemCheck.getElementsByClass("vat-paid").isEmpty shouldBe false
     tobaccoItemCheck.getElementsByClass("vat-paid").isEmpty shouldBe false
@@ -1146,9 +1146,9 @@ class DashboardControllerSpec extends BaseSpec {
     tobaccoItem.getElementsByClass("edit-link").isEmpty shouldBe true
     otherItem.getElementsByClass("edit-link").isEmpty shouldBe true
 
-    val alcoholItemCheck: Element = alcoholItem.getElementsByClass("govuk-check-your-answers").get(0)
-    val tobaccoItemCheck: Element = tobaccoItem.getElementsByClass("govuk-check-your-answers").get(0)
-    val otherItemCheck: Element = otherItem.getElementsByClass("govuk-check-your-answers").get(0)
+    val alcoholItemCheck: Element = alcoholItem.getElementsByClass("hmrc-add-to-a-list").get(0)
+    val tobaccoItemCheck: Element = tobaccoItem.getElementsByClass("hmrc-add-to-a-list").get(0)
+    val otherItemCheck: Element = otherItem.getElementsByClass("hmrc-add-to-a-list").get(0)
 
     alcoholItemCheck.getElementsByClass("producedin-country").isEmpty shouldBe false
     tobaccoItemCheck.getElementsByClass("producedin-country").isEmpty shouldBe false
