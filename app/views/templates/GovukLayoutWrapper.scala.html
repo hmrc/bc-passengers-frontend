@@ -39,7 +39,6 @@
     @inlineLinkElem
     <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
     <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
-    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/passengers.css")" >
 
     @if(timeout) {
         @hmrcTimeoutDialog(TimeoutDialog(
@@ -63,7 +62,6 @@
     <script>window.HMRCFrontend.initAll();</script>
 
     <script src='@routes.Assets.versioned("javascripts/application.js")'></script>
-    <script src='@routes.Assets.versioned("javascripts/show-hide-content.js")'></script>
 
     @inlineScript
 }
@@ -104,6 +102,12 @@
 @govukLayout(
     pageTitle = pageTitle,
     headBlock = Some(head),
+    headerBlock = Some(header(Header(
+        homepageUrl = appConfig.govUK,
+        serviceName = Some(messages("service.name")),
+        serviceUrl = controllers.routes.TravelDetailsController.newSession().url,
+        language = if (messages.lang.code == "cy") Cy else En
+    ))),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(footer()),
     bodyEndBlock = None,

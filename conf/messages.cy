@@ -764,6 +764,10 @@ time.fields.hour=Awr
 time.fields.minute=Munud
 time.fields.am-pm=am neu pm
 
+date.day = Diwrnod
+date.month = Mis
+date.year = Blwyddyn
+
 error.required.first_name=Nodwch eich enw cyntaf
 head.error.required.first_name=Nodwch eich enw cyntaf
 error.max-length.first_name=Mae’n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai

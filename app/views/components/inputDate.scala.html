@@ -44,7 +44,7 @@
                     || form.errors.exists(_.key.isEmpty)
                     || form.errors.exists(_.args.contains("day")))" govuk-input--error" else ""}",
             name = s"$id.day",
-            label = Some(messages("date.fields.day")),
+            label = Some(messages("date.day")),
             value = form(s"$id.day").value
         ),
         InputItem(
@@ -54,7 +54,7 @@
                     || form.errors.exists(_.key.isEmpty)
                     || form.errors.exists(_.args.contains("month"))) " govuk-input--error" else ""}",
             name = s"$id.month",
-            label = Some(messages("date.fields.month")),
+            label = Some(messages("date.month")),
             value = form(s"$id.month").value
         ),
         InputItem(
@@ -64,7 +64,7 @@
                     || form.errors.exists(_.key.isEmpty)
                     || form.errors.exists(_.args.contains("year"))) " govuk-input--error" else ""}",
             name = s"$id.year",
-            label = Some(messages("date.fields.year")),
+            label = Some(messages("date.year")),
             value = form(s"$id.year").value
         )
     ),

@@ -29,6 +29,7 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: Run
 
   private val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = loadConfig("appName")
+  lazy val govUK: String = servicesConfig.getString("urls.govUK")
 
   lazy val reportAProblemPartialUrl: String = runMode.envPath(s"contact/problem_reports_ajax?service=$contactFormServiceIdentifier")(other = contactHost)
   lazy val reportAProblemNonJSUrl: String = runMode.envPath(s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier")(other = contactHost)

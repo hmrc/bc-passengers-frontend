@@ -14,40 +14,24 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(claimedVatResForm: Form[ClaimedVatResDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@this( govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    formHelper: FormWithCSRF,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button
+)
+@(form: Form[ClaimedVatResDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@govukLayout(pageTitle = Some(messages("heading.did_you_claim_tax_back_on_")), backLink = backLink) {
 
-@main_template(title = prefixErrorMessage(messages("heading.did_you_claim_tax_back_on_"), claimedVatResForm.hasErrors), backLink = backLink) {
+    @formHelper(action = routes.TravelDetailsController.didYouClaimTaxBackPost()){
 
-    @views.html.tags.errors(claimedVatResForm)
+        @errorSummary(form.errors, Some("error"))
 
+        @yesNoRadio(form, Some("heading.did_you_claim_tax_back_on_"), name = "claimedVatRes", isPageHeading= true)
 
-    @form(action = routes.TravelDetailsController.didYouClaimTaxBackPost()){
-
-        <fieldset>
-            <legend>
-                <h1 class="heading-xlarge">@messages("heading.did_you_claim_tax_back_on_")</h1>
-            </legend>
-
-            <div class="panel panel-border-wide" id="panel">
-                <p>@messages("label.select_yes_if_the_tax_was_refunded_")</p>
-            </div>
-
-            @components.input_radio_group(
-                claimedVatResForm("claimedVatRes"),
-                Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-                '_labelClass -> "block-label inputLabelBeforeError",
-                '_inline -> true
-            )
-
-            <div class="form-group">
-                <button class="button" type="submit">@messages("label.continue")</button>
-            </div>
-
-        </fieldset>
+        @button("label.continue")
 
     }
 
