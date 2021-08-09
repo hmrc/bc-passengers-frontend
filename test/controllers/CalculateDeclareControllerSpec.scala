@@ -1245,8 +1245,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.select("#irishBorder-true").hasAttr("checked") shouldBe true
-        doc.select("#irishBorder-false").hasAttr("checked") shouldBe false
+        doc.select("#value-yes").hasAttr("checked") shouldBe true
+        doc.select("#value-no").hasAttr("checked") shouldBe false
 
         verify(injected[Cache], times(1)).fetch(any())
       }
@@ -1264,8 +1264,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.select("#irishBorder-false").hasAttr("checked") shouldBe true
-        doc.select("#irishBorder-true").hasAttr("checked") shouldBe false
+        doc.select("#value-no").hasAttr("checked") shouldBe true
+        doc.select("#value-yes").hasAttr("checked") shouldBe false
 
         verify(injected[Cache], times(1)).fetch(any())
       }
@@ -1314,10 +1314,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        Option(doc.getElementById("errors").select("a[href=#irishBorder]")).isEmpty shouldBe false
-        Option(doc.getElementById("errors").select("a[href=#irishBorder]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
-        Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-        Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+        Option(doc.select("a[href=#irishBorder-error]")).isEmpty shouldBe false
+        Option(doc.select("a[href=#irishBorder-error]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+        Option( doc.select("#error-summary-title").text()).get shouldBe "There is a problem"
 
       }
 
@@ -1332,9 +1331,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
-
-      doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=irishBorder]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+        doc.getElementById("irishBorder-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are entering Northern Ireland from Ireland"
     }
 
   }

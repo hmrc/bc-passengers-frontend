@@ -138,8 +138,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("#claimedVatRes-true").hasAttr("checked") shouldBe true
-      doc.select("#claimedVatRes-false").hasAttr("checked") shouldBe false
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
+      doc.select("#value-no").hasAttr("checked") shouldBe false
 
       content should include ("Did you claim tax back on any goods you bought in the EU?")
 
@@ -172,10 +172,9 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#claimedVatRes]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#claimedVatRes]").html()).get shouldBe "Select if you claimed tax back on any goods you bought in the EU"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+      Option(doc.select("a[href=#claimedVatRes-error]")).isEmpty shouldBe false
+      Option(doc.select("a[href=#claimedVatRes-error]").html()).get shouldBe "Select if you claimed tax back on any goods you bought in the EU"
+      Option(doc.select("#error-summary-title").text()).get shouldBe "There is a problem"
     }
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
@@ -189,8 +188,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("input[name=claimedVatRes]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=claimedVatRes]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "Select if you claimed tax back on any goods you bought in the EU"
+      doc.getElementById("claimedVatRes-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select if you claimed tax back on any goods you bought in the EU"
     }
   }
 
@@ -226,8 +224,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("#isBringingDutyFree-true").hasAttr("checked") shouldBe true
-      doc.select("#isBringingDutyFree-false").hasAttr("checked") shouldBe false
+      doc.select("#value-yes").hasAttr("checked") shouldBe true
+      doc.select("#value-no").hasAttr("checked") shouldBe false
 
       content should include ("Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?")
 
@@ -274,10 +272,9 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      Option(doc.getElementById("errors").select("a[href=#isBringingDutyFree]")).isEmpty shouldBe false
-      Option(doc.getElementById("errors").select("a[href=#isBringingDutyFree]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
-      Option(doc.getElementById("errors").select("h2").hasClass("error-summary-heading")).get shouldBe true
-      Option(doc.getElementById("errors").select("h2").html()).get shouldBe "There is a problem"
+      Option(doc.select("a[href=#isBringingDutyFree-error]")).isEmpty shouldBe false
+      Option(doc.select("a[href=#isBringingDutyFree-error]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      Option(doc.select("#error-summary-title").text()).get shouldBe "There is a problem"
     }
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
@@ -291,8 +288,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=isBringingDutyFree]").parents.find(_.tagName=="fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      doc.getElementById("isBringingDutyFree-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
     }
   }
 
@@ -307,7 +303,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.title() shouldBe "You may need to declare goods brought in from EU countries - Check tax on goods you bring into the UK - GOV.UK"
+      doc.title() shouldBe "You may need to declare goods brought in from EU countries"
       status(response) shouldBe OK
     }
   }
@@ -325,8 +321,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
+      doc.getElementById("bringingOverAllowance-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
     }
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {
@@ -361,7 +356,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.title() shouldBe "You may need to declare all your goods - Check tax on goods you bring into the UK - GOV.UK"
+      doc.title() shouldBe "You may need to declare all your goods"
       status(response) shouldBe OK
     }
   }
@@ -379,8 +374,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document = Jsoup.parse(content)
 
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").isEmpty shouldBe false
-      doc.select("input[name=bringingOverAllowance]").parents.find(_.tagName == "fieldset").get.select(".error-message").html() shouldBe "<span class=\"visually-hidden\">Error: </span> Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
+      doc.getElementById("bringingOverAllowance-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are bringing in goods over your allowances, or you are unsure or undecided"
     }
 
     "redirect to the no need to use service page if they are not bringing in goods over their allowance" in new LocalSetup {

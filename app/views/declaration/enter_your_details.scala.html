@@ -136,7 +136,7 @@
 
         <div class="govuk-form-group @{if(form("emailAddress").hasErrors) "govuk-form-group--error" else "" }" id="emailAddress">
             @form.errors.filter(_.key == "emailAddress").map { error =>
-                <span class="govuk-error-message" id="email-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+                <span class="govuk-error-message" id="emailAddress-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
             }
             @inputText(
                 form,

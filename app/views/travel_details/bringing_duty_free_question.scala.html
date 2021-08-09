@@ -14,41 +14,25 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(isBringingDutyFreeForm: Form[BringingDutyFreeDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    formHelper: FormWithCSRF,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button,
+)
+@(form: Form[BringingDutyFreeDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@govukLayout(pageTitle = Some(messages("heading.are_you_bringing_in_duty_free_")), backLink = backLink) {
 
-@main_template(title = prefixErrorMessage(messages("heading.are_you_bringing_in_duty_free_"), isBringingDutyFreeForm.hasErrors), backLink = backLink) {
+    @formHelper(action = routes.TravelDetailsController.dutyFreePost()){
 
-    @views.html.tags.errors(isBringingDutyFreeForm)
+        @errorSummary(form.errors, Some("error"))
 
-    @form(action = routes.TravelDetailsController.dutyFreePost()){
+        @yesNoRadio(form, Some("heading.are_you_bringing_in_duty_free_"), name = "isBringingDutyFree", isPageHeading= true)
 
-        <fieldset>
-            <legend>
-                <h1 class="heading-xlarge">@messages("heading.are_you_bringing_in_duty_free_")</h1>
-            </legend>
-
-            <div class="panel panel-border-wide" id="panel">
-                <p>@messages("label.select_yes_any_any_alcohol_or_tobacco_")</p>
-            </div>
-
-            @components.input_radio_group(
-                isBringingDutyFreeForm("isBringingDutyFree"),
-                Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-                '_labelClass -> "block-label inputLabelBeforeError",
-                '_inline -> true,
-                '_error_id -> "isBringingDutyFree-error-message",
-                '_errorPrefix -> messages("label.error")
-            )
-
-            <div class="form-group">
-                <button class="button" type="submit">@messages("label.continue")</button>
-            </div>
-
-        </fieldset>
+        @button("label.continue")
 
     }
 

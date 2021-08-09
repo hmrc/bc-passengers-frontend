@@ -220,6 +220,10 @@ class CalculateDeclareController @Inject()(
     )
   }
 
+  val cannotUseService: Action[AnyContent] = dashboardAction { implicit context =>
+    Future.successful(Ok(purchase_price_out_of_bounds()))
+  }
+
   def calculate: Action[AnyContent] = dashboardAction { implicit context =>
       doCalculateAction(context.getJourneyData)
   }
@@ -243,7 +247,7 @@ class CalculateDeclareController @Inject()(
     case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
 
       Future.successful {
-        BadRequest(purchase_price_out_of_bounds())
+        Redirect(routes.CalculateDeclareController.cannotUseService())
       }
 
     case _ =>

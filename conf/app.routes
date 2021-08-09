@@ -54,6 +54,8 @@ POST       /goods-brought-into-great-britain-iom                                
 
 GET        /no-need-to-use-service                                                     controllers.TravelDetailsController.noNeedToUseService
 
+GET        /cannot-use-service                                                         controllers.CalculateDeclareController.cannotUseService
+
 GET        /private-travel                                                             controllers.TravelDetailsController.privateTravel
 POST       /private-travel                                                             controllers.TravelDetailsController.privateTravelPost
 

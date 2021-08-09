@@ -14,36 +14,24 @@
  * limitations under the License.
  *@
 
-@this(main_template: views.html.main_template, form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
-@(irishBorderForm: Form[IrishBorderDto], backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@import views.ViewUtils._
+@this( govukLayout: templates.GovukLayoutWrapper,
+    errorSummary: components.errorSummary,
+    formHelper: FormWithCSRF,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button
+)
+@(form: Form[IrishBorderDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@import uk.gov.hmrc.play.views.html._
-@import util.prefixErrorMessage
+@govukLayout(pageTitle = Some(messages("label.are_entering_northern_ireland_")), backLink = backLink) {
 
-@main_template(title = prefixErrorMessage(messages("label.are_entering_northern_ireland_"), irishBorderForm.hasErrors), backLink = backLink) {
+  @formHelper(action = routes.CalculateDeclareController.irishBorderPost()) {
 
-  @views.html.tags.errors(irishBorderForm)
+    @errorSummary(form.errors, Some("error"))
 
+    @yesNoRadio(form, Some("label.are_entering_northern_ireland_"), name = "irishBorder", isPageHeading= true)
 
-  @form(action = routes.CalculateDeclareController.irishBorderPost()) {
-
-    <fieldset>
-      <legend>
-          <h1 class="heading-xlarge">@messages("label.are_entering_northern_ireland_")</h1>
-      </legend>
-
-      @components.input_radio_group(
-        irishBorderForm("irishBorder"),
-        Seq("true" -> Messages("label.yes"), "false" -> Messages("label.no")),
-        '_labelClass -> "block-label inputLabelBeforeError",
-        '_inline -> true
-      )
-
-    </fieldset>
-
-    <div class="form-group">
-      <button class="button" type="submit">@messages("label.continue")</button>
-    </div>
+    @button("label.continue")
 
   }
 

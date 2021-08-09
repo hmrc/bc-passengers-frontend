@@ -764,6 +764,10 @@ time.fields.hour = Hour
 time.fields.minute = Minute
 time.fields.am-pm = am or pm
 
+date.day = Day
+date.month = Month
+date.year = Year
+
 error.required.first_name = Enter your first name
 head.error.required.first_name = Enter your first name
 error.max-length.first_name = First name must be 35 characters or less
