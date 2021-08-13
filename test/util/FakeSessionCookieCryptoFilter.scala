@@ -19,7 +19,7 @@ package util
 import akka.stream.Materializer
 import javax.inject.Inject
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 
 import scala.concurrent.{ExecutionContext, Future}
 

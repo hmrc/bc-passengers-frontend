@@ -24,6 +24,7 @@ import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
+import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -207,7 +208,7 @@ class PayApiServiceSpec extends BaseSpec {
 
     "return PayApiServiceFailureResponse when client returns 400" in new LocalSetup {
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
+      override lazy val httpResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, "")
 
       val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceFailureResponse
@@ -216,7 +217,7 @@ class PayApiServiceSpec extends BaseSpec {
 
     "return PayApiServiceFailureResponse when client returns 500" in new LocalSetup {
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(BAD_REQUEST)
+      override lazy val httpResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, "")
 
       val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceFailureResponse
@@ -225,9 +226,7 @@ class PayApiServiceSpec extends BaseSpec {
 
     "return a PayApiServiceSuccessResponse with a payment url when http client returns 201" in new LocalSetup {
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
-        Json.obj("nextUrl" -> "https://example.com")
-      ))
+      override lazy val httpResponse: HttpResponse = HttpResponse(Status.CREATED,json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
@@ -238,9 +237,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       val uiWithBstArrival: UserInformation = userInformation.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "LHR", dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
-        Json.obj("nextUrl" -> "https://example.com")
-      ))
+      override lazy val httpResponse: HttpResponse = HttpResponse(Status.CREATED,json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val r: PayApiServiceResponse = await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, false, None))
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
@@ -251,9 +248,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       val uiWithBstArrival: UserInformation = userInformation.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "LHR", dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
-        Json.obj("nextUrl" -> "https://example.com")
-      ))
+      override lazy val httpResponse: HttpResponse = HttpResponse(Status.CREATED,json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val expectedJsonForAmendment = exampleJsonForBstArrival.as[JsObject].deepMerge(
         Json.obj("backUrl"-> "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods", "amountPaidPreviously"-> "100.99", "totalPaidNow"->"97000.00"))
@@ -267,9 +262,7 @@ class PayApiServiceSpec extends BaseSpec {
 
       val uiWithBstArrival: UserInformation = userInformation.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "LHR", dateOfArrival = LocalDate.parse("2018-7-12"), timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))
 
-      override lazy val httpResponse: HttpResponse = HttpResponse(CREATED, Some(
-        Json.obj("nextUrl" -> "https://example.com")
-      ))
+      override lazy val httpResponse: HttpResponse = HttpResponse(Status.CREATED,json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val expectedJsonForAmendment = exampleJsonForBstArrival.as[JsObject].deepMerge(
         Json.obj("backUrl"-> "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/pending-payment", "amountPaidPreviously"-> "100.99", "totalPaidNow"->"97000.00"))

@@ -33,7 +33,7 @@ import play.api.test.Helpers.{status, route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.alcohol.alcohol_input
 import views.html.tobacco._

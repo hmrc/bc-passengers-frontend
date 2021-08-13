@@ -31,7 +31,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.collection.JavaConversions._

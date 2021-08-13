@@ -24,15 +24,17 @@ import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class JourneyEnforcer {
+  private val logger = Logger(this.getClass)
+
   def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {
-    Logger.debug(logMessage)
+    logger.debug(logMessage)
     Future.successful(Redirect(redirectLocation))
   }
 
@@ -65,7 +67,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder)
 
         request.session.get(SessionKeys.sessionId) match {
           case Some(s) =>
-            val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, Some(request.session), Some(request))
+            val headerCarrier = HeaderCarrierConverter.fromRequestAndSession(request,request.session)
             cache.fetch(headerCarrier) flatMap { journeyData =>
               block(LocalContext(request, s, journeyData))
             }

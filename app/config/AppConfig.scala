@@ -20,19 +20,16 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject() (val runModeConfiguration: Configuration, runMode: RunMode, servicesConfig: ServicesConfig) {
+class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConfig: ServicesConfig) {
 
   private def loadConfig(key: String) = runModeConfiguration.get[String](key)
 
   private val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = loadConfig("appName")
   lazy val govUK: String = servicesConfig.getString("urls.govUK")
-
-  lazy val reportAProblemPartialUrl: String = runMode.envPath(s"contact/problem_reports_ajax?service=$contactFormServiceIdentifier")(other = contactHost)
-  lazy val reportAProblemNonJSUrl: String = runMode.envPath(s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier")(other = contactHost)
 
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
   lazy val declareGoodsUrl: String = servicesConfig.getString("external.url")

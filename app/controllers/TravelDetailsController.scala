@@ -29,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -76,6 +76,8 @@ class TravelDetailsController @Inject() (
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
+
+  private val logger = Logger(this.getClass)
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
 
@@ -354,7 +356,7 @@ class TravelDetailsController @Inject() (
     cache.updateUpdatedAtTimestamp.map(_ =>
       Ok("Ok")
     ).recover{
-      case e => Logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
+      case e => logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
         InternalServerError(e.getMessage)
     }
   }

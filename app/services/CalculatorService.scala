@@ -62,6 +62,8 @@ class CalculatorService @Inject() (
   lazy val currencyConversionBaseUrl: String = servicesConfig.baseUrl("currency-conversion")
   lazy val passengersDutyCalculatorBaseUrl: String = servicesConfig.baseUrl("passengers-duty-calculator")
 
+  private val logger = Logger(this.getClass)
+
   def todaysDate: String = LocalDate.now.format(DateTimeFormatter.ISO_DATE)
 
   def limitUsage(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[LimitUsageResponse] = {
@@ -75,7 +77,7 @@ class CalculatorService @Inject() (
 
       case None =>
 
-        Logger.debug("No items available for limits request")
+        logger.debug("No items available for limits request")
         Future.successful(LimitUsageCantBuildCalcReqResponse)
     }
   }
@@ -97,7 +99,7 @@ class CalculatorService @Inject() (
 
       case None =>
 
-        Logger.error("No items available for calculation request")
+        logger.error("No items available for calculation request")
         Future.successful(CalculatorServiceCantBuildCalcReqResponse)
     }
   }
@@ -196,7 +198,7 @@ class CalculatorService @Inject() (
       wsAllMethods.GET[List[CurrencyConversionRate]](s"$currencyConversionBaseUrl/currency-conversion/rates/$todaysDate?$queryString") map { currencyConversionRates =>
 
         if (currencyConversionRates.exists(_.rate.isEmpty)) {
-          Logger.error("Missing currency for " + currencyConversionRates.filter(_.rate.isEmpty).mkString(", "))
+          logger.error("Missing currency for " + currencyConversionRates.filter(_.rate.isEmpty).mkString(", "))
         }
 
         gbpEquivCurrencies ++ currencyConversionRates.flatMap(ccr => ccr.rate.map(rate => (ccr.currencyCode, BigDecimal(rate)))).toMap

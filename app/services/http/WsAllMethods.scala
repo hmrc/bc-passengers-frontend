@@ -24,7 +24,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.bootstrap.config.{AppName, RunMode}
+import uk.gov.hmrc.play.bootstrap.config.AppName
 import uk.gov.hmrc.play.http.ws._
 
 trait WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with HttpPatch with WSPatch
@@ -40,5 +40,5 @@ class WsAllMethods @Inject() (
 
   override lazy val appName = AppName.fromConfiguration(config)
   override val hooks = Seq(AuditingHook)
-  override protected val configuration: Option[Config] = None
+  override protected val configuration: Config = config.underlying
 }

@@ -5,14 +5,13 @@ import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
 import scala.util.matching.Regex
 
 val appName = "bc-passengers-frontend"
 
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
@@ -48,12 +47,8 @@ lazy val microservice = Project(appName, file("."))
     parallelExecution in IntegrationTest := false,
     routesImport ++= Seq("binders.Binders._", "models._")
   )
-  .settings(
-    resolvers ++= Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.jcenterRepo
-    )
-  )
+  .settings(resolvers += Resolver.jcenterRepo)
+  .settings(resolvers += Resolver.typesafeRepo("releases"))
 
 lazy val silencerSettings: Seq[Setting[_]] = {
 

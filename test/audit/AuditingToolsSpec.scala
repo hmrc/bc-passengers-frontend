@@ -16,7 +16,7 @@
 
 package audit
 
-import org.scalatest.MustMatchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import util.BaseSpec
