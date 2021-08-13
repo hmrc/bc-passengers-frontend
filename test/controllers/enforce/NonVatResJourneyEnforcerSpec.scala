@@ -95,9 +95,11 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
+        case List(euCountryCheck, arrivingNICheck) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck,arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
           if (jd == JourneyData(None, Some("nonEuOnly"), Some(true)) || jd == JourneyData(None, Some("nonEuOnly"), Some(false)))
             status(res) shouldBe OK
@@ -120,9 +122,12 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
+        case List(euCountryCheck, arrivingNICheck) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck,arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
+
 
           if (jd == JourneyData(None, Some("euOnly"), Some(true)) || jd == JourneyData(None, Some("euOnly"), Some(false)))
             status(res) shouldBe OK
@@ -145,9 +150,11 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], arrivingNICheck: Option[Boolean]) =>
+        case List(euCountryCheck, arrivingNICheck) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck,arrivingNICheck)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
           if (jd == JourneyData(None, Some("both"), Some(true)) || jd == JourneyData(None, Some("both"), Some(false)))
             status(res) shouldBe OK
@@ -170,9 +177,11 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
       forEachInGrid(params) {
 
-        case List(euCountryCheck: Option[String], bringingOverAllowance: Option[Boolean]) =>
+        case List(euCountryCheck, bringingOverAllowance) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance)
 
           jd match {
             case  JourneyData(_, Some("nonEuOnly"), _, _,_, _, _, _, _, Some(false), _, _, _, _, _, _, _, _, _, _,_,_,_, _,_,_,_,_)
@@ -197,9 +206,12 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
       )
 
       forEachInGrid(params) {
-        case List(euCountryCheck: Option[String], bringingOverAllowance: Option[Boolean]) =>
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance)
+        case List(euCountryCheck, bringingOverAllowance) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance)
 
           jd match {
             case JourneyData(_, Some("nonEuOnly"), _, _, _, _, _, _, _, Some(_), _, _, _, _, _, _, _, _, _, _, _,_, _, _,_,_, _,_) =>
@@ -224,9 +236,13 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
       )
 
       forEachInGrid(params) {
-        case List(euCountryCheck: Option[String], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean]) =>
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance, privateCraft)
+        case List(euCountryCheck, bringingOverAllowance, privateCraft) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+          val privateTravel = privateCraft.asInstanceOf[Option[Boolean]]
+
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance, privateTravel)
 
           jd match {
             case JourneyData(_, Some("nonEuOnly"), _, _, _, _, _, _, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _, _, _, _,_, _,_, _,_)
@@ -253,9 +269,13 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
       )
 
       forEachInGrid(params) {
-        case List(euCountryCheck: Option[String], bringingOverAllowance: Option[Boolean], privateCraft: Option[Boolean], ageOver17: Option[Boolean]) =>
+        case List(euCountryCheck, bringingOverAllowance, privateCraft, ageOver17) =>
+          val euCheck = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+          val privateTravel = privateCraft.asInstanceOf[Option[Boolean]]
+          val over17 = ageOver17.asInstanceOf[Option[Boolean]]
 
-          implicit val jd: JourneyData = JourneyData(None, euCountryCheck, None, None, bringingOverAllowance, privateCraft, ageOver17)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance, privateTravel, over17)
 
           jd match {
             case JourneyData(_, Some("nonEuOnly"), _, _, _,_, _, _,_, Some(_), Some(_), Some(_), _, _, _, _, _, _, _, _, _, _, _,_, _,_, _,_)

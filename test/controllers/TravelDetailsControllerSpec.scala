@@ -33,10 +33,11 @@ import play.api.test.Helpers._
 import reactivemongo.api.commands.UpdateWriteResult
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import scala.collection.convert.ImplicitConversions.`list asScalaBuffer`
 import scala.concurrent.Future
 import scala.language.postfixOps
 

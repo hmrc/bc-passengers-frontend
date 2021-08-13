@@ -28,7 +28,7 @@ class DisableBrowserCacheFilter @Inject()(
   implicit val ec: ExecutionContext
 ) extends Filter {
 
-  def apply(nextFilter: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {
+  override def apply(nextFilter: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] = {
 
     nextFilter(requestHeader).map { result =>
 

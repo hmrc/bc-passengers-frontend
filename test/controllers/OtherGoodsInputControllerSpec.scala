@@ -33,7 +33,7 @@ import play.api.test.Helpers.{route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services.NewPurchaseService
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.other_goods.other_goods_input
 

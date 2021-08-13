@@ -42,8 +42,6 @@ trait ImplicitDateFormatter {
 
   def dayToString(date: LocalDate, dayOfWeek: Boolean = true)(implicit messages: Messages): String = {
 
-    val number = if (date.getDayOfMonth < 20) {date.getDayOfMonth} else {date.getDayOfMonth % 10}
-
     val outputFormat = if (dayOfWeek){s"EEEE d MMMM yyyy"} else {s"d MMMM yyyy"}
 
     createDateFormatForPattern(outputFormat).format(new SimpleDateFormat("yyyy-MM-dd").parse(date.toString))

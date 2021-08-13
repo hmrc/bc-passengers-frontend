@@ -267,7 +267,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     val expectedTelephoneValueSendJson: JsObject = expectedJsObj.alterFields {
       case ("chargeReference", _) => None
       case ("acknowledgementReference", _) => None
-      case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false))
+      case("customerReference", _) => Some(("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false)))
     }
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
@@ -512,7 +512,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     )
 
     val expectedTelephoneValueSendJson: JsObject = expectedJsObj.alterFields {
-      case("customerReference", _) => Some("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false))
+      case("customerReference", _) => Some(("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false)))
     }
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
@@ -1868,8 +1868,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   "Calling DeclarationService.retrieveDeclaration" should {
 
-    implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
-
     val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
 
     "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
@@ -1955,8 +1953,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
 
-      val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
-
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
       val purchasedProductInstances = List(
@@ -2028,11 +2024,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
 
-      val otherGoodsSearchItem = OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
-
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
-
-      val deltaCalculation: Calculation = Calculation("0.00", "0.00", "0.00", "0.00")
 
       val purchasedProductInstances = List(
         PurchasedProductInstance(productPath,"UnOGll",None,None,Some(country),None,Some("GBP"),Some(500), None, Some(false),Some(false),None,Some(false),None,None)

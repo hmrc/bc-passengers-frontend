@@ -28,13 +28,13 @@
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th class="govuk-table__header" scope="col" id="item">@messages("label.item")</th>
-            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" scope="col" id="customs">
+            <th class="govuk-table__header" scope="col" id="customs">
                 @messages("label.customs")
             </th>
-            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" scope="col" id="excise">
+            <th class="govuk-table__header" scope="col" id="excise">
                 @messages("label.excise_val")
             </th>
-            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" scope="col" id="vat">
+            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" id="vat">
                 @messages("label.vat")
             </th>
         </tr>
@@ -42,7 +42,7 @@
         <tbody>
         @calculatorResponseDto.items.map { item =>
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell" scope="row">
+            <td class="govuk-table__cell"  scope="row">
                 @messages(item.metadata.description)
             </td>
             <td class="govuk-table__cell numeric">
@@ -51,7 +51,7 @@
             <td class="govuk-table__cell numeric">
                 &pound;@formatMonetaryValue(item.calculation.excise)
             </td>
-            <td class="govuk-table__cell numeric">
+            <td class="govuk-table__cell numeric" style="vertical-align: bottom; text-align: right;">
                 &pound;@formatMonetaryValue(item.calculation.vat)
             </td>
         </tr>

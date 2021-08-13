@@ -145,13 +145,13 @@ class CalculatorServiceSpec extends BaseSpec {
 
       lazy val service: CalculatorService = {
 
-        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(), any(), any())) thenReturn {
+        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"),any(), any())(any(), any(), any())) thenReturn {
           Future.successful(List(
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "USD", None)
           ))
         }
 
-        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](any())(any(), any(), any())) thenReturn {
+        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](any(), any(), any())(any(), any(), any())) thenReturn {
           Future.successful(List(
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "AUD", Some("1.76")),
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "CHF", Some("1.26"))
@@ -167,7 +167,7 @@ class CalculatorServiceSpec extends BaseSpec {
       val response: Option[CalculatorServiceRequest] = await(service.journeyDataToCalculatorRequest(missingRateJourneyData, missingRateJourneyData.purchasedProductInstances))
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"))(any(), any(), any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"), any(), any())(any(), any(), any())
 
       response shouldBe None
     }
@@ -177,7 +177,7 @@ class CalculatorServiceSpec extends BaseSpec {
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(imperfectJourneyData, imperfectJourneyData.purchasedProductInstances)).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"), any(), any())(any(), any(), any())
 
       response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token == "cigars"))
     }
@@ -187,7 +187,7 @@ class CalculatorServiceSpec extends BaseSpec {
       val response: CalculatorServiceRequest = await(service.journeyDataToCalculatorRequest(goodJourneyData, goodJourneyData.purchasedProductInstances)).get
 
       verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"))(any(), any(), any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"), any(), any())(any(), any(), any())
 
       response shouldBe calcRequest
     }
@@ -311,7 +311,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       lazy val service: CalculatorService = {
 
-        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())) thenReturn {
+        when(injected[WsAllMethods].GET[List[CurrencyConversionRate]](meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"), any(), any())(any(),any(),any())) thenReturn {
           Future.successful(List(
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "USD", Some("1.4534")),
             CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "CAD", Some("1.7654"))
@@ -371,7 +371,7 @@ class CalculatorServiceSpec extends BaseSpec {
           isAnyItemOverAllowance = false
         )
 
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"), any(), any())(any(),any(),any())
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
@@ -401,7 +401,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       await(service.calculate(jd)(implicitly, messages)) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"))(any(),any(),any())
+      verify(injected[WsAllMethods], times(1)).GET(meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"), any(), any())(any(),any(),any())
 
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),

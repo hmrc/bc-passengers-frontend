@@ -6,28 +6,28 @@ import sbt._
 object AppDependencies {
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "simple-reactivemongo" % "7.30.0-play-26",
-    "uk.gov.hmrc" %% "govuk-template" % "5.58.0-play-26",
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.49.0-play-26",
+    "uk.gov.hmrc" %% "simple-reactivemongo" % "8.0.0-play-28",
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.88.0-play-28",
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "2.2.0",
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.8.0",
     "com.typesafe.play" %% "play-json-joda" % "2.6.14",
-    "uk.gov.hmrc" %% "play-language" % "4.5.0-play-26",
+    "uk.gov.hmrc" %% "play-language" % "5.1.0-play-28",
     "org.mindrot" % "jbcrypt" % "0.4",
     "org.webjars.npm" % "accessible-autocomplete" % "2.0.3",
     "ai.x" %% "play-json-extensions" % "0.10.0"
   )
 
   val test = Seq(
-    "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-26" % "test,it", //deprecated
-    "org.scalatest" %% "scalatest" % "3.0.9" % "test,it",
+    "org.scalatest" %% "scalatest" % "3.2.9" % "test,it",
     "org.pegdown" % "pegdown" % "1.6.0" % "test,it",
     "org.jsoup" % "jsoup" % "1.13.1" % "test,it",
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test,it",
     "org.mockito" % "mockito-all" % "2.0.2-beta" % "test",  //required??
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.3" % "test,it",
+    "org.scalatestplus"         %%    "mockito-3-4"                 % "3.2.9.0",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test,it",
     "com.networknt" % "json-schema-validator" % "1.0.44" exclude("org.slf4j", "slf4j-nop"),
-    "ai.x" %% "play-json-extensions" % "0.10.0"
+    "ai.x" %% "play-json-extensions" % "0.10.0",
+    "com.vladsch.flexmark"      %     "flexmark-all"                % "0.36.8"
   )
 }
 

@@ -24,8 +24,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.{FrontendHeaderCarrierProvider, Utf8MimeTypes, WithJsonBody}
-
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
+import uk.gov.hmrc.play.bootstrap.controller.{Utf8MimeTypes, WithJsonBody}
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -43,16 +43,17 @@ trait ControllerHelpers extends MessagesBaseController
   implicit def appConfig: AppConfig
   implicit def ec: ExecutionContext
 
+  private val logger = Logger(this.getClass)
 
   implicit def contextToRequest(implicit localContext: LocalContext): Request[AnyContent] = localContext.request
 
   def logAndRenderError(logMessage: String, status: Status = InternalServerError)(implicit context: LocalContext): Future[Result] = {
-    Logger.warn(logMessage)
+    logger.warn(logMessage)
     Future.successful(status(error_template()))
   }
 
   def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {
-    Logger.warn(logMessage)
+    logger.warn(logMessage)
     Future.successful(Redirect(redirectLocation))
   }
 

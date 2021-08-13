@@ -17,8 +17,6 @@
 package services
 
 import models.{OtherGoodsSearchItem, ProductPath, ProductTreeBranch, ProductTreeLeaf, ProductTreeNode}
-import org.scalatest.Matchers
-import uk.gov.hmrc.play.test.UnitSpec
 import util.BaseSpec
 
 

@@ -19,10 +19,11 @@ package helpers
 import java.io.InputStream
 
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
-import com.networknt.schema.{JsonSchema, JsonSchemaFactory, ValidationMessage}
+import com.networknt.schema.{JsonSchema, JsonSchemaFactory, SpecVersion, ValidationMessage}
 import play.api.libs.json.JsValue
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import scala.language.implicitConversions
 import scala.io.Source
 
 case class SchemaValidationResult(errors: Set[ValidationMessage]) {
@@ -68,12 +69,12 @@ object Helpers {
 
     private lazy val schema: JsonSchema = {
       val schemaJson = Helpers.resourceAsJsonNode(schemaResourcePath).getOrElse(throw new RuntimeException("Missing schema: " + schemaResourcePath))
-      JsonSchemaFactory.getInstance().getSchema(schemaJson)
+      JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4).getSchema(schemaJson)
     }
 
 
     private def validateInternal(subject: JsonNode): Set[ValidationMessage] = {
-      schema.validate(subject).toSet
+      schema.validate(subject).asScala.toSet
     }
 
     def validate(subjectJson: JsonNode): SchemaValidationResult = {
