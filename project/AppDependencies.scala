@@ -6,10 +6,10 @@ import sbt._
 object AppDependencies {
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "simple-reactivemongo" % "8.0.0-play-28",
+    "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-28"         % "0.52.0",
     "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.88.0-play-28",
     ws,
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.8.0",
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.12.0",
     "com.typesafe.play" %% "play-json-joda" % "2.6.14",
     "uk.gov.hmrc" %% "play-language" % "5.1.0-play-28",
     "org.mindrot" % "jbcrypt" % "0.4",
@@ -27,7 +27,8 @@ object AppDependencies {
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test,it",
     "com.networknt" % "json-schema-validator" % "1.0.44" exclude("org.slf4j", "slf4j-nop"),
     "ai.x" %% "play-json-extensions" % "0.10.0",
-    "com.vladsch.flexmark"      %     "flexmark-all"                % "0.36.8"
+    "com.vladsch.flexmark"      %     "flexmark-all"                % "0.36.8",
+    "uk.gov.hmrc.mongo"        %% "hmrc-mongo-test-play-28"    % "0.52.0",
   )
 }
 
