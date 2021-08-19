@@ -27,10 +27,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import reactivemongo.api.commands.UpdateWriteResult
+import play.mvc.Results.ok
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
@@ -622,7 +623,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
   "calling GET .../keepAlive" should {
     "return a response OK" in new LocalSetup {
       when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
-        .successful(UpdateWriteResult(ok = true,1,1,Seq(),Seq(),None,None,None))
+        .successful(JsObject.empty)
       val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
       status(response) shouldBe OK
 

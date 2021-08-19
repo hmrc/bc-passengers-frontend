@@ -18,9 +18,10 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 import models.JourneyData
-import reactivemongo.api.commands.UpdateWriteResult
+
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +37,11 @@ class Cache @Inject()(
   def storeJourneyData(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     sessionRepository.store("journeyData", journeyData).flatMap(_ => fetch)
 
-  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = sessionRepository.fetch[JourneyData]("journeyData")
+  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = sessionRepository.fetch[JourneyData]("journeyData").map {
+    case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
+    case _ => Option.empty
+  }
 
-  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier) : Future[UpdateWriteResult] = sessionRepository.updateUpdatedAtTimestamp
+
+  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier) : Future[JsObject] = sessionRepository.updateUpdatedAtTimestamp
 }
