@@ -1,13 +1,9 @@
 package repositories
 
-import java.util.Date
 import models.JourneyData
-import org.mongodb.scala.model.Filters.equal
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.libs.json.JsPath.\
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -15,6 +11,7 @@ import uk.gov.hmrc.http.SessionId
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
 
 
 class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
@@ -33,7 +30,7 @@ class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
     }
     "return Some Journey Data if data exists" in new LocalSetup {
       await(repository.collection.insertOne(Json.obj("_id" -> "fakesessionid", "journeyData" -> JourneyData(euCountryCheck = Some("Yes")))).toFuture())
-      //await(repository.fetch[JourneyData]("journeyData")) shouldBe Some(JourneyData(euCountryCheck = Some("Yes")))
+      await(repository.fetch[JourneyData]("journeyData")) shouldBe Some(Json.obj("_id" -> "fakesessionid", "journeyData" -> JourneyData(euCountryCheck = Some("Yes"))))
     }
 
     "return Error if no session id exists" in new LocalSetup {
@@ -45,14 +42,27 @@ class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
   "store" should {
     "insert new record if no data exists" in new LocalSetup {
       await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(true))))
-      //repository.fetch[JourneyData]("journeyData").futureValue shouldBe Some(JourneyData(arrivingNICheck = Some(true)))
+
+      val journeyData: Option[JourneyData] = await(repository.fetch[JourneyData]("journeyData").map {
+        case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
+        case _ => Option.empty
+      })
+
+      journeyData.get.arrivingNICheck shouldBe Some(true)
+
     }
 
     "update new record if data already exists" in new LocalSetup {
       await(repository.collection.insertOne(Json.obj("_id" -> "fakesessionid", "journeyData" -> JourneyData(euCountryCheck = Some("Yes")))).toFuture())
       await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(false), euCountryCheck = Some("Yes"))))
-     /* repository.fetch[JourneyData]("journeyData").futureValue shouldBe
-        Some(JourneyData(arrivingNICheck = Some(false), euCountryCheck = Some("Yes")))*/
+
+     val journeyData: Option[JourneyData] = await(repository.fetch[JourneyData]("journeyData").map {
+       case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
+       case _ => Option.empty
+     })
+
+      journeyData.get.arrivingNICheck shouldBe Some(false)
+      journeyData.get.euCountryCheck shouldBe Some("Yes")
     }
 
     "return Error if no session id exists" in new LocalSetup {
@@ -61,29 +71,4 @@ class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
     }
 
   }
-
-  "updateUpdatedAtTimestamp" should {
-    "update the updateUpdatedAtTimestamp" in new LocalSetup {
-      /* await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(true))))
-       val returnJson:String = await(repository.collection.find(equal("_id","fakesessionid")).)
-
-       val firstTimestamp = (returnJson \ "updatedAt" \ "$date").as[Date]
-        await(repository.updateUpdatedAtTimestamp)
-        val updatedTimestampJson = await(repository.find("_id" -> "fakesessionid")).headOption
-        val secondTimestamp = (updatedTimestampJson.get \ "updatedAt" \ "$date").as[Date]
-        secondTimestamp.after(firstTimestamp)  shouldBe true*/
-    }
-
-    "return Error if no session id exists" in new LocalSetup {
-      override implicit val hc: HeaderCarrier = HeaderCarrier()
-     // intercept[Exception](await(repository.updateUpdatedAtTimestamp)).getMessage shouldBe "Could not find sessionId in HeaderCarrier"
-    }
-
-  }
-
-
-
-
-
-
 }
