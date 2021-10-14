@@ -24,7 +24,7 @@ class PortsOfArrivalService {
 
   def getAllPorts: List[PortsOfArrival] = ports
 
-  def getAllPortsNI: List[PortsOfArrival] = ports.filter(_.isGB == false)
+  def getAllPortsNI: List[PortsOfArrival] = ports.filterNot(_.isGB)
 
   def getPortByCode(code: String): Option[PortsOfArrival] = ports.find(c => c.code == code)
 

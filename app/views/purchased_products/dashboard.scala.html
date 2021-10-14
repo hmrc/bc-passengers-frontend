@@ -42,7 +42,9 @@
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+)(implicit request: Request[_], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
+
+@defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
 
 @govukLayout(pageTitle = Some(if(isAmendment) messages("label.tell_us_about_the_additional_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.tell_us_about_the_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
@@ -55,7 +57,6 @@
   @p(Html(messages("label.about_foreign_currencies")), id=Some("foreign-currency"))
   <br>
 
-
   <div class="alcohol">
     @h2(messages("label.alcohol"))
     @if(alcoholPurchasedItemList.isEmpty && previousAlcoholPurchasedItemList.isEmpty) {
@@ -65,17 +66,17 @@
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
       </div>
       @alcoholPurchasedItemList.map { purchasedItem =>
-        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
-          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "alcohol")
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol")
         }
       }
-      @if(previousAlcoholPurchasedItemList.length > 0){
+      @if(previousAlcoholPurchasedItemList.nonEmpty){
         @p(Html(messages("label.previously_declared_alcohol")), classes="govuk-body govuk-!-font-weight-bold previous-alcohol")
         <br>
       }
       @previousAlcoholPurchasedItemList.map { purchasedItem =>
-        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
-          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "alcohol")
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol")
         }
       }
     }
@@ -91,17 +92,17 @@
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
       </div>
         @tobaccoPurchasedItemList.map { purchasedItem =>
-          @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
-            @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "tobacco")
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco")
           }
         }
-        @if(previousTobaccoPurchasedItemList.length > 0){
+        @if(previousTobaccoPurchasedItemList.nonEmpty){
           @p(Html(messages("label.previously_declared_tobacco")), classes="govuk-body govuk-!-font-weight-bold previous-tobacco")
           <br>
         }
         @previousTobaccoPurchasedItemList.map { purchasedItem =>
-          @purchasedItem.descriptionArgs(long = true).map( args => messages(args._1, args._2: _*) ).map { description =>
-            @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "tobacco")
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco")
         }
       }
     }
@@ -126,17 +127,17 @@
       </div>
     }
       @otherGoodsPurchasedItemList.map { purchasedItem =>
-        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
-          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "otherGoods")
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods")
         }
       }
-      @if(previousOtherGoodsPurchasedItemList.length > 0){
+      @if(previousOtherGoodsPurchasedItemList.nonEmpty){
         @p(Html(messages("label.previously_declared_other_goods")), classes="govuk-body govuk-!-font-weight-bold previous-othergoods")
         <br>
       }
       @previousOtherGoodsPurchasedItemList.map { purchasedItem =>
-        @purchasedItem.descriptionArgs(long = false).map( args => messages(args._1, args._2: _*) ).map { description =>
-          @displayItem(purchasedItem, description, isEU, isGbNi, isUkResident, "otherGoods")
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods")
       }
     }
   </div>
@@ -156,4 +157,5 @@
       }
     }
   }
+}
 }
