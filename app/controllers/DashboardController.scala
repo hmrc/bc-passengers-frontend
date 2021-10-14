@@ -19,15 +19,13 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-
-import javax.inject.{Inject, Singleton}
 import models.{ProductTreeLeaf, _}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
+import play.api.i18n.{I18nSupport, Lang}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -50,11 +48,11 @@ class DashboardController @Inject() (
 
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
-  implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
-) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
+) extends FrontendController(controllerComponents) with ControllerHelpers {
 
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
+    implicit val lang: Lang = context.request.lang
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     }

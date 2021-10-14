@@ -120,7 +120,7 @@ class SelectProductController @Inject()(
           val updatedJourneyData = context.getJourneyData
 
           selectProductService.addSelectedProductsAsAliases(updatedJourneyData, selectProductsDto.tokens.map(path.addingComponent)) flatMap { journeyData =>
-            
+
             purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
               Redirect(routes.SelectProductController.nextStep())
             }

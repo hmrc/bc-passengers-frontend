@@ -18,13 +18,13 @@ package services
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import connectors.Cache
+
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logger
 import play.api.http.Status._
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json, Reads}
 import services.http.WsAllMethods
 import uk.gov.hmrc.http._
@@ -82,7 +82,7 @@ class CalculatorService @Inject() (
     }
   }
 
-  def calculate(journeyData: JourneyData)(implicit hc: HeaderCarrier, messages: Messages): Future[CalculatorServiceResponse] = {
+  def calculate(journeyData: JourneyData)(implicit hc: HeaderCarrier, messages: MessagesApi): Future[CalculatorServiceResponse] = {
 
     val allPurchasedProductInstances = journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ journeyData.purchasedProductInstances
 

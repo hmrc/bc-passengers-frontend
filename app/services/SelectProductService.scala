@@ -31,7 +31,7 @@ class SelectProductService @Inject()(
   implicit val ec: ExecutionContext
 ) {
 
-  def addSelectedProductsAsAliases(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier) = {
+  def addSelectedProductsAsAliases(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier): Future[JourneyData] = {
 
     val aliases: List[ProductAlias] = journeyData.selectedAliases ++ selectedProducts.map(productPath => ProductAlias("label." + productPath.toMessageKey, productPath))
 

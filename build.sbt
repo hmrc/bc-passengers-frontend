@@ -35,7 +35,7 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LocalLanguageController;.*testonly.*;",
-    ScoverageKeys.coverageMinimum := 80
+    ScoverageKeys.coverageMinimum := 90
   )
   .configs(IntegrationTest)
   .settings(
@@ -49,6 +49,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(resolvers += Resolver.typesafeRepo("releases"))
+  .settings(PlayKeys.playDefaultPort := 9008)
 
 lazy val silencerSettings: Seq[Setting[_]] = {
 

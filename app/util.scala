@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import java.math.RoundingMode
-import java.text.DecimalFormat
-
 import models.ProductPath
-import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
 
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import scala.util.Try
 
 package object util {

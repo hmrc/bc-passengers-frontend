@@ -70,7 +70,7 @@ class AlcoholInputController @Inject()(
   def alcoholForm(path: ProductPath): Form[AlcoholDto] = Form(
     mapping(
       "weightOrVolume" -> optional(text)
-        .verifying("error.required.volume."+ path.toMessageKey, _.isDefined)
+        .verifying("error.required.volume." + path.toMessageKey, _.isDefined)
         .verifying("error.invalid.characters.volume", x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false))
         .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString) )
         .verifying("error.max.decimal.places.volume", _.scale  <= 3).transform[BigDecimal](identity, identity),
@@ -90,7 +90,7 @@ class AlcoholInputController @Inject()(
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))
     }
     else {
       requireProduct(path) { product =>
@@ -105,7 +105,7 @@ class AlcoholInputController @Inject()(
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))
     }
     else{
     requirePurchasedProductInstance(iid) { ppi =>

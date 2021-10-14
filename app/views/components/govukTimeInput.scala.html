@@ -20,7 +20,7 @@
 
 @(params: TimeInput)
 @import params._
-@import views.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.Implicits._
 @require(id.nonEmpty, "id should not be empty")
 @require(if (items.nonEmpty) items.forall(_.name.nonEmpty) else true, "all item.names should be defined")
 

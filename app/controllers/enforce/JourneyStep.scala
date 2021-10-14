@@ -23,6 +23,6 @@ class JourneyStep(preceeding: List[JourneyStep], predicate: List[JourneyStep] =>
 
   def meetsAllPrerequisites(implicit context: LocalContext): Boolean = {
     val prereqsMet: List[JourneyStep] = preceeding.filter(_.meetsAllPrerequisites)
-    (preceeding.isEmpty || !prereqsMet.isEmpty) && predicate(prereqsMet)(context.journeyData)
+    (preceeding.isEmpty || prereqsMet.nonEmpty) && predicate(prereqsMet)(context.journeyData)
   }
 }

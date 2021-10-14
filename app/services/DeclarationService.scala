@@ -19,12 +19,11 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
-import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import play.api.http.Status._
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.Reads._
@@ -36,6 +35,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -91,7 +91,7 @@ class DeclarationService @Inject()(
     }
   }
 
-  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
+  def submitDeclaration(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: MessagesApi): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
@@ -124,7 +124,7 @@ class DeclarationService @Inject()(
     }
   }
 
-  def submitAmendment(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: Messages): Future[DeclarationServiceResponse] = {
+  def submitAmendment(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, receiptDateTime: DateTime, correlationId: String)(implicit hc: HeaderCarrier, messages: MessagesApi): Future[DeclarationServiceResponse] = {
 
     val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
@@ -157,8 +157,9 @@ class DeclarationService @Inject()(
     }
   }
 
-  def buildPartialDeclarationOrAmendmentMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, rd: String)(implicit messages: Messages): JsObject = {
+  def buildPartialDeclarationOrAmendmentMessage(userInformation: UserInformation, calculatorResponse: CalculatorResponse, journeyData: JourneyData, rd: String)(implicit messages: MessagesApi): JsObject = {
 
+    implicit val lang: Lang = Lang("en")
     val ni = "NI"
     val gb = "GB"
 

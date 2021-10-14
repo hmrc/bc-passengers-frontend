@@ -16,12 +16,12 @@
 
 package models
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsValue, Json}
 import util.BaseSpec
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CalculatorServiceRequestSpec extends BaseSpec {
 
@@ -31,7 +31,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
       def todaysDate: String = LocalDate.parse("2019-04-30").format(DateTimeFormatter.ISO_DATE)
 
-      implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+      implicit val messages: MessagesApi = injected[MessagesApi]
 
       def weightOrVolume: Option[BigDecimal]
       def noOfSticks: Option[Int]
@@ -86,6 +86,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "200 dummy product name",
+          |      "descriptionLabels":{"description":"label.X_X","args":["200","Dummy product name"]},
           |      "name" : "Dummy product name",
           |      "cost" : "2.00",
           |      "currency" : {
@@ -136,6 +137,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "50 dummy product name",
+          |      "descriptionLabels":{"description":"label.X_X","args":["50","Dummy product name"]},
           |      "name" : "Dummy product name",
           |      "cost" : "2.00",
           |      "currency" : {
@@ -185,6 +187,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "1000g of dummy product name",
+          |      "descriptionLabels":{"description":"label.Xg_of_X","args":["1000","Dummy product name"]},
           |      "name" : "Dummy product name",
           |      "cost" : "2.00",
           |      "currency" : {
@@ -234,6 +237,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "1.0 litre dummy product name",
+          |      "descriptionLabels":{"description":"label.X_litre_X","args":["1.0","Dummy product name"]},
           |      "name" : "Dummy product name",
           |      "cost" : "2.00",
           |      "currency" : {
@@ -282,6 +286,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |    "isCustomPaid":true,
           |    "metadata" : {
           |      "description" : "Dummy product name",
+          |      "descriptionLabels":{"description":"Dummy product name","args":[]},
           |      "name" : "Dummy product name",
           |      "cost" : "2.00",
           |      "currency" : {
