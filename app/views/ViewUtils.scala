@@ -41,7 +41,7 @@ object ViewUtils extends ImplicitDateFormatter with CurrencyFormatter {
         name = Some(s"tokens[$index]"),
         id = Some(value._2),
         value = value._2,
-        content = Text(messages(s"${value._1}")),
+        content = Text(messages(s"${value._1}"))
       )
   }
 
@@ -50,7 +50,7 @@ object ViewUtils extends ImplicitDateFormatter with CurrencyFormatter {
       RadioItem(
         id = Some(messages(s"tokens-${value._1}")),
         value = Some(value._1),
-        content = Text(messages(s"${value._2}")),
+        content = Text(messages(s"${value._2}"))
       )
   }
 }

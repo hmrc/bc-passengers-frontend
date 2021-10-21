@@ -63,7 +63,7 @@ class AlcoholInputController @Inject()(
       "isVatPaid"      -> optional(boolean),
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid" -> optional(boolean),
-      "hasEvidence" -> optional(boolean),
+      "hasEvidence" -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 

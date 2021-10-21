@@ -72,8 +72,8 @@ class BCPassengersSessionRepository @Inject()(
     hc.sessionId match {
       case Some(id) => collection.findOneAndUpdate(equal("_id",id.value),
         Updates.set("updatedAt", new java.util.Date()),
-        FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER))
+        FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)).toFuture()
+      case _ => Future.failed(new Exception("[BCPassengersSessionRepository][updateUpdatedAtTimestamp]Could not find sessionId in HeaderCarrier"))
     }
-    Future.failed(new Exception("Could not find sessionId in HeaderCarrier"))
   }
 }
