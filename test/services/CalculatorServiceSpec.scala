@@ -356,7 +356,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       override lazy val simulatePurchasePriceOutOfBounds: Boolean = false
 
-      val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+      val messages: MessagesApi = injected[MessagesApi]
 
       val response: CalculatorServiceResponse = await(service.calculate(jd)(implicitly, messages))
 
@@ -376,7 +376,7 @@ class CalculatorServiceSpec extends BaseSpec {
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
         meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, List(
-          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
+          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil), Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
       )(any(),any(),any(),any())
@@ -397,7 +397,7 @@ class CalculatorServiceSpec extends BaseSpec {
 
       override lazy val simulatePurchasePriceOutOfBounds: Boolean = true
 
-      val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+      val messages: MessagesApi = injected[MessagesApi]
 
       await(service.calculate(jd)(implicitly, messages)) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
 
@@ -406,7 +406,7 @@ class CalculatorServiceSpec extends BaseSpec {
       verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
         meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
         meq(CalculatorServiceRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, List(
-          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil),Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
+          PurchasedItem(PurchasedProductInstance(ProductPath("other-goods/antiques"),"iid0",None,None,Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("CAD"),Some(BigDecimal("2.00"))),ProductTreeLeaf("antiques","label.other-goods.antiques","OGD/ART","other-goods", Nil), Currency("CAD","title.canadian_dollars_cad",Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate))
         ))),
         any()
       )(any(),any(),any(),any())

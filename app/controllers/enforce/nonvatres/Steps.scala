@@ -20,13 +20,13 @@ import controllers.enforce.JourneyStep
 
 case object WhereGoodsBoughtStep extends JourneyStep(Nil, _ => _ => true)
 
-case object GoodsBoughtOutsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("nonEuOnly")) && x.flatMap(_.arrivingNICheck).isDefined)
+case object GoodsBoughtOutsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck).contains("nonEuOnly")) && x.flatMap(_.arrivingNICheck).isDefined)
 
-case object GoodsBoughtInsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("euOnly")) && x.flatMap(_.arrivingNICheck).isDefined)
+case object GoodsBoughtInsideEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck).contains("euOnly")) && x.flatMap(_.arrivingNICheck).isDefined)
 
-case object GoodsBoughtInAndOutEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck) == Some("both")) && x.flatMap(_.arrivingNICheck).isDefined)
+case object GoodsBoughtInAndOutEuStep extends JourneyStep(preceeding = List(ArrivingNIStep), predicate = _ => x=> (x.flatMap(_.euCountryCheck).contains("both")) && x.flatMap(_.arrivingNICheck).isDefined)
 
-case object NoNeedToUseStep extends JourneyStep(preceeding = List(GoodsBoughtInAndOutEuStep, GoodsBoughtOutsideEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance) == Some(false))
+case object NoNeedToUseStep extends JourneyStep(preceeding = List(GoodsBoughtInAndOutEuStep, GoodsBoughtOutsideEuStep), predicate = _ =>  _.flatMap(_.bringingOverAllowance).contains(false))
 
 case object PrivateCraftStep extends JourneyStep(preceeding = List(NoNeedToUseStep,GoodsBoughtInAndOutEuStep,GoodsBoughtOutsideEuStep), predicate = _ => _.flatMap(_.bringingOverAllowance).isDefined)
 

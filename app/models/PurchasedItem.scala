@@ -16,8 +16,6 @@
 
 package models
 
-import play.api.i18n.Messages
-
 case class PurchasedItem(
   purchasedProductInstance: PurchasedProductInstance,
   productTreeLeaf: ProductTreeLeaf,
@@ -25,7 +23,9 @@ case class PurchasedItem(
   gbpCost: BigDecimal,
   exchangeRate: ExchangeRate
 ) {
-  def descriptionArgs(long: Boolean)(implicit messages: Messages): Option[(String, List[String])] = productTreeLeaf.getDescriptionArgs(purchasedProductInstance, long)
+  def descriptionLabels(long: Boolean): Option[(String, List[String])] = {
+    productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long)
+  }
   def name: String = productTreeLeaf.name
   def displayCurrency: String = currency.displayName
   def countryName: Option[String] = purchasedProductInstance.country.map(_.countryName)

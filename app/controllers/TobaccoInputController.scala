@@ -78,7 +78,7 @@ class TobaccoInputController @Inject()(
         .verifying("error.invalid.characters.noofsticks." + path.toMessageKey, noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false)) )
         .transform[Option[Int]](noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)), int => int.mkString),
       "weightOrVolume" -> optional(text)
-        .verifying("error.weight_or_volume.required."+ path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
+        .verifying("error.weight_or_volume.required." + path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
         .verifying("error.invalid.characters.weight", weightOrVolume => !weightOrVolume.isDefined || weightOrVolume.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false))
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map( x => x.toString ))
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale  <= 2))
@@ -121,8 +121,8 @@ class TobaccoInputController @Inject()(
   def weightOrVolumeForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping("noOfSticks" -> ignored[Option[Int]](None),
       "weightOrVolume" -> optional(text)
-        .verifying("error.required.weight."+ path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
-        .verifying("error.invalid.characters.weight", weightOrVolume => !weightOrVolume.isDefined || weightOrVolume.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false))
+        .verifying("error.required.weight." + path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
+        .verifying("error.invalid.characters.weight", weightOrVolume => weightOrVolume.isEmpty || weightOrVolume.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false))
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map( x => x.toString ))
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale  <= 2))
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble/1000))), kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))),
@@ -139,10 +139,10 @@ class TobaccoInputController @Inject()(
       "hasEvidence" -> optional(boolean)
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
-  
+
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))
     }
     else {
       requireProduct(path) { product =>

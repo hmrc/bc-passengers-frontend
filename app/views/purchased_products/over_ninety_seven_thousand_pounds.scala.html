@@ -47,7 +47,7 @@
     @calculatorResponseDto.items.map { item =>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell" scope="row">
-          @messages(item.metadata.description)
+            @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
         </td>
         <td class="govuk-table__cell">
           @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)

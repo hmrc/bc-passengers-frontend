@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.{Json, OWrites, Writes}
 import util._
 
@@ -24,13 +24,14 @@ import scala.math.BigDecimal.RoundingMode
 
 object CalculatorServiceRequest {
 
-  implicit def writes(implicit messages: Messages): OWrites[CalculatorServiceRequest] = {
+  implicit def writes(implicit messages: MessagesApi): OWrites[CalculatorServiceRequest] = {
 
     implicit val piw: Writes[PurchasedItem] = (item: PurchasedItem) => {
+      implicit val defaultLanguage: Lang = Lang("en")
 
-      val description = item.productTreeLeaf.getDescriptionArgs(item.purchasedProductInstance, long = false) match {
-        case Some((messageKey, args)) => messages(messageKey, args: _*)
-        case _ => messages(item.name) //Should not happen
+      val descriptionLabels = item.productTreeLeaf.getDescriptionLabels(item.purchasedProductInstance, long = false) match {
+        case Some((messageKey, args)) => DescriptionLabels(messageKey, args)
+        case _ => DescriptionLabels(item.name, List.empty) //Should not happen
       }
 
       Json.obj(
@@ -43,7 +44,8 @@ object CalculatorServiceRequest {
         "isUccRelief" -> item.purchasedProductInstance.isUccRelief,
         "isCustomPaid" -> item.purchasedProductInstance.isCustomPaid,
         "metadata" -> Json.obj(
-          "description" -> description,
+          "description" -> messages(descriptionLabels.description, descriptionLabels.args.map(messages(_).toLowerCase): _*),
+          "descriptionLabels" -> descriptionLabels,
           "name" -> item.name,
           "cost" -> item.purchasedProductInstance.cost.map(_.setScale(2, RoundingMode.DOWN).toString),
           "currency" -> item.currency,

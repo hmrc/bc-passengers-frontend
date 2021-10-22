@@ -54,11 +54,17 @@ object CalculatorResponse {
   implicit val formats: OFormat[CalculatorResponse] = Json.format[CalculatorResponse]
 }
 
+object DescriptionLabels {
+  implicit val formats: OFormat[DescriptionLabels] = Json.format[DescriptionLabels]
+}
+
 case class Calculation(excise: String, customs: String, vat: String, allTax: String)
 case class ExchangeRate(rate: String, date: String)
+case class DescriptionLabels(description: String, args: List[String])
 case class Metadata(description: String,
                     name: String,
                     cost: String,
+                    descriptionLabels: DescriptionLabels,
                     currency: Currency,
                     country: Country,
                     exchangeRate: ExchangeRate,
