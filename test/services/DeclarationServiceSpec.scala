@@ -25,7 +25,7 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -39,6 +39,8 @@ import util.{BaseSpec, _}
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
+
+  implicit val messages: MessagesApi = injected[MessagesApi]
 
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -111,8 +113,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
   )
 
   "Calling DeclarationService.submitDeclaration" should {
-
-    implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
     val jd: JourneyData = JourneyData(
       euCountryCheck = Some("nonEuOnly"),
@@ -334,8 +334,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
   }
 
   "Calling DeclarationService.submitAmendment" should {
-
-    implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
     val calculation: Calculation = Calculation("0.00","12.50","102.50","115.00")
     val liabilityDetails: LiabilityDetails = LiabilityDetails("0.00","12.50","102.50","115.00")
@@ -580,8 +578,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
 
   "Calling DeclarationService.buildPartialDeclarationMessage" should {
-
-    implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
 
     "truncate a product description to 40 characters if the product description is too big in the metadata." in new LocalSetup {
 
