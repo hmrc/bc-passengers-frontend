@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.LanguageSelect
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 
 @this(
     govukLayout: GovukLayout,
@@ -29,6 +30,7 @@
     hmrcReportTechnicalIssue: hmrcReportTechnicalIssue,
     languageSwitch: HmrcLanguageSelect,
     header: HmrcHeader,
+    hmrcHead: HmrcHead,
     footer: HmrcStandardFooter,
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
@@ -101,7 +103,7 @@
 
 @govukLayout(
     pageTitle = pageTitle,
-    headBlock = Some(head),
+    headBlock = Some(hmrcHead(headBlock = Some(head))),
     headerBlock = Some(header(Header(
         homepageUrl = appConfig.govUK,
         serviceName = Some(messages("service.name")),
