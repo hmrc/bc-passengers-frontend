@@ -51,10 +51,8 @@
         @button(messages("label.amend_your_goods"))
     }
   }else {
-    <p class="margin-top-30">
-        @formHelper(action = routes.CalculateDeclareController.enterYourDetails()) {
-            @button(messages("label.declare_your_goods_and_pay_online"))
-        }
-    </p>
+    @formHelper(action = routes.CalculateDeclareController.enterYourDetails()) {
+        @button(messages("label.declare_your_goods_and_pay_online"))
+    }
   }
 }
