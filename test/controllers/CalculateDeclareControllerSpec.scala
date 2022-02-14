@@ -946,7 +946,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
        doc.getElementById("conditional-identificationType-telephone").text() shouldBe "For international numbers this will need to include the country code, for example +33 for France."
       }
 
-      "Return Hint Text When euId is entered" in new LocalSetup {
+      "Return Inset Text When euId is entered" in new LocalSetup {
 
         override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))))
         override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
@@ -974,7 +974,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.getElementById("conditional-identificationType-euId").text() shouldBe "You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK. Check the latest rules prior to your arrival in the UK (opens in a new tab)."
+       doc.getElementsByClass("govuk-inset-text").text() shouldBe "You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK. Check the latest rules prior to your arrival in the UK (opens in a new tab)."
       }
 
       "Cache the submitted user information and redirect payment url when valid form input is sent and the payment service request is successful" in new LocalSetup {

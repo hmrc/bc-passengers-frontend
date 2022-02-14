@@ -29,6 +29,7 @@
     inputRadioH2: components.inputRadioH2,
     inputDate: components.inputDate,
     inputTime: components.inputTime,
+    inputInsetText: components.inputInsetText,
     autoCompleteList: components.autocompleteList
 )
 
@@ -81,8 +82,7 @@
                         RadioItem(id = Some("identificationType-euId"),
                         value = Some("euId"),
                         content = Text(messages("label.euId_number")),
-                        checked = form("identification.identificationType").value.contains("euId"),
-                        conditionalHtml = Some(Html(s"${<p class="govuk-hint">{messages("label.euId_hint")} {<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}</p>}"))
+                        checked = form("identification.identificationType").value.contains("euId")
                         ),
                         RadioItem(id = Some("identificationType-driving"),
                         value = Some("driving"),
@@ -96,7 +96,10 @@
                         checked = form("identification.identificationType").value.contains("telephone")
                         )
                     )
-                )
+                   )
+
+                        @inputInsetText(s"${<p>{messages("label.euId_hint")} {<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}</p>}")
+
             } else {
                 @inputRadioH2(
                     form = form,
@@ -113,11 +116,13 @@
                         RadioItem(id = Some("identificationType-euId"),
                         value = Some("euId"),
                         content = Text(messages("label.euId_number")),
-                        checked = form("identification.identificationType").value.contains("euId"),
-                        conditionalHtml = Some(Html(s"${<p class="govuk-hint">{messages("label.euId_hint")} {<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}</p>}"))
+                        checked = form("identification.identificationType").value.contains("euId")
                         )
                     )
                 )
+
+                @inputInsetText(s"${<p>{messages("label.euId_hint")} {<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">{messages("label.euId_hint_link")}</a>}</p>}")
+
             }
         @form.errors.filter(_.key == "identification").map { error =>
             <span class="govuk-error-message" id="identificationNumber-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
