@@ -33,7 +33,12 @@
  @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidPage()) {
 
   @errorSummary(form.errors, Some("error"))
-  @h1("heading.is_uk_vat_excise_paid")
+
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">
+     @Html(messages("heading.is_uk_vat_excise_paid"))
+    </h1>
+  </legend>
   @p{@messages("text.excise_duty_will_usually") <a href="https://www.gov.uk/tax-on-shopping/alcohol-tobacco" target="_blank">@messages("text.read_more")</a>}
 
   @yesNoRadio(form, name = "isUKVatExcisePaid", isPageHeading= true)
