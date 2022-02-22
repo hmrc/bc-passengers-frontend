@@ -39,7 +39,7 @@
 
     @formHelper(action = routes.CalculateDeclareController.processEnterYourDetails) {
 
-    @errorSummary(form.errors, Some("error"))
+    @errorSummary(form.errors)
 
     @fieldset(s"label.enter_your_details") {
 
@@ -74,7 +74,7 @@
                     name = "identification.identificationType",
                     hint = Some(Html(messages(s"label.choose_identification_type"))),
                     items = Seq(
-                        RadioItem(id = Some("identificationType-passport"),
+                        RadioItem(id = Some("identification.identificationType"),
                         value = Some("passport"),
                         content = Text(messages("label.passport_number")),
                         checked = form("identification.identificationType").value.contains("passport")
@@ -108,7 +108,7 @@
                     name = "identification.identificationType",
                     hint = Some(Html(messages(s"label.choose_identification_type"))),
                     items = Seq(
-                        RadioItem(id = Some("identificationType-passport"),
+                        RadioItem(id = Some("identification.identificationType"),
                         value = Some("passport"),
                         content = Text(messages("label.passport_number")),
                         checked = form("identification.identificationType").value.contains("passport")
@@ -170,7 +170,9 @@
         <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
             @form.errors.filter(_.key == "placeOfArrival").map { error =>
-                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span>
+                    @messages(error.message)
+                </span>
             }
             @if(journeyStart.contains("greatBritain")){
                 @autoCompleteList(form,
@@ -221,31 +223,41 @@
             </details>
         </div>
 
-        <div class="govuk-form-group @{if(form("dateTimeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival">
-
+        @if(form("dateTimeOfArrival").hasErrors){
+            <div class="govuk-form-group govuk-form-group--error" id="dateOfArrival.date">
             @form.errors.filter(_.key == "dateTimeOfArrival").map { error =>
-                <span class="govuk-error-message" id="dateOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message) </span>
+                <span class="govuk-error-message" id="dateTimeOfArrival-error">
+                    <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message)
+                </span>
             }
-            @inputDate(
-                form,
-                id = "dateTimeOfArrival.dateOfArrival",
-                legendContent = messages(s"label.date_of_arrival"),
-                legendClasses = "govuk-label govuk-!-margin-bottom-4 govuk-!-font-weight-bold",
-                hintMessage= Some((messages(s"label.for_example_31_10_2021"))),
-                hintHtml = None,
-                legendAsPageHeading = false,
-            )
+        }
+            <div class="govuk-form-group @{if(form("dateTimeOfArrival.dateOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival.date">
+                @inputDate(
+                    form,
+                    id = "dateTimeOfArrival.dateOfArrival",
+                    legendContent = messages(s"label.date_of_arrival"),
+                    legendClasses = "govuk-label govuk-!-margin-bottom-4 govuk-!-font-weight-bold",
+                    hintMessage= Some((messages(s"label.for_example_31_10_2021"))),
+                    hintHtml = None,
+                    legendAsPageHeading = false
+                )
+            </div>
 
-            @inputTime(
-                form = form,
-                id = "dateTimeOfArrival.timeOfArrival",
-                legendContent = messages("label.scheduled_time_of_arrival"),
-                legendClasses = "govuk-!-font-weight-bold",
-                legendAsPageHeading = false,
-                showSelectPeriod = true,
-                hintText = Some(messages("label.for_example_930")),
-            )
-        </div>
+            <div class="govuk-form-group @{if(form("dateTimeOfArrival.timeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival.time">
+                @inputTime(
+                    form,
+                    id = "dateTimeOfArrival.timeOfArrival",
+                    legendContent = messages(s"label.scheduled_time_of_arrival"),
+                    legendClasses = "govuk-!-font-weight-bold",
+                    legendAsPageHeading = false,
+                    showSelectPeriod = true,
+                    hintText = Some(messages("label.for_example_930"))
+                )
+            </div>
+
+        @if(form("dateTimeOfArrival").hasErrors){
+            </div>
+        }
     }
 
     @button("label.continue")

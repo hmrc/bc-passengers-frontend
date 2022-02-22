@@ -30,7 +30,7 @@
 @govukLayout(pageTitle = Some(title(form, "heading.is_uk_excise_paid_item")), backLink = backLink) {
 
     @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidItemPage(path,iid)) {
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
 
         @fieldset(s"heading.is_uk_excise_paid_item") {
 

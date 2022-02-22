@@ -29,7 +29,7 @@
 @govukLayout(pageTitle = Some(title(form, messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))), backLink = backLink) {
     @formHelper(action = routes.PendingPaymentController.postPendingPaymentPage()){
 
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
 
         @h1(messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))
         <table class="govuk-table">

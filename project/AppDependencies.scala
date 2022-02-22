@@ -1,6 +1,5 @@
 import play.core.PlayVersion
 import play.sbt.PlayImport.ws
-import sbt.Keys._
 import sbt._
 
 object AppDependencies {

@@ -138,8 +138,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("#value-yes").hasAttr("checked") shouldBe true
-      doc.select("#value-no").hasAttr("checked") shouldBe false
+      doc.select("#claimedVatRes-value-yes").hasAttr("checked") shouldBe true
+      doc.select("#claimedVatRes-value-no").hasAttr("checked") shouldBe false
 
       content should include ("Did you claim tax back on any goods you bought in the EU?")
 
@@ -173,7 +173,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       Option(doc.select("a[href=#claimedVatRes-error]")).isEmpty shouldBe false
-      Option(doc.select("a[href=#claimedVatRes-error]").html()).get shouldBe "Select if you claimed tax back on any goods you bought in the EU"
+      Option(doc.select("a[href=#claimedVatRes-value-yes]").html()).get shouldBe "Select if you claimed tax back on any goods you bought in the EU"
       Option(doc.select("#error-summary-title").text()).get shouldBe "There is a problem"
     }
 
@@ -224,8 +224,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc = Jsoup.parse(content)
 
-      doc.select("#value-yes").hasAttr("checked") shouldBe true
-      doc.select("#value-no").hasAttr("checked") shouldBe false
+      doc.select("#isBringingDutyFree-value-yes").hasAttr("checked") shouldBe true
+      doc.select("#isBringingDutyFree-value-no").hasAttr("checked") shouldBe false
 
       content should include ("Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?")
 
@@ -273,7 +273,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       Option(doc.select("a[href=#isBringingDutyFree-error]")).isEmpty shouldBe false
-      Option(doc.select("a[href=#isBringingDutyFree-error]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      Option(doc.select("a[href=#isBringingDutyFree-value-yes]").html()).get shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
       Option(doc.select("#error-summary-title").text()).get shouldBe "There is a problem"
     }
 

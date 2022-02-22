@@ -29,7 +29,7 @@
 
  @formHelper(action = routes.UKResidentController.postUKResidentPage()){
 
-     @errorSummary(form.errors, Some("error"))
+     @errorSummary(form.errors, Some("value-yes"))
 
      @yesNoRadio(form, Some("heading.uk-resident"), name = "isUKResident", isPageHeading= true)
 

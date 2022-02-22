@@ -850,7 +850,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content = contentAsString(response)
         val doc = Jsoup.parse(content)
 
-        doc.getElementById("dateOfArrival-error").text() shouldBe "Error: Scheduled date and time of arrival must be less than 5 days in the future"
+        doc.getElementById("dateTimeOfArrival-error").text() shouldBe "Error: Scheduled date and time of arrival must be less than 5 days in the future"
       }
 
       "Redirect to next page when the schedule time of arrival is 2 hours in past" in new LocalSetup {
@@ -1245,8 +1245,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.select("#value-yes").hasAttr("checked") shouldBe true
-        doc.select("#value-no").hasAttr("checked") shouldBe false
+        doc.select("#irishBorder-value-yes").hasAttr("checked") shouldBe true
+        doc.select("#irishBorder-value-no").hasAttr("checked") shouldBe false
 
         verify(injected[Cache], times(1)).fetch(any())
       }
@@ -1264,8 +1264,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val content: String = contentAsString(response)
         val doc: Document = Jsoup.parse(content)
 
-        doc.select("#value-no").hasAttr("checked") shouldBe true
-        doc.select("#value-yes").hasAttr("checked") shouldBe false
+        doc.select("#irishBorder-value-no").hasAttr("checked") shouldBe true
+        doc.select("#irishBorder-value-yes").hasAttr("checked") shouldBe false
 
         verify(injected[Cache], times(1)).fetch(any())
       }
@@ -1315,7 +1315,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val doc: Document = Jsoup.parse(content)
 
         Option(doc.select("a[href=#irishBorder-error]")).isEmpty shouldBe false
-        Option(doc.select("a[href=#irishBorder-error]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+        Option(doc.select("a[href=#irishBorder-value-yes]").html()).get shouldBe "Select yes if you are entering Northern Ireland from Ireland"
         Option( doc.select("#error-summary-title").text()).get shouldBe "There is a problem"
 
       }

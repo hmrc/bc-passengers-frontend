@@ -31,7 +31,7 @@
 
  @formHelper(action = routes.AlterProductsController.remove(path, iid)){
 
-  @errorSummary(form.errors, Some("error"))
+  @errorSummary(form.errors, Some("value-yes"))
 
   @yesNoRadio(form, Some(s"label.do_you_want_to_remove_.${path.toMessageKey}"), name = "confirmRemove", isPageHeading= true)
 

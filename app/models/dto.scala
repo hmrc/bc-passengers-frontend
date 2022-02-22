@@ -19,8 +19,10 @@ package models
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms.{optional, _}
+import play.api.data.Forms.tuple
 import play.api.data.validation._
-import play.api.data.{Form, Mapping}
+import play.api.data.{Form, FormError, Mapping}
+import play.api.data.format.Formatter
 import services.CountriesService
 
 import scala.util.Try
@@ -230,7 +232,8 @@ object EnterYourDetailsDto extends Validators {
       if (text.length <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
   }
 
-  private def mandatoryDate(error: String): Mapping[String] = tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
+  private def mandatoryDate(error: String): Mapping[String] =
+    tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
     .verifying("error.enter_a_date", dateParts => {
       val definedParts: Int = dateParts.productIterator.collect { case o@Some(_) => o }.size
       definedParts > 0
@@ -257,8 +260,9 @@ object EnterYourDetailsDto extends Validators {
     )
 
 
-  private def mandatoryTime(error: String): Mapping[String] = tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
-    .verifying(error, maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty && maybeTimeString._3.nonEmpty)
+  private def mandatoryTime(error: String): Mapping[String] =
+    tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
+    .verifying("error.enter_a_time", maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty && maybeTimeString._3.nonEmpty)
     .transform[(String, String, String)](
       maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get, maybeTimeString._3.get),
       timeString => (Some(timeString._1), Some(timeString._2), Some(timeString._3))
@@ -320,7 +324,6 @@ object EnterYourDetailsDto extends Validators {
     }
   }
 
-
   def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
       "firstName" -> text.verifying(nonEmptyMaxLength(35, "first_name")).verifying(validateFieldsRegex("error.first_name.valid",validInputText)),
@@ -337,7 +340,8 @@ object EnterYourDetailsDto extends Validators {
         .verifying(emailAddressMatchConstraint()),
       "placeOfArrival" -> mapping(
         "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
-        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival")).verifying(validateFieldsRegex("error.place_of_arrival.valid",validInputText)))
+        "enterPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))
+                                .verifying(validateFieldsRegex("error.place_of_arrival.valid",validInputText)))
       )(PlaceOfArrival.apply)(PlaceOfArrival.unapply).verifying()
         .verifying(placeOfArrivalConstraint("error.required.place_of_arrival")),
       "dateTimeOfArrival" -> mapping(
@@ -364,8 +368,7 @@ object EnterYourDetailsDto extends Validators {
 object DeclarationRetrievalDto extends Validators {
 
   def fromPreviousDeclarationDetails(previousDeclarationDetails: PreviousDeclarationRequest): DeclarationRetrievalDto = {
-    DeclarationRetrievalDto(previousDeclarationDetails.lastName,
-      previousDeclarationDetails.referenceNumber)
+    DeclarationRetrievalDto(previousDeclarationDetails.lastName, previousDeclarationDetails.referenceNumber)
   }
   private val chargeReferencePattern = """^[Xx]([A-Za-z])[Pp][Rr](\d{10})$"""
   def form(): Form[DeclarationRetrievalDto] = Form(
@@ -378,9 +381,11 @@ object DeclarationRetrievalDto extends Validators {
   )
 }
 
+case class TimeOfArrivalDto(hour: String, minute: String, ampm: String)
+
 case class DateTimeOfArrival(dateOfArrival: String, timeOfArrival: String)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
 case class Identification(identificationType: Option[String], identificationNumber: String)
 case class EmailAddress(email: String, confirmEmail: String)
-case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification , emailAddress: EmailAddress, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
+case class EnterYourDetailsDto(firstName: String, lastName: String, identification: Identification, emailAddress: EmailAddress, placeOfArrival: PlaceOfArrival,  dateTimeOfArrival: DateTimeOfArrival)
 case class DeclarationRetrievalDto(lastName: String, referenceNumber: String)

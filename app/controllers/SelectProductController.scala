@@ -97,7 +97,8 @@ class SelectProductController @Inject()(
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
-        Future.successful(Ok(select_products(SelectProductsDto.form(path.toMessageKey), if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")) children.map( i => ( i.name, i.token ) ) else children.map( i => ( i.token,i.name ) ), path)))
+        Future.successful(Ok(select_products(SelectProductsDto.form(path.toMessageKey), if(path.toMessageKey.contains("alcohol") ||
+            path.toMessageKey.contains("tobacco")) children.map( i => ( i.name, i.token ) ) else children.map( i => ( i.token,i.name ) ), path)))
       case _ =>
         Future.successful(InternalServerError(error_template()))
 
@@ -108,7 +109,6 @@ class SelectProductController @Inject()(
   def processProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
     requireCategory(path) { branch =>
-
       SelectProductsDto.form(path.toMessageKey).bindFromRequest.fold(
         formWithErrors => {
           Future.successful {

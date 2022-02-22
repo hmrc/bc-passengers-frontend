@@ -28,7 +28,7 @@
 
     @formHelper(action = routes.TravelDetailsController.dutyFreePost()){
 
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
 
         @yesNoRadio(form, Some("heading.are_you_bringing_in_duty_free_"), name = "isBringingDutyFree", isPageHeading= true)
 
