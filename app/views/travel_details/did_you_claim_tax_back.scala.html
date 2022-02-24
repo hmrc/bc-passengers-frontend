@@ -27,7 +27,7 @@
 
     @formHelper(action = routes.TravelDetailsController.didYouClaimTaxBackPost()){
 
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
 
         @yesNoRadio(form, Some("heading.did_you_claim_tax_back_on_"), name = "claimedVatRes", isPageHeading= true)
 

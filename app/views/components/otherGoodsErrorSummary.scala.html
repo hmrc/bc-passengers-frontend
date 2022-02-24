@@ -16,13 +16,15 @@
 
 @this(govukErrorSummary: GovukErrorSummary)
 
-@(errors: Seq[FormError], errorFieldSuffix: Option[String] = None, errorId: Option[String] = None)(implicit messages: Messages)
+@(errors: Seq[FormError], errorFieldSuffix: Option[String] = None, item: Option[String]=None, errorId: Option[String] = None)(implicit messages: Messages)
 
     @if(errors.nonEmpty) {
         @defining(errors.map { error =>
-            val id = if(error.key == "") { errorId.getOrElse("") } else {
-                error.key + errorFieldSuffix.fold("")(suffix => s"-error")
-            }
+            val id = if(item != None) {
+                        item.getOrElse("")
+                     } else if (error.key == "") { errorId.getOrElse("") } else {
+                        error.key + errorFieldSuffix.fold("")(suffix => s"-error")
+                     }
             ErrorLink(
                 href = Some(s"#$id"),
                 content = Text(messages(s"${error.message}.${errorFieldSuffix.getOrElse("")}"))

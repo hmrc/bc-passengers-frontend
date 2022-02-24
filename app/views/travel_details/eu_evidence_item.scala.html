@@ -31,7 +31,7 @@
 @govukLayout(pageTitle = Some(title(form, "heading.evidence_eu_item")), backLink = backLink) {
 
     @formHelper(action = routes.EUEvidenceController.postEUEvidenceItemPage(path,iid)){
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
         @fieldset(s"heading.evidence_eu_item") {
 
             @p{@messages("text.evidence_include")}

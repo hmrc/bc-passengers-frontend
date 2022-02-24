@@ -20,11 +20,22 @@
 
     @if(errors.nonEmpty) {
         @defining(errors.map { error =>
-            val id = if(error.key == "") { errorId.getOrElse("") } else {
+            val id = if(error.key == "") {
+                errorId.getOrElse("")
+            } else {
                 error.key + errorFieldSuffix.fold("")(suffix => s"-$suffix")
             }
+
+            var errorSuffix = error.key match {
+                case key if key.contains("dateOfArrival") => ".day"
+                case key if key.contains("timeOfArrival") => ".hour"
+                case key if key.contains("dateTimeOfArrival") => ".dateOfArrival.day"
+                case key if key.contains("placeOfArrival") => ".selectPlaceOfArrival"
+                case _ => ""
+            }
+
             ErrorLink(
-                href = Some(s"#$id"),
+                href = Some(s"#$id" + errorSuffix),
                 content = Text(messages(error.message, error.args: _*))
             )
         }) { errorLinks =>
@@ -34,3 +45,4 @@
             ))
         }
     }
+

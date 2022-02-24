@@ -32,8 +32,8 @@
 
  @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidPage()) {
 
-  @errorSummary(form.errors, Some("error"))
-
+  @errorSummary(form.errors, Some("value-yes"))
+ 
   <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
     <h1 class="govuk-fieldset__heading">
      @Html(messages("heading.is_uk_vat_excise_paid"))

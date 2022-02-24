@@ -87,7 +87,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
       val doc = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "You have an incomplete payment for your declaration for £98,000.00"
-      doc.select("#value-yes").hasAttr("checked") shouldBe true
+      doc.select("#pendingPayment-value-yes").hasAttr("checked") shouldBe true
     }
 
     "return 500 when calculator response missing while load the pending payment page" in {
@@ -164,7 +164,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "You have an incomplete payment for your declaration for £0.00"
       doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.getElementsByClass("govuk-error-summary").select("a[href=#pendingPayment-error]").html() shouldBe "Select yes if you want to pay now"
+      doc.getElementsByClass("govuk-error-summary").select("a[href=#pendingPayment-value-yes]").html() shouldBe "Select yes if you want to pay now"
       doc.getElementById("pendingPayment-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you want to pay now"
 
 

@@ -41,12 +41,12 @@
         content = HtmlContent(hint)
     )},
     items = Seq(
-        RadioItem(id = Some("value-yes"),
+        RadioItem(id = Some(s"$name-value-yes"),
                   value = Some("true"),
                   content = Text(messages("label.yes")),
                   checked = form(name).value.contains("true")
         ),
-        RadioItem(id = Some("value-no"),
+        RadioItem(id = Some(s"$name-value-no"),
                   value = Some("false"),
                   content = Text(messages("label.no")),
                   checked = form(name).value.contains("false")

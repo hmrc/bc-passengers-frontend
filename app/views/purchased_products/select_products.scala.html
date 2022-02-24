@@ -24,7 +24,7 @@
     checkboxes: components.inputCheckboxes,
     radios: components.otherGoodsInputRadio,
     otherGoodsErrorSummary : components.otherGoodsErrorSummary,
-    p: components.p,
+    p: components.p
 )
 
 @(selectProductsForm: Form[SelectProductsDto], items: List[(String, String)], path: ProductPath)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
@@ -33,7 +33,12 @@
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
 
-    @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey))
+    @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey),
+                            if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco"))
+                                Some(items(0)._2)
+                            else
+                                Some(s"tokens-${items(0)._1}")
+                            )
 
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
         <h1 class="govuk-fieldset__heading">
@@ -44,6 +49,7 @@
     @p(Html(messages("label.select_all_that_apply")))
 
             @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
+
                 @checkboxes(
                     field = selectProductsForm("tokens"),
                     path = Some(path),
@@ -52,12 +58,11 @@
             } else {
                     @radios(
                         field = selectProductsForm("tokens"),
-                        items= radioOptions(items),
-                        name= "tokens",
-                        path= Some(path)
+                        items = radioOptions(items),
+                        name = "tokens",
+                        path = Some(path)
                 )
             }
-
     @button("label.continue")
     }
 }

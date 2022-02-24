@@ -29,7 +29,7 @@
 @govukLayout(pageTitle = Some(title(form, "label.are_you_17_or_over")), backLink = backLink) {
 
     @formHelper(action = routes.TravelDetailsController.confirmAgePost()){
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
 
         @yesNoRadio(form, Some("label.are_you_17_or_over"), name = "ageOver17", isPageHeading= true)
 

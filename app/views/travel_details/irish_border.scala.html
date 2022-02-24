@@ -27,7 +27,7 @@
 
   @formHelper(action = routes.CalculateDeclareController.irishBorderPost()) {
 
-    @errorSummary(form.errors, Some("error"))
+    @errorSummary(form.errors, Some("value-yes"))
 
     @yesNoRadio(form, Some("label.are_entering_northern_ireland_"), name = "irishBorder", isPageHeading= true)
 

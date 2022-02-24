@@ -32,7 +32,7 @@
 
     @formHelper(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage()) {
 
-    @errorSummary(form.errors, Some("error"))
+    @errorSummary(form.errors)
 
     @fieldset("heading.declaration_retrieval") {
         @p{@messages("text.declaration_retrieval")}

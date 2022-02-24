@@ -31,7 +31,7 @@
 
     @formHelper(action = routes.UccReliefController.postUccReliefItemPage(path, iid)){
 
-        @errorSummary(form.errors, Some("error"))
+        @errorSummary(form.errors, Some("value-yes"))
         @fieldset(s"heading.ucc_item") {
 
             @p{@messages("label.ucc.first_message_item")}

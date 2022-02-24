@@ -14,13 +14,13 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    ```
 2. Run the services (minus the frontend) via [service manager](https://github.com/hmrc/service-manager) with the following profile:
    ```bash
-   sm --start BC_PASSENGERS_ALL -f
+   sm --start BC_PASSENGERS_ALL
    sm --stop BC_PASSENGERS_FRONTEND
    ```
-3. Restart the service from your local repository on the appropriate port, for example:
+3. Restart the service locally:
    ```bash
    cd bc-passengers-frontend
-   sbt 'run 9008'
+   sbt run
    ```
 4. To get to the first page of the service, you should be able to use the `where-goods-bought` endpoint (i.e. http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought)
 

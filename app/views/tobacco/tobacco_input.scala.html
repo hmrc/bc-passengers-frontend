@@ -36,7 +36,7 @@
 
       @formHelper(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid))) {
 
-          @errorSummary(form.errors, Some("error"))
+          @errorSummary(form.errors)
 
           @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}")
           <br>
