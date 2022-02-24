@@ -43,6 +43,7 @@
 
     @p(Html(messages("label.select_all_that_apply")))
 
+            <legend>
             @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
                 @checkboxes(
                     field = selectProductsForm("tokens"),
@@ -57,6 +58,7 @@
                         path= Some(path)
                 )
             }
+            </legend>
 
     @button("label.continue")
     }
