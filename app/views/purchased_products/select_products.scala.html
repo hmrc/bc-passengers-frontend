@@ -46,14 +46,14 @@
      </h1>
     </legend>
 
-    @p(Html(messages("label.select_all_that_apply")))
 
             @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
 
                 @checkboxes(
                     field = selectProductsForm("tokens"),
                     path = Some(path),
-                    inputs = checkBoxOptions(items)
+                    inputs = checkBoxOptions(items),
+                    legendText = Some(messages("label.select_all_that_apply"))
                 )
             } else {
                     @radios(
