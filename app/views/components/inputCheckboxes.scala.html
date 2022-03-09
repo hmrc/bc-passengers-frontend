@@ -24,6 +24,7 @@
     hint: Option[String] = None,
     path: Option[ProductPath] = None,
     legendAsHeading: Boolean = false,
+    legendText: Option[String] = None,
     inputs: Seq[CheckboxItem]
 )(implicit messages: Messages)
 
@@ -35,9 +36,13 @@
         case None => None
     },
     fieldset = Some(Fieldset(
-        legend = Some(Legend(
-        classes = legendClass.getOrElse("govuk-fieldset__legend--l"),
-        isPageHeading = legendAsHeading
+    legend = Some(Legend(
+    isPageHeading = legendAsHeading,
+        content = if(legendText.isDefined){
+            Text(legendText.get)
+            } else {
+                 Empty
+            }
         ))
     )),
     hint = if(hint.isDefined) Some(Hint(content = Text(hint.get))) else None,
