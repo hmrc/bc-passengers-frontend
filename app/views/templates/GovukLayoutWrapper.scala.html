@@ -27,7 +27,7 @@
     govukBackLink: GovukBackLink,
     link: components.link,
     phaseBanner: components.phaseBanner,
-    hmrcReportTechnicalIssue: hmrcReportTechnicalIssue,
+    HmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     languageSwitch: HmrcLanguageSelect,
     header: HmrcHeader,
     hmrcHead: HmrcHead,
@@ -90,16 +90,9 @@
     </div>
 
     <div class="govuk-!-font-size-19">
-        @hmrcReportTechnicalIssue(
-            uk.gov.hmrc.hmrcfrontend.views.html.components.ReportTechnicalIssue(
-                "bc-passengers-frontend", messages.lang.language,
-                if (messages.lang.code == "cy") Cy else En
-            )
-        )
+        @HmrcReportTechnicalIssueHelper()
     </div>
-}
-
-
+    }
 
 @govukLayout(
     pageTitle = pageTitle,
