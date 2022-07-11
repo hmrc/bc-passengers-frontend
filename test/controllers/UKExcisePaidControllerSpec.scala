@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.Cache
 import org.jsoup.Jsoup
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
-import org.mockito.Matchers.{eq => meq,_}
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
