@@ -28,7 +28,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import uk.gov.hmrc.play.bootstrap.controller.{Utf8MimeTypes, WithJsonBody}
 import scala.concurrent.{ExecutionContext, Future}
 
-
 trait ControllerHelpers extends MessagesBaseController
   with Utf8MimeTypes
   with WithJsonBody
@@ -62,7 +61,7 @@ trait ControllerHelpers extends MessagesBaseController
     context.getJourneyData match {
       case JourneyData(_, _, _,_,_, _, _, _, _, _, _, _, _,_, _, _, _, Some(calculatorResponse), _, _, _, _,_, _,_,_, _, _) => block(calculatorResponse)
       case _ =>
-        logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard())
+        logAndRedirect(s"Missing calculator response in journeyData! Redirecting to dashboard...", routes.DashboardController.showDashboard)
     }
   }
 
@@ -86,7 +85,7 @@ trait ControllerHelpers extends MessagesBaseController
       case Some(journeyData) =>
         block(journeyData)
       case None =>
-        logAndRedirect("Unable to get journeyData! Starting a new session...", routes.TravelDetailsController.newSession())
+        logAndRedirect("Unable to get journeyData! Starting a new session...", routes.TravelDetailsController.newSession)
     }
   }
 
@@ -129,7 +128,7 @@ trait ControllerHelpers extends MessagesBaseController
       case JourneyData(_, Some(_), _, _, _, _,_, _, _, _,Some(_), Some(_), _, _, _, _, _, _, _, _, _, _, _,_, _,_, _, _) if appConfig.isVatResJourneyEnabled => block
       case JourneyData(_, Some(_), _, _, _, _, _, None, None, _, Some(_), Some(_), _, _, _, _, _, _, _, _, _, _,_, _, _,_, _, _) if !appConfig.isVatResJourneyEnabled => block
       case _ =>
-        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... ", routes.TravelDetailsController.newSession())
+        logAndRedirect(s"Incomplete or missing travel details found in journeyData! Starting a new session... ", routes.TravelDetailsController.newSession)
     }
   }
 

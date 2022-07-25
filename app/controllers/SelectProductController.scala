@@ -22,7 +22,7 @@ import controllers.enforce.{DashboardAction, PublicAction}
 import javax.inject.Inject
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -51,7 +51,7 @@ class SelectProductController @Inject()(
 
   def cancel():  Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
-      Future.successful(Redirect(routes.SelectProductController.nextStep()))
+      Future.successful(Redirect(routes.SelectProductController.nextStep))
     }
   }
 
@@ -60,7 +60,7 @@ class SelectProductController @Inject()(
     withNextSelectedProductAlias {
 
       case None =>
-        Future.successful(Redirect(routes.DashboardController.showDashboard()))
+        Future.successful(Redirect(routes.DashboardController.showDashboard))
 
       case Some(ProductAlias(_, productPath)) =>
 
@@ -122,7 +122,7 @@ class SelectProductController @Inject()(
           selectProductService.addSelectedProductsAsAliases(updatedJourneyData, selectProductsDto.tokens.map(path.addingComponent)) flatMap { journeyData =>
 
             purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-              Redirect(routes.SelectProductController.nextStep())
+              Redirect(routes.SelectProductController.nextStep)
             }
           }
         }
@@ -150,7 +150,7 @@ class SelectProductController @Inject()(
 
             pathsOrdered match {
               case x :: xs if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
-                Future.successful(Redirect(routes.SelectProductController.nextStep()))
+                Future.successful(Redirect(routes.SelectProductController.nextStep))
 
               case _ =>
                 purchasedProductService.clearWorkingInstance(journeyData) map { _ =>

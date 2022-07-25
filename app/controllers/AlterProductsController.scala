@@ -19,13 +19,13 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, PublicAction}
-import javax.inject.Inject
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, ControllerComponents, MessagesControllerComponents}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AlterProductsController @Inject() (
@@ -61,11 +61,11 @@ class AlterProductsController @Inject() (
       confirmRemoveDto => {
         if (confirmRemoveDto.confirmRemove) {
           purhasedProductService.removePurchasedProductInstance(context.getJourneyData, path, iid) map { _ =>
-            Redirect(routes.DashboardController.showDashboard())
+            Redirect(routes.DashboardController.showDashboard)
           }
         }
         else {
-          Future.successful(Redirect(routes.DashboardController.showDashboard()))
+          Future.successful(Redirect(routes.DashboardController.showDashboard))
         }
       }
     )

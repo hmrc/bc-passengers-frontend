@@ -9,7 +9,6 @@ import scala.util.matching.Regex
 
 val appName = "bc-passengers-frontend"
 
-
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
@@ -21,30 +20,30 @@ lazy val microservice = Project(appName, file("."))
     pipelineStages := Seq(digest)
   )
   .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.12.12")
+  .settings(scalaVersion := "2.12.15")
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(silencerSettings)
   .settings( majorVersion := 1 )
   .settings(
     targetJvm := "jvm-1.8",
-    parallelExecution in Test := false,
-    fork in Test := false
+    Test / parallelExecution := false,
+    Test / fork := false
   )
   .settings(
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LocalLanguageController;.*testonly.*;",
-    ScoverageKeys.coverageMinimum := 90
+    ScoverageKeys.coverageMinimumStmtTotal := 90
   )
   .configs(IntegrationTest)
   .settings(
     inConfig(IntegrationTest)(Defaults.itSettings),
-    Keys.fork in IntegrationTest := false,
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
+    IntegrationTest / Keys.fork := false,
+    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false,
+    IntegrationTest / testGrouping := oneForkedJvmPerTest((IntegrationTest / definedTests).value),
+    IntegrationTest / parallelExecution := false,
     routesImport ++= Seq("binders.Binders._", "models._")
   )
   .settings(resolvers += Resolver.jcenterRepo)
@@ -56,7 +55,7 @@ lazy val silencerSettings: Seq[Setting[_]] = {
   val paramValueNeverUsed: Regex = """^(parameter value)(.*)(is never used)$""".r
   val unusedImports: Regex = """^(Unused import*)$""".r
 
-  val silencerVersion = "1.7.1"
+  val silencerVersion = "1.7.9"
   Seq(
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
@@ -74,7 +73,6 @@ lazy val silencerSettings: Seq[Setting[_]] = {
 TwirlKeys.templateImports ++= Seq(
   "play.twirl.api.HtmlFormat",
   "uk.gov.hmrc.govukfrontend.views.html.components._",
-  "uk.gov.hmrc.govukfrontend.views.html.helpers._",
   "views.ViewUtils._",
   "controllers.routes._"
 )
@@ -87,5 +85,5 @@ Concat.groups := Seq(
       "javascripts/autocomplete.js"
     ))
 )
-pipelineStages in Assets := Seq(concat, uglify)
-includeFilter in uglify := GlobFilter("application.js")
+Assets / pipelineStages := Seq(concat, uglify)
+uglify / includeFilter := GlobFilter("application.js")

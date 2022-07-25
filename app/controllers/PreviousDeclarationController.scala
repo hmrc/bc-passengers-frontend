@@ -23,7 +23,7 @@ import forms.PrevDeclarationForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,9 +65,9 @@ class PreviousDeclarationController @Inject()(
         prevDeclaration =>
           previousDeclarationService.storePrevDeclaration(context.journeyData)(prevDeclaration).map(_ =>
             if (prevDeclaration) {
-              Redirect(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage())
+              Redirect(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage)
             } else {
-              Redirect(routes.TravelDetailsController.whereGoodsBought())
+              Redirect(routes.TravelDetailsController.whereGoodsBought)
             })
       })
   }

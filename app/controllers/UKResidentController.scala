@@ -23,7 +23,7 @@ import forms.UKResidentForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,8 +65,8 @@ class UKResidentController @Inject()(
         isUKResident =>
           travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(f = _ =>
             isUKResident match {
-              case true => Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage())
-              case false => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
+              case true => Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage)
+              case false => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
             }
           )
       })

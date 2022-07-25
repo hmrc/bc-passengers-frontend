@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.{DeclarationRetrievalDto, PreviousDeclarationRequest}
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -77,13 +77,13 @@ class DeclarationRetrievalController @Inject()(
               val amendState = journeyData.get.amendState.getOrElse("")
 
               if (dateTime.withZone(DateTimeZone.UTC).plusHours(24).isBefore(DateTime.now().withZone(DateTimeZone.UTC))) {
-                Redirect(routes.DeclarationRetrievalController.declarationNotFound())
+                Redirect(routes.DeclarationRetrievalController.declarationNotFound)
               } else if(amendState.equals("pending-payment")){
-                Redirect(routes.PendingPaymentController.loadPendingPaymentPage())
+                Redirect(routes.PendingPaymentController.loadPendingPaymentPage)
               } else {
-                Redirect(routes.DashboardController.showDashboard())
+                Redirect(routes.DashboardController.showDashboard)
               }
-            case false => Redirect(routes.DeclarationRetrievalController.declarationNotFound())}
+            case false => Redirect(routes.DeclarationRetrievalController.declarationNotFound)}
           )
       })
 

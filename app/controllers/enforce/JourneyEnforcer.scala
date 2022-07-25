@@ -41,7 +41,7 @@ class JourneyEnforcer {
   def apply(q: JourneyStep*)(block: => Future[Result])(implicit context: LocalContext): Future[Result] = if(q.exists(_.meetsAllPrerequisites)) block else redirect
 
   def redirect(implicit context: LocalContext): Future[Result] =
-    logAndRedirect(s"Enforcer prerequisites not met for ${context.request.path}, redirecting", routes.TravelDetailsController.newSession())
+    logAndRedirect(s"Enforcer prerequisites not met for ${context.request.path}, redirecting", routes.TravelDetailsController.newSession)
 }
 
 @Singleton
@@ -72,7 +72,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder)
               block(LocalContext(request, s, journeyData))
             }
           case None =>
-            Future.successful(Redirect(routes.TravelDetailsController.newSession()))
+            Future.successful(Redirect(routes.TravelDetailsController.newSession))
         }
 
       }
@@ -264,7 +264,7 @@ class DeclareAction @Inject()(appConfig: AppConfig, publicAction: PublicAction) 
         block(context)
       else if(amendmentJourney(context))
         block(context)
-      else if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+      else if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
     }
   }
 
@@ -292,7 +292,7 @@ class UserInfoAction @Inject()(appConfig: AppConfig, publicAction: PublicAction)
       }
 
       else {
-        if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+        if(appConfig.isAmendmentsEnabled) Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))  else Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
       }
     }
   }
@@ -447,7 +447,7 @@ class PreviousDeclarationAction @Inject()(journeyEnforcer: JourneyEnforcer, appC
         }
       }
       else {
-        Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+        Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
       }
     }
   }
@@ -463,7 +463,7 @@ class DeclarationRetrievalAction @Inject()(journeyEnforcer: JourneyEnforcer, app
         }
       }
       else {
-        Future(Redirect(routes.TravelDetailsController.whereGoodsBought()))
+        Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
       }
     }
   }

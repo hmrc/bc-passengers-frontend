@@ -46,8 +46,6 @@ class DashboardControllerSpec extends BaseSpec {
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .build()
 
-  
-
   override def beforeEach: Unit = {
     reset(injected[Cache], injected[PurchasedProductService])
     reset(injected[Cache], injected[CalculatorService])

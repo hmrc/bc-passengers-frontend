@@ -23,7 +23,7 @@ import forms.PendingPaymentForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.{CalculatorService, CalculatorServiceSuccessResponse, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -78,8 +78,8 @@ class PendingPaymentController @Inject()(
           pendingPayment =>
             cache.storeJourneyData(context.getJourneyData.copy(pendingPayment = Some(pendingPayment))).map(_ =>
               pendingPayment match {
-                case true => Redirect(routes.CalculateDeclareController.processAmendment())
-                case false => Redirect(routes.PendingPaymentController.noFurtherAmendment())
+                case true => Redirect(routes.CalculateDeclareController.processAmendment)
+                case false => Redirect(routes.PendingPaymentController.noFurtherAmendment)
               }
             )
         })

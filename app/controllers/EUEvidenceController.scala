@@ -23,7 +23,7 @@ import forms.EUEvidenceItemForm
 import javax.inject.Inject
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,7 +69,7 @@ class EUEvidenceController @Inject()(
             else ppi
           })
           cache.store(context.getJourneyData.copy(purchasedProductInstances = ppInstances)).map(_ =>
-            Redirect(routes.SelectProductController.nextStep())
+            Redirect(routes.SelectProductController.nextStep)
           )
       })
   }

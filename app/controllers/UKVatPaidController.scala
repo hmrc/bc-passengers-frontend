@@ -24,7 +24,7 @@ import forms.UKVatPaidForm
 import javax.inject.Inject
 import models.{ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -74,7 +74,7 @@ class UKVatPaidController @Inject()(
                 if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get)
                   Redirect (routes.UccReliefController.loadUccReliefItemPage(path, iid))
                 else
-                  Redirect(routes.SelectProductController.nextStep())
+                  Redirect(routes.SelectProductController.nextStep)
               case false =>
                 Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))
             }

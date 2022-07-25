@@ -25,7 +25,6 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.JodaWrites._
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.Reads._
 import util._
 import play.api.libs.json._

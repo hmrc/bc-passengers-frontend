@@ -46,12 +46,12 @@ class PayApiService @Inject()(
 
   lazy val returnUrl: String = configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
 
-  lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation()
+  lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation
   lazy val returnUrlCancelled: String = returnUrlFailed
 
-  lazy val backUrlDeclaration: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails()
+  lazy val backUrlDeclaration: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails
   lazy val backUrlAmendment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.declareYourGoods
-  lazy val backUrlPendingPayment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.PendingPaymentController.loadPendingPaymentPage()
+  lazy val backUrlPendingPayment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.PendingPaymentController.loadPendingPaymentPage
 
   def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean, amountPaidPreviously : Option[String], amendState: Option[String] = None)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 

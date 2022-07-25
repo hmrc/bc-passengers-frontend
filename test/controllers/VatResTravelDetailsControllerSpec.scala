@@ -34,7 +34,6 @@ import services.TravelDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
-import scala.collection.JavaConversions._
 import scala.concurrent.Future
 import scala.language.postfixOps
 

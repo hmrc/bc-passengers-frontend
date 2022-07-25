@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@
       <div class="govuk-inset-text">
         <p>@messages("label.tax_on_all_if_go_over_allowance")</p>
       </div>
-      <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
+      <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a></p>
       @displayTaxBreakdown(calculatorResponseDto)
       <br>
 
@@ -97,16 +97,16 @@
 
       @if(previousDeclaration) {
         @p(Html(messages("label.amend_upto_5_days")))
-        @formHelper(action = routes.CalculateDeclareController.declareYourGoods()) {
+        @formHelper(action = routes.CalculateDeclareController.declareYourGoods) {
             @button(messages("label.amend_your_goods_and_pay_online"))
         }
       } else {
         @p(Html(messages("label.upto_5_days")))
-        @formHelper(action = routes.CalculateDeclareController.declareYourGoods()) {
+        @formHelper(action = routes.CalculateDeclareController.declareYourGoods) {
             @button(messages("label.declare_your_goods_and_pay_online"))
         }
       }
 
-      <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
+      <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.TravelDetailsController.newSession">@messages("label.start_again")</a></p>
 
 }
