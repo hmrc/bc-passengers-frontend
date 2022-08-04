@@ -18,16 +18,14 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.UKExcisePaidAction
-import controllers.enforce.UKExcisePaidItemAction
-import forms.UKExcisePaidForm
-import forms.UKExcisePaidItemForm
-import javax.inject.Inject
+import controllers.enforce.{UKExcisePaidAction, UKExcisePaidItemAction}
+import forms.{UKExcisePaidForm, UKExcisePaidItemForm}
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UKExcisePaidController @Inject()(
@@ -69,9 +67,9 @@ class UKExcisePaidController @Inject()(
         isUKVatExcisePaid =>
           travelDetailsService.storeUKExcisePaid(context.journeyData)(isUKVatExcisePaid).map(_ =>
             (context.getJourneyData.isUKResident,isUKVatExcisePaid) match {
-              case (Some(true),true) => Redirect(routes.TravelDetailsController.noNeedToUseServiceGbni())
-              case (Some(true),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
-              case _ => Redirect(routes.TravelDetailsController.whereGoodsBought())
+              case (Some(true),true) => Redirect(routes.TravelDetailsController.noNeedToUseServiceGbni)
+              case (Some(true),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
+              case _ => Redirect(routes.TravelDetailsController.whereGoodsBought)
             }
           )
       })
@@ -103,10 +101,9 @@ class UKExcisePaidController @Inject()(
             if(ppi.iid == iid) ppi.copy(isExcisePaid = Some(isUKExcisePaid)) else ppi
           })
           cache.store(context.getJourneyData.copy(purchasedProductInstances = ppInstances)).map(_ =>
-            Redirect(routes.SelectProductController.nextStep())
+            Redirect(routes.SelectProductController.nextStep)
           )
       })
   }
-
 
 }

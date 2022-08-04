@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import models.{Alcohol, Band, Calculation, CalculatorResponse, Country, Currency, DescriptionLabels, ExchangeRate, Item, JourneyData, Metadata, OtherGoods, ProductPath, PurchasedProductInstance, Tobacco}
+import models._
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -103,9 +103,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = TravelDetailsController.whereGoodsBought()
+      override def call: Call = TravelDetailsController.whereGoodsBought
 
-      m.backLink(context) shouldBe Some(routes.PreviousDeclarationController.loadPreviousDeclarationPage().url)
+      m.backLink(context) shouldBe Some(routes.PreviousDeclarationController.loadPreviousDeclarationPage.url)
     }
   }
 
@@ -121,7 +121,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = TravelDetailsController.whereGoodsBought()
+      override def call: Call = TravelDetailsController.whereGoodsBought
 
       m.backLink(context) shouldBe Some("https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods")
     }
@@ -139,7 +139,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = PreviousDeclarationController.loadPreviousDeclarationPage()
+      override def call: Call = PreviousDeclarationController.loadPreviousDeclarationPage
 
       m.backLink(context) shouldBe Some("https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods")
     }
@@ -155,9 +155,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = ArrivingNIController.loadArrivingNIPage()
+      override def call: Call = ArrivingNIController.loadArrivingNIPage
 
-      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought().url)
+      m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
     }
   }
 
@@ -169,9 +169,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val euCountryCheck: Option[String] = Some("euOnly")
       override val isArrivingNi: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.goodsBoughtIntoGB()
+      override def call: Call = TravelDetailsController.goodsBoughtIntoGB
 
-      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
     "happen when on goods-brought-into-great-britain-iom and nonEuOnly journey to GB" in new LocalSetup {
@@ -180,9 +180,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val euCountryCheck: Option[String] = Some("nonEuOnly")
       override val isArrivingNi: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.goodsBoughtIntoGB()
+      override def call: Call = TravelDetailsController.goodsBoughtIntoGB
 
-      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
     "happen when on goods-brought-into-northern-ireland and nonEuOnly journey to NI" in new LocalSetup {
@@ -191,9 +191,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val euCountryCheck: Option[String] = Some("nonEuOnly")
       override val isArrivingNi: Option[Boolean] = Some(true)
 
-      override def call: Call = TravelDetailsController.goodsBoughtIntoNI()
+      override def call: Call = TravelDetailsController.goodsBoughtIntoNI
 
-      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
     "happen when on gb-ni-uk-resident-check and GB journey to NI" in new LocalSetup {
@@ -202,9 +202,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val euCountryCheck: Option[String] = Some("greatBritain")
       override val isArrivingNi: Option[Boolean] = Some(true)
 
-      override def call: Call = UKResidentController.loadUKResidentPage()
+      override def call: Call = UKResidentController.loadUKResidentPage
 
-      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
 
     "happen when on goods-bought-into-northern-ireland-inside-eu-check and euOnly journey to NI" in new LocalSetup {
@@ -213,9 +213,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val euCountryCheck: Option[String] = Some("euOnly")
       override val isArrivingNi: Option[Boolean] = Some(true)
 
-      override def call: Call = TravelDetailsController.goodsBoughtInsideEu()
+      override def call: Call = TravelDetailsController.goodsBoughtInsideEu
 
-      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage().url)
+      m.backLink(context) shouldBe Some(routes.ArrivingNIController.loadArrivingNIPage.url)
     }
   }
 
@@ -225,9 +225,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck: Option[String] = None
 
-      override def call: Call = UKExcisePaidController.loadUKExcisePaidPage()
+      override def call: Call = UKExcisePaidController.loadUKExcisePaidPage
 
-      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
+      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage.url)
     }
   }
 
@@ -238,9 +238,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isIrishBorderQuestionEnabled  = false
       override val euCountryCheck: Option[String] = None
 
-      override def call: Call = TravelDetailsController.noNeedToUseServiceGbni()
+      override def call: Call = TravelDetailsController.noNeedToUseServiceGbni
 
-      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage().url)
+      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage.url)
     }
 
     "happen when on goods-brought-into-northern-ireland for UK Resident in GB-NI flow" in new LocalSetup {
@@ -251,9 +251,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isUKVatExcisePaid: Option[Boolean] = Some(false)
       override val isUKResident: Option[Boolean] = Some(true)
 
-      override def call: Call = TravelDetailsController.goodsBoughtIntoNI()
+      override def call: Call = TravelDetailsController.goodsBoughtIntoNI
 
-      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage().url)
+      m.backLink(context) shouldBe Some(routes.UKExcisePaidController.loadUKExcisePaidPage.url)
     }
   }
 
@@ -264,9 +264,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val euCountryCheck: Option[String] = Some("greatBritain")
       override val isUKResident: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.goodsBoughtIntoNI()
+      override def call: Call = TravelDetailsController.goodsBoughtIntoNI
 
-      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage().url)
+      m.backLink(context) shouldBe Some(routes.UKResidentController.loadUKResidentPage.url)
     }
   }
 
@@ -279,9 +279,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(true)
       override val bringingOverAllowance: Option[Boolean] = Some(true)
 
-      override def call: Call = TravelDetailsController.privateTravel()
+      override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoNI().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoNI.url)
     }
 
 
@@ -293,9 +293,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.privateTravel()
+      override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService.url)
     }
 
     "return user to goods-brought-into-great-britain-iom when destination is GB and bringingOverAllowance=true" in new LocalSetup {
@@ -305,9 +305,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(false)
       override val bringingOverAllowance: Option[Boolean] = Some(true)
 
-      override def call: Call = TravelDetailsController.privateTravel()
+      override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoGB().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoGB.url)
     }
 
     "return user to no-need-to-use-service when euCountryCheck=nonEuOnly and bringingOverAllowance=false" in new LocalSetup {
@@ -318,9 +318,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.privateTravel()
+      override def call: Call = TravelDetailsController.privateTravel
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.noNeedToUseService.url)
     }
   }
 
@@ -333,9 +333,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(true)
       override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.noNeedToUseService()
+      override def call: Call = TravelDetailsController.noNeedToUseService
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoNI().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoNI.url)
     }
 
     "return user to goods-brought-into-great-britain-iom when destination is GB" in new LocalSetup {
@@ -345,9 +345,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(false)
       override val bringingOverAllowance: Option[Boolean] = Some(false)
 
-      override def call: Call = TravelDetailsController.noNeedToUseService()
+      override def call: Call = TravelDetailsController.noNeedToUseService
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoGB().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.goodsBoughtIntoGB.url)
     }
   }
 
@@ -361,7 +361,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = DeclarationRetrievalController.loadDeclarationRetrievalPage()
+      override def call: Call = DeclarationRetrievalController.loadDeclarationRetrievalPage
 
       m.backLink(context) shouldBe Some(PreviousDeclarationController.loadPreviousDeclarationPage.url)
     }
@@ -377,9 +377,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = TravelDetailsController.confirmAge()
+      override def call: Call = TravelDetailsController.confirmAge
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.privateTravel().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.privateTravel.url)
     }
   }
 
@@ -394,9 +394,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val bringingOverAllowance: Option[Boolean] = None
       override val prevDeclaration: Option[Boolean] = Some(false)
 
-      override def call: Call = routes.DashboardController.showDashboard()
+      override def call: Call = routes.DashboardController.showDashboard
 
-      m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge().url)
+      m.backLink(context) shouldBe Some(TravelDetailsController.confirmAge.url)
     }
 
     "return user to declaration-retrieval for amendment journey " in new LocalSetup {
@@ -408,9 +408,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val bringingOverAllowance: Option[Boolean] = None
       override val prevDeclaration: Option[Boolean] = Some(true)
 
-      override def call: Call = routes.DashboardController.showDashboard()
+      override def call: Call = routes.DashboardController.showDashboard
 
-      m.backLink(context) shouldBe Some(DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
+      m.backLink(context) shouldBe Some(DeclarationRetrievalController.loadDeclarationRetrievalPage.url)
     }
   }
 
@@ -423,9 +423,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(true)
       override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
 
-      override def call: Call = CalculateDeclareController.enterYourDetails()
+      override def call: Call = CalculateDeclareController.enterYourDetails
 
-      m.backLink(context) shouldBe Some(CalculateDeclareController.declareYourGoods().url)
+      m.backLink(context) shouldBe Some(CalculateDeclareController.declareYourGoods.url)
     }
   }
 
@@ -438,9 +438,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(true)
       override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
 
-      override def call: Call = CalculateDeclareController.declareYourGoods()
+      override def call: Call = CalculateDeclareController.declareYourGoods
 
-      m.backLink(context) shouldBe Some(CalculateDeclareController.showCalculation().url)
+      m.backLink(context) shouldBe Some(CalculateDeclareController.showCalculation.url)
     }
   }
 
@@ -453,9 +453,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean] = Some(true)
       override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
 
-      override def call: Call = CalculateDeclareController.showCalculation()
+      override def call: Call = CalculateDeclareController.showCalculation
 
-      m.backLink(context) shouldBe Some(DashboardController.showDashboard().url)
+      m.backLink(context) shouldBe Some(DashboardController.showDashboard.url)
     }
   }
 
@@ -469,9 +469,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.CalculateDeclareController.irishBorder()
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
-      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard().url)
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }
   }
 
@@ -485,9 +485,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.CalculateDeclareController.irishBorder()
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
-      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard().url)
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }
 
     "return user to /tell-us when irishBorder is false" in new LocalSetup {
@@ -498,9 +498,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.CalculateDeclareController.irishBorder()
+      override def call: Call = routes.CalculateDeclareController.irishBorder
 
-      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard().url)
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
     }
   }
 
@@ -680,9 +680,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.DeclarationRetrievalController.declarationNotFound()
+      override def call: Call = routes.DeclarationRetrievalController.declarationNotFound
 
-      m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
+      m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage.url)
     }
   }
 
@@ -697,9 +697,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.PendingPaymentController.loadPendingPaymentPage()
+      override def call: Call = routes.PendingPaymentController.loadPendingPaymentPage
 
-      m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage().url)
+      m.backLink(context) shouldBe Some(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage.url)
     }
   }
 
@@ -714,9 +714,9 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isBringingDutyFree: Option[Boolean] = None
       override val bringingOverAllowance: Option[Boolean] = None
 
-      override def call: Call = routes.PendingPaymentController.noFurtherAmendment()
+      override def call: Call = routes.PendingPaymentController.noFurtherAmendment
 
-      m.backLink(context) shouldBe Some(routes.PendingPaymentController.loadPendingPaymentPage().url)
+      m.backLink(context) shouldBe Some(routes.PendingPaymentController.loadPendingPaymentPage.url)
     }
   }
 }

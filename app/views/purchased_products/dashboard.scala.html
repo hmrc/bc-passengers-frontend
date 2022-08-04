@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,13 +146,13 @@
 
   @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
-      <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder()">@messages("label.calculate")</a>
+      <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder">@messages("label.calculate")</a>
     } else if(isAmendment) {
-      @formHelper(action = routes.CalculateDeclareController.calculate()) {
+      @formHelper(action = routes.CalculateDeclareController.calculate) {
         @button(messages("label.calculate_change_in_tax_and_duties"))
       }
     } else {
-      @formHelper(action = routes.CalculateDeclareController.calculate()) {
+      @formHelper(action = routes.CalculateDeclareController.calculate) {
         @button(messages("label.calculate"))
       }
     }

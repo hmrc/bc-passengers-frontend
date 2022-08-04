@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 
 @govukLayout(pageTitle = Some(messages("heading.are_you_bringing_in_duty_free_")), backLink = backLink) {
 
-    @formHelper(action = routes.TravelDetailsController.dutyFreePost()){
+    @formHelper(action = routes.TravelDetailsController.dutyFreePost){
 
         @errorSummary(form.errors, Some("value-yes"))
 

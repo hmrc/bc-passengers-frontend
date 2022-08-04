@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 
 @govukLayout(pageTitle = Some(title(form, "label.are_you_17_or_over")), backLink = backLink) {
 
-    @formHelper(action = routes.TravelDetailsController.confirmAgePost()){
+    @formHelper(action = routes.TravelDetailsController.confirmAgePost){
         @errorSummary(form.errors, Some("value-yes"))
 
         @yesNoRadio(form, Some("label.are_you_17_or_over"), name = "ageOver17", isPageHeading= true)

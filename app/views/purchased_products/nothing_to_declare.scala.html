@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@
   <div class="govuk-inset-text">
     <p>@messages("label.tax_on_all_if_go_over_allowance")</p>
   </div>
-  <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard()">@messages("label.change_your_goods")</a></p>
+  <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a></p>
       @displayTaxBreakdown(calculatorResponseDto)
       <br>
       @if(!hideExchangeRateInfo) {
@@ -107,5 +107,5 @@
   @p(Html(messages("label.any_other_goods_to_declare")))
   @p(Html(messages("label.import_export_licence")))
 
-  <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.TravelDetailsController.newSession()">@messages("label.start_again")</a></p>
+  <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.TravelDetailsController.newSession">@messages("label.start_again")</a></p>
 }

@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@
     @h1(messages("label.for_security_we_deleted_your_answers"))
 
     @if(appConfig.isAmendmentsEnabled){
-        @formHelper(action = routes.PreviousDeclarationController.loadPreviousDeclarationPage()) {
+        @formHelper(action = routes.PreviousDeclarationController.loadPreviousDeclarationPage) {
             @button("label.start_again")
         }
     }else{
-        @formHelper(action = routes.TravelDetailsController.whereGoodsBought()) {
+        @formHelper(action = routes.TravelDetailsController.whereGoodsBought) {
             @button("label.start_again")
         }
     }

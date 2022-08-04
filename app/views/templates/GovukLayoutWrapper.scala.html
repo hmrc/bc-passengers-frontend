@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@
             signOutButtonText = Some(messages("label.delete_your_answer")),
             timeout = Some(appConfig.timeout),
             countdown = Some(appConfig.countdown),
-            keepAliveUrl = Some(controllers.routes.TravelDetailsController.keepAlive().url),
-            signOutUrl = Some(controllers.routes.PublicController.timeOut().url),
+            keepAliveUrl = Some(controllers.routes.TravelDetailsController.keepAlive.url),
+            signOutUrl = Some(controllers.routes.PublicController.timeOut.url),
             language = if (messages.lang.code == "cy") Some("cy") else Some("en")
         ))
     }
@@ -100,7 +100,7 @@
     headerBlock = Some(header(Header(
         homepageUrl = appConfig.govUK,
         serviceName = Some(messages("service.name")),
-        serviceUrl = controllers.routes.TravelDetailsController.newSession().url,
+        serviceUrl = controllers.routes.TravelDetailsController.newSession.url,
         language = if (messages.lang.code == "cy") Cy else En
     ))),
     beforeContentBlock = Some(beforeContentBlock),

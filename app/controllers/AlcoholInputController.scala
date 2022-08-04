@@ -19,19 +19,16 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-
-import javax.inject.Inject
 import models.{AlcoholDto, ProductPath}
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.mvc.Results.Redirect
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -90,7 +87,7 @@ class AlcoholInputController @Inject()(
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     }
     else {
       requireProduct(path) { product =>
@@ -105,7 +102,7 @@ class AlcoholInputController @Inject()(
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     }
     else{
     requirePurchasedProductInstance(iid) { ppi =>
@@ -139,9 +136,9 @@ class AlcoholInputController @Inject()(
                     if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                       Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
                     } else {
-                      Redirect(routes.SelectProductController.nextStep())
+                      Redirect(routes.SelectProductController.nextStep)
                     }
-                  case _ => Redirect(routes.SelectProductController.nextStep())
+                  case _ => Redirect(routes.SelectProductController.nextStep)
                 }
               }
             } else
@@ -174,9 +171,9 @@ class AlcoholInputController @Inject()(
                       if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
                       } else {
-                        Redirect(routes.SelectProductController.nextStep())
+                        Redirect(routes.SelectProductController.nextStep)
                       }
-                    case _ => Redirect(routes.SelectProductController.nextStep())
+                    case _ => Redirect(routes.SelectProductController.nextStep)
                   }
                 }
               } else

@@ -16,21 +16,20 @@
 
 package controllers
 
-import java.util.UUID
-
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce._
-import javax.inject.{Inject, Singleton}
 import models.PrivateCraftDto._
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import java.util.UUID
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -83,9 +82,9 @@ class TravelDetailsController @Inject() (
 
     Future.successful {
       if (appConfig.isAmendmentsEnabled) {
-        Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
+        Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
       } else {
-        Redirect(routes.TravelDetailsController.whereGoodsBought()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
+        Redirect(routes.TravelDetailsController.whereGoodsBought).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
       }
     }
   }
@@ -109,7 +108,7 @@ class TravelDetailsController @Inject() (
       },
       euCountryCheckDto => {
         travelDetailsService.storeEuCountryCheck(context.journeyData)(euCountryCheckDto.euCountryCheck) flatMap { _ =>
-          cache.fetch map { _ => Redirect(routes.ArrivingNIController.loadArrivingNIPage())
+          cache.fetch map { _ => Redirect(routes.ArrivingNIController.loadArrivingNIPage)
           }
         }
       }
@@ -135,9 +134,9 @@ class TravelDetailsController @Inject() (
       didYouClaimTaxBackDto => {
         travelDetailsService.storeVatResCheck(context.journeyData)(didYouClaimTaxBackDto.claimedVatRes) map { _ =>
           if (didYouClaimTaxBackDto.claimedVatRes) {
-            Redirect(routes.TravelDetailsController.privateTravel())
+            Redirect(routes.TravelDetailsController.privateTravel)
           } else {
-            Redirect(routes.TravelDetailsController.dutyFree())
+            Redirect(routes.TravelDetailsController.dutyFree)
           }
         }
       }
@@ -165,18 +164,18 @@ class TravelDetailsController @Inject() (
           if (!isBringingDutyFreeDto.isBringingDutyFree) {
             cache.fetch map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
-                Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
+                Redirect(routes.TravelDetailsController.goodsBoughtInsideEu)
               case Some(jd) if jd.euCountryCheck.contains("both") =>
-                Redirect(routes.TravelDetailsController.goodsBoughtIntoGB())
+                Redirect(routes.TravelDetailsController.goodsBoughtIntoGB)
               case _ =>
-                Redirect(routes.TravelDetailsController.privateTravel())
+                Redirect(routes.TravelDetailsController.privateTravel)
             }
           } else {
             cache.fetch map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
-                Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionEu())
+                Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionEu)
               case Some(jd) if jd.euCountryCheck.contains("both") =>
-                Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix())
+                Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix)
             }
           }
         }
@@ -207,9 +206,9 @@ class TravelDetailsController @Inject() (
       overAllowanceDto => {
         travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
-            Redirect(routes.TravelDetailsController.privateTravel())
+            Redirect(routes.TravelDetailsController.privateTravel)
           } else {
-            Redirect(routes.TravelDetailsController.noNeedToUseService())
+            Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
       }
@@ -235,9 +234,9 @@ class TravelDetailsController @Inject() (
       overAllowanceDto => {
         travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
-            Redirect(routes.TravelDetailsController.privateTravel())
+            Redirect(routes.TravelDetailsController.privateTravel)
           } else {
-            Redirect(routes.TravelDetailsController.noNeedToUseService())
+            Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
       }
@@ -278,9 +277,9 @@ class TravelDetailsController @Inject() (
       overAllowanceDto => {
         travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
-            Redirect(routes.TravelDetailsController.privateTravel())
+            Redirect(routes.TravelDetailsController.privateTravel)
           } else {
-            Redirect(routes.TravelDetailsController.noNeedToUseService())
+            Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
       }
@@ -295,9 +294,9 @@ class TravelDetailsController @Inject() (
       overAllowanceDto => {
         travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
-            Redirect(routes.TravelDetailsController.privateTravel())
+            Redirect(routes.TravelDetailsController.privateTravel)
           } else {
-            Redirect(routes.TravelDetailsController.noNeedToUseService())
+            Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
       }
@@ -322,7 +321,7 @@ class TravelDetailsController @Inject() (
       },
       privateCraftDto => {
         travelDetailsService.storePrivateCraft(context.journeyData)(privateCraftDto.privateCraft) map { _ =>
-          Redirect(routes.TravelDetailsController.confirmAge())
+          Redirect(routes.TravelDetailsController.confirmAge)
         }
       }
     )
@@ -346,7 +345,7 @@ class TravelDetailsController @Inject() (
       },
       ageOver17Dto => {
         travelDetailsService.storeAgeOver17(context.journeyData)(ageOver17Dto.ageOver17) map { _ =>
-          Redirect(routes.DashboardController.showDashboard())
+          Redirect(routes.DashboardController.showDashboard)
         }
       }
     )

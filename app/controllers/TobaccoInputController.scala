@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, text, _}
 import play.api.i18n.I18nSupport
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
@@ -142,7 +142,7 @@ class TobaccoInputController @Inject()(
 
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if(context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")){
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage()))
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     }
     else {
       requireProduct(path) { product =>
@@ -227,10 +227,10 @@ class TobaccoInputController @Inject()(
                       if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
                       } else {
-                        Redirect(routes.SelectProductController.nextStep())
+                        Redirect(routes.SelectProductController.nextStep)
                       }
                     }
-                    case _ => Redirect(routes.SelectProductController.nextStep())
+                    case _ => Redirect(routes.SelectProductController.nextStep)
                   }
                 }
               } else
@@ -253,10 +253,10 @@ class TobaccoInputController @Inject()(
                         if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                           Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
                         } else {
-                          Redirect(routes.SelectProductController.nextStep())
+                          Redirect(routes.SelectProductController.nextStep)
                         }
                       }
-                      case _ => Redirect(routes.SelectProductController.nextStep())
+                      case _ => Redirect(routes.SelectProductController.nextStep)
                     }
                   }
               } else
@@ -279,10 +279,10 @@ class TobaccoInputController @Inject()(
                       if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
                       } else {
-                        Redirect(routes.SelectProductController.nextStep())
+                        Redirect(routes.SelectProductController.nextStep)
                       }
                     }
-                    case _ => Redirect(routes.SelectProductController.nextStep())
+                    case _ => Redirect(routes.SelectProductController.nextStep)
                   }
                 }
               } else
@@ -328,10 +328,10 @@ class TobaccoInputController @Inject()(
                           if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                             Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
                           } else {
-                            Redirect(routes.SelectProductController.nextStep())
+                            Redirect(routes.SelectProductController.nextStep)
                           }
                         }
-                        case _ => Redirect(routes.SelectProductController.nextStep())
+                        case _ => Redirect(routes.SelectProductController.nextStep)
                       }
                     }
                   } else
@@ -354,10 +354,10 @@ class TobaccoInputController @Inject()(
                           if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                             Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
                           } else {
-                            Redirect(routes.SelectProductController.nextStep())
+                            Redirect(routes.SelectProductController.nextStep)
                           }
                         }
-                        case _ => Redirect(routes.SelectProductController.nextStep())
+                        case _ => Redirect(routes.SelectProductController.nextStep)
                       }
                     }
                   } else
@@ -380,10 +380,10 @@ class TobaccoInputController @Inject()(
                           if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                             Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
                           } else {
-                            Redirect(routes.SelectProductController.nextStep())
+                            Redirect(routes.SelectProductController.nextStep)
                           }
                         }
-                        case _ => Redirect(routes.SelectProductController.nextStep())
+                        case _ => Redirect(routes.SelectProductController.nextStep)
                       }
                     }
                   } else

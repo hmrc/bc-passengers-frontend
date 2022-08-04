@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 
 @govukLayout(pageTitle = Some(title(form, "label.did_you_arrive_in_the_uk_by_private_boat_")), backLink = backLink) {
 
-    @formHelper(action = routes.TravelDetailsController.privateTravelPost()){
+    @formHelper(action = routes.TravelDetailsController.privateTravelPost){
 
         @errorSummary(form.errors, Some("value-yes"))
 

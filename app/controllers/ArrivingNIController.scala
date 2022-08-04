@@ -23,7 +23,7 @@ import forms.ArrivingNIForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -66,11 +66,11 @@ class ArrivingNIController @Inject()(
         arrivingNI =>
           travelDetailsService.storeArrivingNI(context.journeyData)(arrivingNI).map(_ =>
             (context.getJourneyData.euCountryCheck,arrivingNI) match {
-              case (Some("greatBritain"),_) => Redirect(routes.UKResidentController.loadUKResidentPage())
-              case (Some("nonEuOnly"),true) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI())
-              case (Some("nonEuOnly"),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoGB())
-              case (Some("euOnly"),true) => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu())
-              case (Some("euOnly"),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoGB())
+              case (Some("greatBritain"),_) => Redirect(routes.UKResidentController.loadUKResidentPage)
+              case (Some("nonEuOnly"),true) => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
+              case (Some("nonEuOnly"),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoGB)
+              case (Some("euOnly"),true) => Redirect(routes.TravelDetailsController.goodsBoughtInsideEu)
+              case (Some("euOnly"),false) => Redirect(routes.TravelDetailsController.goodsBoughtIntoGB)
               case _ => throw new RuntimeException("Country type could not be determined.")
             }
           )

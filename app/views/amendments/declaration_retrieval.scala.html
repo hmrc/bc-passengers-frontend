@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 
 @govukLayout(pageTitle = Some(title(form, "heading.declaration_retrieval")), backLink = backLink) {
 
-    @formHelper(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage()) {
+    @formHelper(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage) {
 
     @errorSummary(form.errors)
 

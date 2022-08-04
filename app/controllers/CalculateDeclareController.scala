@@ -16,20 +16,18 @@
 
 package controllers
 
-import java.util.UUID
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
-
-import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import java.util.UUID
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -142,7 +140,7 @@ class CalculateDeclareController @Inject()(
                 BigDecimal(calculatorResponse.calculation.allTax) match {
                   case allTax if allTax == 0  && context.getJourneyData.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance =>
                     declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
-                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
                     }
                   case _ => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (BigDecimal(calculatorResponse.calculation.allTax) * 100).toInt, false, None) map {
 
@@ -177,7 +175,7 @@ class CalculateDeclareController @Inject()(
           BigDecimal(context.getJourneyData.deltaCalculation.get.allTax) match {
             case deltaAllTax if deltaAllTax == 0  && context.getJourneyData.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance =>
               declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
-                Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+                Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
               }
             case deltaAllTax => payApiService.requestPaymentUrl(cr, userInformation, calculatorResponse, (deltaAllTax * 100).toInt, true, Some(amountPaidPreviously), Some(amendState)) map {
 
@@ -236,18 +234,18 @@ class CalculateDeclareController @Inject()(
       val currentCalculation: Calculation = calculatorResponse.calculation
 
       if (!oldCalculation.isDefined) calculatorService.storeCalculatorResponse(journeyData, calculatorResponse) map { _ =>
-        Redirect(routes.CalculateDeclareController.showCalculation())
+        Redirect(routes.CalculateDeclareController.showCalculation)
       } else {
         val deltaCalculation = calculatorService.getDeltaCalculation(oldCalculation.get, currentCalculation)
         calculatorService.storeCalculatorResponse(journeyData, calculatorResponse, Some(deltaCalculation)) map { _ =>
-          Redirect(routes.CalculateDeclareController.showCalculation())
+          Redirect(routes.CalculateDeclareController.showCalculation)
         }
       }
 
     case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>
 
       Future.successful {
-        Redirect(routes.CalculateDeclareController.cannotUseService())
+        Redirect(routes.CalculateDeclareController.cannotUseService)
       }
 
     case _ =>

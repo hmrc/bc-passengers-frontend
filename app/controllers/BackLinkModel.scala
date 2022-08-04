@@ -19,7 +19,6 @@ package controllers
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 
-
 @Singleton
 class BackLinkModel @Inject() (
   appConfig: AppConfig
@@ -46,11 +45,11 @@ class BackLinkModel @Inject() (
         Some(TravelDetailsController.didYouClaimTaxBack)
       case "where-goods-bought" =>
         if(appConfig.isAmendmentsEnabled)
-          Some(PreviousDeclarationController.loadPreviousDeclarationPage())
+          Some(PreviousDeclarationController.loadPreviousDeclarationPage)
         else
           Some(appConfig.declareGoodsUrl)
       case "declaration-not-found" =>
-        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage())
+        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "arriving-ni" =>
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check" =>{
@@ -96,7 +95,7 @@ class BackLinkModel @Inject() (
       case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & !ukr =>
         Some(UKResidentController.loadUKResidentPage)
       case "goods-brought-into-northern-ireland" if eucc==Some("greatBritain") & ukr =>
-        Some(UKExcisePaidController.loadUKExcisePaidPage())
+        Some(UKExcisePaidController.loadUKExcisePaidPage)
       case "goods-brought-into-great-britain-iom" =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "private-travel" if arN & boa =>
@@ -106,9 +105,9 @@ class BackLinkModel @Inject() (
       case "private-travel" if !boa=>
         Some(TravelDetailsController.noNeedToUseService)
       case "no-need-to-use-service" if arN =>
-        Some(TravelDetailsController.goodsBoughtIntoNI())
+        Some(TravelDetailsController.goodsBoughtIntoNI)
       case "no-need-to-use-service" if !arN =>
-        Some(TravelDetailsController.goodsBoughtIntoGB())
+        Some(TravelDetailsController.goodsBoughtIntoGB)
       case "confirm-age" =>
         Some(TravelDetailsController.privateTravel)
       case "tell-us" => {
@@ -124,19 +123,19 @@ class BackLinkModel @Inject() (
       case "tax-due" if !appConfig.isIrishBorderQuestionEnabled =>
         Some(DashboardController.showDashboard)
       case "declare-your-goods" =>
-        Some(CalculateDeclareController.showCalculation())
+        Some(CalculateDeclareController.showCalculation)
       case "user-information" =>
-        Some(CalculateDeclareController.declareYourGoods())
+        Some(CalculateDeclareController.declareYourGoods)
       case "previous-declaration" =>
         Some(appConfig.declareGoodsUrl)
       case "declaration-retrieval" =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
       case "pending-payment" =>
-        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage())
+        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments" =>
-        Some(PendingPaymentController.loadPendingPaymentPage())
+        Some(PendingPaymentController.loadPendingPaymentPage)
       case "add" =>
-        Some(DashboardController.showDashboard())
+        Some(DashboardController.showDashboard)
       case _ =>
         None
     }

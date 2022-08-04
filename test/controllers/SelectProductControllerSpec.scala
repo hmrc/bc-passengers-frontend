@@ -40,7 +40,6 @@ import views.html.error_template
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
-
 class SelectProductControllerSpec extends BaseSpec {
 
   val requiredJourneyData: JourneyData = JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false))

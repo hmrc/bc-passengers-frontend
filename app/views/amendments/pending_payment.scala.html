@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 @(form: Form[Boolean], calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))), backLink = backLink) {
-    @formHelper(action = routes.PendingPaymentController.postPendingPaymentPage()){
+    @formHelper(action = routes.PendingPaymentController.postPendingPaymentPage){
 
         @errorSummary(form.errors, Some("value-yes"))
 

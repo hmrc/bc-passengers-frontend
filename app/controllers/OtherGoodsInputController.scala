@@ -19,18 +19,16 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-
-import javax.inject.Inject
 import models.{OtherGoodsDto, OtherGoodsSearchItem, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.{optional, _}
 import play.api.i18n.I18nSupport
-import play.api.mvc.Results.Redirect
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherGoodsInputController @Inject()(
@@ -137,10 +135,10 @@ class OtherGoodsInputController @Inject()(
                   if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                     Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
                   } else {
-                    Redirect(routes.SelectProductController.nextStep())
+                    Redirect(routes.SelectProductController.nextStep)
                   }
                 }
-                case _ => Redirect(routes.SelectProductController.nextStep())
+                case _ => Redirect(routes.SelectProductController.nextStep)
               }
             }
          }
@@ -166,10 +164,10 @@ class OtherGoodsInputController @Inject()(
                   if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                     Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path,iid))
                   } else {
-                    Redirect(routes.SelectProductController.nextStep())
+                    Redirect(routes.SelectProductController.nextStep)
                   }
                 }
-                case _ => Redirect(routes.SelectProductController.nextStep())
+                case _ => Redirect(routes.SelectProductController.nextStep)
               }
             }
           }
@@ -178,6 +176,5 @@ class OtherGoodsInputController @Inject()(
       }
     }
   }
-
 
 }
