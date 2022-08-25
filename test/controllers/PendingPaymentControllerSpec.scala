@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class PendingPaymentControllerSpec extends BaseSpec {
 
   val calculatorService: CalculatorService = MockitoSugar.mock[CalculatorService]
-  val mockCache: Cache = MockitoSugar.mock[Cache]
+  val mockCache: Cache                     = MockitoSugar.mock[Cache]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -55,51 +55,119 @@ class PendingPaymentControllerSpec extends BaseSpec {
   "loadPendingPaymentPage" should {
     "load the pending payment page" in {
 
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
-        prevDeclaration = Some(true)
-      ))))
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)))
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation("10.00", "10.00", "10.00", "30.00")
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
+              prevDeclaration = Some(true)
+            )
+          )
+        )
+      )
+      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceSuccessResponse(
+          CalculatorResponse(
+            None,
+            None,
+            None,
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = true,
+            Map.empty,
+            isAnyItemOverAllowance = false
+          )
+        )
+      )
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+        .successful(JourneyData())
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "10.00",
+        "10.00",
+        "10.00",
+        "30.00"
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
 
       status(result) shouldBe OK
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "You have an incomplete payment for your declaration for £98,000.00"
     }
     "load the pending payment page when pending-payment = true in journey data" in {
 
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
-        prevDeclaration = Some(true),
-        pendingPayment = Some(true)
-      ))))
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(CalculatorServiceSuccessResponse(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)))
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation("10.00", "10.00", "10.00", "30.00")
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
+              prevDeclaration = Some(true),
+              pendingPayment = Some(true)
+            )
+          )
+        )
+      )
+      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceSuccessResponse(
+          CalculatorResponse(
+            None,
+            None,
+            None,
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = true,
+            Map.empty,
+            isAnyItemOverAllowance = false
+          )
+        )
+      )
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+        .successful(JourneyData())
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "10.00",
+        "10.00",
+        "10.00",
+        "30.00"
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
 
       status(result) shouldBe OK
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "You have an incomplete payment for your declaration for £98,000.00"
+      doc.getElementsByTag("h1").text()                          shouldBe "You have an incomplete payment for your declaration for £98,000.00"
       doc.select("#pendingPayment-value-yes").hasAttr("checked") shouldBe true
     }
 
     "return 500 when calculator response missing while load the pending payment page" in {
 
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
-        prevDeclaration = Some(true)
-      ))))
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(CalculatorServiceCantBuildCalcReqResponse)
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future.successful(JourneyData())
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation("10.00", "10.00", "0.00", "20.00")
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
+              prevDeclaration = Some(true)
+            )
+          )
+        )
+      )
+      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceCantBuildCalcReqResponse
+      )
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+        .successful(JourneyData())
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "10.00",
+        "10.00",
+        "0.00",
+        "20.00"
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
@@ -107,81 +175,150 @@ class PendingPaymentControllerSpec extends BaseSpec {
 
   "postPendingPaymentPage" should {
 
-    "redirect to .../no-further-amendments when user says they don't want to pay pending payment" in  {
+    "redirect to .../no-further-amendments when user says they don't want to pay pending payment" in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)),
-        prevDeclaration = Some(true)
-      )))
+      val cachedJourneyData = Future.successful(
+        Some(
+          JourneyData(
+            calculatorResponse = Some(
+              CalculatorResponse(
+                None,
+                None,
+                None,
+                Calculation("0.00", "0.00", "0.00", "0.00"),
+                withinFreeAllowance = true,
+                Map.empty,
+                isAnyItemOverAllowance = false
+              )
+            ),
+            prevDeclaration = Some(true)
+          )
+        )
+      )
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
-        .withFormUrlEncodedBody("pendingPayment" -> "false")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+          .withFormUrlEncodedBody("pendingPayment" -> "false")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/no-further-amendments")
 
-
     }
 
-    "redirect to .../process-amendment when user says they want to pay pending payment" in  {
+    "redirect to .../process-amendment when user says they want to pay pending payment" in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)),
-        prevDeclaration = Some(true)
-      )))
+      val cachedJourneyData = Future.successful(
+        Some(
+          JourneyData(
+            calculatorResponse = Some(
+              CalculatorResponse(
+                None,
+                None,
+                None,
+                Calculation("0.00", "0.00", "0.00", "0.00"),
+                withinFreeAllowance = true,
+                Map.empty,
+                isAnyItemOverAllowance = false
+              )
+            ),
+            prevDeclaration = Some(true)
+          )
+        )
+      )
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
-        .withFormUrlEncodedBody("pendingPayment" -> "true")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+          .withFormUrlEncodedBody("pendingPayment" -> "true")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/process-amendment")
 
-
     }
 
-    "return a bad request when user selects an invalid value in pending payment" in  {
+    "return a bad request when user selects an invalid value in pending payment" in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(calculatorResponse = Some(CalculatorResponse(None, None, None, Calculation("0.00", "0.00", "0.00", "0.00"), withinFreeAllowance = true, Map.empty, isAnyItemOverAllowance = false)),
-        prevDeclaration = Some(true),
-        deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
-      )))
+      val cachedJourneyData = Future.successful(
+        Some(
+          JourneyData(
+            calculatorResponse = Some(
+              CalculatorResponse(
+                None,
+                None,
+                None,
+                Calculation("0.00", "0.00", "0.00", "0.00"),
+                withinFreeAllowance = true,
+                Map.empty,
+                isAnyItemOverAllowance = false
+              )
+            ),
+            prevDeclaration = Some(true),
+            deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
+          )
+        )
+      )
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation("0.00", "0.00", "0.00", "0.00")
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "0.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      )
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
-        .withFormUrlEncodedBody()).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+          .withFormUrlEncodedBody()
+      ).get
 
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "You have an incomplete payment for your declaration for £0.00"
+      doc.getElementsByTag("h1").text()         shouldBe "You have an incomplete payment for your declaration for £0.00"
       doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.getElementsByClass("govuk-error-summary").select("a[href=#pendingPayment-value-yes]").html() shouldBe "Select yes if you want to pay now"
-      doc.getElementById("pendingPayment-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you want to pay now"
-
+      doc
+        .getElementsByClass("govuk-error-summary")
+        .select("a[href=#pendingPayment-value-yes]")
+        .html()                                 shouldBe "Select yes if you want to pay now"
+      doc
+        .getElementById("pendingPayment-error")
+        .html()                                 shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you want to pay now"
 
     }
   }
 
   "load noFurtherAmendment" should {
     "load the no further amendment page" in {
-     when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
-        prevDeclaration = Some(true)
-      ))))
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              deltaCalculation = Some(Calculation("1.00", "7.00", "90000.00", "98000.00")),
+              prevDeclaration = Some(true)
+            )
+          )
+        )
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-further-amendments")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-further-amendments")).get
 
       status(result) shouldBe OK
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "You can no longer use this service to add goods to your declaration"
     }

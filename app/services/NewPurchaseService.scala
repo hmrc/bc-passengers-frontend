@@ -27,32 +27,101 @@ class NewPurchaseService @Inject() (
   countriesService: CountriesService
 ) {
 
-  def insertPurchases(path: ProductPath, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryCode: String, originCountryCode: Option[String], currency: String, costs: List[BigDecimal], searchTerm: Option[OtherGoodsSearchItem] = None, rand: Random = Random)(implicit context: LocalContext): (JourneyData,String) = {
+  def insertPurchases(
+    path: ProductPath,
+    weightOrVolume: Option[BigDecimal],
+    noOfSticks: Option[Int],
+    countryCode: String,
+    originCountryCode: Option[String],
+    currency: String,
+    costs: List[BigDecimal],
+    searchTerm: Option[OtherGoodsSearchItem] = None,
+    rand: Random = Random
+  )(implicit context: LocalContext): (JourneyData, String) = {
     val journeyData = context.journeyData.getOrElse(JourneyData())
-    val iid = rand.alphanumeric.filter(_.isLetter).take(6).mkString
-    val dataToAdd = for {
-      cost <- costs
-      country = countriesService.getCountryByCode(countryCode)
+    val iid         = rand.alphanumeric.filter(_.isLetter).take(6).mkString
+    val dataToAdd   = for {
+      cost     <- costs
+      country   = countriesService.getCountryByCode(countryCode)
       countryEU = countriesService.getCountryByCode(originCountryCode.getOrElse(""))
-    } yield PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, countryEU, Some(currency), Some(cost), searchTerm,  isCustomPaid = Some(journeyData.isUKResident.getOrElse(false)))
-    (journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd,
-      //Added partial working instance to differenciate between new item and existing in ControllerHelpers.revertWorkingInstance
-      workingInstance = Some(PurchasedProductInstance(dataToAdd.head.path,dataToAdd.head.iid)),
-      defaultCountry = Some(countryCode),
-      defaultCurrency = Some(currency)),iid)
+    } yield PurchasedProductInstance(
+      path,
+      iid,
+      weightOrVolume,
+      noOfSticks,
+      country,
+      countryEU,
+      Some(currency),
+      Some(cost),
+      searchTerm,
+      isCustomPaid = Some(journeyData.isUKResident.getOrElse(false))
+    )
+    (
+      journeyData.copy(
+        purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd,
+        //Added partial working instance to differenciate between new item and existing in ControllerHelpers.revertWorkingInstance
+        workingInstance = Some(PurchasedProductInstance(dataToAdd.head.path, dataToAdd.head.iid)),
+        defaultCountry = Some(countryCode),
+        defaultCurrency = Some(currency)
+      ),
+      iid
+    )
   }
 
-  def updatePurchase(path: ProductPath, iid: String, weightOrVolume: Option[BigDecimal], noOfSticks: Option[Int], countryCode: String, originCountryCode: Option[String], currency: String, cost: BigDecimal, searchTerm: Option[OtherGoodsSearchItem] = None)(implicit context: LocalContext): JourneyData = {
+  def updatePurchase(
+    path: ProductPath,
+    iid: String,
+    weightOrVolume: Option[BigDecimal],
+    noOfSticks: Option[Int],
+    countryCode: String,
+    originCountryCode: Option[String],
+    currency: String,
+    cost: BigDecimal,
+    searchTerm: Option[OtherGoodsSearchItem] = None
+  )(implicit context: LocalContext): JourneyData = {
     val journeyData = context.getJourneyData
-    val country = countriesService.getCountryByCode(countryCode)
-    val countryEU = countriesService.getCountryByCode(originCountryCode.getOrElse(""))
-    journeyData.copy(purchasedProductInstances = journeyData.purchasedProductInstances
-      .map(ppi => {
-        if (ppi.iid == iid && originCountryCode.isDefined && countriesService.isInEu(originCountryCode.getOrElse(""))) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, countryEU, Some(currency), Some(cost), None,ppi.isVatPaid, isCustomPaid = Some(false), ppi.isExcisePaid, ppi.isUccRelief, ppi.hasEvidence)
-        else if (ppi.iid == iid) PurchasedProductInstance(path, iid, weightOrVolume, noOfSticks, country, countryEU, Some(currency), Some(cost), searchTerm, ppi.isVatPaid, isCustomPaid = Some(journeyData.isUKResident.getOrElse(false)), ppi.isExcisePaid, ppi.isUccRelief)
-        else ppi
-      }),
+    val country     = countriesService.getCountryByCode(countryCode)
+    val countryEU   = countriesService.getCountryByCode(originCountryCode.getOrElse(""))
+    journeyData.copy(
+      purchasedProductInstances = journeyData.purchasedProductInstances
+        .map { ppi =>
+          if (ppi.iid == iid && originCountryCode.isDefined && countriesService.isInEu(originCountryCode.getOrElse("")))
+            PurchasedProductInstance(
+              path,
+              iid,
+              weightOrVolume,
+              noOfSticks,
+              country,
+              countryEU,
+              Some(currency),
+              Some(cost),
+              None,
+              ppi.isVatPaid,
+              isCustomPaid = Some(false),
+              ppi.isExcisePaid,
+              ppi.isUccRelief,
+              ppi.hasEvidence
+            )
+          else if (ppi.iid == iid)
+            PurchasedProductInstance(
+              path,
+              iid,
+              weightOrVolume,
+              noOfSticks,
+              country,
+              countryEU,
+              Some(currency),
+              Some(cost),
+              searchTerm,
+              ppi.isVatPaid,
+              isCustomPaid = Some(journeyData.isUKResident.getOrElse(false)),
+              ppi.isExcisePaid,
+              ppi.isUccRelief
+            )
+          else ppi
+        },
       defaultCountry = Some(countryCode),
-      defaultCurrency = Some(currency))
+      defaultCurrency = Some(currency)
+    )
   }
 }

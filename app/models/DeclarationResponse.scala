@@ -27,15 +27,15 @@ object LiabilityDetails {
 }
 
 case class DeclarationResponse(
-                                calculation: Calculation,
-                                liabilityDetails: LiabilityDetails,
-                                oldPurchaseProductInstances: List[PurchasedProductInstance],
-                                amendmentCount: Option[Int] = Some(0)
-                              )
+  calculation: Calculation,
+  liabilityDetails: LiabilityDetails,
+  oldPurchaseProductInstances: List[PurchasedProductInstance],
+  amendmentCount: Option[Int] = Some(0)
+)
 
 case class LiabilityDetails(
-                             totalExciseGBP: String,
-                             totalCustomsGBP: String,
-                             totalVATGBP: String,
-                             grandTotalGBP: String
-                           )
+  totalExciseGBP: String,
+  totalCustomsGBP: String,
+  totalVATGBP: String,
+  grandTotalGBP: String
+)

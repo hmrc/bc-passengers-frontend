@@ -19,6 +19,7 @@ package models
 import org.joda.time.{LocalDate, LocalTime}
 import play.api.libs.json.{Json, OFormat}
 import ai.x.play.json.Jsonx
+import ai.x.play.json.Encoders.encoder
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 
@@ -47,14 +48,17 @@ object UserInformation {
   implicit val formats: OFormat[UserInformation] = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
-    UserInformation(dto.firstName,
+    UserInformation(
+      dto.firstName,
       dto.lastName,
       dto.identification.identificationType.getOrElse(""),
-      dto.identification.identificationNumber ,
-      dto.emailAddress.email,dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
+      dto.identification.identificationNumber,
+      dto.emailAddress.email,
+      dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
       dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
       new LocalDate(dto.dateTimeOfArrival.dateOfArrival),
-      LocalTime.parse(dto.dateTimeOfArrival.timeOfArrival, org.joda.time.format.DateTimeFormat.forPattern("hh:mm aa")))
+      LocalTime.parse(dto.dateTimeOfArrival.timeOfArrival, org.joda.time.format.DateTimeFormat.forPattern("hh:mm aa"))
+    )
 }
 case class UserInformation(
   firstName: String,
@@ -75,9 +79,9 @@ object PreviousDeclarationRequest {
     PreviousDeclarationRequest(dto.lastName, dto.referenceNumber.toUpperCase)
 }
 case class PreviousDeclarationRequest(
-                            lastName: String,
-                            referenceNumber: String
-                          )
+  lastName: String,
+  referenceNumber: String
+)
 
 object ProductAlias {
   implicit val formats: OFormat[ProductAlias] = Json.format[ProductAlias]
@@ -130,40 +134,44 @@ case class JourneyData(
 
   def allCurrencyCodes(purchasedProductInstances: List[PurchasedProductInstance]): Set[String] = (for {
     purchasedProductInstances <- purchasedProductInstances
-    currencyCode <- purchasedProductInstances.currency
+    currencyCode              <- purchasedProductInstances.currency
   } yield currencyCode).toSet
 
   def getPurchasedProductInstance(iid: String): Option[PurchasedProductInstance] =
     purchasedProductInstances.find(_.iid == iid)
 
-  def getOrCreatePurchasedProductInstance(path: ProductPath, iid: String): PurchasedProductInstance
-    = purchasedProductInstances.find(_.iid == iid).getOrElse(PurchasedProductInstance(path, iid))
+  def getOrCreatePurchasedProductInstance(path: ProductPath, iid: String): PurchasedProductInstance =
+    purchasedProductInstances.find(_.iid == iid).getOrElse(PurchasedProductInstance(path, iid))
 
-  def updatePurchasedProductInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance): JourneyData = {
-    val newPdList = block(getOrCreatePurchasedProductInstance(path, iid)) :: purchasedProductInstances.filterNot(_.path == path)
+  def updatePurchasedProductInstance(path: ProductPath, iid: String)(
+    block: PurchasedProductInstance => PurchasedProductInstance
+  ): JourneyData = {
+    val newPdList =
+      block(getOrCreatePurchasedProductInstance(path, iid)) :: purchasedProductInstances.filterNot(_.path == path)
     this.copy(purchasedProductInstances = newPdList)
   }
   def revertPurchasedProductInstance(): JourneyData = {
     val workingInstance = this.workingInstance
-    if(workingInstance.isDefined){
-      val ppis = this.purchasedProductInstances.map(ppi => {
-        if(ppi.iid == workingInstance.get.iid){
+    if (workingInstance.isDefined) {
+      val ppis = this.purchasedProductInstances.map { ppi =>
+        if (ppi.iid == workingInstance.get.iid) {
           workingInstance.get
-        }else{
+        } else {
           ppi
         }
-      })
+      }
       this.copy(purchasedProductInstances = ppis)
-    }else{
+    } else {
       this
     }
   }
 
-  def removePurchasedProductInstance(iid: String): JourneyData = {
-    this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid==iid))
-  }
+  def removePurchasedProductInstance(iid: String): JourneyData =
+    this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid == iid))
 
-  def withUpdatedWorkingInstance(path: ProductPath, iid: String)(block: PurchasedProductInstance => PurchasedProductInstance): JourneyData = {
+  def withUpdatedWorkingInstance(path: ProductPath, iid: String)(
+    block: PurchasedProductInstance => PurchasedProductInstance
+  ): JourneyData = {
     val workingInstance = block(this.workingInstance.getOrElse(PurchasedProductInstance(path, iid)))
     this.copy(workingInstance = Some(workingInstance))
   }

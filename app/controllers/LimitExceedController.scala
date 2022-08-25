@@ -28,22 +28,26 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LimitExceedController @Inject()(
-                                      val cache: Cache,
-                                      val productTreeService: ProductTreeService,
-                                      val calculatorService: CalculatorService,
-                                      limitExceedAction: LimitExceedAction,
-                                      val error_template: views.html.error_template,
-                                      val limitExceedPage: views.html.purchased_products.limit_exceed,
-                                      override val controllerComponents: MessagesControllerComponents,
-                                      implicit val appConfig: AppConfig,
-                                      val backLinkModel: BackLinkModel,
-                                      implicit val ec: ExecutionContext
-                                    ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
+class LimitExceedController @Inject() (
+  val cache: Cache,
+  val productTreeService: ProductTreeService,
+  val calculatorService: CalculatorService,
+  limitExceedAction: LimitExceedAction,
+  val error_template: views.html.error_template,
+  val limitExceedPage: views.html.purchased_products.limit_exceed,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  val backLinkModel: BackLinkModel,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents)
+    with I18nSupport
+    with ControllerHelpers {
 
   def loadLimitExceedPage(path: ProductPath): Action[AnyContent] = limitExceedAction { implicit context =>
     requireProduct(path) { product =>
-      Future.successful(Ok(limitExceedPage(product.name, s"heading.${product.applicableLimits.last.toLowerCase}.limit-exceeded")))
+      Future.successful(
+        Ok(limitExceedPage(product.name, s"heading.${product.applicableLimits.last.toLowerCase}.limit-exceeded"))
+      )
     }
   }
 }

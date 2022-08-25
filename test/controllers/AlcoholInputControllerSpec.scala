@@ -52,74 +52,85 @@ class AlcoholInputControllerSpec extends BaseSpec {
     .overrides(bind[alcohol_input].toInstance(MockitoSugar.mock[alcohol_input]))
     .build()
 
-  override def beforeEach: Unit = {
+  override def beforeEach: Unit =
     reset(injected[Cache], injected[NewPurchaseService], injected[alcohol_input])
-  }
 
   trait LocalSetup {
 
-    lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-      prevDeclaration = Some(false),
-      Some("nonEuOnly"),
-      arrivingNICheck= Some(true),
-      isVatResClaimed = None,
-      isBringingDutyFree = None,
-      bringingOverAllowance = Some(true),
-      privateCraft = Some(false),
-      ageOver17 = Some(true),
-      purchasedProductInstances = List(PurchasedProductInstance(
-        ProductPath("alcohol/beer"),
-        "iid0",
-        Some(20.0),
-        None,
-        Some(Country("FR", "title.france", "FR", isEu = true,isCountry=true, Nil)),
-        Some(Country("IT", "title.italy", "IT", isEu=true, isCountry=true, Nil)),
-        Some("EUR"),
-        Some(BigDecimal(12.99))
-      ))
-    ))
+    lazy val cachedJourneyData: Option[JourneyData] = Some(
+      JourneyData(
+        prevDeclaration = Some(false),
+        Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
+        isVatResClaimed = None,
+        isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(
+          PurchasedProductInstance(
+            ProductPath("alcohol/beer"),
+            "iid0",
+            Some(20.0),
+            None,
+            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+            Some(Country("IT", "title.italy", "IT", isEu = true, isCountry = true, Nil)),
+            Some("EUR"),
+            Some(BigDecimal(12.99))
+          )
+        )
+      )
+    )
 
-    lazy val cachedGBNIJourneyData: Option[JourneyData] = Some(JourneyData(
-      prevDeclaration = Some(false),
-      Some("greatBritain"),
-      arrivingNICheck= Some(true),
-      isVatResClaimed = None,
-      isBringingDutyFree = None,
-      bringingOverAllowance = Some(true),
-      privateCraft = Some(false),
-      ageOver17 = Some(true),
-      purchasedProductInstances = List(PurchasedProductInstance(
-        ProductPath("alcohol/beer"),
-        "iid0",
-        Some(20.0),
-        None,
-        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-        None,
-        Some("EUR"),
-        Some(BigDecimal(12.99))
-      ))
-    ))
+    lazy val cachedGBNIJourneyData: Option[JourneyData] = Some(
+      JourneyData(
+        prevDeclaration = Some(false),
+        Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        isVatResClaimed = None,
+        isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(
+          PurchasedProductInstance(
+            ProductPath("alcohol/beer"),
+            "iid0",
+            Some(20.0),
+            None,
+            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+            None,
+            Some("EUR"),
+            Some(BigDecimal(12.99))
+          )
+        )
+      )
+    )
 
-    lazy val cachedEUGBJourneyData: Option[JourneyData] = Some(JourneyData(
-      prevDeclaration = Some(false),
-      Some("euOnly"),
-      arrivingNICheck= Some(false),
-      isVatResClaimed = None,
-      isBringingDutyFree = None,
-      bringingOverAllowance = Some(true),
-      privateCraft = Some(false),
-      ageOver17 = Some(true),
-      purchasedProductInstances = List(PurchasedProductInstance(
-        ProductPath("alcohol/beer"),
-        "iid0",
-        Some(20.0),
-        None,
-        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-        None,
-        Some("EUR"),
-        Some(BigDecimal(12.99))
-      ))
-    ))
+    lazy val cachedEUGBJourneyData: Option[JourneyData] = Some(
+      JourneyData(
+        prevDeclaration = Some(false),
+        Some("euOnly"),
+        arrivingNICheck = Some(false),
+        isVatResClaimed = None,
+        isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
+        privateCraft = Some(false),
+        ageOver17 = Some(true),
+        purchasedProductInstances = List(
+          PurchasedProductInstance(
+            ProductPath("alcohol/beer"),
+            "iid0",
+            Some(20.0),
+            None,
+            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+            None,
+            Some("EUR"),
+            Some(BigDecimal(12.99))
+          )
+        )
+      )
+    )
 
     val formCaptor: ArgumentCaptor[Form[AlcoholDto]] = ArgumentCaptor.forClass(classOf[Form[AlcoholDto]])
 
@@ -129,12 +140,24 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
-      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
-      val insertedPurchase = (cachedJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedJourneyData.get
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(
+        LimitUsageSuccessResponse(fakeLimits)
+      )
+      val insertedPurchase = (cachedJourneyData.get, "pid")
+      when(
+        injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ) thenReturn insertedPurchase
+      when(
+        injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ) thenReturn cachedJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())) thenReturn Html("")
+      when(
+        injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      ) thenReturn Html("")
 
       rt(app, req)
     }
@@ -143,12 +166,24 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
-      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
-      val insertedPurchase = (cachedGBNIJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedGBNIJourneyData.get
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(
+        LimitUsageSuccessResponse(fakeLimits)
+      )
+      val insertedPurchase = (cachedGBNIJourneyData.get, "pid")
+      when(
+        injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ) thenReturn insertedPurchase
+      when(
+        injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ) thenReturn cachedGBNIJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())) thenReturn Html("")
+      when(
+        injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      ) thenReturn Html("")
 
       rt(app, req)
     }
@@ -157,12 +192,24 @@ class AlcoholInputControllerSpec extends BaseSpec {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedEUGBJourneyData)
       when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
-      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(LimitUsageSuccessResponse(fakeLimits))
-      val insertedPurchase = (cachedEUGBJourneyData.get,"pid")
-      when(injected[NewPurchaseService].insertPurchases(any(),any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn insertedPurchase
-      when(injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())) thenReturn cachedEUGBJourneyData.get
+      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(
+        LimitUsageSuccessResponse(fakeLimits)
+      )
+      val insertedPurchase = (cachedEUGBJourneyData.get, "pid")
+      when(
+        injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ) thenReturn insertedPurchase
+      when(
+        injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ) thenReturn cachedEUGBJourneyData.get
 
-      when(injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())) thenReturn Html("")
+      when(
+        injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      ) thenReturn Html("")
 
       rt(app, req)
     }
@@ -174,7 +221,10 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit")
+      ).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -182,29 +232,35 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          Some(20.0),
-          None,
-          None,
-          None,
-          Some("EUR"),
-          Some(BigDecimal(12.99))
-        ))
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(20.0),
+              None,
+              None,
+              None,
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
+          )
+        )
+      )
 
-
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
@@ -212,29 +268,35 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          Some(20.0),
-          None,
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          None,
-          Some(BigDecimal(12.99))
-        ))
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(20.0),
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              None,
+              Some(BigDecimal(12.99))
+            )
+          )
+        )
+      )
 
-
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
@@ -242,29 +304,35 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          None,
-          None,
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          Some("EUR"),
-          Some(BigDecimal(12.99))
-        ))
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              None,
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
+          )
+        )
+      )
 
-
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
@@ -272,29 +340,35 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("invalid/product/path"),
-          "iid0",
-          None,
-          None,
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          Some("EUR"),
-          Some(BigDecimal(12.99))
-        ))
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("invalid/product/path"),
+              "iid0",
+              None,
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
+          )
+        )
+      )
 
-
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -302,25 +376,33 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
       status(result) shouldBe OK
     }
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        amendState = Some("pending-payment")
-      ))
+      override lazy val fakeLimits                             = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          amendState = Some("pending-payment")
+        )
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
   }
@@ -331,7 +413,10 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/invalid/path/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/invalid/path/tell-us")
+      ).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -339,7 +424,10 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+      ).get
       status(result) shouldBe OK
     }
 
@@ -347,36 +435,52 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          Some(20.0),
-          None,
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          Some("EUR"),
-          Some(BigDecimal(12.99))
-        )),
-        defaultCountry = Some("FR"),
-        defaultCurrency = Some("EUR")
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(20.0),
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
+          ),
+          defaultCountry = Some("FR"),
+          defaultCurrency = Some("EUR")
+        )
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+      ).get
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(
+        formCaptor.capture(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
 
-      formCaptor.getValue.data("country") shouldBe "FR"
+      formCaptor.getValue.data("country")  shouldBe "FR"
       formCaptor.getValue.data("currency") shouldBe "EUR"
     }
 
@@ -384,35 +488,51 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("euOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          Some(20.0),
-          None,
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          Some(Country("IT", "title.italy", "IT", isEu=true, isCountry=true, Nil)),
-          Some("EUR"),
-          Some(BigDecimal(12.99))
-        )),
-        defaultCountry = Some("FR"),
-        defaultOriginCountry = Some("IT"),
-        defaultCurrency = Some("EUR")
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("euOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(20.0),
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              Some(Country("IT", "title.italy", "IT", isEu = true, isCountry = true, Nil)),
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
+          ),
+          defaultCountry = Some("FR"),
+          defaultOriginCountry = Some("IT"),
+          defaultCurrency = Some("EUR")
+        )
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+      ).get
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(
+        formCaptor.capture(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
 
       formCaptor.getValue.data("originCountry") shouldBe "IT"
     }
@@ -421,34 +541,50 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          Some(20.0),
-          None,
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          Some("EUR"),
-          Some(BigDecimal(12.99))
-        ))
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(20.0),
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
+          )
+        )
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+      ).get
 
       status(result) shouldBe OK
 
-      verify(injected[views.html.alcohol.alcohol_input], times(1))(formCaptor.capture(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(
+        formCaptor.capture(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
 
-      formCaptor.getValue.data("country") shouldBe ""
+      formCaptor.getValue.data("country")  shouldBe ""
       formCaptor.getValue.data("currency") shouldBe ""
     }
 
@@ -456,18 +592,23 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        amendState = Some("pending-payment")
-      ))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          amendState = Some("pending-payment")
+        )
+      )
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+      ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
 
     }
@@ -479,7 +620,13 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/invalid/path/tell-us")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest(
+          "POST",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/invalid/path/tell-us"
+        )
+      ).get
       status(result) shouldBe NOT_FOUND
     }
 
@@ -487,12 +634,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -502,12 +651,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "Not a real country",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "Not a real country",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -517,12 +668,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -532,12 +685,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "XXX",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "XXX",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -547,11 +702,13 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -561,12 +718,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "invalid-cost"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "invalid-cost"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -576,11 +735,13 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"  -> "FR",
+            "currency" -> "EUR",
+            "cost"     -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -590,12 +751,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "invalid-volume",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "invalid-volume",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
@@ -605,63 +768,78 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "111",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "111",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits"
+      )
     }
 
     "redirect to warning page on more than allowance 60 litres in sparkling-wine" in new LocalSetup {
 
       override lazy val fakeLimits = Map("L-WINESP" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/sparkling-wine/tell-us").withFormUrlEncodedBody(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest(
+        "POST",
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/sparkling-wine/tell-us"
+      ).withFormUrlEncodedBody(
         "weightOrVolume" -> "65",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "50"
+        "country"        -> "FR",
+        "currency"       -> "EUR",
+        "cost"           -> "50"
       )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits"
+      )
     }
 
     "redirect to warning page on more than allowance 90 litres in wine" in new LocalSetup {
 
       override lazy val fakeLimits = Map("L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us").withFormUrlEncodedBody(
-        "weightOrVolume" -> "95",
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "cost" -> "50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "95",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits"
+      )
     }
 
     "add a PPI to the JourneyData and redirect to next step" in new LocalSetup {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
@@ -683,16 +861,20 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = gbNIRoute(app, req).get
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/gb-ni-vat-check")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/gb-ni-vat-check"
+      )
 
     }
 
@@ -700,18 +882,22 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "originCountry" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "originCountry"  -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/eu-evidence-check")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/pid/eu-evidence-check"
+      )
 
     }
 
@@ -719,17 +905,19 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "originCountry" -> "IN",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "originCountry"  -> "IN",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
     }
@@ -738,16 +926,18 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
     }
@@ -759,12 +949,14 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe NOT_FOUND
@@ -775,31 +967,37 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "111",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "111",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits"
+      )
     }
 
     "modify the relevant PPI in the JourneyData and redirect to next step" in new LocalSetup {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "13.0",
-        "cost" -> "50.00"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "13.0",
+            "cost"           -> "50.00"
+          )
 
       val result: Future[Result] = route(app, req).get
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
@@ -821,16 +1019,20 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "13.0",
-        "cost" -> "50.00"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "13.0",
+            "cost"           -> "50.00"
+          )
 
       val result: Future[Result] = gbNIRoute(app, req).get
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/gb-ni-vat-check")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/gb-ni-vat-check"
+      )
 
     }
 
@@ -838,18 +1040,22 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "originCountry" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "originCountry"  -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/eu-evidence-check")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/iid0/eu-evidence-check"
+      )
 
     }
 
@@ -857,17 +1063,19 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "originCountry" -> "IN",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "originCountry"  -> "IN",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
     }
@@ -876,16 +1084,18 @@ class AlcoholInputControllerSpec extends BaseSpec {
 
       override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit").withFormUrlEncodedBody(
-        "country" -> "FR",
-        "currency" -> "EUR",
-        "weightOrVolume" -> "20.0",
-        "cost" -> "12.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
     }

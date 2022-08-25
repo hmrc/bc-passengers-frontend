@@ -43,9 +43,8 @@ class AlterProductsControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
-  override def beforeEach: Unit = {
+  override def beforeEach: Unit =
     reset(injected[Cache], injected[PurchasedProductService])
-  }
 
   val controller: AlterProductsController = app.injector.instanceOf[AlterProductsController]
 
@@ -55,7 +54,9 @@ class AlterProductsControllerSpec extends BaseSpec {
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
-      when(injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())) thenReturn Future.successful(JourneyData())
+      when(
+        injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())
+      ) thenReturn Future.successful(JourneyData())
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
 
       rt(app, req)
@@ -66,17 +67,60 @@ class AlterProductsControllerSpec extends BaseSpec {
 
     "show the confirm page" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData( prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true,Nil)), None, Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("24.99")))
-      )))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          ageOver17 = Some(true),
+          privateCraft = Some(false),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(BigDecimal("16.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("12.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid1",
+              Some(BigDecimal("2.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("4.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid2",
+              Some(BigDecimal("4.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("24.99"))
+            )
+          )
+        )
+      )
 
-      val response: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")).get
+      val response: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+      ).get
 
       status(response) shouldBe OK
 
-      verify(injected[PurchasedProductService], times(0)).removePurchasedProductInstance(any(), any(), any())(any(), any())
+      verify(injected[PurchasedProductService], times(0))
+        .removePurchasedProductInstance(any(), any(), any())(any(), any())
 
     }
   }
@@ -85,50 +129,180 @@ class AlterProductsControllerSpec extends BaseSpec {
 
     "remove the product from purchased products if true was submitted" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("24.99")))
-      )))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          ageOver17 = Some(true),
+          privateCraft = Some(false),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(BigDecimal("16.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("12.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid1",
+              Some(BigDecimal("2.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("4.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid2",
+              Some(BigDecimal("4.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("24.99"))
+            )
+          )
+        )
+      )
 
-      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove").withFormUrlEncodedBody("confirmRemove" -> "true")).get
+      val response: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+          .withFormUrlEncodedBody("confirmRemove" -> "true")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
 
-      verify(injected[PurchasedProductService], times(1)).removePurchasedProductInstance(any(), any(), any())(any(), any())
+      verify(injected[PurchasedProductService], times(1))
+        .removePurchasedProductInstance(any(), any(), any())(any(), any())
 
     }
 
     "not remove the product from purchased products if false was submitted" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true),isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false), purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("24.99")))
-      )))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          ageOver17 = Some(true),
+          privateCraft = Some(false),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(BigDecimal("16.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("12.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid1",
+              Some(BigDecimal("2.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("4.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid2",
+              Some(BigDecimal("4.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("24.99"))
+            )
+          )
+        )
+      )
 
-      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove").withFormUrlEncodedBody("confirmRemove" -> "false")).get
+      val response: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+          .withFormUrlEncodedBody("confirmRemove" -> "false")
+      ).get
 
       status(response) shouldBe SEE_OTHER
 
-      verify(injected[PurchasedProductService], times(0)).removePurchasedProductInstance(any(), any(), any())(any(), any())
+      verify(injected[PurchasedProductService], times(0))
+        .removePurchasedProductInstance(any(), any(), any())(any(), any())
 
     }
 
     "re-display the input form with a 400 status if no form data was submitted" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly"),arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true),  ageOver17 = Some(true), privateCraft = Some(false), purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("24.99")))
-      )))
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          ageOver17 = Some(true),
+          privateCraft = Some(false),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(BigDecimal("16.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("12.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid1",
+              Some(BigDecimal("2.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("4.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid2",
+              Some(BigDecimal("4.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("24.99"))
+            )
+          )
+        )
+      )
 
-      val response: Future[Result] = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")).get
+      val response: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+      ).get
 
       status(response) shouldBe BAD_REQUEST
 
-      verify(injected[PurchasedProductService], times(0)).removePurchasedProductInstance(any(), any(), any())(any(), any())
+      verify(injected[PurchasedProductService], times(0))
+        .removePurchasedProductInstance(any(), any(), any())(any(), any())
 
     }
   }

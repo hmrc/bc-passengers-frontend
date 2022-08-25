@@ -22,7 +22,12 @@ import util.BaseSpec
 class CurrencyServiceSpec extends BaseSpec {
 
   private val expectedCurrencies: List[Currency] = List(
-    Currency("AED", "title.united_arab_emirates_dirham_aed", Some("AED"), List("UAE", "Emirati", "dubai", "abu dahbi", "abu dhabi")),
+    Currency(
+      "AED",
+      "title.united_arab_emirates_dirham_aed",
+      Some("AED"),
+      List("UAE", "Emirati", "dubai", "abu dahbi", "abu dhabi")
+    ),
     Currency("ALL", "title.albanian_lek_all", Some("ALL"), Nil),
     Currency("AMD", "title.armenian_dram_amd", Some("AMD"), Nil),
     Currency("AOA", "title.angolan_kwanza_aoa", Some("AOA"), Nil),
@@ -121,7 +126,12 @@ class CurrencyServiceSpec extends BaseSpec {
     Currency("PAB", "title.panamanian_balboa_pab", Some("PAB"), List("Panamanian")),
     Currency("PEN", "title.peruvian_sol_pen", Some("PEN"), Nil),
     Currency("PGK", "title.papua_new_guinea_kina_pgk", Some("PGK"), Nil),
-    Currency("PHP", "title.philippineno_pesos_php", Some("PHP"), List("Philippenes", "Phillipines", "Phillippines", "Philipines")),
+    Currency(
+      "PHP",
+      "title.philippineno_pesos_php",
+      Some("PHP"),
+      List("Philippenes", "Phillipines", "Phillippines", "Philipines")
+    ),
     Currency("PKR", "title.pakistani_rupees_pkr", Some("PKR"), Nil),
     Currency("PLN", "title.polish_zloty_pln", Some("PLN"), List("Poland")),
     Currency("PYG", "title.paraguan_guarani_pyg", Some("PYG"), List("Paraguay")),
@@ -152,22 +162,78 @@ class CurrencyServiceSpec extends BaseSpec {
     Currency("TZS", "title.tanzanian_schillings_tzs", Some("TZS"), Nil),
     Currency("UAH", "title.ukrainian_hryvnia_uah", Some("UAH"), List("Ukraine")),
     Currency("UGX", "title.ugandan_schillings_ugx", Some("UGX"), Nil),
-    Currency("USD", "title.usa_dollars_usd", Some("USD"), List("USD", "USA", "US", "United States of America", "American")),
+    Currency(
+      "USD",
+      "title.usa_dollars_usd",
+      Some("USD"),
+      List("USD", "USA", "US", "United States of America", "American")
+    ),
     Currency("UYU", "title.uruguan_pesos_uyu", Some("UYU"), List("Urguguay")),
     Currency("UZS", "title.uzbekistanian_sum_uzs", Some("UZS"), Nil),
     Currency("VEF", "title.venezuelan_bolivar_fuerte_vef", Some("VEF"), Nil),
     Currency("VND", "title.vietnamese_dong_vnd", Some("VND"), Nil),
     Currency("VUV", "title.vanuatuan_vatu_vuv", Some("VUV"), Nil),
     Currency("WST", "title.western_samoan_tala_wst", Some("WST"), Nil),
-    Currency("XAF", "title.central_african_francs_xaf", Some("XAF"), List("Cameroon", "Chad", "Congo", "Equatorial Guinea", "Gabon")),
-    Currency("XCD", "title.east_caribbean_dollars_xcd", Some("XCD"), List("Dominica", "Grenada", "Montserrat", "St Christopher and Anguilla", "Saint Christopher", "St Lucia", "Saint Lucia", "St Vincent", "Saint Vincent")),
-    Currency("XOF", "title.west_african_francs_xof", Some("XOF"), List("Benin", "Burkina Faso", "Cote d'Ivoire", "Ivory Coast", "Guinea Bissau", "Mali Republic", "Niger Republic", "Senegal", "Cote dIvoire", "Cote d Ivoire", "Republic of Mali", "Republic of the Niger", "Togolese Republic", "Togo Republic", "Republic of Togo")),
-    Currency("XPF", "title.cfp_francs_xpf", Some("XPF"), List("Fr. Polynesia", "French Polynesia", "New Caledonia", "Wallis and Futuna Islands")),
+    Currency(
+      "XAF",
+      "title.central_african_francs_xaf",
+      Some("XAF"),
+      List("Cameroon", "Chad", "Congo", "Equatorial Guinea", "Gabon")
+    ),
+    Currency(
+      "XCD",
+      "title.east_caribbean_dollars_xcd",
+      Some("XCD"),
+      List(
+        "Dominica",
+        "Grenada",
+        "Montserrat",
+        "St Christopher and Anguilla",
+        "Saint Christopher",
+        "St Lucia",
+        "Saint Lucia",
+        "St Vincent",
+        "Saint Vincent"
+      )
+    ),
+    Currency(
+      "XOF",
+      "title.west_african_francs_xof",
+      Some("XOF"),
+      List(
+        "Benin",
+        "Burkina Faso",
+        "Cote d'Ivoire",
+        "Ivory Coast",
+        "Guinea Bissau",
+        "Mali Republic",
+        "Niger Republic",
+        "Senegal",
+        "Cote dIvoire",
+        "Cote d Ivoire",
+        "Republic of Mali",
+        "Republic of the Niger",
+        "Togolese Republic",
+        "Togo Republic",
+        "Republic of Togo"
+      )
+    ),
+    Currency(
+      "XPF",
+      "title.cfp_francs_xpf",
+      Some("XPF"),
+      List("Fr. Polynesia", "French Polynesia", "New Caledonia", "Wallis and Futuna Islands")
+    ),
     Currency("YER", "title.yemen_rial_yer", Some("YER"), Nil),
     Currency("ZAR", "title.south_african_rand_zar", Some("ZAR"), Nil),
     Currency("ZMW", "title.zambian_kwacha_zmw", Some("ZMW"), Nil),
     Currency("ZWL", "title.zimbabwean_dollars_zwl", Some("ZWL"), Nil),
-    Currency("GBP", "title.british_pounds_gbp", None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")),
+    Currency(
+      "GBP",
+      "title.british_pounds_gbp",
+      None,
+      List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")
+    ),
     Currency("FKP", "title.falkland_island_pounds_fkp", None, List("Falklands")),
     Currency("GIP", "title.gibraltar_pounds_gip", None, Nil),
     Currency("GGP", "title.guernsey_pounds_ggp", None, List("Channel Islands")),

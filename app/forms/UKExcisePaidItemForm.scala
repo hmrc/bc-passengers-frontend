@@ -25,7 +25,10 @@ object UKExcisePaidItemForm {
   val form: Form[Boolean] = Form(
     single(
       "uKExcisePaidItem" -> optional(text)
-        .verifying("error.is_uk_excise_paid_item", x => x.fold(false)(y => y.nonEmpty && Try(y.toBoolean).toOption.isDefined))
+        .verifying(
+          "error.is_uk_excise_paid_item",
+          x => x.fold(false)(y => y.nonEmpty && Try(y.toBoolean).toOption.isDefined)
+        )
         .transform[Boolean](_.get.toBoolean, s => Some(s.toString))
     )
   )

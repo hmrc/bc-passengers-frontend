@@ -16,7 +16,6 @@
 
 package services
 
-
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models.{JourneyData, ProductAlias, ProductPath, ProductTreeBranch, ProductTreeLeaf}
@@ -25,25 +24,28 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SelectProductService @Inject()(
+class SelectProductService @Inject() (
   val cache: Cache,
   val productTreeService: ProductTreeService,
   implicit val ec: ExecutionContext
 ) {
 
-  def addSelectedProductsAsAliases(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit hc: HeaderCarrier): Future[JourneyData] = {
+  def addSelectedProductsAsAliases(journeyData: JourneyData, selectedProducts: List[ProductPath])(implicit
+    hc: HeaderCarrier
+  ): Future[JourneyData] = {
 
-    val aliases: List[ProductAlias] = journeyData.selectedAliases ++ selectedProducts.map(productPath => ProductAlias("label." + productPath.toMessageKey, productPath))
+    val aliases: List[ProductAlias] = journeyData.selectedAliases ++ selectedProducts.map(productPath =>
+      ProductAlias("label." + productPath.toMessageKey, productPath)
+    )
 
     val aliasesOrdered = aliases.sortWith { (aliasA, aliasB) =>
-
       val dA = productTreeService.productTree.getDescendant(aliasA.productPath)
       val dB = productTreeService.productTree.getDescendant(aliasB.productPath)
 
       (dA, dB) match {
         case (Some(ProductTreeBranch(_, _, _)), Some(ProductTreeLeaf(_, _, _, _, _))) => true
         case (Some(ProductTreeLeaf(_, _, _, _, _)), Some(ProductTreeBranch(_, _, _))) => false
-        case _ => false
+        case _                                                                        => false
       }
     }
 
@@ -53,9 +55,7 @@ class SelectProductService @Inject()(
     }
   }
 
-  def removeSelectedAlias(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] = {
+  def removeSelectedAlias(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] =
     cache.store(journeyData.copy(workingInstance = None, selectedAliases = journeyData.selectedAliases.tail))
-  }
-
 
 }

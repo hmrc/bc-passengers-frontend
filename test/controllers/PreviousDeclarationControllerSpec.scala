@@ -38,8 +38,8 @@ import scala.concurrent.Future
 class PreviousDeclarationControllerSpec extends BaseSpec {
 
   val mockPreviousDeclarationService: PreviousDeclarationService = MockitoSugar.mock[PreviousDeclarationService]
-  val mockCache: Cache = MockitoSugar.mock[Cache]
-  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
+  val mockCache: Cache                                           = MockitoSugar.mock[Cache]
+  val mockAppConfig: AppConfig                                   = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -52,7 +52,9 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockPreviousDeclarationService, mockCache, mockAppConfig)
-    when(injected[AppConfig].declareGoodsUrl) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
+    when(
+      injected[AppConfig].declareGoodsUrl
+    ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
   }
 
@@ -60,11 +62,12 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     "load the page when feature is on" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
 
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "What do you want to do?"
     }
@@ -72,7 +75,8 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     "redirect to start page when the amendments feature is off" in {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result) shouldBe SEE_OTHER
 
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -80,20 +84,22 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
     "loading the page and populate data from keyStore" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "What do you want to do?"
+      doc.getElementsByTag("h1").text()                    shouldBe "What do you want to do?"
       doc.select("#prevDeclaration-no").hasAttr("checked") shouldBe true
     }
 
     "redirect to start page when journey data is empty" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
-      status(result) shouldBe OK
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+      status(result)           shouldBe OK
       redirectLocation(result) shouldBe None
     }
 
@@ -101,55 +107,67 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
   "postPreviousDeclarationPage" should {
 
-    "redirect to .../where-goods-bought when user says they have not made any previous declaration" in  {
+    "redirect to .../where-goods-bought when user says they have not made any previous declaration" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-        .withFormUrlEncodedBody("prevDeclaration" -> "false")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+          .withFormUrlEncodedBody("prevDeclaration" -> "false")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
 
       verify(mockPreviousDeclarationService, times(1)).storePrevDeclaration(any())(meq(false))(any())
     }
 
-    "redirect to .../declaration-retrieval when user selects they have made a previous declaration" in  {
+    "redirect to .../declaration-retrieval when user selects they have made a previous declaration" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-        .withFormUrlEncodedBody("prevDeclaration" -> "true")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+          .withFormUrlEncodedBody("prevDeclaration" -> "true")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
 
       verify(mockPreviousDeclarationService, times(1)).storePrevDeclaration(any())(meq(true))(any())
     }
 
-    "return a bad request when user selects an invalid value in Previous Declaration page" in  {
+    "return a bad request when user selects an invalid value in Previous Declaration page" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = None)))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn false
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration").withFormUrlEncodedBody("prevDeclaration" -> "dummy")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+          .withFormUrlEncodedBody("prevDeclaration" -> "dummy")
+      ).get
 
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "What do you want to do?"
-      doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.select("a[href=#prevDeclaration-no]").html() shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
+      doc.getElementsByTag("h1").text()                                                              shouldBe "What do you want to do?"
+      doc.select("#error-summary-title").text()                                                      shouldBe "There is a problem"
+      doc
+        .select("a[href=#prevDeclaration-no]")
+        .html()                                                                                      shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
       doc.getElementById("prevDeclaration-error").getElementsByClass("govuk-visually-hidden").html() shouldBe "Error:"
       verify(mockPreviousDeclarationService, times(0)).storePrevDeclaration(any())(any())(any())
     }
@@ -159,16 +177,19 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = None)))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+      val response =
+        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       Option(doc.getElementById("prevDeclaration-error").select("a[href=#prevDeclaration]")).isEmpty shouldBe false
-      Option(doc.select("a[href=#prevDeclaration-no]").html()).get shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
-      Option(doc.select("h2").hasClass("govuk-error-summary__title")).get shouldBe true
-      Option(doc.getElementById("error-summary-title").select("h2").html()).get shouldBe "There is a problem"
+      Option(
+        doc.select("a[href=#prevDeclaration-no]").html()
+      ).get                                                                                          shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
+      Option(doc.select("h2").hasClass("govuk-error-summary__title")).get                            shouldBe true
+      Option(doc.getElementById("error-summary-title").select("h2").html()).get                      shouldBe "There is a problem"
     }
 
   }

@@ -20,11 +20,11 @@ lazy val microservice = Project(appName, file("."))
     pipelineStages := Seq(digest)
   )
   .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.12.15")
+  .settings(scalaVersion := "2.12.16")
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(silencerSettings)
-  .settings( majorVersion := 1 )
+  .settings(majorVersion := 1)
   .settings(
     targetJvm := "jvm-1.8",
     Test / parallelExecution := false,
@@ -40,7 +40,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     inConfig(IntegrationTest)(Defaults.itSettings),
     IntegrationTest / Keys.fork := false,
-    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
+    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory)(base => Seq(base / "it")).value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
     IntegrationTest / testGrouping := oneForkedJvmPerTest((IntegrationTest / definedTests).value),
     IntegrationTest / parallelExecution := false,
@@ -53,7 +53,7 @@ lazy val microservice = Project(appName, file("."))
 lazy val silencerSettings: Seq[Setting[_]] = {
 
   val paramValueNeverUsed: Regex = """^(parameter value)(.*)(is never used)$""".r
-  val unusedImports: Regex = """^(Unused import*)$""".r
+  val unusedImports: Regex       = """^(Unused import*)$""".r
 
   val silencerVersion = "1.7.9"
   Seq(
@@ -78,12 +78,17 @@ TwirlKeys.templateImports ++= Seq(
 )
 Concat.groups := Seq(
   "javascripts/application.js" ->
-    group(Seq(
-      "lib/govuk-frontend/govuk/all.js",
-      "javascripts/jquery.min.js",
-      "javascripts/app.js",
-      "javascripts/autocomplete.js"
-    ))
+    group(
+      Seq(
+        "lib/govuk-frontend/govuk/all.js",
+        "javascripts/jquery.min.js",
+        "javascripts/app.js",
+        "javascripts/autocomplete.js"
+      )
+    )
 )
 Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
+
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")

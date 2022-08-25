@@ -38,8 +38,8 @@ import scala.concurrent.Future
 class UccReliefControllerSpec extends BaseSpec {
 
   val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
-  val mockCache: Cache = MockitoSugar.mock[Cache]
-  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
+  val mockCache: Cache                              = MockitoSugar.mock[Cache]
+  val mockAppConfig: AppConfig                      = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -56,34 +56,78 @@ class UccReliefControllerSpec extends BaseSpec {
 
   "loadUccReliefItemPage" should {
     "load the page" in {
-      val ppi = PurchasedProductInstance(iid = "someIid", path = ProductPath("other-goods/adult/adult-clothing"))
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions")).get
+      val ppi                    = PurchasedProductInstance(iid = "someIid", path = ProductPath("other-goods/adult/adult-clothing"))
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              euCountryCheck = Some("greatBritain"),
+              arrivingNICheck = Some(true),
+              isUKResident = Some(false),
+              purchasedProductInstances = List(ppi)
+            )
+          )
+        )
+      )
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions"
+        )
+      ).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
     }
 
     "load the page and populate uccRelief as true" in {
-      val ppi = PurchasedProductInstance(iid = "someIid", path = ProductPath("other-goods/adult/adult-clothing"), isUccRelief = Some(true))
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/someIid/gb-ni-exemptions")).get
+      val ppi                    = PurchasedProductInstance(
+        iid = "someIid",
+        path = ProductPath("other-goods/adult/adult-clothing"),
+        isUccRelief = Some(true)
+      )
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              euCountryCheck = Some("greatBritain"),
+              arrivingNICheck = Some(true),
+              isUKResident = Some(false),
+              purchasedProductInstances = List(ppi)
+            )
+          )
+        )
+      )
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/someIid/gb-ni-exemptions"
+        )
+      ).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
+      doc.getElementsByTag("h1").text()                       shouldBe "Tax and duty exemptions for non-UK residents"
       doc.select("#isUccRelief-value-yes").hasAttr("checked") shouldBe true
     }
 
     "redirect to start page when journey data is empty" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/someIid/gb-ni-exemptions")).get
-      status(result) shouldBe SEE_OTHER
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/someIid/gb-ni-exemptions"
+        )
+      ).get
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
 
@@ -91,48 +135,88 @@ class UccReliefControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(isUKResident = Some(true)))))
 
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/someIid/gb-ni-exemptions")).get
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/someIid/gb-ni-exemptions"
+        )
+      ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
   }
 
   "postUccReliefItemPage" should {
-    "redirect to the next step in the add other goods journey when successfully submitted" in  {
+    "redirect to the next step in the add other goods journey when successfully submitted" in {
 
-      val ppi = PurchasedProductInstance(iid = "someIid", path = ProductPath("other-goods/adult/adult-clothing"), isUccRelief = Some(false))
-      val jd = JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi))
+      val ppi               = PurchasedProductInstance(
+        iid = "someIid",
+        path = ProductPath("other-goods/adult/adult-clothing"),
+        isUccRelief = Some(false)
+      )
+      val jd                = JourneyData(
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        isUKResident = Some(false),
+        purchasedProductInstances = List(ppi)
+      )
       val cachedJourneyData = Future.successful(Some(jd))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions")
-        .withFormUrlEncodedBody("isUccRelief" -> "true")).get
+      val response          = route(
+        app,
+        EnhancedFakeRequest(
+          "POST",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions"
+        )
+          .withFormUrlEncodedBody("isUccRelief" -> "true")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
     }
 
-    "return a bad request when user selects an invalid value" in  {
+    "return a bad request when user selects an invalid value" in {
 
-      val ppi = PurchasedProductInstance(iid = "someIid", path = ProductPath("other-goods/adult/adult-clothing"), isUccRelief = Some(false))
-      val jd = JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true), isUKResident = Some(false), purchasedProductInstances = List(ppi))
+      val ppi               = PurchasedProductInstance(
+        iid = "someIid",
+        path = ProductPath("other-goods/adult/adult-clothing"),
+        isUccRelief = Some(false)
+      )
+      val jd                = JourneyData(
+        euCountryCheck = Some("greatBritain"),
+        arrivingNICheck = Some(true),
+        isUKResident = Some(false),
+        purchasedProductInstances = List(ppi)
+      )
       val cachedJourneyData = Future.successful(Some(jd))
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions")
-        .withFormUrlEncodedBody("incorrect" -> "true")).get
+      val response          = route(
+        app,
+        EnhancedFakeRequest(
+          "POST",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions"
+        )
+          .withFormUrlEncodedBody("incorrect" -> "true")
+      ).get
 
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
+      doc.getElementsByTag("h1").text()         shouldBe "Tax and duty exemptions for non-UK residents"
       doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.select("a[href=#isUccRelief-value-yes]").html() shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
-      doc.getElementById("isUccRelief-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+      doc
+        .select("a[href=#isUccRelief-value-yes]")
+        .html()                                 shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+      doc
+        .getElementById("isUccRelief-error")
+        .html()                                 shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
       verify(mockTravelDetailService, times(0)).storeUccRelief(any())(any())(any())
     }
   }

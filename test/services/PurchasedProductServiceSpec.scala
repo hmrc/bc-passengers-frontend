@@ -38,29 +38,30 @@ class PurchasedProductServiceSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
-  override def beforeEach: Unit = {
+  override def beforeEach: Unit =
     reset(app.injector.instanceOf[Cache])
-  }
-
 
   trait LocalSetup {
     def journeyDataInCache: Option[JourneyData]
 
     lazy val s = {
       val service = app.injector.instanceOf[PurchasedProductService]
-      val mock = service.cache
-      when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData() )
+      val mock    = service.cache
+      when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
+      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
       service
     }
   }
-
 
   "Calling PurchasedProductService.clearWorkingInstance" should {
 
     "remove the working instance" in new LocalSetup {
 
-      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData(workingInstance = Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))))
+      override def journeyDataInCache: Option[JourneyData] = Some(
+        JourneyData(workingInstance =
+          Some(PurchasedProductInstance(ProductPath("some/item/path"), iid = "iid0", currency = Some("USD")))
+        )
+      )
 
       await(s.clearWorkingInstance(journeyDataInCache.get))
 
@@ -76,19 +77,72 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
     "remove the working instance" in new LocalSetup {
 
-      override def journeyDataInCache: Option[JourneyData] = Some(JourneyData( purchasedProductInstances = List(
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("12.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid1", Some(BigDecimal("2.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("4.99"))),
-        PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("24.99")))
-      )))
+      override def journeyDataInCache: Option[JourneyData] = Some(
+        JourneyData(purchasedProductInstances =
+          List(
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid0",
+              Some(BigDecimal("16.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("12.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid1",
+              Some(BigDecimal("2.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("4.99"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("alcohol/beer"),
+              "iid2",
+              Some(BigDecimal("4.0")),
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("USD"),
+              Some(BigDecimal("24.99"))
+            )
+          )
+        )
+      )
 
       await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
 
       verify(s.cache, times(1)).store(
-        meq(JourneyData( purchasedProductInstances = List(
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(BigDecimal("16.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("12.99"))),
-          PurchasedProductInstance(ProductPath("alcohol/beer"), "iid2", Some(BigDecimal("4.0")), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("USD"), Some(BigDecimal("24.99")))
-        )))
+        meq(
+          JourneyData(purchasedProductInstances =
+            List(
+              PurchasedProductInstance(
+                ProductPath("alcohol/beer"),
+                "iid0",
+                Some(BigDecimal("16.0")),
+                None,
+                Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+                None,
+                Some("USD"),
+                Some(BigDecimal("12.99"))
+              ),
+              PurchasedProductInstance(
+                ProductPath("alcohol/beer"),
+                "iid2",
+                Some(BigDecimal("4.0")),
+                None,
+                Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+                None,
+                Some("USD"),
+                Some(BigDecimal("24.99"))
+              )
+            )
+          )
+        )
       )(any())
 
     }

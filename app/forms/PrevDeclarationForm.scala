@@ -26,8 +26,11 @@ object PrevDeclarationForm {
   def validateForm(): Form[Boolean] = Form(
     single(
       "prevDeclaration" -> optional(text)
-        .verifying("error.previous_declaration", x => x.fold(false)(y => y.nonEmpty && Try(y.toBoolean).toOption.isDefined))
+        .verifying(
+          "error.previous_declaration",
+          x => x.fold(false)(y => y.nonEmpty && Try(y.toBoolean).toOption.isDefined)
         )
-        .transform[Boolean](_.get.toBoolean, s => Some(s.toString))
     )
+      .transform[Boolean](_.get.toBoolean, s => Some(s.toString))
+  )
 }

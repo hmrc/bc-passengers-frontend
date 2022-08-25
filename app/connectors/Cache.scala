@@ -25,23 +25,24 @@ import play.api.libs.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class Cache @Inject()(
-                       val sessionRepository: BCPassengersSessionRepository,
-                       implicit val ec: ExecutionContext
+class Cache @Inject() (
+  val sessionRepository: BCPassengersSessionRepository,
+  implicit val ec: ExecutionContext
 ) {
 
-  def store(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] = sessionRepository.store("journeyData", journeyData)
+  def store(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[JourneyData] =
+    sessionRepository.store("journeyData", journeyData)
 
   def storeJourneyData(journeyData: JourneyData)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     sessionRepository.store("journeyData", journeyData).flatMap(_ => fetch)
 
-  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = sessionRepository.fetch[JourneyData]("journeyData").map {
-    case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
-    case _ => Option.empty
-  }
+  def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
+    sessionRepository.fetch[JourneyData]("journeyData").map {
+      case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
+      case _          => Option.empty
+    }
 
-
-  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier) : Future[JsObject] = sessionRepository.updateUpdatedAtTimestamp
+  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier): Future[JsObject] =
+    sessionRepository.updateUpdatedAtTimestamp
 }

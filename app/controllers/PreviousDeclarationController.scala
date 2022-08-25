@@ -28,24 +28,56 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDeclarationController @Inject()(
-   val cache: Cache,
-   previousDeclarationAction: PreviousDeclarationAction,
-   val error_template: views.html.error_template,
-   val previousDeclarationPage: views.html.amendments.previous_declaration,
-   override val controllerComponents: MessagesControllerComponents,
-   implicit val appConfig: AppConfig,
-   val backLinkModel: BackLinkModel,
-   val previousDeclarationService: services.PreviousDeclarationService,
-   implicit val ec: ExecutionContext
-   ) extends FrontendController(controllerComponents) with I18nSupport {
+class PreviousDeclarationController @Inject() (
+  val cache: Cache,
+  previousDeclarationAction: PreviousDeclarationAction,
+  val error_template: views.html.error_template,
+  val previousDeclarationPage: views.html.amendments.previous_declaration,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  val backLinkModel: BackLinkModel,
+  val previousDeclarationService: services.PreviousDeclarationService,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents)
+    with I18nSupport {
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
 
   val loadPreviousDeclarationPage: Action[AnyContent] = previousDeclarationAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData( Some(prevDeclaration), _, _, _, _,_,_, _, _, _, _, _, _, _, _, _, _, _, _ ,_, _,_, _, _,_,_, _, _)) =>
+        case Some(
+              JourneyData(
+                Some(prevDeclaration),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
           Ok(previousDeclarationPage(PrevDeclarationForm.validateForm().fill(prevDeclaration), backLinkModel.backLink))
         case _ =>
           Ok(previousDeclarationPage(PrevDeclarationForm.validateForm(), backLinkModel.backLink))
@@ -54,21 +86,26 @@ class PreviousDeclarationController @Inject()(
   }
 
   def postPreviousDeclarationPage(): Action[AnyContent] = previousDeclarationAction { implicit context =>
-    PrevDeclarationForm.validateForm().bindFromRequest().fold(
-      hasErrors = {
-        formWithErrors =>
+    PrevDeclarationForm
+      .validateForm()
+      .bindFromRequest()
+      .fold(
+        hasErrors = { formWithErrors =>
           Future.successful(
             BadRequest(previousDeclarationPage(formWithErrors, backLinkModel.backLink))
           )
-      },
-      success = {
-        prevDeclaration =>
-          previousDeclarationService.storePrevDeclaration(context.journeyData)(prevDeclaration).map(_ =>
-            if (prevDeclaration) {
-              Redirect(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage)
-            } else {
-              Redirect(routes.TravelDetailsController.whereGoodsBought)
-            })
-      })
+        },
+        success = { prevDeclaration =>
+          previousDeclarationService
+            .storePrevDeclaration(context.journeyData)(prevDeclaration)
+            .map(_ =>
+              if (prevDeclaration) {
+                Redirect(routes.DeclarationRetrievalController.loadDeclarationRetrievalPage)
+              } else {
+                Redirect(routes.TravelDetailsController.whereGoodsBought)
+              }
+            )
+        }
+      )
   }
 }
