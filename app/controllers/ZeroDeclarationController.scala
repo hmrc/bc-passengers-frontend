@@ -28,39 +28,63 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ZeroDeclarationController @Inject()(
-   val cache: Cache,
-   val portsOfArrivalService: PortsOfArrivalService,
-   val calculatorService: CalculatorService,
-   val productTreeService: ProductTreeService,
-   val declarationService: DeclarationService,
-   zeroDeclarationAction: ZeroDeclarationAction,
-   val error_template: views.html.error_template,
-   val isZeroDeclarationPage: views.html.declaration.zero_declaration,
-   override val controllerComponents: MessagesControllerComponents,
-   implicit val appConfig: AppConfig,
-   implicit val ec: ExecutionContext
-  ) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
+class ZeroDeclarationController @Inject() (
+  val cache: Cache,
+  val portsOfArrivalService: PortsOfArrivalService,
+  val calculatorService: CalculatorService,
+  val productTreeService: ProductTreeService,
+  val declarationService: DeclarationService,
+  zeroDeclarationAction: ZeroDeclarationAction,
+  val error_template: views.html.error_template,
+  val isZeroDeclarationPage: views.html.declaration.zero_declaration,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents)
+    with I18nSupport
+    with ControllerHelpers {
 
   def loadDeclarationPage(): Action[AnyContent] = zeroDeclarationAction { implicit context =>
-
     val chargeReference = context.getJourneyData.chargeReference.getOrElse("")
     declarationService.updateDeclaration(chargeReference) flatMap {
       case DeclarationServiceFailureResponse =>
         Future.successful(InternalServerError(error_template()))
 
       case DeclarationServiceSuccessResponse =>
-        val placeOfArrivalValue = portsOfArrivalService.getDisplayNameByCode(context.getJourneyData.userInformation.get.selectPlaceOfArrival).getOrElse(context.getJourneyData.userInformation.get.enterPlaceOfArrival)
+        val placeOfArrivalValue = portsOfArrivalService
+          .getDisplayNameByCode(context.getJourneyData.userInformation.get.selectPlaceOfArrival)
+          .getOrElse(context.getJourneyData.userInformation.get.enterPlaceOfArrival)
 
         requireCalculatorResponse { calculatorResponse =>
-
           Future.successful {
-            if(context.getJourneyData.declarationResponse.isDefined) {
+            if (context.getJourneyData.declarationResponse.isDefined) {
               val deltaCalculation: Option[Calculation] = context.getJourneyData.deltaCalculation
-              val oldTax = context.getJourneyData.declarationResponse.get.calculation.allTax
-              Ok(isZeroDeclarationPage(true, deltaCalculation, Some(oldTax), context.getJourneyData.userInformation, calculatorResponse, calculatorResponse.asDto(applySorting = false), chargeReference, placeOfArrivalValue))
+              val oldTax                                = context.getJourneyData.declarationResponse.get.calculation.allTax
+              Ok(
+                isZeroDeclarationPage(
+                  true,
+                  deltaCalculation,
+                  Some(oldTax),
+                  context.getJourneyData.userInformation,
+                  calculatorResponse,
+                  calculatorResponse.asDto(applySorting = false),
+                  chargeReference,
+                  placeOfArrivalValue
+                )
+              )
             } else {
-              Ok(isZeroDeclarationPage(false, None, None, context.getJourneyData.userInformation, calculatorResponse, calculatorResponse.asDto(applySorting = false), chargeReference, placeOfArrivalValue))
+              Ok(
+                isZeroDeclarationPage(
+                  false,
+                  None,
+                  None,
+                  context.getJourneyData.userInformation,
+                  calculatorResponse,
+                  calculatorResponse.asDto(applySorting = false),
+                  chargeReference,
+                  placeOfArrivalValue
+                )
+              )
             }
           }
         }
@@ -69,4 +93,3 @@ class ZeroDeclarationController @Inject()(
   }
 
 }
-

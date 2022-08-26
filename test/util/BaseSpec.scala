@@ -31,25 +31,22 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.reflect.ClassTag
 
-
 trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach {
-  override implicit lazy val app : Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository])).build()
-  implicit lazy val hc = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
+    .build()
+  implicit lazy val hc                        = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
 
-  private def addToken[T](fakeRequest: FakeRequest[T])(implicit app: Application) = {
-
+  private def addToken[T](fakeRequest: FakeRequest[T])(implicit app: Application) =
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
 
 //    (tags = fakeRequest.tags ++ Map(
 //      Token.NameRequestTag  -> csrfConfig.tokenName,
 //      Token.RequestTag      -> token
 //    )).withHeaders((csrfConfig.headerName, token))
-  }
 
-  def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
+  def injected[T](c: Class[T]): T                 = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]) = app.injector.instanceOf[T]
-
 
   def EnhancedFakeRequest(method: String, uri: String)(implicit app: Application) = addToken(FakeRequest(method, uri))
 }

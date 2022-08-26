@@ -38,7 +38,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
       def templateId: String
 
-      lazy val cr: CalculatorServiceRequest = CalculatorServiceRequest(isPrivateCraft = false,
+      lazy val cr: CalculatorServiceRequest = CalculatorServiceRequest(
+        isPrivateCraft = false,
         isAgeOver17 = true,
         isArrivingNI = false,
         List(
@@ -59,7 +60,9 @@ class CalculatorServiceRequestSpec extends BaseSpec {
               None
             ),
             ProductTreeLeaf("dummy-product", "Dummy product name", "DUMMY/RATE/ID", templateId, Nil),
-            Currency("CAD", "Canadian dollars (CAD)", Some("CAD"), Nil), BigDecimal("1.13"), ExchangeRate("1.7654", todaysDate)
+            Currency("CAD", "Canadian dollars (CAD)", Some("CAD"), Nil),
+            BigDecimal("1.13"),
+            ExchangeRate("1.7654", todaysDate)
           )
         )
       )
@@ -68,12 +71,11 @@ class CalculatorServiceRequestSpec extends BaseSpec {
     "convert cigarettes correctly" in new Setup {
 
       override val weightOrVolume: None.type = None
-      override val noOfSticks: Option[Int] = Some(200)
+      override val noOfSticks: Option[Int]   = Some(200)
 
       override val templateId: String = "cigarettes"
 
-      val expected: JsValue = Json.parse(
-        """{
+      val expected: JsValue = Json.parse("""{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
@@ -118,12 +120,11 @@ class CalculatorServiceRequestSpec extends BaseSpec {
     "convert cigars correctly" in new Setup {
 
       override val weightOrVolume: Option[BigDecimal] = Some(BigDecimal("1.0"))
-      override val noOfSticks: Option[Int] = Some(50)
+      override val noOfSticks: Option[Int]            = Some(50)
 
       override val templateId: String = "cigars"
 
-      val expected: JsValue = Json.parse(
-        """{
+      val expected: JsValue = Json.parse("""{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
@@ -169,12 +170,11 @@ class CalculatorServiceRequestSpec extends BaseSpec {
     "convert tobacco correctly" in new Setup {
 
       override val weightOrVolume: Option[BigDecimal] = Some(BigDecimal("1.0"))
-      override val noOfSticks: None.type = None
+      override val noOfSticks: None.type              = None
 
       override val templateId: String = "tobacco"
 
-      val expected: JsValue = Json.parse(
-        """{
+      val expected: JsValue = Json.parse("""{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
@@ -219,12 +219,11 @@ class CalculatorServiceRequestSpec extends BaseSpec {
     "convert alcohol correctly" in new Setup {
 
       override val weightOrVolume: Option[BigDecimal] = Some(BigDecimal("1.0"))
-      override val noOfSticks: None.type = None
+      override val noOfSticks: None.type              = None
 
       override val templateId: String = "alcohol"
 
-      val expected: JsValue = Json.parse(
-        """{
+      val expected: JsValue = Json.parse("""{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,
@@ -269,12 +268,11 @@ class CalculatorServiceRequestSpec extends BaseSpec {
     "convert other goods correctly" in new Setup {
 
       override val weightOrVolume: None.type = None
-      override val noOfSticks: None.type = None
+      override val noOfSticks: None.type     = None
 
       override val templateId: String = "other-goods"
 
-      val expected: JsValue = Json.parse(
-        """{
+      val expected: JsValue = Json.parse("""{
           |  "isPrivateCraft" : false,
           |  "isAgeOver17" : true,
           |  "isArrivingNI" : false,

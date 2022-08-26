@@ -16,7 +16,6 @@
 
 package services
 
-
 import javax.inject.Singleton
 import org.joda.time.DateTime
 

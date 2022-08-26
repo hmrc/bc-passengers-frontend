@@ -28,24 +28,56 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UKResidentController @Inject()(
-                                      val cache: Cache,
-                                      uKResidentAction: UKResidentAction,
-                                      val error_template: views.html.error_template,
-                                      val isUKResidentPage: views.html.travel_details.uk_resident,
-                                      override val controllerComponents: MessagesControllerComponents,
-                                      implicit val appConfig: AppConfig,
-                                      val backLinkModel: BackLinkModel,
-                                      val travelDetailsService: services.TravelDetailsService,
-                                      implicit val ec: ExecutionContext
-                                    ) extends FrontendController(controllerComponents) with I18nSupport {
+class UKResidentController @Inject() (
+  val cache: Cache,
+  uKResidentAction: UKResidentAction,
+  val error_template: views.html.error_template,
+  val isUKResidentPage: views.html.travel_details.uk_resident,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  val backLinkModel: BackLinkModel,
+  val travelDetailsService: services.TravelDetailsService,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents)
+    with I18nSupport {
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
 
   val loadUKResidentPage: Action[AnyContent] = uKResidentAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _, _, _,Some(isUKResident),_,_, _, _, _, _, _, _, _, _, _, _, _, _, _,_, _, _,_,_, _, _)) =>
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(isUKResident),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
           Ok(isUKResidentPage(UKResidentForm.form.fill(isUKResident), backLinkModel.backLink))
         case _ =>
           Ok(isUKResidentPage(UKResidentForm.form, backLinkModel.backLink))
@@ -54,22 +86,26 @@ class UKResidentController @Inject()(
   }
 
   def postUKResidentPage(): Action[AnyContent] = uKResidentAction { implicit context =>
-    UKResidentForm.form.bindFromRequest().fold(
-      hasErrors = {
-        formWithErrors =>
+    UKResidentForm.form
+      .bindFromRequest()
+      .fold(
+        hasErrors = { formWithErrors =>
           Future.successful(
             BadRequest(isUKResidentPage(formWithErrors, backLinkModel.backLink))
           )
-      },
-      success = {
-        isUKResident =>
-          travelDetailsService.storeUKResident(context.journeyData)(isUKResident).map(f = _ =>
-            isUKResident match {
-              case true => Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage)
-              case false => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
-            }
-          )
-      })
+        },
+        success = { isUKResident =>
+          travelDetailsService
+            .storeUKResident(context.journeyData)(isUKResident)
+            .map(f =
+              _ =>
+                isUKResident match {
+                  case true  => Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage)
+                  case false => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
+                }
+            )
+        }
+      )
   }
 
 }

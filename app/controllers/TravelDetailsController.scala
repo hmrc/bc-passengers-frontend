@@ -55,7 +55,6 @@ class TravelDetailsController @Inject() (
   val duty_free_allowance_question_mix: views.html.travel_details.duty_free_allowance_question_mix,
   val duty_free_allowance_question_eu: views.html.travel_details.duty_free_allowance_question_eu,
   val no_need_to_use_service_gbni: views.html.travel_details.no_need_to_use_service_gbni,
-
   whereGoodsBoughtAction: WhereGoodsBoughtAction,
   didYouClaimTaxBackAction: DidYouClaimTaxBackAction,
   bringingDutyFreeAction: BringingDutyFreeAction,
@@ -69,22 +68,24 @@ class TravelDetailsController @Inject() (
   privateCraftAction: PrivateCraftAction,
   is17OrOverAction: Is17OrOverAction,
   noNeedToUseServiceGbniAction: NoNeedToUseServiceGbniAction,
-
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
-) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
+) extends FrontendController(controllerComponents)
+    with I18nSupport
+    with ControllerHelpers {
 
   private val logger = Logger(this.getClass)
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
-
     Future.successful {
       if (appConfig.isAmendmentsEnabled) {
-        Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
+        Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
+          .addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
       } else {
-        Redirect(routes.TravelDetailsController.whereGoodsBought).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
+        Redirect(routes.TravelDetailsController.whereGoodsBought)
+          .addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
       }
     }
   }
@@ -92,34 +93,93 @@ class TravelDetailsController @Inject() (
   val whereGoodsBought: Action[AnyContent] = whereGoodsBoughtAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, Some(countryCheck), _, _,_,_, _, _, _, _, _, _,_, _, _, _, _, _,_,_,_,_,_,_, _,_, _, _)) =>
-            Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck)),
-              backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                Some(countryCheck),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(eu_country_check(EuCountryCheckDto.form.fill(EuCountryCheckDto(countryCheck)), backLinkModel.backLink))
         case _ =>
-            Ok(eu_country_check(EuCountryCheckDto.form, backLinkModel.backLink))
+          Ok(eu_country_check(EuCountryCheckDto.form, backLinkModel.backLink))
       }
     }
   }
 
   val whereGoodsBoughtPost: Action[AnyContent] = whereGoodsBoughtAction { implicit context =>
     EuCountryCheckDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(eu_country_check(formWithErrors, backLinkModel.backLink)))
-      },
-      euCountryCheckDto => {
+      formWithErrors => Future.successful(BadRequest(eu_country_check(formWithErrors, backLinkModel.backLink))),
+      euCountryCheckDto =>
         travelDetailsService.storeEuCountryCheck(context.journeyData)(euCountryCheckDto.euCountryCheck) flatMap { _ =>
-          cache.fetch map { _ => Redirect(routes.ArrivingNIController.loadArrivingNIPage)
-          }
+          cache.fetch map { _ => Redirect(routes.ArrivingNIController.loadArrivingNIPage) }
         }
-      }
     )
   }
 
   val didYouClaimTaxBack: Action[AnyContent] = didYouClaimTaxBackAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _,_, _, _,_, _,Some(claimedVatRes), _, _, _, _, _, _, _, _, _, _, _, _ , _,_,_, _, _,_, _, _)) =>
-          Ok(did_you_claim_tax_back(ClaimedVatResDto.form.fill(ClaimedVatResDto(claimedVatRes)), backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(claimedVatRes),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(
+            did_you_claim_tax_back(ClaimedVatResDto.form.fill(ClaimedVatResDto(claimedVatRes)), backLinkModel.backLink)
+          )
         case _ =>
           Ok(did_you_claim_tax_back(ClaimedVatResDto.form, backLinkModel.backLink))
       }
@@ -128,10 +188,8 @@ class TravelDetailsController @Inject() (
 
   val didYouClaimTaxBackPost: Action[AnyContent] = didYouClaimTaxBackAction { implicit context =>
     ClaimedVatResDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(did_you_claim_tax_back(formWithErrors, backLinkModel.backLink)))
-      },
-      didYouClaimTaxBackDto => {
+      formWithErrors => Future.successful(BadRequest(did_you_claim_tax_back(formWithErrors, backLinkModel.backLink))),
+      didYouClaimTaxBackDto =>
         travelDetailsService.storeVatResCheck(context.journeyData)(didYouClaimTaxBackDto.claimedVatRes) map { _ =>
           if (didYouClaimTaxBackDto.claimedVatRes) {
             Redirect(routes.TravelDetailsController.privateTravel)
@@ -139,15 +197,50 @@ class TravelDetailsController @Inject() (
             Redirect(routes.TravelDetailsController.dutyFree)
           }
         }
-      }
     )
   }
 
   val dutyFree: Action[AnyContent] = bringingDutyFreeAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_,_, _, _, _, Some(isBringingDutyFree), _, _, _, _, _, _, _, _, _, _, _ , _,_, _, _, _,_, _, _)) =>
-          Ok(bringing_duty_free_question(BringingDutyFreeDto.form.fill(BringingDutyFreeDto(isBringingDutyFree)), backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(isBringingDutyFree),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(
+            bringing_duty_free_question(
+              BringingDutyFreeDto.form.fill(BringingDutyFreeDto(isBringingDutyFree)),
+              backLinkModel.backLink
+            )
+          )
         case _ =>
           Ok(bringing_duty_free_question(BringingDutyFreeDto.form, backLinkModel.backLink))
       }
@@ -156,30 +249,30 @@ class TravelDetailsController @Inject() (
 
   val dutyFreePost: Action[AnyContent] = bringingDutyFreeAction { implicit context =>
     BringingDutyFreeDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(bringing_duty_free_question(formWithErrors, backLinkModel.backLink)))
-      },
-      isBringingDutyFreeDto => {
-        travelDetailsService.storeBringingDutyFree(context.journeyData)(isBringingDutyFreeDto.isBringingDutyFree) flatMap { _ =>
+      formWithErrors =>
+        Future.successful(BadRequest(bringing_duty_free_question(formWithErrors, backLinkModel.backLink))),
+      isBringingDutyFreeDto =>
+        travelDetailsService.storeBringingDutyFree(context.journeyData)(
+          isBringingDutyFreeDto.isBringingDutyFree
+        ) flatMap { _ =>
           if (!isBringingDutyFreeDto.isBringingDutyFree) {
             cache.fetch map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
                 Redirect(routes.TravelDetailsController.goodsBoughtInsideEu)
-              case Some(jd) if jd.euCountryCheck.contains("both") =>
+              case Some(jd) if jd.euCountryCheck.contains("both")   =>
                 Redirect(routes.TravelDetailsController.goodsBoughtIntoGB)
-              case _ =>
+              case _                                                =>
                 Redirect(routes.TravelDetailsController.privateTravel)
             }
           } else {
             cache.fetch map {
               case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
                 Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionEu)
-              case Some(jd) if jd.euCountryCheck.contains("both") =>
+              case Some(jd) if jd.euCountryCheck.contains("both")   =>
                 Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix)
             }
           }
         }
-      }
     )
   }
 
@@ -190,8 +283,44 @@ class TravelDetailsController @Inject() (
   val goodsBoughtIntoNI: Action[AnyContent] = goodsBoughtIntoNIAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_, _ ,_,_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _, _, _,_,_, _,_, _, _)) =>
-          Ok(goods_brought_into_ni(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(bringingOverAllowance),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(
+            goods_brought_into_ni(
+              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
+              backLinkModel.backLink
+            )
+          )
         case _ =>
           Ok(goods_brought_into_ni(BringingOverAllowanceDto.form, backLinkModel.backLink))
       }
@@ -200,26 +329,61 @@ class TravelDetailsController @Inject() (
 
   val goodsBoughtIntoNIPost: Action[AnyContent] = goodsBoughtIntoNIAction { implicit context =>
     BringingOverAllowanceDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(goods_brought_into_ni(formWithErrors, backLinkModel.backLink)))
-      },
-      overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
+      formWithErrors => Future.successful(BadRequest(goods_brought_into_ni(formWithErrors, backLinkModel.backLink))),
+      overAllowanceDto =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)(
+          overAllowanceDto.bringingOverAllowance
+        ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel)
           } else {
             Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
-      }
     )
   }
 
   val goodsBoughtIntoGB: Action[AnyContent] = goodsBoughtIntoGBAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_, _,_, _, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _, _,_, _, _, _,_, _, _)) =>
-          Ok(goods_brought_into_gb(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(bringingOverAllowance),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(
+            goods_brought_into_gb(
+              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
+              backLinkModel.backLink
+            )
+          )
         case _ =>
           Ok(goods_brought_into_gb(BringingOverAllowanceDto.form, backLinkModel.backLink))
       }
@@ -228,18 +392,17 @@ class TravelDetailsController @Inject() (
 
   val goodsBoughtIntoGBPost: Action[AnyContent] = goodsBoughtIntoGBAction { implicit context =>
     BringingOverAllowanceDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(goods_brought_into_gb(formWithErrors, backLinkModel.backLink)))
-      },
-      overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
+      formWithErrors => Future.successful(BadRequest(goods_brought_into_gb(formWithErrors, backLinkModel.backLink))),
+      overAllowanceDto =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)(
+          overAllowanceDto.bringingOverAllowance
+        ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel)
           } else {
             Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
-      }
     )
   }
 
@@ -250,8 +413,45 @@ class TravelDetailsController @Inject() (
   val bringingDutyFreeQuestionEu: Action[AnyContent] = declareDutyFreeEuAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _,_, _, _,_,_, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _, _,_, _, _, _,_, _, _)) =>
-          Ok(duty_free_allowance_question_eu(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), mixEuRow = false, backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(bringingOverAllowance),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(
+            duty_free_allowance_question_eu(
+              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
+              mixEuRow = false,
+              backLinkModel.backLink
+            )
+          )
         case _ =>
           Ok(duty_free_allowance_question_eu(BringingOverAllowanceDto.form, mixEuRow = false, backLinkModel.backLink))
       }
@@ -261,8 +461,45 @@ class TravelDetailsController @Inject() (
   val bringingDutyFreeQuestionMix: Action[AnyContent] = declareDutyFreeMixAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_, _, _, _, _, _, Some(bringingOverAllowance), _, _, _, _, _, _, _, _, _, _, _, _,_, _, _,_, _, _)) =>
-          Ok(duty_free_allowance_question_mix(BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)), mixEuRow = true, backLinkModel.backLink))
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(bringingOverAllowance),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
+          Ok(
+            duty_free_allowance_question_mix(
+              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
+              mixEuRow = true,
+              backLinkModel.backLink
+            )
+          )
         case _ =>
           Ok(duty_free_allowance_question_mix(BringingOverAllowanceDto.form, mixEuRow = true, backLinkModel.backLink))
       }
@@ -271,42 +508,48 @@ class TravelDetailsController @Inject() (
 
   val dutyFreeAllowanceQuestionMixPost: Action[AnyContent] = declareDutyFreeAnyAction { implicit context =>
     BringingOverAllowanceDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(duty_free_allowance_question_mix(formWithErrors, mixEuRow = true, backLinkModel.backLink)))
-      },
-      overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
+      formWithErrors =>
+        Future.successful(
+          BadRequest(duty_free_allowance_question_mix(formWithErrors, mixEuRow = true, backLinkModel.backLink))
+        ),
+      overAllowanceDto =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)(
+          overAllowanceDto.bringingOverAllowance
+        ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel)
           } else {
             Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
-      }
     )
   }
 
   val dutyFreeAllowanceQuestionEuPost: Action[AnyContent] = declareDutyFreeAnyAction { implicit context =>
     BringingOverAllowanceDto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(duty_free_allowance_question_eu(formWithErrors, mixEuRow = false, backLinkModel.backLink)))
-      },
-      overAllowanceDto => {
-        travelDetailsService.storeBringingOverAllowance(context.journeyData)(overAllowanceDto.bringingOverAllowance) map { _ =>
+      formWithErrors =>
+        Future.successful(
+          BadRequest(duty_free_allowance_question_eu(formWithErrors, mixEuRow = false, backLinkModel.backLink))
+        ),
+      overAllowanceDto =>
+        travelDetailsService.storeBringingOverAllowance(context.journeyData)(
+          overAllowanceDto.bringingOverAllowance
+        ) map { _ =>
           if (overAllowanceDto.bringingOverAllowance) {
             Redirect(routes.TravelDetailsController.privateTravel)
           } else {
             Redirect(routes.TravelDetailsController.noNeedToUseService)
           }
         }
-      }
     )
   }
 
   val privateTravel: Action[AnyContent] = privateCraftAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_,_, _,_, _, _, _, Some(pc), _, _, _, _, _, _, _, _, _, _,_, _, _, _,_, _, _)) =>
+        case Some(
+              JourneyData(_, _, _, _, _, _, _, _, _, _, Some(pc), _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)
+            ) =>
           Ok(private_travel(form.bind(Map("privateCraft" -> pc.toString)), backLinkModel.backLink))
         case _ =>
           Ok(private_travel(form, backLinkModel.backLink))
@@ -316,21 +559,49 @@ class TravelDetailsController @Inject() (
 
   val privateTravelPost: Action[AnyContent] = privateCraftAction { implicit context =>
     form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(private_travel(formWithErrors, backLinkModel.backLink)))
-      },
-      privateCraftDto => {
+      formWithErrors => Future.successful(BadRequest(private_travel(formWithErrors, backLinkModel.backLink))),
+      privateCraftDto =>
         travelDetailsService.storePrivateCraft(context.journeyData)(privateCraftDto.privateCraft) map { _ =>
           Redirect(routes.TravelDetailsController.confirmAge)
         }
-      }
     )
   }
 
   def confirmAge: Action[AnyContent] = is17OrOverAction { implicit context =>
     Future.successful {
       context.journeyData match {
-        case Some(JourneyData(_, _, _,_, _,_,_, _, _, _, _, Some(ageOver17), _, _, _, _, _, _, _, _, _,_,_, _,_,_, _, _)) =>
+        case Some(
+              JourneyData(
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                Some(ageOver17),
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _,
+                _
+              )
+            ) =>
           Ok(confirm_age(AgeOver17Dto.form.bind(Map("ageOver17" -> ageOver17.toString)), backLinkModel.backLink))
         case _ =>
           Ok(confirm_age(AgeOver17Dto.form, backLinkModel.backLink))
@@ -340,23 +611,18 @@ class TravelDetailsController @Inject() (
 
   def confirmAgePost: Action[AnyContent] = is17OrOverAction { implicit context =>
     AgeOver17Dto.form.bindFromRequest.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(confirm_age(formWithErrors, backLinkModel.backLink)))
-      },
-      ageOver17Dto => {
+      formWithErrors => Future.successful(BadRequest(confirm_age(formWithErrors, backLinkModel.backLink))),
+      ageOver17Dto =>
         travelDetailsService.storeAgeOver17(context.journeyData)(ageOver17Dto.ageOver17) map { _ =>
           Redirect(routes.DashboardController.showDashboard)
         }
-      }
     )
   }
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
-    cache.updateUpdatedAtTimestamp.map(_ =>
-      Ok("Ok")
-    ).recover{
-      case e => logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
-        InternalServerError(e.getMessage)
+    cache.updateUpdatedAtTimestamp.map(_ => Ok("Ok")).recover { case e =>
+      logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
+      InternalServerError(e.getMessage)
     }
   }
 

@@ -27,13 +27,12 @@ object Binders {
       val re = """^[a-z-/]+$""".r
       value match {
         case re() => Right(ProductPath(value.split("/").toList))
-        case _ => Left("Invalid product path component")
+        case _    => Left("Invalid product path component")
       }
     }
 
-    override def unbind(key: String, value: ProductPath): String = {
+    override def unbind(key: String, value: ProductPath): String =
       value.toString
-    }
   }
 
   implicit val productPathJSLBinder: JavascriptLiteral[ProductPath] = new JavascriptLiteral[ProductPath] {

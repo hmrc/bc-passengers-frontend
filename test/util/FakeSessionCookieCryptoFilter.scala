@@ -25,11 +25,12 @@ import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFil
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeSessionCookieCryptoFilter @Inject()(val mat: Materializer, val ec: ExecutionContext) extends SessionCookieCryptoFilter {
+class FakeSessionCookieCryptoFilter @Inject() (val mat: Materializer, val ec: ExecutionContext)
+    extends SessionCookieCryptoFilter {
 
-  override protected def encrypter: Encrypter = mock[Encrypter]
-  override protected def decrypter: Decrypter = mock[Decrypter]
-  override protected def sessionBaker: SessionCookieBaker = mock[SessionCookieBaker]
+  override protected def encrypter: Encrypter                       = mock[Encrypter]
+  override protected def decrypter: Decrypter                       = mock[Decrypter]
+  override protected def sessionBaker: SessionCookieBaker           = mock[SessionCookieBaker]
   override protected def cookieHeaderEncoding: CookieHeaderEncoding = mock[CookieHeaderEncoding]
 
   override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = next(rh)

@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class LimitExceedControllerSpec extends BaseSpec {
 
-  val mockCache: Cache = MockitoSugar.mock[Cache]
+  val mockCache: Cache         = MockitoSugar.mock[Cache]
   val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
@@ -51,49 +51,136 @@ class LimitExceedControllerSpec extends BaseSpec {
     reset(mockCache, mockAppConfig)
   }
 
-  lazy val oldAlcohol: PurchasedProductInstance = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", Some(1.54332), None, Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)), None, Some("AUD"), Some(BigDecimal(10.234)), None,None,None, isEditable = Some(false))
+  lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
+    ProductPath("alcohol/beer"),
+    "iid0",
+    Some(1.54332),
+    None,
+    Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+    None,
+    Some("AUD"),
+    Some(BigDecimal(10.234)),
+    None,
+    None,
+    None,
+    isEditable = Some(false)
+  )
   lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
 
   "loadLimitExceedPage" should {
 
     "load limit exceeded page for cider and display alcohol content" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits")).get
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              Some(false),
+              Some("greatBritain"),
+              arrivingNICheck = Some(true),
+              isVatResClaimed = None,
+              isBringingDutyFree = None,
+              bringingOverAllowance = Some(true),
+              ageOver17 = Some(true),
+              privateCraft = Some(false)
+            )
+          )
+        )
+      )
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
+        )
+      ).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare more than 20 litres of other alcoholic drinks"
-      doc.getElementById("table-heading-alcohol").text() shouldBe "You cannot use this service to declare more than the following amounts of alcohol:"
-      content should include ("You must declare alcohol over these limits in person to Border Force when you arrive in the UK.")
-      content should include ("Type of alcohol")
-      content should include ("This is because Border Force need to be sure you are bringing the alcohol in for personal use only.")
-      content should include ("Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due.")
+      doc
+        .getElementsByTag("h1")
+        .text() shouldBe "You cannot use this service to declare more than 20 litres of other alcoholic drinks"
+      doc
+        .getElementById("table-heading-alcohol")
+        .text() shouldBe "You cannot use this service to declare more than the following amounts of alcohol:"
+      content     should include(
+        "You must declare alcohol over these limits in person to Border Force when you arrive in the UK."
+      )
+      content     should include("Type of alcohol")
+      content     should include(
+        "This is because Border Force need to be sure you are bringing the alcohol in for personal use only."
+      )
+      content     should include(
+        "Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due."
+      )
     }
 
     "load limit exceeded page for cigars and display tobacco content" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits")).get
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              Some(false),
+              Some("greatBritain"),
+              arrivingNICheck = Some(true),
+              isVatResClaimed = None,
+              isBringingDutyFree = None,
+              bringingOverAllowance = Some(true),
+              ageOver17 = Some(true),
+              privateCraft = Some(false)
+            )
+          )
+        )
+      )
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits")
+      ).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare more than 200 cigars"
-      doc.getElementById("table-heading-tobacco").text() shouldBe "You cannot use this service to declare more than the following amounts of tobacco:"
-      content should include ("You must declare tobacco over these limits in person to Border Force when you arrive in the UK.")
-      content should include ("Type of tobacco")
-      content should include ("This is because Border Force need to be sure you are bringing the tobacco in for personal use only.")
-      content should include ("Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due.")
+      doc
+        .getElementById("table-heading-tobacco")
+        .text()                         shouldBe "You cannot use this service to declare more than the following amounts of tobacco:"
+      content                             should include(
+        "You must declare tobacco over these limits in person to Border Force when you arrive in the UK."
+      )
+      content                             should include("Type of tobacco")
+      content                             should include(
+        "This is because Border Force need to be sure you are bringing the tobacco in for personal use only."
+      )
+      content                             should include(
+        "Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due."
+      )
     }
 
     "do not load limit exceed page if the path is incorrect" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), arrivingNICheck = Some(true), isVatResClaimed = None, isBringingDutyFree = None, bringingOverAllowance = Some(true), ageOver17 = Some(true), privateCraft = Some(false)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")).get
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            JourneyData(
+              Some(false),
+              Some("greatBritain"),
+              arrivingNICheck = Some(true),
+              isVatResClaimed = None,
+              isBringingDutyFree = None,
+              bringingOverAllowance = Some(true),
+              ageOver17 = Some(true),
+              privateCraft = Some(false)
+            )
+          )
+        )
+      )
+      val result: Future[Result] = route(
+        app,
+        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")
+      ).get
       status(result) shouldBe NOT_FOUND
     }
   }
 
 }
-

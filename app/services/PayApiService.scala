@@ -16,7 +16,6 @@
 
 package services
 
-
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.{CalculatorResponse, ChargeReference, Country, UserInformation}
@@ -31,9 +30,8 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class PayApiService @Inject()(
+class PayApiService @Inject() (
   val wsAllMethods: WsAllMethods,
   configuration: Configuration,
   servicesConfig: ServicesConfig,
@@ -41,25 +39,40 @@ class PayApiService @Inject()(
   implicit val ec: ExecutionContext
 ) {
 
-
   lazy val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
 
-  lazy val returnUrl: String = configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
+  lazy val returnUrl: String =
+    configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
 
-  lazy val returnUrlFailed: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.showCalculation
+  lazy val returnUrlFailed: String    = configuration
+    .getOptional[String]("bc-passengers-frontend.host")
+    .getOrElse("") + routes.CalculateDeclareController.showCalculation
   lazy val returnUrlCancelled: String = returnUrlFailed
 
-  lazy val backUrlDeclaration: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.enterYourDetails
-  lazy val backUrlAmendment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.CalculateDeclareController.declareYourGoods
-  lazy val backUrlPendingPayment: String = configuration.getOptional[String]("bc-passengers-frontend.host").getOrElse("") + routes.PendingPaymentController.loadPendingPaymentPage
+  lazy val backUrlDeclaration: String    = configuration
+    .getOptional[String]("bc-passengers-frontend.host")
+    .getOrElse("") + routes.CalculateDeclareController.enterYourDetails
+  lazy val backUrlAmendment: String      = configuration
+    .getOptional[String]("bc-passengers-frontend.host")
+    .getOrElse("") + routes.CalculateDeclareController.declareYourGoods
+  lazy val backUrlPendingPayment: String = configuration
+    .getOptional[String]("bc-passengers-frontend.host")
+    .getOrElse("") + routes.PendingPaymentController.loadPendingPaymentPage
 
-  def requestPaymentUrl(chargeReference: ChargeReference, userInformation: UserInformation, calculatorResponse: CalculatorResponse, amountPence: Int, isAmendment: Boolean, amountPaidPreviously : Option[String], amendState: Option[String] = None)(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
+  def requestPaymentUrl(
+    chargeReference: ChargeReference,
+    userInformation: UserInformation,
+    calculatorResponse: CalculatorResponse,
+    amountPence: Int,
+    isAmendment: Boolean,
+    amountPaidPreviously: Option[String],
+    amendState: Option[String] = None
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 
-    def getPlaceOfArrival(userInfo: UserInformation) = {
-      if(userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
-    }
+    def getPlaceOfArrival(userInfo: UserInformation) =
+      if (userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
 
-    def formatYesNo(customValue: Boolean, country: Option[Country])(implicit messages: Messages) : String = {
+    def formatYesNo(customValue: Boolean, country: Option[Country])(implicit messages: Messages): String =
       if (countriesService.isInEu(country.map(_.code).getOrElse(""))) {
         if (customValue) {
           messages("label.yes")
@@ -69,48 +82,52 @@ class PayApiService @Inject()(
       } else {
         messages("label.not_required")
       }
-    }
 
-    def geBackURL(isAmendment: Boolean, amendState: String) = {
-      if(amendState.equals("pending-payment")) backUrlPendingPayment else if (isAmendment) backUrlAmendment else backUrlDeclaration
-    }
+    def geBackURL(isAmendment: Boolean, amendState: String) =
+      if (amendState.equals("pending-payment")) backUrlPendingPayment
+      else if (isAmendment) backUrlAmendment
+      else backUrlDeclaration
 
     def previouslyPaidAmount: String = amountPaidPreviously.getOrElse("0.00")
 
     val requestBody: JsObject = Json.obj(
-      "chargeReference" -> chargeReference.value,
-      "taxToPayInPence" -> amountPence,
-      "dateOfArrival" -> userInformation.dateOfArrival.toDateTime(userInformation.timeOfArrival).toString("yyyy-MM-dd'T'HH:mm:ss"),
-      "passengerName" -> s"${userInformation.firstName} ${userInformation.lastName}",
-      "placeOfArrival" -> getPlaceOfArrival(userInformation),
-      "returnUrl" -> returnUrl,
-      "returnUrlFailed" -> returnUrlFailed,
+      "chargeReference"    -> chargeReference.value,
+      "taxToPayInPence"    -> amountPence,
+      "dateOfArrival"      -> userInformation.dateOfArrival
+        .toDateTime(userInformation.timeOfArrival)
+        .toString("yyyy-MM-dd'T'HH:mm:ss"),
+      "passengerName"      -> s"${userInformation.firstName} ${userInformation.lastName}",
+      "placeOfArrival"     -> getPlaceOfArrival(userInformation),
+      "returnUrl"          -> returnUrl,
+      "returnUrlFailed"    -> returnUrlFailed,
       "returnUrlCancelled" -> returnUrlCancelled,
-      "backUrl" -> geBackURL(isAmendment, amendState.getOrElse("")),
-      "items" -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
+      "backUrl"            -> geBackURL(isAmendment, amendState.getOrElse("")),
+      "items"              -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
         Json.obj(
-          "name" -> item.metadata.description,
-          "costInGbp" -> item.calculation.allTax,
-          "price" -> s"${item.metadata.cost} ${messages(item.metadata.currency.displayName)}",
+          "name"             -> item.metadata.description,
+          "costInGbp"        -> item.calculation.allTax,
+          "price"            -> s"${item.metadata.cost} ${messages(item.metadata.currency.displayName)}",
           "purchaseLocation" -> messages(item.metadata.country.countryName),
-          "producedIn" -> messages(item.metadata.originCountry.map(_.countryName).getOrElse(messages("label.na"))),
-          "evidenceOfOrigin" -> formatYesNo(item.isCustomPaid.getOrElse(false),item.metadata.originCountry)
+          "producedIn"       -> messages(item.metadata.originCountry.map(_.countryName).getOrElse(messages("label.na"))),
+          "evidenceOfOrigin" -> formatYesNo(item.isCustomPaid.getOrElse(false), item.metadata.originCountry)
         )
       }),
-      "taxBreakdown" -> Json.obj(
+      "taxBreakdown"       -> Json.obj(
         "customsInGbp" -> calculatorResponse.calculation.customs,
-        "exciseInGbp"-> calculatorResponse.calculation.excise,
-        "vatInGbp"-> calculatorResponse.calculation.vat
+        "exciseInGbp"  -> calculatorResponse.calculation.excise,
+        "vatInGbp"     -> calculatorResponse.calculation.vat
       )
     ) ++ (if (isAmendment)
-      Json.obj("totalPaidNow" -> BigDecimal(amountPence.toDouble / 100).setScale(2).toString,
-        "amountPaidPreviously" -> previouslyPaidAmount)
-    else Json.obj())
+            Json.obj(
+              "totalPaidNow"         -> BigDecimal(amountPence.toDouble / 100).setScale(2).toString,
+              "amountPaidPreviously" -> previouslyPaidAmount
+            )
+          else Json.obj())
 
     wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/pngr/pngr/journey/start", requestBody) map { r =>
       r.status match {
         case CREATED => PayApiServiceSuccessResponse((r.json \ "nextUrl").as[JsString].value)
-        case _ => PayApiServiceFailureResponse
+        case _       => PayApiServiceFailureResponse
       }
     }
 

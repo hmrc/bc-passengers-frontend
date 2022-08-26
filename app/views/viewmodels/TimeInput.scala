@@ -22,18 +22,18 @@ import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.CommonJsonFormats._
 
 case class TimeInput(
-                      id: String = "",
-                      namePrefix: Option[String] = None,
-                      items: Seq[InputItem] = Seq.empty,
-                      periodSelectItems: Seq[SelectItem] = Seq.empty,
-                      hint: Option[Hint] = None,
-                      errorMessage: Option[ErrorMessage] = None,
-                      formGroupClasses: String = "",
-                      fieldset: Option[Fieldset] = None,
-                      classes: String = "",
-                      attributes: Map[String, String] = Map.empty,
-                      showSelectPeriod: Boolean = true
-                    )
+  id: String = "",
+  namePrefix: Option[String] = None,
+  items: Seq[InputItem] = Seq.empty,
+  periodSelectItems: Seq[SelectItem] = Seq.empty,
+  hint: Option[Hint] = None,
+  errorMessage: Option[ErrorMessage] = None,
+  formGroupClasses: String = "",
+  fieldset: Option[Fieldset] = None,
+  classes: String = "",
+  attributes: Map[String, String] = Map.empty,
+  showSelectPeriod: Boolean = true
+)
 
 object TimeInput {
 
@@ -52,7 +52,7 @@ object TimeInput {
         (__ \ "classes").readWithDefault[String](defaultObject.classes) and
         (__ \ "attributes").readWithDefault[Map[String, String]](defaultObject.attributes) and
         (__ \ "showSelectPeriod").readWithDefault[Boolean](defaultObject.showSelectPeriod)
-      )(TimeInput.apply _)
+    )(TimeInput.apply _)
 
   implicit def jsonWrites: OWrites[TimeInput] =
     (
@@ -67,6 +67,6 @@ object TimeInput {
         (__ \ "classes").write[String] and
         (__ \ "attributes").write[Map[String, String]] and
         (__ \ "showSelectPeriod").write[Boolean]
-      )(unlift(TimeInput.unapply))
+    )(unlift(TimeInput.unapply))
 
 }

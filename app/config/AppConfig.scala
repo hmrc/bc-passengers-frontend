@@ -27,29 +27,28 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
 
   private def loadConfig(key: String) = runModeConfiguration.get[String](key)
 
-  private val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
+  private val contactHost                  = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = loadConfig("appName")
-  lazy val govUK: String = servicesConfig.getString("urls.govUK")
+  lazy val govUK: String                   = servicesConfig.getString("urls.govUK")
 
-  lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  lazy val betaFeedbackUrl         = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
   lazy val declareGoodsUrl: String = servicesConfig.getString("external.url")
 
-  lazy val maxOtherGoods: Int = runModeConfiguration.getOptional[Int]("max-other-goods-items").getOrElse(50)
+  lazy val maxOtherGoods: Int    = runModeConfiguration.getOptional[Int]("max-other-goods-items").getOrElse(50)
   lazy val minPaymentAmount: Int = runModeConfiguration.getOptional[Int]("min-payment-amount").getOrElse(9)
-  lazy val paymentLimit: Int = runModeConfiguration.getOptional[Int]("payment-limit").getOrElse(97000)
+  lazy val paymentLimit: Int     = runModeConfiguration.getOptional[Int]("payment-limit").getOrElse(97000)
 
   // Feature Flags
-  lazy val isVatResJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("features.vat-res")
+  lazy val isVatResJourneyEnabled: Boolean       = runModeConfiguration.get[Boolean]("features.vat-res")
   lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
-  lazy val isAmendmentsEnabled: Boolean = runModeConfiguration.get[Boolean]("features.amendments")
-  lazy val timeout: Int = servicesConfig.getInt("timeout.timeout")
-  lazy val countdown: Int = servicesConfig.getInt("timeout.countdown")
+  lazy val isAmendmentsEnabled: Boolean          = runModeConfiguration.get[Boolean]("features.amendments")
+  lazy val timeout: Int                          = servicesConfig.getInt("timeout.timeout")
+  lazy val countdown: Int                        = servicesConfig.getInt("timeout.countdown")
 
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy"))
+  def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
-  def routeToSwitchLanguage: String => Call = (lang: String) => controllers.routes.LocalLanguageController.switchToLanguage(lang)
+  def routeToSwitchLanguage: String => Call = (lang: String) =>
+    controllers.routes.LocalLanguageController.switchToLanguage(lang)
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
 

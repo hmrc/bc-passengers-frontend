@@ -23,19 +23,17 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-class PreviousDeclarationService @Inject()(
+class PreviousDeclarationService @Inject() (
   val cache: Cache,
   val declarationService: DeclarationService,
   implicit val ec: ExecutionContext
 ) {
 
-  def storePrevDeclaration(journeyData: Option[JourneyData])(prevDeclaration: Boolean)
-                          (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
-
+  def storePrevDeclaration(
+    journeyData: Option[JourneyData]
+  )(prevDeclaration: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     journeyData match {
       case Some(journeyData) if !journeyData.prevDeclaration.contains(prevDeclaration) =>
-
         val resetJourneyData = JourneyData(
           prevDeclaration = Some(prevDeclaration)
         )
@@ -43,42 +41,47 @@ class PreviousDeclarationService @Inject()(
         cache.storeJourneyData(resetJourneyData)
 
       case None =>
-        cache.storeJourneyData( JourneyData(
-          prevDeclaration = Some(prevDeclaration)) )
-
-      case _ =>
-        Future.successful( journeyData )
-    }
-  }
-
-  def storePrevDeclarationDetails(journeyData: Option[JourneyData])(previousDeclarationRequest: PreviousDeclarationRequest)
-                                 (implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
-    journeyData match {
-      case Some(_) =>
-        declarationService.retrieveDeclaration(previousDeclarationRequest) flatMap {
-          case DeclarationServiceRetrieveSuccessResponse(retrievedJourneyData) =>
-            cache.storeJourneyData(retrievedJourneyData.copy(pendingPayment = journeyData.get.pendingPayment,
-              declarationResponse = retrievedJourneyData.declarationResponse.map { ds =>
-                ds.copy(oldPurchaseProductInstances = ds.oldPurchaseProductInstances.map(ppi =>
-                  ppi.copy(isEditable = Some(false))
-                ))
-              })
-            )
-          case DeclarationServiceFailureResponse =>
-            cache.storeJourneyData(JourneyData(
-              pendingPayment = journeyData.get.pendingPayment,
-              prevDeclaration = Some(true),
-              previousDeclarationRequest = Some(previousDeclarationRequest)
-            ))
-        }
-      case None =>
-        cache.storeJourneyData(JourneyData(
-          prevDeclaration = Some(true),
-          previousDeclarationRequest = Some(previousDeclarationRequest)
-        ))
+        cache.storeJourneyData(JourneyData(prevDeclaration = Some(prevDeclaration)))
 
       case _ =>
         Future.successful(journeyData)
     }
-  }
+
+  def storePrevDeclarationDetails(
+    journeyData: Option[JourneyData]
+  )(previousDeclarationRequest: PreviousDeclarationRequest)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
+    journeyData match {
+      case Some(_) =>
+        declarationService.retrieveDeclaration(previousDeclarationRequest) flatMap {
+          case DeclarationServiceRetrieveSuccessResponse(retrievedJourneyData) =>
+            cache.storeJourneyData(
+              retrievedJourneyData.copy(
+                pendingPayment = journeyData.get.pendingPayment,
+                declarationResponse = retrievedJourneyData.declarationResponse.map { ds =>
+                  ds.copy(oldPurchaseProductInstances =
+                    ds.oldPurchaseProductInstances.map(ppi => ppi.copy(isEditable = Some(false)))
+                  )
+                }
+              )
+            )
+          case DeclarationServiceFailureResponse                               =>
+            cache.storeJourneyData(
+              JourneyData(
+                pendingPayment = journeyData.get.pendingPayment,
+                prevDeclaration = Some(true),
+                previousDeclarationRequest = Some(previousDeclarationRequest)
+              )
+            )
+        }
+      case None    =>
+        cache.storeJourneyData(
+          JourneyData(
+            prevDeclaration = Some(true),
+            previousDeclarationRequest = Some(previousDeclarationRequest)
+          )
+        )
+
+      case _ =>
+        Future.successful(journeyData)
+    }
 }

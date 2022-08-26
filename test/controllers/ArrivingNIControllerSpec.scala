@@ -39,8 +39,8 @@ import scala.concurrent.Future
 class ArrivingNIControllerSpec extends BaseSpec {
 
   val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
-  val mockCache: Cache = MockitoSugar.mock[Cache]
-  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
+  val mockCache: Cache                              = MockitoSugar.mock[Cache]
+  val mockAppConfig: AppConfig                      = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -57,55 +57,66 @@ class ArrivingNIControllerSpec extends BaseSpec {
   "loadArrivingNIPage" should {
     "load the page" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly")))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Is your final destination Northern Ireland?"
     }
 
     "loading the page and populate data from keyStore" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly"),Some(true)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
+      when(mockCache.fetch(any()))
+        .thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly"), Some(true)))))
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Is your final destination Northern Ireland?"
+      doc.getElementsByTag("h1").text()                      shouldBe "Is your final destination Northern Ireland?"
       doc.select("#arrivingNI-value-yes").hasAttr("checked") shouldBe true
     }
 
     "redirect to the start page where journey data is missing" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
-      status(result) shouldBe SEE_OTHER
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
   }
 
   "postArrivingNIPage" should {
 
-    "redirect to .../goods-brought-into-great-britain-iom when user says they have arrived from EU and final destination is not NI" in  {
+    "redirect to .../goods-brought-into-great-britain-iom when user says they have arrived from EU and final destination is not NI" in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false))))
+      val cachedJourneyData =
+        Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
       when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody("arrivingNI" -> "false")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "false"
+        )
+      ).get
 
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")
-
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom"
+      )
 
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(false))(any())
     }
 
-    "redirect to .../goods-bought-into-northern-ireland-inside-EU  when user says they have arrived from EU when isVatResJourneyEnabled is false" in  {
+    "redirect to .../goods-bought-into-northern-ireland-inside-EU  when user says they have arrived from EU when isVatResJourneyEnabled is false" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
@@ -113,50 +124,66 @@ class ArrivingNIControllerSpec extends BaseSpec {
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn false
       when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "true"
+        )
+      ).get
 
-
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody("arrivingNI" -> "true")).get
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-eu")
-
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-eu"
+      )
 
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(true))(any())
     }
 
-    "return a bad request when user selects an invalid value in Arriving NI page" in  {
+    "return a bad request when user selects an invalid value in Arriving NI page" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("None"))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn false
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody("arrivingNI" -> "dummy")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "dummy"
+        )
+      ).get
 
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Is your final destination Northern Ireland?"
-      doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.select("a[href=#arrivingNI-value-yes]").html() shouldBe "Select yes if your final destination is Northern Ireland"
+      doc.getElementsByTag("h1").text()                                                         shouldBe "Is your final destination Northern Ireland?"
+      doc.select("#error-summary-title").text()                                                 shouldBe "There is a problem"
+      doc
+        .select("a[href=#arrivingNI-value-yes]")
+        .html()                                                                                 shouldBe "Select yes if your final destination is Northern Ireland"
       doc.getElementById("arrivingNI-error").getElementsByClass("govuk-visually-hidden").html() shouldBe "Error:"
       verify(mockTravelDetailService, times(0)).storeArrivingNI(any())(any())(any())
     }
 
-    "redirect to .../gb-ni-uk-resident-check when user says they have arrived from GB and final destination is NI" in  {
+    "redirect to .../gb-ni-uk-resident-check when user says they have arrived from GB and final destination is NI" in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true))))
+      val cachedJourneyData =
+        Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true))))
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody("arrivingNI" -> "true")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "true"
+        )
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
-
 
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(true))(any())
     }

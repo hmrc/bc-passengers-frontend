@@ -33,20 +33,19 @@ class PublicController @Inject() (
   val cache: Cache,
   val productTreeService: ProductTreeService,
   val calculatorService: CalculatorService,
-
   val error_template: views.html.error_template,
   val time_out: views.html.time_out,
-
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
-) extends FrontendController(controllerComponents) with I18nSupport with ControllerHelpers {
+) extends FrontendController(controllerComponents)
+    with I18nSupport
+    with ControllerHelpers {
 
   def timeOut: Action[AnyContent] = Action.async { implicit context =>
     Future.successful(Ok(time_out()).addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString))
 
   }
-
 
 }

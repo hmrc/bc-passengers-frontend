@@ -34,17 +34,14 @@ class UtilSpec extends BaseSpec {
 
     "restrict negative value like -95 to old constraint" in {
 
-      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(validation.Valid) should be (false)
+      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(validation.Valid) should be(false)
     }
 
     "restrict negative value like -9.50" in {
 
-      blankOkCostCheckConstraint("cost").apply("-9.50").equals(validation.Valid) should be (false)
+      blankOkCostCheckConstraint("cost").apply("-9.50").equals(validation.Valid) should be(false)
     }
 
   }
 
-
 }
-
-

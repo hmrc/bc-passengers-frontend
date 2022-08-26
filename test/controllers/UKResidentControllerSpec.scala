@@ -38,8 +38,8 @@ import scala.concurrent.Future
 class UKResidentControllerSpec extends BaseSpec {
 
   val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
-  val mockCache: Cache = MockitoSugar.mock[Cache]
-  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
+  val mockCache: Cache                              = MockitoSugar.mock[Cache]
+  val mockAppConfig: AppConfig                      = MockitoSugar.mock[AppConfig]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -55,89 +55,146 @@ class UKResidentControllerSpec extends BaseSpec {
   }
   "loadUKResidentPage" should {
     "load the page" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true), Some(true), Some(true)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true), Some(true), Some(true))))
+      )
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Are you a UK resident?"
     }
 
     "loading the page and populate data" in {
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("greatBritain"),Some(true),Some(true),Some(true),Some(true)))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
+      when(mockCache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(JourneyData(Some(false), Some("greatBritain"), Some(true), Some(true), Some(true), Some(true)))
+        )
+      )
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Are you a UK resident?"
+      doc.getElementsByTag("h1").text()                        shouldBe "Are you a UK resident?"
       doc.select("#isUKResident-value-yes").hasAttr("checked") shouldBe true
     }
 
     "redirect to start page when journey data is empty" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
-      val result: Future[Result] = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
-      status(result) shouldBe SEE_OTHER
+      val result: Future[Result] =
+        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
   }
 
   "postUKResidentPage" should {
 
-    "redirect to .../goods-brought-into-northern-ireland when non-UK resident travels from GB to NI " in  {
+    "redirect to .../goods-brought-into-northern-ireland when non-UK resident travels from GB to NI " in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),None,None,Some(false))))
+      val cachedJourneyData = Future.successful(
+        Some(
+          JourneyData(
+            prevDeclaration = Some(false),
+            euCountryCheck = Some("greatBritain"),
+            Some(true),
+            None,
+            None,
+            Some(false)
+          )
+        )
+      )
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
-        .withFormUrlEncodedBody("isUKResident" -> "false")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+          .withFormUrlEncodedBody("isUKResident" -> "false")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland"
+      )
 
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(false))(any())
     }
 
-    "redirect to .../gb-ni-vat-excise-check when UK resident travels from GB to NI" in  {
+    "redirect to .../gb-ni-vat-excise-check when UK resident travels from GB to NI" in {
 
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"),Some(true),None,None,Some(true))))
+      val cachedJourneyData = Future.successful(
+        Some(
+          JourneyData(
+            prevDeclaration = Some(false),
+            euCountryCheck = Some("greatBritain"),
+            Some(true),
+            None,
+            None,
+            Some(true)
+          )
+        )
+      )
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
-        .withFormUrlEncodedBody("isUKResident" -> "true")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+          .withFormUrlEncodedBody("isUKResident" -> "true")
+      ).get
 
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
 
       verify(mockTravelDetailService, times(1)).storeUKResident(any())(meq(true))(any())
     }
 
+    "return a bad request when user selects an invalid value" in {
 
-
-    "return a bad request when user selects an invalid value" in  {
-
-      val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("greatBritain"), Some(true),Some(true),Some(true),Some(true))))
+      val cachedJourneyData = Future.successful(
+        Some(
+          JourneyData(
+            prevDeclaration = Some(false),
+            euCountryCheck = Some("greatBritain"),
+            Some(true),
+            Some(true),
+            Some(true),
+            Some(true)
+          )
+        )
+      )
 
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check").withFormUrlEncodedBody("ukResident" -> "dummy")).get
+      val response = route(
+        app,
+        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+          .withFormUrlEncodedBody("ukResident" -> "dummy")
+      ).get
 
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)
-      val doc = Jsoup.parse(content)
+      val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Are you a UK resident?"
+      doc.getElementsByTag("h1").text()         shouldBe "Are you a UK resident?"
       doc.select("#error-summary-title").text() shouldBe "There is a problem"
-      doc.getElementsByClass("govuk-error-summary").select("a[href=#isUKResident-value-yes]").html() shouldBe "Select yes if you are a UK resident"
-      doc.getElementById("isUKResident-error").html() shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are a UK resident"
+      doc
+        .getElementsByClass("govuk-error-summary")
+        .select("a[href=#isUKResident-value-yes]")
+        .html()                                 shouldBe "Select yes if you are a UK resident"
+      doc
+        .getElementById("isUKResident-error")
+        .html()                                 shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are a UK resident"
       verify(mockTravelDetailService, times(0)).storeUKResident(any())(any())(any())
     }
 

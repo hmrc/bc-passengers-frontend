@@ -23,15 +23,14 @@ case class PurchasedItem(
   gbpCost: BigDecimal,
   exchangeRate: ExchangeRate
 ) {
-  def descriptionLabels(long: Boolean): Option[(String, List[String])] = {
+  def descriptionLabels(long: Boolean): Option[(String, List[String])] =
     productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long)
-  }
-  def name: String = productTreeLeaf.name
-  def displayCurrency: String = currency.displayName
-  def countryName: Option[String] = purchasedProductInstance.country.map(_.countryName)
-  def countryCode: Option[String] = purchasedProductInstance.country.map(_.code)
-  def originCountry: Option[String] = purchasedProductInstance.originCountry.map(_.countryName)
-  def hasEvidence: Option[Boolean] = purchasedProductInstance.hasEvidence
+  def name: String                                                     = productTreeLeaf.name
+  def displayCurrency: String                                          = currency.displayName
+  def countryName: Option[String]                                      = purchasedProductInstance.country.map(_.countryName)
+  def countryCode: Option[String]                                      = purchasedProductInstance.country.map(_.code)
+  def originCountry: Option[String]                                    = purchasedProductInstance.originCountry.map(_.countryName)
+  def hasEvidence: Option[Boolean]                                     = purchasedProductInstance.hasEvidence
 }
 
 case class SpeculativeItem(

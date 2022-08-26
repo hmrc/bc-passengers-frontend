@@ -16,7 +16,6 @@
 
 package services
 
-
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
 import models.{JourneyData, UserInformation}
@@ -27,10 +26,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class UserInformationService @Inject() (val cache: Cache) {
 
-  def storeUserInformation(journeyData: JourneyData, userInformation: UserInformation)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+  def storeUserInformation(journeyData: JourneyData, userInformation: UserInformation)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[JourneyData] = {
 
     val updatedJourneyData = journeyData.copy(userInformation = Some(userInformation))
 
-    cache.store( updatedJourneyData ).map(_ => updatedJourneyData)
+    cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 }

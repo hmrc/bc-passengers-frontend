@@ -27,7 +27,17 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.AppName
 import uk.gov.hmrc.play.http.ws._
 
-trait WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with HttpPatch with WSPatch
+trait WSHttp
+    extends HttpGet
+    with WSGet
+    with HttpPut
+    with WSPut
+    with HttpPost
+    with WSPost
+    with HttpDelete
+    with WSDelete
+    with HttpPatch
+    with WSPatch
 
 @Singleton
 class WsAllMethods @Inject() (
@@ -36,9 +46,10 @@ class WsAllMethods @Inject() (
   environment: Environment,
   val wsClient: WSClient,
   config: Configuration
-) extends WSHttp with HttpAuditing {
+) extends WSHttp
+    with HttpAuditing {
 
-  override lazy val appName = AppName.fromConfiguration(config)
-  override val hooks = Seq(AuditingHook)
+  override lazy val appName                    = AppName.fromConfiguration(config)
+  override val hooks                           = Seq(AuditingHook)
   override protected val configuration: Config = config.underlying
 }

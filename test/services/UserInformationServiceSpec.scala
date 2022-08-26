@@ -38,10 +38,8 @@ class UserInformationServiceSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
-  override def beforeEach: Unit = {
+  override def beforeEach: Unit =
     reset(app.injector.instanceOf[Cache])
-  }
-
 
   trait LocalSetup {
 
@@ -49,9 +47,9 @@ class UserInformationServiceSpec extends BaseSpec {
 
     lazy val s = {
       val service = app.injector.instanceOf[UserInformationService]
-      val mock = service.cache
-      when(mock.fetch(any())) thenReturn Future.successful( journeyDataInCache )
-      when(mock.store(any())(any())) thenReturn Future.successful( JourneyData() )
+      val mock    = service.cache
+      when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
+      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
       service
     }
   }
@@ -62,10 +60,41 @@ class UserInformationServiceSpec extends BaseSpec {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      await(s.storeUserInformation(JourneyData(), UserInformation("Harry", "Potter","passport", "SX12345","abc@gmail.com", "Newcastle Airport","", LocalDate.parse("2018-08-31"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa")))))
+      await(
+        s.storeUserInformation(
+          JourneyData(),
+          UserInformation(
+            "Harry",
+            "Potter",
+            "passport",
+            "SX12345",
+            "abc@gmail.com",
+            "Newcastle Airport",
+            "",
+            LocalDate.parse("2018-08-31"),
+            LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+          )
+        )
+      )
 
       verify(s.cache, times(1)).store(
-        meq(JourneyData(userInformation = Some(UserInformation("Harry", "Potter","passport", "SX12345", "abc@gmail.com", "Newcastle Airport", "",  LocalDate.parse("2018-08-31"), LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))))))
+        meq(
+          JourneyData(userInformation =
+            Some(
+              UserInformation(
+                "Harry",
+                "Potter",
+                "passport",
+                "SX12345",
+                "abc@gmail.com",
+                "Newcastle Airport",
+                "",
+                LocalDate.parse("2018-08-31"),
+                LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+              )
+            )
+          )
+        )
       )(any())
 
     }

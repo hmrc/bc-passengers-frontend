@@ -21,10 +21,10 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
-class LocalLanguageController @Inject()(
-                                         languageUtils: LanguageUtils,
-                                         controllerComponent: ControllerComponents,
-                                         override val messagesApi: MessagesApi
+class LocalLanguageController @Inject() (
+  languageUtils: LanguageUtils,
+  controllerComponent: ControllerComponents,
+  override val messagesApi: MessagesApi
 ) extends LanguageController(languageUtils, controllerComponent) {
 
   override def languageMap: Map[String, Lang] = Map(
