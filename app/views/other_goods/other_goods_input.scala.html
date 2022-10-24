@@ -41,9 +41,15 @@
 
     @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
 
-        @errorSummary(form.errors)
+        @if(form.errors){
+        <div class="govuk-!-margin-top-4">
+            @errorSummary(form.errors)
+        </div>
+        }
+        <div class="govuk-!-margin-bottom-6">
+            <fieldset class="govuk-fieldset">
 
-        @h1Product("label.tell_us_about_the", customHeading)
+        @h1Product("label.tell_us_about_the", customHeading, form.errors)
         <br>
         <br>
 
@@ -111,11 +117,13 @@
             isPageHeading = false,
             classes = Some("govuk-input govuk-!-width-one-half")
         )
+        </fieldset>
 
         @button("label.continue")
 
         <div>
             <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
+        </div>
         </div>
 
     }

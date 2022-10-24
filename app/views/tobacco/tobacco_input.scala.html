@@ -35,66 +35,72 @@
 @govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase()))) {
 
       @formHelper(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid))) {
+        @if(form.errors){
+          <div class="govuk-!-margin-top-4">
+            @errorSummary(form.errors)
+          </div>
+        }
+        <div class="govuk-!-margin-bottom-6">
+          <fieldset class="govuk-fieldset">
+            @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}", form.errors)
+            <br>
+            <br>
 
-          @errorSummary(form.errors)
+            @content
 
-          @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}")
-          <br>
-          <br>
-
-          @content
-
-          @autoCompleteList(form,
-              id = "country",
-              name = "country",
-              isPageHint = true,
-              hint = messages("label.if_you_bought_this_tobacco_"),
-              isPageHeading = false,
-              label = messages(s"label.country_this_tobacco_was_"),
-              hintText = "",
-              list = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
-              jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
-          )
-          @if(journeyStart.contains("euOnly")){
-              @autoCompleteList(form,
-                  id = "originCountry",
-                  name = "originCountry",
-                  isPageHint = true,
-                  hint = messages("label.country_this_tobacco_was_produced_hint"),
-                  isPageHeading = false,
-                  label = messages(s"label.country_this_tobacco_was_produced"),
-                  hintText = "",
-                  list = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
-                  jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
+            @autoCompleteList(form,
+                id = "country",
+                name = "country",
+                isPageHint = true,
+                hint = messages("label.if_you_bought_this_tobacco_"),
+                isPageHeading = false,
+                label = messages(s"label.country_this_tobacco_was_"),
+                hintText = "",
+                list = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
+                jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
+            )
+            @if(journeyStart.contains("euOnly")){
+                @autoCompleteList(form,
+                id = "originCountry",
+                name = "originCountry",
+                isPageHint = true,
+                hint = messages("label.country_this_tobacco_was_produced_hint"),
+                isPageHeading = false,
+                label = messages(s"label.country_this_tobacco_was_produced"),
+                hintText = "",
+                list = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
+                jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
               )
-          }
+            }
 
-          @autoCompleteList(form,
-              id = "currency",
-              name = "currency",
-              isPageHint = false,
-              hint = "",
-              isPageHeading = false,
-              label = messages(s"label.currency_used_to_buy_this_tobacco"),
-              hintText = "",
-              list = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
-              jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
-          )
+              @autoCompleteList(form,
+                  id = "currency",
+                  name = "currency",
+                  isPageHint = false,
+                  hint = "",
+                  isPageHeading = false,
+                  label = messages(s"label.currency_used_to_buy_this_tobacco"),
+                  hintText = "",
+                  list = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
+                  jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
+              )
 
-          @inputText(
-              form,
-              id = "cost",
-              name = "cost",
-              label = "label.price_paid",
-              isPageHeading = false,
-              classes = Some("govuk-input govuk-!-width-one-half")
-          )
+              @inputText(
+                  form,
+                  id = "cost",
+                  name = "cost",
+                  label = "label.price_paid",
+                  isPageHeading = false,
+                  classes = Some("govuk-input govuk-!-width-one-half")
+              )
+
+          </fieldset>
 
           @button("label.continue")
 
           <div>
               <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
           </div>
-
+        </div>
       }
 }

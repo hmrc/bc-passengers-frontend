@@ -35,10 +35,15 @@
 @govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase()))) {
 
     @formHelper(action = iid.fold(routes.AlcoholInputController.processAddForm(path))(iid => routes.AlcoholInputController.processEditForm(iid))) {
+        @if(form.errors){
+        <div class="govuk-!-margin-top-4">
+            @errorSummary(form.errors)
+        </div>
+        }
+        <div class="govuk-!-margin-bottom-6">
+        <fieldset class="govuk-fieldset">
 
-    @errorSummary(form.errors)
-
-        @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}")
+        @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}", form.errors)
         <br>
         <br>
 
@@ -98,11 +103,13 @@
            classes = Some("govuk-input govuk-!-width-one-half")
         )
 
+        </fieldset>
+
     @button("label.continue")
 
     <div>
         <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
     </div>
-
+    </div>
   }
 }
