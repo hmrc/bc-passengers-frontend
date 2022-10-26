@@ -49,7 +49,6 @@
             @messages(label, headingMessageArgs: _*)
         </label>
     }
-
     @if(isPageHint){<span id="@id-hint" class="govuk-hint">@hint</span>}
     @select(hmrcComponent.Select(
         id = id,
@@ -80,7 +79,7 @@
 
           //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
           let foundInData = Array.from(document.querySelectorAll("#" + newId+ "-select > option"))
-            .find(e => e.label === document.getElementById('@id').value)
+            .find(e => e.text === document.getElementById('@id').value)
             let element = !!confirmed ? confirmed : foundInData
 
             if(!!element) {
