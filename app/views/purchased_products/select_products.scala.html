@@ -32,37 +32,42 @@
 @govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}")))) {
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
+    @if(selectProductsForm.errors){
+        <div class="govuk-!-margin-top-4">
+            @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey),
+            if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco"))
+            Some(items(0)._2)
+            else
+            Some(s"tokens-${items(0)._1}")
+            )
+        </div>
+    }
+    <div class="govuk-!-margin-bottom-6">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                   @Html(messages(s"select_products.heading.${path.toMessageKey}"))
+             </h1>
+            </legend>
 
-    @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey),
-                            if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco"))
-                                Some(items(0)._2)
-                            else
-                                Some(s"tokens-${items(0)._1}")
-                            )
+                @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
 
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-        <h1 class="govuk-fieldset__heading">
-           @Html(messages(s"select_products.heading.${path.toMessageKey}"))
-     </h1>
-    </legend>
-
-
-            @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
-
-                @checkboxes(
-                    field = selectProductsForm("tokens"),
-                    path = Some(path),
-                    inputs = checkBoxOptions(items),
-                    legendText = Some(messages("label.select_all_that_apply"))
-                )
-            } else {
-                    @radios(
+                    @checkboxes(
                         field = selectProductsForm("tokens"),
-                        items = radioOptions(items),
-                        name = "tokens",
-                        path = Some(path)
-                )
-            }
+                        path = Some(path),
+                        inputs = checkBoxOptions(items),
+                        legendText = Some(messages("label.select_all_that_apply"))
+                    )
+                } else {
+                        @radios(
+                            field = selectProductsForm("tokens"),
+                            items = radioOptions(items),
+                            name = "tokens",
+                            path = Some(path)
+                    )
+                }
+        </fieldset>
     @button("label.continue")
+    </div>
     }
 }
