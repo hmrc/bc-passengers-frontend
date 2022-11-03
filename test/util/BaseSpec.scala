@@ -19,7 +19,7 @@ package util
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
@@ -37,7 +37,7 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
     .build()
   implicit lazy val hc                        = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
 
-  private def addToken[T](fakeRequest: FakeRequest[T])(implicit app: Application) =
+  private def addToken[T](fakeRequest: FakeRequest[T]) =
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
 
 //    (tags = fakeRequest.tags ++ Map(
@@ -48,5 +48,5 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
   def injected[T](c: Class[T]): T                 = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]) = app.injector.instanceOf[T]
 
-  def EnhancedFakeRequest(method: String, uri: String)(implicit app: Application) = addToken(FakeRequest(method, uri))
+  def enhancedFakeRequest(method: String, uri: String) = addToken(FakeRequest(method, uri))
 }

@@ -43,10 +43,11 @@ class BackLinkModel @Inject() (
       case "duty-free"                                                                  =>
         Some(TravelDetailsController.didYouClaimTaxBack)
       case "where-goods-bought"                                                         =>
-        if (appConfig.isAmendmentsEnabled)
+        if (appConfig.isAmendmentsEnabled) {
           Some(PreviousDeclarationController.loadPreviousDeclarationPage)
-        else
+        } else {
           Some(appConfig.declareGoodsUrl)
+        }
       case "declaration-not-found"                                                      =>
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "arriving-ni"                                                                =>

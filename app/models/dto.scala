@@ -21,8 +21,7 @@ import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms.{optional, _}
 import play.api.data.Forms.tuple
 import play.api.data.validation._
-import play.api.data.{Form, FormError, Mapping}
-import play.api.data.format.Formatter
+import play.api.data.{Form, Mapping}
 import services.CountriesService
 
 import scala.util.Try

@@ -21,11 +21,11 @@ import java.time.format.DateTimeFormatter
 
 import connectors.Cache
 import models.{PurchasedItem, _}
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 import scala.math.BigDecimal.RoundingMode
 
 class CalculatorServiceSpec extends BaseSpec {
-
+  // scalastyle:off magic.number
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
@@ -1310,4 +1310,5 @@ class CalculatorServiceSpec extends BaseSpec {
 
     }
   }
+  // scalastyle:on magic.number
 }

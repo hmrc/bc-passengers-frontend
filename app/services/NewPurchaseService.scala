@@ -85,7 +85,9 @@ class NewPurchaseService @Inject() (
     journeyData.copy(
       purchasedProductInstances = journeyData.purchasedProductInstances
         .map { ppi =>
-          if (ppi.iid == iid && originCountryCode.isDefined && countriesService.isInEu(originCountryCode.getOrElse("")))
+          if (
+            ppi.iid == iid && originCountryCode.isDefined && countriesService.isInEu(originCountryCode.getOrElse(""))
+          ) {
             PurchasedProductInstance(
               path,
               iid,
@@ -102,7 +104,7 @@ class NewPurchaseService @Inject() (
               ppi.isUccRelief,
               ppi.hasEvidence
             )
-          else if (ppi.iid == iid)
+          } else if (ppi.iid == iid) {
             PurchasedProductInstance(
               path,
               iid,
@@ -118,7 +120,9 @@ class NewPurchaseService @Inject() (
               ppi.isExcisePaid,
               ppi.isUccRelief
             )
-          else ppi
+          } else {
+            ppi
+          }
         },
       defaultCountry = Some(countryCode),
       defaultCurrency = Some(currency)

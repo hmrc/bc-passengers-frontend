@@ -20,8 +20,8 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.scalatestplus.mockito.MockitoSugar
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.Application
 import play.api.inject.bind
@@ -58,7 +58,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
     "load the page" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly")))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -71,7 +71,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
       when(mockCache.fetch(any()))
         .thenReturn(Future.successful(Some(JourneyData(Some(false), Some("nonEuOnly"), Some(true)))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -84,7 +84,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
     "redirect to the start page where journey data is missing" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni")).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
@@ -103,7 +103,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
           "arrivingNI" -> "false"
         )
       ).get
@@ -126,7 +126,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
           "arrivingNI" -> "true"
         )
       ).get
@@ -148,7 +148,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
           "arrivingNI" -> "dummy"
         )
       ).get
@@ -177,7 +177,7 @@ class ArrivingNIControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
           "arrivingNI" -> "true"
         )
       ).get

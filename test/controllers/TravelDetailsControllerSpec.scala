@@ -21,9 +21,9 @@ import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,16 +31,12 @@ import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.mvc.Results.ok
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-
-import scala.collection.JavaConverters._
 import scala.collection.convert.ImplicitConversions.`list asScalaBuffer`
 import scala.concurrent.Future
-import scala.language.postfixOps
 
 class TravelDetailsControllerSpec extends BaseSpec {
 
@@ -98,7 +94,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
         Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"))))
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
 
       status(response) shouldBe OK
 
@@ -123,7 +119,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(None)
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
       status(response) shouldBe OK
 
       val content: String = contentAsString(response)
@@ -152,7 +148,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
 
       status(response) shouldBe OK
 
@@ -168,7 +164,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
 
       status(response) shouldBe OK
 
@@ -189,7 +185,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("euCountryCheck" -> "euOnly")
       ).get
 
@@ -206,7 +202,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")
       ).get
 
@@ -223,7 +219,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("euCountryCheck" -> "both")
       ).get
 
@@ -236,7 +232,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     "return bad request when given invalid data" in new LocalSetup {
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("value" -> "badValue")
       ).get
 
@@ -251,7 +247,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Future[Some[JourneyData]] = Future.successful(Some(JourneyData(None)))
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -269,7 +265,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Future[Some[JourneyData]] = Future.successful(Some(JourneyData(None)))
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -289,7 +285,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
       ).get
       status(response) shouldBe OK
 
@@ -309,7 +305,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
           .withFormUrlEncodedBody("bringingOverAllowance" -> "true")
       ).get
 
@@ -324,7 +320,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
           .withFormUrlEncodedBody("bringingOverAllowance" -> "false")
       ).get
 
@@ -339,7 +335,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("value" -> "badValue")
       ).get
 
@@ -356,7 +352,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")
       ).get
       status(response) shouldBe OK
 
@@ -376,7 +372,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")
           .withFormUrlEncodedBody("bringingOverAllowance" -> "true")
       ).get
 
@@ -391,7 +387,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("value" -> "badValue")
       ).get
 
@@ -408,7 +404,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/goods-bought-into-northern-ireland-inside-eu"
         )
@@ -431,7 +427,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-need-to-use-service")).get
       status(response) shouldBe OK
 
       val content: String = contentAsString(response)
@@ -450,7 +446,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe OK
       val doc: Document = Jsoup.parse(contentAsString(response))
@@ -482,7 +478,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe OK
       val doc: Document = Jsoup.parse(contentAsString(response))
@@ -514,7 +510,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe OK
       val doc: Document = Jsoup.parse(contentAsString(response))
@@ -550,7 +546,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody(
           "privateCraft" -> "true"
         )
       ).get
@@ -569,7 +565,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel").withFormUrlEncodedBody(
           "value" -> "bad_value"
         )
       ).get
@@ -587,7 +583,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -611,7 +607,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/private-travel")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -637,7 +633,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe OK
 
@@ -672,7 +668,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe OK
 
@@ -707,7 +703,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe OK
 
@@ -734,7 +730,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody(
           "ageOver17" -> "true"
         )
       ).get
@@ -755,7 +751,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody(
           "value" -> "badValue"
         )
       ).get
@@ -775,7 +771,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -804,7 +800,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -825,7 +821,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
 
       val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
       val sessionId: Option[String]                        = fakeRequest.session.get("sessionId")
       val response: Future[Result]                         = route(app, fakeRequest).get
 
@@ -841,7 +837,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
 
       val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
       val sessionId: Option[String]                        = fakeRequest.session.get("sessionId")
 
       val response: Future[Result] = route(app, fakeRequest).get
@@ -860,7 +856,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
         .successful(JsObject.empty)
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
       status(response) shouldBe OK
 
     }
@@ -869,7 +865,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
         .failed(new Exception("failed updating timestamp"))
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
       status(response) shouldBe INTERNAL_SERVER_ERROR
 
     }
@@ -885,7 +881,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-no-need-to-use-service")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-no-need-to-use-service")
       ).get
 
       status(response) shouldBe OK
@@ -907,7 +903,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     val response: Future[Result] = route(
       app,
-      EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody(
+      enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/confirm-age").withFormUrlEncodedBody(
         "value" -> "badValue"
       )
     ).get

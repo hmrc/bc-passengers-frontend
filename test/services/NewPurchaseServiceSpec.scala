@@ -44,7 +44,7 @@ class NewPurchaseServiceSpec extends BaseSpec {
       )
 
       val localContext = LocalContext(
-        EnhancedFakeRequest("GET", "anything"),
+        enhancedFakeRequest("GET", "anything"),
         "123",
         Some(JourneyData(purchasedProductInstances = List(ppi)))
       )
@@ -96,7 +96,7 @@ class NewPurchaseServiceSpec extends BaseSpec {
       )
 
       val localContext = LocalContext(
-        EnhancedFakeRequest("GET", "anything"),
+        enhancedFakeRequest("GET", "anything"),
         "123",
         Some(JourneyData(purchasedProductInstances = List(ppi)))
       )
@@ -148,7 +148,7 @@ class NewPurchaseServiceSpec extends BaseSpec {
       )
 
       val localContext =
-        LocalContext(EnhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = ppis)))
+        LocalContext(enhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = ppis)))
 
       val modifiedJourneyData =
         s.updatePurchase(ProductPath("some/item/path"), "iid1", Some(185.5), Some(100), "FR", None, "EUR", 14.70)(
@@ -215,7 +215,7 @@ class NewPurchaseServiceSpec extends BaseSpec {
       )
 
       val localContext =
-        LocalContext(EnhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = ppis)))
+        LocalContext(enhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = ppis)))
 
       val modifiedJourneyData =
         s.updatePurchase(ProductPath("some/item/path"), "iid1", Some(185.5), Some(100), "BG", None, "AED", 14.70)(

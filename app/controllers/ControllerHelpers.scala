@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.Cache
 import models._
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -55,14 +55,14 @@ trait ControllerHelpers
     Future.successful(status(error_template()))
   }
 
-  def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {
+  def logAndRedirect(logMessage: String, redirectLocation: Call): Future[Result] = {
     logger.warn(logMessage)
     Future.successful(Redirect(redirectLocation))
   }
 
   def requireCalculatorResponse(
     block: CalculatorResponse => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     context.getJourneyData match {
       case JourneyData(
             _,
@@ -117,7 +117,7 @@ trait ControllerHelpers
 
   def requireJourneyData(
     block: JourneyData => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     context.journeyData match {
       case Some(journeyData) =>
         block(journeyData)
@@ -130,7 +130,7 @@ trait ControllerHelpers
 
   def revertWorkingInstance(
     block: => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] = {
+  )(implicit context: LocalContext): Future[Result] = {
 
     val edit       = context.getJourneyData.workingInstance.exists(_.cost.isDefined)
     val workingIid = context.getJourneyData.workingInstance.map(_.iid)
@@ -147,7 +147,7 @@ trait ControllerHelpers
 
   def requirePurchasedProductInstance(iid: String)(
     block: PurchasedProductInstance => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     requireJourneyData { journeyData =>
       journeyData.getPurchasedProductInstance(iid) match {
         case Some(ppi) =>
@@ -162,7 +162,7 @@ trait ControllerHelpers
 
   def requireTravelDetails(
     block: => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     context.getJourneyData match {
       case JourneyData(
             _,
@@ -238,7 +238,7 @@ trait ControllerHelpers
 
   def withNextSelectedProductAlias(
     block: Option[ProductAlias] => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     withClearWorkingInstance {
       context.getJourneyData.selectedAliases match {
         case Nil               => block(None)
@@ -248,7 +248,7 @@ trait ControllerHelpers
 
   def requireProductOrCategory(path: ProductPath)(
     block: ProductTreeNode => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     productTreeService.productTree.getDescendant(path) match {
       case Some(node) => block(node)
       case None       =>
@@ -257,7 +257,7 @@ trait ControllerHelpers
 
   def requireProduct(path: ProductPath)(
     block: ProductTreeLeaf => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     requireProductOrCategory(path) {
       case leaf: ProductTreeLeaf => block(leaf)
       case _                     =>
@@ -266,7 +266,7 @@ trait ControllerHelpers
 
   def requireCategory(path: ProductPath)(
     block: ProductTreeBranch => Future[Result]
-  )(implicit context: LocalContext, messagesApi: MessagesApi): Future[Result] =
+  )(implicit context: LocalContext): Future[Result] =
     requireProductOrCategory(path) {
       case branch: ProductTreeBranch => block(branch)
       case _                         =>
@@ -275,7 +275,7 @@ trait ControllerHelpers
 
   def withDefaults(jd: JourneyData)(
     block: Option[String] => Option[String] => Option[String] => Future[Result]
-  )(implicit context: LocalContext): Future[Result] =
+  ): Future[Result] =
     jd match {
       case JourneyData(
             _,

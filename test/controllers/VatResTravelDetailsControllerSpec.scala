@@ -20,9 +20,9 @@ import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,7 +34,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFil
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.concurrent.Future
-import scala.language.postfixOps
 
 class VatResTravelDetailsControllerSpec extends BaseSpec {
 
@@ -72,7 +71,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("euCountryCheck" -> "euOnly")
       ).get
 
@@ -92,7 +91,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("euCountryCheck" -> "nonEuOnly")
       ).get
 
@@ -113,7 +112,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
           .withFormUrlEncodedBody("euCountryCheck" -> "both")
       ).get
 
@@ -132,7 +131,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
         Some(JourneyData(Some(false), Some("euOnly"), arrivingNICheck = Some(true), isVatResClaimed = None))
 
       val response =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
       status(response) shouldBe OK
 
@@ -159,7 +158,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
       status(response) shouldBe OK
 
@@ -185,7 +184,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")
           .withFormUrlEncodedBody("value" -> "badValue")
       ).get
 
@@ -202,7 +201,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -230,7 +229,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/did-you-claim-tax-back")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -261,7 +260,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
         )
       )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
+      val response = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
       status(response) shouldBe OK
 
@@ -292,7 +291,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
         )
       )
 
-      val response = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
+      val response = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
       status(response) shouldBe OK
 
@@ -331,7 +330,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody(
           "isBringingDutyFree" -> "false"
         )
       ).get
@@ -363,7 +362,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free").withFormUrlEncodedBody(
           "value" -> "badValue"
         )
       ).get
@@ -390,7 +389,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -420,7 +419,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
         )
       )
 
-      val response = route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
+      val response = route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -452,7 +451,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -481,7 +480,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -511,7 +510,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody(
           "bringingOverAllowance" -> "false"
         )
       ).get
@@ -538,7 +537,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-eu").withFormUrlEncodedBody(
           "bringingOverAllowance" -> "true"
         )
       ).get
@@ -567,7 +566,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -596,7 +595,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       )
 
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix")).get
 
       status(response) shouldBe BAD_REQUEST
 
@@ -626,7 +625,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody(
           "bringingOverAllowance" -> "false"
         )
       ).get
@@ -654,7 +653,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody(
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/duty-free-mix").withFormUrlEncodedBody(
           "bringingOverAllowance" -> "true"
         )
       ).get

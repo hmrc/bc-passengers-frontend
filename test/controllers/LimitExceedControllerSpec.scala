@@ -20,9 +20,9 @@ import config.AppConfig
 import connectors.Cache
 import models._
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -88,7 +88,7 @@ class LimitExceedControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
         )
@@ -135,7 +135,7 @@ class LimitExceedControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits")
       ).get
       status(result) shouldBe OK
 
@@ -177,7 +177,7 @@ class LimitExceedControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")
       ).get
       status(result) shouldBe NOT_FOUND
     }

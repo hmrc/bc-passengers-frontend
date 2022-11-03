@@ -19,9 +19,9 @@ package controllers
 import connectors.Cache
 import models.{Calculation, CalculatorResponse, JourneyData}
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -88,7 +88,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
 
       status(result) shouldBe OK
       val content = contentAsString(result)
@@ -132,7 +132,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
 
       status(result) shouldBe OK
       val content = contentAsString(result)
@@ -167,7 +167,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
@@ -201,7 +201,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
           .withFormUrlEncodedBody("pendingPayment" -> "false")
       ).get
 
@@ -236,7 +236,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
           .withFormUrlEncodedBody("pendingPayment" -> "true")
       ).get
 
@@ -278,7 +278,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
           .withFormUrlEncodedBody()
       ).get
 
@@ -314,7 +314,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-further-amendments")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/no-further-amendments")).get
 
       status(result) shouldBe OK
       val content = contentAsString(result)

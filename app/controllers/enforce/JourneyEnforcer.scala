@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class JourneyEnforcer {
   private val logger = Logger(this.getClass)
 
-  def logAndRedirect(logMessage: String, redirectLocation: Call)(implicit context: LocalContext): Future[Result] = {
+  def logAndRedirect(logMessage: String, redirectLocation: Call): Future[Result] = {
     logger.debug(logMessage)
     Future.successful(Redirect(redirectLocation))
   }

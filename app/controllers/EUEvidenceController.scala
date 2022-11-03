@@ -21,7 +21,7 @@ import connectors.Cache
 import controllers.enforce.EUEvidenceItemAction
 import forms.EUEvidenceItemForm
 import javax.inject.Inject
-import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import models.{ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController

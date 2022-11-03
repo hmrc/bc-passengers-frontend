@@ -18,9 +18,9 @@ package controllers
 
 import connectors.Cache
 import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -114,7 +114,7 @@ class AlterProductsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
       ).get
 
       status(response) shouldBe OK
@@ -176,7 +176,7 @@ class AlterProductsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
           .withFormUrlEncodedBody("confirmRemove" -> "true")
       ).get
 
@@ -236,7 +236,7 @@ class AlterProductsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
           .withFormUrlEncodedBody("confirmRemove" -> "false")
       ).get
 
@@ -296,7 +296,7 @@ class AlterProductsControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/remove-goods/alcohol/beer/iid1/remove")
       ).get
 
       status(response) shouldBe BAD_REQUEST

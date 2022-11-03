@@ -19,9 +19,9 @@ package controllers
 import connectors.Cache
 import models._
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -208,7 +208,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit")
       ).get
       status(result) shouldBe NOT_FOUND
     }
@@ -242,7 +242,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
       ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
@@ -276,7 +276,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
       ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
@@ -310,7 +310,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
       ).get
       status(result) shouldBe NOT_FOUND
     }
@@ -319,7 +319,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
       ).get
       status(result) shouldBe OK
     }
@@ -331,7 +331,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/invalid/path/tell-us"
         )
@@ -343,7 +343,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
       ).get
       status(result) shouldBe OK
     }
@@ -380,7 +380,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
       ).get
 
       status(result) shouldBe OK
@@ -431,7 +431,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
       ).get
 
       status(result) shouldBe OK
@@ -468,7 +468,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
       ).get
 
       status(result)           shouldBe SEE_OTHER
@@ -482,7 +482,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/invalid/path/tell-us"
         )
@@ -493,7 +493,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 if no action is supplied" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "country"  -> "",
             "currency" -> ""
@@ -506,7 +506,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and country not present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"   -> "continue",
             "country"  -> "",
@@ -521,7 +521,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and country not valid" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"   -> "continue",
             "country"  -> "Not a real country",
@@ -536,7 +536,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and currency not present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"   -> "continue",
             "country"  -> "FR",
@@ -551,7 +551,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and currency not valid" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"   -> "continue",
             "country"  -> "FR",
@@ -566,7 +566,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and cost not present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"   -> "continue",
             "country"  -> "FR",
@@ -580,7 +580,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and cost contains ',' only" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"   -> "continue",
             "country"  -> "FR",
@@ -595,7 +595,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a number of PPIs to the JourneyData and redirect to next step when action == continue and iid is not present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.womens_clothes",
@@ -626,7 +626,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.adult.adult-clothing",
@@ -645,7 +645,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"        -> "continue",
             "searchTerm"    -> "label.other-goods.adult.adult-clothing",
@@ -667,7 +667,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"        -> "continue",
             "searchTerm"    -> "label.other-goods.adult.adult-clothing",
@@ -686,7 +686,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a null value" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.adult.adult-clothing",
@@ -707,7 +707,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
     "return a 404 when action == continue and iid is not found in journey data" in new LocalSetup {
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/missing-iid/edit"
       ).withFormUrlEncodedBody(
@@ -725,7 +725,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "return a 400 when action == continue and currency not present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.book",
@@ -741,7 +741,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "modify the relevant PPI in the JourneyData and redirect to next step when action == continue and iid is present" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.book",
@@ -772,7 +772,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.book",
@@ -791,7 +791,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
           .withFormUrlEncodedBody(
             "action"        -> "continue",
             "searchTerm"    -> "label.other-goods.book",
@@ -813,7 +813,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
           .withFormUrlEncodedBody(
             "action"        -> "continue",
             "searchTerm"    -> "label.other-goods.adult.adult-clothing",
@@ -833,7 +833,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
           .withFormUrlEncodedBody(
             "action"     -> "continue",
             "searchTerm" -> "label.other-goods.adult.adult-clothing",

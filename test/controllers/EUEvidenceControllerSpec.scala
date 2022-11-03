@@ -20,9 +20,9 @@ import config.AppConfig
 import connectors.Cache
 import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -75,7 +75,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )
@@ -109,7 +109,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )
@@ -129,7 +129,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )
@@ -160,7 +160,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )
@@ -190,7 +190,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )
@@ -220,7 +220,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )
@@ -250,7 +250,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/brTuNh/eu-evidence-check"
         )
@@ -280,7 +280,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/brTuNh/eu-evidence-check"
         )
@@ -310,7 +310,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/eu-evidence-check"
         )

@@ -20,10 +20,10 @@ import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
@@ -39,7 +39,7 @@ import util.{BaseSpec, _}
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
-
+  // scalastyle:off magic.number
   implicit val messages: MessagesApi = injected[MessagesApi]
 
   override lazy val app: Application = GuiceApplicationBuilder()
@@ -3117,5 +3117,5 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     }
   }
-
+  // scalastyle:on magic.number
 }

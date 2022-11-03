@@ -20,7 +20,7 @@
 @this(
     h2: components.h2,
 )
-@(calculatorResponseDto: CalculatorResponseDto)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(calculatorResponseDto: CalculatorResponseDto)(implicit messages: Messages)
 
 @h2(messages("label.breakdown_of_tax_and_duty_due"))
 

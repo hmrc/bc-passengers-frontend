@@ -20,9 +20,9 @@ import connectors.Cache
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -38,7 +38,7 @@ import util.BaseSpec
 import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {
-
+  // scalastyle:off magic.number
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
@@ -358,7 +358,7 @@ class PayApiServiceSpec extends BaseSpec {
 
   "Calling requestPaymentUrl" should {
 
-    implicit val messages: Messages = injected[MessagesApi].preferred(EnhancedFakeRequest("POST", "/nowhere")(app))
+    implicit val messages: Messages = injected[MessagesApi].preferred(enhancedFakeRequest("POST", "/nowhere"))
 
     "return PayApiServiceFailureResponse when client returns 400" in new LocalSetup {
 
@@ -534,4 +534,5 @@ class PayApiServiceSpec extends BaseSpec {
       isValidChargeReference(ChargeReference.generate.value) shouldBe true
     }
   }
+  // scalastyle:on magic.number
 }

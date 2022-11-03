@@ -20,9 +20,9 @@ import connectors.Cache
 import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -37,7 +37,7 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends BaseSpec {
-
+  // scalastyle:off magic.number
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -83,7 +83,7 @@ class DashboardControllerSpec extends BaseSpec {
       override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
@@ -180,7 +180,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
     val result: Future[Result]        = route(
       app,
-      EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
+      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
         "firstName"      -> "Harry",
         "lastName"       -> "Potter",
         "passportNumber" -> "801375812",
@@ -309,7 +309,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
     val result: Future[Result]        = route(
       app,
-      EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
+      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
         "firstName"      -> "Harry",
         "lastName"       -> "Potter",
         "passportNumber" -> "801375812",
@@ -334,7 +334,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
     val result: Future[Result]                          = route(
       app,
-      EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
+      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
         "firstName"      -> "Harry",
         "lastName"       -> "Potter",
         "passportNumber" -> "801375812",
@@ -406,7 +406,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -474,7 +474,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -571,7 +571,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -674,7 +674,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -769,7 +769,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -864,7 +864,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -968,7 +968,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -1071,7 +1071,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -1173,7 +1173,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -1272,7 +1272,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -1341,7 +1341,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -1404,7 +1404,7 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
       status(result) shouldBe OK
 
@@ -1468,7 +1468,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 
@@ -1536,7 +1536,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 
@@ -1602,7 +1602,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 
@@ -1701,7 +1701,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
     status(result) shouldBe OK
 
@@ -1801,7 +1801,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -1921,7 +1921,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2041,7 +2041,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2161,7 +2161,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2281,7 +2281,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2404,7 +2404,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2522,7 +2522,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2638,7 +2638,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2754,7 +2754,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2865,7 +2865,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -2942,7 +2942,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -3039,7 +3039,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -3152,7 +3152,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -3281,7 +3281,7 @@ class DashboardControllerSpec extends BaseSpec {
     )
 
     val result: Future[Result] =
-      route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+      route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
     status(result) shouldBe OK
     val content: String = contentAsString(result)
@@ -3322,11 +3322,11 @@ class DashboardControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
   }
-
+  // scalastyle:on magic.number
 }

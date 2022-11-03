@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import play.api.test._
 import util.BaseSpec
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future

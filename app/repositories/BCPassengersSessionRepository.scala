@@ -25,7 +25,7 @@ import org.mongodb.scala.model.Indexes.ascending
 
 import javax.inject._
 
-import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
+import play.api.libs.json.{Format, JsObject, Json, Writes}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
@@ -53,7 +53,7 @@ class BCPassengersSessionRepository @Inject() (
 
   def fetch[T](
     key: String
-  )(implicit hc: HeaderCarrier, rds: Reads[T], executionContext: ExecutionContext): Future[Option[JsObject]] =
+  )(implicit hc: HeaderCarrier): Future[Option[JsObject]] =
     hc.sessionId match {
       case Some(id) =>
         collection.find(equal("_id", id.value)).headOption()
@@ -62,8 +62,7 @@ class BCPassengersSessionRepository @Inject() (
 
   def store[T](key: String, body: T)(implicit
     wts: Writes[T],
-    hc: HeaderCarrier,
-    executionContext: ExecutionContext
+    hc: HeaderCarrier
   ): Future[T] =
     hc.sessionId match {
       case Some(id) =>
@@ -78,7 +77,7 @@ class BCPassengersSessionRepository @Inject() (
       case _        => Future.failed[T](new Exception("Could not find sessionId in HeaderCarrier"))
     }
 
-  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[JsObject] =
+  def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier): Future[JsObject] =
     hc.sessionId match {
       case Some(id) =>
         collection
