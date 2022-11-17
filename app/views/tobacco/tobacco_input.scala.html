@@ -36,11 +36,8 @@
 
       @formHelper(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid))) {
         @if(form.errors){
-          <div class="govuk-!-margin-top-4">
             @errorSummary(form.errors)
-          </div>
         }
-        <div class="govuk-!-margin-bottom-6">
           <fieldset class="govuk-fieldset">
             @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}", form.errors)
             <br>
@@ -101,6 +98,5 @@
           <div>
               <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
           </div>
-        </div>
       }
 }

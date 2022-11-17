@@ -42,12 +42,9 @@
     @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
 
         @if(form.errors){
-        <div class="govuk-!-margin-top-4">
             @errorSummary(form.errors)
-        </div>
         }
-        <div class="govuk-!-margin-bottom-6">
-            <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset">
 
         @h1Product("label.tell_us_about_the", customHeading, form.errors)
         <br>
@@ -123,7 +120,6 @@
 
         <div>
             <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
-        </div>
         </div>
 
     }

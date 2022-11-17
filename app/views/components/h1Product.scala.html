@@ -17,16 +17,9 @@
 @this()
 
 @(msg1: String, msg2: String, formErrors: Boolean)(implicit messages: Messages)
-<legend >
- @if(formErrors){
-  <h1 class="govuk-fieldset__legend govuk-fieldset__legend--xl govuk-!-margin-top-0">
+<legend>
+  <h1 class="govuk-fieldset__legend govuk-fieldset__legend--xl @if(formErrors){govuk-!-margin-top-0}else{product-heading-margin}">
    <span class="govuk-caption-xl">@messages(msg1)</span>
    @messages(msg2)
   </h1>
- }else{
-  <h1 class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-   <span class="govuk-caption-xl">@messages(msg1)</span>
-   @messages(msg2)
-  </h1>
- }
 </legend>
