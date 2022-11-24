@@ -16,7 +16,6 @@
 
 package models
 
-import play.api.i18n.{Lang, MessagesApi}
 import util._
 
 sealed trait ProductTreeNode {

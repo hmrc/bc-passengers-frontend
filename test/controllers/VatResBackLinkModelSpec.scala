@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import models.JourneyData
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder

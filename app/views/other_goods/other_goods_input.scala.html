@@ -41,9 +41,12 @@
 
     @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
 
-        @errorSummary(form.errors)
+        @if(form.errors){
+            @errorSummary(form.errors)
+        }
+        <fieldset class="govuk-fieldset">
 
-        @h1Product("label.tell_us_about_the", customHeading)
+        @h1Product("label.tell_us_about_the", customHeading, form.errors)
         <br>
         <br>
 
@@ -111,6 +114,7 @@
             isPageHeading = false,
             classes = Some("govuk-input govuk-!-width-one-half")
         )
+        </fieldset>
 
         @button("label.continue")
 

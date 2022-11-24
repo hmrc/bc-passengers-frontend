@@ -20,9 +20,9 @@ import config.AppConfig
 import connectors.Cache
 import org.jsoup.Jsoup
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -59,7 +59,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
         Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true), None, None, Some(true))))
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -77,7 +77,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
         )
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -92,7 +92,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
     "redirect to start page when journey data is empty" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
@@ -120,7 +120,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
           .withFormUrlEncodedBody("isUKVatExcisePaid" -> "false")
       ).get
 
@@ -152,7 +152,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
           .withFormUrlEncodedBody("isUKVatExcisePaid" -> "true")
       ).get
 
@@ -181,7 +181,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-vat-excise-check")
           .withFormUrlEncodedBody("isUKVatExcisePaid" -> "dummy")
       ).get
 
@@ -221,7 +221,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check"
         )
@@ -254,7 +254,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check"
         )
@@ -272,7 +272,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check"
         )
@@ -301,7 +301,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check"
         )
@@ -330,7 +330,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
       val response          = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-excise-check"
         )

@@ -17,7 +17,7 @@
 package util
 
 import akka.stream.Materializer
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import play.api.mvc.{CookieHeaderEncoding, RequestHeader, Result, SessionCookieBaker}
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter

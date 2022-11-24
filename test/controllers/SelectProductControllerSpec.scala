@@ -21,10 +21,10 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.Inspectors._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -38,7 +38,6 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.postfixOps
 
 class SelectProductControllerSpec extends BaseSpec {
 
@@ -117,7 +116,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
       override val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
@@ -136,7 +135,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
       override val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
 
       status(result) shouldBe OK
       h1             shouldBe "What type of alcohol do you want to add?"
@@ -151,7 +150,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
       override val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco")).get
 
       status(result) shouldBe OK
       h1             shouldBe "What type of tobacco do you want to add?"
@@ -166,7 +165,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
       override val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")).get
 
       status(result)                              shouldBe OK
       h1                                          shouldBe "What type of other goods do you want to add?"
@@ -179,7 +178,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/carpets-fabric")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/carpets-fabric")
       ).get
 
       status(result) shouldBe OK
@@ -195,7 +194,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/invalid/path")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/invalid/path")
       ).get
 
       status(result) shouldBe NOT_FOUND
@@ -208,7 +207,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/beer")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/beer")
       ).get
 
       status(result) shouldBe INTERNAL_SERVER_ERROR
@@ -224,7 +223,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
           .withFormUrlEncodedBody("value" -> "bad_value")
       ).get
       status(result) shouldBe BAD_REQUEST
@@ -244,7 +243,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
           .withFormUrlEncodedBody("tokens[0]" -> "beer")
       ).get
 
@@ -266,7 +265,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       override val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")
           .withFormUrlEncodedBody("value" -> "bad_value")
       ).get
       status(result) shouldBe BAD_REQUEST
@@ -284,7 +283,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")
           .withFormUrlEncodedBody("tokens" -> "carpets-fabric")
       ).get
 
@@ -301,7 +300,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods")
           .withFormUrlEncodedBody("tokens" -> "car-seats")
       ).get
 
@@ -333,7 +332,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
         when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get
       }
     }
 
@@ -397,7 +396,7 @@ class SelectProductControllerSpec extends BaseSpec {
         }
         when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get
       }
     }
 

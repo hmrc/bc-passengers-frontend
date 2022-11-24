@@ -20,9 +20,9 @@ import connectors.Cache
 import models.{JourneyData, UserInformation}
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalTime}
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder

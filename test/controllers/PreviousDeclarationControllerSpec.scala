@@ -20,9 +20,9 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -63,7 +63,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
 
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -76,7 +76,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result) shouldBe SEE_OTHER
 
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -85,7 +85,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     "loading the page and populate data from keyStore" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -98,7 +98,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     "redirect to start page when journey data is empty" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(result)           shouldBe OK
       redirectLocation(result) shouldBe None
     }
@@ -116,7 +116,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
           .withFormUrlEncodedBody("prevDeclaration" -> "false")
       ).get
 
@@ -135,7 +135,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
           .withFormUrlEncodedBody("prevDeclaration" -> "true")
       ).get
 
@@ -154,7 +154,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
           .withFormUrlEncodedBody("prevDeclaration" -> "dummy")
       ).get
 
@@ -178,7 +178,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
 
       val response =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
       status(response) shouldBe BAD_REQUEST
 
       val content = contentAsString(response)

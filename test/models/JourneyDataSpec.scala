@@ -18,8 +18,6 @@ package models
 
 import util.BaseSpec
 
-import scala.util.Random
-
 class JourneyDataSpec extends BaseSpec {
 
   private val countryEgypt = Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)

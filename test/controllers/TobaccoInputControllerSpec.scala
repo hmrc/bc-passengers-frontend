@@ -19,9 +19,9 @@ package controllers
 import connectors.Cache
 import models._
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -35,12 +35,12 @@ import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.alcohol.alcohol_input
 import views.html.tobacco._
 
 import scala.concurrent.Future
 
 class TobaccoInputControllerSpec extends BaseSpec {
+  // scalastyle:off magic.number
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
@@ -267,7 +267,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/invalid/path/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/invalid/path/tell-us")
       ).get
       status(result) shouldBe NOT_FOUND
     }
@@ -282,7 +282,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
       ).get
       status(result) shouldBe OK
     }
@@ -297,7 +297,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
         )
@@ -315,7 +315,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
       ).get
       status(result) shouldBe OK
     }
@@ -330,7 +330,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
         )
@@ -375,7 +375,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
       ).get
 
       status(result) shouldBe OK
@@ -430,7 +430,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
       ).get
 
       status(result) shouldBe OK
@@ -473,7 +473,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
       ).get
 
       status(result)           shouldBe SEE_OTHER
@@ -503,7 +503,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
       ).get
 
       status(result)           shouldBe SEE_OTHER
@@ -533,7 +533,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
         )
@@ -556,7 +556,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest(
+        enhancedFakeRequest(
           "POST",
           "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/invalid/path/tell-us"
         )
@@ -573,7 +573,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "",
             "currency"   -> "EUR",
@@ -594,7 +594,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "Not a real country",
             "currency"   -> "EUR",
@@ -615,7 +615,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "",
@@ -636,7 +636,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "Not a valid currency",
@@ -657,7 +657,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -678,7 +678,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -699,7 +699,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -720,7 +720,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -756,7 +756,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -781,7 +781,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"       -> "FR",
             "originCountry" -> "FR",
@@ -808,7 +808,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"       -> "FR",
             "originCountry" -> "IN",
@@ -833,7 +833,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -856,7 +856,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -878,7 +878,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -900,7 +900,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -922,7 +922,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -944,7 +944,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -966,7 +966,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -988,7 +988,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1010,7 +1010,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1047,7 +1047,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1069,7 +1069,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1091,7 +1091,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1113,7 +1113,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1135,7 +1135,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1157,7 +1157,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1179,7 +1179,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1201,7 +1201,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = EnhancedFakeRequest(
+      val req = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1239,7 +1239,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(900)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -1262,7 +1262,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(801)
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1288,7 +1288,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(201)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1312,7 +1312,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(1001)
       override def noOfSticks: Option[Int]            = None
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = EnhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/chewing-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1338,7 +1338,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "",
             "currency"       -> "EUR",
@@ -1360,7 +1360,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "Invalid country",
             "currency"       -> "EUR",
@@ -1382,7 +1382,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "",
@@ -1404,7 +1404,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "Invalid currency",
@@ -1426,7 +1426,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1448,7 +1448,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1470,7 +1470,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1492,7 +1492,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1514,7 +1514,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1536,7 +1536,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1558,7 +1558,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1580,7 +1580,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1621,7 +1621,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/missing-iid/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/missing-iid/edit")
       ).get
       status(result) shouldBe NOT_FOUND
     }
@@ -1661,7 +1661,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
       ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
@@ -1701,7 +1701,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
       ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
@@ -1741,7 +1741,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
       ).get
       status(result) shouldBe NOT_FOUND
     }
@@ -1781,7 +1781,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
       ).get
       status(result) shouldBe OK
     }
@@ -1821,7 +1821,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
       ).get
       status(result) shouldBe OK
     }
@@ -1838,7 +1838,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/missing-iid/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/missing-iid/edit")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
             "currency"   -> "EUR",
@@ -1859,7 +1859,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(20.0))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req = EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      val req = enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
         .withFormUrlEncodedBody(
           "country"        -> "FR",
           "currency"       -> "EUR",
@@ -1895,7 +1895,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1920,7 +1920,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(150)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "originCountry"  -> "FR",
@@ -1947,7 +1947,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1973,7 +1973,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(400)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -1998,7 +1998,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(801)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -2024,7 +2024,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = Some(201)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -2050,7 +2050,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = None
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -2066,4 +2066,5 @@ class TobaccoInputControllerSpec extends BaseSpec {
       )
     }
   }
+  // scalastyle:on magic.number
 }

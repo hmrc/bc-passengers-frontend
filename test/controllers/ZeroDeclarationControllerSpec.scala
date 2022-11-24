@@ -22,9 +22,9 @@ import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalTime}
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -226,7 +226,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
         )
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -268,7 +268,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
         )
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -313,7 +313,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
         )
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -349,7 +349,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
         )
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -362,7 +362,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     "redirect to the start page when there is no journey data" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
@@ -393,7 +393,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
         )
       )
       val response: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete")).get
 
       status(response) shouldBe INTERNAL_SERVER_ERROR
 

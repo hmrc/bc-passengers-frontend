@@ -23,9 +23,9 @@ import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalTime}
 import org.jsoup.Jsoup
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -39,7 +39,7 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import scala.concurrent.Future
 
 class DeclarationRetrievalControllerSpec extends BaseSpec {
-
+  // scalastyle:off magic.number
   val mockPreviousDeclarationService: PreviousDeclarationService = MockitoSugar.mock[PreviousDeclarationService]
   val mockCache: Cache                                           = MockitoSugar.mock[Cache]
   val mockAppConfig: AppConfig                                   = MockitoSugar.mock[AppConfig]
@@ -66,7 +66,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
     "load the page when amendments feature is on" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(true)))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc     = Jsoup.parse(content)
@@ -77,7 +77,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(result) shouldBe SEE_OTHER
 
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")
@@ -88,7 +88,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
@@ -99,7 +99,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         JourneyData(prevDeclaration = Some(true), previousDeclarationRequest = Some(previousDeclarationDetails))
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
       val result: Future[Result]     =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc     = Jsoup.parse(content)
@@ -112,7 +112,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val journeyData            = JourneyData(prevDeclaration = Some(true), previousDeclarationRequest = None)
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc     = Jsoup.parse(content)
@@ -128,7 +128,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       when(mockCache.fetch(any())) thenReturn cachedJourneyData
       when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
       val response          =
-        route(app, EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
 
@@ -141,7 +141,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
           .withFormUrlEncodedBody("lastName" -> "", "identificationNumber" -> "", "referenceNumber" -> "")
       ).get
 
@@ -180,7 +180,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
           .withFormUrlEncodedBody(
             "" +
               "lastName"      -> "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
@@ -272,7 +272,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         .successful(Some(retrievedJourneyData))
       val response                          = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
           .withFormUrlEncodedBody(
             "" +
               "lastName"           -> "Smith",
@@ -342,7 +342,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
       val response                   = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
           .withFormUrlEncodedBody(
             "" +
               "lastName"           -> "Smith",
@@ -410,7 +410,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         .successful(Some(retrievedJourneyData))
       val response                          = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
           .withFormUrlEncodedBody(
             "" +
               "lastName"      -> "Smith",
@@ -429,7 +429,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
       val response          = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
           .withFormUrlEncodedBody(
             "" +
               "lastName"           -> "Smith",
@@ -441,5 +441,5 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
     }
   }
-
+  // scalastyle:on magic.number
 }

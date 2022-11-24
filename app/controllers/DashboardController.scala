@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
 import models.{ProductTreeLeaf, _}
-import play.api.i18n.{I18nSupport, Lang}
+import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController

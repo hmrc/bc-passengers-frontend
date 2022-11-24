@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.Cache
 import org.jsoup.Jsoup
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -42,7 +42,7 @@ class PublicControllerSpec extends BaseSpec {
   "Calling /time-out" should {
     "return 200 and start button redirects to where-goods-bought page when amendment feature is off" in {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
-      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
+      val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK
       Jsoup
@@ -54,7 +54,7 @@ class PublicControllerSpec extends BaseSpec {
 
     "return 200 and start button redirects to previous-declaration page when amendment feature is on" in {
       when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
-      val result = route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
+      val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK
       Jsoup

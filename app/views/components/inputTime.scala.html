@@ -72,7 +72,7 @@
         )
     ),
     periodSelectItems = Seq(
-        SelectItem(value = None, text = ""),
+        SelectItem(value = None, text = "", attributes = Map("label" → " ")),
         SelectItem(value = Some("am"), text = messages("time.period.am"), selected = form(s"$id.halfday").value.contains("am")),
         SelectItem(value = Some("pm"), text = messages("time.period.pm"), selected = form(s"$id.halfday").value.contains("pm"))
     ),

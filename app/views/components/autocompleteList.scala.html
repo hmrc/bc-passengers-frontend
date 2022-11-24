@@ -49,19 +49,18 @@
             @messages(label, headingMessageArgs: _*)
         </label>
     }
-
     @if(isPageHint){<span id="@id-hint" class="govuk-hint">@hint</span>}
     @select(hmrcComponent.Select(
         id = id,
         name = name,
         describedBy = if(hint) {Some(id + s"-hint")} else {None},
         errorMessage = form(id).error.map(fe ⇒ ErrorMessage(content = HtmlContent(messages(fe.message)))),
-        items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
+        items = Seq(SelectItem(value = Some(""), attributes = Map("label" → " "), text=(hintText))) ++ list.map {
         case (k,v) ⇒ SelectItem(
             value = Some(k),
             text = v,
             selected = k == form(id).value.getOrElse(""),
-            attributes = Map("id" → (id + s"-$k")))
+            attributes = Map("id" → (id + s"-$k"), "label" → " "))
         },
         formGroupClasses = "form-field-group"
     ))
@@ -80,7 +79,7 @@
 
           //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
           let foundInData = Array.from(document.querySelectorAll("#" + newId+ "-select > option"))
-            .find(e => e.label === document.getElementById('@id').value)
+            .find(e => e.text === document.getElementById('@id').value)
             let element = !!confirmed ? confirmed : foundInData
 
             if(!!element) {

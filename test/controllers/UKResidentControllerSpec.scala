@@ -20,9 +20,9 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -59,7 +59,7 @@ class UKResidentControllerSpec extends BaseSpec {
         Future.successful(Some(JourneyData(Some(false), Some("greatBritain"), Some(true), Some(true), Some(true))))
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -75,7 +75,7 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
@@ -88,7 +88,7 @@ class UKResidentControllerSpec extends BaseSpec {
     "redirect to start page when journey data is empty" in {
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(None))))
       val result: Future[Result] =
-        route(app, EnhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
     }
@@ -116,7 +116,7 @@ class UKResidentControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
           .withFormUrlEncodedBody("isUKResident" -> "false")
       ).get
 
@@ -148,7 +148,7 @@ class UKResidentControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
           .withFormUrlEncodedBody("isUKResident" -> "true")
       ).get
 
@@ -177,7 +177,7 @@ class UKResidentControllerSpec extends BaseSpec {
 
       val response = route(
         app,
-        EnhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
           .withFormUrlEncodedBody("ukResident" -> "dummy")
       ).get
 
