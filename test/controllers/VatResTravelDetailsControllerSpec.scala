@@ -209,10 +209,10 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc     = Jsoup.parse(content)
 
       Option(doc.select("a[href=#claimedVatRes-error]")).isEmpty shouldBe false
-      Option(
-        doc.select("a[href=#claimedVatRes-value-yes]").html()
-      ).get                                                      shouldBe "Select if you claimed tax back on any goods you bought in the EU"
-      Option(doc.select("#error-summary-title").text()).get      shouldBe "There is a problem"
+      doc
+        .select("a[href=#claimedVatRes-value-yes]")
+        .text()                                                  shouldBe "Select if you claimed tax back on any goods you bought in the EU"
+      doc.select(".govuk-error-summary__title").text()           shouldBe "There is a problem"
     }
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
@@ -397,10 +397,10 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
       val doc     = Jsoup.parse(content)
 
       Option(doc.select("a[href=#isBringingDutyFree-error]")).isEmpty shouldBe false
-      Option(
-        doc.select("a[href=#isBringingDutyFree-value-yes]").html()
-      ).get                                                           shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
-      Option(doc.select("#error-summary-title").text()).get           shouldBe "There is a problem"
+      doc
+        .select("a[href=#isBringingDutyFree-value-yes]")
+        .text()                                                       shouldBe "Select if you are bringing in alcohol or tobacco bought in duty-free shops in the UK or EU"
+      doc.select(".govuk-error-summary__title").text()                shouldBe "There is a problem"
     }
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {

@@ -209,14 +209,14 @@ class UccReliefControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()         shouldBe "Tax and duty exemptions for non-UK residents"
-      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.getElementsByTag("h1").text()                shouldBe "Tax and duty exemptions for non-UK residents"
+      doc.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
       doc
         .select("a[href=#isUccRelief-value-yes]")
-        .html()                                 shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+        .html()                                        shouldBe "Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
       doc
         .getElementById("isUccRelief-error")
-        .html()                                 shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
+        .html()                                        shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if this item is covered by the tax and duty exemptions for non-UK residents"
       verify(mockTravelDetailService, times(0)).storeUccRelief(any())(any())(any())
     }
   }

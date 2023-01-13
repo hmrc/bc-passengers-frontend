@@ -254,10 +254,12 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      Option(doc.getElementById("error-summary-title").select("a[href=#euCountryCheck]")).isEmpty shouldBe false
-      Option(doc.select("a[href=#euCountryCheck-eu]").html()).get                                 shouldBe "Select where you are bringing in goods from"
-      Option(doc.select("h2").hasClass("govuk-error-summary__title")).get                         shouldBe true
-      Option(doc.getElementById("error-summary-title").select("h2").html()).get                   shouldBe "There is a problem"
+      Option(
+        doc.getElementsByClass("govuk-error-summary__body").select("a[href=#euCountryCheck]")
+      ).isEmpty                                               shouldBe false
+      doc.select("a[href=#euCountryCheck-eu]").text()         shouldBe "Select where you are bringing in goods from"
+      doc.select("h2").hasClass("govuk-error-summary__title") shouldBe true
+      doc.select(".govuk-error-summary__title").text()        shouldBe "There is a problem"
     }
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {
@@ -272,8 +274,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      Option(doc.getElementById("error-summary-title").select("a[href=#euCountryCheck]")).isEmpty   shouldBe false
-      doc.getElementById("euCountryCheck-error").getElementsByClass("govuk-visually-hidden").html() shouldBe "Error:"
+      Option(
+        doc.getElementsByClass("govuk-error-summary__body").select("a[href=#euCountryCheck]")
+      ).isEmpty                                                                                     shouldBe false
+      doc.getElementById("euCountryCheck-error").getElementsByClass("govuk-visually-hidden").text() shouldBe "Error:"
     }
   }
 
@@ -590,14 +594,18 @@ class TravelDetailsControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      Option(doc.getElementsByClass("govuk-error-summary").select("a[href=#privateCraft-error]")).isEmpty shouldBe false
       Option(
-        doc.getElementsByClass("govuk-error-summary").select("a[href=#privateCraft-value-yes]").html()
-      ).get                                                                                               shouldBe "Select yes if you are arriving in the UK by private transport"
-      Option(
-        doc.getElementsByClass("govuk-error-summary").select("h2").hasClass("govuk-error-summary__title")
-      ).get                                                                                               shouldBe true
-      Option(doc.getElementsByClass("govuk-error-summary").select("h2").html()).get                       shouldBe "There is a problem"
+        doc
+          .getElementsByClass("govuk-error-summary__body")
+          .select("a[href=#privateCraft-error]")
+      ).isEmpty                                        shouldBe false
+      doc
+        .select("a[href=#privateCraft-value-yes]")
+        .text()                                        shouldBe "Select yes if you are arriving in the UK by private transport"
+      doc
+        .select("h2")
+        .hasClass("govuk-error-summary__title")        shouldBe true
+      doc.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
     }
 
     "return error notification on the control when trying to submit a blank form" in new LocalSetup {

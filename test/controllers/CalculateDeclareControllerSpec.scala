@@ -2553,10 +2553,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       Option(doc.select("a[href=#irishBorder-error]")).isEmpty shouldBe false
-      Option(
-        doc.select("a[href=#irishBorder-value-yes]").html()
-      ).get                                                    shouldBe "Select yes if you are entering Northern Ireland from Ireland"
-      Option(doc.select("#error-summary-title").text()).get    shouldBe "There is a problem"
+      doc
+        .select("a[href=#irishBorder-value-yes]")
+        .text()                                                shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+      doc.select(".govuk-error-summary__title").text()         shouldBe "There is a problem"
 
     }
 
