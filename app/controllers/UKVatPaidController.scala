@@ -74,10 +74,11 @@ class UKVatPaidController @Inject() (
             .map(_ =>
               path.toString.contains("other-goods") match {
                 case true  =>
-                  if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get)
+                  if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
                     Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
-                  else
+                  } else {
                     Redirect(routes.SelectProductController.nextStep)
+                  }
                 case false =>
                   Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))
               }

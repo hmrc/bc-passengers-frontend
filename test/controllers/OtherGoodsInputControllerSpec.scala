@@ -49,8 +49,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
     .overrides(bind[other_goods_input].toInstance(MockitoSugar.mock[other_goods_input]))
     .build()
 
-  override def beforeEach: Unit =
-    reset(injected[Cache], injected[NewPurchaseService], injected[other_goods_input])
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[NewPurchaseService])
+    reset(injected[other_goods_input])
+  }
 
   trait LocalSetup {
 

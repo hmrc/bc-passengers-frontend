@@ -35,7 +35,7 @@ import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import scala.collection.convert.ImplicitConversions.`list asScalaBuffer`
+import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.concurrent.Future
 
 class TravelDetailsControllerSpec extends BaseSpec {
@@ -49,8 +49,9 @@ class TravelDetailsControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
-  override def beforeEach: Unit = {
-    reset(app.injector.instanceOf[TravelDetailsService], app.injector.instanceOf[Cache])
+  override def beforeEach(): Unit = {
+    reset(injected[TravelDetailsService])
+    reset(injected[Cache])
     when(
       injected[AppConfig].declareGoodsUrl
     ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
@@ -107,7 +108,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
         .getElementById("euCountryCheck-hint")
         .text() shouldBe "If you are bringing in goods from both EU and non-EU countries, only select non-EU countries below."
 
-      doc.getElementsByAttributeValueMatching("name", "euCountryCheck").length shouldBe 3
+      doc.getElementsByAttributeValueMatching("name", "euCountryCheck").asScala.length shouldBe 3
 
       doc.select("#euCountryCheck-nonEu").hasAttr("checked") shouldBe true
 

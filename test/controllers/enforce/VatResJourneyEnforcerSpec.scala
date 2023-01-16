@@ -176,10 +176,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             Some("euOnly"),
             Some(false)
           )
-        )
+        ) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
@@ -209,10 +210,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             Some("greatBritain"),
             Some(true)
           )
-        )
+        ) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
@@ -242,10 +244,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             Some("both"),
             Some(false)
           )
-        )
+        ) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
@@ -269,10 +272,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
         implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (jd == JourneyData(Some(false), Some("greatBritain"), Some(true)))
+        if (jd == JourneyData(Some(false), Some("greatBritain"), Some(true))) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
@@ -296,10 +300,11 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
         implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (jd == JourneyData(Some(false), Some("euOnly"), Some(true)))
+        if (jd == JourneyData(Some(false), Some("euOnly"), Some(true))) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }

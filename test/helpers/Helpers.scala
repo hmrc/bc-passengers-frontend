@@ -22,22 +22,22 @@ import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import com.networknt.schema.{JsonSchema, JsonSchemaFactory, SpecVersion, ValidationMessage}
 import play.api.libs.json.JsValue
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 import scala.io.Source
 
 case class SchemaValidationResult(errors: Set[ValidationMessage]) {
-  override def toString =
-    errors.map(x => x + "\n").mkString + "\n"
-  def isValid           = errors.isEmpty
-  def hasErrors         = !isValid
+  override def toString: String =
+    errors.map(_.toString + "\n").mkString + "\n"
+  def isValid: Boolean          = errors.isEmpty
+  def hasErrors: Boolean        = !isValid
 }
 
 object Helpers {
 
   def resourceAsString(resourcePath: String): Option[String] =
     resourceAsInputStream(resourcePath) map { is =>
-      Source.fromInputStream(is).getLines.mkString("\n")
+      Source.fromInputStream(is).getLines().mkString("\n")
     }
 
   def resourceAsInputStream(resourcePath: String): Option[InputStream] =

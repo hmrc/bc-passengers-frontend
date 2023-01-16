@@ -43,8 +43,10 @@ class AlterProductsControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
-  override def beforeEach: Unit =
-    reset(injected[Cache], injected[PurchasedProductService])
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[PurchasedProductService])
+  }
 
   val controller: AlterProductsController = app.injector.instanceOf[AlterProductsController]
 

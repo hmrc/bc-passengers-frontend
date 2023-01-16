@@ -54,7 +54,9 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockPreviousDeclarationService, mockCache, mockAppConfig)
+    reset(mockPreviousDeclarationService)
+    reset(mockCache)
+    reset(mockAppConfig)
     when(
       injected[AppConfig].declareGoodsUrl
     ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"

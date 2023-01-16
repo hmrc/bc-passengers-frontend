@@ -61,10 +61,16 @@ class TobaccoInputControllerSpec extends BaseSpec {
     )
     .build()
 
-  override def beforeEach: Unit = {
-    reset(injected[Cache], injected[NewPurchaseService], injected[no_of_sticks_input])
-    reset(injected[Cache], injected[NewPurchaseService], injected[weight_or_volume_input])
-    reset(injected[Cache], injected[NewPurchaseService], injected[no_of_sticks_weight_or_volume_input])
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[NewPurchaseService])
+    reset(injected[no_of_sticks_input])
+    reset(injected[Cache])
+    reset(injected[NewPurchaseService])
+    reset(injected[weight_or_volume_input])
+    reset(injected[Cache])
+    reset(injected[NewPurchaseService])
+    reset(injected[no_of_sticks_weight_or_volume_input])
   }
 
   trait LocalSetup {

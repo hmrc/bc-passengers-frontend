@@ -19,7 +19,9 @@ lazy val microservice = Project(appName, file("."))
     pipelineStages := Seq(digest)
   )
   .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.12.16")
+  .settings(scalaVersion := "2.13.10")
+  // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
+  .settings(libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always))
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(majorVersion := 1)
@@ -46,8 +48,6 @@ lazy val microservice = Project(appName, file("."))
     IntegrationTest / parallelExecution := false,
     routesImport ++= Seq("binders.Binders._", "models._")
   )
-  .settings(resolvers += Resolver.jcenterRepo)
-  .settings(resolvers += Resolver.typesafeRepo("releases"))
   .settings(PlayKeys.playDefaultPort := 9008)
   .settings(
     TwirlKeys.templateImports ++= Seq(
@@ -76,5 +76,5 @@ Concat.groups := Seq(
 Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")

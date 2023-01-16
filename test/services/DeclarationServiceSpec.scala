@@ -54,11 +54,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     .build()
 
   override def beforeEach(): Unit = {
-    reset(
-      app.injector.instanceOf[WsAllMethods],
-      app.injector.instanceOf[Cache],
-      app.injector.instanceOf[AuditConnector]
-    )
+    reset(injected[WsAllMethods])
+    reset(injected[Cache])
+    reset(injected[AuditConnector])
     super.beforeEach()
   }
 

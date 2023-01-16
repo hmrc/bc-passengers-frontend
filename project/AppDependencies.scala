@@ -18,7 +18,7 @@ object AppDependencies {
     "ai.x"                         %% "play-json-extensions"       % "0.42.0"
   )
 
-  val test = Seq(
+  val test                   = Seq(
     "org.scalatest"          %% "scalatest"               % "3.2.15",
     "org.jsoup"               % "jsoup"                   % "1.15.3",
     "com.typesafe.play"      %% "play-test"               % PlayVersion.current,
@@ -29,11 +29,6 @@ object AppDependencies {
     "com.vladsch.flexmark"    % "flexmark-all"            % "0.62.2",
     "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28" % hmrcMongoVersion
   ).map(_ % "test, it")
-
-//  private val silencerDependencies: Seq[ModuleID] = Seq(
-//    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.9" cross CrossVersion.full),
-//    "com.github.ghik" % "silencer-lib" % "1.7.9" % Provided cross CrossVersion.full
-//  )
 
   def apply(): Seq[ModuleID] = compile ++ test
 }

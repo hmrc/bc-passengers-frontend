@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, PublicAction}
+import controllers.ControllerHelpers
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -52,16 +53,18 @@ class AlterProductsController @Inject() (
   }
 
   def remove(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    ConfirmRemoveDto.form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(remove(formWithErrors, path, iid))),
-      confirmRemoveDto =>
-        if (confirmRemoveDto.confirmRemove) {
-          purhasedProductService.removePurchasedProductInstance(context.getJourneyData, path, iid) map { _ =>
-            Redirect(routes.DashboardController.showDashboard)
+    ConfirmRemoveDto.form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(remove(formWithErrors, path, iid))),
+        confirmRemoveDto =>
+          if (confirmRemoveDto.confirmRemove) {
+            purhasedProductService.removePurchasedProductInstance(context.getJourneyData, path, iid) map { _ =>
+              Redirect(routes.DashboardController.showDashboard)
+            }
+          } else {
+            Future.successful(Redirect(routes.DashboardController.showDashboard))
           }
-        } else {
-          Future.successful(Redirect(routes.DashboardController.showDashboard))
-        }
-    )
+      )
   }
 }

@@ -112,10 +112,10 @@
   <div class="other-goods">
     @h2(messages("label.other_goods"))
     @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
-      <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a></p>
+      <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
       <div class="add-more">
-        <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm">@messages("label.add_other_goods")</a></p>
+        <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
       </div>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
       <div class="panel panel-border-wide">

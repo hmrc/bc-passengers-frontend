@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
+import controllers.ControllerHelpers
 import models._
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -167,7 +168,7 @@ class CalculateDeclareController @Inject() (
   def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
     EnterYourDetailsDto
       .form(receiptDateTime)
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors =>
           context.getJourneyData.euCountryCheck match {
@@ -343,15 +344,17 @@ class CalculateDeclareController @Inject() (
   }
 
   def irishBorderPost: Action[AnyContent] = publicAction { implicit context =>
-    IrishBorderDto.form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink))),
-      irishBorderDto =>
-        travelDetailsService.storeIrishBorder(context.journeyData)(irishBorderDto.irishBorder) flatMap { _ =>
-          val updatedJourneyData = context.getJourneyData.copy(irishBorder = Some(irishBorderDto.irishBorder))
+    IrishBorderDto.form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink))),
+        irishBorderDto =>
+          travelDetailsService.storeIrishBorder(context.journeyData)(irishBorderDto.irishBorder) flatMap { _ =>
+            val updatedJourneyData = context.getJourneyData.copy(irishBorder = Some(irishBorderDto.irishBorder))
 
-          doCalculateAction(updatedJourneyData)
-        }
-    )
+            doCalculateAction(updatedJourneyData)
+          }
+      )
   }
 
   val cannotUseService: Action[AnyContent] = dashboardAction { implicit context =>

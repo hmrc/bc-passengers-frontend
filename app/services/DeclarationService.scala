@@ -562,7 +562,7 @@ class DeclarationService @Inject() (
 
   private def formatDeclarationMessage(idType: String, idValue: String, receiptDateTime: String): Reads[JsObject] = {
 
-    val localPath: JsPath = __ \ 'simpleDeclarationRequest
+    val localPath: JsPath = __ \ Symbol("simpleDeclarationRequest")
 
     def getIdValue: String =
       idType match {
@@ -571,11 +571,11 @@ class DeclarationService @Inject() (
       }
 
     (localPath.json
-      .copyFrom((localPath \ 'requestDetail).json.pick) andThen
-      (localPath \ 'requestCommon).json.prune andThen
-      (localPath \ 'requestDetail).json.prune) andThen
-      (localPath \ 'customerReference \ 'idType).json.prune andThen
-      (localPath \ 'customerReference \ 'idValue).json.prune andThen
+      .copyFrom((localPath \ Symbol("requestDetail")).json.pick) andThen
+      (localPath \ Symbol("requestCommon")).json.prune andThen
+      (localPath \ Symbol("'requestDetail")).json.prune) andThen
+      (localPath \ Symbol("customerReference") \ Symbol("idType")).json.prune andThen
+      (localPath \ Symbol("customerReference") \ Symbol("idValue")).json.prune andThen
       localPath.json
         .update(
           __.read[JsObject].map(o => o ++ Json.obj("receiptDate" -> receiptDateTime))
@@ -584,7 +584,7 @@ class DeclarationService @Inject() (
         .update(
           __.read[JsObject].map(o => o ++ Json.obj("REGIME" -> "PNGR"))
         ) andThen
-      (localPath \ 'customerReference).json
+      (localPath \ Symbol("customerReference")).json
         .update(
           __.read[JsObject].map(o => o ++ Json.obj(idType -> getIdValue))
         )

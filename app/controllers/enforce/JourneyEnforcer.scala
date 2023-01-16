@@ -262,13 +262,13 @@ class DeclareAction @Inject() (appConfig: AppConfig, publicAction: PublicAction)
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>
-      if (declarationJourney(context))
+      if (declarationJourney(context)) {
         block(context)
-      else if (amendmentJourney(context))
+      } else if (amendmentJourney(context)) {
         block(context)
-      else if (appConfig.isAmendmentsEnabled)
+      } else if (appConfig.isAmendmentsEnabled) {
         Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
-      else Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
+      } else { Future(Redirect(routes.TravelDetailsController.whereGoodsBought)) }
     }
 
   private def declarationJourney(context: LocalContext): Boolean = context.journeyData.isDefined &&

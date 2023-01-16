@@ -51,7 +51,9 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTravelDetailService, mockCache, mockAppConfig)
+    reset(mockTravelDetailService)
+    reset(mockCache)
+    reset(mockAppConfig)
   }
 
   "loadEUEvidenceItemPage" should {

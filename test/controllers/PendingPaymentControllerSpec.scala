@@ -48,8 +48,8 @@ class PendingPaymentControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(calculatorService, mockCache)
-
+    reset(calculatorService)
+    reset(mockCache)
   }
 
   "loadPendingPaymentPage" should {

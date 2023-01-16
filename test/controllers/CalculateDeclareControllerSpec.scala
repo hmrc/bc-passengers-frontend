@@ -52,16 +52,15 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
-  override def beforeEach: Unit =
-    reset(
-      injected[Cache],
-      injected[PurchasedProductService],
-      injected[UserInformationService],
-      injected[PayApiService],
-      injected[DeclarationService],
-      injected[DateTimeProviderService],
-      injected[TravelDetailsService]
-    )
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[PurchasedProductService])
+    reset(injected[UserInformationService])
+    reset(injected[PayApiService])
+    reset(injected[DeclarationService])
+    reset(injected[DateTimeProviderService])
+    reset(injected[TravelDetailsService])
+  }
 
   trait LocalSetup {
 

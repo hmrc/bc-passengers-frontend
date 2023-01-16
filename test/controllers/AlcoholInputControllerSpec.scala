@@ -19,7 +19,7 @@ package controllers
 import connectors.Cache
 import models._
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{eq => meq, _} //TODO
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.MockitoSugar
 import play.api.Application
@@ -27,6 +27,7 @@ import play.api.data.Form
 import play.api.http.Writeable
 import play.api.test.Helpers.{route => rt, _}
 import play.api.inject.bind
+import play.api.test.Injecting
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
@@ -40,7 +41,11 @@ import views.html.alcohol.alcohol_input
 
 import scala.concurrent.Future
 
-class AlcoholInputControllerSpec extends BaseSpec {
+class AlcoholInputControllerSpec extends BaseSpec with Injecting {
+
+  val injectedCache: Cache                           = inject[Cache]
+  val injectedNewPurchaseService: NewPurchaseService = inject[NewPurchaseService]
+  val injectedAlcoholInput: alcohol_input            = inject[alcohol_input]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
@@ -51,8 +56,11 @@ class AlcoholInputControllerSpec extends BaseSpec {
     .overrides(bind[alcohol_input].toInstance(MockitoSugar.mock[alcohol_input]))
     .build()
 
-  override def beforeEach: Unit =
-    reset(injected[Cache], injected[NewPurchaseService], injected[alcohol_input])
+  override def beforeEach(): Unit = {
+    reset(injectedCache)
+    reset(injectedNewPurchaseService)
+    reset(injectedAlcoholInput)
+  }
 
   trait LocalSetup {
 

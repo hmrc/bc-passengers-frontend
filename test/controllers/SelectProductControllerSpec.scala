@@ -60,8 +60,10 @@ class SelectProductControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
-  override def beforeEach: Unit =
-    reset(injected[Cache], injected[SelectProductService])
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[SelectProductService])
+  }
 
   val controllerHelpers: ControllerHelpers = new Object with ControllerHelpers {
     override def cache: Cache                                                 = MockitoSugar.mock[Cache]
@@ -348,7 +350,8 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "inform the user the item is not found when journeyData.selectedProducts contains an invalid path" in new NextStepSetup {
 
-      override val selectedProducts = List(ProductAlias("other-goods.invalid", ProductPath("other-goods/invalid")))
+      override val selectedProducts: List[ProductAlias] =
+        List(ProductAlias("other-goods.invalid", ProductPath("other-goods/invalid")))
 
       status(response) shouldBe NOT_FOUND
       verify(injected[Cache], times(1)).fetch(any())
@@ -357,7 +360,8 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "go to purchase input form when journeyData.selectedProducts contains a leaf" in new NextStepSetup {
 
-      override val selectedProducts = List(ProductAlias("other-goods.books", ProductPath("other-goods/books")))
+      override val selectedProducts: List[ProductAlias] =
+        List(ProductAlias("other-goods.books", ProductPath("other-goods/books")))
 
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
@@ -367,7 +371,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "redirect to selectProducts when journeyData.selectedProducts contains a branch" in new NextStepSetup {
 
-      override val selectedProducts = List(ProductAlias("alcohol", ProductPath("alcohol")))
+      override val selectedProducts: List[ProductAlias] = List(ProductAlias("alcohol", ProductPath("alcohol")))
 
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
@@ -402,17 +406,18 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "redirect to next step after clearing working instance from cache when adding a product" in new CancelSetup {
 
-      override val selectedProducts                   = List(ProductAlias("alcohol", ProductPath("alcohol")))
-      val workingInstance                             = PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))
-      val incompleteGbNiPpi: PurchasedProductInstance =
+      override val selectedProducts: List[ProductAlias] = List(ProductAlias("alcohol", ProductPath("alcohol")))
+      val workingInstance: PurchasedProductInstance     =
         PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))
-      val localRequiredJourneyData: JourneyData       = requiredJourneyData.copy(
+      val incompleteGbNiPpi: PurchasedProductInstance   =
+        PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))
+      val localRequiredJourneyData: JourneyData         = requiredJourneyData.copy(
         workingInstance = Some(workingInstance),
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),
         purchasedProductInstances = List(incompleteGbNiPpi)
       )
-      override val journeyData: JourneyData           = localRequiredJourneyData
+      override val journeyData: JourneyData             = localRequiredJourneyData
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
       verify(injected[Cache], times(1)).store(any())(any())
@@ -420,18 +425,18 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "redirect to next step after clearing working instance from cache when editing a product" in new CancelSetup {
 
-      override val selectedProducts                   = List(ProductAlias("alcohol", ProductPath("alcohol")))
-      val workingInstance                             =
+      override val selectedProducts: List[ProductAlias] = List(ProductAlias("alcohol", ProductPath("alcohol")))
+      val workingInstance: PurchasedProductInstance     =
         PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"), cost = Some(BigDecimal(100)))
-      val incompleteGbNiPpi: PurchasedProductInstance =
+      val incompleteGbNiPpi: PurchasedProductInstance   =
         PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))
-      val localRequiredJourneyData: JourneyData       = requiredJourneyData.copy(
+      val localRequiredJourneyData: JourneyData         = requiredJourneyData.copy(
         workingInstance = Some(workingInstance),
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),
         purchasedProductInstances = List(incompleteGbNiPpi)
       )
-      override val journeyData: JourneyData           = localRequiredJourneyData
+      override val journeyData: JourneyData             = localRequiredJourneyData
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
       verify(injected[Cache], times(1)).store(any())(any())

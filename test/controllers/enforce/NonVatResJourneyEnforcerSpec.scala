@@ -101,10 +101,11 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
             Some("nonEuOnly"),
             Some(false)
           )
-        )
+        ) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
@@ -126,10 +127,13 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
         implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
-        if (jd == JourneyData(None, Some("euOnly"), Some(true)) || jd == JourneyData(None, Some("euOnly"), Some(false)))
+        if (
+          jd == JourneyData(None, Some("euOnly"), Some(true)) || jd == JourneyData(None, Some("euOnly"), Some(false))
+        ) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
@@ -151,10 +155,11 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
         implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
-        if (jd == JourneyData(None, Some("both"), Some(true)) || jd == JourneyData(None, Some("both"), Some(false)))
+        if (jd == JourneyData(None, Some("both"), Some(true)) || jd == JourneyData(None, Some("both"), Some(false))) {
           status(res) shouldBe OK
-        else
+        } else {
           status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }

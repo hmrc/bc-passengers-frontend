@@ -45,8 +45,10 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
     .configure("features.vat-res" -> true)
     .build()
 
-  override def beforeEach: Unit =
-    reset(injected[Cache], injected[TravelDetailsService])
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[TravelDetailsService])
+  }
 
   trait LocalSetup {
 

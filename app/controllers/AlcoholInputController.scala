@@ -27,6 +27,7 @@ import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
+import controllers.ControllerHelpers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -153,7 +154,7 @@ class AlcoholInputController @Inject() (
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireLimitUsage {
-      val dto = resilientForm.bindFromRequest.value.get
+      val dto = resilientForm.bindFromRequest().value.get
       newPurchaseService
         .insertPurchases(
           path,
@@ -167,55 +168,57 @@ class AlcoholInputController @Inject() (
         ._1
     } { limits =>
       requireProduct(path) { product =>
-        alcoholForm(path).bindFromRequest.fold(
-          formWithErrors =>
-            Future.successful(
-              BadRequest(
-                alcohol_input(
-                  formWithErrors,
-                  product,
-                  path,
-                  None,
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck
-                )
-              )
-            ),
-          dto =>
-            if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
-              val item = newPurchaseService.insertPurchases(
-                path,
-                Some(dto.weightOrVolume),
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost)
-              )
-              cache.store(item._1) map { _ =>
-                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                  case (Some(true), Some("greatBritain")) =>
-                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, item._2))
-                  case (Some(false), Some("euOnly"))      =>
-                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
-                    } else {
-                      Redirect(routes.SelectProductController.nextStep)
-                    }
-                  case _                                  => Redirect(routes.SelectProductController.nextStep)
-                }
-              }
-            } else
+        alcoholForm(path)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
               Future.successful(
-                Redirect(
-                  routes.LimitExceedController.loadLimitExceedPage(path =
-                    calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
+                BadRequest(
+                  alcohol_input(
+                    formWithErrors,
+                    product,
+                    path,
+                    None,
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck
                   )
                 )
-              )
-        )
+              ),
+            dto =>
+              if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
+                val item = newPurchaseService.insertPurchases(
+                  path,
+                  Some(dto.weightOrVolume),
+                  None,
+                  dto.country,
+                  dto.originCountry,
+                  dto.currency,
+                  List(dto.cost)
+                )
+                cache.store(item._1) map { _ =>
+                  (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                    case (Some(true), Some("greatBritain")) =>
+                      Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, item._2))
+                    case (Some(false), Some("euOnly"))      =>
+                      if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
+                      } else {
+                        Redirect(routes.SelectProductController.nextStep)
+                      }
+                    case _                                  => Redirect(routes.SelectProductController.nextStep)
+                  }
+                }
+              } else
+                Future.successful(
+                  Redirect(
+                    routes.LimitExceedController.loadLimitExceedPage(path =
+                      calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
+                    )
+                  )
+                )
+          )
       }
     }
   }
@@ -224,7 +227,7 @@ class AlcoholInputController @Inject() (
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         requireLimitUsage {
-          val dto = resilientForm.bindFromRequest.value.get
+          val dto = resilientForm.bindFromRequest().value.get
           newPurchaseService.updatePurchase(
             ppi.path,
             iid,
@@ -236,57 +239,59 @@ class AlcoholInputController @Inject() (
             dto.cost
           )
         } { limits =>
-          alcoholForm(ppi.path).bindFromRequest.fold(
-            formWithErrors =>
-              Future.successful(
-                BadRequest(
-                  alcohol_input(
-                    formWithErrors,
-                    product,
-                    ppi.path,
-                    Some(iid),
-                    countriesService.getAllCountries,
-                    countriesService.getAllCountriesAndEu,
-                    currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
-                  )
-                )
-              ),
-            dto =>
-              if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
-                cache.store(
-                  newPurchaseService.updatePurchase(
-                    ppi.path,
-                    iid,
-                    Some(dto.weightOrVolume),
-                    None,
-                    dto.country,
-                    dto.originCountry,
-                    dto.currency,
-                    dto.cost
-                  )
-                ) map { _ =>
-                  (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                    case (Some(true), Some("greatBritain")) =>
-                      Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
-                    case (Some(false), Some("euOnly"))      =>
-                      if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
-                      } else {
-                        Redirect(routes.SelectProductController.nextStep)
-                      }
-                    case _                                  => Redirect(routes.SelectProductController.nextStep)
-                  }
-                }
-              } else
+          alcoholForm(ppi.path)
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
                 Future.successful(
-                  Redirect(
-                    routes.LimitExceedController.loadLimitExceedPage(path =
-                      calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get
+                  BadRequest(
+                    alcohol_input(
+                      formWithErrors,
+                      product,
+                      ppi.path,
+                      Some(iid),
+                      countriesService.getAllCountries,
+                      countriesService.getAllCountriesAndEu,
+                      currencyService.getAllCurrencies,
+                      context.getJourneyData.euCountryCheck
                     )
                   )
-                )
-          )
+                ),
+              dto =>
+                if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
+                  cache.store(
+                    newPurchaseService.updatePurchase(
+                      ppi.path,
+                      iid,
+                      Some(dto.weightOrVolume),
+                      None,
+                      dto.country,
+                      dto.originCountry,
+                      dto.currency,
+                      dto.cost
+                    )
+                  ) map { _ =>
+                    (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                      case (Some(true), Some("greatBritain")) =>
+                        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
+                      case (Some(false), Some("euOnly"))      =>
+                        if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                          Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
+                        } else {
+                          Redirect(routes.SelectProductController.nextStep)
+                        }
+                      case _                                  => Redirect(routes.SelectProductController.nextStep)
+                    }
+                  }
+                } else
+                  Future.successful(
+                    Redirect(
+                      routes.LimitExceedController.loadLimitExceedPage(path =
+                        calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get
+                      )
+                    )
+                  )
+            )
         }
       }
     }
