@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UKResidentController @Inject() (
   val cache: Cache,
   uKResidentAction: UKResidentAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val isUKResidentPage: views.html.travel_details.uk_resident,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

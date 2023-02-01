@@ -32,7 +32,7 @@ class UKExcisePaidController @Inject() (
   val cache: Cache,
   uKExcisePaidAction: UKExcisePaidAction,
   uKExcisePaidItemAction: UKExcisePaidItemAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val isUKExcisePaidPage: views.html.travel_details.ukexcise_paid,
   val isUKExcisePaidItemPage: views.html.travel_details.ukexcise_paid_item,
   override val controllerComponents: MessagesControllerComponents,

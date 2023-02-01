@@ -40,108 +40,105 @@ class BackLinkModel @Inject() (
     def prevDecl = context.journeyData.flatMap(_.prevDeclaration).getOrElse(false)
 
     def call = location match {
-      case "duty-free"                                                                  =>
+      case "duty-free"                                                                    =>
         Some(TravelDetailsController.didYouClaimTaxBack)
-      case "where-goods-bought"                                                         =>
+      case "where-goods-bought"                                                           =>
         if (appConfig.isAmendmentsEnabled) {
           Some(PreviousDeclarationController.loadPreviousDeclarationPage)
         } else {
           Some(appConfig.declareGoodsUrl)
         }
-      case "declaration-not-found"                                                      =>
+      case "declaration-not-found"                                                        =>
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
-      case "arriving-ni"                                                                =>
+      case "arriving-ni"                                                                  =>
         Some(TravelDetailsController.whereGoodsBought)
-      case "gb-ni-vat-check"                                                            =>
+      case "gb-ni-vat-check"                                                              =>
         val iid = getIid(context.request.path)
         context.request.path match {
           case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
         }
-      case "gb-ni-excise-check"                                                         =>
+      case "gb-ni-excise-check"
+          if context.request.path.contains("enter-goods/alcohol")
+            || context.request.path.contains("enter-goods/tobacco") =>
         val iid = getIid(context.request.path)
-        context.request.path match {
-          case path if path.contains("enter-goods/alcohol") || path.contains("enter-goods/tobacco") =>
-            Some(
-              UKVatPaidController.loadItemUKVatPaidPage(
-                context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
-                iid
-              )
-            )
-        }
-      case "goods-bought-into-northern-ireland-inside-eu"                               =>
+        Some(
+          UKVatPaidController.loadItemUKVatPaidPage(
+            context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
+            iid
+          )
+        )
+      case "goods-bought-into-northern-ireland-inside-eu"                                 =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "gb-ni-vat-excise-check"                                                     =>
+      case "gb-ni-vat-excise-check"                                                       =>
         Some(UKResidentController.loadUKResidentPage)
-      case "gb-ni-uk-resident-check"                                                    =>
+      case "gb-ni-uk-resident-check"                                                      =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "gb-ni-exemptions"                                                           =>
+      case "gb-ni-exemptions" if context.request.path.contains("enter-goods/other-goods") =>
         val iid = getIid(context.request.path)
-        context.request.path match {
-          case path if path.contains("enter-goods/other-goods") =>
-            Some(
-              UKVatPaidController.loadItemUKVatPaidPage(
-                context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
-                iid
-              )
-            )
-        }
-      case "eu-evidence-check" if eucc == Some("euOnly") & !arN                         =>
+        Some(
+          UKVatPaidController.loadItemUKVatPaidPage(
+            context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
+            iid
+          )
+        )
+      case "eu-evidence-check" if eucc == Some("euOnly") & !arN                           =>
         val iid = getIid(context.request.path)
         context.request.path match {
           case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
         }
-      case "gb-ni-no-need-to-use-service"                                               =>
+      case "gb-ni-no-need-to-use-service"                                                 =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
-      case "goods-brought-into-northern-ireland" if eucc != Some("greatBritain")        =>
+      case "goods-brought-into-northern-ireland" if eucc != Some("greatBritain")          =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "goods-brought-into-northern-ireland" if eucc == Some("greatBritain") & !ukr =>
+      case "goods-brought-into-northern-ireland" if eucc == Some("greatBritain") & !ukr   =>
         Some(UKResidentController.loadUKResidentPage)
-      case "goods-brought-into-northern-ireland" if eucc == Some("greatBritain") & ukr  =>
+      case "goods-brought-into-northern-ireland" if eucc == Some("greatBritain") & ukr    =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
-      case "goods-brought-into-great-britain-iom"                                       =>
+      case "goods-brought-into-great-britain-iom"                                         =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "private-travel" if arN & boa                                                =>
+      case "private-travel" if arN & boa                                                  =>
         Some(TravelDetailsController.goodsBoughtIntoNI)
-      case "private-travel" if !arN & boa                                               =>
+      case "private-travel" if !arN & boa                                                 =>
         Some(TravelDetailsController.goodsBoughtIntoGB)
-      case "private-travel" if !boa                                                     =>
+      case "private-travel" if !boa                                                       =>
         Some(TravelDetailsController.noNeedToUseService)
-      case "no-need-to-use-service" if arN                                              =>
+      case "no-need-to-use-service" if arN                                                =>
         Some(TravelDetailsController.goodsBoughtIntoNI)
-      case "no-need-to-use-service" if !arN                                             =>
+      case "no-need-to-use-service" if !arN                                               =>
         Some(TravelDetailsController.goodsBoughtIntoGB)
-      case "confirm-age"                                                                =>
+      case "confirm-age"                                                                  =>
         Some(TravelDetailsController.privateTravel)
-      case "tell-us"                                                                    =>
-        if (prevDecl)
+      case "tell-us"                                                                      =>
+        if (prevDecl) {
           Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
-        else
+        } else {
           Some(TravelDetailsController.confirmAge)
-      case "ireland-to-northern-ireland"                                                =>
+        }
+      case "ireland-to-northern-ireland"                                                  =>
         Some(DashboardController.showDashboard)
-      case "tax-due" if appConfig.isIrishBorderQuestionEnabled                          =>
+      case "tax-due" if appConfig.isIrishBorderQuestionEnabled                            =>
         Some(CalculateDeclareController.irishBorder)
-      case "tax-due" if !appConfig.isIrishBorderQuestionEnabled                         =>
+      case "tax-due" if !appConfig.isIrishBorderQuestionEnabled                           =>
         Some(DashboardController.showDashboard)
-      case "declare-your-goods"                                                         =>
+      case "declare-your-goods"                                                           =>
         Some(CalculateDeclareController.showCalculation)
-      case "user-information"                                                           =>
+      case "user-information"                                                             =>
         Some(CalculateDeclareController.declareYourGoods)
-      case "previous-declaration"                                                       =>
+      case "previous-declaration"                                                         =>
         Some(appConfig.declareGoodsUrl)
-      case "declaration-retrieval"                                                      =>
+      case "declaration-retrieval"                                                        =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
-      case "pending-payment"                                                            =>
+      case "pending-payment"                                                              =>
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
-      case "no-further-amendments"                                                      =>
+      case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case "add"                                                                        =>
+      case "add"                                                                          =>
         Some(DashboardController.showDashboard)
-      case _                                                                            =>
+      case _                                                                              =>
         None
     }
 

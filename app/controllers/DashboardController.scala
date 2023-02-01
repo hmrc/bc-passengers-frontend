@@ -39,7 +39,7 @@ class DashboardController @Inject() (
   val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val dashboard: views.html.purchased_products.dashboard,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

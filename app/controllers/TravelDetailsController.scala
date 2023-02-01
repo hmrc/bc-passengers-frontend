@@ -50,7 +50,7 @@ class TravelDetailsController @Inject() (
   val goods_bought_inside_eu: views.html.travel_details.goods_bought_inside_eu,
   val confirm_age: views.html.travel_details.confirm_age,
   val private_travel: views.html.travel_details.private_travel,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val did_you_claim_tax_back: views.html.travel_details.did_you_claim_tax_back,
   val bringing_duty_free_question: views.html.travel_details.bringing_duty_free_question,
   val duty_free_allowance_question_mix: views.html.travel_details.duty_free_allowance_question_mix,

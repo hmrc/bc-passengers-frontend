@@ -35,7 +35,7 @@ import repositories.BCPassengersSessionRepository
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.error_template
+import views.html.errorTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,7 +69,7 @@ class SelectProductControllerSpec extends BaseSpec {
     override def cache: Cache                                                 = MockitoSugar.mock[Cache]
     override def productTreeService: ProductTreeService                       = MockitoSugar.mock[ProductTreeService]
     override def calculatorService: CalculatorService                         = MockitoSugar.mock[CalculatorService]
-    override def error_template: error_template                               = MockitoSugar.mock[error_template]
+    override def errorTemplate: errorTemplate                                 = MockitoSugar.mock[errorTemplate]
     override implicit def appConfig: AppConfig                                = MockitoSugar.mock[AppConfig]
     override implicit def ec: ExecutionContext                                = MockitoSugar.mock[ExecutionContext]
     override protected def controllerComponents: MessagesControllerComponents =

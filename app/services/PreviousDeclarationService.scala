@@ -72,6 +72,14 @@ class PreviousDeclarationService @Inject() (
                 previousDeclarationRequest = Some(previousDeclarationRequest)
               )
             )
+          case _                                                               =>
+            cache.storeJourneyData(
+              JourneyData(
+                pendingPayment = journeyData.get.pendingPayment,
+                prevDeclaration = Some(true),
+                previousDeclarationRequest = Some(previousDeclarationRequest)
+              )
+            )
         }
       case None    =>
         cache.storeJourneyData(

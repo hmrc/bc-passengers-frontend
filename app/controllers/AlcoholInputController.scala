@@ -41,7 +41,7 @@ class AlcoholInputController @Inject() (
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
   dashboardAction: DashboardAction,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val alcohol_input: views.html.alcohol.alcohol_input,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -210,7 +210,7 @@ class AlcoholInputController @Inject() (
                     case _                                  => Redirect(routes.SelectProductController.nextStep)
                   }
                 }
-              } else
+              } else {
                 Future.successful(
                   Redirect(
                     routes.LimitExceedController.loadLimitExceedPage(path =
@@ -218,6 +218,7 @@ class AlcoholInputController @Inject() (
                     )
                   )
                 )
+              }
           )
       }
     }
@@ -283,7 +284,7 @@ class AlcoholInputController @Inject() (
                       case _                                  => Redirect(routes.SelectProductController.nextStep)
                     }
                   }
-                } else
+                } else {
                   Future.successful(
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path =
@@ -291,6 +292,7 @@ class AlcoholInputController @Inject() (
                       )
                     )
                   )
+                }
             )
         }
       }

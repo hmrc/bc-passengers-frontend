@@ -40,7 +40,7 @@ class SelectProductController @Inject() (
   dashboardAction: DashboardAction,
   val purchasedProductService: PurchasedProductService,
   val select_products: views.html.purchased_products.select_products,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -119,7 +119,7 @@ class SelectProductController @Inject() (
           )
         )
       case _                                 =>
-        Future.successful(InternalServerError(error_template()))
+        Future.successful(InternalServerError(errorTemplate()))
 
     }
   }

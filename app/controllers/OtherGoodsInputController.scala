@@ -41,7 +41,7 @@ class OtherGoodsInputController @Inject() (
   val calculatorService: CalculatorService,
   dashboardAction: DashboardAction,
   val other_goods_input: views.html.other_goods.other_goods_input,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit val ec: ExecutionContext

@@ -43,7 +43,7 @@ class TobaccoInputController @Inject() (
   val calculatorService: CalculatorService,
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val tobacco_input: views.html.tobacco.tobacco_input,
   val weight_or_volume_input: views.html.tobacco.weight_or_volume_input,
   val no_of_sticks_input: views.html.tobacco.no_of_sticks_input,
@@ -606,8 +606,9 @@ class TobaccoInputController @Inject() (
                         case _                                  => Redirect(routes.SelectProductController.nextStep)
                       }
                     }
-                  } else
+                  } else {
                     Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(ppi.path)))
+                  }
               )
 
           def processOtherTobaccoEditForm: Future[Result] =

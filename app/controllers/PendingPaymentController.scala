@@ -37,7 +37,7 @@ class PendingPaymentController @Inject() (
   val calculateDeclareController: controllers.CalculateDeclareController,
   noFurtherAmendmentAction: NoFurtherAmendmentAction,
   pendingPaymentAction: PendingPaymentAction,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val noFurtherAmendmentPage: views.html.amendments.no_further_amendment,
   val pendingPaymentPage: views.html.amendments.pending_payment,
   override val controllerComponents: MessagesControllerComponents,
@@ -116,7 +116,7 @@ class PendingPaymentController @Inject() (
         }
       case _                                                    =>
         Future.successful {
-          InternalServerError(error_template())
+          InternalServerError(errorTemplate())
         }
     }
   }

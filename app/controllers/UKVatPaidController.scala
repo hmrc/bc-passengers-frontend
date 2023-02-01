@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UKVatPaidController @Inject() (
   val cache: Cache,
   uKVatPaidAction: UKVatPaidAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val isUKVatPaidItemPage: views.html.travel_details.ukvat_paid_item,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

@@ -89,23 +89,25 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, arrivingNICheck) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, arrivingNICheck) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
-        if (
-          jd == JourneyData(None, Some("nonEuOnly"), Some(true)) || jd == JourneyData(
-            None,
-            Some("nonEuOnly"),
-            Some(false)
-          )
-        ) {
-          status(res) shouldBe OK
-        } else {
-          status(res) shouldBe SEE_OTHER
-        }
+          if (
+            jd == JourneyData(None, Some("nonEuOnly"), Some(true)) || jd == JourneyData(
+              None,
+              Some("nonEuOnly"),
+              Some(false)
+            )
+          ) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                     => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -121,19 +123,21 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, arrivingNICheck) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, arrivingNICheck) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
-        if (
-          jd == JourneyData(None, Some("euOnly"), Some(true)) || jd == JourneyData(None, Some("euOnly"), Some(false))
-        ) {
-          status(res) shouldBe OK
-        } else {
-          status(res) shouldBe SEE_OTHER
-        }
+          if (
+            jd == JourneyData(None, Some("euOnly"), Some(true)) || jd == JourneyData(None, Some("euOnly"), Some(false))
+          ) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                     => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -149,17 +153,19 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, arrivingNICheck) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, arrivingNICheck) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val arrivingCheck = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, arrivingCheck)
 
-        if (jd == JourneyData(None, Some("both"), Some(true)) || jd == JourneyData(None, Some("both"), Some(false))) {
-          status(res) shouldBe OK
-        } else {
-          status(res) shouldBe SEE_OTHER
-        }
+          if (jd == JourneyData(None, Some("both"), Some(true)) || jd == JourneyData(None, Some("both"), Some(false))) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                     => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -175,47 +181,49 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "bringingOverAllowance" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, bringingOverAllowance) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, bringingOverAllowance) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance)
 
-        jd match {
-          case JourneyData(
-                _,
-                Some("nonEuOnly"),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                Some(false),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _
-              ) =>
-            status(res) shouldBe OK
-          case _ =>
-            status(res) shouldBe SEE_OTHER
-        }
+          jd match {
+            case JourneyData(
+                  _,
+                  Some("nonEuOnly"),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Some(false),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _
+                ) =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
+        case _                                           => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -231,47 +239,49 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "bringingOverAllowance" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, bringingOverAllowance) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, bringingOverAllowance) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance)
 
-        jd match {
-          case JourneyData(
-                _,
-                Some("nonEuOnly"),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                Some(_),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _
-              ) =>
-            status(res) shouldBe OK
-          case _ =>
-            status(res) shouldBe SEE_OTHER
-        }
+          jd match {
+            case JourneyData(
+                  _,
+                  Some("nonEuOnly"),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Some(_),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _
+                ) =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
+        case _                                           => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -288,48 +298,50 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "privateCraft"          -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, bringingOverAllowance, privateCraft) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
-        val privateTravel = privateCraft.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, bringingOverAllowance, privateCraft) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+          val privateTravel = privateCraft.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance, privateTravel)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance, privateTravel)
 
-        jd match {
-          case JourneyData(
-                _,
-                Some("nonEuOnly"),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                Some(_),
-                Some(_),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _
-              ) =>
-            status(res) shouldBe OK
-          case _ =>
-            status(res) shouldBe SEE_OTHER
-        }
+          jd match {
+            case JourneyData(
+                  _,
+                  Some("nonEuOnly"),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Some(_),
+                  Some(_),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _
+                ) =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
+        case _                                                         => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -347,49 +359,51 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
         "ageOver17"             -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(euCountryCheck, bringingOverAllowance, privateCraft, ageOver17) =>
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
-        val privateTravel = privateCraft.asInstanceOf[Option[Boolean]]
-        val over17        = ageOver17.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(euCountryCheck, bringingOverAllowance, privateCraft, ageOver17) =>
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+          val privateTravel = privateCraft.asInstanceOf[Option[Boolean]]
+          val over17        = ageOver17.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance, privateTravel, over17)
+          implicit val jd: JourneyData = JourneyData(None, euCheck, None, None, overAllowance, privateTravel, over17)
 
-        jd match {
-          case JourneyData(
-                _,
-                Some("nonEuOnly"),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                Some(_),
-                Some(_),
-                Some(_),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _
-              ) =>
-            status(res) shouldBe OK
-          case _ =>
-            status(res) shouldBe SEE_OTHER
-        }
+          jd match {
+            case JourneyData(
+                  _,
+                  Some("nonEuOnly"),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Some(_),
+                  Some(_),
+                  Some(_),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _
+                ) =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
+        case _                                                                    => throw new Error("Invalid JourneyData")
       }
     }
   }

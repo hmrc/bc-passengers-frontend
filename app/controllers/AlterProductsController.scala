@@ -39,7 +39,7 @@ class AlterProductsController @Inject() (
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
   val remove: views.html.purchased_products.remove,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,

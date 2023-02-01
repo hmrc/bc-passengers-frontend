@@ -33,7 +33,7 @@ class DeclarationRetrievalController @Inject() (
   val cache: Cache,
   declarationRetrievalAction: DeclarationRetrievalAction,
   declarationNotFoundAction: DeclarationNotFoundAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val declarationRetrievalPage: views.html.amendments.declaration_retrieval,
   val declarationNotFoundPage: views.html.amendments.declaration_not_found,
   override val controllerComponents: MessagesControllerComponents,

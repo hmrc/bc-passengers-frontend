@@ -33,7 +33,7 @@ class LimitExceedController @Inject() (
   val productTreeService: ProductTreeService,
   val calculatorService: CalculatorService,
   limitExceedAction: LimitExceedAction,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val limitExceedPage: views.html.purchased_products.limit_exceed,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

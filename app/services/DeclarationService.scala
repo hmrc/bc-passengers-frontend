@@ -75,9 +75,9 @@ class DeclarationService @Inject() (
         ),
         amendState = (declarationResponse \ "amendState").asOpt[String],
         deltaCalculation =
-          if ((declarationResponse \ "amendState").asOpt[String].getOrElse("").equals("pending-payment"))
+          if ((declarationResponse \ "amendState").asOpt[String].getOrElse("").equals("pending-payment")) {
             (declarationResponse \ "deltaCalculation").asOpt[Calculation]
-          else None
+          } else { None }
       )
 
     wsAllMethods.POST[PreviousDeclarationRequest, HttpResponse](
@@ -101,6 +101,12 @@ class DeclarationService @Inject() (
       case HttpResponse(status, _, _)               =>
         logger.error(
           s"DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+        )
+        DeclarationServiceFailureResponse
+      case _                                        =>
+        logger.error(
+          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+            | Unhandled declaration service response""".stripMargin
         )
         DeclarationServiceFailureResponse
     }
@@ -158,6 +164,12 @@ class DeclarationService @Inject() (
           s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
         )
         DeclarationServiceFailureResponse
+      case _                                      =>
+        logger.error(
+          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+            | Unhandled declaration service response""".stripMargin
+        )
+        DeclarationServiceFailureResponse
     }
   }
 
@@ -205,12 +217,20 @@ class DeclarationService @Inject() (
         DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
       case HttpResponse(BAD_REQUEST, _, _)        =>
         logger.error(
-          "DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted"
+          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+            | BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted""".stripMargin
         )
         DeclarationServiceFailureResponse
       case HttpResponse(status, _, _)             =>
         logger.error(
-          s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+          s"""DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+             | Unexpected status of $status received from bc-passengers-declarations, unable to proceed""".stripMargin
+        )
+        DeclarationServiceFailureResponse
+      case _                                      =>
+        logger.error(
+          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+            | Unhandled declaration service response""".stripMargin
         )
         DeclarationServiceFailureResponse
     }
@@ -270,8 +290,8 @@ class DeclarationService @Inject() (
         if (o.selectPlaceOfArrival.isEmpty) o.enterPlaceOfArrival else o.selectPlaceOfArrival
 
       def getPlaceOfArrival: String =
-        if (o.selectPlaceOfArrival.isEmpty) o.enterPlaceOfArrival
-        else messages(portsOfArrivalService.getDisplayNameByCode(o.selectPlaceOfArrival).getOrElse(""))
+        if (o.selectPlaceOfArrival.isEmpty) { o.enterPlaceOfArrival }
+        else { messages(portsOfArrivalService.getDisplayNameByCode(o.selectPlaceOfArrival).getOrElse("")) }
 
       def getTravellingFrom: String =
         journeyData.euCountryCheck match {
@@ -306,14 +326,15 @@ class DeclarationService @Inject() (
     }
 
     def getDeclarationHeader: JsValue =
-      if (journeyData.previousDeclarationRequest.isDefined)
+      if (journeyData.previousDeclarationRequest.isDefined) {
         declarationHeader
           .as[JsObject]
           .++(
             Json.obj("chargeReference" -> journeyData.previousDeclarationRequest.get.referenceNumber)
           )
-      else
+      } else {
         declarationHeader
+      }
 
     def getLiabilityDetails: JsValue =
       Json.toJson(calculatorResponse.calculation)((o: Calculation) =>
@@ -470,9 +491,9 @@ class DeclarationService @Inject() (
     def getJourneyData = {
 
       val amendmentCount: Int =
-        if (journeyData.declarationResponse.isDefined && journeyData.declarationResponse.get.amendmentCount.isDefined)
+        if (journeyData.declarationResponse.isDefined && journeyData.declarationResponse.get.amendmentCount.isDefined) {
           journeyData.declarationResponse.get.amendmentCount.get + 1
-        else 0
+        } else { 0 }
 
       val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
         journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
@@ -501,8 +522,9 @@ class DeclarationService @Inject() (
             "acknowledgementReference" -> (journeyData.previousDeclarationRequest.get.referenceNumber + getJourneyData.amendmentCount.get)
           )
         )
-      } else
+      } else {
         requestCommon
+      }
     }
 
     Json
@@ -555,7 +577,14 @@ class DeclarationService @Inject() (
         DeclarationServiceFailureResponse
       case HttpResponse(status, _, _)      =>
         logger.error(
-          s"ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+          s"""ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration]
+             | Unexpected status of $status received from bc-passengers-declarations, unable to proceed""".stripMargin
+        )
+        DeclarationServiceFailureResponse
+      case _                               =>
+        logger.error(
+          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+            | Unhandled declaration service response""".stripMargin
         )
         DeclarationServiceFailureResponse
     }

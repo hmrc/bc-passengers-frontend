@@ -84,7 +84,7 @@ class PayApiService @Inject() (
       }
 
     def geBackURL(isAmendment: Boolean, amendState: String) =
-      if (amendState.equals("pending-payment")) backUrlPendingPayment
+      if (amendState.equals("pending-payment")) { backUrlPendingPayment }
       else if (isAmendment) { backUrlAmendment }
       else { backUrlDeclaration }
 

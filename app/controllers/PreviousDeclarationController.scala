@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PreviousDeclarationController @Inject() (
   val cache: Cache,
   previousDeclarationAction: PreviousDeclarationAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val previousDeclarationPage: views.html.amendments.previous_declaration,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

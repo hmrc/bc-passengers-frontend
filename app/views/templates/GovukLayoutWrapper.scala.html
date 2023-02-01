@@ -50,7 +50,7 @@
             timeout = Some(appConfig.timeout),
             countdown = Some(appConfig.countdown),
             keepAliveUrl = Some(controllers.routes.TravelDetailsController.keepAlive.url),
-            signOutUrl = Some(controllers.routes.PublicController.timeOut().url),
+            signOutUrl = Some(controllers.routes.PublicController.pageTimeOut().url),
             language = if (messages.lang.code == "cy") Some("cy") else Some("en")
         ))
     }

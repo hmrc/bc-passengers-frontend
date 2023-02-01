@@ -261,8 +261,7 @@ trait Validators {
 
   def validateFieldsRegex(errorKey: String, pattern: String): Constraint[String] =
     Constraint { text =>
-      if (text.isEmpty || text.matches(pattern)) Valid
-      else Invalid(errorKey)
+      if (text.isEmpty || text.matches(pattern)) Valid else Invalid(errorKey)
     }
 }
 

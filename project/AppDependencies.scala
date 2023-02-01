@@ -12,7 +12,6 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-28" % "7.12.0",
     "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.14.1",
     "com.typesafe.play"            %% "play-json-joda"             % "2.9.3",
-    "uk.gov.hmrc"                  %% "play-language"              % "6.1.0-play-28",
     "org.mindrot"                   % "jbcrypt"                    % "0.4",
     "org.webjars.npm"               % "accessible-autocomplete"    % "2.0.4",
     "ai.x"                         %% "play-json-extensions"       % "0.42.0"

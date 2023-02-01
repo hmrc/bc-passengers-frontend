@@ -15,8 +15,6 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.10")
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.18")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-settings" % "4.5.0")
-
 addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "2.1.0")
 
 addSbtPlugin("com.beautiful-scala" % "sbt-scalastyle" % "1.5.1")

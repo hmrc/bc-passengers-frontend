@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EUEvidenceController @Inject() (
   val cache: Cache,
   eUEvidenceItemAction: EUEvidenceItemAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val euEvidenceItem: views.html.travel_details.eu_evidence_item,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -68,8 +68,9 @@ class EUEvidenceController @Inject() (
           },
           success = { euEvidence =>
             val ppInstances = context.getJourneyData.purchasedProductInstances.map { ppi =>
-              if (ppi.iid == iid) ppi.copy(hasEvidence = Some(euEvidence), isCustomPaid = Some(euEvidence))
-              else ppi
+              if (ppi.iid == iid) {
+                ppi.copy(hasEvidence = Some(euEvidence), isCustomPaid = Some(euEvidence))
+              } else { ppi }
             }
             cache
               .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
