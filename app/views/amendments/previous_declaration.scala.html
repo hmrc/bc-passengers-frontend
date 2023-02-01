@@ -37,16 +37,18 @@
             legend =messages("heading.previous_declaration"),
             name = "prevDeclaration",
             items = Seq(
-                    RadioItem(id = Some("prevDeclaration-no"),
-                        value = Some("false"),
-                        content = Text(messages("label.check_tax_and_declare")),
-                        checked = form("prevDeclaration").value.contains("false")
-                    ),
-                    RadioItem(id = Some("prevDeclaration-yes"),
-                        value = Some("true"),
-                        content = Text(messages("label.add_goods_previous_declaration")),
-                        checked = form("prevDeclaration").value.contains("true")
-                    )
+                        RadioItem(
+                            id = Some("prevDeclaration-no"),
+                            value = Some("false"),
+                            content = Text(messages("label.check_tax_and_declare")),
+                            checked = form("prevDeclaration").value.contains("false")
+                        ),
+                        RadioItem(
+                            id = Some("prevDeclaration-yes"),
+                            value = Some("true"),
+                            content = Text(messages("label.add_goods_previous_declaration")),
+                            checked = form("prevDeclaration").value.contains("true")
+                        )
             ),
         )
 

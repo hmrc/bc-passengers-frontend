@@ -69,7 +69,7 @@ class PayApiService @Inject() (
     amendState: Option[String] = None
   )(implicit hc: HeaderCarrier, messages: Messages): Future[PayApiServiceResponse] = {
 
-    def getPlaceOfArrival(userInfo: UserInformation) =
+    def getPlaceOfArrival(userInfo: UserInformation): String =
       if (userInfo.selectPlaceOfArrival.isEmpty) userInfo.enterPlaceOfArrival else userInfo.selectPlaceOfArrival
 
     def formatYesNo(customValue: Boolean, country: Option[Country])(implicit messages: Messages): String =
@@ -83,7 +83,7 @@ class PayApiService @Inject() (
         messages("label.not_required")
       }
 
-    def geBackURL(isAmendment: Boolean, amendState: String) =
+    def geBackURL(isAmendment: Boolean, amendState: String): String =
       if (amendState.equals("pending-payment")) { backUrlPendingPayment }
       else if (isAmendment) { backUrlAmendment }
       else { backUrlDeclaration }
