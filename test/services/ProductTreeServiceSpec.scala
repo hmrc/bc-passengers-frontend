@@ -96,7 +96,7 @@ class ProductTreeServiceSpec extends BaseSpec {
 
       for (item <- items) {
         val descendant: Option[ProductTreeNode] = productTreeService.productTree.getDescendant(item.path)
-        assert(descendant.isDefined, item.path + " was not defined in the product tree")
+        assert(descendant.isDefined, item.path.toString + " was not defined in the product tree")
       }
     }
 

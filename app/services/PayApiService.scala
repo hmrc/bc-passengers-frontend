@@ -84,9 +84,9 @@ class PayApiService @Inject() (
       }
 
     def geBackURL(isAmendment: Boolean, amendState: String) =
-      if (amendState.equals("pending-payment")) backUrlPendingPayment
-      else if (isAmendment) backUrlAmendment
-      else backUrlDeclaration
+      if (amendState.equals("pending-payment")) { backUrlPendingPayment }
+      else if (isAmendment) { backUrlAmendment }
+      else { backUrlDeclaration }
 
     def previouslyPaidAmount: String = amountPaidPreviously.getOrElse("0.00")
 
@@ -117,12 +117,14 @@ class PayApiService @Inject() (
         "exciseInGbp"  -> calculatorResponse.calculation.excise,
         "vatInGbp"     -> calculatorResponse.calculation.vat
       )
-    ) ++ (if (isAmendment)
+    ) ++ (if (isAmendment) {
             Json.obj(
               "totalPaidNow"         -> BigDecimal(amountPence.toDouble / 100).setScale(2).toString,
               "amountPaidPreviously" -> previouslyPaidAmount
             )
-          else Json.obj())
+          } else {
+            Json.obj()
+          })
 
     wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/pngr/pngr/journey/start", requestBody) map { r =>
       r.status match {

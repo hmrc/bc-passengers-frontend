@@ -163,23 +163,26 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (
-          jd == JourneyData(Some(false), Some("euOnly"), Some(true)) || jd == JourneyData(
-            Some(false),
-            Some("euOnly"),
-            Some(false)
-          )
-        )
-          status(res) shouldBe OK
-        else
-          status(res) shouldBe SEE_OTHER
+          if (
+            jd == JourneyData(Some(false), Some("euOnly"), Some(true)) || jd == JourneyData(
+              Some(false),
+              Some("euOnly"),
+              Some(false)
+            )
+          ) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                                      => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -196,23 +199,26 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (
-          jd == JourneyData(Some(false), Some("nonEuOnly"), Some(true)) || jd == JourneyData(
-            Some(false),
-            Some("greatBritain"),
-            Some(true)
-          )
-        )
-          status(res) shouldBe OK
-        else
-          status(res) shouldBe SEE_OTHER
+          if (
+            jd == JourneyData(Some(false), Some("nonEuOnly"), Some(true)) || jd == JourneyData(
+              Some(false),
+              Some("greatBritain"),
+              Some(true)
+            )
+          ) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                                      => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -229,23 +235,26 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (
-          jd == JourneyData(Some(false), Some("both"), Some(true)) || jd == JourneyData(
-            Some(false),
-            Some("both"),
-            Some(false)
-          )
-        )
-          status(res) shouldBe OK
-        else
-          status(res) shouldBe SEE_OTHER
+          if (
+            jd == JourneyData(Some(false), Some("both"), Some(true)) || jd == JourneyData(
+              Some(false),
+              Some("both"),
+              Some(false)
+            )
+          ) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                                      => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -262,17 +271,20 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (jd == JourneyData(Some(false), Some("greatBritain"), Some(true)))
-          status(res) shouldBe OK
-        else
-          status(res) shouldBe SEE_OTHER
+          if (jd == JourneyData(Some(false), Some("greatBritain"), Some(true))) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                                      => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -289,17 +301,20 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (jd == JourneyData(Some(false), Some("euOnly"), Some(true)))
-          status(res) shouldBe OK
-        else
-          status(res) shouldBe SEE_OTHER
+          if (jd == JourneyData(Some(false), Some("euOnly"), Some(true))) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+        case _                                                      => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -393,6 +408,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             case _ =>
               status(res) shouldBe SEE_OTHER
           }
+        case _                                                                                                 => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -410,80 +426,82 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "bringingOverAllowance" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck, bringingOverAllowance) =>
-        val prevDeclared  = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck       = arrivingNICheck.asInstanceOf[Option[Boolean]]
-        val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck, bringingOverAllowance) =>
+          val prevDeclared  = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck       = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck       = arrivingNICheck.asInstanceOf[Option[Boolean]]
+          val overAllowance = bringingOverAllowance.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck, overAllowance)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck, overAllowance)
 
-        jd match {
-          case JourneyData(
-                Some(false),
-                Some("euOnly"),
-                Some(false),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                Some(true),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _
-              ) //Q2
-              | JourneyData(
-                Some(false),
-                Some("nonEuOnly"),
-                Some(_),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                Some(true),
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _,
-                _
-              ) //Q3, NoNeed
-              =>
-            status(res) shouldBe OK
-          case _ =>
-            status(res) shouldBe SEE_OTHER
-        }
+          jd match {
+            case JourneyData(
+                  Some(false),
+                  Some("euOnly"),
+                  Some(false),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Some(true),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _
+                ) //Q2
+                | JourneyData(
+                  Some(false),
+                  Some("nonEuOnly"),
+                  Some(_),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Some(true),
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _,
+                  _
+                ) //Q3, NoNeed
+                =>
+              status(res) shouldBe OK
+            case _ =>
+              status(res) shouldBe SEE_OTHER
+          }
+        case _                                                                             => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -678,6 +696,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             case _ =>
               status(res) shouldBe SEE_OTHER
           }
+        case _ => throw new Error("Invalid JourneyData")
       }
     }
   }
@@ -875,6 +894,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             case _ =>
               status(res) shouldBe SEE_OTHER
           }
+        case _ => throw new Error("Invalid JourneyData")
       }
     }
   }

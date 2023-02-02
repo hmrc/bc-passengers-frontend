@@ -74,7 +74,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  override def beforeEach: Unit =
+  override def beforeEach(): Unit =
     reset(injected[AppConfig])
 
   import routes._

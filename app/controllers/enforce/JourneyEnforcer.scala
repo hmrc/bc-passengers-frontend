@@ -26,7 +26,7 @@ import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 @Singleton
@@ -49,7 +49,7 @@ class JourneyEnforcer {
 }
 
 @Singleton
-class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder) {
+class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder, implicit val ec: ExecutionContext) {
 
   private def trimmingFormUrlEncodedData(
     block: Request[AnyContent] => Future[Result]
@@ -258,17 +258,17 @@ class DeclareDutyFreeAnyAction @Inject() (journeyEnforcer: JourneyEnforcer, publ
 }
 
 @Singleton
-class DeclareAction @Inject() (appConfig: AppConfig, publicAction: PublicAction) {
+class DeclareAction @Inject() (appConfig: AppConfig, publicAction: PublicAction, implicit val ec: ExecutionContext) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>
-      if (declarationJourney(context))
+      if (declarationJourney(context)) {
         block(context)
-      else if (amendmentJourney(context))
+      } else if (amendmentJourney(context)) {
         block(context)
-      else if (appConfig.isAmendmentsEnabled)
+      } else if (appConfig.isAmendmentsEnabled) {
         Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
-      else Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
+      } else { Future(Redirect(routes.TravelDetailsController.whereGoodsBought)) }
     }
 
   private def declarationJourney(context: LocalContext): Boolean = context.journeyData.isDefined &&
@@ -295,7 +295,7 @@ class DeclareAction @Inject() (appConfig: AppConfig, publicAction: PublicAction)
 }
 
 @Singleton
-class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction) {
+class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction, implicit val ec: ExecutionContext) {
 
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>
@@ -311,9 +311,11 @@ class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction
       ) {
         block(context)
       } else {
-        if (appConfig.isAmendmentsEnabled)
+        if (appConfig.isAmendmentsEnabled) {
           Future(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
-        else Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
+        } else {
+          Future(Redirect(routes.TravelDetailsController.whereGoodsBought))
+        }
       }
     }
 
@@ -321,7 +323,8 @@ class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction
 
 @Singleton
 class ArrivingNIAction @Inject() (journeyEnforcer: JourneyEnforcer, appConfig: AppConfig, publicAction: PublicAction) {
-  val step: JourneyStep                                                = if (appConfig.isVatResJourneyEnabled) vatres.ArrivingNIStep else nonvatres.ArrivingNIStep
+  val step: JourneyStep                                                =
+    if (appConfig.isVatResJourneyEnabled) vatres.ArrivingNIStep else nonvatres.ArrivingNIStep
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>
       journeyEnforcer(step) {
@@ -444,7 +447,8 @@ class ZeroDeclarationAction @Inject() (journeyEnforcer: JourneyEnforcer, publicA
 class PreviousDeclarationAction @Inject() (
   journeyEnforcer: JourneyEnforcer,
   appConfig: AppConfig,
-  publicAction: PublicAction
+  publicAction: PublicAction,
+  implicit val ec: ExecutionContext
 ) {
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>
@@ -462,7 +466,8 @@ class PreviousDeclarationAction @Inject() (
 class DeclarationRetrievalAction @Inject() (
   journeyEnforcer: JourneyEnforcer,
   appConfig: AppConfig,
-  publicAction: PublicAction
+  publicAction: PublicAction,
+  implicit val ec: ExecutionContext
 ) {
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>

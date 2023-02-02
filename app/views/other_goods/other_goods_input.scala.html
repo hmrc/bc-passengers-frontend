@@ -39,7 +39,7 @@
 
 @govukLayout(pageTitle = Some(title(form, customTitle))) {
 
-    @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm)(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
+    @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm())(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
 
         @if(form.errors){
             @errorSummary(form.errors)

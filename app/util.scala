@@ -124,8 +124,8 @@ package object util {
     val errors =
       for (limit <- applicableLimits; amount <- limits.get(limit); if amount > BigDecimal(1.0)) yield (limit, amount)
 
-    if (errors.isEmpty) None
-    else
+    if (errors.isEmpty) { None }
+    else {
       Some(
         errors
           .sortBy(_._2)
@@ -139,6 +139,7 @@ package object util {
           }
           .head
       )
+    }
   }
 
   def bigDecimalCostCheckConstraint(errorSubString: String): Constraint[String] =

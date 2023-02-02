@@ -39,7 +39,7 @@ trait ControllerHelpers
   def productTreeService: ProductTreeService
   def calculatorService: CalculatorService
 
-  def error_template: views.html.error_template
+  def errorTemplate: views.html.errorTemplate
 
   implicit def appConfig: AppConfig
   implicit def ec: ExecutionContext
@@ -52,7 +52,7 @@ trait ControllerHelpers
     context: LocalContext
   ): Future[Result] = {
     logger.warn(logMessage)
-    Future.successful(status(error_template()))
+    Future.successful(status(errorTemplate()))
   }
 
   def logAndRedirect(logMessage: String, redirectLocation: Call): Future[Result] = {

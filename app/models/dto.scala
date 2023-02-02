@@ -231,12 +231,13 @@ object SelectProductsDto {
 
   def form(path: String): Form[SelectProductsDto] = Form(
     mapping(
-      if (path.contains("alcohol") || path.contains("tobacco"))
+      if (path.contains("alcohol") || path.contains("tobacco")) {
         "tokens" -> list(nonEmptyText).verifying(nonEmptyList)
-      else
+      } else {
         "tokens" -> optional(text)
           .verifying("error.required.other", _.nonEmpty)
           .transform[List[String]](item => List(item.get), _.headOption)
+      }
     )(SelectProductsDto.apply)(SelectProductsDto.unapply)
   )
 }
@@ -248,20 +249,19 @@ trait Validators {
   val validInputText                                                           = "^[a-zA-Z- ']+$"
   def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
     text =>
-      if (text.isEmpty) Invalid(ValidationError(s"error.required.$fieldName"))
-      else if (text.length > maxLength) Invalid(ValidationError(s"error.max-length.$fieldName"))
-      else Valid
+      if (text.isEmpty) { Invalid(ValidationError(s"error.required.$fieldName")) }
+      else if (text.length > maxLength) { Invalid(ValidationError(s"error.max-length.$fieldName")) }
+      else { Valid }
   }
 
   def nonEmpty(fieldName: String): Constraint[String] = Constraint("constraint.required") { text =>
-    if (text.isEmpty) Invalid(ValidationError(s"error.required.$fieldName"))
-    else Valid
+    if (text.isEmpty) { Invalid(ValidationError(s"error.required.$fieldName")) }
+    else { Valid }
   }
 
   def validateFieldsRegex(errorKey: String, pattern: String): Constraint[String] =
     Constraint { text =>
-      if (text.isEmpty || text.matches(pattern)) Valid
-      else Invalid(errorKey)
+      if (text.isEmpty || text.matches(pattern)) Valid else Invalid(errorKey)
     }
 }
 

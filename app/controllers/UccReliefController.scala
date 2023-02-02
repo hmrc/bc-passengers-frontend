@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UccReliefController @Inject() (
   val cache: Cache,
   uccReliefAction: UccReliefAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val isUccReliefItemPage: views.html.travel_details.ucc_relief_item,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

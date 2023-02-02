@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
+import controllers.ControllerHelpers
 import models.{OtherGoodsDto, OtherGoodsSearchItem, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.{optional, _}
@@ -40,7 +41,7 @@ class OtherGoodsInputController @Inject() (
   val calculatorService: CalculatorService,
   dashboardAction: DashboardAction,
   val other_goods_input: views.html.other_goods.other_goods_input,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit val ec: ExecutionContext
@@ -191,93 +192,44 @@ class OtherGoodsInputController @Inject() (
   }
 
   val processAddForm: Action[AnyContent] = dashboardAction { implicit context =>
-    def processContinue = continueForm.bindFromRequest.fold(
-      formWithErrors =>
-        Future.successful(
-          BadRequest(
-            other_goods_input(
-              formWithErrors,
-              None,
-              countriesService.getAllCountries,
-              countriesService.getAllCountriesAndEu,
-              currencyService.getAllCurrencies,
-              context.getJourneyData.euCountryCheck,
-              productTreeService.otherGoodsSearchItems,
-              "create",
-              ProductPath.apply(Nil)
-            )
-          )
-        ),
-      dto =>
-        requireProduct(dto.searchTerm.get.path) { _ =>
-          val jd = newPurchaseService.insertPurchases(
-            dto.searchTerm.get.path,
-            None,
-            None,
-            dto.country,
-            dto.originCountry,
-            dto.currency,
-            List(dto.cost),
-            dto.searchTerm
-          )
-          cache.store(jd._1) map { _ =>
-            (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-              case (Some(true), Some("greatBritain")) =>
-                Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
-              case (Some(false), Some("euOnly"))      =>
-                if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                  Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
-                } else {
-                  Redirect(routes.SelectProductController.nextStep)
-                }
-              case _                                  => Redirect(routes.SelectProductController.nextStep)
-            }
-          }
-        }
-    )
-    processContinue
-
-  }
-
-  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    requirePurchasedProductInstance(iid) { ppi =>
-      requireProduct(ppi.path) { _ =>
-        def processContinue = addCostForm.bindFromRequest.fold(
-          formWithErrors =>
-            Future.successful(
-              BadRequest(
-                other_goods_input(
-                  formWithErrors,
-                  Some(iid),
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck,
-                  productTreeService.otherGoodsSearchItems,
-                  "edit",
-                  ppi.path
-                )
+    def processContinue = continueForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          Future.successful(
+            BadRequest(
+              other_goods_input(
+                formWithErrors,
+                None,
+                countriesService.getAllCountries,
+                countriesService.getAllCountriesAndEu,
+                currencyService.getAllCurrencies,
+                context.getJourneyData.euCountryCheck,
+                productTreeService.otherGoodsSearchItems,
+                "create",
+                ProductPath.apply(Nil)
               )
-            ),
-          dto => {
-            val jd = newPurchaseService.updatePurchase(
-              ppi.path,
-              iid,
+            )
+          ),
+        dto =>
+          requireProduct(dto.searchTerm.get.path) { _ =>
+            val jd = newPurchaseService.insertPurchases(
+              dto.searchTerm.get.path,
               None,
               None,
               dto.country,
               dto.originCountry,
               dto.currency,
-              dto.cost,
-              ppi.searchTerm
+              List(dto.cost),
+              dto.searchTerm
             )
-            cache.store(jd) map { _ =>
+            cache.store(jd._1) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                 case (Some(true), Some("greatBritain")) =>
-                  Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
+                  Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
                 case (Some(false), Some("euOnly"))      =>
                   if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                    Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
+                    Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
                   } else {
                     Redirect(routes.SelectProductController.nextStep)
                   }
@@ -285,7 +237,60 @@ class OtherGoodsInputController @Inject() (
               }
             }
           }
-        )
+      )
+    processContinue
+
+  }
+
+  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    requirePurchasedProductInstance(iid) { ppi =>
+      requireProduct(ppi.path) { _ =>
+        def processContinue = addCostForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(
+                  other_goods_input(
+                    formWithErrors,
+                    Some(iid),
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck,
+                    productTreeService.otherGoodsSearchItems,
+                    "edit",
+                    ppi.path
+                  )
+                )
+              ),
+            dto => {
+              val jd = newPurchaseService.updatePurchase(
+                ppi.path,
+                iid,
+                None,
+                None,
+                dto.country,
+                dto.originCountry,
+                dto.currency,
+                dto.cost,
+                ppi.searchTerm
+              )
+              cache.store(jd) map { _ =>
+                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                  case (Some(true), Some("greatBritain")) =>
+                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
+                  case (Some(false), Some("euOnly"))      =>
+                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
+                    } else {
+                      Redirect(routes.SelectProductController.nextStep)
+                    }
+                  case _                                  => Redirect(routes.SelectProductController.nextStep)
+                }
+              }
+            }
+          )
         processContinue
       }
     }

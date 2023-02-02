@@ -54,19 +54,19 @@
         id = id,
         name = name,
         describedBy = if(hint) {Some(id + s"-hint")} else {None},
-        errorMessage = form(id).error.map(fe ⇒ ErrorMessage(content = HtmlContent(messages(fe.message)))),
-        items = Seq(SelectItem(value = Some(""), attributes = Map("label" → " "), text=(hintText))) ++ list.map {
-        case (k,v) ⇒ SelectItem(
+        errorMessage = form(id).error.map(fe => ErrorMessage(content = HtmlContent(messages(fe.message)))),
+        items = Seq(SelectItem(value = Some(""), attributes = Map("label" -> " "), text=(hintText))) ++ list.map {
+        case (k,v) => SelectItem(
             value = Some(k),
             text = v,
             selected = k == form(id).value.getOrElse(""),
-            attributes = Map("id" → (id + s"-$k"), "label" → " "))
+            attributes = Map("id" -> (id + s"-$k"), "label" -> " "))
         },
         formGroupClasses = "form-field-group"
     ))
 </div>
 
-<script src="@controllers.routes.Assets.versioned("javascripts/autocomplete.js")" ></script>
+<script src='@controllers.routes.Assets.versioned("javascripts/autocomplete.js")' ></script>
 <script>
     accessibleAutocomplete.enhanceSelectElement({
         selectElement: document.getElementById('@id'),

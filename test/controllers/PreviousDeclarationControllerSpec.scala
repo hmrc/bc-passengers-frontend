@@ -51,7 +51,9 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockPreviousDeclarationService, mockCache, mockAppConfig)
+    reset(mockPreviousDeclarationService)
+    reset(mockCache)
+    reset(mockAppConfig)
     when(
       injected[AppConfig].declareGoodsUrl
     ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
@@ -164,7 +166,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text()                                                              shouldBe "What do you want to do?"
-      doc.select("#error-summary-title").text()                                                      shouldBe "There is a problem"
+      doc.select(".govuk-error-summary__title").text()                                               shouldBe "There is a problem"
       doc
         .select("a[href=#prevDeclaration-no]")
         .html()                                                                                      shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
@@ -185,11 +187,11 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       val doc     = Jsoup.parse(content)
 
       Option(doc.getElementById("prevDeclaration-error").select("a[href=#prevDeclaration]")).isEmpty shouldBe false
-      Option(
-        doc.select("a[href=#prevDeclaration-no]").html()
-      ).get                                                                                          shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
-      Option(doc.select("h2").hasClass("govuk-error-summary__title")).get                            shouldBe true
-      Option(doc.getElementById("error-summary-title").select("h2").html()).get                      shouldBe "There is a problem"
+      doc
+        .select("a[href=#prevDeclaration-no]")
+        .text()                                                                                      shouldBe "Select if you want to check tax on goods and declare them or add goods to a previous declaration"
+      doc.select("h2").hasClass("govuk-error-summary__title")                                        shouldBe true
+      doc.select(".govuk-error-summary__title").text()                                               shouldBe "There is a problem"
     }
 
   }

@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ArrivingNIController @Inject() (
   val cache: Cache,
   arrivingNIAction: ArrivingNIAction,
-  val error_template: views.html.error_template,
+  val error_template: views.html.errorTemplate,
   val arrivingNIPage: views.html.travel_details.arriving_ni,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,

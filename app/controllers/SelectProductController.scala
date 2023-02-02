@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, PublicAction}
+import controllers.ControllerHelpers
 import javax.inject.Inject
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +40,7 @@ class SelectProductController @Inject() (
   dashboardAction: DashboardAction,
   val purchasedProductService: PurchasedProductService,
   val select_products: views.html.purchased_products.select_products,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
@@ -111,14 +112,14 @@ class SelectProductController @Inject() (
               if (
                 path.toMessageKey.contains("alcohol") ||
                 path.toMessageKey.contains("tobacco")
-              ) children.map(i => (i.name, i.token))
-              else children.map(i => (i.token, i.name)),
+              ) { children.map(i => (i.name, i.token)) }
+              else { children.map(i => (i.token, i.name)) },
               path
             )
           )
         )
       case _                                 =>
-        Future.successful(InternalServerError(error_template()))
+        Future.successful(InternalServerError(errorTemplate()))
 
     }
   }
@@ -127,7 +128,7 @@ class SelectProductController @Inject() (
     requireCategory(path) { branch =>
       SelectProductsDto
         .form(path.toMessageKey)
-        .bindFromRequest
+        .bindFromRequest()
         .fold(
           formWithErrors =>
             Future.successful {
@@ -154,7 +155,7 @@ class SelectProductController @Inject() (
     requireCategory(path) { branch =>
       SelectProductsDto
         .form(path.toMessageKey)
-        .bindFromRequest
+        .bindFromRequest()
         .fold(
           formWithErrors =>
             Future.successful {

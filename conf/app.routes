@@ -137,6 +137,6 @@ POST       /ireland-to-northern-ireland                                         
 
 GET        /assets/*file                                                               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /time-out                                                                   controllers.PublicController.timeOut()
+GET        /time-out                                                                   controllers.PublicController.pageTimeOut()
 
 GET        /language/:lang                                                             controllers.LocalLanguageController.switchToLanguage(lang: String)

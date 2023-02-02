@@ -35,7 +35,7 @@ class ZeroDeclarationController @Inject() (
   val productTreeService: ProductTreeService,
   val declarationService: DeclarationService,
   zeroDeclarationAction: ZeroDeclarationAction,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val isZeroDeclarationPage: views.html.declaration.zero_declaration,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -48,7 +48,7 @@ class ZeroDeclarationController @Inject() (
     val chargeReference = context.getJourneyData.chargeReference.getOrElse("")
     declarationService.updateDeclaration(chargeReference) flatMap {
       case DeclarationServiceFailureResponse =>
-        Future.successful(InternalServerError(error_template()))
+        Future.successful(InternalServerError(errorTemplate()))
 
       case DeclarationServiceSuccessResponse =>
         val placeOfArrivalValue = portsOfArrivalService

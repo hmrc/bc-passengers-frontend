@@ -48,7 +48,8 @@ class LimitExceedControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockCache, mockAppConfig)
+    reset(mockCache)
+    reset(mockAppConfig)
   }
 
   lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(

@@ -51,7 +51,9 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTravelDetailService, mockCache, mockAppConfig)
+    reset(mockTravelDetailService)
+    reset(mockCache)
+    reset(mockAppConfig)
   }
 
   "loadEUEvidenceItemPage" should {
@@ -324,14 +326,14 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
       doc
         .getElementsByTag("h1")
-        .text()                                 shouldBe "Do you have evidence this item was originally produced or made in the EU?"
-      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+        .text()                                        shouldBe "Do you have evidence this item was originally produced or made in the EU?"
+      doc.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
       doc
         .select("a[href=#eUEvidenceItem-value-yes]")
-        .html()                                 shouldBe "Select yes if you have evidence this item was originally produced or made in the EU"
+        .html()                                        shouldBe "Select yes if you have evidence this item was originally produced or made in the EU"
       doc
         .getElementById("eUEvidenceItem-error")
-        .html()                                 shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you have evidence this item was originally produced or made in the EU"
+        .html()                                        shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you have evidence this item was originally produced or made in the EU"
       verify(mockCache, times(0)).store(any())(any())
     }
   }

@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
+import controllers.ControllerHelpers
 import models._
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -51,7 +52,7 @@ class CalculateDeclareController @Inject() (
   val you_need_to_declare: views.html.declaration.declare_your_goods,
   val zero_to_declare_your_goods: views.html.declaration.zero_to_declare_your_goods,
   val enter_your_details: views.html.declaration.enter_your_details,
-  val error_template: views.html.error_template,
+  val errorTemplate: views.html.errorTemplate,
   val irish_border: views.html.travel_details.irish_border,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
   val nothing_to_declare: views.html.purchased_products.nothing_to_declare,
@@ -88,7 +89,7 @@ class CalculateDeclareController @Inject() (
           checkZeroPoundCondition(calculatorResponse) ||
           (context.getJourneyData.deltaCalculation.isDefined &&
             checkZeroPoundConditionForAmendment(calculatorResponse, context.getJourneyData.deltaCalculation.get.allTax))
-        )
+        ) {
           Ok(
             zero_to_declare_your_goods(
               calculatorResponse.asDto(applySorting = false),
@@ -97,7 +98,7 @@ class CalculateDeclareController @Inject() (
               backLinkModel.backLink
             )
           )
-        else {
+        } else {
           Ok(you_need_to_declare(isAmendment, backLinkModel.backLink))
         }
       }
@@ -167,7 +168,7 @@ class CalculateDeclareController @Inject() (
   def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
     EnterYourDetailsDto
       .form(receiptDateTime)
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors =>
           context.getJourneyData.euCountryCheck match {
@@ -211,7 +212,7 @@ class CalculateDeclareController @Inject() (
               ) flatMap {
 
                 case DeclarationServiceFailureResponse =>
-                  Future.successful(InternalServerError(error_template()))
+                  Future.successful(InternalServerError(errorTemplate()))
 
                 case DeclarationServiceSuccessResponse(cr) =>
                   BigDecimal(calculatorResponse.calculation.allTax) match {
@@ -231,10 +232,8 @@ class CalculateDeclareController @Inject() (
                         false,
                         None
                       ) map {
-
-                        case PayApiServiceFailureResponse =>
-                          InternalServerError(error_template())
-
+                        case PayApiServiceFailureResponse      =>
+                          InternalServerError(errorTemplate())
                         case PayApiServiceSuccessResponse(url) =>
                           Redirect(url)
                       }
@@ -253,11 +252,11 @@ class CalculateDeclareController @Inject() (
     val amendState      = context.getJourneyData.amendState.getOrElse("")
     requireCalculatorResponse { calculatorResponse =>
       val amountPaidPreviously =
-        if (amendState.equals("pending-payment"))
+        if (amendState.equals("pending-payment")) {
           calculatorService
             .getPreviousPaidCalculation(context.getJourneyData.deltaCalculation.get, calculatorResponse.calculation)
             .allTax
-        else context.getJourneyData.declarationResponse.get.calculation.allTax
+        } else { context.getJourneyData.declarationResponse.get.calculation.allTax }
       declarationService.submitAmendment(
         userInformation,
         calculatorResponse,
@@ -267,33 +266,37 @@ class CalculateDeclareController @Inject() (
       ) flatMap {
 
         case DeclarationServiceFailureResponse =>
-          Future.successful(InternalServerError(error_template()))
+          Future.successful(InternalServerError(errorTemplate()))
 
         case DeclarationServiceSuccessResponse(cr) =>
           BigDecimal(context.getJourneyData.deltaCalculation.get.allTax) match {
-            case deltaAllTax
-                if deltaAllTax == 0 && context.getJourneyData.euCountryCheck.contains(
-                  "greatBritain"
-                ) && calculatorResponse.isAnyItemOverAllowance =>
-              declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
-                Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
-              }
             case deltaAllTax =>
-              payApiService.requestPaymentUrl(
-                cr,
-                userInformation,
-                calculatorResponse,
-                (deltaAllTax * 100).toInt,
-                true,
-                Some(amountPaidPreviously),
-                Some(amendState)
-              ) map {
+              if (
+                deltaAllTax == 0 && context.getJourneyData.euCountryCheck.contains(
+                  "greatBritain"
+                ) && calculatorResponse.isAnyItemOverAllowance
+              ) {
+                declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap {
+                  _ =>
+                    Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+                }
+              } else {
+                payApiService.requestPaymentUrl(
+                  cr,
+                  userInformation,
+                  calculatorResponse,
+                  (deltaAllTax * 100).toInt,
+                  true,
+                  Some(amountPaidPreviously),
+                  Some(amendState)
+                ) map {
 
-                case PayApiServiceFailureResponse =>
-                  InternalServerError(error_template())
+                  case PayApiServiceFailureResponse =>
+                    InternalServerError(errorTemplate())
 
-                case PayApiServiceSuccessResponse(url) =>
-                  Redirect(url)
+                  case PayApiServiceSuccessResponse(url) =>
+                    Redirect(url)
+                }
               }
           }
       }
@@ -343,15 +346,17 @@ class CalculateDeclareController @Inject() (
   }
 
   def irishBorderPost: Action[AnyContent] = publicAction { implicit context =>
-    IrishBorderDto.form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink))),
-      irishBorderDto =>
-        travelDetailsService.storeIrishBorder(context.journeyData)(irishBorderDto.irishBorder) flatMap { _ =>
-          val updatedJourneyData = context.getJourneyData.copy(irishBorder = Some(irishBorderDto.irishBorder))
+    IrishBorderDto.form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink))),
+        irishBorderDto =>
+          travelDetailsService.storeIrishBorder(context.journeyData)(irishBorderDto.irishBorder) flatMap { _ =>
+            val updatedJourneyData = context.getJourneyData.copy(irishBorder = Some(irishBorderDto.irishBorder))
 
-          doCalculateAction(updatedJourneyData)
-        }
-    )
+            doCalculateAction(updatedJourneyData)
+          }
+      )
   }
 
   val cannotUseService: Action[AnyContent] = dashboardAction { implicit context =>
@@ -369,11 +374,11 @@ class CalculateDeclareController @Inject() (
         val oldCalculation: Option[Calculation] = journeyData.declarationResponse.map(_.calculation)
         val currentCalculation: Calculation     = calculatorResponse.calculation
 
-        if (!oldCalculation.isDefined) calculatorService.storeCalculatorResponse(journeyData, calculatorResponse) map {
-          _ =>
+        if (!oldCalculation.isDefined) {
+          calculatorService.storeCalculatorResponse(journeyData, calculatorResponse) map { _ =>
             Redirect(routes.CalculateDeclareController.showCalculation)
-        }
-        else {
+          }
+        } else {
           val deltaCalculation = calculatorService.getDeltaCalculation(oldCalculation.get, currentCalculation)
           calculatorService.storeCalculatorResponse(journeyData, calculatorResponse, Some(deltaCalculation)) map { _ =>
             Redirect(routes.CalculateDeclareController.showCalculation)
@@ -387,7 +392,7 @@ class CalculateDeclareController @Inject() (
 
       case _ =>
         Future.successful {
-          InternalServerError(error_template())
+          InternalServerError(errorTemplate())
         }
     }
 

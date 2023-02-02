@@ -52,16 +52,15 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
-  override def beforeEach: Unit =
-    reset(
-      injected[Cache],
-      injected[PurchasedProductService],
-      injected[UserInformationService],
-      injected[PayApiService],
-      injected[DeclarationService],
-      injected[DateTimeProviderService],
-      injected[TravelDetailsService]
-    )
+  override def beforeEach(): Unit = {
+    reset(injected[Cache])
+    reset(injected[PurchasedProductService])
+    reset(injected[UserInformationService])
+    reset(injected[PayApiService])
+    reset(injected[DeclarationService])
+    reset(injected[DateTimeProviderService])
+    reset(injected[TravelDetailsService])
+  }
 
   trait LocalSetup {
 
@@ -2553,10 +2552,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       Option(doc.select("a[href=#irishBorder-error]")).isEmpty shouldBe false
-      Option(
-        doc.select("a[href=#irishBorder-value-yes]").html()
-      ).get                                                    shouldBe "Select yes if you are entering Northern Ireland from Ireland"
-      Option(doc.select("#error-summary-title").text()).get    shouldBe "There is a problem"
+      doc
+        .select("a[href=#irishBorder-value-yes]")
+        .text()                                                shouldBe "Select yes if you are entering Northern Ireland from Ireland"
+      doc.select(".govuk-error-summary__title").text()         shouldBe "There is a problem"
 
     }
 

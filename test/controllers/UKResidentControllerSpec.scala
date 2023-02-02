@@ -51,7 +51,9 @@ class UKResidentControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTravelDetailService, mockCache, mockAppConfig)
+    reset(mockTravelDetailService)
+    reset(mockCache)
+    reset(mockAppConfig)
   }
   "loadUKResidentPage" should {
     "load the page" in {
@@ -186,15 +188,15 @@ class UKResidentControllerSpec extends BaseSpec {
       val content = contentAsString(response)
       val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()         shouldBe "Are you a UK resident?"
-      doc.select("#error-summary-title").text() shouldBe "There is a problem"
+      doc.getElementsByTag("h1").text()                shouldBe "Are you a UK resident?"
+      doc.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
       doc
         .getElementsByClass("govuk-error-summary")
         .select("a[href=#isUKResident-value-yes]")
-        .html()                                 shouldBe "Select yes if you are a UK resident"
+        .html()                                        shouldBe "Select yes if you are a UK resident"
       doc
         .getElementById("isUKResident-error")
-        .html()                                 shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are a UK resident"
+        .html()                                        shouldBe "<span class=\"govuk-visually-hidden\">Error:</span> Select yes if you are a UK resident"
       verify(mockTravelDetailService, times(0)).storeUKResident(any())(any())(any())
     }
 

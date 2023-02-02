@@ -38,7 +38,7 @@ class UserInformationServiceSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
-  override def beforeEach: Unit =
+  override def beforeEach(): Unit =
     reset(app.injector.instanceOf[Cache])
 
   trait LocalSetup {

@@ -37,7 +37,7 @@ class SelectProductServiceSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .build()
 
-  override def beforeEach: Unit =
+  override def beforeEach(): Unit =
     reset(app.injector.instanceOf[Cache])
 
   trait LocalSetup {
@@ -118,7 +118,7 @@ class SelectProductServiceSpec extends BaseSpec {
       override val journeyDataInCache: Option[JourneyData] =
         Some(JourneyData(None, None, None, None, None, None, None, None, None, None, None, None, None, List()))
 
-      val selectedProducts = List(
+      val selectedProducts: List[ProductPath] = List(
         ProductPath("other-goods/antiques"),
         ProductPath("other-goods/carpets-fabric"),
         ProductPath("other-goods/furniture"),

@@ -52,7 +52,9 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockCache, mockAppConfig, injected[DeclarationService])
+    reset(mockCache)
+    reset(mockAppConfig)
+    reset(injected[DeclarationService])
   }
 
   lazy val crZeroTax: CalculatorResponse                                = CalculatorResponse(
