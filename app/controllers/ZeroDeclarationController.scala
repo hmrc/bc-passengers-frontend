@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.ZeroDeclarationAction
 import javax.inject.Inject
-import models.Calculation
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
@@ -56,40 +55,32 @@ class ZeroDeclarationController @Inject() (
           .getOrElse(context.getJourneyData.userInformation.get.enterPlaceOfArrival)
 
         requireCalculatorResponse { calculatorResponse =>
-          Future.successful {
-            if (context.getJourneyData.declarationResponse.isDefined) {
-              val deltaCalculation: Option[Calculation] = context.getJourneyData.deltaCalculation
-              val oldTax                                = context.getJourneyData.declarationResponse.get.calculation.allTax
-              Ok(
-                isZeroDeclarationPage(
+          val (previousDeclaration, deltaCalculation, oldTax) =
+            context.getJourneyData.declarationResponse match {
+              case Some(declarationResponse) =>
+                (
                   true,
-                  deltaCalculation,
-                  Some(oldTax),
-                  context.getJourneyData.userInformation,
-                  calculatorResponse,
-                  calculatorResponse.asDto(applySorting = false),
-                  chargeReference,
-                  placeOfArrivalValue
+                  context.getJourneyData.deltaCalculation,
+                  Some(declarationResponse.calculation.allTax)
                 )
-              )
-            } else {
-              Ok(
-                isZeroDeclarationPage(
-                  false,
-                  None,
-                  None,
-                  context.getJourneyData.userInformation,
-                  calculatorResponse,
-                  calculatorResponse.asDto(applySorting = false),
-                  chargeReference,
-                  placeOfArrivalValue
-                )
-              )
+              case None                      => (false, None, None)
             }
-          }
+
+          Future.successful(
+            Ok(
+              isZeroDeclarationPage(
+                previousDeclaration,
+                deltaCalculation,
+                oldTax,
+                context.getJourneyData.userInformation,
+                calculatorResponse,
+                calculatorResponse.asDto(applySorting = false),
+                chargeReference,
+                placeOfArrivalValue
+              )
+            )
+          )
         }
     }
-
   }
-
 }

@@ -5,19 +5,21 @@ import sbt._
 object AppDependencies {
 
   val hmrcMongoVersion = "0.74.0"
+  val bootstrapVersion = "7.13.0"
   val compile          = Seq(
     ws,
     "uk.gov.hmrc.mongo"            %% "hmrc-mongo-play-28"         % hmrcMongoVersion,
-    "uk.gov.hmrc"                  %% "play-frontend-hmrc"         % "6.2.0-play-28",
-    "uk.gov.hmrc"                  %% "bootstrap-frontend-play-28" % "7.12.0",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.14.1",
-    "com.typesafe.play"            %% "play-json-joda"             % "2.9.3",
+    "uk.gov.hmrc"                  %% "play-frontend-hmrc"         % "6.4.0-play-28",
+    "uk.gov.hmrc"                  %% "bootstrap-frontend-play-28" % bootstrapVersion,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.14.2",
+    "com.typesafe.play"            %% "play-json-joda"             % "2.9.4",
     "org.mindrot"                   % "jbcrypt"                    % "0.4",
     "org.webjars.npm"               % "accessible-autocomplete"    % "2.0.4",
     "ai.x"                         %% "play-json-extensions"       % "0.42.0"
   )
 
   val test                   = Seq(
+    "uk.gov.hmrc"            %% "bootstrap-test-play-28"  % bootstrapVersion,
     "org.scalatest"          %% "scalatest"               % "3.2.15",
     "org.jsoup"               % "jsoup"                   % "1.15.3",
     "com.typesafe.play"      %% "play-test"               % PlayVersion.current,

@@ -63,44 +63,12 @@ trait ControllerHelpers
   def requireCalculatorResponse(
     block: CalculatorResponse => Future[Result]
   )(implicit context: LocalContext): Future[Result] =
-    context.getJourneyData match {
-      case JourneyData(
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            Some(calculatorResponse),
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _,
-            _
-          ) =>
-        block(calculatorResponse)
-      case _ =>
-        logAndRedirect(
-          s"Missing calculator response in journeyData! Redirecting to dashboard...",
-          routes.DashboardController.showDashboard
-        )
-    }
+    context.getJourneyData.calculatorResponse.fold(
+      logAndRedirect(
+        "Missing calculator response in journeyData! Redirecting to dashboard...",
+        routes.DashboardController.showDashboard
+      )
+    )(block)
 
   def requireLimitUsage(journeyData: JourneyData)(
     block: Map[String, BigDecimal] => Future[Result]
