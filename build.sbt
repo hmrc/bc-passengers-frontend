@@ -25,7 +25,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings(): _*)
   .settings(majorVersion := 1)
   .settings(
-    targetJvm := "jvm-1.8",
     Test / parallelExecution := false,
     Test / fork := false
   )
