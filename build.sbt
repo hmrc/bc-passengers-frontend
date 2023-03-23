@@ -1,5 +1,5 @@
 import TestPhases.oneForkedJvmPerTest
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
+import uk.gov.hmrc.DefaultBuildSettings._
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys
@@ -17,7 +17,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     pipelineStages := Seq(digest)
   )
-  .settings(scalaSettings: _*)
   .settings(scalaVersion := "2.13.10")
   // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
   .settings(libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always))
@@ -31,13 +30,13 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LocalLanguageController;.*testonly.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 90,
+    ScoverageKeys.coverageMinimumStmtTotal := 91,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
   .configs(IntegrationTest)
   .settings(
-    inConfig(IntegrationTest)(Defaults.itSettings),
+    integrationTestSettings(),
     IntegrationTest / Keys.fork := false,
     IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory)(base => Seq(base / "it")).value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
