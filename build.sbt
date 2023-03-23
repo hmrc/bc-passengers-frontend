@@ -65,7 +65,6 @@ Concat.groups := Seq(
       Seq(
         "lib/govuk-frontend/govuk/all.js",
         "javascripts/jquery.min.js",
-        "javascripts/app.js",
         "javascripts/autocomplete.js"
       )
     )
