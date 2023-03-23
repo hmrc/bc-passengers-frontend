@@ -19,9 +19,8 @@
 @(field: Field,
  items: Seq[RadioItem],
  name: String,
- legendAsHeading: Boolean = true,
+ legendText: Option[String] = None,
  hint: Option[Html] = None,
- classes: String = "govuk-fieldset__legend--xl",
  inline: Boolean = false,
  path: Option[ProductPath] = None
 )(implicit messages: Messages)
@@ -35,8 +34,7 @@
  },
  fieldset = Some(Fieldset(
    legend = Some(Legend(
-   isPageHeading = legendAsHeading,
-   classes = classes
+    content = legendText.map(Text(_)).getOrElse(Empty)
   ))
  )),
  hint = hint.map { hint => Hint(

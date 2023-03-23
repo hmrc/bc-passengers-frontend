@@ -35,12 +35,8 @@
     },
     fieldset = Some(Fieldset(
     legend = Some(Legend(
-    isPageHeading = legendAsHeading,
-        content = if(legendText.isDefined){
-            Text(legendText.get)
-            } else {
-                 Empty
-            }
+        isPageHeading = legendAsHeading,
+        content = legendText.map(Text(_)).getOrElse(Empty)
         ))
     )),
     hint = if(hint.isDefined) Some(Hint(content = Text(hint.get))) else None,
