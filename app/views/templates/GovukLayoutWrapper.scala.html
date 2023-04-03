@@ -43,7 +43,7 @@
     inlineLinkElem: Option[Html] = None,
     backLink: Option[String] = None,
     timeout: Boolean = true
-)(contentBlock: Html)(implicit request: Request[_], requestHeader: RequestHeader, messages: Messages, appConfig: config.AppConfig)
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @head = {
     @inlineLinkElem

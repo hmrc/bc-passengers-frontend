@@ -1,5 +1,5 @@
 import play.sbt.PlayImport.ws
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
@@ -22,7 +22,7 @@ object AppDependencies {
     "org.scalatest"       %% "scalatest"               % "3.2.15",
     "org.jsoup"            % "jsoup"                   % "1.15.4",
     "org.mockito"         %% "mockito-scala-scalatest" % "1.17.14",
-    "com.networknt"        % "json-schema-validator"   % "1.0.78" exclude ("org.slf4j", "slf4j-nop"),
+    "com.networknt"        % "json-schema-validator"   % "1.0.79" exclude ("org.slf4j", "slf4j-nop"),
     "ai.x"                %% "play-json-extensions"    % "0.42.0",
     "com.vladsch.flexmark" % "flexmark-all"            % "0.64.0",
     "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % hmrcMongoVersion
