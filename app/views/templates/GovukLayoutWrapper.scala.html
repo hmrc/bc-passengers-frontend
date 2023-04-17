@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import views.html.helper.CSPNonce
 
 @this(
     govukLayout: GovukLayout,
@@ -35,7 +36,14 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
 
-@(pageTitle: Option[String] = None, signOut: Boolean = true, inlineScript: Option[Html] = None, inlineLinkElem: Option[Html] = None, backLink: Option[String] = None, timeout: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(
+    pageTitle: Option[String] = None,
+    signOut: Boolean = true,
+    inlineScript: Option[Html] = None,
+    inlineLinkElem: Option[Html] = None,
+    backLink: Option[String] = None,
+    timeout: Boolean = true
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @head = {
     @inlineLinkElem
@@ -57,13 +65,13 @@
 }
 
 @scripts = {
-    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
-    <script>window.GOVUKFrontend.initAll();</script>
-    <script>window.HMRCFrontend.initAll();</script>
+    <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+    <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
+    <script @CSPNonce.attr >window.GOVUKFrontend.initAll();</script>
+    <script @CSPNonce.attr >window.HMRCFrontend.initAll();</script>
 
-    <script src='@routes.Assets.versioned("javascripts/application.js")'></script>
+    <script @CSPNonce.attr src='@routes.Assets.versioned("javascripts/application.js")'></script>
 
     @inlineScript
 }

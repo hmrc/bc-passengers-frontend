@@ -118,6 +118,54 @@ class ArrivingNIControllerSpec extends BaseSpec {
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(false))(any())
     }
 
+    "redirect to .../goods-brought-into-great-britain-iom when user says they did not arrive from EU and final destination is not NI" in {
+
+      val cachedJourneyData =
+        Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(false))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "false"
+        )
+      ).get
+
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom"
+      )
+
+      verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(false))(any())
+    }
+
+    "redirect to .../goods-brought-into-northern-ireland when user says they did not arrive from EU and the final destination is NI" in {
+
+      val cachedJourneyData =
+        Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
+
+      val response = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "true"
+        )
+      ).get
+
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland"
+      )
+
+      verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(true))(any())
+    }
+
     "redirect to .../goods-bought-into-northern-ireland-inside-EU  when user says they have arrived from EU when isVatResJourneyEnabled is false" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
@@ -188,6 +236,29 @@ class ArrivingNIControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/gb-ni-uk-resident-check")
 
       verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(true))(any())
+    }
+
+    "throw an exception when the JourneyData is invalid" in {
+
+      val cachedJourneyData =
+        Future.successful(Some(JourneyData(euCountryCheck = Some("invalid country"))))
+
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
+      val response = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(
+          "arrivingNI" -> "false"
+        )
+      ).get
+
+      val exception = intercept[RuntimeException] {
+        status(response)
+      }
+      exception.getMessage shouldBe "Country type could not be determined."
+
+      verify(mockTravelDetailService, times(1)).storeArrivingNI(any())(meq(false))(any())
+
     }
 
   }
