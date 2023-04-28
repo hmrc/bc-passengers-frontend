@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
-
+import controllers.AlcoholInputController
 import models.{AlcoholDto, ProductPath}
 import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
 import util.BaseSpec
