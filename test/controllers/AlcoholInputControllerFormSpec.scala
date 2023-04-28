@@ -17,9 +17,10 @@
 package controllers
 
 import models.{AlcoholDto, ProductPath}
+import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
 import util.BaseSpec
 
-class AlcoholInputControllerFormSpec extends BaseSpec {
+class AlcoholInputControllerFormSpec extends BaseSpec with AccessibilityMatchers {
 
   "Posting the alcoholForm" should {
 

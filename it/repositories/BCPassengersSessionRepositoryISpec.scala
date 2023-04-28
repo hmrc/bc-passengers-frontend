@@ -28,8 +28,6 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
-
 class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
   with GuiceOneServerPerSuite with FutureAwaits with DefaultAwaitTimeout with DefaultPlayMongoRepositorySupport[JsObject] {
   val repository: BCPassengersSessionRepository = new BCPassengersSessionRepository(mongoComponent)
@@ -83,8 +81,9 @@ class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
 
     "return Error if no session id exists" in new LocalSetup {
       override implicit val hc: HeaderCarrier = HeaderCarrier()
-      intercept[Exception](await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(true))))).getMessage shouldBe "Could not find sessionId in HeaderCarrier"
+      intercept[Exception](await(repository.store[JourneyData](
+        "journeyData", JourneyData(arrivingNICheck = Some(true))
+      ))).getMessage shouldBe "Could not find sessionId in HeaderCarrier"
     }
-
   }
 }
