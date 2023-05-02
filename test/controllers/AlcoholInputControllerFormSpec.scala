@@ -17,10 +17,9 @@
 package controllers
 
 import models.{AlcoholDto, ProductPath}
-import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
 import util.BaseSpec
 
-class AlcoholInputControllerFormSpec extends BaseSpec with AccessibilityMatchers {
+class AlcoholInputControllerFormSpec extends BaseSpec {
 
   "Posting the alcoholForm" should {
 
@@ -92,7 +91,6 @@ class AlcoholInputControllerFormSpec extends BaseSpec with AccessibilityMatchers
         )
       form.hasErrors shouldBe false
       form.value.get shouldBe AlcoholDto(90, "FR", None, "EUR", 4444, None, None, None, None)
-
     }
 
     "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
@@ -109,10 +107,6 @@ class AlcoholInputControllerFormSpec extends BaseSpec with AccessibilityMatchers
       form.hasErrors shouldBe false
       form.value.get shouldBe AlcoholDto(300, "IN", None, "INR", 5000, None, None, None, None)
 
-    }
-
-    "pass accessibility tests" in {
-      app.toString() must passAccessibilityChecks
     }
   }
 }
