@@ -88,48 +88,56 @@ class ProductTreeNodeSpec extends BaseSpec {
       )
     }
 
-    "return the correct display description for cigarettes" in {
+    "return the correct display description for cigarettes" which {
+      def test(noOfSticks: Int, name: String): Unit =
+        s"has a noOfSticks value of $noOfSticks" in {
+          val productTreeLeaf          = ProductTreeLeaf("cigarettes", "Cigarettes", "TOB/A1/CIGRT", "cigarettes", Nil)
+          val purchasedProductInstance = PurchasedProductInstance(
+            ProductPath("tobacco/cigarettes"),
+            "iid0",
+            Some(1.54332),
+            Some(noOfSticks),
+            Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+            None,
+            Some("AUD"),
+            Some(BigDecimal(10.234))
+          )
+          productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
+            ("label.X_X", List(noOfSticks.toString, name))
+          )
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
+            ("label.X_X", List(noOfSticks.toString, name))
+          )
+        }
 
-      val productTreeLeaf          = ProductTreeLeaf("cigarettes", "Cigarettes", "TOB/A1/CIGRT", "cigarettes", Nil)
-      val purchasedProductInstance = PurchasedProductInstance(
-        ProductPath("tobacco/cigarettes"),
-        "iid0",
-        Some(1.54332),
-        Some(20),
-        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-        None,
-        Some("AUD"),
-        Some(BigDecimal(10.234))
-      )
-      productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
-        ("label.X_X", List("20", "Cigarettes"))
-      )
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
-        ("label.X_X", List("20", "Cigarettes"))
-      )
+      Seq((1, "Cigarettes.single"), (2, "Cigarettes")).foreach(args => (test _).tupled(args))
     }
 
-    "return the correct display description for cigars" in {
+    "return the correct display description for cigars" which {
+      def test(noOfSticks: Int, name: String): Unit =
+        s"has a noOfSticks value of $noOfSticks" in {
+          val productTreeLeaf          = ProductTreeLeaf("cigars", "Cigars", "TOB/A1/CIGAR", "cigars", Nil)
+          val purchasedProductInstance = PurchasedProductInstance(
+            ProductPath("tobacco/cigars"),
+            "iid0",
+            Some(1.54332),
+            Some(noOfSticks),
+            Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+            None,
+            Some("AUD"),
+            Some(BigDecimal(10.234))
+          )
+          productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
+            ("label.X_X", List(noOfSticks.toString, name))
+          )
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
+            ("label.X_X_Xg", List(noOfSticks.toString, name, "1543.32"))
+          )
+        }
 
-      val productTreeLeaf          = ProductTreeLeaf("cigars", "Cigars", "TOB/A1/CIGAR", "cigars", Nil)
-      val purchasedProductInstance = PurchasedProductInstance(
-        ProductPath("tobacco/cigars"),
-        "iid0",
-        Some(1.54332),
-        Some(5),
-        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-        None,
-        Some("AUD"),
-        Some(BigDecimal(10.234))
-      )
-      productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
-        ("label.X_X", List("5", "Cigars"))
-      )
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
-        ("label.X_X_Xg", List("5", "Cigars", "1543.32"))
-      )
+      Seq((1, "Cigars.single"), (2, "Cigars")).foreach(args => (test _).tupled(args))
     }
   }
 }

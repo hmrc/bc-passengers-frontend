@@ -19,9 +19,8 @@ package views
 import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{CheckboxItem, RadioItem, Text}
-import utils.{CurrencyFormatter, ImplicitDateFormatter}
 
-object ViewUtils extends ImplicitDateFormatter with CurrencyFormatter {
+object ViewUtils {
 
   def title(form: Form[_], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(
     implicit messages: Messages

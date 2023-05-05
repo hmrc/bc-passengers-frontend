@@ -18,17 +18,13 @@ package config
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
-import play.api.i18n.Lang
-import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConfig: ServicesConfig) {
 
-  private def loadConfig(key: String) = runModeConfiguration.get[String](key)
-
   private val contactHost                  = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = loadConfig("appName")
+  private val contactFormServiceIdentifier = runModeConfiguration.get[String]("appName")
   lazy val govUK: String                   = servicesConfig.getString("urls.govUK")
 
   lazy val betaFeedbackUrl         = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
@@ -44,11 +40,6 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val isAmendmentsEnabled: Boolean          = runModeConfiguration.get[Boolean]("features.amendments")
   lazy val timeout: Int                          = servicesConfig.getInt("timeout.timeout")
   lazy val countdown: Int                        = servicesConfig.getInt("timeout.countdown")
-
-  def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
-
-  def routeToSwitchLanguage: String => Call = (lang: String) =>
-    controllers.routes.LocalLanguageController.switchToLanguage(lang)
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
 

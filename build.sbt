@@ -1,9 +1,4 @@
-import TestPhases.oneForkedJvmPerTest
 import uk.gov.hmrc.DefaultBuildSettings._
-import sbt.Keys._
-import sbt._
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 
 val appName = "bc-passengers-frontend"
 
@@ -23,25 +18,16 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings(): _*)
   .settings(majorVersion := 1)
   .settings(
-    Test / parallelExecution := false,
-    Test / fork := false
-  )
-  .settings(
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
+    coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LocalLanguageController;.*testonly.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 91,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
+    coverageMinimumStmtTotal := 95,
+    coverageFailOnMinimum := true,
+    coverageHighlighting := true
   )
   .configs(IntegrationTest)
   .settings(
     integrationTestSettings(),
-    IntegrationTest / Keys.fork := false,
-    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory)(base => Seq(base / "it")).value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / testGrouping := oneForkedJvmPerTest((IntegrationTest / definedTests).value),
-    IntegrationTest / parallelExecution := false,
     routesImport ++= Seq("binders.Binders._", "models._")
   )
   .settings(PlayKeys.playDefaultPort := 9008)

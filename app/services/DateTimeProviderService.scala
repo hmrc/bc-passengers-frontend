@@ -23,6 +23,4 @@ import org.joda.time.DateTime
 class DateTimeProviderService {
 
   def now: DateTime = DateTime.now()
-
-  def javaNow: java.time.LocalDate = java.time.LocalDate.now
 }

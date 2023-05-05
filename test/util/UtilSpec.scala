@@ -17,6 +17,7 @@
 package util
 
 import play.api.data.validation
+import play.api.data.validation.{Invalid, Valid, ValidationError}
 
 class UtilSpec extends BaseSpec {
 
@@ -39,9 +40,25 @@ class UtilSpec extends BaseSpec {
 
     "restrict negative value like -9.50" in {
 
-      blankOkCostCheckConstraint("cost").apply("-9.50").equals(validation.Valid) should be(false)
+      blankOkCostCheckConstraint("cost")("-9.50").equals(validation.Valid) should be(false)
     }
 
-  }
+    "return failed validation when a value greater than 9999999999 is passed" in {
+      blankOkCostCheckConstraint(
+        productPathMessageKey = "other-goods.adult.adult-clothing"
+      )("99999999999.00") shouldBe Invalid(
+        Seq(ValidationError("error.exceeded.max.cost.other-goods.adult.adult-clothing"))
+      )
+    }
 
+    "return failed validation when a positive value with more than 2 decimal places is passed" in {
+      blankOkCostCheckConstraint(
+        productPathMessageKey = "other-goods.adult.adult-clothing"
+      )("95.999") shouldBe Invalid(Seq(ValidationError("error.invalid.format.cost.other-goods.adult.adult-clothing")))
+    }
+
+    "return successful validation when an empty string is passed" in {
+      blankOkCostCheckConstraint(productPathMessageKey = "other-goods.adult.adult-clothing")("") shouldBe Valid
+    }
+  }
 }

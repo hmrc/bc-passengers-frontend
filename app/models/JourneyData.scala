@@ -143,13 +143,6 @@ case class JourneyData(
   def getOrCreatePurchasedProductInstance(path: ProductPath, iid: String): PurchasedProductInstance =
     purchasedProductInstances.find(_.iid == iid).getOrElse(PurchasedProductInstance(path, iid))
 
-  def updatePurchasedProductInstance(path: ProductPath, iid: String)(
-    block: PurchasedProductInstance => PurchasedProductInstance
-  ): JourneyData = {
-    val newPdList =
-      block(getOrCreatePurchasedProductInstance(path, iid)) :: purchasedProductInstances.filterNot(_.path == path)
-    this.copy(purchasedProductInstances = newPdList)
-  }
   def revertPurchasedProductInstance(): JourneyData = {
     val workingInstance = this.workingInstance
     if (workingInstance.isDefined) {
@@ -168,13 +161,6 @@ case class JourneyData(
 
   def removePurchasedProductInstance(iid: String): JourneyData =
     this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid == iid))
-
-  def withUpdatedWorkingInstance(path: ProductPath, iid: String)(
-    block: PurchasedProductInstance => PurchasedProductInstance
-  ): JourneyData = {
-    val workingInstance = block(this.workingInstance.getOrElse(PurchasedProductInstance(path, iid)))
-    this.copy(workingInstance = Some(workingInstance))
-  }
 
   def clearingWorking: JourneyData = this.copy(workingInstance = None)
 }
