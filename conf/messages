@@ -1709,6 +1709,7 @@ error.summary.title = There is a problem
 error.browser.title.prefix = Error:
 
 site.govuk = GOV.UK
+site.warning = Warning
 
 time.period.am = am
 time.period.pm = pm
