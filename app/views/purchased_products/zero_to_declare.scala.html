@@ -42,7 +42,7 @@
         <th class="govuk-table__header" scope="col">@messages("label.item")</th>
         <th class="govuk-table__header" scope="col">@messages("label.price")</th>
         <th class="govuk-table__header" scope="col">@messages("label.purchased_in")</th>
-        <th class="govuk-table__header numeric" style="vertical-align: bottom; text-align: right;" scope="col">
+        <th class="govuk-table__header govuk-table__header--numeric" scope="col">
             @messages("label.tax_due")
         </th>
     </tr>
@@ -60,14 +60,14 @@
             <td class="govuk-table__cell">
                 @messages(item.metadata.country.countryName)
             </td>
-            <td class="govuk-table__cell numeric" style="vertical-align: bottom; text-align: right;">
+            <td class="govuk-table__cell govuk-table__cell--numeric">
                 &pound;@formatMonetaryValue(item.calculation.allTax)
             </td>
         </tr>
         }
         <tr class="govuk-table__row">
             <td class="govuk-table__cell total table-foot" colspan="3">@messages("label.total")</td>
-            <td class="govuk-table__cell total-value numeric table-foot" style="vertical-align: bottom; text-align: right;">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
         </tr>
     </tbody>
 </table>
@@ -76,12 +76,12 @@
     <tbody id="delta">
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
-        <td class="govuk-table__cell numeric" style="vertical-align: bottom; text-align: right;">&pound;@formatMonetaryValue(oldAllTax)</td>
+        <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
     </tr>
 
     <tr>
         <td class="govuk-table__cell total table-foot">@messages("label.total_due_now")</td>
-        <td class="govuk-table__cell total-value numeric table-foot" style="vertical-align: bottom; text-align: right;">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+        <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
     </tr>
     </tbody>
 </table>
