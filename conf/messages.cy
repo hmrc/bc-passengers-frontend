@@ -1709,6 +1709,7 @@ error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:
 
 site.govuk = GOV.UK/CYMRAEG
+site.warning = Rhybudd
 
 time.period.am = am
 time.period.pm = pm

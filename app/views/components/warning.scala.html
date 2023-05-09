@@ -16,12 +16,12 @@
 
 @this()
 
-@(content: Html)
+@(content: Html)(implicit messages: Messages)
 
 <div class="govuk-warning-text">
  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
  <strong class="govuk-warning-text__text">
-  <span class="govuk-warning-text__assistive">@content</span>
+  <span class="govuk-warning-text__assistive">@messages("site.warning")</span>
   @content
  </strong>
 </div>
