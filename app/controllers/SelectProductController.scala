@@ -18,15 +18,15 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction}
 import controllers.ControllerHelpers
-import javax.inject.Inject
+import controllers.enforce.DashboardAction
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelectProductController @Inject() (
@@ -36,7 +36,7 @@ class SelectProductController @Inject() (
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val selectProductService: SelectProductService,
-  publicAction: PublicAction,
+  backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val purchasedProductService: PurchasedProductService,
   val select_products: views.html.purchased_products.select_products,
@@ -114,7 +114,8 @@ class SelectProductController @Inject() (
                 path.toMessageKey.contains("tobacco")
               ) { children.map(i => (i.name, i.token)) }
               else { children.map(i => (i.token, i.name)) },
-              path
+              path,
+              backLinkModel.backLink
             )
           )
         )
@@ -132,7 +133,14 @@ class SelectProductController @Inject() (
         .fold(
           formWithErrors =>
             Future.successful {
-              BadRequest(select_products(formWithErrors, branch.children.map(i => (i.name, i.token)), path))
+              BadRequest(
+                select_products(
+                  formWithErrors,
+                  branch.children.map(i => (i.name, i.token)),
+                  path,
+                  backLinkModel.backLink
+                )
+              )
             },
           selectProductsDto => {
 
@@ -159,7 +167,14 @@ class SelectProductController @Inject() (
         .fold(
           formWithErrors =>
             Future.successful {
-              BadRequest(select_products(formWithErrors, branch.children.map(i => (i.token, i.name)), path))
+              BadRequest(
+                select_products(
+                  formWithErrors,
+                  branch.children.map(i => (i.token, i.name)),
+                  path,
+                  backLinkModel.backLink
+                )
+              )
             },
           selectProductsDto => {
 

@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import models.JourneyData
+import models.{JourneyData, ProductPath}
 import org.mockito.Mockito.{reset, when}
 import org.mockito.MockitoSugar
 import play.api.Application
@@ -225,4 +225,37 @@ class VatResBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(routes.TravelDetailsController.whereGoodsBought.url)
     }
   }
+
+  "Going back from select-goods/acohol page" should {
+
+    "return user to the dashboard page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled           = false
+      override val euCountryCheck: Option[String]         = None
+      override val isVatResClaimed: Option[Boolean]       = None
+      override val isBringingDutyFree: Option[Boolean]    = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.SelectProductController.askProductSelection(ProductPath("alcohol"))
+
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
+    }
+  }
+
+  "Going back from select-goods/tobacco page" should {
+
+    "return user to the dashboard page" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled           = false
+      override val euCountryCheck: Option[String]         = None
+      override val isVatResClaimed: Option[Boolean]       = None
+      override val isBringingDutyFree: Option[Boolean]    = None
+      override val bringingOverAllowance: Option[Boolean] = None
+
+      override def call: Call = routes.SelectProductController.askProductSelection(ProductPath("tobacco"))
+
+      m.backLink(context) shouldBe Some(routes.DashboardController.showDashboard.url)
+    }
+  }
+
 }
