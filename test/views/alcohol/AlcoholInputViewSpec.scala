@@ -16,25 +16,14 @@
 
 package views.alcohol
 
-import config.AppConfig
 import controllers.AlcoholInputController
 import models._
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.alcohol.alcohol_input
 
-class AlcoholInputViewSpec extends BaseSpec with Injecting {
-
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
+class AlcoholInputViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "alcohol/wine")
 
@@ -48,10 +37,10 @@ class AlcoholInputViewSpec extends BaseSpec with Injecting {
 
   private val currencies: List[Currency] = List(
     Currency(
-      code = "USD",
-      displayName = "title.usa_dollars_usd",
-      valueForConversion = Some("USD"),
-      currencySynonyms = List("USD", "USA", "US", "United States of America", "American")
+      code = "EUR",
+      displayName = "title.euro_eur",
+      valueForConversion = Some("EUR"),
+      currencySynonyms = List("Europe", "European")
     )
   )
 
@@ -88,80 +77,50 @@ class AlcoholInputViewSpec extends BaseSpec with Injecting {
       )
     )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaApply: HtmlFormat.Appendable = injected[alcohol_input].apply(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[alcohol_input].apply(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None
-    )(request, messages, appConfig)
+  val viewViaRender: HtmlFormat.Appendable = injected[alcohol_input].render(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaRender: HtmlFormat.Appendable = inject[alcohol_input].render(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[alcohol_input].f(
-        validForm,
-        productTreeLeaf,
-        productPath,
-        Some("iid0"),
-        nonEuropeanCountries,
-        europeanCountries,
-        currencies,
-        None
-      )(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[alcohol_input].f(
+    validForm,
+    productTreeLeaf,
+    productPath,
+    Some("iid0"),
+    nonEuropeanCountries,
+    europeanCountries,
+    currencies,
+    None
+  )(request, messages, appConfig)
 
   "AlcoholInputView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Tell us about the wine - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaApply).select("h1").text shouldBe "Tell us about the Wine"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Tell us about the wine - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaRender).select("h1").text shouldBe "Tell us about the Wine"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(viewViaF).title shouldBe "Tell us about the wine - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaF).select("h1").text shouldBe "Tell us about the Wine"
-      }
-    }
+    renderViewTest(
+      title = "Tell us about the wine - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Tell us about the Wine"
+    )
   }
 }

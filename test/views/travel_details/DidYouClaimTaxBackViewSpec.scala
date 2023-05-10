@@ -16,90 +16,43 @@
 
 package views.travel_details
 
-import config.AppConfig
 import models.ClaimedVatResDto
 import models.ClaimedVatResDto.form
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.travel_details.did_you_claim_tax_back
 
-class DidYouClaimTaxBackViewSpec extends BaseSpec with Injecting {
-
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
-
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+class DidYouClaimTaxBackViewSpec extends BaseViewSpec {
 
   private val validForm: Form[ClaimedVatResDto] = form.bind(Map("claimedVatRes" -> "true"))
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[did_you_claim_tax_back].apply(form = validForm, backLink = None)(
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
+  val viewViaApply: HtmlFormat.Appendable = injected[did_you_claim_tax_back].apply(
+    form = validForm,
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaRender: HtmlFormat.Appendable = inject[did_you_claim_tax_back].render(
-      form = validForm,
-      backLink = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
+  val viewViaRender: HtmlFormat.Appendable = injected[did_you_claim_tax_back].render(
+    form = validForm,
+    backLink = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaF: HtmlFormat.Appendable =
-      inject[did_you_claim_tax_back].f(validForm, None)(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[did_you_claim_tax_back].f(
+    validForm,
+    None
+  )(request, messages, appConfig)
 
   "DidYouClaimTaxBackView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Did you claim tax back on any goods you bought in the EU?"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaApply
-        ).select("h1").text shouldBe "Did you claim tax back on any goods you bought in the EU?"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Did you claim tax back on any goods you bought in the EU?"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaRender
-        ).select("h1").text shouldBe "Did you claim tax back on any goods you bought in the EU?"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Did you claim tax back on any goods you bought in the EU?"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaF
-        ).select("h1").text shouldBe "Did you claim tax back on any goods you bought in the EU?"
-      }
-    }
+    renderViewTest(
+      title = "Did you claim tax back on any goods you bought in the EU?",
+      heading = "Did you claim tax back on any goods you bought in the EU?"
+    )
   }
 }

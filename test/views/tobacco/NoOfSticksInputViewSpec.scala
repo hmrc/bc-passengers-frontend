@@ -16,42 +16,31 @@
 
 package views.tobacco
 
-import config.AppConfig
 import controllers.TobaccoInputController
 import models._
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.tobacco.no_of_sticks_input
 
-class NoOfSticksInputViewSpec extends BaseSpec with Injecting {
+class NoOfSticksInputViewSpec extends BaseViewSpec {
 
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
-
-  private val productPath: ProductPath = ProductPath(path = "tobacco/rolling-tobacco")
+  private val productPath: ProductPath = ProductPath(path = "tobacco/cigarettes")
 
   private val productTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
-    token = "rolling-tobacco",
-    name = "label.tobacco.rolling-tobacco",
-    rateID = "TOB/A1/HAND",
-    templateId = "tobacco",
-    applicableLimits = List("L-LOOSE")
+    token = "cigarettes",
+    name = "label.tobacco.cigarettes",
+    rateID = "TOB/A1/CIGRT",
+    templateId = "cigarettes",
+    applicableLimits = List("L-CIGRT")
   )
 
   private val currencies: List[Currency] = List(
     Currency(
-      code = "USD",
-      displayName = "title.usa_dollars_usd",
-      valueForConversion = Some("USD"),
-      currencySynonyms = List("USD", "USA", "US", "United States of America", "American")
+      code = "EUR",
+      displayName = "title.euro_eur",
+      valueForConversion = Some("EUR"),
+      currencySynonyms = List("Europe", "European")
     )
   )
 
@@ -81,89 +70,57 @@ class NoOfSticksInputViewSpec extends BaseSpec with Injecting {
     .noOfSticksForm(productPath)
     .bind(
       Map(
-        "noOfSticks" -> "1000",
-        "country"    -> "IN",
-        "currency"   -> "INR",
-        "cost"       -> "4500.00"
+        "noOfSticks" -> "500",
+        "country"    -> "FR",
+        "currency"   -> "EUR",
+        "cost"       -> "100.00"
       )
     )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaApply: HtmlFormat.Appendable = injected[no_of_sticks_input].apply(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[no_of_sticks_input].apply(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None
-    )(request, messages, appConfig)
+  val viewViaRender: HtmlFormat.Appendable = injected[no_of_sticks_input].render(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaRender: HtmlFormat.Appendable = inject[no_of_sticks_input].render(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[no_of_sticks_input].f(
-        validForm,
-        productTreeLeaf,
-        productPath,
-        Some("iid0"),
-        nonEuropeanCountries,
-        europeanCountries,
-        currencies,
-        None
-      )(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_input].f(
+    validForm,
+    productTreeLeaf,
+    productPath,
+    Some("iid0"),
+    nonEuropeanCountries,
+    europeanCountries,
+    currencies,
+    None
+  )(request, messages, appConfig)
 
   "NoOfSticksInputView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Tell us about the rolling tobacco - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaApply).select("h1").text shouldBe "Tell us about the Rolling tobacco"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Tell us about the rolling tobacco - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaRender).select("h1").text shouldBe "Tell us about the Rolling tobacco"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Tell us about the rolling tobacco - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaF).select("h1").text shouldBe "Tell us about the Rolling tobacco"
-      }
-    }
+    renderViewTest(
+      title = "Tell us about the cigarettes - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Tell us about the Cigarettes"
+    )
   }
 }

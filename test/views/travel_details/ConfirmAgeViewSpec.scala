@@ -16,90 +16,43 @@
 
 package views.travel_details
 
-import config.AppConfig
 import models.AgeOver17Dto
 import models.AgeOver17Dto.form
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.travel_details.confirm_age
 
-class ConfirmAgeViewSpec extends BaseSpec with Injecting {
-
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
-
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+class ConfirmAgeViewSpec extends BaseViewSpec {
 
   private val validForm: Form[AgeOver17Dto] = form.bind(Map("ageOver17" -> "true"))
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[confirm_age].apply(form = validForm, backLink = None)(
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
+  val viewViaApply: HtmlFormat.Appendable = injected[confirm_age].apply(
+    form = validForm,
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaRender: HtmlFormat.Appendable = inject[confirm_age].render(
-      form = validForm,
-      backLink = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
+  val viewViaRender: HtmlFormat.Appendable = injected[confirm_age].render(
+    form = validForm,
+    backLink = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaF: HtmlFormat.Appendable =
-      inject[confirm_age].f(validForm, None)(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[confirm_age].f(
+    validForm,
+    None
+  )(request, messages, appConfig)
 
   "ConfirmAgeView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Are you aged 17 or over? - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaApply
-        ).select("h1").text shouldBe "Are you aged 17 or over?"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Are you aged 17 or over? - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaRender
-        ).select("h1").text shouldBe "Are you aged 17 or over?"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Are you aged 17 or over? - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaF
-        ).select("h1").text shouldBe "Are you aged 17 or over?"
-      }
-    }
+    renderViewTest(
+      title = "Are you aged 17 or over? - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Are you aged 17 or over?"
+    )
   }
 }

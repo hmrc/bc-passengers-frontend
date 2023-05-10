@@ -20,7 +20,7 @@ import util.BaseSpec
 
 class PurchasedItemSpec extends BaseSpec {
 
-  private val (weightOrVolume, noOfSticks): (Int, Int) = (500, 1000)
+  private val weightOrVolume: BigDecimal = 50
 
   private val productPath: ProductPath = ProductPath(path = "tobacco/chewing-tobacco")
 
@@ -33,27 +33,27 @@ class PurchasedItemSpec extends BaseSpec {
   )
 
   private val currency: Currency = Currency(
-    code = "USD",
-    displayName = "title.usa_dollars_usd",
-    valueForConversion = Some("USD"),
-    currencySynonyms = List("USD", "USA", "US", "United States of America", "American")
+    code = "EUR",
+    displayName = "title.euro_eur",
+    valueForConversion = Some("EUR"),
+    currencySynonyms = List("Europe", "European")
   )
 
-  private val purchasedProductInstance = PurchasedProductInstance(
+  private val country: Country = Country(
+    code = "FR",
+    countryName = "title.france",
+    alphaTwoCode = "FR",
+    isEu = true,
+    isCountry = true,
+    countrySynonyms = Nil
+  )
+
+  private val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
     path = productPath,
     iid = "iid0",
     weightOrVolume = Some(weightOrVolume),
-    noOfSticks = Some(noOfSticks),
-    country = Some(
-      Country(
-        code = "FR",
-        countryName = "title.france",
-        alphaTwoCode = "FR",
-        isEu = true,
-        isCountry = true,
-        countrySynonyms = Nil
-      )
-    )
+    noOfSticks = None,
+    country = Some(country)
   )
 
   private val exchangeRate: ExchangeRate = ExchangeRate(

@@ -30,9 +30,9 @@ class LimitRequestSpec extends BaseSpec {
       |    "items": [
       |        {
       |            "purchaseCost": "100.00",
-      |            "rateId": "TOB/A1/OTHER",
-      |            "weightOrVolume": 500,
-      |            "noOfUnits": 1000,
+      |            "rateId": "TOB/A1/CIGAR",
+      |            "weightOrVolume": 50,
+      |            "noOfUnits": 10,
       |            "metadata": {}
       |        }
       |    ]
@@ -40,44 +40,48 @@ class LimitRequestSpec extends BaseSpec {
     """.stripMargin
   )
 
-  private val (weightOrVolume, noOfSticks): (Int, Int) = (500, 1000)
+  private val (weightOrVolume, noOfSticks): (BigDecimal, Int) = (50, 10)
 
-  private val productPath: ProductPath = ProductPath(path = "tobacco/chewing-tobacco")
+  private val productPath: ProductPath = ProductPath(path = "tobacco/cigars")
 
   private val productTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
-    token = "chewing-tobacco",
-    name = "label.tobacco.chewing-tobacco",
-    rateID = "TOB/A1/OTHER",
-    templateId = "tobacco",
-    applicableLimits = List("L-LOOSE")
+    token = "cigars",
+    name = "label.tobacco.cigars",
+    rateID = "TOB/A1/CIGAR",
+    templateId = "cigars",
+    applicableLimits = List("L-CIGAR")
   )
 
-  private val items = SpeculativeItem(
-    purchasedProductInstance = PurchasedProductInstance(
-      path = productPath,
-      iid = "iid0",
-      weightOrVolume = Some(weightOrVolume),
-      noOfSticks = Some(noOfSticks),
-      country = Some(
-        Country(
-          code = "FR",
-          countryName = "title.france",
-          alphaTwoCode = "FR",
-          isEu = true,
-          isCountry = true,
-          countrySynonyms = Nil
-        )
-      )
-    ),
-    productTreeLeaf = productTreeLeaf,
-    gbpCost = 100.00
+  private val country: Country = Country(
+    code = "FR",
+    countryName = "title.france",
+    alphaTwoCode = "FR",
+    isEu = true,
+    isCountry = true,
+    countrySynonyms = Nil
+  )
+
+  private val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+    path = productPath,
+    iid = "iid0",
+    weightOrVolume = Some(weightOrVolume),
+    noOfSticks = Some(noOfSticks),
+    country = Some(country)
+  )
+
+  private val items: List[SpeculativeItem] = List(
+    SpeculativeItem(
+      purchasedProductInstance = purchasedProductInstance,
+      productTreeLeaf = productTreeLeaf,
+      gbpCost = 100.00
+    )
   )
 
   private val model: LimitRequest = LimitRequest(
     isPrivateCraft = false,
     isAgeOver17 = true,
     isArrivingNI = true,
-    items = List(items)
+    items = items
   )
 
   "LimitRequest" when {

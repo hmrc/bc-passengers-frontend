@@ -90,7 +90,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
               Some(
                 Json.obj(
                   "_id"         -> "sessionId",
-                  "journeyData" -> JourneyData(euCountryCheck = Some("Yes"))
+                  "journeyData" -> JourneyData(euCountryCheck = Some("euOnly"))
                 )
               )
             )
@@ -98,7 +98,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
 
         val result: Future[Option[JourneyData]] = cache.fetch
 
-        result.map(_ shouldBe Some(journeyData.copy(euCountryCheck = Some("Yes"))))
+        result.map(_ shouldBe Some(journeyData.copy(euCountryCheck = Some("euOnly"))))
       }
     }
 

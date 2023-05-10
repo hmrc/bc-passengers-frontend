@@ -16,42 +16,31 @@
 
 package views.tobacco
 
-import config.AppConfig
 import controllers.TobaccoInputController
 import models._
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.tobacco.no_of_sticks_weight_or_volume_input
 
-class NoOfSticksWeightOrVolumeInputViewSpec extends BaseSpec with Injecting {
+class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
 
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
-
-  private val productPath: ProductPath = ProductPath(path = "tobacco/chewing-tobacco")
+  private val productPath: ProductPath = ProductPath(path = "tobacco/cigars")
 
   private val productTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
-    token = "chewing-tobacco",
-    name = "label.tobacco.chewing-tobacco",
-    rateID = "TOB/A1/OTHER",
-    templateId = "tobacco",
-    applicableLimits = List("L-LOOSE")
+    token = "cigars",
+    name = "label.tobacco.cigars",
+    rateID = "TOB/A1/CIGAR",
+    templateId = "cigars",
+    applicableLimits = List("L-CIGAR")
   )
 
   private val currencies: List[Currency] = List(
     Currency(
-      code = "USD",
-      displayName = "title.usa_dollars_usd",
-      valueForConversion = Some("USD"),
-      currencySynonyms = List("USD", "USA", "US", "United States of America", "American")
+      code = "EUR",
+      displayName = "title.euro_eur",
+      valueForConversion = Some("EUR"),
+      currencySynonyms = List("Europe", "European")
     )
   )
 
@@ -81,90 +70,58 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseSpec with Injecting {
     .weightOrVolumeNoOfSticksForm(productPath)
     .bind(
       Map(
-        "noOfSticks"     -> "1000",
-        "weightOrVolume" -> "500",
+        "noOfSticks"     -> "10",
+        "weightOrVolume" -> "50",
         "country"        -> "FR",
         "currency"       -> "EUR",
-        "cost"           -> "4,444.00"
+        "cost"           -> "100.00"
       )
     )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaApply: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].apply(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[no_of_sticks_weight_or_volume_input].apply(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None
-    )(request, messages, appConfig)
+  val viewViaRender: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].render(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaRender: HtmlFormat.Appendable = inject[no_of_sticks_weight_or_volume_input].render(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[no_of_sticks_weight_or_volume_input].f(
-        validForm,
-        productTreeLeaf,
-        productPath,
-        Some("iid0"),
-        nonEuropeanCountries,
-        europeanCountries,
-        currencies,
-        None
-      )(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].f(
+    validForm,
+    productTreeLeaf,
+    productPath,
+    Some("iid0"),
+    nonEuropeanCountries,
+    europeanCountries,
+    currencies,
+    None
+  )(request, messages, appConfig)
 
   "NoOfSticksWeightOrVolumeInputView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Tell us about the pipe or chewing tobacco - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaApply).select("h1").text shouldBe "Tell us about the Pipe or chewing tobacco"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Tell us about the pipe or chewing tobacco - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaRender).select("h1").text shouldBe "Tell us about the Pipe or chewing tobacco"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Tell us about the pipe or chewing tobacco - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaF).select("h1").text shouldBe "Tell us about the Pipe or chewing tobacco"
-      }
-    }
+    renderViewTest(
+      title = "Tell us about the cigars - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Tell us about the Cigars"
+    )
   }
 }

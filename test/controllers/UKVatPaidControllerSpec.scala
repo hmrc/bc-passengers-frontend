@@ -184,7 +184,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
     "redirect to the excise page in the add alcohol journey when successfully submitted" in {
 
-      val ppi               = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("alcohol/beer"), isVatPaid = Some(false))
+      val ppi               = PurchasedProductInstance(iid = "brXuNh", path = ProductPath("alcohol/beer"), isVatPaid = Some(false))
       val jd                = JourneyData(
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),

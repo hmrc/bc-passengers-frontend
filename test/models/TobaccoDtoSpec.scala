@@ -20,25 +20,26 @@ import util.BaseSpec
 
 class TobaccoDtoSpec extends BaseSpec {
 
-  private val (weightOrVolume, noOfSticks): (Int, Int) = (500, 1000)
+  private val weightOrVolume: BigDecimal = 50
 
   private val productPath: ProductPath = ProductPath(path = "tobacco/chewing-tobacco")
 
-  private val purchasedProductInstance = PurchasedProductInstance(
+  private val country: Country = Country(
+    code = "FR",
+    countryName = "title.france",
+    alphaTwoCode = "FR",
+    isEu = true,
+    isCountry = true,
+    countrySynonyms = Nil
+  )
+
+  private val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
     path = productPath,
     iid = "iid0",
     weightOrVolume = Some(weightOrVolume),
-    noOfSticks = Some(noOfSticks),
-    country = Some(
-      Country(
-        code = "FR",
-        countryName = "title.france",
-        alphaTwoCode = "FR",
-        isEu = true,
-        isCountry = true,
-        countrySynonyms = Nil
-      )
-    ),
+    noOfSticks = None,
+    country = Some(country),
+    originCountry = Some(country),
     currency = Some("EUR"),
     cost = Some(100.00),
     isVatPaid = Some(false),
@@ -48,10 +49,10 @@ class TobaccoDtoSpec extends BaseSpec {
   )
 
   private val model: TobaccoDto = TobaccoDto(
-    noOfSticks = Some(noOfSticks),
+    noOfSticks = None,
     weightOrVolume = Some(weightOrVolume),
     country = "FR",
-    originCountry = None,
+    originCountry = Some("FR"),
     currency = "EUR",
     cost = 100.00,
     isVatPaid = Some(false),

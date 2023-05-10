@@ -60,5 +60,9 @@ class UtilSpec extends BaseSpec {
     "return successful validation when an empty string is passed" in {
       blankOkCostCheckConstraint(productPathMessageKey = "other-goods.adult.adult-clothing")("") shouldBe Valid
     }
+
+    "return correctly formatted string value" in {
+      formatMonetaryValue(0.012) shouldBe "0.01"
+    }
   }
 }

@@ -25,7 +25,7 @@ class BindersSpec extends BaseSpec {
   private val binder: PathBindable[ProductPath] = Binders.productPathBinder
 
   "Binders" when {
-    "productPathBinder" should {
+    ".productPathBinder" should {
       "bind a valid string value" which {
         "matches the regex" in {
           binder.bind("hello", "there") shouldBe Right(ProductPath(List("there")))
@@ -33,7 +33,7 @@ class BindersSpec extends BaseSpec {
       }
 
       "fail to bind an invalid string value" which {
-        "that does not match the regex" in {
+        "does not match the regex" in {
           binder.bind("hello", "there?") shouldBe Left("Invalid product path component")
         }
       }

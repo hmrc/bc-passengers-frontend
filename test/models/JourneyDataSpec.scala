@@ -176,4 +176,52 @@ class JourneyDataSpec extends BaseSpec {
       ) shouldEqual PurchasedProductInstance(ProductPath("alcohol/sparkling"), "iid5", None, None, None, None)
     }
   }
+
+  "Calling JourneyData.revertPurchasedProductInstance" should {
+    val purchasedProductInstances: List[PurchasedProductInstance] = List(
+      PurchasedProductInstance(
+        path = ProductPath(path = "tobacco/chewing-tobacco"),
+        iid = "iid0"
+      )
+    )
+
+    val workingInstance: PurchasedProductInstance = PurchasedProductInstance(
+      path = ProductPath(path = "tobacco/rolling-tobacco"),
+      iid = "iid0"
+    )
+
+    val journeyData: JourneyData = JourneyData(
+      purchasedProductInstances = purchasedProductInstances,
+      workingInstance = Some(workingInstance)
+    )
+
+    "return the correct journey data model" when {
+      "both iid values are the same" in {
+        val result: JourneyData = journeyData.revertPurchasedProductInstance()
+
+        result shouldBe journeyData.copy(purchasedProductInstances = List(workingInstance))
+      }
+
+      "iid values are different" in {
+        val result: JourneyData = journeyData
+          .copy(
+            workingInstance = Some(
+              workingInstance.copy(iid = "iid1")
+            )
+          )
+          .revertPurchasedProductInstance()
+
+        result shouldBe journeyData.copy(
+          workingInstance = Some(workingInstance.copy(iid = "iid1")),
+          purchasedProductInstances = purchasedProductInstances
+        )
+      }
+
+      "workingInstance is not specified" in {
+        val result: JourneyData = journeyData.copy(workingInstance = None).revertPurchasedProductInstance()
+
+        result shouldBe journeyData.copy(workingInstance = None)
+      }
+    }
+  }
 }

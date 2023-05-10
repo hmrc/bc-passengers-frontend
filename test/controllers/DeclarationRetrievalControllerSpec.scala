@@ -443,5 +443,17 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
     }
   }
+
+  "declarationNotFound" should {
+    "load the declaration not found page" in {
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(true)))))
+      val result: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")).get
+      status(result) shouldBe OK
+      val content = contentAsString(result)
+      val doc     = Jsoup.parse(content)
+      doc.getElementsByTag("h1").text() shouldBe "Your declaration cannot be found"
+    }
+  }
   // scalastyle:on magic.number
 }

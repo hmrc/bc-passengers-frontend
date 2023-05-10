@@ -16,42 +16,31 @@
 
 package views.tobacco
 
-import config.AppConfig
 import controllers.TobaccoInputController
 import models._
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
 import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import views.BaseViewSpec
 import views.html.tobacco.tobacco_input
 
-class TobaccoInputViewSpec extends BaseSpec with Injecting {
+class TobaccoInputViewSpec extends BaseViewSpec {
 
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
-
-  private val productPath: ProductPath = ProductPath(path = "tobacco/cigarettes")
+  private val productPath: ProductPath = ProductPath(path = "tobacco/cigars")
 
   private val productTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
-    token = "cigarettes",
-    name = "label.tobacco.cigarettes",
-    rateID = "TOB/A1/CIGRT",
-    templateId = "cigarettes",
-    applicableLimits = List("L-CIGRT")
+    token = "cigars",
+    name = "label.tobacco.cigars",
+    rateID = "TOB/A1/CIGAR",
+    templateId = "cigars",
+    applicableLimits = List("L-CIGAR")
   )
 
   private val currencies: List[Currency] = List(
     Currency(
-      code = "USD",
-      displayName = "title.usa_dollars_usd",
-      valueForConversion = Some("USD"),
-      currencySynonyms = List("USD", "USA", "US", "United States of America", "American")
+      code = "EUR",
+      displayName = "title.euro_eur",
+      valueForConversion = Some("EUR"),
+      currencySynonyms = List("Europe", "European")
     )
   )
 
@@ -80,88 +69,58 @@ class TobaccoInputViewSpec extends BaseSpec with Injecting {
   private val validForm: Form[TobaccoDto] = injected[TobaccoInputController].resilientForm
     .bind(
       Map(
-        "noOfSticks"     -> "1000",
-        "weightOrVolume" -> "500"
+        "noOfSticks"     -> "10",
+        "weightOrVolume" -> "50"
       )
     )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaApply: HtmlFormat.Appendable = injected[tobacco_input].apply(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None
+  )(
+    content = Html("")
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[tobacco_input].apply(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None
-    )(content = Html(""))(request, messages, appConfig)
+  val viewViaRender: HtmlFormat.Appendable = injected[tobacco_input].render(
+    form = validForm,
+    product = productTreeLeaf,
+    path = productPath,
+    iid = Some("iid0"),
+    countries = nonEuropeanCountries,
+    countriesEU = europeanCountries,
+    currencies = currencies,
+    journeyStart = None,
+    content = Html(""),
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-    val viewViaRender: HtmlFormat.Appendable = inject[tobacco_input].render(
-      form = validForm,
-      product = productTreeLeaf,
-      path = productPath,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None,
-      content = Html(""),
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[tobacco_input].f(
-        validForm,
-        productTreeLeaf,
-        productPath,
-        Some("iid0"),
-        nonEuropeanCountries,
-        europeanCountries,
-        currencies,
-        None
-      )(Html(""))(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[tobacco_input].f(
+    validForm,
+    productTreeLeaf,
+    productPath,
+    Some("iid0"),
+    nonEuropeanCountries,
+    europeanCountries,
+    currencies,
+    None
+  )(Html(""))(request, messages, appConfig)
 
   "TobaccoInputView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Tell us about the cigarettes - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaApply).select("h1").text shouldBe "Tell us about the Cigarettes"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Tell us about the cigarettes - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaRender).select("h1").text shouldBe "Tell us about the Cigarettes"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Tell us about the cigarettes - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(viewViaF).select("h1").text shouldBe "Tell us about the Cigarettes"
-      }
-    }
+    renderViewTest(
+      title = "Tell us about the cigars - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Tell us about the Cigars"
+    )
   }
 }

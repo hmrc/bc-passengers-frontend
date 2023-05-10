@@ -529,4 +529,147 @@ class TravelDetailsServiceSpec extends BaseSpec {
     }
   }
 
+  "Calling storeVatResCheck" should {
+
+    "store isVatResClaimed in keystore when no journey data is currently there" in new LocalSetup {
+
+      await(travelDetailsService.storeVatResCheck(None)(isVatResClaimed = false))
+
+      verify(cacheMock, times(1)).storeJourneyData(
+        meq(JourneyData(isVatResClaimed = Some(false)))
+      )(any())
+    }
+
+    "not update the journey data if the answer has not changed" in new LocalSetup {
+
+      val journeyData: Option[JourneyData] = Some(
+        JourneyData(
+          isVatResClaimed = Some(false),
+          isBringingDutyFree = Some(true),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(true),
+          ageOver17 = Some(true)
+        )
+      )
+
+      await(travelDetailsService.storeVatResCheck(journeyData)(isVatResClaimed = false))
+
+      verify(cacheMock, times(0)).storeJourneyData(any())(any())
+    }
+
+    "store isVatResClaimed in keystore when journey data does exist, setting subsequent " +
+      "journey data to None if the isVatResClaimed has changed" in new LocalSetup {
+
+        val journeyData: Option[JourneyData] = Some(
+          JourneyData(
+            isVatResClaimed = Some(false),
+            isBringingDutyFree = Some(true),
+            bringingOverAllowance = Some(true),
+            privateCraft = Some(true),
+            ageOver17 = Some(true)
+          )
+        )
+
+        await(travelDetailsService.storeVatResCheck(journeyData)(isVatResClaimed = true))
+
+        verify(cacheMock, times(1)).storeJourneyData(
+          meq(
+            JourneyData(
+              isVatResClaimed = Some(true),
+              isBringingDutyFree = None,
+              bringingOverAllowance = None,
+              privateCraft = None,
+              ageOver17 = None
+            )
+          )
+        )(any())
+      }
+  }
+
+  "Calling storeBringingDutyFree" should {
+
+    "store isBringingDutyFree in keystore when no journey data is currently there" in new LocalSetup {
+
+      await(travelDetailsService.storeBringingDutyFree(None)(isBringingDutyFree = false))
+
+      verify(cacheMock, times(1)).storeJourneyData(
+        meq(JourneyData(isBringingDutyFree = Some(false)))
+      )(any())
+    }
+
+    "not update the journey data if the answer has not changed" in new LocalSetup {
+
+      val journeyData: Option[JourneyData] = Some(
+        JourneyData(
+          isBringingDutyFree = Some(false),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(true),
+          ageOver17 = Some(true)
+        )
+      )
+
+      await(travelDetailsService.storeBringingDutyFree(journeyData)(isBringingDutyFree = false))
+
+      verify(cacheMock, times(0)).storeJourneyData(any())(any())
+    }
+
+    "store isBringingDutyFree in keystore when journey data does exist, setting subsequent " +
+      "journey data to None if the isBringingDutyFree has changed" in new LocalSetup {
+
+        val journeyData: Option[JourneyData] = Some(
+          JourneyData(
+            isBringingDutyFree = Some(false),
+            bringingOverAllowance = Some(true),
+            privateCraft = Some(true),
+            ageOver17 = Some(true)
+          )
+        )
+
+        await(travelDetailsService.storeBringingDutyFree(journeyData)(isBringingDutyFree = true))
+
+        verify(cacheMock, times(1)).storeJourneyData(
+          meq(
+            JourneyData(
+              isBringingDutyFree = Some(true),
+              bringingOverAllowance = None,
+              privateCraft = None,
+              ageOver17 = None
+            )
+          )
+        )(any())
+      }
+  }
+
+  "Calling storeIrishBorder" should {
+
+    "store irishBorder in keystore when no journey data is currently there" in new LocalSetup {
+
+      await(travelDetailsService.storeIrishBorder(None)(irishBorder = false))
+
+      verify(cacheMock, times(1)).storeJourneyData(
+        meq(JourneyData(irishBorder = Some(false)))
+      )(any())
+    }
+
+    "not update the journey data if the answer has not changed" in new LocalSetup {
+
+      val journeyData: Option[JourneyData] = Some(JourneyData(irishBorder = Some(false)))
+
+      await(travelDetailsService.storeIrishBorder(journeyData)(irishBorder = false))
+
+      verify(cacheMock, times(0)).storeJourneyData(any())(any())
+    }
+
+    "store irishBorder in keystore when journey data does exist, keeping existing " +
+      "journey data if the irishBorder has changed" in new LocalSetup {
+
+        val journeyData: Option[JourneyData] = Some(JourneyData(irishBorder = Some(false)))
+
+        await(travelDetailsService.storeIrishBorder(journeyData)(irishBorder = true))
+
+        verify(cacheMock, times(1)).storeJourneyData(
+          meq(JourneyData(irishBorder = Some(true)))
+        )(any())
+      }
+  }
 }

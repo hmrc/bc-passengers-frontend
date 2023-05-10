@@ -16,84 +16,32 @@
 
 package views.amendments
 
-import config.AppConfig
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.amendments.no_further_amendment
 
-class NoFurtherAmendmentViewSpec extends BaseSpec with Injecting {
+class NoFurtherAmendmentViewSpec extends BaseViewSpec {
 
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
+  val viewViaApply: HtmlFormat.Appendable = injected[no_further_amendment].apply(backLink = None)(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaRender: HtmlFormat.Appendable = injected[no_further_amendment].render(
+    backLink = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[no_further_amendment].apply(backLink = None)(
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaRender: HtmlFormat.Appendable = inject[no_further_amendment].render(
-      backLink = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[no_further_amendment].f(None)(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[no_further_amendment].f(None)(request, messages, appConfig)
 
   "NoFurtherAmendmentView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "You can no longer use this service to add goods to your declaration - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaApply
-        ).select("h1").text shouldBe "You can no longer use this service to add goods to your declaration"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "You can no longer use this service to add goods to your declaration - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaRender
-        ).select("h1").text shouldBe "You can no longer use this service to add goods to your declaration"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "You can no longer use this service to add goods to your declaration - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaF
-        ).select("h1").text shouldBe "You can no longer use this service to add goods to your declaration"
-      }
-    }
+    renderViewTest(
+      title =
+        "You can no longer use this service to add goods to your declaration - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "You can no longer use this service to add goods to your declaration"
+    )
   }
 }

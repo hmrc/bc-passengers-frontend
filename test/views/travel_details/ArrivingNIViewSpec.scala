@@ -16,89 +16,42 @@
 
 package views.travel_details
 
-import config.AppConfig
-import forms.ArrivingNIForm
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import forms.ArrivingNIForm.validateForm
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.travel_details.arriving_ni
 
-class ArrivingNIViewSpec extends BaseSpec with Injecting {
+class ArrivingNIViewSpec extends BaseViewSpec {
 
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
+  private val validForm: Form[Boolean] = validateForm().bind(Map("arrivingNI" -> "true"))
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaApply: HtmlFormat.Appendable = injected[arriving_ni].apply(
+    form = validForm,
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private val validForm: Form[Boolean] = ArrivingNIForm.validateForm().bind(Map("arrivingNI" -> "true"))
+  val viewViaRender: HtmlFormat.Appendable = injected[arriving_ni].render(
+    form = validForm,
+    backLink = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[arriving_ni].apply(form = validForm, backLink = None)(
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaRender: HtmlFormat.Appendable = inject[arriving_ni].render(
-      form = validForm,
-      backLink = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[arriving_ni].f(validForm, None)(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[arriving_ni].f(
+    validForm,
+    None
+  )(request, messages, appConfig)
 
   "ArrivingNIView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Is your final destination Northern Ireland? - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaApply
-        ).select("h1").text shouldBe "Is your final destination Northern Ireland?"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Is your final destination Northern Ireland? - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaRender
-        ).select("h1").text shouldBe "Is your final destination Northern Ireland?"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Is your final destination Northern Ireland? - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaF
-        ).select("h1").text shouldBe "Is your final destination Northern Ireland?"
-      }
-    }
+    renderViewTest(
+      title = "Is your final destination Northern Ireland? - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Is your final destination Northern Ireland?"
+    )
   }
 }

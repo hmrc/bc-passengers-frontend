@@ -16,84 +16,31 @@
 
 package views.amendments
 
-import config.AppConfig
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
-import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import play.twirl.api.HtmlFormat
+import views.BaseViewSpec
 import views.html.amendments.declaration_not_found
 
-class DeclarationNotFoundViewSpec extends BaseSpec with Injecting {
+class DeclarationNotFoundViewSpec extends BaseViewSpec {
 
-  private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-  private val appConfig: AppConfig                     = injected[AppConfig]
-  private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  private val messages: Messages                       = messagesApi.preferred(request)
+  val viewViaApply: HtmlFormat.Appendable = injected[declaration_not_found].apply(backLink = None)(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaRender: HtmlFormat.Appendable = injected[declaration_not_found].render(
+    backLink = None,
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private trait ViewFixture {
-    val viewViaApply: HtmlFormat.Appendable = inject[declaration_not_found].apply(backLink = None)(
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaRender: HtmlFormat.Appendable = inject[declaration_not_found].render(
-      backLink = None,
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[declaration_not_found].f(None)(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[declaration_not_found].f(None)(request, messages, appConfig)
 
   "DeclarationNotFoundView" when {
-    ".apply" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaApply
-        ).title shouldBe "Your declaration cannot be found - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaApply
-        ).select("h1").text shouldBe "Your declaration cannot be found"
-      }
-    }
-
-    ".render" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaRender
-        ).title shouldBe "Your declaration cannot be found - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaRender
-        ).select("h1").text shouldBe "Your declaration cannot be found"
-      }
-    }
-
-    ".f" should {
-      "display the correct title" in new ViewFixture {
-        document(
-          viewViaF
-        ).title shouldBe "Your declaration cannot be found - Check tax on goods you bring into the UK - GOV.UK"
-      }
-
-      "display the correct heading" in new ViewFixture {
-        document(
-          viewViaF
-        ).select("h1").text shouldBe "Your declaration cannot be found"
-      }
-    }
+    renderViewTest(
+      title = "Your declaration cannot be found - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Your declaration cannot be found"
+    )
   }
 }

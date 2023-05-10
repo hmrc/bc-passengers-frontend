@@ -16,80 +16,73 @@
 
 package views.templates
 
-import config.AppConfig
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContentAsEmpty, Cookie, Request}
-import play.api.test.{FakeRequest, Injecting}
+import play.api.mvc.Cookie
+import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
-import util.BaseSpec
+import views.BaseViewSpec
 import views.html.templates.GovukLayoutWrapper
 
-class GovukLayoutWrapperViewSpec extends BaseSpec with Injecting {
+class GovukLayoutWrapperViewSpec extends BaseViewSpec {
 
-  private val appConfig: AppConfig     = injected[AppConfig]
-  private val messagesApi: MessagesApi = injected[MessagesApi]
+  val viewViaApply: HtmlFormat.Appendable = injected[GovukLayoutWrapper].apply(
+    pageTitle = Some("page title")
+  )(
+    contentBlock = Html("<h1>page heading</h1>")
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
+  val viewViaRender: HtmlFormat.Appendable = injected[GovukLayoutWrapper].render(
+    pageTitle = Some("page title"),
+    signOut = true,
+    inlineScript = None,
+    inlineLinkElem = None,
+    backLink = None,
+    timeout = true,
+    contentBlock = Html("<h1>page heading</h1>"),
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
-  private class ViewFixture(request: Request[AnyContentAsEmpty.type] = FakeRequest()) {
-    val messages: Messages = messagesApi.preferred(request)
-
-    val viewViaApply: HtmlFormat.Appendable = inject[GovukLayoutWrapper].apply()(
-      contentBlock = Html("<h1 class=\"govuk-heading-xl\">page heading</h1>")
-    )(request, messages, appConfig)
-
-    val viewViaRender: HtmlFormat.Appendable = inject[GovukLayoutWrapper].render(
-      pageTitle = None,
-      signOut = true,
-      inlineScript = None,
-      inlineLinkElem = None,
-      backLink = None,
-      timeout = true,
-      contentBlock = Html("<h1 class=\"govuk-heading-xl\">page heading</h1>"),
-      request = request,
-      messages = messages,
-      appConfig = appConfig
-    )
-
-    val viewViaF: HtmlFormat.Appendable =
-      inject[GovukLayoutWrapper].f(
-        None,
-        true,
-        None,
-        None,
-        None,
-        true
-      )(Html("<h1 class=\"govuk-heading-xl\">page heading</h1>"))(request, messages, appConfig)
-  }
+  val viewViaF: HtmlFormat.Appendable = injected[GovukLayoutWrapper].f(
+    Some("page title"),
+    true,
+    None,
+    None,
+    None,
+    true
+  )(Html("<h1>page heading</h1>"))(request, messages, appConfig)
 
   "GovukLayoutWrapperView" when {
-    ".apply" should {
-      "display the correct heading" in new ViewFixture {
-        document(viewViaApply).select("h1").text shouldBe "page heading"
-      }
+    renderViewTest(
+      title = "page title",
+      heading = "page heading"
+    )
 
-      "by default render the html lang as en" in new ViewFixture {
+    "default language" should {
+      "render the html lang as en" in {
         document(viewViaApply).select("html").attr("lang") shouldBe "en"
       }
+    }
 
-      "render the html lang as cy if language is toggled to Welsh" in new ViewFixture(
-        request = FakeRequest().withCookies(Cookie("PLAY_LANG", "cy"))
-      ) {
+    "language is toggled to Welsh" should {
+      "render the html lang as cy" in {
+        val messages: Messages                  = injected[MessagesApi].preferred(
+          request = FakeRequest().withCookies(Cookie("PLAY_LANG", "cy"))
+        )
+        val viewViaApply: HtmlFormat.Appendable = injected[GovukLayoutWrapper].apply()(
+          contentBlock = Html("")
+        )(
+          request = request,
+          messages = messages,
+          appConfig = appConfig
+        )
+
         document(viewViaApply).select("html").attr("lang") shouldBe "cy"
-      }
-    }
-
-    ".render" should {
-      "display the correct heading" in new ViewFixture {
-        document(viewViaRender).select("h1").text shouldBe "page heading"
-      }
-    }
-
-    ".f" should {
-      "display the correct heading" in new ViewFixture {
-        document(viewViaF).select("h1").text shouldBe "page heading"
       }
     }
   }

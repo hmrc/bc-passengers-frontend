@@ -96,18 +96,32 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
       )(any())
     }
 
+    "store previousDeclarationRequest when DeclarationServiceSuccessResponse received" in new LocalSetup {
+
+      val journeyData: Option[JourneyData] = Some(JourneyData(prevDeclaration = Some(true)))
+
+      when(injected[DeclarationService].retrieveDeclaration(any())(any()))
+        .thenReturn(Future.successful(DeclarationServiceSuccessResponse))
+
+      await(previousDeclarationService.storePrevDeclarationDetails(journeyData)(previousDeclarationRequest))
+
+      verify(cacheMock, times(1)).storeJourneyData(
+        meq(JourneyData(prevDeclaration = Some(true), previousDeclarationRequest = Some(previousDeclarationRequest)))
+      )(any())
+    }
+
     "store retrieved journeyData when success response" in new LocalSetup {
 
-      val calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
+      val calculation: Calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
 
-      val productPath = ProductPath("other-goods/adult/adult-footwear")
+      val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
 
-      val otherGoodsSearchItem =
+      val otherGoodsSearchItem: OtherGoodsSearchItem =
         OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
 
-      val country = Country("IN", "title.india", "IN", false, true, List())
+      val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
-      val liabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
+      val liabilityDetails: LiabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
 
       val editablePurchasedProductInstances = List(
         PurchasedProductInstance(
@@ -129,7 +143,8 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
         )
       )
 
-      val declarationResponse = DeclarationResponse(calculation, liabilityDetails, editablePurchasedProductInstances)
+      val declarationResponse: DeclarationResponse =
+        DeclarationResponse(calculation, liabilityDetails, editablePurchasedProductInstances)
 
       val retrievedJourneyData: JourneyData = JourneyData(
         prevDeclaration = Some(true),
@@ -162,7 +177,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
         )
       )
 
-      val expectedJourneyData =
+      val expectedJourneyData: JourneyData =
         retrievedJourneyData.copy(declarationResponse = retrievedJourneyData.declarationResponse.map { ds =>
           ds.copy(oldPurchaseProductInstances = nonEditablePurchasedProductInstances)
         })
@@ -199,7 +214,8 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
 
     "store prevDeclaration when journey data does exist, reset existing journey data if the prevDeclaration has changed" in new LocalSetup {
 
-      val ppi                              = PurchasedProductInstance(iid = "someId", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
+      val ppi: PurchasedProductInstance    =
+        PurchasedProductInstance(iid = "someId", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
       val journeyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),

@@ -24,12 +24,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.{FakeRequest, Injecting}
+import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import util.BaseSpec
 import views.html.other_goods.other_goods_input
 
-class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
+class OtherGoodsInputViewSpec extends BaseSpec {
 
   private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
   private val appConfig: AppConfig                     = injected[AppConfig]
@@ -40,10 +40,10 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
 
   private val currencies: List[Currency] = List(
     Currency(
-      code = "USD",
-      displayName = "title.usa_dollars_usd",
-      valueForConversion = Some("USD"),
-      currencySynonyms = List("USD", "USA", "US", "United States of America", "American")
+      code = "EUR",
+      displayName = "title.euro_eur",
+      valueForConversion = Some("EUR"),
+      currencySynonyms = List("Europe", "European")
     )
   )
 
@@ -70,7 +70,10 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
   )
 
   private val otherGoodsSearchItems: List[OtherGoodsSearchItem] = List(
-    OtherGoodsSearchItem(name = "label.other-goods.antiques", path = productPath)
+    OtherGoodsSearchItem(
+      name = "label.other-goods.antiques",
+      path = productPath
+    )
   )
 
   private val validForm: Form[OtherGoodsDto] = injected[OtherGoodsInputController].addCostForm
@@ -86,7 +89,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
   private def document(html: Html): Document = Jsoup.parse(html.toString())
 
   private trait ViewFixture {
-    def viewViaApply(otherItemMode: String): HtmlFormat.Appendable = inject[other_goods_input].apply(
+    def viewViaApply(otherItemMode: String): HtmlFormat.Appendable = injected[other_goods_input].apply(
       form = validForm,
       iid = Some("iid0"),
       countries = nonEuropeanCountries,
@@ -98,7 +101,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
       path = productPath
     )(request, messages, appConfig)
 
-    def viewViaRender(otherItemMode: String): HtmlFormat.Appendable = inject[other_goods_input].render(
+    def viewViaRender(otherItemMode: String): HtmlFormat.Appendable = injected[other_goods_input].render(
       form = validForm,
       iid = Some("iid0"),
       countries = nonEuropeanCountries,
@@ -114,7 +117,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
     )
 
     def viewViaF(otherItemMode: String): HtmlFormat.Appendable =
-      inject[other_goods_input].f(
+      injected[other_goods_input].f(
         validForm,
         Some("iid0"),
         nonEuropeanCountries,
@@ -127,6 +130,24 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
       )(request, messages, appConfig)
   }
 
+  private val titleInput: Seq[(String, String)] = Seq(
+    ("create", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK"),
+    (
+      "edit",
+      "Tell us about the Antique, collector’s item or artwork - Check tax on goods you bring into the UK - GOV.UK"
+    ),
+    ("display", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK")
+  )
+
+  private val headingInput: Seq[(String, String)] = Seq(
+    ("create", "Tell us about the Item of other goods"),
+    (
+      "edit",
+      "Tell us about the Antique, collector’s item or artwork"
+    ),
+    ("display", "Tell us about the Item of other goods")
+  )
+
   "OtherGoodsInputView" when {
     ".apply" should {
       "display the correct title" when {
@@ -137,16 +158,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
             ).title shouldBe title
           }
 
-        val input = Seq(
-          ("create", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK"),
-          (
-            "edit",
-            "Tell us about the Antique, collector’s item or artwork - Check tax on goods you bring into the UK - GOV.UK"
-          ),
-          ("display", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK")
-        )
-
-        input.foreach(args => (test _).tupled(args))
+        titleInput.foreach(args => (test _).tupled(args))
       }
 
       "display the correct heading" when {
@@ -157,13 +169,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
             ).select("h1").text shouldBe heading
           }
 
-        val input = Seq(
-          ("create", "Tell us about the Item of other goods"),
-          ("edit", "Tell us about the Antique, collector’s item or artwork"),
-          ("display", "Tell us about the Item of other goods")
-        )
-
-        input.foreach(args => (test _).tupled(args))
+        headingInput.foreach(args => (test _).tupled(args))
       }
     }
 
@@ -176,16 +182,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
             ).title shouldBe title
           }
 
-        val input = Seq(
-          ("create", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK"),
-          (
-            "edit",
-            "Tell us about the Antique, collector’s item or artwork - Check tax on goods you bring into the UK - GOV.UK"
-          ),
-          ("display", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK")
-        )
-
-        input.foreach(args => (test _).tupled(args))
+        titleInput.foreach(args => (test _).tupled(args))
       }
 
       "display the correct heading" when {
@@ -196,13 +193,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
             ).select("h1").text shouldBe heading
           }
 
-        val input = Seq(
-          ("create", "Tell us about the Item of other goods"),
-          ("edit", "Tell us about the Antique, collector’s item or artwork"),
-          ("display", "Tell us about the Item of other goods")
-        )
-
-        input.foreach(args => (test _).tupled(args))
+        headingInput.foreach(args => (test _).tupled(args))
       }
     }
 
@@ -215,16 +206,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
             ).title shouldBe title
           }
 
-        val input = Seq(
-          ("create", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK"),
-          (
-            "edit",
-            "Tell us about the Antique, collector’s item or artwork - Check tax on goods you bring into the UK - GOV.UK"
-          ),
-          ("display", "Tell us about the Item of other goods - Check tax on goods you bring into the UK - GOV.UK")
-        )
-
-        input.foreach(args => (test _).tupled(args))
+        titleInput.foreach(args => (test _).tupled(args))
       }
 
       "display the correct heading" when {
@@ -235,13 +217,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with Injecting {
             ).select("h1").text shouldBe heading
           }
 
-        val input = Seq(
-          ("create", "Tell us about the Item of other goods"),
-          ("edit", "Tell us about the Antique, collector’s item or artwork"),
-          ("display", "Tell us about the Item of other goods")
-        )
-
-        input.foreach(args => (test _).tupled(args))
+        headingInput.foreach(args => (test _).tupled(args))
       }
     }
   }

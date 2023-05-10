@@ -22,27 +22,28 @@ class OtherGoodsDtoSpec extends BaseSpec {
 
   private val productPath: ProductPath = ProductPath(path = "other-goods/antiques")
 
+  private val country: Country = Country(
+    code = "FR",
+    countryName = "title.france",
+    alphaTwoCode = "FR",
+    isEu = true,
+    isCountry = true,
+    countrySynonyms = Nil
+  )
+
+  private val otherGoodsSearchItem: OtherGoodsSearchItem = OtherGoodsSearchItem(
+    name = "label.other-goods.antiques",
+    path = productPath
+  )
+
   private val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
     path = productPath,
     iid = "iid0",
-    country = Some(
-      Country(
-        code = "FR",
-        countryName = "title.france",
-        alphaTwoCode = "FR",
-        isEu = true,
-        isCountry = true,
-        countrySynonyms = Nil
-      )
-    ),
+    country = Some(country),
+    originCountry = Some(country),
     currency = Some("EUR"),
     cost = Some(100.00),
-    searchTerm = Some(
-      OtherGoodsSearchItem(
-        name = "label.other-goods.antiques",
-        path = productPath
-      )
-    ),
+    searchTerm = Some(otherGoodsSearchItem),
     isVatPaid = Some(false),
     isCustomPaid = Some(false),
     isUccRelief = Some(false),
@@ -50,14 +51,9 @@ class OtherGoodsDtoSpec extends BaseSpec {
   )
 
   private val model: OtherGoodsDto = OtherGoodsDto(
-    searchTerm = Some(
-      OtherGoodsSearchItem(
-        name = "label.other-goods.antiques",
-        path = productPath
-      )
-    ),
+    searchTerm = Some(otherGoodsSearchItem),
     country = "FR",
-    originCountry = None,
+    originCountry = Some("FR"),
     currency = "EUR",
     cost = 100.00,
     isVatPaid = Some(false),
