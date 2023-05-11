@@ -28,13 +28,13 @@
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th class="govuk-table__header" scope="col" id="item">@messages("label.item")</th>
-            <th class="govuk-table__header" scope="col" id="customs">
+            <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="customs">
                 @messages("label.customs")
             </th>
-            <th class="govuk-table__header" scope="col" id="excise">
+            <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="excise">
                 @messages("label.excise_val")
             </th>
-            <th class="govuk-table__header" style="vertical-align: bottom; text-align: right;" scope="col" id="vat">
+            <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="vat">
                 @messages("label.vat")
             </th>
         </tr>
@@ -45,13 +45,13 @@
             <td class="govuk-table__cell">
                 @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
             </td>
-            <td class="govuk-table__cell numeric">
+            <td class="govuk-table__cell govuk-table__cell--numeric">
                 &pound;@formatMonetaryValue(item.calculation.customs)
             </td>
-            <td class="govuk-table__cell numeric">
+            <td class="govuk-table__cell govuk-table__cell--numeric">
                 &pound;@formatMonetaryValue(item.calculation.excise)
             </td>
-            <td class="govuk-table__cell numeric" style="vertical-align: bottom; text-align: right;">
+            <td class="govuk-table__cell govuk-table__cell--numeric">
                 &pound;@formatMonetaryValue(item.calculation.vat)
             </td>
         </tr>
