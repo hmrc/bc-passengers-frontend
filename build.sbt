@@ -18,8 +18,8 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings())
   .settings(majorVersion := 1)
   .settings(
-    coverageExcludedFiles := "<empty>;Reverse.*;.*components.*;.*javascript.*;.*Routes.*;",
-    coverageMinimumStmtTotal := 97,
+    coverageExcludedFiles := "<empty>;.*components.*;.*Routes.*;",
+    coverageMinimumStmtTotal := 99,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )

@@ -17,7 +17,7 @@
 package services
 
 import controllers.LocalContext
-import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
+import models._
 import util.BaseSpec
 
 import scala.util.Random
@@ -25,93 +25,126 @@ import scala.util.Random
 class NewPurchaseServiceSpec extends BaseSpec {
 
   trait LocalSetup {
+    val noOfSticks: Int               = 100
+    val ppi: PurchasedProductInstance = PurchasedProductInstance(
+      path = ProductPath("some/item/path"),
+      iid = "iid0",
+      country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+      currency = Some("USD")
+    )
 
-    lazy val s = app.injector.instanceOf[NewPurchaseService]
+    val ppis: List[PurchasedProductInstance] = List(
+      PurchasedProductInstance(
+        path = ProductPath("some/item/path"),
+        iid = "iid0",
+        country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        currency = Some("USD"),
+        cost = Some(1.69)
+      ),
+      PurchasedProductInstance(
+        path = ProductPath("some/item/path"),
+        iid = "iid1",
+        country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        currency = Some("USD"),
+        cost = Some(2.99)
+      )
+    )
+
+    lazy val newPurchaseService: NewPurchaseService = app.injector.instanceOf[NewPurchaseService]
   }
 
   "Calling NewPurchaseService.insertPurchases" should {
+    "add purchases when no journey data exists" in new LocalSetup {
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = None
+      )
+
+      val modifiedJourneyData: JourneyData = newPurchaseService
+        .insertPurchases(
+          path = ProductPath("some/item/path"),
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          countryCode = "FR",
+          originCountryCode = None,
+          currency = "EUR",
+          costs = List(12.50),
+          searchTerm = None,
+          rand = new Random(1)
+        )(localContext)
+        ._1
+
+      modifiedJourneyData.purchasedProductInstances shouldBe List(
+        PurchasedProductInstance(
+          path = ProductPath("some/item/path"),
+          iid = "NAvZuG",
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          originCountry = None,
+          currency = Some("EUR"),
+          cost = Some(12.50),
+          isCustomPaid = Some(false)
+        )
+      )
+    }
 
     "add purchases to existing journey data" in new LocalSetup {
-
-      val ppi = PurchasedProductInstance(
-        ProductPath("some/item/path"),
-        "iid0",
-        None,
-        None,
-        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-        None,
-        Some("USD")
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = Some(JourneyData(purchasedProductInstances = List(ppi)))
       )
 
-      val localContext = LocalContext(
-        enhancedFakeRequest("GET", "anything"),
-        "123",
-        Some(JourneyData(purchasedProductInstances = List(ppi)))
-      )
-
-      val modifiedJourneyData = s
+      val modifiedJourneyData: JourneyData = newPurchaseService
         .insertPurchases(
-          ProductPath("some/item/path"),
-          Some(185.5),
-          Some(100),
-          "FR",
-          None,
-          "EUR",
-          List(12.50),
-          None,
-          new Random(1)
+          path = ProductPath("some/item/path"),
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          countryCode = "FR",
+          originCountryCode = None,
+          currency = "EUR",
+          costs = List(12.50),
+          searchTerm = None,
+          rand = new Random(1)
         )(localContext)
         ._1
 
       modifiedJourneyData.purchasedProductInstances shouldBe List(
         ppi,
         PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "NAvZuG",
-          Some(185.5),
-          Some(100),
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          Some("EUR"),
-          Some(12.50),
-          None,
-          None,
-          Some(false),
-          None,
-          None
+          path = ProductPath("some/item/path"),
+          iid = "NAvZuG",
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          originCountry = None,
+          currency = Some("EUR"),
+          cost = Some(12.50),
+          isCustomPaid = Some(false)
         )
       )
     }
 
     "set default country and currency in journey data" in new LocalSetup {
-
-      val ppi = PurchasedProductInstance(
-        ProductPath("some/item/path"),
-        "iid0",
-        None,
-        None,
-        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-        None,
-        Some("USD")
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = Some(JourneyData(purchasedProductInstances = List(ppi)))
       )
 
-      val localContext = LocalContext(
-        enhancedFakeRequest("GET", "anything"),
-        "123",
-        Some(JourneyData(purchasedProductInstances = List(ppi)))
-      )
-
-      val modifiedJourneyData = s
+      val modifiedJourneyData: JourneyData = newPurchaseService
         .insertPurchases(
-          ProductPath("some/item/path"),
-          Some(185.5),
-          Some(100),
-          "FR",
-          None,
-          "EUR",
-          List(12.50, 13.60, 14.70),
-          None,
-          new Random(1)
+          path = ProductPath("some/item/path"),
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          countryCode = "FR",
+          originCountryCode = None,
+          currency = "EUR",
+          costs = List(12.50, 13.60, 14.70),
+          searchTerm = None,
+          rand = new Random(1)
         )(localContext)
         ._1
 
@@ -121,110 +154,105 @@ class NewPurchaseServiceSpec extends BaseSpec {
   }
 
   "Calling NewPurchaseService.updatePurchase" should {
-
-    "update a purchase in existing journey data" in new LocalSetup {
-
-      val ppis = List(
-        PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "iid0",
-          None,
-          None,
-          Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-          None,
-          Some("USD"),
-          Some(1.69)
-        ),
-        PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "iid1",
-          None,
-          None,
-          Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-          None,
-          Some("USD"),
-          Some(2.99)
-        )
+    "update a purchase with no origin country code specified in existing journey data" in new LocalSetup {
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = Some(JourneyData(purchasedProductInstances = ppis))
       )
 
-      val localContext =
-        LocalContext(enhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = ppis)))
-
-      val modifiedJourneyData =
-        s.updatePurchase(ProductPath("some/item/path"), "iid1", Some(185.5), Some(100), "FR", None, "EUR", 14.70)(
-          localContext
-        )
+      val modifiedJourneyData: JourneyData = newPurchaseService.updatePurchase(
+        path = ProductPath("some/item/path"),
+        iid = "iid1",
+        weightOrVolume = Some(185.5),
+        noOfSticks = Some(noOfSticks),
+        countryCode = "FR",
+        originCountryCode = None,
+        currency = "EUR",
+        cost = 14.70
+      )(localContext)
 
       modifiedJourneyData.purchasedProductInstances shouldBe List(
         PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "iid0",
-          None,
-          None,
-          Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-          None,
-          Some("USD"),
-          Some(1.69),
-          None,
-          None,
-          None,
-          None
+          path = ProductPath("some/item/path"),
+          iid = "iid0",
+          country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+          currency = Some("USD"),
+          cost = Some(1.69)
         ),
         PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "iid1",
-          Some(185.5),
-          Some(100),
-          Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-          None,
-          Some("EUR"),
-          Some(14.70),
-          None,
-          None,
-          Some(false),
-          None,
-          None
+          path = ProductPath("some/item/path"),
+          iid = "iid1",
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          currency = Some("EUR"),
+          cost = Some(14.70),
+          isCustomPaid = Some(false)
         )
       )
+    }
 
+    "update a purchase with origin country code specified in existing journey data" in new LocalSetup {
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = Some(JourneyData(purchasedProductInstances = ppis))
+      )
+
+      val modifiedJourneyData: JourneyData = newPurchaseService.updatePurchase(
+        path = ProductPath("some/item/path"),
+        iid = "iid1",
+        weightOrVolume = Some(185.5),
+        noOfSticks = Some(noOfSticks),
+        countryCode = "FR",
+        originCountryCode = Some("BE"),
+        currency = "EUR",
+        cost = 14.70
+      )(localContext)
+
+      modifiedJourneyData.purchasedProductInstances shouldBe List(
+        PurchasedProductInstance(
+          path = ProductPath("some/item/path"),
+          iid = "iid0",
+          country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+          currency = Some("USD"),
+          cost = Some(1.69)
+        ),
+        PurchasedProductInstance(
+          path = ProductPath("some/item/path"),
+          iid = "iid1",
+          weightOrVolume = Some(185.5),
+          noOfSticks = Some(noOfSticks),
+          country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+          originCountry = Some(Country("BE", "title.belgium", "BE", isEu = true, isCountry = true, Nil)),
+          currency = Some("EUR"),
+          cost = Some(14.70),
+          isCustomPaid = Some(false)
+        )
+      )
     }
 
     "set default country and currency in journey data" in new LocalSetup {
-
-      val ppis = List(
-        PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "iid0",
-          None,
-          None,
-          Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-          None,
-          Some("USD"),
-          Some(1.69)
-        ),
-        PurchasedProductInstance(
-          ProductPath("some/item/path"),
-          "iid1",
-          None,
-          None,
-          Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-          None,
-          Some("USD"),
-          Some(2.99)
-        )
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = Some(JourneyData(purchasedProductInstances = ppis))
       )
 
-      val localContext =
-        LocalContext(enhancedFakeRequest("GET", "anything"), "123", Some(JourneyData(purchasedProductInstances = ppis)))
-
-      val modifiedJourneyData =
-        s.updatePurchase(ProductPath("some/item/path"), "iid1", Some(185.5), Some(100), "BG", None, "AED", 14.70)(
-          localContext
-        )
+      val modifiedJourneyData: JourneyData = newPurchaseService.updatePurchase(
+        path = ProductPath("some/item/path"),
+        iid = "iid1",
+        weightOrVolume = Some(185.5),
+        noOfSticks = Some(noOfSticks),
+        countryCode = "BG",
+        originCountryCode = None,
+        currency = "AED",
+        cost = 14.70
+      )(localContext)
 
       modifiedJourneyData.defaultCountry  shouldBe Some("BG")
       modifiedJourneyData.defaultCurrency shouldBe Some("AED")
     }
   }
-
 }

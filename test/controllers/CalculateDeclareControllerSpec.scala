@@ -32,9 +32,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
-import services.{PayApiServiceFailureResponse, _}
+import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+
 import scala.concurrent.Future
 
 class CalculateDeclareControllerSpec extends BaseSpec {
@@ -701,19 +702,34 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when there is no journey data" should {
+    def test(page: String, isAmendmentsEnabled: Boolean, locationRoute: String): Unit =
+      s"redirect to the $page page" in new LocalSetup {
+        override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(None)
+        override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse =
+          DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-    "Display the previous-declaration page" in new LocalSetup {
-      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(Option.empty)
-      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse: DeclarationServiceResponse =
-        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+        val app: Application = GuiceApplicationBuilder()
+          .configure(
+            "features.amendments" -> isAmendmentsEnabled
+          )
+          .build()
 
-      val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
+        val response: Future[Result] = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")
+        ).get
 
-      status(response)           shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-    }
+        status(response)           shouldBe SEE_OTHER
+        redirectLocation(response) shouldBe Some(s"/check-tax-on-goods-you-bring-into-the-uk/$locationRoute")
+      }
+
+    val input: Seq[(String, Boolean, String)] = Seq(
+      ("EU country check", false, "where-goods-bought"),
+      ("previous declaration", true, "previous-declaration")
+    )
+
+    input.foreach(args => (test _).tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when tax amount is 0.00" should {
@@ -745,20 +761,34 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when there is no journey data" should {
+    def test(page: String, isAmendmentsEnabled: Boolean, locationRoute: String): Unit =
+      s"redirect to the $page page" in new LocalSetup {
+        override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(None)
+        override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+        override lazy val declarationServiceResponse: DeclarationServiceResponse =
+          DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-    "Display the previous-declaration page" in new LocalSetup {
+        val app: Application = GuiceApplicationBuilder()
+          .configure(
+            "features.amendments" -> isAmendmentsEnabled
+          )
+          .build()
 
-      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(Option.empty)
-      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse: DeclarationServiceResponse =
-        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+        val response: Future[Result] = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        ).get
 
-      val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        status(response)           shouldBe SEE_OTHER
+        redirectLocation(response) shouldBe Some(s"/check-tax-on-goods-you-bring-into-the-uk/$locationRoute")
+      }
 
-      status(response)           shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-    }
+    val input: Seq[(String, Boolean, String)] = Seq(
+      ("EU country check", false, "where-goods-bought"),
+      ("previous declaration", true, "previous-declaration")
+    )
+
+    input.foreach(args => (test _).tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when in amendment journey" should {
@@ -1783,8 +1813,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       status(response) shouldBe BAD_REQUEST
 
-      val content = contentAsString(response)
-      val doc     = Jsoup.parse(content)
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
 
       doc
         .getElementById("dateTimeOfArrival-error")
@@ -2248,7 +2278,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         redirectLocation(response).get shouldBe "http://example.com/payment-journey"
       }
 
-    "fetch user information from journey data and redirect to payment url," +
+    "fetch user information from journey data and redirect to payment url, " +
       "when payment service request is successful in pending payment journey" in new LocalSetup {
 
         override lazy val cachedJourneyData: Future[Option[JourneyData]]                = Future.successful(

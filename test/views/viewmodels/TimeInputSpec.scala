@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels
+package views.viewmodels
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import util.BaseSpec
-import views.viewmodels.TimeInput
 
 class TimeInputSpec extends BaseSpec {
 
@@ -55,16 +54,9 @@ class TimeInputSpec extends BaseSpec {
           json.as[TimeInput] shouldBe model
         }
 
-        "all mandatory defaulted fields excluding formGroupClasses are not specified" in {
-          val json: JsValue = Json.parse(
-            """
-              |{
-              |    "formGroup": {
-              |        "classes": ""
-              |    }
-              |}
-            """.stripMargin
-          )
+        "all mandatory defaulted fields are not specified" in {
+          val json: JsValue = JsObject.empty
+
           json.as[TimeInput] shouldBe model.copy(attributes = Map.empty)
         }
       }

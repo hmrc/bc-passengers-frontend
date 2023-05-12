@@ -30,7 +30,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
 
   private val mockBCPassengersSessionRepository: BCPassengersSessionRepository = mock[BCPassengersSessionRepository]
 
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+  implicit val ec: ExecutionContext = ExecutionContext.global
 
   private val cache: Cache = new Cache(mockBCPassengersSessionRepository, ec)
 
@@ -102,7 +102,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
       }
     }
 
-    "updateUpdatedAtTimestamp" should {
+    ".updateUpdatedAtTimestamp" should {
       "return an empty object" in {
         when(mockBCPassengersSessionRepository.updateUpdatedAtTimestamp)
           .thenReturn(Future.successful(JsObject.empty))

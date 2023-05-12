@@ -16,8 +16,8 @@
 
 package util
 
-import play.api.data.validation
-import play.api.data.validation.{Invalid, Valid, ValidationError}
+import models.ProductPath
+import play.api.data.validation._
 
 class UtilSpec extends BaseSpec {
 
@@ -35,12 +35,12 @@ class UtilSpec extends BaseSpec {
 
     "restrict negative value like -95 to old constraint" in {
 
-      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(validation.Valid) should be(false)
+      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(Valid) should be(false)
     }
 
     "restrict negative value like -9.50" in {
 
-      blankOkCostCheckConstraint("cost")("-9.50").equals(validation.Valid) should be(false)
+      blankOkCostCheckConstraint("cost").apply("-9.50").equals(Valid) should be(false)
     }
 
     "return failed validation when a value greater than 9999999999 is passed" in {
@@ -63,6 +63,19 @@ class UtilSpec extends BaseSpec {
 
     "return correctly formatted string value" in {
       formatMonetaryValue(0.012) shouldBe "0.01"
+    }
+  }
+
+  "validating limits" should {
+    "return the correct product path" in {
+      calculatorLimitConstraintBigDecimal(
+        limits = Map(
+          "L-WINE"   -> 2.2222,
+          "L-WINESP" -> 4.4444
+        ),
+        applicableLimits = List("L-WINE", "L-WINESP"),
+        path = ProductPath(path = "alcohol/sparkling-wine")
+      ) shouldBe Some(ProductPath(path = "alcohol/sparkling-wine"))
     }
   }
 }

@@ -29,10 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ControllerHelpersSpec extends BaseSpec with MockitoSugar with ControllerHelpers {
 
-  def cache: Cache                            = mock[Cache]
-  def productTreeService: ProductTreeService  = mock[ProductTreeService]
-  def calculatorService: CalculatorService    = mock[CalculatorService]
-  def errorTemplate: views.html.errorTemplate = mock[errorTemplate]
+  def cache: Cache                           = mock[Cache]
+  def productTreeService: ProductTreeService = mock[ProductTreeService]
+  def calculatorService: CalculatorService   = mock[CalculatorService]
+  def errorTemplate: errorTemplate           = mock[errorTemplate]
 
   implicit def appConfig: AppConfig                                = mock[AppConfig]
   implicit def ec: ExecutionContext                                = mock[ExecutionContext]

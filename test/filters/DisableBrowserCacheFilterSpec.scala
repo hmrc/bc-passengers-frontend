@@ -23,11 +23,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import util.BaseSpec
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DisableBrowserCacheFilterSpec extends BaseSpec with MockitoSugar {
 
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
   implicit val mockMaterializer: Materializer = mock[Materializer]
 
   private val disableBrowserCacheFilter: DisableBrowserCacheFilter = new DisableBrowserCacheFilter()

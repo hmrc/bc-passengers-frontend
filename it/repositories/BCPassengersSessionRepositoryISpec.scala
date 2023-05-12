@@ -93,8 +93,8 @@ class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
   }
 
   "updateUpdatedAtTimestamp" should {
-    "update the numberLong field within updatedAt object with current time" in new LocalSetup {
-      val result: JsObject = await(repository.updateUpdatedAtTimestamp(hc))
+    "update the numberLong field within updatedAt object with current timestamp" in new LocalSetup {
+      val result: JsObject = await(repository.updateUpdatedAtTimestamp)
 
       val lookupResult: JsLookupResult = result \ "updatedAt" \ s"$$date" \ s"$$numberLong"
       val instant: Instant = Instant.ofEpochMilli(lookupResult.as[String].toLong)
@@ -107,7 +107,7 @@ class BCPassengersSessionRepositoryISpec extends AnyWordSpecLike with Matchers
       override implicit val hc: HeaderCarrier = HeaderCarrier()
 
       intercept[Exception](
-        await(repository.updateUpdatedAtTimestamp(hc))
+        await(repository.updateUpdatedAtTimestamp)
       ).getMessage shouldBe "[BCPassengersSessionRepository][updateUpdatedAtTimestamp]Could not find sessionId in HeaderCarrier"
     }
   }
