@@ -27,7 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
@@ -57,12 +57,12 @@ class EUEvidenceControllerSpec extends BaseSpec {
   }
 
   "loadEUEvidenceItemPage" should {
-    "load the page" in {
+    "load the page without hasEvidence populated" in {
       val ppi                    = PurchasedProductInstance(
         iid = "brTuNh",
         path = ProductPath("alcohol/beer"),
         originCountry = Some(Country("ES0", "Spain", "ES", isEu = true, isCountry = true, Nil)),
-        hasEvidence = Some(true)
+        hasEvidence = None
       )
       when(mockCache.fetch(any())).thenReturn(
         Future.successful(
@@ -91,6 +91,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
         .getElementsByTag("h1")
         .text() shouldBe "Do you have evidence this item was originally produced or made in the EU?"
     }
+
     "load the page and populate hasEvidence as true" in {
       val ppi                    = PurchasedProductInstance(
         iid = "brTuNh",
@@ -204,13 +205,13 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to the tell us page in the add alcohol journey when successfully submitted" in {
+    "redirect to the next step in the add alcohol journey when successfully submitted with no hasEvidence" in {
 
       val ppi               = PurchasedProductInstance(
-        iid = "brTuNh",
+        iid = "brXuNh",
         path = ProductPath("alcohol/beer"),
         originCountry = Some(Country("ES0", "Spain", "ES", isEu = true, isCountry = true, Nil)),
-        hasEvidence = Some(false)
+        hasEvidence = None
       )
       val jd                = JourneyData(
         euCountryCheck = Some("euOnly"),

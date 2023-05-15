@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import models.{Calculation, Country, DeclarationResponse, JourneyData, LiabilityDetails, PreviousDeclarationRequest, ProductPath, PurchasedProductInstance}
 import models._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalTime}
@@ -30,7 +29,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.PreviousDeclarationService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
@@ -441,6 +440,18 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       ).get
       status(response) shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")
+    }
+  }
+
+  "declarationNotFound" should {
+    "load the declaration not found page" in {
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(true)))))
+      val result: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-not-found")).get
+      status(result) shouldBe OK
+      val content = contentAsString(result)
+      val doc     = Jsoup.parse(content)
+      doc.getElementsByTag("h1").text() shouldBe "Your declaration cannot be found"
     }
   }
   // scalastyle:on magic.number

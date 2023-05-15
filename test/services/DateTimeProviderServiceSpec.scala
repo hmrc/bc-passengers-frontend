@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package services
 
-trait CurrencyFormatter {
-  def currencyFormat(amt: BigDecimal): String = f"&pound;$amt%,1.2f".replace(".00", "")
+import java.time.LocalDate
+
+import util.BaseSpec
+
+class DateTimeProviderServiceSpec extends BaseSpec {
+
+  private val dateTimeProviderService: DateTimeProviderService = new DateTimeProviderService
+
+  "DateTimeProviderService" when {
+    ".now" should {
+      "return current year" in {
+        dateTimeProviderService.now.getYear shouldBe LocalDate.now().getYear
+      }
+    }
+  }
 }
-
-object CurrencyFormatter extends CurrencyFormatter

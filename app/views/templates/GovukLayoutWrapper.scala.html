@@ -80,15 +80,16 @@
 
     @phaseBanner("beta")
 
-    @backLink.map { x =>
-        @govukBackLink(BackLink(href = x, content = Text(messages("label.back")), attributes = Map("id" -> "back")))
-    }
     @if(appConfig.languageTranslationEnabled) {
         @languageSwitch(LanguageSelect(
             if (messages.lang.code == "cy") Cy else En,
             (En, controllers.routes.LocalLanguageController.switchToLanguage("english").url),
             (Cy, controllers.routes.LocalLanguageController.switchToLanguage("cymraeg").url)
         ))
+    }
+
+    @backLink.map { x =>
+        @govukBackLink(BackLink(href = x, content = Text(messages("label.back")), attributes = Map("id" -> "back")))
     }
 }
 

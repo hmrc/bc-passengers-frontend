@@ -27,7 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
@@ -151,35 +151,37 @@ class UccReliefControllerSpec extends BaseSpec {
   }
 
   "postUccReliefItemPage" should {
-    "redirect to the next step in the add other goods journey when successfully submitted" in {
-
-      val ppi               = PurchasedProductInstance(
-        iid = "someIid",
-        path = ProductPath("other-goods/adult/adult-clothing"),
-        isUccRelief = Some(false)
-      )
-      val jd                = JourneyData(
-        euCountryCheck = Some("greatBritain"),
-        arrivingNICheck = Some(true),
-        isUKResident = Some(false),
-        purchasedProductInstances = List(ppi)
-      )
-      val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
-      val response          = route(
-        app,
-        enhancedFakeRequest(
-          "POST",
-          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions"
+    def test(iid: String): Unit =
+      s"redirect to the next step in the add other goods journey when successfully submitted with PurchasedProductInstance iid $iid" in {
+        val ppi: PurchasedProductInstance = PurchasedProductInstance(
+          iid = iid,
+          path = ProductPath("other-goods/adult/adult-clothing"),
+          isUccRelief = Some(false)
         )
-          .withFormUrlEncodedBody("isUccRelief" -> "true")
-      ).get
+        val jd: JourneyData               = JourneyData(
+          euCountryCheck = Some("greatBritain"),
+          arrivingNICheck = Some(true),
+          isUKResident = Some(false),
+          purchasedProductInstances = List(ppi)
+        )
+        val cachedJourneyData             = Future.successful(Some(jd))
+        when(mockCache.fetch(any())) thenReturn cachedJourneyData
+        when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+        val response                      = route(
+          app,
+          enhancedFakeRequest(
+            "POST",
+            "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-exemptions"
+          )
+            .withFormUrlEncodedBody("isUccRelief" -> "true")
+        ).get
 
-      status(response)           shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+        status(response)           shouldBe SEE_OTHER
+        redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
 
-    }
+      }
+
+    Seq("someIid", "someIid2").foreach(test)
 
     "return a bad request when user selects an invalid value" in {
 

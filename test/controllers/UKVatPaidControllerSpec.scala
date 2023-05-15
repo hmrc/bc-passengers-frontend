@@ -27,7 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
@@ -184,7 +184,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
     "redirect to the excise page in the add alcohol journey when successfully submitted" in {
 
-      val ppi               = PurchasedProductInstance(iid = "brTuNh", path = ProductPath("alcohol/beer"), isVatPaid = Some(false))
+      val ppi               = PurchasedProductInstance(iid = "brXuNh", path = ProductPath("alcohol/beer"), isVatPaid = Some(false))
       val jd                = JourneyData(
         euCountryCheck = Some("greatBritain"),
         arrivingNICheck = Some(true),

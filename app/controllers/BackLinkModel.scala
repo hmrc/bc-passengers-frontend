@@ -136,8 +136,6 @@ class BackLinkModel @Inject() (
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case "add"                                                                          =>
-        Some(DashboardController.showDashboard)
       case _                                                                              =>
         None
     }

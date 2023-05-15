@@ -18,11 +18,10 @@ package models
 
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
-import play.api.data.Forms.{optional, _}
+import play.api.data.Forms._
 import play.api.data.Forms.tuple
 import play.api.data.validation._
 import play.api.data.{Form, Mapping}
-import services.CountriesService
 
 import scala.util.Try
 
@@ -167,18 +166,6 @@ object BringingDutyFreeDto {
   )
 }
 case class BringingDutyFreeDto(isBringingDutyFree: Boolean)
-
-object SelectedCountryDto {
-  def form(countryService: CountriesService, optionalItemsRemaining: Boolean = true): Form[SelectedCountryDto] = Form(
-    mapping(
-      "country"        -> text.verifying("error.country.invalid", code => countryService.isValidCountryCode(code)),
-      "itemsRemaining" -> optional(number)
-        .verifying("error.required", i => optionalItemsRemaining || i.isDefined)
-        .transform[Int](_.getOrElse(0), i => Some(i))
-    )(SelectedCountryDto.apply)(SelectedCountryDto.unapply)
-  )
-}
-case class SelectedCountryDto(country: String, itemsRemaining: Int)
 
 object AgeOver17Dto {
   val form: Form[AgeOver17Dto] = Form(

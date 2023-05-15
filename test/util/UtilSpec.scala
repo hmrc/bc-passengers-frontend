@@ -16,7 +16,8 @@
 
 package util
 
-import play.api.data.validation
+import models.ProductPath
+import play.api.data.validation._
 
 class UtilSpec extends BaseSpec {
 
@@ -34,14 +35,47 @@ class UtilSpec extends BaseSpec {
 
     "restrict negative value like -95 to old constraint" in {
 
-      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(validation.Valid) should be(false)
+      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(Valid) should be(false)
     }
 
     "restrict negative value like -9.50" in {
 
-      blankOkCostCheckConstraint("cost").apply("-9.50").equals(validation.Valid) should be(false)
+      blankOkCostCheckConstraint("cost").apply("-9.50").equals(Valid) should be(false)
     }
 
+    "return failed validation when a value greater than 9999999999 is passed" in {
+      blankOkCostCheckConstraint(
+        productPathMessageKey = "other-goods.adult.adult-clothing"
+      )("99999999999.00") shouldBe Invalid(
+        Seq(ValidationError("error.exceeded.max.cost.other-goods.adult.adult-clothing"))
+      )
+    }
+
+    "return failed validation when a positive value with more than 2 decimal places is passed" in {
+      blankOkCostCheckConstraint(
+        productPathMessageKey = "other-goods.adult.adult-clothing"
+      )("95.999") shouldBe Invalid(Seq(ValidationError("error.invalid.format.cost.other-goods.adult.adult-clothing")))
+    }
+
+    "return successful validation when an empty string is passed" in {
+      blankOkCostCheckConstraint(productPathMessageKey = "other-goods.adult.adult-clothing")("") shouldBe Valid
+    }
+
+    "return correctly formatted string value" in {
+      formatMonetaryValue(0.012) shouldBe "0.01"
+    }
   }
 
+  "validating limits" should {
+    "return the correct product path" in {
+      calculatorLimitConstraintBigDecimal(
+        limits = Map(
+          "L-WINE"   -> 2.2222,
+          "L-WINESP" -> 4.4444
+        ),
+        applicableLimits = List("L-WINE", "L-WINESP"),
+        path = ProductPath(path = "alcohol/sparkling-wine")
+      ) shouldBe Some(ProductPath(path = "alcohol/sparkling-wine"))
+    }
+  }
 }

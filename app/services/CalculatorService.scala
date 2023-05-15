@@ -74,7 +74,7 @@ class CalculatorService @Inject() (
         }
 
       case None =>
-        logger.debug("No items available for limits request")
+        logger.error("No items available for limits request")
         Future.successful(LimitUsageCantBuildCalcReqResponse)
     }
 

@@ -88,48 +88,125 @@ class ProductTreeNodeSpec extends BaseSpec {
       )
     }
 
-    "return the correct display description for cigarettes" in {
+    "return the correct display description for cigarettes" which {
+      def test(noOfSticks: Int, name: String): Unit =
+        s"has a noOfSticks value of $noOfSticks" in {
+          val productTreeLeaf: ProductTreeLeaf                   = ProductTreeLeaf(
+            token = "cigarettes",
+            name = "label.tobacco.cigarettes",
+            rateID = "TOB/A1/CIGRT",
+            templateId = "cigarettes",
+            applicableLimits = List("L-CIGRT")
+          )
+          val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+            path = ProductPath(path = "tobacco/cigarettes"),
+            iid = "iid0",
+            noOfSticks = Some(noOfSticks),
+            country = Some(
+              Country(
+                code = "EG",
+                countryName = "title.egypt",
+                alphaTwoCode = "EG",
+                isEu = false,
+                isCountry = true,
+                countrySynonyms = Nil
+              )
+            ),
+            currency = Some("EGP"),
+            cost = Some(BigDecimal(10.234))
+          )
 
-      val productTreeLeaf          = ProductTreeLeaf("cigarettes", "Cigarettes", "TOB/A1/CIGRT", "cigarettes", Nil)
-      val purchasedProductInstance = PurchasedProductInstance(
-        ProductPath("tobacco/cigarettes"),
-        "iid0",
-        Some(1.54332),
-        Some(20),
-        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-        None,
-        Some("AUD"),
-        Some(BigDecimal(10.234))
-      )
-      productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
-        ("label.X_X", List("20", "Cigarettes"))
-      )
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
-        ("label.X_X", List("20", "Cigarettes"))
+          productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
+            ("label.X_X", List(noOfSticks.toString, name))
+          )
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
+            ("label.X_X", List(noOfSticks.toString, name))
+          )
+        }
+
+      Seq((1, "label.tobacco.cigarettes.single"), (2, "label.tobacco.cigarettes")).foreach(args =>
+        (test _).tupled(args)
       )
     }
 
-    "return the correct display description for cigars" in {
+    "return the correct display description for cigars" which {
+      def test(noOfSticks: Int, name: String): Unit =
+        s"has a noOfSticks value of $noOfSticks" in {
+          val productTreeLeaf: ProductTreeLeaf                   = ProductTreeLeaf(
+            token = "cigars",
+            name = "label.tobacco.cigars",
+            rateID = "TOB/A1/CIGAR",
+            templateId = "cigars",
+            applicableLimits = List("L-CIGAR")
+          )
+          val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+            path = ProductPath(path = "tobacco/cigars"),
+            iid = "iid0",
+            weightOrVolume = Some(1.54332),
+            noOfSticks = Some(noOfSticks),
+            country = Some(
+              Country(
+                code = "EG",
+                countryName = "title.egypt",
+                alphaTwoCode = "EG",
+                isEu = false,
+                isCountry = true,
+                countrySynonyms = Nil
+              )
+            ),
+            currency = Some("EGP"),
+            cost = Some(BigDecimal(10.234))
+          )
 
-      val productTreeLeaf          = ProductTreeLeaf("cigars", "Cigars", "TOB/A1/CIGAR", "cigars", Nil)
-      val purchasedProductInstance = PurchasedProductInstance(
-        ProductPath("tobacco/cigars"),
-        "iid0",
-        Some(1.54332),
-        Some(5),
-        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-        None,
-        Some("AUD"),
-        Some(BigDecimal(10.234))
+          productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
+            ("label.X_X", List(noOfSticks.toString, name))
+          )
+          productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
+            ("label.X_X_Xg", List(noOfSticks.toString, name, "1543.32"))
+          )
+        }
+
+      Seq((1, "label.tobacco.cigars.single"), (2, "label.tobacco.cigars")).foreach(args => (test _).tupled(args))
+    }
+  }
+
+  "Calling ProductTreeLeaf.isValid" should {
+    "return false for an invalid templateId" in {
+      val productTreeLeaf: ProductTreeLeaf                   = ProductTreeLeaf(
+        token = "chewing-tobacco",
+        name = "label.tobacco.chewing-tobacco",
+        rateID = "TOB/A1/OTHER",
+        templateId = "hello",
+        applicableLimits = List("L-LOOSE")
       )
-      productTreeLeaf.isValid(purchasedProductInstance)                            shouldBe true
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = false) shouldBe Some(
-        ("label.X_X", List("5", "Cigars"))
+      val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+        path = ProductPath(path = "tobacco/chewing-tobacco"),
+        iid = "iid0"
       )
-      productTreeLeaf.getDescriptionLabels(purchasedProductInstance, long = true)  shouldBe Some(
-        ("label.X_X_Xg", List("5", "Cigars", "1543.32"))
+
+      productTreeLeaf.isValid(purchasedProductInstance) shouldBe false
+    }
+  }
+
+  "Calling ProductTreeBranch.isLeaf" should {
+    "return false" in {
+      val productTreeBranch: ProductTreeBranch = ProductTreeBranch(
+        token = "cat1",
+        name = "Category1",
+        children = List(
+          ProductTreeLeaf(
+            token = "leaf1",
+            name = "someName",
+            rateID = "someRateID",
+            templateId = "someTemplateID",
+            applicableLimits = Nil
+          )
+        )
       )
+
+      productTreeBranch.isLeaf shouldBe false
     }
   }
 }

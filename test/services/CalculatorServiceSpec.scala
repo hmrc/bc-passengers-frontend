@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import connectors.Cache
-import models.{PurchasedItem, _}
+import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -28,6 +28,7 @@ import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
@@ -1092,74 +1093,84 @@ class CalculatorServiceSpec extends BaseSpec {
       )(any(), any(), any(), any())
     }
 
-    "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse when call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new LocalSetup {
+    "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse" +
+      "when call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new LocalSetup {
 
-      val jd: JourneyData = JourneyData(
-        euCountryCheck = Some("nonEuOnly"),
-        ageOver17 = Some(true),
-        arrivingNICheck = Some(false),
-        privateCraft = Some(false),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            ProductPath("other-goods/antiques"),
-            iid = "iid0",
-            country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-            currency = Some("CAD"),
-            cost = Some(BigDecimal("2.00"))
-          ),
-          PurchasedProductInstance(
-            ProductPath("tobacco/cigars"),
-            iid = "iid1",
-            country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-            currency = Some("USD"),
-            cost = Some(BigDecimal("4.00"))
-          )
-        )
-      )
-
-      override lazy val simulatePurchasePriceOutOfBounds: Boolean = true
-
-      val messages: MessagesApi = injected[MessagesApi]
-
-      await(
-        service.calculate(jd)(implicitly, messages)
-      ) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
-
-      verify(injected[WsAllMethods], times(1)).GET(
-        meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"),
-        any(),
-        any()
-      )(any(), any(), any())
-
-      verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
-        meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(
-          CalculatorServiceRequest(
-            isPrivateCraft = false,
-            isAgeOver17 = true,
-            isArrivingNI = false,
-            List(
-              PurchasedItem(
-                PurchasedProductInstance(
-                  ProductPath("other-goods/antiques"),
-                  "iid0",
-                  None,
-                  None,
-                  Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-                  None,
-                  Some("CAD"),
-                  Some(BigDecimal("2.00"))
-                ),
-                ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil),
-                Currency("CAD", "title.canadian_dollars_cad", Some("CAD"), Nil),
-                BigDecimal("1.13"),
-                ExchangeRate("1.7654", todaysDate)
-              )
+        val jd: JourneyData = JourneyData(
+          euCountryCheck = Some("nonEuOnly"),
+          ageOver17 = Some(true),
+          arrivingNICheck = Some(false),
+          privateCraft = Some(false),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("other-goods/antiques"),
+              iid = "iid0",
+              country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              currency = Some("CAD"),
+              cost = Some(BigDecimal("2.00"))
+            ),
+            PurchasedProductInstance(
+              ProductPath("tobacco/cigars"),
+              iid = "iid1",
+              country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              currency = Some("USD"),
+              cost = Some(BigDecimal("4.00"))
             )
           )
-        ),
-        any()
-      )(any(), any(), any(), any())
+        )
+
+        override lazy val simulatePurchasePriceOutOfBounds: Boolean = true
+
+        val messages: MessagesApi = injected[MessagesApi]
+
+        await(
+          service.calculate(jd)(implicitly, messages)
+        ) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
+
+        verify(injected[WsAllMethods], times(1)).GET(
+          meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"),
+          any(),
+          any()
+        )(any(), any(), any())
+
+        verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
+          meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
+          meq(
+            CalculatorServiceRequest(
+              isPrivateCraft = false,
+              isAgeOver17 = true,
+              isArrivingNI = false,
+              List(
+                PurchasedItem(
+                  PurchasedProductInstance(
+                    ProductPath("other-goods/antiques"),
+                    "iid0",
+                    None,
+                    None,
+                    Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+                    None,
+                    Some("CAD"),
+                    Some(BigDecimal("2.00"))
+                  ),
+                  ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil),
+                  Currency("CAD", "title.canadian_dollars_cad", Some("CAD"), Nil),
+                  BigDecimal("1.13"),
+                  ExchangeRate("1.7654", todaysDate)
+                )
+              )
+            )
+          ),
+          any()
+        )(any(), any(), any(), any())
+      }
+
+    "return CalculatorServiceCantBuildCalcReqResponse" in {
+      val messages: MessagesApi      = injected[MessagesApi]
+      val service: CalculatorService = injected[CalculatorService]
+
+      val response: CalculatorServiceResponse = await(service.calculate(JourneyData())(implicitly, messages))
+
+      response shouldBe CalculatorServiceCantBuildCalcReqResponse
     }
   }
 
@@ -1308,6 +1319,76 @@ class CalculatorServiceSpec extends BaseSpec {
 
       previousPaidCalc shouldBe previousPaidProbable
 
+    }
+  }
+
+  "Calling CalculatorService.limitUsage" should {
+    val jsonObj: JsObject = Json.obj(
+      "limits" -> Json.obj(
+        "L-WINE" -> "0.4444"
+      )
+    )
+
+    val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+      path = ProductPath("alcohol/wine"),
+      iid = "iid0"
+    )
+
+    val calculation: Calculation = Calculation(
+      excise = "0.00",
+      customs = "0.00",
+      vat = "0.00",
+      allTax = "0.00"
+    )
+
+    val liabilityDetails: LiabilityDetails = LiabilityDetails(
+      totalExciseGBP = "0.00",
+      totalCustomsGBP = "0.00",
+      totalVATGBP = "0.00",
+      grandTotalGBP = "0.00"
+    )
+
+    val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(purchasedProductInstance)
+
+    val declarationResponse: DeclarationResponse = DeclarationResponse(
+      calculation = calculation,
+      oldPurchaseProductInstances = oldPurchasedProductInstances,
+      liabilityDetails = liabilityDetails
+    )
+
+    val journeyData: JourneyData = JourneyData(
+      privateCraft = Some(false),
+      ageOver17 = Some(false),
+      arrivingNICheck = Some(false),
+      declarationResponse = Some(declarationResponse)
+    )
+
+    val service: CalculatorService = injected[CalculatorService]
+
+    "return LimitUsageSuccessResponse" in {
+      when(
+        injected[WsAllMethods].POST[LimitRequest, JsObject](
+          meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/limits"),
+          any(),
+          any()
+        )(any(), any(), any(), any())
+      ).thenReturn(Future.successful(jsonObj))
+
+      val response: LimitUsageResponse = await(service.limitUsage(journeyData))
+
+      response shouldBe LimitUsageSuccessResponse(Map("L-WINE" -> "0.4444"))
+
+      verify(injected[WsAllMethods], times(1)).POST(
+        meq(s"http://passengers-duty-calculator.service:80/passengers-duty-calculator/limits"),
+        any(),
+        any()
+      )(any(), any(), any(), any())
+    }
+
+    "return LimitUsageCantBuildCalcReqResponse" in {
+      val response: LimitUsageResponse = await(service.limitUsage(JourneyData()))
+
+      response shouldBe LimitUsageCantBuildCalcReqResponse
     }
   }
   // scalastyle:on magic.number

@@ -25,13 +25,13 @@ import scala.util.Try
 
 package object util {
 
-  val decimalFormat10 = {
+  val decimalFormat10: DecimalFormat = {
     val df = new DecimalFormat("0.##########")
     df.setRoundingMode(RoundingMode.DOWN)
     df
   }
 
-  val decimalFormat5 = {
+  val decimalFormat5: DecimalFormat = {
     val df = new DecimalFormat("0.#####")
     df.setRoundingMode(RoundingMode.UP)
     df
@@ -75,23 +75,6 @@ package object util {
       JsObject(jsObject.fields.flatMap(executePartials(_).toList))
     }
   }
-
-  def bigDecimalCheckConstraint(errorSubString: String, decimalPlaces: Int): Constraint[String] =
-    Constraint("constraints.bigdecimalcheck") { plainText =>
-      val errors = plainText match {
-        case s if s == ""                                               => Seq(ValidationError(s"error.required.$errorSubString"))
-        case s if Try(s.toDouble).toOption.fold(true)(d => d <= 0.0)    =>
-          Seq(ValidationError(s"error.invalid.characters.$errorSubString"))
-        case s if !s.matches(s"^[0-9]+(\\.[0-9]{1,$decimalPlaces})?$$") =>
-          Seq(ValidationError(s"error.invalid.format.$errorSubString"))
-        case _                                                          => Nil
-      }
-      if (errors.isEmpty) {
-        Valid
-      } else {
-        Invalid(errors)
-      }
-    }
 
   def calculatorLimitConstraintOptionInt(
     limits: Map[String, BigDecimal] = Map.empty,
@@ -185,12 +168,4 @@ package object util {
     } else {
       messages("label.no")
     }
-
-  def prefixErrorMessage(title: String, hasError: Boolean)(implicit messages: Messages): String =
-    if (hasError) {
-      messages("label.error") + " " + title
-    } else {
-      title
-    }
-
 }
