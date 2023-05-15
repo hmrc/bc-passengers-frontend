@@ -136,8 +136,6 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case "add"                                                                          =>
-        Some(DashboardController.showDashboard)
       case x // other goods has cancel button that is because it is following different pattern of adding items
           if path.endsWith("select-goods/alcohol")
             || path.endsWith("select-goods/tobacco") =>

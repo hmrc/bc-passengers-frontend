@@ -226,7 +226,7 @@ class VatResBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  "Going back from select-goods/acohol page" should {
+  "Going back from select-goods/alcohol page" should {
 
     "return user to the dashboard page" in new LocalSetup {
 

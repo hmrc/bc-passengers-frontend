@@ -34,7 +34,8 @@ class SelectProductsViewSpec extends BaseViewSpec {
   val viewViaApply: HtmlFormat.Appendable = injected[select_products].apply(
     selectProductsForm = validForm,
     items = List(("label.other-goods.electronic-devices.televisions", "televisions")),
-    path = productPath
+    path = productPath,
+    None
   )(
     request = request,
     messages = messages,
@@ -47,13 +48,15 @@ class SelectProductsViewSpec extends BaseViewSpec {
     path = productPath,
     request = request,
     messages = messages,
-    appConfig = appConfig
+    appConfig = appConfig,
+    backLink = None
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[select_products].f(
     validForm,
     List(("televisions", "label.other-goods.electronic-devices.televisions")),
-    productPath
+    productPath,
+    None
   )(request, messages, appConfig)
 
   "SelectProductsView" when {
