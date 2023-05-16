@@ -17,12 +17,11 @@
 package controllers
 
 import config.AppConfig
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BackLinkModel @Inject() (
-  appConfig: AppConfig
-) {
+class BackLinkModel @Inject() (appConfig: AppConfig) {
 
   import routes._
 
@@ -31,7 +30,8 @@ class BackLinkModel @Inject() (
 
   def backLinkVatRes(context: LocalContext): Option[String] = {
 
-    val location = context.request.path.split('/').last
+    val path     = context.request.path
+    val location = path.split('/').last
 
     def eucc     = context.journeyData.flatMap(_.euCountryCheck)
     def boa      = context.journeyData.flatMap(_.bringingOverAllowance).getOrElse(false)
@@ -83,7 +83,7 @@ class BackLinkModel @Inject() (
             iid
           )
         )
-      case "eu-evidence-check" if eucc == Some("euOnly") & !arN                           =>
+      case "eu-evidence-check" if eucc.contains("euOnly") & !arN                          =>
         val iid = getIid(context.request.path)
         context.request.path match {
           case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
@@ -92,11 +92,11 @@ class BackLinkModel @Inject() (
         }
       case "gb-ni-no-need-to-use-service"                                                 =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
-      case "goods-brought-into-northern-ireland" if eucc != Some("greatBritain")          =>
+      case "goods-brought-into-northern-ireland" if !eucc.contains("greatBritain")        =>
         Some(ArrivingNIController.loadArrivingNIPage)
-      case "goods-brought-into-northern-ireland" if eucc == Some("greatBritain") & !ukr   =>
+      case "goods-brought-into-northern-ireland" if eucc.contains("greatBritain") & !ukr  =>
         Some(UKResidentController.loadUKResidentPage)
-      case "goods-brought-into-northern-ireland" if eucc == Some("greatBritain") & ukr    =>
+      case "goods-brought-into-northern-ireland" if eucc.contains("greatBritain") & ukr   =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
       case "goods-brought-into-great-britain-iom"                                         =>
         Some(ArrivingNIController.loadArrivingNIPage)
@@ -136,6 +136,10 @@ class BackLinkModel @Inject() (
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
+      case x // other goods has cancel button that is because it is following different pattern of adding items
+          if path.endsWith("select-goods/alcohol")
+            || path.endsWith("select-goods/tobacco") =>
+        Some(DashboardController.showDashboard)
       case _                                                                              =>
         None
     }

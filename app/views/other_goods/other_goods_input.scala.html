@@ -37,7 +37,7 @@
 
 @customHeading = @{ otherItemMode match { case "create" => messages("label.other-goods.item-of-other-goods") case "edit" => messages(s"label.${path.toMessageKey}") case _ => messages("label.other-goods.item-of-other-goods")}}
 
-@govukLayout(pageTitle = Some(title(form, customTitle))) {
+@govukLayout(pageTitle = Some(title(form, customTitle)), backLink = Some(controllers.routes.SelectProductController.cancel.url)) {
 
     @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm())(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
 
@@ -117,10 +117,6 @@
         </fieldset>
 
         @button("label.continue")
-
-        <div>
-            <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
-        </div>
 
     }
 }
