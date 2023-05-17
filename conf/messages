@@ -1593,6 +1593,7 @@ heading.amending_declaration = Amending your declaration
 label.name = Name
 label.reference_number = Reference number
 label.amount_paid = Amount paid
+label.amount_paid_on_items_declared = Amount paid on items declared
 label.items_declared = Items declared
 label.purchased_in = Purchased in
 label.tax_type = Type of tax or duty
@@ -1699,6 +1700,8 @@ head.error.pay_now_if_you_want_to = Select yes if you want to pay now
 error.pay_now_if_you_want_to = Select yes if you want to pay now
 label.tax_on_all_if_go_over_allowance = You pay tax on all items within an allowance category if you go over that allowance.
 label.additional_tax_due_on_these_goods = Additional tax due on these goods
+label.tax_due_on_declaration = Tax due on declaration
+label.incomplete_payment = Incomplete payment for your declaration
 
 # BETA Banner
 feedback.before = This is a new service - your

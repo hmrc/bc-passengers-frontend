@@ -33,6 +33,7 @@
 
         @h1(messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))
         <table class="govuk-table">
+         <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.tax_due_on_declaration")</caption>
          <thead class="govuk-table__head">
           <tr class="govuk-table__row">
            <th scope="col" class="govuk-table__header">@messages("label.item")</th>
@@ -66,6 +67,7 @@
         </table>
 
         <table class="govuk-table margin-bottom-30">
+            <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.incomplete_payment")</caption>
             <tbody class="govuk-table__body" id="delta">
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>

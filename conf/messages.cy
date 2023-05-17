@@ -1593,6 +1593,7 @@ heading.amending_declaration = Diwygio’ch datganiad
 label.name = Enw
 label.reference_number = Cyfeirnod
 label.amount_paid = Swm a dalwyd
+label.amount_paid_on_items_declared = Swm a dalwyd ar eitemau a ddatganwyd
 label.items_declared = Eitemau wedi’u datgan
 label.purchased_in = Prynwyd yn
 label.tax_type = Math o dreth neu doll
@@ -1699,6 +1700,8 @@ head.error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
 error.pay_now_if_you_want_to = Dewiswch ‘Iawn’ os ydych am dalu nawr
 label.tax_on_all_if_go_over_allowance = Rydych yn talu treth ar bob eitem o fewn categori lwfans, os byddwch yn mynd dros y lwfans hwnnw.
 label.additional_tax_due_on_these_goods = Treth ychwanegol sy’n ddyledus ar y nwyddau hyn
+label.tax_due_on_declaration = Treth sy’n ddyledus ar ddatganiad
+label.incomplete_payment = Taliad anghyflawn ar gyfer eich datganiad
 
 # BETA Banner
 feedback.before = Gwasanaeth newydd yw hwn – bydd eich

@@ -104,9 +104,8 @@
       </div>
   </dl>
 
-  @h2(messages("label.items_declared"))
-
   <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">@messages("label.items_declared")</caption>
       <thead class="govuk-table__head">
           <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">@messages("label.item")</th>
@@ -141,6 +140,7 @@
 
   @if(deltaCalc.isDefined && oldAllTax.isDefined){
       <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.amount_paid_on_items_declared")</caption>
           <tbody class="govuk-table__body" id="delta">
           <tr class="govuk-table__row">
               <td class="govuk-table__cell" colspan="2" id="prev-paid">@messages("label.amount_paid_previously")</td>
@@ -155,8 +155,8 @@
       </table>
   }
 
-  @h2(messages("label.payment_breakdown"))
   <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">@messages("label.payment_breakdown")</caption>
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">@messages("label.tax_type")</th>
