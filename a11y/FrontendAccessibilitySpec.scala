@@ -1,11 +1,25 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import config.AppConfig
-import models.{AgeOver17Dto, AlcoholDto, BringingDutyFreeDto, BringingOverAllowanceDto, ClaimedVatResDto, DeclarationRetrievalDto, EnterYourDetailsDto, EuCountryCheckDto, IrishBorderDto, JourneyData, OtherGoodsDto, OtherGoodsSearchItem, PrivateCraftDto, ProductPath, SelectProductsDto, TobaccoDto, UserInformation}
+import models._
 import org.joda.time.DateTime
 import org.scalacheck.Arbitrary
-import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.twirl.api.Html
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
 import views.html._
@@ -15,30 +29,23 @@ import views.html.declaration._
 import views.html.errors.purchase_price_out_of_bounds
 import views.html.other_goods.other_goods_input
 import views.html.purchased_products._
-import views.html.tobacco.{no_of_sticks_input, no_of_sticks_weight_or_volume_input, tobacco_input, weight_or_volume_input}
+import views.html.templates.GovukLayoutWrapper
+import views.html.tobacco.tobacco_input
 import views.html.travel_details._
 
 import scala.util.Try
 
 class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
-  // If you wish to override the GuiceApplicationBuilder to provide additional
-  // config for your service, you can do that by overriding fakeApplication
-  override def fakeApplication(): Application =
-    new GuiceApplicationBuilder()
-      .configure()
-      .build()
 
   // Some view template parameters can't be completely arbitrary,
-  // but need to have sane values for pages to render properly.
+  // but need to have same values for pages to render properly.
   // eg. if there is validation or conditional logic in the twirl template.
   // These can be provided by calling `fixed()` to wrap an existing concrete value.
-  val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  implicit val arbConfig: Arbitrary[AppConfig] = fixed(appConfig)
+  private val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val booleanForm: Form[Boolean] = Form("value" -> boolean)
-  implicit val arbForm: Arbitrary[Form[Boolean]] = fixed(booleanForm)
+  private val booleanForm: Form[Boolean] = Form("value" -> boolean)
 
-  val alcoholForm: Form[AlcoholDto] = Form(
+  private val alcoholForm: Form[AlcoholDto] = Form(
     mapping(
       "weightOrVolume" -> optional(text)
         .transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), _ => None),
@@ -52,20 +59,15 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       "hasEvidence"    -> optional(boolean)
     )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
-  implicit val arbAlcoholInput: Arbitrary[Form[AlcoholDto]] = fixed(alcoholForm)
 
-  implicit val arbDecRetrievalInput: Arbitrary[Form[DeclarationRetrievalDto]] = fixed(DeclarationRetrievalDto.form())
-
-  implicit val arbEnterYourDetailsInput: Arbitrary[Form[EnterYourDetailsDto]] = fixed(EnterYourDetailsDto.form(DateTime.now()))
-
-  val otherGoodsForm: Form[OtherGoodsDto] = Form(
+  private val otherGoodsForm: Form[OtherGoodsDto] = Form(
     mapping(
       "searchTerm" -> optional(text)
         .transform[Option[OtherGoodsSearchItem]](
-        _.map(_ => OtherGoodsSearchItem("label.other-goods.chocolate", ProductPath("other-goods/other")),
+          _.map(_ => OtherGoodsSearchItem("label.other-goods.chocolate", ProductPath("other-goods/other")),
+          ),
+          _.map(_.name)
         ),
-        _.map(_.name)
-      ),
       "country" -> ignored(""),
       "originCountry" -> optional(text),
       "currency" -> ignored(""),
@@ -76,6 +78,32 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       "hasEvidence" -> optional(boolean)
     )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
   )
+
+  private val tobaccoForm: Form[TobaccoDto] = Form(
+    mapping(
+      "noOfSticks" -> optional(number),
+      "weightOrVolume" -> optional(ignored(BigDecimal(0))),
+      "country" -> text,
+      "originCountry" -> optional(text),
+      "currency" -> ignored(""),
+      "cost" -> ignored(BigDecimal(0)),
+      "isVatPaid" -> optional(boolean),
+      "isExcisePaid" -> optional(boolean),
+      "isCustomPaid" -> optional(boolean),
+      "hasEvidence" -> optional(boolean)
+    )(TobaccoDto.apply)(TobaccoDto.unapply)
+  )
+
+  implicit val arbConfig: Arbitrary[AppConfig] = fixed(appConfig)
+
+  implicit val arbForm: Arbitrary[Form[Boolean]] = fixed(booleanForm)
+
+  implicit val arbAlcoholInput: Arbitrary[Form[AlcoholDto]] = fixed(alcoholForm)
+
+  implicit val arbDecRetrievalInput: Arbitrary[Form[DeclarationRetrievalDto]] = fixed(DeclarationRetrievalDto.form())
+
+  implicit val arbEnterYourDetailsInput: Arbitrary[Form[EnterYourDetailsDto]] = fixed(EnterYourDetailsDto.form(DateTime.now()))
+
   implicit val arbOtherGoodsInput: Arbitrary[Form[OtherGoodsDto]] = fixed(otherGoodsForm)
 
   implicit val arbJourneyData: Arbitrary[JourneyData] = fixed(JourneyData.apply())
@@ -96,21 +124,12 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
 
   implicit val arbBringingDutyFreeInput: Arbitrary[Form[BringingDutyFreeDto]] = fixed(BringingDutyFreeDto.form)
 
-  val tobaccoForm: Form[TobaccoDto] = Form(
-    mapping(
-      "noOfSticks" -> optional(number),
-      "weightOrVolume" -> optional(ignored(BigDecimal(0))),
-      "country" -> text,
-      "originCountry" -> optional(text),
-      "currency" -> ignored(""),
-      "cost" -> ignored(BigDecimal(0)),
-      "isVatPaid" -> optional(boolean),
-      "isExcisePaid" -> optional(boolean),
-      "isCustomPaid" -> optional(boolean),
-      "hasEvidence" -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
-  )
   implicit val arbTobaccoInput: Arbitrary[Form[TobaccoDto]] = fixed(tobaccoForm)
+
+  implicit val arbHtmlInput: Arbitrary[Html] = fixed(Html.apply(""))
+
+  implicit val arbConfirmRemoveInput: Arbitrary[Form[ConfirmRemoveDto]] = fixed(ConfirmRemoveDto.form)
+
   // Another limitation of the framework is that it can generate Arbitrary[T] but not Arbitrary[T[_]],
   // so any nested types (like a Play `Form[]`) must similarly be provided by wrapping
   // a concrete value using `fixed()`.  Usually, you'll have a value you can use somewhere else
@@ -123,7 +142,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
 
   // This is the layout class or classes which are injected into all full pages in your service.
   // This might be `HmrcLayout` or some custom class(es) that your service uses as base page templates.
-  val layoutClasses = Seq(classOf[views.html.templates.GovukLayoutWrapper])
+  val layoutClasses: Seq[Class[GovukLayoutWrapper]] = Seq(classOf[GovukLayoutWrapper])
 
   // this partial function wires up the generic render() functions with arbitrary instances of the correct types.
   // Important: there's a known issue with intellij incorrectly displaying warnings here, you should be able to ignore these for now.
@@ -152,11 +171,10 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case nothing_to_declare: nothing_to_declare => render(nothing_to_declare)
     case over_ninety_seven_thousand_pounds: over_ninety_seven_thousand_pounds => render(over_ninety_seven_thousand_pounds)
     case select_products: select_products => render(select_products)
+    case remove: remove => render(remove)
     case zero_to_declare: zero_to_declare => render(zero_to_declare)
     // tobacco
-    case no_of_sticks_input: no_of_sticks_input => render(no_of_sticks_input)
-    case no_of_sticks_weight_or_volume_input: no_of_sticks_weight_or_volume_input => render(no_of_sticks_weight_or_volume_input)
-    case weight_or_volume_input: weight_or_volume_input => render(weight_or_volume_input)
+    case tobacco_input: tobacco_input => render(tobacco_input)
     // travel_details
     case arriving_ni: arriving_ni => render(arriving_ni)
     case bringing_duty_free_question: bringing_duty_free_question => render(bringing_duty_free_question)
@@ -181,4 +199,16 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   }
 
   runAccessibilityTests()
+
+  // TODO We are missing the following views as they were clashing with others, the ideal will be to
+  //  separate and isolate them in different view tests instead of just running all the AccessibilityTests together,
+  //  see https://github.com/hmrc/sbt-accessibility-linter#running-accessibility-checks for more info.
+  //    case zero_declaration: zero_declaration => render(zero_declaration)
+  //    case dashboard: dashboard => render(dashboard)
+
+  // TODO These views are not picked up as accessible pending for missing wiring,
+  //  tobacco_input is the main template for these views so they can be tested individually in their own view tests.
+  //    case no_of_sticks_input: no_of_sticks_input => render(no_of_sticks_input)
+  //    case no_of_sticks_weight_or_volume_input: no_of_sticks_weight_or_volume_input => render(no_of_sticks_weight_or_volume_input)
+  //    case weight_or_volume_input: weight_or_volume_input => render(weight_or_volume_input)
 }
