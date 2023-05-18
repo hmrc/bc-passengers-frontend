@@ -37,7 +37,8 @@
 @p(Html(messages("label.no_tax_or_duty")))
 
 <table class="govuk-table responsive-table margin-bottom-30">
-    <thead>
+    <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.tax_due_on_these_goods")</caption>
+    <thead class="govuk-table__head">
     <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="col">@messages("label.item")</th>
         <th class="govuk-table__header" scope="col">@messages("label.price")</th>
@@ -72,7 +73,8 @@
     </tbody>
 </table>
 @if(deltaCalc.isDefined){
-<table class="govuk-table responsive-table margin-bottom-30">
+  <table class="govuk-table responsive-table margin-bottom-30">
+    <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.additional_tax_due_on_these_goods")</caption>
     <tbody id="delta">
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
@@ -84,7 +86,7 @@
         <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
     </tr>
     </tbody>
-</table>
+  </table>
 }
     <div class="govuk-inset-text">
         <p>@messages("label.tax_on_all_if_go_over_allowance")</p>

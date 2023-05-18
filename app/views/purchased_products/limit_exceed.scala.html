@@ -35,6 +35,7 @@
 
         @p(Html(messages("label.limit_exceed_tobacco")), id=Some("table-heading-tobacco"))
         <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-visually-hidden">@messages(headerLabel)</caption>
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="table-60 govuk-table__header" >@messages("label.type_of_tobacco")</th>
@@ -77,6 +78,7 @@
 
         @p(Html(messages("label.limit_exceed_alcohol")), id=Some("table-heading-alcohol"))
         <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-visually-hidden">@messages(headerLabel)</caption>
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="table-60 govuk-table__header">@messages("label.type_of_alcohol")</th>

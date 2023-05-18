@@ -40,6 +40,7 @@
   }
 
   <table class="govuk-table responsive-table margin-bottom-30">
+      <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.tax_due_on_these_goods")</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th class="govuk-table__header" scope="col">@messages("label.item")</th>
@@ -71,21 +72,22 @@
       </tr>
     </tbody>
   </table>
-@if(deltaCalc.isDefined){
-<table class="govuk-table responsive-table margin-bottom-30">
-  <tbody id="delta">
-  <tr class="govuk-table__row">
-    <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
-    <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
-  </tr>
+  @if(deltaCalc.isDefined){
+    <table class="govuk-table responsive-table margin-bottom-30">
+      <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.additional_tax_due_on_these_goods")</caption>
+      <tbody id="delta">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
+        <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
+      </tr>
 
-  <tr class="govuk-table__row">
-    <td class="govuk-table__cell total table-foot">@messages("label.total_due_now")</td>
-    <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
-  </tr>
-  </tbody>
-</table>
-}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell total table-foot">@messages("label.total_due_now")</td>
+        <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+      </tr>
+      </tbody>
+    </table>
+  }
   <div class="govuk-inset-text">
     <p>@messages("label.tax_on_all_if_go_over_allowance")</p>
   </div>
