@@ -16,23 +16,20 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConfig: ServicesConfig) {
 
-  private val contactHost                  = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = runModeConfiguration.get[String]("appName")
-  lazy val govUK: String                   = servicesConfig.getString("urls.govUK")
+  lazy val govUK: String = servicesConfig.getString("urls.govUK")
 
-  lazy val betaFeedbackUrl         = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
   lazy val declareGoodsUrl: String = servicesConfig.getString("external.url")
 
-  lazy val maxOtherGoods: Int    = runModeConfiguration.getOptional[Int]("max-other-goods-items").getOrElse(50)
-  lazy val minPaymentAmount: Int = runModeConfiguration.getOptional[Int]("min-payment-amount").getOrElse(9)
-  lazy val paymentLimit: Int     = runModeConfiguration.getOptional[Int]("payment-limit").getOrElse(97000)
+  lazy val maxOtherGoods: Int = runModeConfiguration.getOptional[Int]("max-other-goods-items").getOrElse(50)
+  lazy val paymentLimit: Int  = runModeConfiguration.getOptional[Int]("payment-limit").getOrElse(97000)
 
   // Feature Flags
   lazy val isVatResJourneyEnabled: Boolean       = runModeConfiguration.get[Boolean]("features.vat-res")
@@ -42,7 +39,5 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val countdown: Int                        = servicesConfig.getInt("timeout.countdown")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
-
-  val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
 }
