@@ -24,10 +24,8 @@
 
 @this(
     govukLayout: GovukLayout,
-    govukPhaseBanner: GovukPhaseBanner,
     govukBackLink: GovukBackLink,
     link: components.link,
-    phaseBanner: components.phaseBanner,
     HmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     languageSwitch: HmrcLanguageSelect,
     header: HmrcHeader,
@@ -77,8 +75,6 @@
 }
 
 @beforeContentBlock = {
-
-    @phaseBanner("beta")
 
     @if(appConfig.languageTranslationEnabled) {
         @languageSwitch(LanguageSelect(

@@ -1703,11 +1703,6 @@ label.additional_tax_due_on_these_goods = Treth ychwanegol sy’n ddyledus ar y 
 label.tax_due_on_declaration = Treth sy’n ddyledus ar ddatganiad
 label.incomplete_payment = Taliad anghyflawn ar gyfer eich datganiad
 
-# BETA Banner
-feedback.before = Gwasanaeth newydd yw hwn – bydd eich
-feedback.link = adborth
-feedback.after = yn ein helpu i’w wella.
-
 error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:
 
