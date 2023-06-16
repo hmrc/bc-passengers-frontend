@@ -57,5 +57,5 @@ Concat.groups := Seq(
 Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt IntegrationTest/scalafmt A11y/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle IntegrationTest/scalastyle A11y/scalastyle")

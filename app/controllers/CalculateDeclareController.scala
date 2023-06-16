@@ -60,7 +60,6 @@ class CalculateDeclareController @Inject() (
   val zero_to_declare: views.html.purchased_products.zero_to_declare,
   val done: views.html.purchased_products.done,
   val over_ninety_seven_thousand_pounds: views.html.purchased_products.over_ninety_seven_thousand_pounds,
-  val zero_declaration: views.html.declaration.zero_declaration,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
