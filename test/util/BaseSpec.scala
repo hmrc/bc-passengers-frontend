@@ -22,6 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
@@ -41,15 +42,15 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
   private def addToken[T](fakeRequest: FakeRequest[T]): FakeRequest[T] =
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
 
-//    (tags = fakeRequest.tags ++ Map(
-//      Token.NameRequestTag  -> csrfConfig.tokenName,
-//      Token.RequestTag      -> token
-//    )).withHeaders((csrfConfig.headerName, token))
-
-  def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
-  def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T](evidence)
+  def injected[T](c: Class[T]): T                                      = app.injector.instanceOf(c)
+  def injected[T](implicit evidence: ClassTag[T]): T                   = app.injector.instanceOf[T](evidence)
 
   def enhancedFakeRequest(method: String, uri: String): FakeRequest[AnyContentAsEmpty.type] = addToken(
     FakeRequest(method, uri)
   )
+
+  def getFormErrors(form: Form[_]): Set[(String, String)] = form.errors.map(error => error.key -> error.message).toSet
+
+  def buildExpectedFormErrors(items: (String, String)*): Set[(String, String)] = items.toSet
+
 }
