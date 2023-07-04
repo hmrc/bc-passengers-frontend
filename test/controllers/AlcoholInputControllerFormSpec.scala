@@ -22,89 +22,125 @@ import util.BaseSpec
 
 class AlcoholInputControllerFormSpec extends BaseSpec {
 
+  val alcoholItems: Seq[String]      = List("beer", "sparkling-wine", "spirits", "wine", "other", "cider")
+  val invalidCostInputs: Seq[String] = List("   ", "----", "***", "$5", "£399.70", "-100")
+
   "AlcoholInputController" when {
-    ".alcoholForm" should {
-      val beerPath: ProductPath          = ProductPath("alcohol/beer")
-      val sparklingWinePath: ProductPath = ProductPath("alcohol/sparkling-wine")
+    alcoholItems.foreach { item =>
+      val path: ProductPath = ProductPath(path = s"alcohol/$item")
 
-      "fail on empty string in weightOrVolume" in {
-        val form: Form[AlcoholDto] = injected[AlcoholInputController]
-          .alcoholForm(beerPath)
-          .bind(
-            Map(
-              "weightOrVolume" -> "",
-              "country"        -> "FR",
-              "currency"       -> "EUR",
-              "cost"           -> "50"
+      s".alcoholForm($path)" should {
+
+        "fail on empty string in weightOrVolume" in {
+          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            .alcoholForm(path)
+            .bind(
+              Map(
+                "weightOrVolume" -> "",
+                "country"        -> "FR",
+                "currency"       -> "EUR",
+                "cost"           -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.required.volume.alcohol.beer"
-      }
 
-      "fail on special character in weightOrVolume" in {
-        val form: Form[AlcoholDto] = injected[AlcoholInputController]
-          .alcoholForm(beerPath)
-          .bind(
-            Map(
-              "weightOrVolume" -> "***",
-              "country"        -> "FR",
-              "currency"       -> "EUR",
-              "cost"           -> "50"
+          getFormErrors(form) shouldBe buildExpectedFormErrors(
+            "weightOrVolume" -> s"error.required.volume.alcohol.$item"
+          )
+        }
+
+        "fail on special character in weightOrVolume" in {
+          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            .alcoholForm(path)
+            .bind(
+              Map(
+                "weightOrVolume" -> "***",
+                "country"        -> "FR",
+                "currency"       -> "EUR",
+                "cost"           -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.invalid.characters.volume"
-      }
 
-      "fail on more than 3 decimal places in weightOrVolume" in {
-        val form: Form[AlcoholDto] = injected[AlcoholInputController]
-          .alcoholForm(beerPath)
-          .bind(
-            Map(
-              "weightOrVolume" -> "4.5678",
-              "country"        -> "FR",
-              "currency"       -> "EUR",
-              "cost"           -> "50"
+          getFormErrors(form) shouldBe buildExpectedFormErrors("weightOrVolume" -> "error.invalid.characters.volume")
+        }
+
+        "fail on empty in weightOrVolume" in {
+          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            .alcoholForm(path)
+            .bind(
+              Map(
+                "weightOrVolume" -> "   ",
+                "country"        -> "FR",
+                "currency"       -> "EUR",
+                "cost"           -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.max.decimal.places.volume"
-      }
 
-      "pass on cost with comma separated thousands" in {
-        val form: Form[AlcoholDto] = injected[AlcoholInputController]
-          .alcoholForm(sparklingWinePath)
-          .bind(
-            Map(
-              "weightOrVolume" -> "90",
-              "country"        -> "FR",
-              "currency"       -> "EUR",
-              "cost"           -> "4,444.00"
+          getFormErrors(form) shouldBe buildExpectedFormErrors("weightOrVolume" -> "error.invalid.characters.volume")
+        }
+
+        "fail on more than 3 decimal places in weightOrVolume" in {
+          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            .alcoholForm(path)
+            .bind(
+              Map(
+                "weightOrVolume" -> "4.5678",
+                "country"        -> "FR",
+                "currency"       -> "EUR",
+                "cost"           -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe false
-        form.value.get shouldBe AlcoholDto(90.00, "FR", None, "EUR", 4444.00, None, None, None, None)
 
-      }
+          getFormErrors(form) shouldBe buildExpectedFormErrors("weightOrVolume" -> "error.max.decimal.places.volume")
+        }
 
-      "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
-        val form: Form[AlcoholDto] = injected[AlcoholInputController]
-          .alcoholForm(sparklingWinePath)
-          .bind(
-            Map(
-              "weightOrVolume" -> "300",
-              "country"        -> "IN",
-              "currency"       -> "INR",
-              "cost"           -> "5000.00"
+        "pass on cost with comma separated thousands" in {
+          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            .alcoholForm(path)
+            .bind(
+              Map(
+                "weightOrVolume" -> "90",
+                "country"        -> "FR",
+                "currency"       -> "EUR",
+                "cost"           -> "4,444.00"
+              )
             )
-          )
-        form.hasErrors shouldBe false
-        form.value.get shouldBe AlcoholDto(300.00, "IN", None, "INR", 5000.00, None, None, None, None)
+          form.hasErrors shouldBe false
+          form.value.get shouldBe AlcoholDto(90.00, "FR", None, "EUR", 4444.00, None, None, None, None)
 
+        }
+
+        "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
+          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            .alcoholForm(path)
+            .bind(
+              Map(
+                "weightOrVolume" -> "300",
+                "country"        -> "IN",
+                "currency"       -> "INR",
+                "cost"           -> "5000.00"
+              )
+            )
+          form.hasErrors shouldBe false
+          form.value.get shouldBe AlcoholDto(300.00, "IN", None, "INR", 5000.00, None, None, None, None)
+
+        }
+
+        invalidCostInputs.foreach { costInput =>
+          s"fail on special characters in cost=$costInput" in {
+            val form: Form[AlcoholDto] = injected[AlcoholInputController]
+              .alcoholForm(path)
+              .bind(
+                Map(
+                  "weightOrVolume" -> "300",
+                  "country"        -> "FR",
+                  "currency"       -> "EUR",
+                  "cost"           -> costInput
+                )
+              )
+
+            getFormErrors(form) shouldBe buildExpectedFormErrors("cost" -> "error.invalid.characters")
+          }
+        }
       }
     }
 

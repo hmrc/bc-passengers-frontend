@@ -22,154 +22,171 @@ import util.BaseSpec
 
 class TobaccoInputControllerFormSpec extends BaseSpec {
 
+  val tobaccoItems: Seq[String]      = List("cigarettes", "cigars", "cigarillos", "heated-tobacco")
+  val invalidCostInputs: Seq[String] = List("   ", "----", "***", "$5", "£399.70", "-100")
+
   "TobaccoInputController" when {
-    ".noOfSticksForm" should {
-      val path: ProductPath = ProductPath(path = "tobacco/cigarettes")
-
-      val path2: ProductPath = ProductPath(path = "tobacco/heated-tobacco")
-
-      "fail on empty string in noOfSticks" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path)
-          .bind(
-            Map(
-              "noOfSticks" -> "",
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> "50"
+    tobaccoItems.foreach { item =>
+      val path: ProductPath = ProductPath(path = s"tobacco/$item")
+      s".noOfSticksForm($item)" should {
+        "fail on empty string in noOfSticks" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "",
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size                     shouldBe 1
-        form.error("noOfSticks").get.message shouldBe "error.no_of_sticks.required.tobacco.cigarettes"
-      }
 
-      "fail on invalid characters in noOfSticks" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path)
-          .bind(
-            Map(
-              "noOfSticks" -> "***",
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> "50"
-            )
+          getFormErrors(form) shouldBe buildExpectedFormErrors(
+            "noOfSticks" -> s"error.no_of_sticks.required.tobacco.$item"
           )
-        form.hasErrors shouldBe true
-        form.errors.size                     shouldBe 1
-        form.error("noOfSticks").get.message shouldBe "error.invalid.characters.noofsticks.tobacco.cigarettes"
-      }
+        }
 
-      "fail on empty string in country" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path)
-          .bind(
-            Map(
-              "noOfSticks" -> "500",
-              "country"    -> "",
-              "currency"   -> "EUR",
-              "cost"       -> "50"
+        "fail on invalid characters in noOfSticks" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "***",
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size                  shouldBe 1
-        form.error("country").get.message shouldBe "error.country.invalid"
-      }
 
-      "fail on empty string in currency" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path2)
-          .bind(
-            Map(
-              "noOfSticks" -> "500",
-              "country"    -> "FR",
-              "currency"   -> "",
-              "cost"       -> "50"
-            )
+          getFormErrors(form) shouldBe buildExpectedFormErrors(
+            "noOfSticks" -> s"error.invalid.characters.noofsticks.tobacco.$item"
           )
-        form.hasErrors shouldBe true
-        form.errors.size                   shouldBe 1
-        form.error("currency").get.message shouldBe "error.currency.invalid"
-      }
+        }
 
-      "fail on empty string in cost" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path2)
-          .bind(
-            Map(
-              "noOfSticks" -> "500",
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> ""
+        "fail on decimal number in noOfSticks" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "4.0",
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size               shouldBe 1
-        form.error("cost").get.message shouldBe "error.required.tobacco.heated-tobacco"
-      }
 
-      "fail on special characters in cost" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path)
-          .bind(
-            Map(
-              "noOfSticks" -> "500",
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> "***"
-            )
+          getFormErrors(form) shouldBe buildExpectedFormErrors(
+            "noOfSticks" -> s"error.invalid.characters.noofsticks.tobacco.$item"
           )
-        form.hasErrors shouldBe true
-        form.errors.size               shouldBe 1
-        form.error("cost").get.message shouldBe "error.invalid.characters"
-      }
+        }
 
-      "fail on more than 2 decimal places in cost" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path2)
-          .bind(
-            Map(
-              "noOfSticks" -> "500",
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> "4.567"
+        "fail on empty string in country" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "500",
+                "country"    -> "",
+                "currency"   -> "EUR",
+                "cost"       -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size               shouldBe 1
-        form.error("cost").get.message shouldBe "error.invalid.format"
-      }
 
-      "fail when cost exceeds 9,999,999,999" in {
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path)
-          .bind(
-            Map(
-              "noOfSticks" -> "500",
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> "99999999999"
-            )
-          )
-        form.hasErrors shouldBe true
-        form.errors.size               shouldBe 1
-        form.error("cost").get.message shouldBe "error.exceeded.max"
-      }
+          getFormErrors(form) shouldBe buildExpectedFormErrors("country" -> "error.country.invalid")
+        }
 
-      "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
-        val noOfSticks: Int        = 1000
-        val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .noOfSticksForm(path)
-          .bind(
-            Map(
-              "noOfSticks" -> "1000",
-              "country"    -> "IN",
-              "currency"   -> "INR",
-              "cost"       -> "4500.00"
+        "fail on empty string in currency" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "500",
+                "country"    -> "FR",
+                "currency"   -> "",
+                "cost"       -> "50"
+              )
             )
-          )
-        form.hasErrors shouldBe false
-        form.value.get shouldBe TobaccoDto(Some(noOfSticks), None, "IN", None, "INR", 4500.00, None, None, None, None)
+
+          getFormErrors(form) shouldBe buildExpectedFormErrors("currency" -> "error.currency.invalid")
+        }
+
+        "fail on empty string in cost" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "500",
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> ""
+              )
+            )
+
+          getFormErrors(form) shouldBe buildExpectedFormErrors("cost" -> s"error.required.tobacco.$item")
+        }
+
+        invalidCostInputs.foreach { costInput =>
+          s"fail on special characters in cost=$costInput" in {
+            val form: Form[TobaccoDto] = injected[TobaccoInputController]
+              .noOfSticksForm(path)
+              .bind(
+                Map(
+                  "noOfSticks" -> "500",
+                  "country"    -> "FR",
+                  "currency"   -> "EUR",
+                  "cost"       -> costInput
+                )
+              )
+
+            getFormErrors(form) shouldBe buildExpectedFormErrors("cost" -> "error.invalid.characters")
+          }
+        }
+
+        "fail on more than 2 decimal places in cost" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "500",
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> "4.567"
+              )
+            )
+
+          getFormErrors(form) shouldBe buildExpectedFormErrors("cost" -> "error.invalid.format")
+        }
+
+        "fail when cost exceeds 9,999,999,999" in {
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "500",
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> "99999999999"
+              )
+            )
+
+          getFormErrors(form) shouldBe buildExpectedFormErrors("cost" -> "error.exceeded.max")
+        }
+
+        "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
+          val noOfSticks: Int        = 1000
+          val form: Form[TobaccoDto] = injected[TobaccoInputController]
+            .noOfSticksForm(path)
+            .bind(
+              Map(
+                "noOfSticks" -> "1000",
+                "country"    -> "IN",
+                "currency"   -> "INR",
+                "cost"       -> "4500.00"
+              )
+            )
+          form.hasErrors shouldBe false
+          form.value.get shouldBe TobaccoDto(Some(noOfSticks), None, "IN", None, "INR", 4500.00, None, None, None, None)
+        }
       }
     }
 
@@ -187,9 +204,10 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> "50"
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.required.weight.tobacco.rolling-tobacco"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors(
+          "weightOrVolume" -> "error.required.weight.tobacco.rolling-tobacco"
+        )
       }
 
       "fail on special characters in weightOrVolume" in {
@@ -203,9 +221,8 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> "50"
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.invalid.characters.weight"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors("weightOrVolume" -> "error.invalid.characters.weight")
       }
 
       "fail on more than 2 decimal places in weightOrVolume" in {
@@ -219,9 +236,8 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> "50"
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.max.decimal.places.weight"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors("weightOrVolume" -> "error.max.decimal.places.weight")
       }
 
       "fail on empty string in country" in {
@@ -235,9 +251,8 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> "50"
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size                  shouldBe 1
-        form.error("country").get.message shouldBe "error.country.invalid"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors("country" -> "error.country.invalid")
       }
 
       "fail on empty string in currency" in {
@@ -251,9 +266,8 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> "50"
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size                   shouldBe 1
-        form.error("currency").get.message shouldBe "error.currency.invalid"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors("currency" -> "error.currency.invalid")
       }
 
       "fail on empty string in cost" in {
@@ -267,9 +281,8 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> ""
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size               shouldBe 1
-        form.error("cost").get.message shouldBe "error.required.tobacco.rolling-tobacco"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors("cost" -> "error.required.tobacco.rolling-tobacco")
       }
 
       "pass on cost with comma separated thousands" in {
@@ -343,9 +356,8 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
               "cost"           -> "50"
             )
           )
-        form.hasErrors shouldBe true
-        form.errors.size                         shouldBe 1
-        form.error("weightOrVolume").get.message shouldBe "error.max.decimal.places.weight"
+
+        getFormErrors(form) shouldBe buildExpectedFormErrors("weightOrVolume" -> "error.max.decimal.places.weight")
       }
 
       "pass on cost with comma separated thousands" in {
