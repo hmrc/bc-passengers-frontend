@@ -16,7 +16,7 @@ lazy val microservice = Project(appName, file("."))
   // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
   .settings(libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always))
   // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
-  .settings(dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1")
+  .settings(dependencyOverrides += "com.ibm.icu" % "icu4j" % "72.1")
   .settings(defaultSettings())
   .settings(majorVersion := 1)
   .settings(
@@ -54,6 +54,7 @@ Concat.groups := Seq(
       )
     )
 )
+
 Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
 
