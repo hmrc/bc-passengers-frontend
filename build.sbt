@@ -54,6 +54,7 @@ Concat.groups := Seq(
       )
     )
 )
+
 Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
 

@@ -16,19 +16,19 @@
 
 package repositories
 
-import java.time.{Instant, LocalDate, LocalDateTime}
-import java.time.ZoneOffset.UTC
-
 import models.JourneyData
+import models.JourneyData.format
+import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.libs.json.{JsLookupResult, JsObject, Json}
+import play.api.libs.json.{JsLookupResult, JsObject}
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
+import java.time.ZoneOffset.UTC
+import java.time.{Instant, LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class BCPassengersSessionRepositoryISpec
@@ -37,31 +37,27 @@ class BCPassengersSessionRepositoryISpec
     with GuiceOneServerPerSuite
     with FutureAwaits
     with DefaultAwaitTimeout
+    with OptionValues
     with DefaultPlayMongoRepositorySupport[JsObject] {
-  val repository: BCPassengersSessionRepository = new BCPassengersSessionRepository(mongoComponent)
-  class LocalSetup {
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
 
-    await(repository.collection.drop().toFuture())
-  }
+  val repository: BCPassengersSessionRepository = new BCPassengersSessionRepository(mongoComponent)
+  implicit val hc: HeaderCarrier                = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
 
   "fetch" should {
-    "return None if no data exists" in new LocalSetup {
+    "return None if no data exists" in {
       repository.fetch[JourneyData]("journeyData").futureValue shouldBe None
     }
-    "return Some Journey Data if data exists" in new LocalSetup {
-      await(
-        repository.collection
-          .insertOne(Json.obj("_id" -> "fakesessionid", "journeyData" -> JourneyData(euCountryCheck = Some("Yes"))))
-          .toFuture()
-      )
-      await(repository.fetch[JourneyData]("journeyData")) shouldBe Some(
-        Json.obj("_id" -> "fakesessionid", "journeyData" -> JourneyData(euCountryCheck = Some("Yes")))
-      )
+    "return Some Journey Data if data exists" in {
+      await(repository.store[JourneyData]("journeyData", JourneyData(euCountryCheck = Some("Yes"))))
+
+      val data = await(repository.fetch[JourneyData]("journeyData"))
+
+      (data.value \ "_id").toString                     should include("fakesessionid")
+      Some(JourneyData(euCountryCheck = Some("Yes"))) shouldBe (data.value \ "journeyData").asOpt[JourneyData]
     }
 
-    "return Error if no session id exists" in new LocalSetup {
-      override implicit val hc: HeaderCarrier = HeaderCarrier()
+    "return Error if no session id exists" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
       intercept[Exception](
         await(repository.fetch[JourneyData]("journeyData"))
       ).getMessage shouldBe "Could not find sessionId in HeaderCarrier"
@@ -69,7 +65,7 @@ class BCPassengersSessionRepositoryISpec
   }
 
   "store" should {
-    "insert new record if no data exists" in new LocalSetup {
+    "insert new record if no data exists" in {
       await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(true))))
 
       val journeyData: Option[JourneyData] = await(repository.fetch[JourneyData]("journeyData").map {
@@ -81,12 +77,12 @@ class BCPassengersSessionRepositoryISpec
 
     }
 
-    "update new record if data already exists" in new LocalSetup {
+    "update new record if data already exists" in {
       await(
-        repository.collection
-          .insertOne(Json.obj("_id" -> "fakesessionid", "journeyData" -> JourneyData(euCountryCheck = Some("Yes"))))
-          .toFuture()
+        repository
+          .store[JourneyData]("journeyData", JourneyData(euCountryCheck = Some("Yes")))
       )
+
       await(
         repository
           .store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(false), euCountryCheck = Some("Yes")))
@@ -101,8 +97,8 @@ class BCPassengersSessionRepositoryISpec
       journeyData.get.euCountryCheck  shouldBe Some("Yes")
     }
 
-    "return Error if no session id exists" in new LocalSetup {
-      override implicit val hc: HeaderCarrier = HeaderCarrier()
+    "return Error if no session id exists" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
 
       intercept[Exception](
         await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(true))))
@@ -111,7 +107,7 @@ class BCPassengersSessionRepositoryISpec
   }
 
   "updateUpdatedAtTimestamp" should {
-    "update the numberLong field within updatedAt object with current timestamp" in new LocalSetup {
+    "update the numberLong field within updatedAt object with current timestamp" in {
       val result: JsObject = await(repository.updateUpdatedAtTimestamp)
 
       val lookupResult: JsLookupResult = result \ "updatedAt" \ s"$$date" \ s"$$numberLong"
@@ -121,8 +117,8 @@ class BCPassengersSessionRepositoryISpec
       date shouldBe LocalDate.now(UTC)
     }
 
-    "throw Exception if no session id exists" in new LocalSetup {
-      override implicit val hc: HeaderCarrier = HeaderCarrier()
+    "throw Exception if no session id exists" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
 
       intercept[Exception](
         await(repository.updateUpdatedAtTimestamp)
