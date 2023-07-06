@@ -51,8 +51,6 @@ class BCPassengersSessionRepository @Inject() (
       )
     ) {
 
-  override lazy val requiresTtlIndex = false
-
   def fetch[T](
     key: String
   )(implicit hc: HeaderCarrier): Future[Option[JsObject]] =
