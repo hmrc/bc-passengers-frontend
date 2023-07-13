@@ -99,9 +99,10 @@ class UKResidentController @Inject() (
             .storeUKResident(context.journeyData)(isUKResident)
             .map(f =
               _ =>
-                isUKResident match {
-                  case true  => Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage)
-                  case false => Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
+                if (isUKResident) {
+                  Redirect(routes.UKExcisePaidController.loadUKExcisePaidPage)
+                } else {
+                  Redirect(routes.TravelDetailsController.goodsBoughtIntoNI)
                 }
             )
         }

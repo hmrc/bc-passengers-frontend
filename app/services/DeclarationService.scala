@@ -47,7 +47,7 @@ class DeclarationService @Inject() (
   implicit val ec: ExecutionContext
 ) {
 
-  lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
+  private lazy val passengersDeclarationsBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 
   private val logger = Logger(this.getClass)
 
@@ -306,9 +306,10 @@ class DeclarationService @Inject() (
           case _          => gb
         }
 
-      def getMessageTypes: String = journeyData.declarationResponse.isDefined match {
-        case true  => servicesConfig.getString("declarations.amend")
-        case false => servicesConfig.getString("declarations.create")
+      def getMessageTypes: String = if (journeyData.declarationResponse.isDefined) {
+        servicesConfig.getString("declarations.amend")
+      } else {
+        servicesConfig.getString("declarations.create")
       }
 
       Json.obj(

@@ -38,7 +38,7 @@ class Cache @Inject() (
     sessionRepository.store("journeyData", journeyData).flatMap(_ => fetch)
 
   def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
-    sessionRepository.fetch[JourneyData]("journeyData").map {
+    sessionRepository.fetch[JourneyData]().map {
       case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
       case _          => Option.empty
     }

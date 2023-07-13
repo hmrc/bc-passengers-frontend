@@ -66,7 +66,7 @@ class SelectProductController @Inject() (
           _ => //FIXME - if an invalid path is supplied, this would still remove the top item from the stack
             requireProductOrCategory(productPath) {
 
-              case ProductTreeBranch(_, _, children) =>
+              case ProductTreeBranch(_, _, _) =>
                 Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
 
               case ProductTreeLeaf(_, _, _, templateId, _) =>
@@ -185,7 +185,7 @@ class SelectProductController @Inject() (
               val pathsOrdered = journeyData.selectedAliases.map(_.productPath)
 
               pathsOrdered match {
-                case x :: xs if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
+                case x :: _ if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
                   Future.successful(Redirect(routes.SelectProductController.nextStep))
 
                 case _ =>

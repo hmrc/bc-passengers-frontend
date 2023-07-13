@@ -55,8 +55,8 @@ class CalculatorService @Inject() (
   implicit val ec: ExecutionContext
 ) {
 
-  lazy val currencyConversionBaseUrl: String       = servicesConfig.baseUrl("currency-conversion")
-  lazy val passengersDutyCalculatorBaseUrl: String = servicesConfig.baseUrl("passengers-duty-calculator")
+  private lazy val currencyConversionBaseUrl: String       = servicesConfig.baseUrl("currency-conversion")
+  private lazy val passengersDutyCalculatorBaseUrl: String = servicesConfig.baseUrl("passengers-duty-calculator")
 
   private val logger = Logger(this.getClass)
 

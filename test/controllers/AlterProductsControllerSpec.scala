@@ -57,7 +57,7 @@ class AlterProductsControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(
-        injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())
+        injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
       ) thenReturn Future.successful(JourneyData())
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
 
@@ -122,7 +122,7 @@ class AlterProductsControllerSpec extends BaseSpec {
       status(response) shouldBe OK
 
       verify(injected[PurchasedProductService], times(0))
-        .removePurchasedProductInstance(any(), any(), any())(any(), any())
+        .removePurchasedProductInstance(any(), any())(any(), any())
 
     }
   }
@@ -186,7 +186,7 @@ class AlterProductsControllerSpec extends BaseSpec {
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
 
       verify(injected[PurchasedProductService], times(1))
-        .removePurchasedProductInstance(any(), any(), any())(any(), any())
+        .removePurchasedProductInstance(any(), any())(any(), any())
 
     }
 
@@ -245,7 +245,7 @@ class AlterProductsControllerSpec extends BaseSpec {
       status(response) shouldBe SEE_OTHER
 
       verify(injected[PurchasedProductService], times(0))
-        .removePurchasedProductInstance(any(), any(), any())(any(), any())
+        .removePurchasedProductInstance(any(), any())(any(), any())
 
     }
 
@@ -304,7 +304,7 @@ class AlterProductsControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
 
       verify(injected[PurchasedProductService], times(0))
-        .removePurchasedProductInstance(any(), any(), any())(any(), any())
+        .removePurchasedProductInstance(any(), any())(any(), any())
 
     }
   }

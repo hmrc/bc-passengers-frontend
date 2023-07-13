@@ -51,9 +51,7 @@ class BCPassengersSessionRepository @Inject() (
       )
     ) {
 
-  def fetch[T](
-    key: String
-  )(implicit hc: HeaderCarrier): Future[Option[JsObject]] =
+  def fetch[T]()(implicit hc: HeaderCarrier): Future[Option[JsObject]] =
     hc.sessionId match {
       case Some(id) =>
         collection.find(equal("_id", id.value)).headOption()

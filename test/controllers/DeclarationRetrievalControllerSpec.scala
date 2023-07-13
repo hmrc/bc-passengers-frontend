@@ -223,7 +223,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val previousDeclarationRequest        = PreviousDeclarationRequest("Potter", "someReference")
       val calculation                       = Calculation("160.45", "25012.50", "15134.59", "40307.54")
       val productPath                       = ProductPath("other-goods/adult/adult-footwear")
-      val country                           = Country("IN", "title.india", "IN", false, true, List())
+      val country                           = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
       val liabilityDetails                  = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
       val userInformation                   = UserInformation(
         "Harry",
@@ -360,7 +360,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       val previousDeclarationRequest        = PreviousDeclarationRequest("Potter", "someReference")
       val calculation                       = Calculation("160.45", "25012.50", "15134.59", "40307.54")
       val productPath                       = ProductPath("other-goods/adult/adult-footwear")
-      val country                           = Country("IN", "title.india", "IN", false, true, List())
+      val country                           = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
       val liabilityDetails                  = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
       val userInformation                   = UserInformation(
         "Harry",

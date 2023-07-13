@@ -35,7 +35,6 @@ class DeclarationRetrievalController @Inject() (
   declarationNotFoundAction: DeclarationNotFoundAction,
   val error_template: views.html.errorTemplate,
   val declarationRetrievalPage: views.html.amendments.declaration_retrieval,
-  val declarationNotFoundPage: views.html.amendments.declaration_not_found,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   val backLinkModel: BackLinkModel,
@@ -80,33 +79,33 @@ class DeclarationRetrievalController @Inject() (
               PreviousDeclarationRequest.build(previousDeclarationDetails)
             )
             .map(journeyData =>
-              journeyData.get.declarationResponse.isDefined match {
-                case true  =>
-                  val date       = journeyData.get.userInformation.get.dateOfArrival
-                  val time       = journeyData.get.userInformation.get.timeOfArrival
-                  val dateTime   = new DateTime(
-                    date.getYear,
-                    date.getMonthOfYear,
-                    date.getDayOfMonth,
-                    time.getHourOfDay,
-                    time.getMinuteOfHour,
-                    time.getSecondOfMinute
-                  )
-                  val amendState = journeyData.get.amendState.getOrElse("")
+              if (journeyData.get.declarationResponse.isDefined) {
+                val date       = journeyData.get.userInformation.get.dateOfArrival
+                val time       = journeyData.get.userInformation.get.timeOfArrival
+                val dateTime   = new DateTime(
+                  date.getYear,
+                  date.getMonthOfYear,
+                  date.getDayOfMonth,
+                  time.getHourOfDay,
+                  time.getMinuteOfHour,
+                  time.getSecondOfMinute
+                )
+                val amendState = journeyData.get.amendState.getOrElse("")
 
-                  if (
-                    dateTime
-                      .withZone(DateTimeZone.UTC)
-                      .plusHours(24)
-                      .isBefore(DateTime.now().withZone(DateTimeZone.UTC))
-                  ) {
-                    Redirect(routes.DeclarationRetrievalController.declarationNotFound)
-                  } else if (amendState.equals("pending-payment")) {
-                    Redirect(routes.PendingPaymentController.loadPendingPaymentPage)
-                  } else {
-                    Redirect(routes.DashboardController.showDashboard)
-                  }
-                case false => Redirect(routes.DeclarationRetrievalController.declarationNotFound)
+                if (
+                  dateTime
+                    .withZone(DateTimeZone.UTC)
+                    .plusHours(24)
+                    .isBefore(DateTime.now().withZone(DateTimeZone.UTC))
+                ) {
+                  Redirect(routes.DeclarationRetrievalController.declarationNotFound)
+                } else if (amendState.equals("pending-payment")) {
+                  Redirect(routes.PendingPaymentController.loadPendingPaymentPage)
+                } else {
+                  Redirect(routes.DashboardController.showDashboard)
+                }
+              } else {
+                Redirect(routes.DeclarationRetrievalController.declarationNotFound)
               }
             )
         }

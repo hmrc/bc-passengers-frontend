@@ -72,15 +72,14 @@ class UKVatPaidController @Inject() (
           cache
             .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
             .map(_ =>
-              path.toString.contains("other-goods") match {
-                case true  =>
-                  if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
-                    Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
-                  } else {
-                    Redirect(routes.SelectProductController.nextStep)
-                  }
-                case false =>
-                  Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))
+              if (path.toString.contains("other-goods")) {
+                if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
+                  Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
+                } else {
+                  Redirect(routes.SelectProductController.nextStep)
+                }
+              } else {
+                Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))
               }
             )
         }

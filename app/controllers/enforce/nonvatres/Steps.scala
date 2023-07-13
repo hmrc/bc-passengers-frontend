@@ -23,20 +23,19 @@ case object WhereGoodsBoughtStep extends JourneyStep(Nil, _ => _ => true)
 case object GoodsBoughtOutsideEuStep
     extends JourneyStep(
       preceeding = List(ArrivingNIStep),
-      predicate = _ =>
-        x => (x.flatMap(_.euCountryCheck).contains("nonEuOnly")) && x.flatMap(_.arrivingNICheck).isDefined
+      predicate = _ => x => x.flatMap(_.euCountryCheck).contains("nonEuOnly") && x.flatMap(_.arrivingNICheck).isDefined
     )
 
 case object GoodsBoughtInsideEuStep
     extends JourneyStep(
       preceeding = List(ArrivingNIStep),
-      predicate = _ => x => (x.flatMap(_.euCountryCheck).contains("euOnly")) && x.flatMap(_.arrivingNICheck).isDefined
+      predicate = _ => x => x.flatMap(_.euCountryCheck).contains("euOnly") && x.flatMap(_.arrivingNICheck).isDefined
     )
 
 case object GoodsBoughtInAndOutEuStep
     extends JourneyStep(
       preceeding = List(ArrivingNIStep),
-      predicate = _ => x => (x.flatMap(_.euCountryCheck).contains("both")) && x.flatMap(_.arrivingNICheck).isDefined
+      predicate = _ => x => x.flatMap(_.euCountryCheck).contains("both") && x.flatMap(_.arrivingNICheck).isDefined
     )
 
 case object NoNeedToUseStep

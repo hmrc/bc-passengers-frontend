@@ -212,7 +212,7 @@ case class ConfirmRemoveDto(confirmRemove: Boolean)
 
 object SelectProductsDto {
 
-  def nonEmptyList[T]: Constraint[List[T]] = Constraint[List[T]]("constraint.required") { list =>
+  private def nonEmptyList[T]: Constraint[List[T]] = Constraint[List[T]]("constraint.required") { list =>
     if (list.nonEmpty) Valid else Invalid(ValidationError("error.required"))
   }
 
@@ -253,16 +253,16 @@ trait Validators {
 }
 
 object EnterYourDetailsDto extends Validators {
-  val identificationPattern  = "^[a-zA-Z0-9- '+]+$"
-  val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
-  val emailAddressPattern    = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
+  private val identificationPattern  = "^[a-zA-Z0-9- '+]+$"
+  private val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
+  private val emailAddressPattern    = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
 
-  def maxLength(length: Int, fieldName: String): Constraint[String] = Constraint("constraint.maxLength", length) {
-    text =>
+  private def maxLength(length: Int, fieldName: String): Constraint[String] =
+    Constraint("constraint.maxLength", length) { text =>
       if (text.length <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
-  }
+    }
 
-  private def mandatoryDate(error: String): Mapping[String] =
+  private def mandatoryDate: Mapping[String] =
     tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
       .verifying(
         "error.enter_a_date",
@@ -292,7 +292,7 @@ object EnterYourDetailsDto extends Validators {
       .verifying(
         "error.enter_a_real_date",
         dateString =>
-          dateString._2.length >= 1 && dateString._2.length <= 2 && dateString._1.length >= 1 && dateString._1.length <= 2
+          dateString._2.nonEmpty && dateString._2.length <= 2 && dateString._1.nonEmpty && dateString._1.length <= 2
       )
       .transform[(Int, Int, Int)](
         dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt),
@@ -300,7 +300,7 @@ object EnterYourDetailsDto extends Validators {
       )
       .verifying(
         "error.enter_a_real_date",
-        dateInt => Try(new LocalDate(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess
+        dateInt => Try(new LocalDate(dateInt._3, dateInt._2, dateInt._1)).isSuccess
       )
       .transform[String](
         dateInt => s"${dateInt._3.toString}-${dateInt._2.toString}-${dateInt._1.toString}",
@@ -310,7 +310,7 @@ object EnterYourDetailsDto extends Validators {
           }
       )
 
-  private def mandatoryTime(error: String): Mapping[String] =
+  private def mandatoryTime: Mapping[String] =
     tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
       .verifying(
         "error.enter_a_time",
@@ -327,7 +327,7 @@ object EnterYourDetailsDto extends Validators {
       .verifying(
         "error.enter_a_real_time",
         timeString =>
-          timeString._1.length >= 1 && timeString._1.length <= 2 && timeString._2.length >= 1 && timeString._2.length <= 2
+          timeString._1.nonEmpty && timeString._1.length <= 2 && timeString._2.nonEmpty && timeString._2.length <= 2
       )
       .transform[(Int, Int, String)](
         timeString => (timeString._1.toInt, timeString._2.toInt, timeString._3),
@@ -374,8 +374,8 @@ object EnterYourDetailsDto extends Validators {
     Constraint { model =>
       (model.email, model.confirmEmail) match {
         case (x, y) if x.isEmpty && y.isEmpty                                                 => Valid
-        case (x, y) if !x.isEmpty && y.isEmpty                                                => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
-        case (x, y) if x.isEmpty && !y.isEmpty                                                => Invalid(ValidationError(s"error.required.emailAddress.email"))
+        case (x, y) if x.nonEmpty && y.isEmpty                                                => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
+        case (x, y) if x.isEmpty && y.nonEmpty                                                => Invalid(ValidationError(s"error.required.emailAddress.email"))
         case (x, y) if (!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern)) =>
           Invalid(s"error.format.emailAddress", emailAddressPattern)
         case (x, y) if x != y                                                                 =>
@@ -414,8 +414,8 @@ object EnterYourDetailsDto extends Validators {
         .verifying()
         .verifying(placeOfArrivalConstraint("error.required.place_of_arrival")),
       "dateTimeOfArrival" -> mapping(
-        "dateOfArrival" -> mandatoryDate("error.enter_a_date"),
-        "timeOfArrival" -> mandatoryTime("error.enter_a_time")
+        "dateOfArrival" -> mandatoryDate,
+        "timeOfArrival" -> mandatoryTime
       )(DateTimeOfArrival.apply)(DateTimeOfArrival.unapply)
         .verifying(
           "error.5_days",
@@ -467,8 +467,6 @@ object DeclarationRetrievalDto extends Validators {
     )(DeclarationRetrievalDto.apply)(DeclarationRetrievalDto.unapply)
   )
 }
-
-case class TimeOfArrivalDto(hour: String, minute: String, ampm: String)
 
 case class DateTimeOfArrival(dateOfArrival: String, timeOfArrival: String)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])

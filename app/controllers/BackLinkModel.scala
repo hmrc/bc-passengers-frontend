@@ -28,7 +28,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
   def backLink(implicit context: LocalContext): Option[String] =
     if (appConfig.isVatResJourneyEnabled) backLinkVatRes(context) else backLinkStandard(context)
 
-  def backLinkVatRes(context: LocalContext): Option[String] = {
+  private def backLinkVatRes(context: LocalContext): Option[String] = {
 
     val path     = context.request.path
     val location = path.split('/').last
@@ -148,7 +148,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
 
   }
 
-  def backLinkStandard(context: LocalContext): Option[String] =
+  private def backLinkStandard(context: LocalContext): Option[String] =
     backLinkVatRes(context)
 
   private def getIid(path: String): String = {

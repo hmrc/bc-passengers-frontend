@@ -128,7 +128,7 @@ trait ControllerHelpers
       }
     }
 
-  def withClearWorkingInstance(block: => Future[Result])(implicit context: LocalContext): Future[Result] =
+  private def withClearWorkingInstance(block: => Future[Result])(implicit context: LocalContext): Future[Result] =
     cache.store(context.getJourneyData.copy(workingInstance = None)).flatMap(_ => block)
 
   def withNextSelectedProductAlias(
