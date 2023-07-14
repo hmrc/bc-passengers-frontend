@@ -70,7 +70,7 @@ class DashboardControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(
-        injected[PurchasedProductService].removePurchasedProductInstance(any(), any(), any())(any(), any())
+        injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
       ) thenReturn Future.successful(JourneyData())
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
       rt(app, req)

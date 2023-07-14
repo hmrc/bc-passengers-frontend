@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction}
+import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
 
 import javax.inject.Inject
@@ -41,7 +41,6 @@ class TobaccoInputController @Inject() (
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
-  publicAction: PublicAction,
   dashboardAction: DashboardAction,
   val errorTemplate: views.html.errorTemplate,
   val tobacco_input: views.html.tobacco.tobacco_input,
@@ -78,7 +77,7 @@ class TobaccoInputController @Inject() (
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
         .verifying(
           "error.invalid.characters.noofsticks." + path.toMessageKey,
-          noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false))
+          noOfSticks => noOfSticks.isEmpty || Try(BigInt(noOfSticks) > 0).getOrElse(false)
         )
         .transform[Option[Int]](
           noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)),
@@ -89,7 +88,7 @@ class TobaccoInputController @Inject() (
         .verifying(
           "error.invalid.characters.weight",
           weightOrVolume =>
-            !weightOrVolume.isDefined || weightOrVolume
+            weightOrVolume.isEmpty || weightOrVolume
               .flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0))
               .getOrElse(false)
         )
@@ -119,7 +118,7 @@ class TobaccoInputController @Inject() (
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
         .verifying(
           "error.invalid.characters.noofsticks." + path.toMessageKey,
-          noOfSticks => noOfSticks.isEmpty || (Try(BigInt(noOfSticks) > 0).getOrElse(false))
+          noOfSticks => noOfSticks.isEmpty || Try(BigInt(noOfSticks) > 0).getOrElse(false)
         )
         .transform[Option[Int]](
           noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)),

@@ -34,7 +34,6 @@ class PendingPaymentController @Inject() (
   val cache: Cache,
   val calculatorService: CalculatorService,
   val productTreeService: ProductTreeService,
-  val calculateDeclareController: controllers.CalculateDeclareController,
   noFurtherAmendmentAction: NoFurtherAmendmentAction,
   pendingPaymentAction: PendingPaymentAction,
   val errorTemplate: views.html.errorTemplate,
@@ -148,9 +147,10 @@ class PendingPaymentController @Inject() (
             cache
               .storeJourneyData(context.getJourneyData.copy(pendingPayment = Some(pendingPayment)))
               .map(_ =>
-                pendingPayment match {
-                  case true  => Redirect(routes.CalculateDeclareController.processAmendment)
-                  case false => Redirect(routes.PendingPaymentController.noFurtherAmendment)
+                if (pendingPayment) {
+                  Redirect(routes.CalculateDeclareController.processAmendment)
+                } else {
+                  Redirect(routes.PendingPaymentController.noFurtherAmendment)
                 }
               )
           }

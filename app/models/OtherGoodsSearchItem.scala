@@ -17,9 +17,9 @@
 package models
 
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, OFormat}
 object OtherGoodsSearchItem {
-  implicit val formats = Json.format[OtherGoodsSearchItem]
+  implicit val formats: OFormat[OtherGoodsSearchItem] = Json.format[OtherGoodsSearchItem]
 }
 case class OtherGoodsSearchItem(name: String, path: ProductPath) {
   def toAutoCompleteJson(implicit messages: Messages): JsObject =

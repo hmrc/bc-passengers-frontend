@@ -365,7 +365,9 @@ class PayApiServiceSpec extends BaseSpec {
       override lazy val httpResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, "")
 
       val r: PayApiServiceResponse =
-        await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
+        await(
+          s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
+        )
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
         meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
@@ -379,7 +381,9 @@ class PayApiServiceSpec extends BaseSpec {
       override lazy val httpResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, "")
 
       val r: PayApiServiceResponse =
-        await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
+        await(
+          s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
+        )
       r shouldBe PayApiServiceFailureResponse
       verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
         meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
@@ -394,7 +398,9 @@ class PayApiServiceSpec extends BaseSpec {
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val r: PayApiServiceResponse                 =
-        await(s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, false, None))
+        await(
+          s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
+        )
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
         meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
@@ -416,7 +422,16 @@ class PayApiServiceSpec extends BaseSpec {
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val r: PayApiServiceResponse                 =
-        await(s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, false, None))
+        await(
+          s.requestPaymentUrl(
+            exampleChargeRef,
+            uiWithBstArrival,
+            calculatorResponse,
+            9700000,
+            isAmendment = false,
+            None
+          )
+        )
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
         meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
@@ -448,7 +463,14 @@ class PayApiServiceSpec extends BaseSpec {
         )
 
       val r: PayApiServiceResponse = await(
-        s.requestPaymentUrl(exampleChargeRef, uiWithBstArrival, calculatorResponse, 9700000, true, Some("100.99"))
+        s.requestPaymentUrl(
+          exampleChargeRef,
+          uiWithBstArrival,
+          calculatorResponse,
+          9700000,
+          isAmendment = true,
+          Some("100.99")
+        )
       )
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
       verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
@@ -486,7 +508,7 @@ class PayApiServiceSpec extends BaseSpec {
           uiWithBstArrival,
           calculatorResponse,
           9700000,
-          true,
+          isAmendment = true,
           Some("100.99"),
           Some("pending-payment")
         )

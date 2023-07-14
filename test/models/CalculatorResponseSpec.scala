@@ -149,7 +149,7 @@ class CalculatorResponseSpec extends BaseSpec {
             "100.00",
             DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
             Currency("USD", "US Dollars", Some("USD"), List()),
-            Country("US", "United States of America (the)", "US", false, true, List()),
+            Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, List()),
             ExchangeRate("1.20", "2018-10-29"),
             None
           ),
@@ -170,7 +170,7 @@ class CalculatorResponseSpec extends BaseSpec {
             "100.00",
             DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
             Currency("USD", "US Dollars", Some("USD"), List()),
-            Country("US", "United States of America (the)", "US", false, true, List()),
+            Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, List()),
             ExchangeRate("1.20", "2018-10-29"),
             None
           ),
@@ -191,7 +191,7 @@ class CalculatorResponseSpec extends BaseSpec {
             "100.00",
             DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
             Currency("USD", "US Dollars", Some("USD"), List()),
-            Country("US", "United States of America (the)", "US", false, true, List()),
+            Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, List()),
             ExchangeRate("1.20", "2018-10-29"),
             None
           ),

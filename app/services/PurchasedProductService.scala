@@ -36,7 +36,7 @@ class PurchasedProductService @Inject() (val cache: Cache) {
   }
 
   //TODO - move to NewPurchaseService
-  def removePurchasedProductInstance(journeyData: JourneyData, path: ProductPath, iid: String)(implicit
+  def removePurchasedProductInstance(journeyData: JourneyData, iid: String)(implicit
     hc: HeaderCarrier,
     ex: ExecutionContext
   ): Future[JourneyData] = {

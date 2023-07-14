@@ -16,7 +16,7 @@
 
 package services
 
-import models.{PortsOfArrival}
+import models.PortsOfArrival
 import util.BaseSpec
 
 class PortsOfArrivalServiceSpec extends BaseSpec {

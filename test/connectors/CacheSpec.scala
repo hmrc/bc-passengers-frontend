@@ -75,7 +75,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
 
     ".fetch" should {
       "return None" in {
-        when(mockBCPassengersSessionRepository.fetch(any[String])(any[HeaderCarrier]))
+        when(mockBCPassengersSessionRepository.fetch()(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
 
         val result: Future[Option[JourneyData]] = cache.fetch
@@ -84,7 +84,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
       }
 
       "return journeyData" in {
-        when(mockBCPassengersSessionRepository.fetch(any[String])(any[HeaderCarrier]))
+        when(mockBCPassengersSessionRepository.fetch()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(

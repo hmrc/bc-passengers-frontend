@@ -300,7 +300,7 @@ class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction
   def apply(block: LocalContext => Future[Result]): Action[AnyContent] =
     publicAction { implicit context =>
       if (
-        context.journeyData.isDefined && context.getJourneyData.prevDeclaration.getOrElse(false) == false &&
+        context.journeyData.isDefined && !context.getJourneyData.prevDeclaration.getOrElse(false) &&
         (context.getJourneyData.calculatorResponse.fold(false)(x =>
           BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <= appConfig.paymentLimit
         ) ||

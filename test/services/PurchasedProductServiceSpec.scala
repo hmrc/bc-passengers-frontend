@@ -114,7 +114,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
         )
       )
 
-      await(s.removePurchasedProductInstance(journeyDataInCache.get, ProductPath("alcohol/beer"), "iid1"))
+      await(s.removePurchasedProductInstance(journeyDataInCache.get, "iid1"))
 
       verify(s.cache, times(1)).store(
         meq(
@@ -144,8 +144,6 @@ class PurchasedProductServiceSpec extends BaseSpec {
           )
         )
       )(any())
-
     }
-
   }
 }

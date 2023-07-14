@@ -39,7 +39,7 @@ class PayApiService @Inject() (
   implicit val ec: ExecutionContext
 ) {
 
-  lazy val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
+  private lazy val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
 
   lazy val returnUrl: String =
     configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
@@ -49,13 +49,13 @@ class PayApiService @Inject() (
     .getOrElse("") + routes.CalculateDeclareController.showCalculation
   lazy val returnUrlCancelled: String = returnUrlFailed
 
-  lazy val backUrlDeclaration: String    = configuration
+  private lazy val backUrlDeclaration: String    = configuration
     .getOptional[String]("bc-passengers-frontend.host")
     .getOrElse("") + routes.CalculateDeclareController.enterYourDetails
-  lazy val backUrlAmendment: String      = configuration
+  private lazy val backUrlAmendment: String      = configuration
     .getOptional[String]("bc-passengers-frontend.host")
     .getOrElse("") + routes.CalculateDeclareController.declareYourGoods
-  lazy val backUrlPendingPayment: String = configuration
+  private lazy val backUrlPendingPayment: String = configuration
     .getOptional[String]("bc-passengers-frontend.host")
     .getOrElse("") + routes.PendingPaymentController.loadPendingPaymentPage
 

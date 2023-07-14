@@ -433,6 +433,7 @@ label.tell_us_about_the_goods_=Rhowch wybod i ni am eich nwyddau
 label.tell_us_about_the_additional_goods_ = Rhowch wybod i ni am eich nwyddau ychwanegol
 label.about_foreign_currencies = Mae ein cyfrifiannell ar-lein yn derbyn bron pob arian cyfred tramor, a bydd yn cyfrifo’r dreth sy’n ddyledus mewn punnoedd Prydeinig.
 label.price_paid=Y pris a dalwyd
+label.price_format_description = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 1000.40, 1000.4 neu 1,000.
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
 label.country_this_alcohol_was_produced = Ble y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol
 label.if_you_bought_this_alcohol_=Os prynoch yr alcohol hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu.

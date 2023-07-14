@@ -39,7 +39,6 @@ class TravelDetailsController @Inject() (
   val calculatorService: CalculatorService,
   val travelDetailsService: TravelDetailsService,
   val cache: Cache,
-  val productsService: ProductTreeService,
   val currencyService: CurrencyService,
   val productTreeService: ProductTreeService,
   val backLinkModel: BackLinkModel,

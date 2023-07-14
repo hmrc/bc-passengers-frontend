@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.{DashboardAction, PublicAction}
+import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,6 @@ class AlterProductsController @Inject() (
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val productTreeService: ProductTreeService,
-  publicAction: PublicAction,
   dashboardAction: DashboardAction,
   val remove: views.html.purchased_products.remove,
   val errorTemplate: views.html.errorTemplate,
@@ -59,7 +58,7 @@ class AlterProductsController @Inject() (
         formWithErrors => Future.successful(BadRequest(remove(formWithErrors, path, iid))),
         confirmRemoveDto =>
           if (confirmRemoveDto.confirmRemove) {
-            purhasedProductService.removePurchasedProductInstance(context.getJourneyData, path, iid) map { _ =>
+            purhasedProductService.removePurchasedProductInstance(context.getJourneyData, iid) map { _ =>
               Redirect(routes.DashboardController.showDashboard)
             }
           } else {
