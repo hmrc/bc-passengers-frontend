@@ -12,10 +12,10 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    ```bash
    git clone git@github.com:hmrc/bc-passengers-frontend.git
    ```
-2. Run the services (minus the frontend) via [service manager](https://github.com/hmrc/service-manager) with the following profile:
+2. Run the services (minus the frontend) via [service manager 2](https://github.com/hmrc/sm2) with the following profile:
    ```bash
-   sm --start BC_PASSENGERS_ALL
-   sm --stop BC_PASSENGERS_FRONTEND
+   sm2 --start BC_PASSENGERS_ALL
+   sm2 --stop BC_PASSENGERS_FRONTEND
    ```
 3. Restart the service locally:
    ```bash
