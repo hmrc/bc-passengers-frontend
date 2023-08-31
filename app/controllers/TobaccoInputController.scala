@@ -18,23 +18,22 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.DashboardAction
+import controllers.enforce.{DashboardAction, PublicAction}
 import controllers.ControllerHelpers
-
-import javax.inject.Inject
+import controllers.enforce.DashboardAction
+import forms.TobaccoInputForm
 import models.{ProductPath, TobaccoDto}
-import play.api.data.Form
-import play.api.data.Forms.{mapping, text, _}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class TobaccoInputController @Inject() (
+  val tobaccoForm: TobaccoInputForm,
   val cache: Cache,
   val productTreeService: ProductTreeService,
   val newPurchaseService: NewPurchaseService,
@@ -54,123 +53,6 @@ class TobaccoInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  val resilientForm: Form[TobaccoDto] = Form(
-    mapping(
-      "noOfSticks"     -> optional(text)
-        .transform[Option[Int]](_.fold(Some(0))(x => Some(Try(x.toInt).getOrElse(Int.MaxValue))), _.map(_.toString)),
-      "weightOrVolume" -> optional(text)
-        .transform[Option[BigDecimal]](_.map(x => Try(BigDecimal(x) / 1000).getOrElse(0)), _.map(_.toString)),
-      "country"        -> ignored(""),
-      "originCountry"  -> optional(text),
-      "currency"       -> ignored(""),
-      "cost"           -> ignored(BigDecimal(0)),
-      "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid"   -> optional(boolean),
-      "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
-  )
-
-  def weightOrVolumeNoOfSticksForm(path: ProductPath): Form[TobaccoDto] = Form(
-    mapping(
-      "noOfSticks"     -> text
-        .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
-        .verifying(
-          "error.invalid.characters.noofsticks." + path.toMessageKey,
-          noOfSticks => noOfSticks.isEmpty || Try(BigInt(noOfSticks) > 0).getOrElse(false)
-        )
-        .transform[Option[Int]](
-          noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)),
-          int => int.mkString
-        ),
-      "weightOrVolume" -> optional(text)
-        .verifying("error.weight_or_volume.required." + path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
-        .verifying(
-          "error.invalid.characters.weight",
-          weightOrVolume =>
-            weightOrVolume.isEmpty || weightOrVolume
-              .flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0))
-              .getOrElse(false)
-        )
-        .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map(x => x.toString))
-        .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
-        .transform[Option[BigDecimal]](
-          grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble / 1000))),
-          kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))
-        ),
-      "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
-      "originCountry"  -> optional(text),
-      "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "cost"           -> text
-        .transform[String](s => s.filter(_ != ','), identity)
-        .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
-        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
-      "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid"   -> optional(boolean),
-      "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
-  )
-
-  def noOfSticksForm(path: ProductPath): Form[TobaccoDto] = Form(
-    mapping(
-      "noOfSticks"     -> text
-        .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
-        .verifying(
-          "error.invalid.characters.noofsticks." + path.toMessageKey,
-          noOfSticks => noOfSticks.isEmpty || Try(BigInt(noOfSticks) > 0).getOrElse(false)
-        )
-        .transform[Option[Int]](
-          noOfSticks => Some(Try(noOfSticks.toInt).toOption.getOrElse(Integer.MAX_VALUE)),
-          int => int.mkString
-        ),
-      "weightOrVolume" -> ignored[Option[BigDecimal]](None),
-      "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
-      "originCountry"  -> optional(text),
-      "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "cost"           -> text
-        .transform[String](s => s.filter(_ != ','), identity)
-        .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
-        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
-      "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid"   -> optional(boolean),
-      "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
-  )
-
-  def weightOrVolumeForm(path: ProductPath): Form[TobaccoDto] = Form(
-    mapping(
-      "noOfSticks"     -> ignored[Option[Int]](None),
-      "weightOrVolume" -> optional(text)
-        .verifying("error.required.weight." + path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
-        .verifying(
-          "error.invalid.characters.weight",
-          weightOrVolume =>
-            weightOrVolume.isEmpty || weightOrVolume
-              .flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0))
-              .getOrElse(false)
-        )
-        .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map(x => x.toString))
-        .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
-        .transform[Option[BigDecimal]](
-          grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble / 1000))),
-          kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))
-        ),
-      "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
-      "originCountry"  -> optional(text),
-      "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "cost"           -> text
-        .transform[String](s => s.filter(_ != ','), identity)
-        .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
-        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
-      "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid"   -> optional(boolean),
-      "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
-  )
-
   def displayNoOfSticksAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
@@ -180,7 +62,8 @@ class TobaccoInputController @Inject() (
           Future.successful(
             Ok(
               no_of_sticks_input(
-                noOfSticksForm(path)
+                tobaccoForm
+                  .noOfSticksForm(path)
                   .bind(
                     Map(
                       "country"       -> defaultCountry.getOrElse(""),
@@ -213,7 +96,8 @@ class TobaccoInputController @Inject() (
           Future.successful(
             Ok(
               weight_or_volume_input(
-                weightOrVolumeForm(path)
+                tobaccoForm
+                  .weightOrVolumeForm(path)
                   .bind(
                     Map(
                       "country"       -> defaultCountry.getOrElse(""),
@@ -246,7 +130,8 @@ class TobaccoInputController @Inject() (
           Future.successful(
             Ok(
               no_of_sticks_weight_or_volume_input(
-                weightOrVolumeNoOfSticksForm(path)
+                tobaccoForm
+                  .weightOrVolumeNoOfSticksForm(path)
                   .bind(
                     Map(
                       "country"       -> defaultCountry.getOrElse(""),
@@ -281,7 +166,7 @@ class TobaccoInputController @Inject() (
                 case "cigarettes" =>
                   Ok(
                     no_of_sticks_input(
-                      noOfSticksForm(ppi.path).fill(dto),
+                      tobaccoForm.noOfSticksForm(ppi.path).fill(dto),
                       product,
                       ppi.path,
                       Some(iid),
@@ -294,7 +179,7 @@ class TobaccoInputController @Inject() (
                 case "tobacco"    =>
                   Ok(
                     weight_or_volume_input(
-                      weightOrVolumeForm(ppi.path).fill(dto),
+                      tobaccoForm.weightOrVolumeForm(ppi.path).fill(dto),
                       product,
                       ppi.path,
                       Some(iid),
@@ -307,14 +192,14 @@ class TobaccoInputController @Inject() (
                 case _            =>
                   Ok(
                     no_of_sticks_weight_or_volume_input(
-                      weightOrVolumeNoOfSticksForm(ppi.path).fill(dto),
-                      product,
-                      ppi.path,
-                      Some(iid),
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck
+                      form = tobaccoForm.weightOrVolumeNoOfSticksForm(ppi.path).fill(dto),
+                      product = product,
+                      path = ppi.path,
+                      iid = Some(iid),
+                      countries = countriesService.getAllCountries,
+                      countriesEU = countriesService.getAllCountriesAndEu,
+                      currencies = currencyService.getAllCurrencies,
+                      journeyStart = context.getJourneyData.euCountryCheck
                     )
                   )
               }
@@ -326,7 +211,7 @@ class TobaccoInputController @Inject() (
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireLimitUsage {
-      val dto = resilientForm.bindFromRequest().value.get
+      val dto = tobaccoForm.resilientForm.bindFromRequest().value.get
       newPurchaseService
         .insertPurchases(
           path,
@@ -341,7 +226,8 @@ class TobaccoInputController @Inject() (
     } { limits =>
       requireProduct(path) { product =>
         def processNoOfSticksAddForm       =
-          noOfSticksForm(path)
+          tobaccoForm
+            .noOfSticksForm(path)
             .bindFromRequest()
             .fold(
               formWithErrors =>
@@ -388,7 +274,8 @@ class TobaccoInputController @Inject() (
                 }
             )
         def processWeightAddForm           =
-          weightOrVolumeForm(path)
+          tobaccoForm
+            .weightOrVolumeForm(path)
             .bindFromRequest()
             .fold(
               formWithErrors =>
@@ -435,7 +322,8 @@ class TobaccoInputController @Inject() (
                 }
             )
         def processNoOfSticksWeightAddForm =
-          weightOrVolumeNoOfSticksForm(path)
+          tobaccoForm
+            .weightOrVolumeNoOfSticksForm(path)
             .bindFromRequest()
             .fold(
               formWithErrors =>
@@ -498,7 +386,7 @@ class TobaccoInputController @Inject() (
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         requireLimitUsage {
-          val dto = resilientForm.bindFromRequest().value.get
+          val dto = tobaccoForm.resilientForm.bindFromRequest().value.get
           newPurchaseService.updatePurchase(
             ppi.path,
             iid,
@@ -511,7 +399,8 @@ class TobaccoInputController @Inject() (
           )
         } { limits =>
           def processCigarettesEditForm: Future[Result] =
-            noOfSticksForm(ppi.path)
+            tobaccoForm
+              .noOfSticksForm(ppi.path)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
@@ -561,7 +450,8 @@ class TobaccoInputController @Inject() (
               )
 
           def processTobaccoEditForm: Future[Result] =
-            weightOrVolumeForm(ppi.path)
+            tobaccoForm
+              .weightOrVolumeForm(ppi.path)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
@@ -611,7 +501,8 @@ class TobaccoInputController @Inject() (
               )
 
           def processOtherTobaccoEditForm: Future[Result] =
-            weightOrVolumeNoOfSticksForm(ppi.path)
+            tobaccoForm
+              .weightOrVolumeNoOfSticksForm(ppi.path)
               .bindFromRequest()
               .fold(
                 formWithErrors =>

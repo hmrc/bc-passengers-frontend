@@ -19,7 +19,6 @@ package models
 import org.joda.time._
 import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms._
-import play.api.data.Forms.tuple
 import play.api.data.validation._
 import play.api.data.{Form, Mapping}
 
@@ -89,24 +88,25 @@ case class AlcoholDto(
 )
 
 object TobaccoDto {
-  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[TobaccoDto] = for {
-    country       <- purchasedProductInstance.country
-    currency      <- purchasedProductInstance.currency
-    cost          <- purchasedProductInstance.cost
-    noOfSticks     = purchasedProductInstance.noOfSticks
-    weightOrVolume = purchasedProductInstance.weightOrVolume
-  } yield TobaccoDto(
-    noOfSticks,
-    weightOrVolume,
-    country.code,
-    purchasedProductInstance.originCountry.map(_.code),
-    currency,
-    cost,
-    purchasedProductInstance.isVatPaid,
-    purchasedProductInstance.isExcisePaid,
-    purchasedProductInstance.isCustomPaid,
-    purchasedProductInstance.hasEvidence
-  )
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[TobaccoDto] =
+    for {
+      country       <- purchasedProductInstance.country
+      currency      <- purchasedProductInstance.currency
+      cost          <- purchasedProductInstance.cost
+      noOfSticks     = purchasedProductInstance.noOfSticks
+      weightOrVolume = purchasedProductInstance.weightOrVolume
+    } yield TobaccoDto(
+      noOfSticks,
+      weightOrVolume,
+      country.code,
+      purchasedProductInstance.originCountry.map(_.code),
+      currency,
+      cost,
+      purchasedProductInstance.isVatPaid,
+      purchasedProductInstance.isExcisePaid,
+      purchasedProductInstance.isCustomPaid,
+      purchasedProductInstance.hasEvidence
+    )
 }
 
 case class TobaccoDto(

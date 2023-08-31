@@ -17,6 +17,7 @@
 package views.tobacco
 
 import controllers.TobaccoInputController
+import forms.TobaccoInputForm
 import models._
 import play.api.data.Form
 import play.twirl.api.{Html, HtmlFormat}
@@ -66,7 +67,7 @@ class TobaccoInputViewSpec extends BaseViewSpec {
     )
   )
 
-  private val validForm: Form[TobaccoDto] = injected[TobaccoInputController].resilientForm
+  private val validForm: Form[TobaccoDto] = injected[TobaccoInputForm].resilientForm
     .bind(
       Map(
         "noOfSticks"     -> "10",

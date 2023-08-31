@@ -103,20 +103,20 @@ class DashboardController @Inject() (
 
               Ok(
                 dashboard(
-                  jd,
-                  alcoholPurchasedItemList.reverse,
-                  tobaccoPurchasedItemList.reverse,
-                  otherGoodsPurchasedItemList.reverse,
-                  previousAlcoholPurchasedItemList.reverse,
-                  previousTobaccoPurchasedItemList.reverse,
-                  previousOtherGoodsPurchasedItemList.reverse,
-                  showCalculate,
-                  isAmendment,
-                  backLinkModel.backLink,
-                  appConfig.isIrishBorderQuestionEnabled,
-                  jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
-                  jd.euCountryCheck.contains("euOnly"),
-                  jd.isUKResident.contains(true)
+                  journeyData = jd,
+                  alcoholPurchasedItemList = alcoholPurchasedItemList.reverse,
+                  tobaccoPurchasedItemList = tobaccoPurchasedItemList.reverse,
+                  otherGoodsPurchasedItemList = otherGoodsPurchasedItemList.reverse,
+                  previousAlcoholPurchasedItemList = previousAlcoholPurchasedItemList.reverse,
+                  previousTobaccoPurchasedItemList = previousTobaccoPurchasedItemList.reverse,
+                  previousOtherGoodsPurchasedItemList = previousOtherGoodsPurchasedItemList.reverse,
+                  showCalculate = showCalculate,
+                  isAmendment = isAmendment,
+                  backLink = backLinkModel.backLink,
+                  isIrishBorderQuestionEnabled = appConfig.isIrishBorderQuestionEnabled,
+                  isGbNi = jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
+                  isEU = jd.euCountryCheck.contains("euOnly"),
+                  isUkResident = jd.isUKResident.contains(true)
                 )
               )
           }

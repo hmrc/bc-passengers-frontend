@@ -98,8 +98,7 @@ class CalculatorService @Inject() (
           case e: UpstreamErrorResponse if e.statusCode == REQUESTED_RANGE_NOT_SATISFIABLE =>
             CalculatorServicePurchasePriceOutOfBoundsFailureResponse
         }
-
-      case None =>
+      case None                    =>
         logger.error("No items available for calculation request")
         Future.successful(CalculatorServiceCantBuildCalcReqResponse)
     }

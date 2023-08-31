@@ -31,3 +31,4 @@ tmp
 .idea_modules
 bin
 /.bsp
+project/.bloop/
