@@ -122,8 +122,8 @@ class TobaccoInputForm @Inject() (countriesService: CountriesService, currencySe
         .verifying("error.required.weight." + path.toMessageKey, weightOrVolume => weightOrVolume.isDefined)
         .verifying(
           "error.invalid.characters.weight",
-          weightOrVolume =>
-            weightOrVolume.isEmpty || weightOrVolume.exists(x => BigDecimal(x) > 0.0)
+          weightOrVolume => weightOrVolume.isEmpty ||
+            weightOrVolume.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
         )
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map(x => x.toString))
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
