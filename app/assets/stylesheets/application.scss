@@ -32,7 +32,7 @@ $hmrc-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/hmrc-fr
 }
 
 .app-task-list__task-name{
-  width: 65%
+  width: 65%;
 }
 
 .govuk-form-group--error .autocomplete__input {
@@ -46,17 +46,21 @@ $hmrc-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/hmrc-fr
 }
 
 .hmrc-add-to-a-list__contents {
-    padding-bottom: 35px;
+  padding-bottom: 35px;
 }
 
-.official-status-tag{
- margin-bottom: -6px;
+.official-status-tag {
+  margin-bottom: -6px;
 }
 
 .govuk-\!-margin-bottom-6 {
-    margin-top: 20px !important;
+  margin-top: 20px !important;
 }
 
 .product-heading-margin {
-    margin-top: 0.25em
+  margin-top: 0.25em;
+}
+
+.responsive-table-wrapper {
+  overflow: auto;
 }

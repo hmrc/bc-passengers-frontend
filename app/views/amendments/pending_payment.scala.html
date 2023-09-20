@@ -16,22 +16,26 @@
 
 @import views.ViewUtils._
 @import util._
+
 @this(
-    govukLayout: templates.GovukLayoutWrapper,
-    errorSummary: components.errorSummary,
-    summaryYesNo: components.summaryYesNo,
-    button: components.button,
-    formHelper: FormWithCSRF,
-    h1: components.h1
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  summaryYesNo: components.summaryYesNo,
+  button: components.button,
+  formHelper: FormWithCSRF,
+  h1: components.h1
 )
+
 @(form: Form[Boolean], calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))), backLink = backLink) {
-    @formHelper(action = routes.PendingPaymentController.postPendingPaymentPage){
+  @formHelper(action = routes.PendingPaymentController.postPendingPaymentPage){
 
-        @errorSummary(form.errors, Some("value-yes"))
+    @errorSummary(form.errors, Some("value-yes"))
 
-        @h1(messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))
+      @h1(messages("heading.incomplete_payment") + " £" + formatMonetaryValue(deltaCalc.get.allTax))
+
+      <div class="responsive-table-wrapper">
         <table class="govuk-table">
          <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.tax_due_on_declaration")</caption>
          <thead class="govuk-table__head">
@@ -45,18 +49,18 @@
           <tbody class="govuk-table__body">
             @calculatorResponseDto.items.map { item =>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">
-                    @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
-                </td>
-                <td class="govuk-table__cell">
-                    @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
-                </td>
-                <td class="govuk-table__cell">
-                    @messages(item.metadata.country.countryName)
-                </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">
-                 &pound;@formatMonetaryValue(item.calculation.allTax)
-                </td>
+              <td class="govuk-table__cell">
+                  @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
+              </td>
+              <td class="govuk-table__cell">
+                  @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
+              </td>
+              <td class="govuk-table__cell">
+                  @messages(item.metadata.country.countryName)
+              </td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+               &pound;@formatMonetaryValue(item.calculation.allTax)
+              </td>
             </tr>
             }
             <tr class="govuk-table__row">
@@ -65,29 +69,31 @@
             </tr>
             </tbody>
         </table>
+      </div>
 
+      <div class="responsive-table-wrapper">
         <table class="govuk-table margin-bottom-30">
-            <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.incomplete_payment")</caption>
-            <tbody class="govuk-table__body" id="delta">
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
-            </tr>
+          <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.incomplete_payment")</caption>
+          <tbody class="govuk-table__body" id="delta">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
+          </tr>
 
-            <tr class="govuk-table__row">
-                <td class="govuk-table___cell govuk-!-font-weight-bold">@messages("label.total_due_now")</td>
-                <td class="govuk-table___cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
-            </tr>
-            </tbody>
+          <tr class="govuk-table__row">
+            <td class="govuk-table___cell govuk-!-font-weight-bold">@messages("label.total_due_now")</td>
+            <td class="govuk-table___cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
+          </tr>
+          </tbody>
         </table>
+      </div>
 
-        <br>
+      <br>
 
-        @summaryYesNo(form = form, h2Message = Some("label.want_to_pay_now"), name = "pendingPayment", hintMessage = Some(messages(s"label.service_no_longer_available")))
+      @summaryYesNo(form = form, h2Message = Some("label.want_to_pay_now"), name = "pendingPayment", hintMessage = Some(messages(s"label.service_no_longer_available")))
 
-        @button("label.continue")
+      @button("label.continue")
 
     }
-
 
 }
