@@ -18,44 +18,48 @@
 @import util._
 
 @this(
-    h2: components.h2,
+  h2: components.h2,
 )
+
 @(calculatorResponseDto: CalculatorResponseDto)(implicit messages: Messages)
 
 @h2(messages("label.breakdown_of_tax_and_duty_due"))
 
-    <table class="govuk-table responsive-table">
-        <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.breakdown_of_tax_and_duty_due")</caption>
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col" id="item">@messages("label.item")</th>
-            <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="customs">
-                @messages("label.customs")
-            </th>
-            <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="excise">
-                @messages("label.excise_val")
-            </th>
-            <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="vat">
-                @messages("label.vat")
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        @calculatorResponseDto.items.map { item =>
-        <tr class="govuk-table__row">
-            <td class="govuk-table__cell">
-                @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
-            </td>
-            <td class="govuk-table__cell govuk-table__cell--numeric">
-                &pound;@formatMonetaryValue(item.calculation.customs)
-            </td>
-            <td class="govuk-table__cell govuk-table__cell--numeric">
-                &pound;@formatMonetaryValue(item.calculation.excise)
-            </td>
-            <td class="govuk-table__cell govuk-table__cell--numeric">
-                &pound;@formatMonetaryValue(item.calculation.vat)
-            </td>
-        </tr>
-        }
-        </tbody>
-    </table>
+<div class="responsive-table-wrapper">
+  <table class="govuk-table">
+    <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.breakdown_of_tax_and_duty_due")</caption>
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" scope="col" id="item">@messages("label.item")</th>
+      <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="customs">
+        @messages("label.customs")
+      </th>
+      <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="excise">
+        @messages("label.excise_val")
+      </th>
+      <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="vat">
+        @messages("label.vat")
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    @calculatorResponseDto.items.map { item =>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          @messages(item.metadata.descriptionLabels.description,
+          item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
+        </td>
+        <td class="govuk-table__cell govuk-table__cell--numeric">
+          &pound;@formatMonetaryValue(item.calculation.customs)
+        </td>
+        <td class="govuk-table__cell govuk-table__cell--numeric">
+          &pound;@formatMonetaryValue(item.calculation.excise)
+        </td>
+        <td class="govuk-table__cell govuk-table__cell--numeric">
+          &pound;@formatMonetaryValue(item.calculation.vat)
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>

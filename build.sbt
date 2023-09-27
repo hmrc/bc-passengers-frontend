@@ -1,4 +1,4 @@
-import uk.gov.hmrc.DefaultBuildSettings._
+import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 
 val appName = "bc-passengers-frontend"
 
@@ -6,18 +6,15 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .settings(
+    scalaVersion := "2.13.12",
     libraryDependencies ++= AppDependencies(),
-    retrieveManaged := true
+    pipelineStages := Seq(digest),
+    PlayKeys.playDefaultPort := 9008
   )
-  .settings(
-    pipelineStages := Seq(digest)
-  )
-  .settings(scalaVersion := "2.13.11")
   // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
   .settings(libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always))
   // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
   .settings(dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1")
-  .settings(defaultSettings())
   .settings(majorVersion := 1)
   .settings(
     coverageExcludedFiles := "<empty>;.*components.*;.*Routes.*;",
@@ -30,7 +27,6 @@ lazy val microservice = Project(appName, file("."))
     integrationTestSettings(),
     routesImport ++= Seq("binders.Binders._", "models._")
   )
-  .settings(PlayKeys.playDefaultPort := 9008)
   .settings(
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
