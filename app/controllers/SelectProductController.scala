@@ -63,7 +63,7 @@ class SelectProductController @Inject() (
 
       case Some(ProductAlias(_, productPath)) =>
         selectProductService.removeSelectedAlias(context.getJourneyData) flatMap {
-          _ => //FIXME - if an invalid path is supplied, this would still remove the top item from the stack
+          _ =>
             requireProductOrCategory(productPath) {
 
               case ProductTreeBranch(_, _, _) =>
@@ -109,11 +109,7 @@ class SelectProductController @Inject() (
           Ok(
             select_products(
               SelectProductsDto.form(path.toMessageKey),
-              if (
-                path.toMessageKey.contains("alcohol") ||
-                path.toMessageKey.contains("tobacco")
-              ) { children.map(i => (i.name, i.token)) }
-              else { children.map(i => (i.token, i.name)) },
+              children.map(i => (i.token, i.name)),
               path,
               backLinkModel.backLink
             )
@@ -121,7 +117,6 @@ class SelectProductController @Inject() (
         )
       case _                                 =>
         Future.successful(InternalServerError(errorTemplate()))
-
     }
   }
 
@@ -136,7 +131,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  branch.children.map(i => (i.name, i.token)),
+                  branch.children.map(i => (i.token, i.name)),
                   path,
                   backLinkModel.backLink
                 )

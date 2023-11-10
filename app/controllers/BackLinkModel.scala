@@ -112,9 +112,9 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.goodsBoughtIntoGB)
       case "confirm-age"                                                                  =>
         Some(TravelDetailsController.privateTravel)
-      case "tell-us"                                                                      =>
+      case "tell-us"                                                                      => // todo fix it when it is
         if (prevDecl) {
-          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
+          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage) // this is wrong, should go to previous path
         } else {
           Some(TravelDetailsController.confirmAge)
         }
@@ -136,16 +136,21 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case x // other goods has cancel button that is because it is following different pattern of adding items
-          if path.endsWith("select-goods/alcohol")
-            || path.endsWith("select-goods/tobacco") =>
+      case _ if path.endsWith("select-goods/alcohol")
+            || path.endsWith("select-goods/tobacco")
+            || path.endsWith("enter-goods/other-goods/tell-us") =>
         Some(DashboardController.showDashboard)
+      case x if path.contains("enter-goods/tobacco/") =>
+        val iid = getIid(context.request.path)
+        context.request.path match {
+          case stringPath if stringPath.contains("enter-goods/tobacco") => Some(SelectProductController.askProductSelection(path))
+          case _ => None
+        }
       case _                                                                              =>
         None
     }
 
     call.map(_.toString)
-
   }
 
   private def backLinkStandard(context: LocalContext): Option[String] =
