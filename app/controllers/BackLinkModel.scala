@@ -17,6 +17,7 @@
 package controllers
 
 import config.AppConfig
+import models.ProductPath
 
 import javax.inject.{Inject, Singleton}
 
@@ -140,12 +141,6 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
             || path.endsWith("select-goods/tobacco")
             || path.endsWith("enter-goods/other-goods/tell-us") =>
         Some(DashboardController.showDashboard)
-      case x if path.contains("enter-goods/tobacco/") =>
-        val iid = getIid(context.request.path)
-        context.request.path match {
-          case stringPath if stringPath.contains("enter-goods/tobacco") => Some(SelectProductController.askProductSelection(path))
-          case _ => None
-        }
       case _                                                                              =>
         None
     }

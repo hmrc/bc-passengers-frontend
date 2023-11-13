@@ -33,7 +33,7 @@
     backLink: Option[String]
 )(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), customBackLink = false) {
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
 
