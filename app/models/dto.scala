@@ -212,17 +212,12 @@ case class ConfirmRemoveDto(confirmRemove: Boolean)
 
 object SelectProductsDto {
 
-  private def getError(path: String): String =
-    if (path.contains("alcohol") || path.contains("tobacco")) {
-      "error.required"
-    } else {
-      "error.required.other"
-    }
+  private val getError: String = "error.required"
 
-  def form(path: String): Form[SelectProductsDto] = Form(
+  val form: Form[SelectProductsDto] = Form(
     mapping(
       "tokens" -> text
-        .verifying(getError(path), _.nonEmpty)
+        .verifying(getError, _.nonEmpty)
         .transform[List[String]](item => List(item), _.head)
     )(SelectProductsDto.apply)(SelectProductsDto.unapply)
   )

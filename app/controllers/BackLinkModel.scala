@@ -17,7 +17,6 @@
 package controllers
 
 import config.AppConfig
-import models.ProductPath
 
 import javax.inject.{Inject, Singleton}
 
@@ -113,9 +112,9 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.goodsBoughtIntoGB)
       case "confirm-age"                                                                  =>
         Some(TravelDetailsController.privateTravel)
-      case "tell-us"                                                                      => // todo fix it when it is
+      case "tell-us"                                                                      =>
         if (prevDecl) {
-          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage) // this is wrong, should go to previous path
+          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
         } else {
           Some(TravelDetailsController.confirmAge)
         }
@@ -137,7 +136,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case _ if path.endsWith("select-goods/alcohol")
+      case _
+          if path.endsWith("select-goods/alcohol")
             || path.endsWith("select-goods/tobacco")
             || path.endsWith("enter-goods/other-goods/tell-us") =>
         Some(DashboardController.showDashboard)

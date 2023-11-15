@@ -80,9 +80,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
   implicit val arbEnterYourDetailsForm: Arbitrary[Form[EnterYourDetailsDto]]           = fixed(
     EnterYourDetailsDto.form(DateTime.now())
   )
-  implicit val arbSelectProductsForm: Arbitrary[Form[SelectProductsDto]]               = fixed(SelectProductsDto.form(
-    "other-goods/electronic-devices"
-  ))
+  implicit val arbSelectProductsForm: Arbitrary[Form[SelectProductsDto]]               = fixed(SelectProductsDto.form)
 
   override def viewPackageName: String = "views.html"
 

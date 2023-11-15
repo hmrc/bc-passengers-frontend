@@ -27,7 +27,7 @@ class SelectProductsViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "other-goods/electronic-devices")
 
-  private val validForm: Form[SelectProductsDto] = form(path = "other-goods/electronic-devices").bind(
+  private val validForm: Form[SelectProductsDto] = form.bind(
     Map("tokens" -> "televisions")
   )
 

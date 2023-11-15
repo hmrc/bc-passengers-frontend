@@ -142,7 +142,9 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       h1             shouldBe "What type of alcohol do you want to add?"
       title          shouldBe "What type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
-      forAll(List("beer", "wine", "cider", "spirits", "wine", "sparkling-wine")) { cb =>
+      forAll(
+        List("tokens-beer", "tokens-wine", "tokens-cider", "tokens-spirits", "tokens-wine", "tokens-sparkling-wine")
+      ) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
     }
@@ -157,7 +159,16 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       h1             shouldBe "What type of tobacco do you want to add?"
 
-      forAll(List("cigars", "cigarettes", "cigarillos", "rolling-tobacco", "chewing-tobacco", "heated-tobacco")) { cb =>
+      forAll(
+        List(
+          "tokens-cigars",
+          "tokens-cigarettes",
+          "tokens-cigarillos",
+          "tokens-rolling-tobacco",
+          "tokens-chewing-tobacco",
+          "tokens-heated-tobacco"
+        )
+      ) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
     }
@@ -231,13 +242,11 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "addSelectedProducts to keystore and then redirect to nextStep given valid checkbox values" in new LocalSetup {
+    "addSelectedProducts to keystore and then redirect to nextStep given valid product" in new LocalSetup {
 
       val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(selectedAliases =
         List(
-          ProductAlias("alcohol.beer", ProductPath("alcohol/beer")),
-          ProductAlias("alcohol.cider", ProductPath("alcohol/cider")),
-          ProductAlias("tobacco.cigars", ProductPath("tobacco/cigars"))
+          ProductAlias("alcohol.beer", ProductPath("alcohol/beer"))
         )
       )
 
@@ -246,7 +255,7 @@ class SelectProductControllerSpec extends BaseSpec {
       override val result: Future[Result] = route(
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
-          .withFormUrlEncodedBody("tokens[0]" -> "beer")
+          .withFormUrlEncodedBody("tokens" -> "beer")
       ).get
 
       status(result)           shouldBe SEE_OTHER
@@ -255,7 +264,6 @@ class SelectProductControllerSpec extends BaseSpec {
       verify(injected[SelectProductService], times(1))
         .addSelectedProductsAsAliases(meq(localRequiredJourneyData), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[Cache], times(1)).fetch(any())
-
     }
   }
 

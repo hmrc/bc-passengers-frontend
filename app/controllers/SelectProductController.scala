@@ -62,35 +62,34 @@ class SelectProductController @Inject() (
         Future.successful(Redirect(routes.DashboardController.showDashboard))
 
       case Some(ProductAlias(_, productPath)) =>
-        selectProductService.removeSelectedAlias(context.getJourneyData) flatMap {
-          _ =>
-            requireProductOrCategory(productPath) {
+        selectProductService.removeSelectedAlias(context.getJourneyData) flatMap { _ =>
+          requireProductOrCategory(productPath) {
 
-              case ProductTreeBranch(_, _, _) =>
-                Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
+            case ProductTreeBranch(_, _, _) =>
+              Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
 
-              case ProductTreeLeaf(_, _, _, templateId, _) =>
-                templateId match {
-                  case "alcohol"     =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "cigarettes"  =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "cigars"      =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "tobacco"     =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
-                }
+            case ProductTreeLeaf(_, _, _, templateId, _) =>
+              templateId match {
+                case "alcohol"     =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "cigarettes"  =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "cigars"      =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "tobacco"     =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
+              }
 
-            }
+          }
         }
     }
   }
@@ -108,7 +107,7 @@ class SelectProductController @Inject() (
         Future.successful(
           Ok(
             select_products(
-              SelectProductsDto.form(path.toMessageKey),
+              SelectProductsDto.form,
               children.map(i => (i.token, i.name)),
               path,
               backLinkModel.backLink
@@ -122,8 +121,7 @@ class SelectProductController @Inject() (
 
   def processProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireCategory(path) { branch =>
-      SelectProductsDto
-        .form(path.toMessageKey)
+      SelectProductsDto.form
         .bindFromRequest()
         .fold(
           formWithErrors =>
@@ -156,8 +154,7 @@ class SelectProductController @Inject() (
 
   def processProductSelectionOtherGoods(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireCategory(path) { branch =>
-      SelectProductsDto
-        .form(path.toMessageKey)
+      SelectProductsDto.form
         .bindFromRequest()
         .fold(
           formWithErrors =>

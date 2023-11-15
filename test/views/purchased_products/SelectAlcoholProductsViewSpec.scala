@@ -28,10 +28,10 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "alcohol")
 
-  private val validForm: Form[SelectProductsDto] = form(path = "alcohol")
+  private val validForm: Form[SelectProductsDto] = form
     .fill(SelectProductsDto(List("wine")))
 
-  private val emptyForm: Form[SelectProductsDto] = form(path = "alcohol").bind(Map.empty[String, String])
+  private val emptyForm: Form[SelectProductsDto] = form.bind(Map.empty[String, String])
 
   private val items = List(
     ("label.alcohol.beer", "beer"),
@@ -90,7 +90,7 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
         val doc = document(buildView(form = emptyForm))
         doc.title() must startWith(messages("label.error"))
         messages("label.there_is_a_problem") mustBe getErrorTitle(doc)
-        List("#beer" -> messages("head.error.required.alcohol")) mustBe getErrorsInSummary(doc)
+        List("#tokens-label.alcohol.beer" -> messages("head.error.required.alcohol")) mustBe getErrorsInSummary(doc)
       }
 
       "have all errors in each input" in {
