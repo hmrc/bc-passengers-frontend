@@ -33,7 +33,7 @@ package object util {
 
   val decimalFormat5: DecimalFormat = {
     val df = new DecimalFormat("0.#####")
-    df.setRoundingMode(RoundingMode.UP)
+    df.setRoundingMode(RoundingMode.HALF_UP)
     df
   }
 

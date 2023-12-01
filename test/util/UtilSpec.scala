@@ -16,6 +16,8 @@
 
 package util
 
+import java.math.RoundingMode
+
 import models.ProductPath
 import play.api.data.validation._
 
@@ -76,6 +78,36 @@ class UtilSpec extends BaseSpec {
         applicableLimits = List("L-WINE", "L-WINESP"),
         path = ProductPath(path = "alcohol/sparkling-wine")
       ) shouldBe Some(ProductPath(path = "alcohol/sparkling-wine"))
+    }
+  }
+
+  "Formatting with decimalFormat5" when {
+    "using the HALF_UP rounding mode" should {
+      "preserve the correct value in 5 decimal places" in {
+        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) = (0.00, 0.99, 0.01)
+
+        start
+          .to(end, step)
+          .foreach(value =>
+            BigDecimal(decimalFormat5.format(value.toDouble / 1000)) shouldBe BigDecimal(
+              decimalFormat5.format(value / 1000)
+            )
+          )
+      }
+    }
+
+    "using the UP rounding mode" should {
+      "not preserve the correct value in 5 decimal places" in {
+        val values: Seq[BigDecimal] = Seq(0.07, 0.13, 0.14, 0.26, 0.28, 0.52, 0.56, 0.77, 0.81, 0.89)
+
+        decimalFormat5.setRoundingMode(RoundingMode.UP)
+
+        values.foreach(value =>
+          BigDecimal(decimalFormat5.format(value.toDouble / 1000)) should not be BigDecimal(
+            decimalFormat5.format(value / 1000)
+          )
+        )
+      }
     }
   }
 }
