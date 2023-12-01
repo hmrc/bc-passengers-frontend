@@ -1,30 +1,30 @@
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.DefaultBuildSettings._
 
 val appName = "bc-passengers-frontend"
+
+ThisBuild / majorVersion := 1
+ThisBuild / scalaVersion := "2.13.12"
+
+// To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .settings(
-    scalaVersion := "2.13.12",
     libraryDependencies ++= AppDependencies(),
     pipelineStages := Seq(digest),
     PlayKeys.playDefaultPort := 9008
   )
-  // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
-  .settings(libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always))
   // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
   .settings(dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1")
-  .settings(majorVersion := 1)
   .settings(
     coverageExcludedFiles := "<empty>;.*components.*;.*Routes.*;",
     coverageMinimumStmtTotal := 99,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )
-  .configs(IntegrationTest)
   .settings(
-    integrationTestSettings(),
     routesImport ++= Seq("binders.Binders._", "models._")
   )
   .settings(
@@ -40,6 +40,11 @@ lazy val microservice = Project(appName, file("."))
     )
   )
 
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(itSettings)
+
 Concat.groups := Seq(
   "javascripts/application.js" ->
     group(
@@ -54,5 +59,5 @@ Concat.groups := Seq(
 Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt IntegrationTest/scalafmt A11y/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle IntegrationTest/scalastyle A11y/scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt A11y/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle it/Test/scalastyle A11y/scalastyle")
