@@ -52,12 +52,44 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "arriving-ni"                                                                  =>
         Some(TravelDetailsController.whereGoodsBought)
+      case "gb-ni-vat-check"                                                              =>
+        val iid = getIid(context.request.path)
+        context.request.path match {
+          case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
+          case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
+          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+        }
+      case "gb-ni-excise-check"
+          if context.request.path.contains("enter-goods/alcohol")
+            || context.request.path.contains("enter-goods/tobacco") =>
+        val iid = getIid(context.request.path)
+        Some(
+          UKVatPaidController.loadItemUKVatPaidPage(
+            context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
+            iid
+          )
+        )
       case "goods-bought-into-northern-ireland-inside-eu"                                 =>
         Some(ArrivingNIController.loadArrivingNIPage)
       case "gb-ni-vat-excise-check"                                                       =>
         Some(UKResidentController.loadUKResidentPage)
       case "gb-ni-uk-resident-check"                                                      =>
         Some(ArrivingNIController.loadArrivingNIPage)
+      case "gb-ni-exemptions" if context.request.path.contains("enter-goods/other-goods") =>
+        val iid = getIid(context.request.path)
+        Some(
+          UKVatPaidController.loadItemUKVatPaidPage(
+            context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
+            iid
+          )
+        )
+      case "eu-evidence-check" if eucc.contains("euOnly") & !arN                          =>
+        val iid = getIid(context.request.path)
+        context.request.path match {
+          case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
+          case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
+          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+        }
       case "gb-ni-no-need-to-use-service"                                                 =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
       case "goods-brought-into-northern-ireland" if !eucc.contains("greatBritain")        =>
@@ -80,7 +112,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.goodsBoughtIntoGB)
       case "confirm-age"                                                                  =>
         Some(TravelDetailsController.privateTravel)
-      case "tell-us"                                                                      =>
+      case _ if path.endsWith("tell-us") && !path.contains("enter-goods")                 =>
         if (prevDecl) {
           Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
         } else {
@@ -104,10 +136,10 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case _
-          if path.endsWith("select-goods/alcohol")
-            || path.endsWith("select-goods/tobacco")
-            || path.endsWith("enter-goods/other-goods/tell-us") =>
+      case "edit"
+          if path.contains("enter-goods/alcohol")
+            || path.contains("enter-goods/tobacco")
+            || path.contains("enter-goods/other-goods") =>
         Some(DashboardController.showDashboard)
       case _                                                                              =>
         None

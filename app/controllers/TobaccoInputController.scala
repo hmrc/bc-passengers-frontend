@@ -41,6 +41,7 @@ class TobaccoInputController @Inject() (
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+  val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val errorTemplate: views.html.errorTemplate,
   val tobacco_input: views.html.tobacco.tobacco_input,
@@ -189,6 +190,8 @@ class TobaccoInputController @Inject() (
                     )
                   )
                   .discardingErrors,
+                backLinkModel.backLink,
+                customBackLink = false,
                 product,
                 path,
                 None,
@@ -222,6 +225,8 @@ class TobaccoInputController @Inject() (
                     )
                   )
                   .discardingErrors,
+                backLinkModel.backLink,
+                customBackLink = false,
                 product,
                 path,
                 None,
@@ -255,6 +260,8 @@ class TobaccoInputController @Inject() (
                     )
                   )
                   .discardingErrors,
+                backLinkModel.backLink,
+                customBackLink = false,
                 product,
                 path,
                 None,
@@ -282,6 +289,8 @@ class TobaccoInputController @Inject() (
                   Ok(
                     no_of_sticks_input(
                       noOfSticksForm(ppi.path).fill(dto),
+                      backLinkModel.backLink,
+                      customBackLink = true,
                       product,
                       ppi.path,
                       Some(iid),
@@ -295,6 +304,8 @@ class TobaccoInputController @Inject() (
                   Ok(
                     weight_or_volume_input(
                       weightOrVolumeForm(ppi.path).fill(dto),
+                      backLinkModel.backLink,
+                      customBackLink = true,
                       product,
                       ppi.path,
                       Some(iid),
@@ -308,6 +319,8 @@ class TobaccoInputController @Inject() (
                   Ok(
                     no_of_sticks_weight_or_volume_input(
                       weightOrVolumeNoOfSticksForm(ppi.path).fill(dto),
+                      backLinkModel.backLink,
+                      customBackLink = true,
                       product,
                       ppi.path,
                       Some(iid),
@@ -349,6 +362,8 @@ class TobaccoInputController @Inject() (
                   BadRequest(
                     no_of_sticks_input(
                       formWithErrors,
+                      backLinkModel.backLink,
+                      customBackLink = false,
                       product,
                       path,
                       None,
@@ -396,6 +411,8 @@ class TobaccoInputController @Inject() (
                   BadRequest(
                     weight_or_volume_input(
                       formWithErrors,
+                      backLinkModel.backLink,
+                      customBackLink = false,
                       product,
                       path,
                       None,
@@ -443,6 +460,8 @@ class TobaccoInputController @Inject() (
                   BadRequest(
                     no_of_sticks_weight_or_volume_input(
                       formWithErrors,
+                      backLinkModel.backLink,
+                      customBackLink = false,
                       product,
                       path,
                       None,
@@ -519,6 +538,8 @@ class TobaccoInputController @Inject() (
                     BadRequest(
                       no_of_sticks_input(
                         formWithErrors,
+                        backLinkModel.backLink,
+                        customBackLink = true,
                         product,
                         ppi.path,
                         Some(iid),
@@ -569,6 +590,8 @@ class TobaccoInputController @Inject() (
                     BadRequest(
                       weight_or_volume_input(
                         formWithErrors,
+                        backLinkModel.backLink,
+                        customBackLink = true,
                         product,
                         ppi.path,
                         Some(iid),
@@ -619,6 +642,8 @@ class TobaccoInputController @Inject() (
                     BadRequest(
                       no_of_sticks_weight_or_volume_input(
                         formWithErrors,
+                        backLinkModel.backLink,
+                        customBackLink = true,
                         product,
                         ppi.path,
                         Some(iid),

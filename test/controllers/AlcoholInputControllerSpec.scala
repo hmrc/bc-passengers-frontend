@@ -163,7 +163,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       ) thenReturn cachedJourneyData.get
 
       when(
-        injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+        injected[alcohol_input]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
 
       rt(app, req)
@@ -189,7 +190,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       ) thenReturn cachedGBNIJourneyData.get
 
       when(
-        injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+        injected[alcohol_input]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
 
       rt(app, req)
@@ -215,7 +217,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       ) thenReturn cachedEUGBJourneyData.get
 
       when(
-        injected[alcohol_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+        injected[alcohol_input]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
 
       rt(app, req)
@@ -484,6 +487,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any(),
         any(),
         any(),
+        any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -538,6 +543,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any(),
         any(),
         any(),
+        any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -582,6 +589,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       verify(injected[views.html.alcohol.alcohol_input], times(1))(
         formCaptor.capture(),
+        any(),
+        any(),
         any(),
         any(),
         any(),

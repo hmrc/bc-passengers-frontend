@@ -79,6 +79,8 @@ class NoOfSticksInputViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable = injected[no_of_sticks_input].apply(
     form = validForm,
+    backLink = None,
+    customBackLink = false,
     product = productTreeLeaf,
     path = productPath,
     iid = Some("iid0"),
@@ -94,6 +96,8 @@ class NoOfSticksInputViewSpec extends BaseViewSpec {
 
   val viewViaRender: HtmlFormat.Appendable = injected[no_of_sticks_input].render(
     form = validForm,
+    backLink = None,
+    customBackLink = false,
     product = productTreeLeaf,
     path = productPath,
     iid = Some("iid0"),
@@ -108,6 +112,8 @@ class NoOfSticksInputViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_input].f(
     validForm,
+    None,
+    false,
     productTreeLeaf,
     productPath,
     Some("iid0"),

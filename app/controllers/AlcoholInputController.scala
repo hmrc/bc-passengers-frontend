@@ -40,6 +40,7 @@ class AlcoholInputController @Inject() (
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+  val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val errorTemplate: views.html.errorTemplate,
   val alcohol_input: views.html.alcohol.alcohol_input,
@@ -108,6 +109,8 @@ class AlcoholInputController @Inject() (
                     )
                   )
                   .discardingErrors,
+                backLinkModel.backLink,
+                customBackLink = false,
                 product,
                 path,
                 None,
@@ -135,6 +138,8 @@ class AlcoholInputController @Inject() (
                 Ok(
                   alcohol_input(
                     alcoholForm(ppi.path).fill(dto),
+                    backLinkModel.backLink,
+                    customBackLink = true,
                     product,
                     ppi.path,
                     Some(iid),
@@ -176,6 +181,8 @@ class AlcoholInputController @Inject() (
                 BadRequest(
                   alcohol_input(
                     formWithErrors,
+                    backLinkModel.backLink,
+                    customBackLink = false,
                     product,
                     path,
                     None,
@@ -248,6 +255,8 @@ class AlcoholInputController @Inject() (
                   BadRequest(
                     alcohol_input(
                       formWithErrors,
+                      backLinkModel.backLink,
+                      customBackLink = true,
                       product,
                       ppi.path,
                       Some(iid),
