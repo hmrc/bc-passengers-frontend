@@ -30,9 +30,9 @@
     autoCompleteList: components.autocompleteList
 )
 
-@(form: Form[TobaccoDto], product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(content: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[TobaccoDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(content: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase()))) {
+@govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase())), backLink = backLink, customBackLink = customBackLink) {
 
       @formHelper(action = iid.fold(routes.TobaccoInputController.processAddForm(path))(iid => routes.TobaccoInputController.processEditForm(iid))) {
         @if(form.errors){
@@ -96,8 +96,5 @@
 
           @button("label.continue")
 
-          <div>
-              <p class="govuk-body">@link(controllers.routes.SelectProductController.cancel.url, "label.cancel", id=Some("cancelLink"))</p>
-          </div>
       }
 }

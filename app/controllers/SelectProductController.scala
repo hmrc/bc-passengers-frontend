@@ -62,35 +62,34 @@ class SelectProductController @Inject() (
         Future.successful(Redirect(routes.DashboardController.showDashboard))
 
       case Some(ProductAlias(_, productPath)) =>
-        selectProductService.removeSelectedAlias(context.getJourneyData) flatMap {
-          _ => //FIXME - if an invalid path is supplied, this would still remove the top item from the stack
-            requireProductOrCategory(productPath) {
+        selectProductService.removeSelectedAlias(context.getJourneyData) flatMap { _ =>
+          requireProductOrCategory(productPath) {
 
-              case ProductTreeBranch(_, _, _) =>
-                Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
+            case ProductTreeBranch(_, _, _) =>
+              Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
 
-              case ProductTreeLeaf(_, _, _, templateId, _) =>
-                templateId match {
-                  case "alcohol"     =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "cigarettes"  =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "cigars"      =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "tobacco"     =>
-                    Future.successful(
-                      Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
-                    )
-                  case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
-                }
+            case ProductTreeLeaf(_, _, _, templateId, _) =>
+              templateId match {
+                case "alcohol"     =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "cigarettes"  =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "cigars"      =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "tobacco"     =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
+              }
 
-            }
+          }
         }
     }
   }
@@ -108,12 +107,8 @@ class SelectProductController @Inject() (
         Future.successful(
           Ok(
             select_products(
-              SelectProductsDto.form(path.toMessageKey),
-              if (
-                path.toMessageKey.contains("alcohol") ||
-                path.toMessageKey.contains("tobacco")
-              ) { children.map(i => (i.name, i.token)) }
-              else { children.map(i => (i.token, i.name)) },
+              SelectProductsDto.form,
+              children.map(i => (i.token, i.name)),
               path,
               backLinkModel.backLink
             )
@@ -121,14 +116,12 @@ class SelectProductController @Inject() (
         )
       case _                                 =>
         Future.successful(InternalServerError(errorTemplate()))
-
     }
   }
 
   def processProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireCategory(path) { branch =>
-      SelectProductsDto
-        .form(path.toMessageKey)
+      SelectProductsDto.form
         .bindFromRequest()
         .fold(
           formWithErrors =>
@@ -136,7 +129,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  branch.children.map(i => (i.name, i.token)),
+                  branch.children.map(i => (i.token, i.name)),
                   path,
                   backLinkModel.backLink
                 )
@@ -161,8 +154,7 @@ class SelectProductController @Inject() (
 
   def processProductSelectionOtherGoods(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireCategory(path) { branch =>
-      SelectProductsDto
-        .form(path.toMessageKey)
+      SelectProductsDto.form
         .bindFromRequest()
         .fold(
           formWithErrors =>

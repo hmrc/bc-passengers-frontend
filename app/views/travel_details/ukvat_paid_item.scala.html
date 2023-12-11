@@ -24,9 +24,9 @@
  formHelper: FormWithCSRF
 )
 
-@(form: Form[Boolean], backLink: Option[String],path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "heading.is_uk_vat_paid_item")), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "heading.is_uk_vat_paid_item")), backLink = backLink, customBackLink = true) {
 
  @formHelper(action = routes.UKVatPaidController.postItemUKVatPaidPage(path,iid)) {
 

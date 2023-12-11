@@ -27,7 +27,7 @@
 
 @(form: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "heading.is_uk_excise_paid_item")), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "heading.is_uk_excise_paid_item")), customBackLink = false) {
 
     @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidItemPage(path,iid)) {
         @errorSummary(form.errors, Some("value-yes"))

@@ -80,6 +80,8 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].apply(
     form = validForm,
+    backLink = None,
+    customBackLink = false,
     product = productTreeLeaf,
     path = productPath,
     iid = Some("iid0"),
@@ -95,6 +97,8 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
 
   val viewViaRender: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].render(
     form = validForm,
+    backLink = None,
+    customBackLink = false,
     product = productTreeLeaf,
     path = productPath,
     iid = Some("iid0"),
@@ -109,6 +113,8 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].f(
     validForm,
+    None,
+    false,
     productTreeLeaf,
     productPath,
     Some("iid0"),

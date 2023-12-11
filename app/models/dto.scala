@@ -212,19 +212,13 @@ case class ConfirmRemoveDto(confirmRemove: Boolean)
 
 object SelectProductsDto {
 
-  private def nonEmptyList[T]: Constraint[List[T]] = Constraint[List[T]]("constraint.required") { list =>
-    if (list.nonEmpty) Valid else Invalid(ValidationError("error.required"))
-  }
+  private val getError: String = "error.required"
 
-  def form(path: String): Form[SelectProductsDto] = Form(
+  val form: Form[SelectProductsDto] = Form(
     mapping(
-      if (path.contains("alcohol") || path.contains("tobacco")) {
-        "tokens" -> list(nonEmptyText).verifying(nonEmptyList)
-      } else {
-        "tokens" -> optional(text)
-          .verifying("error.required.other", _.nonEmpty)
-          .transform[List[String]](item => List(item.get), _.headOption)
-      }
+      "tokens" -> text
+        .verifying(getError, _.nonEmpty)
+        .transform[List[String]](item => List(item), _.head)
     )(SelectProductsDto.apply)(SelectProductsDto.unapply)
   )
 }

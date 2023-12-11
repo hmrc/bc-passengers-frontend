@@ -40,6 +40,7 @@ class GovukLayoutWrapperViewSpec extends BaseViewSpec {
     signOut = true,
     inlineScript = None,
     inlineLinkElem = None,
+    customBackLink = true,
     backLink = None,
     timeout = true,
     contentBlock = Html("<h1>page heading</h1>"),
@@ -53,6 +54,7 @@ class GovukLayoutWrapperViewSpec extends BaseViewSpec {
     true,
     None,
     None,
+    true,
     None,
     true
   )(Html("<h1>page heading</h1>"))(request, messages, appConfig)

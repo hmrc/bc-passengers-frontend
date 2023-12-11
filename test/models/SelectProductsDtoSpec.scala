@@ -22,9 +22,7 @@ import util.BaseSpec
 
 class SelectProductsDtoSpec extends BaseSpec {
 
-  private val path: String = "other-goods/electronic-devices"
-
-  private val validatedForm: Form[SelectProductsDto] = form(path).bind(
+  private val validatedForm: Form[SelectProductsDto] = form.bind(
     Map("tokens" -> "televisions")
   )
 
@@ -36,18 +34,18 @@ class SelectProductsDtoSpec extends BaseSpec {
     }
 
     "return error with empty data" in {
-      val validatedForm: Form[SelectProductsDto] = form(path).bind(
+      val validatedForm: Form[SelectProductsDto] = form.bind(
         Map(
           "tokens" -> ""
         )
       )
       val errors: Seq[FormError]                 = validatedForm.errors
 
-      errors shouldBe List(FormError("tokens", List("error.required.other")))
+      errors shouldBe List(FormError("tokens", List("error.required")))
     }
 
     "return the correct result when filled" in {
-      form(path).fill(SelectProductsDto(List("televisions"))).data shouldBe validatedForm.data
+      form.fill(SelectProductsDto(List("televisions"))).data shouldBe validatedForm.data
     }
   }
 }

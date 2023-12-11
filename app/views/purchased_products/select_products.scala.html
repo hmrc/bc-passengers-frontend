@@ -21,7 +21,6 @@
     button: components.button,
     formHelper: FormWithCSRF,
     h1: components.h1,
-    checkboxes: components.inputCheckboxes,
     radios: components.otherGoodsInputRadio,
     otherGoodsErrorSummary : components.otherGoodsErrorSummary,
     p: components.p
@@ -34,17 +33,14 @@
     backLink: Option[String]
 )(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), customBackLink = false) {
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
+
     @if(selectProductsForm.errors){
-        @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey),
-        if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco"))
-            Some(items(0)._2)
-        else
-            Some(s"tokens-${items(0)._1}")
-        )
+        @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey), Some(s"tokens-${items(0)._1}"))
     }
+
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
@@ -52,22 +48,13 @@
             </h1>
         </legend>
 
-        @if(path.toMessageKey.contains("alcohol") || path.toMessageKey.contains("tobacco")){
-            @checkboxes(
-                field = selectProductsForm("tokens"),
-                path = Some(path),
-                inputs = checkBoxOptions(items),
-                legendText = Some(messages("label.select_all_that_apply"))
-            )
-        } else {
-            @radios(
-                field = selectProductsForm("tokens"),
-                items = radioOptions(items),
-                name = "tokens",
-                path = Some(path),
-                legendText = Some(messages("label.select_all_that_apply"))
-            )
-        }
+        @radios(
+            field = selectProductsForm("tokens"),
+            items = radioOptions(items),
+            name = "tokens",
+            path = Some(path),
+            legendText = Some(messages("label.select_all_that_apply"))
+        )
     </fieldset>
 
     @button("label.continue")

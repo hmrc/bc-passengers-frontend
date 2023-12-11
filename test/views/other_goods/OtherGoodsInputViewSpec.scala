@@ -98,7 +98,9 @@ class OtherGoodsInputViewSpec extends BaseSpec {
       journeyStart = None,
       otherGoodsSearchItems = otherGoodsSearchItems,
       otherItemMode = otherItemMode,
-      path = productPath
+      path = productPath,
+      backLink = None,
+      customBackLink = false
     )(request, messages, appConfig)
 
     def viewViaRender(otherItemMode: String): HtmlFormat.Appendable = injected[other_goods_input].render(
@@ -113,7 +115,9 @@ class OtherGoodsInputViewSpec extends BaseSpec {
       path = productPath,
       request = request,
       messages = messages,
-      appConfig = appConfig
+      appConfig = appConfig,
+      backLink = None,
+      customBackLink = false
     )
 
     def viewViaF(otherItemMode: String): HtmlFormat.Appendable =
@@ -126,7 +130,9 @@ class OtherGoodsInputViewSpec extends BaseSpec {
         None,
         otherGoodsSearchItems,
         otherItemMode,
-        productPath
+        productPath,
+        None,
+        false
       )(request, messages, appConfig)
   }
 

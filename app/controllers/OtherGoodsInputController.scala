@@ -39,6 +39,7 @@ class OtherGoodsInputController @Inject() (
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+  val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val other_goods_input: views.html.other_goods.other_goods_input,
   val errorTemplate: views.html.errorTemplate,
@@ -131,7 +132,9 @@ class OtherGoodsInputController @Inject() (
                     context.getJourneyData.euCountryCheck,
                     productTreeService.otherGoodsSearchItems,
                     "create",
-                    ProductPath.apply(Nil)
+                    ProductPath.apply(Nil),
+                    backLinkModel.backLink,
+                    customBackLink = false
                   )
                 )
               )
@@ -158,7 +161,9 @@ class OtherGoodsInputController @Inject() (
                     context.getJourneyData.euCountryCheck,
                     productTreeService.otherGoodsSearchItems,
                     "create",
-                    ProductPath.apply(Nil)
+                    ProductPath.apply(Nil),
+                    backLinkModel.backLink,
+                    customBackLink = false
                   )
                 )
               )
@@ -182,7 +187,9 @@ class OtherGoodsInputController @Inject() (
                 context.getJourneyData.euCountryCheck,
                 productTreeService.otherGoodsSearchItems,
                 "edit",
-                ppi.path
+                ppi.path,
+                backLinkModel.backLink,
+                customBackLink = true
               )
             )
           )
@@ -207,7 +214,9 @@ class OtherGoodsInputController @Inject() (
                 context.getJourneyData.euCountryCheck,
                 productTreeService.otherGoodsSearchItems,
                 "create",
-                ProductPath.apply(Nil)
+                ProductPath.apply(Nil),
+                backLinkModel.backLink,
+                customBackLink = false
               )
             )
           ),
@@ -260,7 +269,9 @@ class OtherGoodsInputController @Inject() (
                     context.getJourneyData.euCountryCheck,
                     productTreeService.otherGoodsSearchItems,
                     "edit",
-                    ppi.path
+                    ppi.path,
+                    backLinkModel.backLink,
+                    customBackLink = true
                   )
                 )
               ),

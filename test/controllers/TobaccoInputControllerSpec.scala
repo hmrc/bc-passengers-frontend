@@ -178,15 +178,16 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ) thenReturn cachedJourneyData.get
 
       when(
-        injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+        injected[no_of_sticks_input]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
       when(
         injected[weight_or_volume_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
       when(
         injected[no_of_sticks_weight_or_volume_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
 
       rt(app, req)
@@ -212,15 +213,16 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ) thenReturn cachedGBNIJourneyData.get
 
       when(
-        injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+        injected[no_of_sticks_input]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
       when(
         injected[weight_or_volume_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
       when(
         injected[no_of_sticks_weight_or_volume_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
 
       rt(app, req)
@@ -246,15 +248,16 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ) thenReturn cachedEUGBJourneyData.get
 
       when(
-        injected[no_of_sticks_input].apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+        injected[no_of_sticks_input]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
       when(
         injected[weight_or_volume_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
       when(
         injected[no_of_sticks_weight_or_volume_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ) thenReturn Html("")
 
       rt(app, req)
@@ -394,6 +397,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
         any(),
         any(),
         any(),
+        any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -443,6 +448,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       verify(injected[no_of_sticks_weight_or_volume_input], times(1))(
         formCaptor.capture(),
+        any(),
+        any(),
         any(),
         any(),
         any(),

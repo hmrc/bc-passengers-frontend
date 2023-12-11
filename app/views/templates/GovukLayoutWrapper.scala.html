@@ -39,6 +39,7 @@
     signOut: Boolean = true,
     inlineScript: Option[Html] = None,
     inlineLinkElem: Option[Html] = None,
+    customBackLink: Boolean = true,
     backLink: Option[String] = None,
     timeout: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
@@ -84,8 +85,17 @@
         ))
     }
 
-    @backLink.map { x =>
-        @govukBackLink(BackLink(href = x, content = Text(messages("label.back")), attributes = Map("id" -> "back")))
+    @if(customBackLink) {
+        @backLink.map { x =>
+            @govukBackLink(BackLink(href = x, content = Text(messages("label.back")), attributes = Map("id" -> "back")))
+        }
+    } else {
+        @govukBackLink(BackLink(
+            content = Text(messages("label.back")),
+            attributes = Map("id" -> "back-link")
+            )
+        )
+        <script @{CSPNonce.attr}>document.getElementById("back-link").addEventListener("click", () => window.history.go(-1));</script>
     }
 }
 

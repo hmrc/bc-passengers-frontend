@@ -76,6 +76,8 @@ class TobaccoInputViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable = injected[tobacco_input].apply(
     form = validForm,
+    backLink = None,
+    customBackLink = false,
     product = productTreeLeaf,
     path = productPath,
     iid = Some("iid0"),
@@ -93,6 +95,8 @@ class TobaccoInputViewSpec extends BaseViewSpec {
 
   val viewViaRender: HtmlFormat.Appendable = injected[tobacco_input].render(
     form = validForm,
+    backLink = None,
+    customBackLink = false,
     product = productTreeLeaf,
     path = productPath,
     iid = Some("iid0"),
@@ -108,6 +112,8 @@ class TobaccoInputViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[tobacco_input].f(
     validForm,
+    None,
+    false,
     productTreeLeaf,
     productPath,
     Some("iid0"),

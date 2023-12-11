@@ -112,7 +112,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.goodsBoughtIntoGB)
       case "confirm-age"                                                                  =>
         Some(TravelDetailsController.privateTravel)
-      case "tell-us"                                                                      =>
+      case _ if path.endsWith("tell-us") && !path.contains("enter-goods")                 =>
         if (prevDecl) {
           Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
         } else {
@@ -136,16 +136,16 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
         Some(PendingPaymentController.loadPendingPaymentPage)
-      case x // other goods has cancel button that is because it is following different pattern of adding items
-          if path.endsWith("select-goods/alcohol")
-            || path.endsWith("select-goods/tobacco") =>
+      case "edit"
+          if path.contains("enter-goods/alcohol")
+            || path.contains("enter-goods/tobacco")
+            || path.contains("enter-goods/other-goods") =>
         Some(DashboardController.showDashboard)
       case _                                                                              =>
         None
     }
 
     call.map(_.toString)
-
   }
 
   private def backLinkStandard(context: LocalContext): Option[String] =

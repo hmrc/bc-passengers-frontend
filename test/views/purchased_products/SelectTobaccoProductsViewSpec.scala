@@ -28,17 +28,18 @@ class SelectTobaccoProductsViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "tobacco")
 
-  private val validForm: Form[SelectProductsDto] = form(path = "tobacco")
+  private val validForm: Form[SelectProductsDto] = form
     .fill(SelectProductsDto(List("cigarillos")))
 
-  private val emptyForm: Form[SelectProductsDto] = form(path = "tobacco").bind(Map.empty[String, String])
+  private val emptyForm: Form[SelectProductsDto] = form.bind(Map.empty[String, String])
 
   private val items = List(
-    ("label.alcohol.cigarettes", "cigarettes"),
-    ("label.alcohol.cigarillos", "cigarillos"),
-    ("label.alcohol.cigars", "cigars"),
-    ("label.alcohol.chewing-tobacco", "chewing-tobacco"),
-    ("label.alcohol.rolling-tobacco", "rolling-tobacco")
+    ("label.tobacco.cigarettes", "cigarettes"),
+    ("label.tobacco.cigarillos", "cigarillos"),
+    ("label.tobacco.cigars", "cigars"),
+    ("label.tobacco.heated-tobacco", "heated-tobacco"),
+    ("label.tobacco.chewing-tobacco", "chewing-tobacco"),
+    ("label.tobacco.rolling-tobacco", "rolling-tobacco")
   )
 
   private def buildView(form: Form[SelectProductsDto]): HtmlFormat.Appendable =
@@ -89,7 +90,9 @@ class SelectTobaccoProductsViewSpec extends BaseViewSpec {
         val doc = document(buildView(form = emptyForm))
         doc.title() must startWith(messages("label.error"))
         messages("label.there_is_a_problem") mustBe getErrorTitle(doc)
-        List("#cigarettes" -> messages("head.error.required.tobacco")) mustBe getErrorsInSummary(doc)
+        List("#tokens-label.tobacco.cigarettes" -> messages("head.error.required.tobacco")) mustBe getErrorsInSummary(
+          doc
+        )
       }
 
       "have all errors in each input" in {
