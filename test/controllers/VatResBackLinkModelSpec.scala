@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import models.{JourneyData, ProductPath}
+import models.JourneyData
 import org.mockito.Mockito.{reset, when}
 import org.mockito.MockitoSugar
 import play.api.Application

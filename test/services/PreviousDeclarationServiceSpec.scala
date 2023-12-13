@@ -43,7 +43,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    val dummyPpi              = List(
+    val dummyPpi: List[PurchasedProductInstance]  = List(
       PurchasedProductInstance(
         ProductPath("path"),
         "iid",
@@ -55,7 +55,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
         Some(100.25)
       )
     )
-    val dummySelectedProducts = List(List("some product"), List("some other product"))
+    val dummySelectedProducts: List[List[String]] = List(List("some product"), List("some other product"))
 
     lazy val previousDeclarationService: PreviousDeclarationService = {
       val service = app.injector.instanceOf[PreviousDeclarationService]
@@ -123,7 +123,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
 
       val liabilityDetails: LiabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
 
-      val editablePurchasedProductInstances = List(
+      val editablePurchasedProductInstances: List[PurchasedProductInstance] = List(
         PurchasedProductInstance(
           productPath,
           "UnOGll",
@@ -157,7 +157,7 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
         declarationResponse = Some(declarationResponse)
       )
 
-      val nonEditablePurchasedProductInstances = List(
+      val nonEditablePurchasedProductInstances: List[PurchasedProductInstance] = List(
         PurchasedProductInstance(
           productPath,
           "UnOGll",

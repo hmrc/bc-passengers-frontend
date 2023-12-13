@@ -16,7 +16,7 @@
 
 package views.amendments
 
-import forms.PendingPaymentForm.form
+import forms.PendingPaymentForm
 import models._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,9 @@ class PendingPaymentViewSpec extends BaseViewSpec {
 
   private val weightOrVolume: BigDecimal = 40
 
-  private val validForm: Form[Boolean] = form.bind(Map("pendingPayment" -> "true"))
+  private val validForm: Form[Boolean] = PendingPaymentForm.form.bind(Map("pendingPayment" -> "true"))
+
+  private val emptyForm: Form[Boolean] = PendingPaymentForm.form.bind(Map("pendingPayment" -> ""))
 
   private val calculation: Calculation = Calculation(
     excise = "0.00",
@@ -125,11 +127,50 @@ class PendingPaymentViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
+  private def buildView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injected[pending_payment].apply(
+      form = form,
+      calculatorResponseDto = calculatorResponseDto,
+      deltaCalc = Some(calculation),
+      oldAllTax = "0.00",
+      backLink = None
+    )(
+      request = request,
+      messages = messages,
+      appConfig = appConfig
+    )
+
   "PendingPaymentView" when {
     renderViewTest(
       title =
         "You have an incomplete payment for your declaration for £0.00 - Check tax on goods you bring into the UK - GOV.UK",
       heading = "You have an incomplete payment for your declaration for £0.00"
     )
+
+    "formWithErrors" should {
+      val expectedErrors = List(
+        "#pendingPayment-value-yes" -> messages("error.pay_now_if_you_want_to")
+      )
+
+      "have error prefix in title" in {
+        val doc = document(buildView(form = emptyForm))
+        doc.title() should startWith(messages("label.error"))
+      }
+
+      "have all info in error summary" in {
+        val doc = document(buildView(form = emptyForm))
+        doc.title()                            should startWith(messages("label.error"))
+        messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
+
+        expectedErrors shouldBe getErrorsInSummary(doc)
+      }
+
+      "have all errors in each input" in {
+        val doc = document(buildView(form = emptyForm))
+        doc.title()                                                             should startWith(messages("label.error"))
+        messages("label.there_is_a_problem")                                  shouldBe getErrorTitle(doc)
+        expectedErrors.map(error => messages("label.error") + " " + error._2) shouldBe getErrorsInFieldSet(doc)
+      }
+    }
   }
 }

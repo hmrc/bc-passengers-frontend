@@ -44,7 +44,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
   trait LocalSetup {
     def journeyDataInCache: Option[JourneyData]
 
-    lazy val s = {
+    lazy val s: PurchasedProductService = {
       val service = app.injector.instanceOf[PurchasedProductService]
       val mock    = service.cache
       when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)

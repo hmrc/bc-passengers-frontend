@@ -16,9 +16,9 @@
 
 package services
 
-import java.time.LocalDate
-
 import util.BaseSpec
+
+import java.time.LocalDate
 
 class DateTimeProviderServiceSpec extends BaseSpec {
 

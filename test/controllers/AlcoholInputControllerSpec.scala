@@ -18,20 +18,17 @@ package controllers
 
 import connectors.Cache
 import models._
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.MockitoSugar
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
-import play.api.test.Helpers.{route => rt, _}
 import play.api.inject.bind
-import play.api.test.Injecting
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
-import play.api.test.FakeRequest
-import play.api.test.Helpers.status
+import play.api.test.Helpers.{status, route => rt, _}
+import play.api.test.{FakeRequest, Injecting}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
@@ -240,7 +237,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 500 when purchase is missing country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
@@ -276,7 +273,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 500 when missing currency" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
@@ -312,7 +309,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 500 when missing weightOrVolume" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
@@ -348,7 +345,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 404 when purchase has invalid product path" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
@@ -384,7 +381,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 200 when all is ok" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val result: Future[Result] = route(
         app,
@@ -395,7 +392,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
 
-      override lazy val fakeLimits                             = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String]        = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
@@ -432,7 +429,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 200 when given a valid path" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val result: Future[Result] = route(
         app,
@@ -665,7 +662,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when country not valid" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -682,7 +679,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when currency not present" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -716,7 +713,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when cost not present" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -732,7 +729,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when cost not valid" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -749,7 +746,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when weightOrVolume not present" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -765,7 +762,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when weightOrVolume not valid" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -782,7 +779,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when beer is over the calculator limit" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -802,7 +799,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "redirect to warning page on more than allowance 60 litres in sparkling-wine" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-WINESP" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINESP" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
@@ -823,7 +820,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "redirect to warning page on more than allowance 90 litres in wine" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
@@ -843,7 +840,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to next step" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -875,7 +872,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to UK VAT Paid page for GBNI Journey" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -896,7 +893,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -919,7 +916,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -940,7 +937,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
@@ -963,7 +960,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 404 when iid is not found in journey data" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/missing-iid/edit")
@@ -981,7 +978,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "return a 400 when beer is over the calculator limit" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
@@ -1001,7 +998,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "modify the relevant PPI in the JourneyData and redirect to next step" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
@@ -1033,7 +1030,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "modify the relevant PPI in the JourneyData and redirect to UK VAT Paid page for GBNI Journey" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
@@ -1054,7 +1051,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
@@ -1077,7 +1074,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
@@ -1098,7 +1095,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")

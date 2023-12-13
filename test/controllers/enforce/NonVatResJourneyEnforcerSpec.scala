@@ -84,7 +84,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
       override lazy val journeyStep: JourneyStep = GoodsBoughtOutsideEuStep
 
-      override lazy val params = ListMap(
+      override lazy val params: ListMap[String, List[Any]] = ListMap(
         "euCountryCheck"  -> List(Some("euOnly"), Some("nonEuOnly"), Some("both"), None),
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )

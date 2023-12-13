@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.libs.json.{JsError, JsNull, JsString, JsValue, Json}
-import util.BaseSpec
+import play.api.libs.json._
+import _root_.util.BaseSpec
 
 class ProductPathSpec extends BaseSpec {
 

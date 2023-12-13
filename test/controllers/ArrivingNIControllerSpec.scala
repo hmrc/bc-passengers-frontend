@@ -20,14 +20,13 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status}
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService

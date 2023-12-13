@@ -24,11 +24,10 @@ import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.status
-import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 class PublicControllerSpec extends BaseSpec {
 

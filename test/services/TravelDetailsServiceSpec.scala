@@ -42,7 +42,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
   trait LocalSetup {
 
-    val dummyPpi              = List(
+    val dummyPpi: List[PurchasedProductInstance]  = List(
       PurchasedProductInstance(
         ProductPath("path"),
         "iid",
@@ -54,7 +54,7 @@ class TravelDetailsServiceSpec extends BaseSpec {
         Some(100.25)
       )
     )
-    val dummySelectedProducts = List(List("some product"), List("some other product"))
+    val dummySelectedProducts: List[List[String]] = List(List("some product"), List("some other product"))
 
     lazy val travelDetailsService: TravelDetailsService = {
       val service = app.injector.instanceOf[TravelDetailsService]
@@ -479,7 +479,8 @@ class TravelDetailsServiceSpec extends BaseSpec {
 
     "store isUKResident when journey data does exist, reset existing journey data if the isUKResident has changed" in new LocalSetup {
 
-      val ppi                              = PurchasedProductInstance(iid = "someId", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
+      val ppi: PurchasedProductInstance    =
+        PurchasedProductInstance(iid = "someId", path = ProductPath("alcohol/beer"), isVatPaid = Some(true))
       val journeyData: Option[JourneyData] = Some(
         JourneyData(
           isUKVatExcisePaid = Some(true),

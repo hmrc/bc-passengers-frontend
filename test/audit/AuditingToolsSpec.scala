@@ -16,14 +16,13 @@
 
 package audit
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import util.BaseSpec
 
 class AuditingToolsSpec extends BaseSpec {
 
-  class Setup() {
+  class Setup {
 
     val service: AuditingTools = app.injector.instanceOf[AuditingTools]
 
@@ -61,10 +60,10 @@ class AuditingToolsSpec extends BaseSpec {
     "generate the right audit event details" in new Setup() {
       val result: ExtendedDataEvent = service.buildDeclarationSubmittedDataEvent(json)
 
-      result.auditSource mustBe "bc-passengers-frontend"
-      result.auditType mustBe "PassengerDeclarations"
-      result.tags("transactionName") mustBe "passenger-declarations-submission"
-      result.detail mustBe Json.parse("""
+      result.auditSource             shouldBe "bc-passengers-frontend"
+      result.auditType               shouldBe "PassengerDeclarations"
+      result.tags("transactionName") shouldBe "passenger-declarations-submission"
+      result.detail                  shouldBe Json.parse("""
           |{
           |  "identificationNumber" : "1234",
           |      "firstName" : "Jack",

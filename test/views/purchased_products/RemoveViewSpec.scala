@@ -16,8 +16,8 @@
 
 package views.purchased_products
 
-import models.{ConfirmRemoveDto, ProductPath}
 import models.ConfirmRemoveDto.form
+import models.{ConfirmRemoveDto, ProductPath}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec

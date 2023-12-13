@@ -16,12 +16,12 @@
 
 package services
 
-import models.{OtherGoodsSearchItem, ProductPath, ProductTreeBranch, ProductTreeLeaf, ProductTreeNode}
+import models._
 import util.BaseSpec
 
 class ProductTreeServiceSpec extends BaseSpec {
 
-  val tree =
+  val tree: ProductTreeBranch =
     ProductTreeBranch(
       "root",
       "NestedTree",

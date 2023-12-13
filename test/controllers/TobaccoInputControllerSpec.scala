@@ -18,10 +18,9 @@ package controllers
 
 import connectors.Cache
 import models._
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.MockitoSugar
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -79,7 +78,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
     def weightOrVolume: Option[BigDecimal]
     def noOfSticks: Option[Int]
 
-    lazy val cachedJourneyData = Some(
+    lazy val cachedJourneyData: Option[JourneyData] = Some(
       JourneyData(
         prevDeclaration = Some(false),
         Some("nonEuOnly"),
@@ -104,7 +103,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       )
     )
 
-    lazy val cachedGBNIJourneyData = Some(
+    lazy val cachedGBNIJourneyData: Some[JourneyData] = Some(
       JourneyData(
         prevDeclaration = Some(false),
         Some("greatBritain"),
@@ -129,7 +128,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       )
     )
 
-    lazy val cachedEUGBJourneyData = Some(
+    lazy val cachedEUGBJourneyData: Some[JourneyData] = Some(
       JourneyData(
         prevDeclaration = Some(false),
         Some("euOnly"),
@@ -156,7 +155,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     def fakeLimits: Map[String, String]
 
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[TobaccoDto]])
+    val formCaptor: ArgumentCaptor[Form[TobaccoDto]] = ArgumentCaptor.forClass(classOf[Form[TobaccoDto]])
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
@@ -268,7 +267,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 404 when given an invalid path" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -283,7 +282,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 200 when given a valid path for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -298,7 +297,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 200 when given a valid path for rolling tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
@@ -316,7 +315,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 200 when given a valid path for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
@@ -331,7 +330,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 200 when given a valid path for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -349,13 +348,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "display default country and currency if set in JourneyData" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -408,13 +407,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "not display default country and currency if not set in JourneyData" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -465,7 +464,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath = ProductPath("tobacco/cigars")
 
@@ -473,7 +472,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override def noOfSticks: Option[Int] = Some(150)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -495,7 +494,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData for displayNoOfSticksAddForm" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath = ProductPath("tobacco/cigarettes")
 
@@ -503,7 +502,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override def noOfSticks: Option[Int] = Some(150)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -525,7 +524,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData for displayWeightAddForm" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath = ProductPath("tobacco/rolling-tobacco")
 
@@ -533,7 +532,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       override def noOfSticks: Option[Int] = Some(150)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -561,7 +560,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 404 when given an invalid path" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -579,13 +578,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not present for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "",
@@ -600,13 +599,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not valid for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "Not a real country",
@@ -621,13 +620,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not present for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -642,13 +641,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not valid for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -663,13 +662,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when cost not present for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -684,13 +683,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfSticks not present for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -705,13 +704,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfStick not valid for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -726,13 +725,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next step for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -762,13 +761,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to UK VAT PAid question for GBNI Journey" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -787,13 +786,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"       -> "FR",
@@ -814,13 +813,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"       -> "FR",
@@ -839,13 +838,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -863,13 +862,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not present for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -885,13 +884,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not valid for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -907,13 +906,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not present for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -929,13 +928,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not valid for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -951,13 +950,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when cost not present for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -973,13 +972,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfSticks not present for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -995,13 +994,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfStick not valid for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1017,13 +1016,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next step for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/heated-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1054,13 +1053,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not present for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1076,13 +1075,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not valid for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1098,13 +1097,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not present for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1120,13 +1119,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not valid for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1142,13 +1141,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when cost not present for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1164,13 +1163,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when weightOrVolume not present for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1186,13 +1185,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when weightOrVolume not valid for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1208,13 +1207,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next step for rolling-tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req = enhancedFakeRequest(
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
       ).withFormUrlEncodedBody(
@@ -1245,7 +1244,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to limit exceed page for over allowance of cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-CIGRT" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-CIGRT" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -1269,7 +1268,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to limit exceed page for over allowance of heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-HTB" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-HTB" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -1294,7 +1293,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to warning page on more than allowance for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-CIGAR" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-CIGAR" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(201))
@@ -1319,7 +1318,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to limit exceed page for over allowance of chewing tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-LOOSE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-LOOSE" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/chewing-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(1001)
@@ -1344,13 +1343,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not present for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "",
@@ -1366,13 +1365,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when country not valid for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "Invalid country",
@@ -1388,13 +1387,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not present for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1410,13 +1409,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when currency not valid for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1432,13 +1431,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when cost not present for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1454,13 +1453,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when weightOrVolume not present for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1476,13 +1475,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when weightOrVolume not valid for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1498,13 +1497,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfSticks not present for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1520,13 +1519,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfSticks not valid for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1542,13 +1541,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfSticks and weightOrVolume not present for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1564,13 +1563,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 400 when noOfSticks and weightOrVolume not valid for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1586,13 +1585,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next step for cigars" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigars/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -1626,7 +1625,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 404 when given an invalid iid" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -1641,13 +1640,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 500 when purchase is missing country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -1681,13 +1680,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 500 when missing currency" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -1721,13 +1720,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 404 when purchase has invalid product path" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -1761,13 +1760,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 200 when all is ok for cigarettes" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -1801,13 +1800,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 200 when all is ok for heated tobacco" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      override lazy val cachedJourneyData = Some(
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
@@ -1844,13 +1843,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "return a 404 when iid is not found in journey data" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
       override def noOfSticks: Option[Int]            = Some(400)
 
-      val req =
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/missing-iid/edit")
           .withFormUrlEncodedBody(
             "country"    -> "FR",
@@ -1866,20 +1865,21 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "modify the relevant PPI in the JourneyData and redirect to next step" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(20.0))
       override def noOfSticks: Option[Int]            = Some(150)
 
-      val req = enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
-        .withFormUrlEncodedBody(
-          "country"        -> "FR",
-          "currency"       -> "EUR",
-          "weightOrVolume" -> "400.0",
-          "noOfSticks"     -> "50",
-          "cost"           -> "98.00"
-        )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "400.0",
+            "noOfSticks"     -> "50",
+            "cost"           -> "98.00"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
@@ -1901,7 +1901,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
     }
 
     "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(20.0))
@@ -1926,7 +1926,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(20.0))
@@ -1953,7 +1953,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -1979,7 +1979,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
 
-      override lazy val fakeLimits = Map[String, String]()
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -2004,7 +2004,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to limit exceed warning page for cigarettes edit" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-CIGRT" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-CIGRT" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
       override def weightOrVolume: Option[BigDecimal] = None
@@ -2030,7 +2030,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to limit exceed warning page for cigars edit" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-CIGAR" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-CIGAR" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/cigars")
       override def weightOrVolume: Option[BigDecimal] = Some(201)
@@ -2056,7 +2056,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
     "redirect to limit exceed warning page for loose tobacco edit" in new LocalSetup {
 
-      override lazy val fakeLimits = Map("L-LOOSE" -> "1.1")
+      override lazy val fakeLimits: Map[String, String] = Map("L-LOOSE" -> "1.1")
 
       override def productPath: ProductPath           = ProductPath("tobacco/chewing-tobacco")
       override def weightOrVolume: Option[BigDecimal] = Some(1001)

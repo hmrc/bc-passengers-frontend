@@ -18,8 +18,8 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import org.jsoup.Jsoup
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.MockitoSugar

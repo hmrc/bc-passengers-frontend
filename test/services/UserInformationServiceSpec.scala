@@ -45,7 +45,7 @@ class UserInformationServiceSpec extends BaseSpec {
 
     def journeyDataInCache: Option[JourneyData]
 
-    lazy val s = {
+    lazy val s: UserInformationService = {
       val service = app.injector.instanceOf[UserInformationService]
       val mock    = service.cache
       when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)

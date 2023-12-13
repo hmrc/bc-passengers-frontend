@@ -23,22 +23,18 @@ import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
 import views.html.purchased_products.select_products
 
-class SelectTobaccoProductsViewSpec extends BaseViewSpec {
+class SelectOtherItemsProductsViewSpec extends BaseViewSpec {
 
-  private val productPath: ProductPath = ProductPath(path = "tobacco")
+  private val productPath: ProductPath = ProductPath(path = "other-goods")
 
   private val validForm: Form[SelectProductsDto] = form
-    .fill(SelectProductsDto(List("cigarillos")))
+    .fill(SelectProductsDto(List("televisions")))
 
   private val emptyForm: Form[SelectProductsDto] = form.bind(Map.empty[String, String])
 
   private val items = List(
-    ("label.tobacco.cigarettes", "cigarettes"),
-    ("label.tobacco.cigarillos", "cigarillos"),
-    ("label.tobacco.cigars", "cigars"),
-    ("label.tobacco.heated-tobacco", "heated-tobacco"),
-    ("label.tobacco.chewing-tobacco", "chewing-tobacco"),
-    ("label.tobacco.rolling-tobacco", "rolling-tobacco")
+    ("label.other-goods.electronic-devices.televisions", "televisions"),
+    ("label.other-goods.electronic-devices.other", "other")
   )
 
   private def buildView(form: Form[SelectProductsDto]): HtmlFormat.Appendable =
@@ -72,10 +68,10 @@ class SelectTobaccoProductsViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "SelectTobaccoProductsViewSpec" when {
+  "SelectOtherItemsProductsViewSpec" when {
     renderViewTest(
-      title = "What type of tobacco do you want to add? - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "What type of tobacco do you want to add?"
+      title = "What type of other goods do you want to add? - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "What type of other goods do you want to add?"
     )
 
     "formWithErrors" should {
@@ -89,14 +85,16 @@ class SelectTobaccoProductsViewSpec extends BaseViewSpec {
         val doc = document(buildView(form = emptyForm))
         doc.title()                            should startWith(messages("label.error"))
         messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
-        List("#tokens-label.tobacco.cigarettes" -> messages("error.required.tobacco")) shouldBe getErrorsInSummary(doc)
+        List(
+          "#tokens-label.other-goods.electronic-devices.televisions" -> messages("error.required.other-goods")
+        )                                    shouldBe getErrorsInSummary(doc)
       }
 
       "have all errors in each input" in {
         val doc = document(buildView(form = emptyForm))
-        doc.title()                                                                should startWith(messages("label.error"))
-        messages("label.there_is_a_problem")                                     shouldBe getErrorTitle(doc)
-        List(messages("label.error") + " " + messages("error.required.tobacco")) shouldBe getErrorsInFieldSet(doc)
+        doc.title()                                                                    should startWith(messages("label.error"))
+        messages("label.there_is_a_problem")                                         shouldBe getErrorTitle(doc)
+        List(messages("label.error") + " " + messages("error.required.other-goods")) shouldBe getErrorsInFieldSet(doc)
       }
     }
   }

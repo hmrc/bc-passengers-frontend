@@ -18,10 +18,9 @@ package controllers
 
 import connectors.Cache
 import models._
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
+import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
