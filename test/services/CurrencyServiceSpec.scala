@@ -110,7 +110,7 @@ class CurrencyServiceSpec extends BaseSpec {
     Currency("MMK", "title.myanmar_kyat_mmk", Some("MMK"), Nil),
     Currency("MNT", "title.mongolian_tugrik_mnt", Some("MNT"), Nil),
     Currency("MOP", "title.macaon_pataca_mop", Some("MOP"), Nil),
-    Currency("MRO", "title.mauritanian_ouguiya_mro", Some("MRO"), Nil),
+    Currency("MRU", "title.mauritanian_ouguiya_mru", Some("MRU"), Nil),
     Currency("MUR", "title.mauritius_rupees_mur", Some("MUR"), Nil),
     Currency("MVR", "title.maldives_rufiyaa_mvr", Some("MVR"), Nil),
     Currency("MWK", "title.malawian_kwacha_mwk", Some("MWK"), Nil),
