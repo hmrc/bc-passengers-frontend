@@ -19,17 +19,17 @@ package views.other_goods
 import config.AppConfig
 import controllers.OtherGoodsInputController
 import models._
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import util.BaseSpec
+import views.ViewSpec
 import views.html.other_goods.other_goods_input
 
-class OtherGoodsInputViewSpec extends BaseSpec {
+class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
 
   private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
   private val appConfig: AppConfig                     = injected[AppConfig]
@@ -76,53 +76,61 @@ class OtherGoodsInputViewSpec extends BaseSpec {
     )
   )
 
-  private val validForm: Form[OtherGoodsDto] = injected[OtherGoodsInputController].addCostForm
+  private val validForm: Form[OtherGoodsDto] =
+    form(searchTerm = "label.other-goods.antiques", country = "FR", currency = "EUR", cost = "4,444.00")
+
+  private def form(
+    searchTerm: String = "invalid",
+    country: String = "",
+    currency: String = "",
+    cost: String = ""
+  ): Form[OtherGoodsDto] = injected[OtherGoodsInputController].addCostForm
     .bind(
       Map(
-        "searchTerm" -> "label.other-goods.antiques",
-        "country"    -> "FR",
-        "currency"   -> "EUR",
-        "cost"       -> "4,444.00"
+        "searchTerm" -> searchTerm,
+        "country"    -> country,
+        "currency"   -> currency,
+        "cost"       -> cost
       )
     )
 
-  private def document(html: Html): Document = Jsoup.parse(html.toString())
-
   private trait ViewFixture {
-    def viewViaApply(otherItemMode: String): HtmlFormat.Appendable = injected[other_goods_input].apply(
-      form = validForm,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None,
-      otherGoodsSearchItems = otherGoodsSearchItems,
-      otherItemMode = otherItemMode,
-      path = productPath,
-      backLink = None,
-      customBackLink = false
-    )(request, messages, appConfig)
+    def viewViaApply(otherItemMode: String, form: Form[OtherGoodsDto] = validForm): HtmlFormat.Appendable =
+      injected[other_goods_input].apply(
+        form = form,
+        iid = Some("iid0"),
+        countries = nonEuropeanCountries,
+        countriesEU = europeanCountries,
+        currencies = currencies,
+        journeyStart = None,
+        otherGoodsSearchItems = otherGoodsSearchItems,
+        otherItemMode = otherItemMode,
+        path = productPath,
+        backLink = None,
+        customBackLink = false
+      )(request, messages, appConfig)
 
-    def viewViaRender(otherItemMode: String): HtmlFormat.Appendable = injected[other_goods_input].render(
-      form = validForm,
-      iid = Some("iid0"),
-      countries = nonEuropeanCountries,
-      countriesEU = europeanCountries,
-      currencies = currencies,
-      journeyStart = None,
-      otherGoodsSearchItems = otherGoodsSearchItems,
-      otherItemMode = otherItemMode,
-      path = productPath,
-      request = request,
-      messages = messages,
-      appConfig = appConfig,
-      backLink = None,
-      customBackLink = false
-    )
+    def viewViaRender(otherItemMode: String, form: Form[OtherGoodsDto] = validForm): HtmlFormat.Appendable =
+      injected[other_goods_input].render(
+        form = form,
+        iid = Some("iid0"),
+        countries = nonEuropeanCountries,
+        countriesEU = europeanCountries,
+        currencies = currencies,
+        journeyStart = None,
+        otherGoodsSearchItems = otherGoodsSearchItems,
+        otherItemMode = otherItemMode,
+        path = productPath,
+        request = request,
+        messages = messages,
+        appConfig = appConfig,
+        backLink = None,
+        customBackLink = false
+      )
 
-    def viewViaF(otherItemMode: String): HtmlFormat.Appendable =
+    def viewViaF(otherItemMode: String, form: Form[OtherGoodsDto] = validForm): HtmlFormat.Appendable =
       injected[other_goods_input].f(
-        validForm,
+        form,
         Some("iid0"),
         nonEuropeanCountries,
         europeanCountries,
@@ -154,6 +162,63 @@ class OtherGoodsInputViewSpec extends BaseSpec {
     ("display", "Tell us about the Item of other goods")
   )
 
+  private val errorInputs: Seq[(String, String, String, Form[OtherGoodsDto])] = Seq(
+    (
+      "create",
+      "#country",
+      "error.country.invalid",
+      form(searchTerm = "label.other-goods.antiques", currency = "EUR", cost = "4,444.00")
+    ),
+    (
+      "create",
+      "#currency",
+      "error.currency.invalid",
+      form(searchTerm = "label.other-goods.antiques", country = "FR", cost = "4,444.00")
+    ),
+    (
+      "create",
+      "#cost",
+      "error.required.other-goods.price",
+      form(searchTerm = "label.other-goods.antiques", country = "FR", currency = "EUR")
+    ),
+    (
+      "edit",
+      "#country",
+      "error.country.invalid",
+      form(searchTerm = "label.other-goods.antiques", currency = "EUR", cost = "4,444.00")
+    ),
+    (
+      "edit",
+      "#currency",
+      "error.currency.invalid",
+      form(searchTerm = "label.other-goods.antiques", country = "FR", cost = "4,444.00")
+    ),
+    (
+      "edit",
+      "#cost",
+      "error.required.other-goods.price",
+      form(searchTerm = "label.other-goods.antiques", country = "FR", currency = "EUR")
+    ),
+    (
+      "display",
+      "#country",
+      "error.country.invalid",
+      form(searchTerm = "label.other-goods.antiques", currency = "EUR", cost = "4,444.00")
+    ),
+    (
+      "display",
+      "#currency",
+      "error.currency.invalid",
+      form(searchTerm = "label.other-goods.antiques", country = "FR", cost = "4,444.00")
+    ),
+    (
+      "display",
+      "#cost",
+      "error.required.other-goods.price",
+      form(searchTerm = "label.other-goods.antiques", country = "FR", currency = "EUR")
+    )
+  )
+
   "OtherGoodsInputView" when {
     ".apply" should {
       "display the correct title" when {
@@ -177,6 +242,19 @@ class OtherGoodsInputViewSpec extends BaseSpec {
 
         headingInput.foreach(args => (test _).tupled(args))
       }
+
+      "have all info in error summary" when {
+        def test(otherItemMode: String, id: String, errorKey: String, form: Form[OtherGoodsDto]): Unit =
+          s"have correct error for mode $otherItemMode and id $id and key $errorKey" in new ViewFixture {
+            val doc: Document = document(viewViaApply(otherItemMode = otherItemMode, form = form))
+            doc.title()                            should startWith(messages("label.error"))
+            messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
+            List(id -> messages(errorKey)) shouldBe getErrorsInSummary(doc)
+          }
+
+        errorInputs.foreach(args => (test _).tupled(args))
+      }
+
     }
 
     ".render" should {

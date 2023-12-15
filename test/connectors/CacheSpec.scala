@@ -17,8 +17,8 @@
 package connectors
 
 import models.JourneyData
-import org.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json, Writes}
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier

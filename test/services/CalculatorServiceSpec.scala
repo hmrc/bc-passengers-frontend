@@ -16,9 +16,6 @@
 
 package services
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import connectors.Cache
 import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -35,6 +32,8 @@ import services.http.WsAllMethods
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import util.BaseSpec
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
 import scala.math.BigDecimal.RoundingMode
 

@@ -452,7 +452,7 @@ class PayApiServiceSpec extends BaseSpec {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val expectedJsonForAmendment                 = exampleJsonForBstArrival
+      val expectedJsonForAmendment: JsObject       = exampleJsonForBstArrival
         .as[JsObject]
         .deepMerge(
           Json.obj(
@@ -492,7 +492,7 @@ class PayApiServiceSpec extends BaseSpec {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val expectedJsonForAmendment                 = exampleJsonForBstArrival
+      val expectedJsonForAmendment: JsObject       = exampleJsonForBstArrival
         .as[JsObject]
         .deepMerge(
           Json.obj(

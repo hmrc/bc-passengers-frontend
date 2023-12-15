@@ -23,8 +23,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.Inspectors._
 import org.mockito.MockitoSugar
+import org.scalatest.Inspectors._
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind

@@ -215,9 +215,9 @@ class DashboardControllerSpec extends BaseSpec {
       isEditable = Some(false)
     )
     lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
-    lazy val calculation                                                  = Calculation("1.00", "1.00", "1.00", "3.00")
-    lazy val liabilityDetails                                             = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
-    lazy val declarationResponse                                          = DeclarationResponse(
+    lazy val calculation: Calculation                                     = Calculation("1.00", "1.00", "1.00", "3.00")
+    lazy val liabilityDetails: LiabilityDetails                           = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
+    lazy val declarationResponse: DeclarationResponse                     = DeclarationResponse(
       calculation = calculation,
       oldPurchaseProductInstances = oldPurchasedProductInstances,
       liabilityDetails = liabilityDetails
@@ -3103,11 +3103,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol, oldTobacco, oldOther)
 
-    val calculation = Calculation("1.00", "1.00", "1.00", "3.00")
+    val calculation: Calculation = Calculation("1.00", "1.00", "1.00", "3.00")
 
-    val liabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
+    val liabilityDetails: LiabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
 
-    val declarationResponse = DeclarationResponse(
+    val declarationResponse: DeclarationResponse = DeclarationResponse(
       calculation = calculation,
       oldPurchaseProductInstances = oldPurchasedProductInstances,
       liabilityDetails = liabilityDetails
@@ -3232,11 +3232,11 @@ class DashboardControllerSpec extends BaseSpec {
 
     val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol, oldTobacco, oldOther)
 
-    val calculation = Calculation("1.00", "1.00", "1.00", "3.00")
+    val calculation: Calculation = Calculation("1.00", "1.00", "1.00", "3.00")
 
-    val liabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
+    val liabilityDetails: LiabilityDetails = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
 
-    val declarationResponse = DeclarationResponse(
+    val declarationResponse: DeclarationResponse = DeclarationResponse(
       calculation = calculation,
       oldPurchaseProductInstances = oldPurchasedProductInstances,
       liabilityDetails = liabilityDetails

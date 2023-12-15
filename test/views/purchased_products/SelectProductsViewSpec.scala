@@ -16,8 +16,8 @@
 
 package views.purchased_products
 
-import models.{ProductPath, SelectProductsDto}
 import models.SelectProductsDto.form
+import models.{ProductPath, SelectProductsDto}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec

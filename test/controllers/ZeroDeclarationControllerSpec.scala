@@ -180,15 +180,15 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     isEditable = Some(false)
   )
   lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
-  lazy val calculation                                                  = Calculation("1.00", "1.00", "1.00", "3.00")
-  lazy val liabilityDetails                                             = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
-  lazy val declarationResponse                                          = DeclarationResponse(
+  lazy val calculation: Calculation                                     = Calculation("1.00", "1.00", "1.00", "3.00")
+  lazy val liabilityDetails: LiabilityDetails                           = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
+  lazy val declarationResponse: DeclarationResponse                     = DeclarationResponse(
     calculation = calculation,
     oldPurchaseProductInstances = oldPurchasedProductInstances,
     liabilityDetails = liabilityDetails
   )
-  lazy val deltaCalculation                                             = Calculation("1.00", "1.00", "1.00", "3.00")
-  lazy val zeroDeltaCalculation                                         = Calculation("0.00", "0.00", "0.00", "0.00")
+  lazy val deltaCalculation: Calculation                                = Calculation("1.00", "1.00", "1.00", "3.00")
+  lazy val zeroDeltaCalculation: Calculation                            = Calculation("0.00", "0.00", "0.00", "0.00")
 
   lazy val ui: UserInformation = UserInformation(
     "Harry",

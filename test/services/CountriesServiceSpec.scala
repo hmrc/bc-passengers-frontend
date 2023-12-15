@@ -21,7 +21,7 @@ import util.BaseSpec
 
 class CountriesServiceSpec extends BaseSpec {
 
-  val expectedCountries = List(
+  val expectedCountries: List[Country] = List(
     Country("AF", "title.afghanistan", "AF", isEu = false, isCountry = true, Nil),
     Country("AX", "title.aland_islands", "AX", isEu = false, isCountry = true, List("Aland Islands")),
     Country("AL", "title.albania", "AL", isEu = false, isCountry = true, Nil),
@@ -350,7 +350,7 @@ class CountriesServiceSpec extends BaseSpec {
     Country("ZW", "title.zimbabwe", "ZW", isEu = false, isCountry = true, Nil)
   )
 
-  val expectedCountriesAndEu = List(
+  val expectedCountriesAndEu: List[Country] = List(
     Country("AF", "title.afghanistan", "AF", isEu = false, isCountry = true, Nil),
     Country("AX", "title.aland_islands", "AX", isEu = false, isCountry = true, List("Aland Islands")),
     Country("AL", "title.albania", "AL", isEu = false, isCountry = true, Nil),

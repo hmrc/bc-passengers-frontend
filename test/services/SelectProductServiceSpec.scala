@@ -79,7 +79,7 @@ class SelectProductServiceSpec extends BaseSpec {
         )
       )
 
-      val selectedAliases = List(
+      val selectedAliases: List[ProductAlias] = List(
         ProductAlias("Cigarettes", ProductPath("tobacco/cigarettes")),
         ProductAlias("Cigars", ProductPath("tobacco/cigars"))
       )

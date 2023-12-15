@@ -18,7 +18,6 @@ package views.purchased_products
 
 import models.SelectProductsDto.form
 import models.{ProductPath, SelectProductsDto}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
@@ -83,21 +82,21 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
 
       "have error prefix in title" in {
         val doc = document(buildView(form = emptyForm))
-        doc.title() must startWith(messages("label.error"))
+        doc.title() should startWith(messages("label.error"))
       }
 
       "have all info in error summary" in {
         val doc = document(buildView(form = emptyForm))
-        doc.title() must startWith(messages("label.error"))
-        messages("label.there_is_a_problem") mustBe getErrorTitle(doc)
-        List("#tokens-label.alcohol.beer" -> messages("head.error.required.alcohol")) mustBe getErrorsInSummary(doc)
+        doc.title()                            should startWith(messages("label.error"))
+        messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
+        List("#tokens-label.alcohol.beer" -> messages("error.required.alcohol")) shouldBe getErrorsInSummary(doc)
       }
 
       "have all errors in each input" in {
         val doc = document(buildView(form = emptyForm))
-        doc.title() must startWith(messages("label.error"))
-        messages("label.there_is_a_problem") mustBe getErrorTitle(doc)
-        List(messages("label.error") + " " + messages("head.error.required.alcohol")) mustBe getErrorsInFieldSet(doc)
+        doc.title()                                                                should startWith(messages("label.error"))
+        messages("label.there_is_a_problem")                                     shouldBe getErrorTitle(doc)
+        List(messages("label.error") + " " + messages("error.required.alcohol")) shouldBe getErrorsInFieldSet(doc)
       }
     }
   }

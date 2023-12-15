@@ -16,10 +16,10 @@
 
 package util
 
+import org.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.data.Form
@@ -28,8 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import repositories.BCPassengersSessionRepository
-import uk.gov.hmrc.http.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 
 import scala.reflect.ClassTag
 

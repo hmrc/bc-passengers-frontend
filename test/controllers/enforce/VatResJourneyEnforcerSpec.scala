@@ -20,14 +20,14 @@ import config.AppConfig
 import controllers.LocalContext
 import controllers.enforce.vatres._
 import models.JourneyData
+import org.mockito.Mockito.when
+import org.mockito.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import play.api.test._
 import util.BaseSpec
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future

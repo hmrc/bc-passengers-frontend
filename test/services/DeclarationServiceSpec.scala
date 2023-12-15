@@ -22,8 +22,8 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
 import org.mockito.MockitoSugar
+import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
@@ -2670,7 +2670,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "XJPR5768524625")
+      val previousDeclarationRequest: PreviousDeclarationRequest =
+        PreviousDeclarationRequest("Potter", "XJPR5768524625")
 
       val calculation: Calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
 
@@ -2678,12 +2679,12 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val productPath: ProductPath = ProductPath("other-goods/adult/adult-footwear")
 
-      val otherGoodsSearchItem =
+      val otherGoodsSearchItem: OtherGoodsSearchItem =
         OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))
 
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
-      val purchasedProductInstances = List(
+      val purchasedProductInstances: List[PurchasedProductInstance] = List(
         PurchasedProductInstance(
           productPath,
           "UnOGll",
@@ -2959,7 +2960,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
-      val purchasedProductInstances = List(
+      val purchasedProductInstances: List[PurchasedProductInstance] = List(
         PurchasedProductInstance(
           productPath,
           "UnOGll",
@@ -3061,7 +3062,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val country: Country = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
 
-      val purchasedProductInstances = List(
+      val purchasedProductInstances: List[PurchasedProductInstance] = List(
         PurchasedProductInstance(
           productPath,
           "UnOGll",

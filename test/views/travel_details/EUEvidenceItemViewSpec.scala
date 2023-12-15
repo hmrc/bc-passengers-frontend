@@ -16,7 +16,7 @@
 
 package views.travel_details
 
-import forms.EUEvidenceItemForm.form
+import forms.EUEvidenceItemForm
 import models.ProductPath
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,9 @@ class EUEvidenceItemViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "tobacco/cigars")
 
-  private val validForm: Form[Boolean] = form.bind(Map("eUEvidenceItem" -> "true"))
+  private val validForm: Form[Boolean] = EUEvidenceItemForm.form.bind(Map("eUEvidenceItem" -> "true"))
+
+  private val emptyForm: Form[Boolean] = EUEvidenceItemForm.form.bind(Map("eUEvidenceItem" -> ""))
 
   val viewViaApply: HtmlFormat.Appendable = injected[eu_evidence_item].apply(
     form = validForm,
@@ -57,11 +59,49 @@ class EUEvidenceItemViewSpec extends BaseViewSpec {
     "iid0"
   )(request, messages, appConfig)
 
+  private def buildView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injected[eu_evidence_item].apply(
+      form = form,
+      backLink = None,
+      path = productPath,
+      iid = "iid0"
+    )(
+      request = request,
+      messages = messages,
+      appConfig = appConfig
+    )
+
   "EUEvidenceItemView" when {
     renderViewTest(
       title =
         "Do you have evidence this item was originally produced or made in the EU? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Do you have evidence this item was originally produced or made in the EU?"
     )
+
+    "formWithErrors" should {
+      val expectedErrors = List(
+        "#eUEvidenceItem-value-yes" -> messages("error.evidence_eu_item")
+      )
+
+      "have error prefix in title" in {
+        val doc = document(buildView(form = emptyForm))
+        doc.title() should startWith(messages("label.error"))
+      }
+
+      "have all info in error summary" in {
+        val doc = document(buildView(form = emptyForm))
+        doc.title()                            should startWith(messages("label.error"))
+        messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
+
+        expectedErrors shouldBe getErrorsInSummary(doc)
+      }
+
+      "have all errors in each input" in {
+        val doc = document(buildView(form = emptyForm))
+        doc.title()                                                             should startWith(messages("label.error"))
+        messages("label.there_is_a_problem")                                  shouldBe getErrorTitle(doc)
+        expectedErrors.map(error => messages("label.error") + " " + error._2) shouldBe getErrorsInFieldSet(doc)
+      }
+    }
   }
 }

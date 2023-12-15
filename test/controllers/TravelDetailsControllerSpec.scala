@@ -35,8 +35,9 @@ import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import scala.jdk.CollectionConverters.ListHasAsScala
+
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.ListHasAsScala
 
 class TravelDetailsControllerSpec extends BaseSpec {
 

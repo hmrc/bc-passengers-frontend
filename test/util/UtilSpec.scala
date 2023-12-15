@@ -16,10 +16,10 @@
 
 package util
 
-import java.math.RoundingMode
-
 import models.ProductPath
 import play.api.data.validation._
+
+import java.math.RoundingMode
 
 class UtilSpec extends BaseSpec {
 
