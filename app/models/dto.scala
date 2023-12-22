@@ -16,8 +16,8 @@
 
 package models
 
-import org.joda.time._
-import org.joda.time.format.DateTimeFormat
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 import play.api.data.Forms._
 import play.api.data.Forms.tuple
 import play.api.data.validation._
@@ -256,7 +256,7 @@ object EnterYourDetailsDto extends Validators {
       if (text.length <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
     }
 
-  private def mandatoryDate: Mapping[String] =
+  private val mandatoryDate: Mapping[String] =
     tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
       .verifying(
         "error.enter_a_date",
@@ -294,7 +294,7 @@ object EnterYourDetailsDto extends Validators {
       )
       .verifying(
         "error.enter_a_real_date",
-        dateInt => Try(new LocalDate(dateInt._3, dateInt._2, dateInt._1)).isSuccess
+        dateInt => Try(LocalDate.of(dateInt._3, dateInt._2, dateInt._1)).isSuccess
       )
       .transform[String](
         dateInt => s"${dateInt._3.toString}-${dateInt._2.toString}-${dateInt._1.toString}",
@@ -304,7 +304,7 @@ object EnterYourDetailsDto extends Validators {
           }
       )
 
-  private def mandatoryTime: Mapping[String] =
+  private val mandatoryTime: Mapping[String] =
     tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
       .verifying(
         "error.enter_a_time",
@@ -378,7 +378,7 @@ object EnterYourDetailsDto extends Validators {
       }
     }
 
-  def form(declarationTime: DateTime): Form[EnterYourDetailsDto] = Form(
+  def form(declarationTime: LocalDateTime): Form[EnterYourDetailsDto] = Form(
     mapping(
       "firstName"         -> text
         .verifying(nonEmptyMaxLength(35, "first_name"))
@@ -414,18 +414,24 @@ object EnterYourDetailsDto extends Validators {
         .verifying(
           "error.5_days",
           dto =>
-            new LocalDate(dto.dateOfArrival)
-              .toDateTime(LocalTime.parse(dto.timeOfArrival, DateTimeFormat.forPattern("hh:mm aa")))
-              .withZone(DateTimeZone.UTC)
-              .isAfter(declarationTime.withZone(DateTimeZone.UTC).minus(Hours.THREE))
+            LocalDateTime
+              .of(
+                LocalDate.parse(dto.dateOfArrival, DateTimeFormatter.ofPattern("yyyy-M-d")),
+                LocalTime.parse(dto.timeOfArrival, DateTimeFormatter.ofPattern("h:m a"))
+              )
+              .atZone(ZoneOffset.UTC)
+              .isAfter(declarationTime.atZone(ZoneOffset.UTC).minusHours(3L))
         )
         .verifying(
           "error.5_days",
           dto =>
-            new LocalDate(dto.dateOfArrival)
-              .toDateTime(LocalTime.parse(dto.timeOfArrival, DateTimeFormat.forPattern("hh:mm aa")))
-              .withZone(DateTimeZone.UTC)
-              .isBefore(declarationTime.withZone(DateTimeZone.UTC).plus(Days.FIVE))
+            LocalDateTime
+              .of(
+                LocalDate.parse(dto.dateOfArrival, DateTimeFormatter.ofPattern("yyyy-M-d")),
+                LocalTime.parse(dto.timeOfArrival, DateTimeFormatter.ofPattern("h:m a"))
+              )
+              .atZone(ZoneOffset.UTC)
+              .isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L))
         )
     )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
   )
@@ -438,8 +444,8 @@ object EnterYourDetailsDto extends Validators {
       EmailAddress(userInformation.emailAddress, userInformation.emailAddress),
       PlaceOfArrival(Some(userInformation.selectPlaceOfArrival), Some(userInformation.enterPlaceOfArrival)),
       DateTimeOfArrival(
-        userInformation.dateOfArrival.toString("dd-MM-yyyy"),
-        userInformation.timeOfArrival.toString("hh:mm aa").toLowerCase
+        userInformation.dateOfArrival.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+        userInformation.timeOfArrival.format(DateTimeFormatter.ofPattern("h:m a")).toLowerCase
       )
     )
 

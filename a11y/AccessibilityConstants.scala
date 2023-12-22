@@ -130,7 +130,7 @@ trait AccessibilityConstants {
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
     dateOfArrival = LocalDate.parse("2023-05-06"),
-    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
   )
 
   val purchasedItems: List[PurchasedItem] = List(

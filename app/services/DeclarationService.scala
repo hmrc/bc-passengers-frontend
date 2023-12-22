@@ -19,11 +19,11 @@ package services
 import audit.AuditingTools
 import connectors.Cache
 import models._
-import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.{Lang, MessagesApi}
-import play.api.libs.json.JodaWrites._
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneOffset}
 import play.api.libs.json.Reads._
 import util._
 import play.api.libs.json._
@@ -116,11 +116,11 @@ class DeclarationService @Inject() (
     userInformation: UserInformation,
     calculatorResponse: CalculatorResponse,
     journeyData: JourneyData,
-    receiptDateTime: DateTime,
+    receiptDateTime: LocalDateTime,
     correlationId: String
   )(implicit hc: HeaderCarrier, messages: MessagesApi): Future[DeclarationServiceResponse] = {
 
-    val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val rd = receiptDateTime.atZone(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))
 
     val partialDeclarationMessage =
       buildPartialDeclarationOrAmendmentMessage(userInformation, calculatorResponse, journeyData, rd)
@@ -177,11 +177,11 @@ class DeclarationService @Inject() (
     userInformation: UserInformation,
     calculatorResponse: CalculatorResponse,
     journeyData: JourneyData,
-    receiptDateTime: DateTime,
+    receiptDateTime: LocalDateTime,
     correlationId: String
   )(implicit hc: HeaderCarrier, messages: MessagesApi): Future[DeclarationServiceResponse] = {
 
-    val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val rd = receiptDateTime.atZone(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))
 
     val partialDeclarationMessage =
       buildPartialDeclarationOrAmendmentMessage(userInformation, calculatorResponse, journeyData, rd)
@@ -316,7 +316,8 @@ class DeclarationService @Inject() (
         "portOfEntry"           -> getPlaceOfArrivalCode,
         "portOfEntryName"       -> getPlaceOfArrival,
         "expectedDateOfArrival" -> o.dateOfArrival,
-        "timeOfEntry"           -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}",
+        "timeOfEntry"           ->
+          s"${formattedTwoDecimals(o.timeOfArrival.getHour)}:${formattedTwoDecimals(o.timeOfArrival.getMinute)}",
         "messageTypes"          -> Json.obj("messageType" -> getMessageTypes),
         "travellingFrom"        -> getTravellingFrom,
         "onwardTravelGBNI"      -> getOnwardTravel,

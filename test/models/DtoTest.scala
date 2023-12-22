@@ -16,7 +16,7 @@
 
 package models
 
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import util.BaseSpec
 
 class DtoTest extends BaseSpec {
@@ -41,7 +41,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -66,7 +66,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -93,7 +93,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -120,7 +120,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -145,7 +145,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -172,7 +172,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -199,7 +199,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -224,7 +224,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -251,7 +251,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -276,7 +276,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -303,7 +303,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -328,7 +328,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -355,7 +355,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -380,7 +380,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -407,7 +407,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -432,7 +432,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -459,7 +459,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -486,7 +486,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -513,7 +513,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -540,7 +540,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -567,7 +567,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -595,7 +595,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -620,7 +620,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -647,7 +647,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -672,7 +672,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -699,7 +699,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -726,7 +726,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -753,7 +753,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -780,7 +780,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -807,7 +807,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -834,7 +834,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -859,7 +859,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -884,7 +884,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -909,7 +909,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -934,7 +934,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -959,7 +959,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -984,7 +984,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1009,7 +1009,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1036,7 +1036,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1061,7 +1061,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "somethingelse"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1088,7 +1088,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1115,7 +1115,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T09:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1140,7 +1140,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T09:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1165,7 +1165,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T09:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1193,7 +1193,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T09:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1219,7 +1219,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> ""
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1246,7 +1246,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 
@@ -1273,7 +1273,7 @@ class DtoTest extends BaseSpec {
         "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
       )
 
-      val declarationTime = DateTime.parse("2018-11-23T12:20:00.000")
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
       val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
 

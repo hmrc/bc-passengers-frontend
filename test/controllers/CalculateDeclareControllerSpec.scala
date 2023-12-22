@@ -18,8 +18,8 @@ package controllers
 
 import connectors.Cache
 import models._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -48,7 +48,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
-    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
     .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
@@ -59,7 +58,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     reset(injected[UserInformationService])
     reset(injected[PayApiService])
     reset(injected[DeclarationService])
-    reset(injected[DateTimeProviderService])
     reset(injected[TravelDetailsService])
   }
 
@@ -627,10 +625,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       "LHR",
       "",
       LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
     )
 
-    lazy val dt: DateTime = DateTime.parse("2018-11-23T06:21:00Z")
+    lazy val dt: LocalDateTime = LocalDateTime.parse("2018-11-23T06:21:00Z")
 
     lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
       ProductPath("alcohol/beer"),
@@ -680,7 +678,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[DeclarationService].storeChargeReference(any(), any(), any())(any())) thenReturn Future.successful(
         JourneyData()
       )
-      when(injected[DateTimeProviderService].now) thenReturn dt
       when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
         CalculatorServiceSuccessResponse(
           CalculatorResponse(

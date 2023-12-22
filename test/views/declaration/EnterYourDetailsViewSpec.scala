@@ -17,7 +17,7 @@
 package views.declaration
 
 import models.{EnterYourDetailsDto, PortsOfArrival}
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
@@ -25,7 +25,7 @@ import views.html.declaration.enter_your_details
 
 class EnterYourDetailsViewSpec extends BaseViewSpec {
 
-  private val declarationTime: DateTime = DateTime.parse("2023-05-06T21:15:00.000")
+  private val declarationTime: LocalDateTime = LocalDateTime.parse("2023-05-06T21:15:00.000")
 
   private val emptyForm: Form[EnterYourDetailsDto] = EnterYourDetailsDto
     .form(declarationTime)

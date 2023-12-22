@@ -18,8 +18,8 @@ package services
 
 import connectors.Cache
 import models.{JourneyData, UserInformation}
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -72,7 +72,7 @@ class UserInformationServiceSpec extends BaseSpec {
             "Newcastle Airport",
             "",
             LocalDate.parse("2018-08-31"),
-            LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+            LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
           )
         )
       )
@@ -90,7 +90,7 @@ class UserInformationServiceSpec extends BaseSpec {
                 "Newcastle Airport",
                 "",
                 LocalDate.parse("2018-08-31"),
-                LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+                LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
               )
             )
           )

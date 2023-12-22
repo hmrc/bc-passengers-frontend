@@ -17,8 +17,8 @@
 package views.declaration
 
 import models._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalTime}
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
 import views.html.declaration.zero_declaration
@@ -108,7 +108,7 @@ class ZeroDeclarationViewSpec extends BaseViewSpec {
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
     dateOfArrival = LocalDate.parse("2023-05-06"),
-    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
   )
 
   private val calculatorResponseDto: CalculatorResponseDto = CalculatorResponseDto(

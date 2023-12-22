@@ -18,8 +18,8 @@ package services
 
 import connectors.Cache
 import models._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -186,7 +186,7 @@ class PayApiServiceSpec extends BaseSpec {
       "LHR",
       "",
       LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
     )
     val calculatorResponse: CalculatorResponse = CalculatorResponse(
       Some(
@@ -346,7 +346,7 @@ class PayApiServiceSpec extends BaseSpec {
       isAnyItemOverAllowance = true
     )
 
-    val receiptDateTime: DateTime = DateTime.parse("2018-11-12T13:56:01+0000")
+    val receiptDateTime: LocalDateTime = LocalDateTime.parse("2018-11-12T13:56:01.0000")
     lazy val s: PayApiService = {
       val service = injected[PayApiService]
       when(
@@ -415,7 +415,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-7-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -446,7 +446,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-7-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -486,7 +486,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-7-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
       )
 
       override lazy val httpResponse: HttpResponse =

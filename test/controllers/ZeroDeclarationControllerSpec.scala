@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import models._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalTime}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
@@ -199,7 +199,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     "LHR",
     "",
     LocalDate.parse("2018-11-12"),
-    LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+    LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
   )
 
   "loadDeclarationPage" should {
