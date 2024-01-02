@@ -22,8 +22,6 @@ import models._
 import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.{Lang, MessagesApi}
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDateTime, ZoneOffset}
 import play.api.libs.json.Reads._
 import util._
 import play.api.libs.json._
@@ -32,6 +30,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
 import java.util.Locale

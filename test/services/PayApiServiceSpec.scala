@@ -414,7 +414,7 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-7-12"),
+        dateOfArrival = LocalDate.parse("2018-07-12"),
         timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
       )
 
@@ -445,7 +445,7 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-7-12"),
+        dateOfArrival = LocalDate.parse("2018-07-12"),
         timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
       )
 
@@ -485,7 +485,7 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-7-12"),
+        dateOfArrival = LocalDate.parse("2018-07-12"),
         timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
       )
 

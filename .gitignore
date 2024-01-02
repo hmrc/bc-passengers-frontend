@@ -31,3 +31,9 @@ tmp
 .idea_modules
 bin
 /.bsp
+.bloop/
+.metals/
+.vscode/
+project/.bloop/
+project/metals.sbt
+

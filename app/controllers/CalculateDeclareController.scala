@@ -45,7 +45,6 @@ class CalculateDeclareController @Inject() (
   val userInformationService: UserInformationService,
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
-  val dateTimeProviderService: DateTimeProviderService,
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
   declareAction: DeclareAction,
@@ -68,7 +67,8 @@ class CalculateDeclareController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def receiptDateTime: LocalDateTime       = dateTimeProviderService.now
+  def receiptDateTime: LocalDateTime       = LocalDateTime.now()
+
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)

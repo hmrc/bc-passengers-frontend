@@ -39,7 +39,8 @@ import scala.concurrent.Future
 
 class CalculateDeclareControllerSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application =
+    GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
     .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
@@ -47,7 +48,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
     .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
-    .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
+    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
