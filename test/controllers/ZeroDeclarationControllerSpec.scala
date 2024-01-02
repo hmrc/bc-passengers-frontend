@@ -19,8 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import models._
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalTime}
+import java.time.LocalDate
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
@@ -33,7 +32,7 @@ import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
 import services.{DeclarationService, DeclarationServiceFailureResponse, DeclarationServiceSuccessResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
 
 import scala.concurrent.Future
 
@@ -199,7 +198,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     "LHR",
     "",
     LocalDate.parse("2018-11-12"),
-    LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+    parseLocalTime("12:20 pm")
   )
 
   "loadDeclarationPage" should {

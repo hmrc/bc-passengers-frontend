@@ -19,7 +19,6 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import models._
-import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalTime}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
@@ -33,7 +32,7 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.PreviousDeclarationService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
 
 import scala.concurrent.Future
 
@@ -301,7 +300,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         "Newcastle Airport",
         "",
         LocalDate.parse("2021-04-01"),
-        LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalTime("12:20 pm")
       )
       val purchasedProductInstances  = List(
         PurchasedProductInstance(

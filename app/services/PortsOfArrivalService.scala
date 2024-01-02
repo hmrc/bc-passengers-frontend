@@ -39,7 +39,7 @@ class PortsOfArrivalService {
 
   def isInGB(code: String): Boolean = ports.exists(c => c.code == code && c.isGB)
 
-  val ports = List(
+  private val ports: List[PortsOfArrival] = List(
     PortsOfArrival("ABZ", "title.aberdeen_airport", isGB = true, Nil),
     PortsOfArrival("ABD", "title.aberdeen_port", isGB = true, Nil),
     PortsOfArrival("AFK", "title.ashford", isGB = true, Nil),

@@ -18,8 +18,7 @@ package controllers
 
 import connectors.Cache
 import models._
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.time.{LocalDate, LocalDateTime}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -34,7 +33,7 @@ import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
 
 import scala.concurrent.Future
 
@@ -625,10 +624,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       "LHR",
       "",
       LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+      parseLocalTime("12:20 pm")
     )
 
-    lazy val dt: LocalDateTime = LocalDateTime.parse("2018-11-23T06:21:00Z")
+    lazy val dt: LocalDateTime = LocalDateTime.parse("2018-11-23T06:21:00")
 
     lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
       ProductPath("alcohol/beer"),

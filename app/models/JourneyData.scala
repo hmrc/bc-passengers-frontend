@@ -21,7 +21,7 @@ import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalTime}
-
+import util.{parseLocalDate, parseLocalTime}
 object PurchasedProductInstance {
   implicit val formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
 }
@@ -55,8 +55,8 @@ object UserInformation {
       dto.emailAddress.email,
       dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
       dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
-      LocalDate.parse(dto.dateTimeOfArrival.dateOfArrival),
-      LocalTime.parse(dto.dateTimeOfArrival.timeOfArrival, DateTimeFormatter.ofPattern("h:m a"))
+      parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
+      parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
 }
 case class UserInformation(

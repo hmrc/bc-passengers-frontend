@@ -301,24 +301,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) {
-        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-          if (jd == JourneyData(Some(false), Some("euOnly"), Some(true))) {
-            status(res) shouldBe OK
-          } else {
-            status(res) shouldBe SEE_OTHER
-          }
-        case _                                                      => throw new Error("Invalid JourneyData")
+        if (jd == JourneyData(Some(false), Some("euOnly"), Some(true))) {
+          status(res) shouldBe OK
+        } else {
+          status(res) shouldBe SEE_OTHER
+        }
       }
     }
   }
-
   "Calling VatResJourneyEnforcer.enforcePrereqs for NoNeedToUseStep (Page2,Page3)" should {
 
     "pass if user is coming from a valid previous step and bringingOverAllowance == false" in new GridSetup {

@@ -18,8 +18,7 @@ package services
 
 import connectors.Cache
 import models.{JourneyData, UserInformation}
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalTime}
+import java.time.LocalDate
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -27,7 +26,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import util.BaseSpec
+import util.{BaseSpec, parseLocalTime}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -72,7 +71,7 @@ class UserInformationServiceSpec extends BaseSpec {
             "Newcastle Airport",
             "",
             LocalDate.parse("2018-08-31"),
-            LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+            parseLocalTime("12:20 pm")
           )
         )
       )
@@ -90,7 +89,7 @@ class UserInformationServiceSpec extends BaseSpec {
                 "Newcastle Airport",
                 "",
                 LocalDate.parse("2018-08-31"),
-                LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+                parseLocalTime("12:20 pm")
               )
             )
           )

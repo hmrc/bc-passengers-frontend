@@ -18,8 +18,7 @@ package services
 
 import connectors.Cache
 import models._
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -82,7 +81,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     "LHR",
     "",
     LocalDate.parse("2018-05-31"),
-    LocalTime.parse("01:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+    parseLocalTime("01:20 pm")
   )
 
   val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -409,7 +408,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       val ui: UserInformation = userInformation.copy(identificationType = "passport", identificationNumber = "SX12345")
 
       val r: DeclarationServiceResponse = declarationService
-        .submitDeclaration(ui, calculatorResponse, jd, LocalDateTime.parse("2018-05-31T13:14:08.0100"), cid)
+        .submitDeclaration(ui, calculatorResponse, jd, LocalDateTime.parse("2018-05-31T12:14:08"), cid)
         .futureValue
 
       r shouldBe DeclarationServiceFailureResponse
@@ -442,7 +441,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           userInformation,
           calculatorResponse,
           jd,
-          LocalDateTime.parse("2018-05-31T13:14:08.0100"),
+          LocalDateTime.parse("2018-05-31T12:14:08"),
           cid
         )
         .futureValue
@@ -479,7 +478,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             userInformation,
             calculatorResponse,
             jd,
-            LocalDateTime.parse("2018-05-31T13:14:08.0100"),
+            LocalDateTime.parse("2018-05-31T12:14:08"),
             cid
           )
       )
@@ -712,7 +711,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       val ui: UserInformation = userInformation.copy(identificationType = "passport", identificationNumber = "SX12345")
 
       val r: DeclarationServiceResponse = declarationService
-        .submitAmendment(ui, calculatorResponse, jd, LocalDateTime.parse("2018-05-31T13:14:08.0100"), cid)
+        .submitAmendment(ui, calculatorResponse, jd, LocalDateTime.parse("2018-05-31T12:14:08"), cid)
         .futureValue
 
       r shouldBe DeclarationServiceFailureResponse
@@ -745,7 +744,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           userInformation,
           calculatorResponse,
           jd,
-          LocalDateTime.parse("2018-05-31T13:14:08.0100"),
+          LocalDateTime.parse("2018-05-31T12:14:08"),
           cid
         )
         .futureValue
@@ -782,7 +781,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             userInformation,
             calculatorResponse,
             jd,
-            LocalDateTime.parse("2018-05-31T13:14:08+0100"),
+            LocalDateTime.parse("2018-05-31T12:14:08"),
             cid
           )
       )
@@ -821,7 +820,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "LHR",
         "",
         LocalDate.parse("2018-05-31"),
-        LocalTime.parse("8:2 am", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalTime("8:2 am")
       )
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -946,8 +945,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "abc@gmail.com",
         "LHR",
         "",
-        LocalDate.parse("2018-05-31"),
-        LocalTime.parse("01:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalDate("2018-05-31"),
+        parseLocalTime("01:20 pm")
       )
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -1431,8 +1430,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "abc@gmail.com",
         "",
         "LHR",
-        LocalDate.parse("2018-05-31"),
-        LocalTime.parse("01:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalDate("2018-05-31"),
+        parseLocalTime("01:20 pm")
       )
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -1913,8 +1912,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "abc@gmail.com",
         "LHR",
         "",
-        LocalDate.parse("2018-05-31"),
-        LocalTime.parse("01:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalDate("2018-05-31"),
+        parseLocalTime("01:20 pm")
       )
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -2416,7 +2415,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "LHR",
         "",
         LocalDate.parse("2018-05-31"),
-        LocalTime.parse("8:2 am", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalTime("8:2 am")
       )
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -2626,8 +2625,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "",
         "LHR",
         "",
-        LocalDate.parse("2018-05-31"),
-        LocalTime.parse("8:2 am", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalDate("2018-05-31"),
+        parseLocalTime("8:2 am")
       )
 
       val dm: JsObject = declarationService.buildPartialDeclarationOrAmendmentMessage(
@@ -2668,8 +2667,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "",
         "LHR",
         "",
-        LocalDate.parse("2018-05-31"),
-        LocalTime.parse("8:2 am", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalDate("2018-05-31"),
+        parseLocalTime("8:2 am")
       )
 
       val dm: JsObject = declarationService.buildPartialDeclarationOrAmendmentMessage(
@@ -2749,8 +2748,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "",
         "LHR",
         "",
-        LocalDate.parse("2018-05-31"),
-        LocalTime.parse("8:2 am", DateTimeFormatter.ofPattern("h:m a"))
+        parseLocalDate("2018-05-31"),
+        parseLocalTime("8:2 am")
       )
 
       val dm: JsObject = declarationService.buildPartialDeclarationOrAmendmentMessage(

@@ -20,6 +20,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
 import java.time.{LocalDate, LocalTime}
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import scala.util.Try
@@ -170,9 +171,19 @@ package object util {
       messages("label.no")
     }
 
-  def timeOfArrivalFormat(time: LocalTime): String =
-    time.format(DateTimeFormatter.ofPattern("h:m a"))
+  private val localTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("h:m a", Locale.UK)
 
-  def dateOfTimeFormat(date: LocalDate): String =
-    date.format(DateTimeFormatter.ofPattern("dd MMMM YYYY"))
+  private val localDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-M-d", Locale.UK)
+
+  def parseLocalTime(time: String): LocalTime =
+    LocalTime.parse(time, localTimeFormat)
+
+  def formatLocalTime(time: LocalTime): String =
+    time.format(localTimeFormat)
+
+  def parseLocalDate(date: String): LocalDate =
+    LocalDate.parse(date, localDateFormat)
+
+  def formatLocalDate(date: LocalDate, pattern: String): String =
+    date.format(DateTimeFormatter.ofPattern(pattern, Locale.UK))
 }

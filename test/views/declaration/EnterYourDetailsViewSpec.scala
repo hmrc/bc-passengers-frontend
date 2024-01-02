@@ -321,8 +321,8 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val amountOfDaysInFuture           = 5
-  private val dateInFutureFiveDays: DateTime = DateTime.now().plusDays(amountOfDaysInFuture)
+  private val amountOfDaysInFuture                = 5
+  private val dateInFutureFiveDays: LocalDateTime = LocalDateTime.now().plusDays(amountOfDaysInFuture)
 
   private val formWithInvalidDateInFuture: Form[EnterYourDetailsDto] = EnterYourDetailsDto
     .form(declarationTime)
@@ -337,7 +337,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
         "placeOfArrival.selectPlaceOfArrival"     -> "",
         "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day"     -> dateInFutureFiveDays.getDayOfMonth.toString,
-        "dateTimeOfArrival.dateOfArrival.month"   -> dateInFutureFiveDays.getMonthOfYear.toString,
+        "dateTimeOfArrival.dateOfArrival.month"   -> dateInFutureFiveDays.getMonthValue.toString,
         "dateTimeOfArrival.dateOfArrival.year"    -> dateInFutureFiveDays.getYear.toString,
         "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
         "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
@@ -523,6 +523,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
 
         s"have all info in error summary for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
+
           doc.title()                            should startWith(messages("label.error"))
           messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
 
@@ -533,7 +534,9 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
           val doc = document(buildView(form = testCase._2))
           doc.title()                                                          should startWith(messages("label.error"))
           messages("label.there_is_a_problem")                               shouldBe getErrorTitle(doc)
-          testCase._3.map(error => messages("label.error") + " " + error._2) shouldBe getErrorsInFieldSet(doc)
+          testCase._3.map(error => messages("label.error") + " " + error._2) shouldBe getErrorsInFieldSet(
+            doc
+          )
         }
       }
     }

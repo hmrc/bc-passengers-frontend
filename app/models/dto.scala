@@ -17,7 +17,8 @@
 package models
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
+import util.{formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
 import play.api.data.Forms._
 import play.api.data.Forms.tuple
 import play.api.data.validation._
@@ -342,9 +343,9 @@ object EnterYourDetailsDto extends Validators {
           }
       )
 
-  private def placeOfArrivalConstraint(message: String): Constraint[PlaceOfArrival] = Constraint { model =>
+  private def placeOfArrivalConstraint: Constraint[PlaceOfArrival] = Constraint { model =>
     (model.selectPlaceOfArrival, model.enterPlaceOfArrival) match {
-      case (x, y) if x.isEmpty && y.isEmpty => Invalid(message, "selectPlaceOfArrival")
+      case (x, y) if x.isEmpty && y.isEmpty => Invalid("error.required.place_of_arrival", "selectPlaceOfArrival")
       case _                                => Valid
     }
   }
@@ -406,7 +407,7 @@ object EnterYourDetailsDto extends Validators {
         )
       )(PlaceOfArrival.apply)(PlaceOfArrival.unapply)
         .verifying()
-        .verifying(placeOfArrivalConstraint("error.required.place_of_arrival")),
+        .verifying(placeOfArrivalConstraint),
       "dateTimeOfArrival" -> mapping(
         "dateOfArrival" -> mandatoryDate,
         "timeOfArrival" -> mandatoryTime
@@ -416,8 +417,8 @@ object EnterYourDetailsDto extends Validators {
           dto =>
             LocalDateTime
               .of(
-                LocalDate.parse(dto.dateOfArrival, DateTimeFormatter.ofPattern("yyyy-M-d")),
-                LocalTime.parse(dto.timeOfArrival, DateTimeFormatter.ofPattern("h:m a"))
+                parseLocalDate(dto.dateOfArrival),
+                parseLocalTime(dto.timeOfArrival)
               )
               .atZone(ZoneOffset.UTC)
               .isAfter(declarationTime.atZone(ZoneOffset.UTC).minusHours(3L))
@@ -427,8 +428,8 @@ object EnterYourDetailsDto extends Validators {
           dto =>
             LocalDateTime
               .of(
-                LocalDate.parse(dto.dateOfArrival, DateTimeFormatter.ofPattern("yyyy-M-d")),
-                LocalTime.parse(dto.timeOfArrival, DateTimeFormatter.ofPattern("h:m a"))
+                parseLocalDate(dto.dateOfArrival),
+                parseLocalTime(dto.timeOfArrival)
               )
               .atZone(ZoneOffset.UTC)
               .isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L))
@@ -444,8 +445,8 @@ object EnterYourDetailsDto extends Validators {
       EmailAddress(userInformation.emailAddress, userInformation.emailAddress),
       PlaceOfArrival(Some(userInformation.selectPlaceOfArrival), Some(userInformation.enterPlaceOfArrival)),
       DateTimeOfArrival(
-        userInformation.dateOfArrival.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-        userInformation.timeOfArrival.format(DateTimeFormatter.ofPattern("h:m a")).toLowerCase
+        formatLocalDate(userInformation.dateOfArrival, "dd-MM-yyyy"),
+        formatLocalTime(userInformation.timeOfArrival).toLowerCase
       )
     )
 

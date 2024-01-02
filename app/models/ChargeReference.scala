@@ -20,7 +20,7 @@ import scala.util.Random
 
 object ChargeReference {
 
-  private val ChargeRefCheckCharTable = Map(
+  private val ChargeRefCheckCharTable: Map[Int, Char] = Map(
     0  -> 'A',
     1  -> 'B',
     2  -> 'C',
@@ -46,7 +46,7 @@ object ChargeReference {
     22 -> 'W'
   )
 
-  private val ChargeRefWeights = List(9, 10, 11, 12, 13, 8, 7, 6, 5, 4, 3, 2, 1)
+  private val ChargeRefWeights: List[Int] = List(9, 10, 11, 12, 13, 8, 7, 6, 5, 4, 3, 2, 1)
 
   def generate: ChargeReference = {
     val randomFactor: List[Char] = Random.alphanumeric.filter(c => c.isDigit).take(10).toList

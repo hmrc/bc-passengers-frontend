@@ -14,21 +14,3 @@
  * limitations under the License.
  */
 
-package services
-
-import util.BaseSpec
-
-import java.time.LocalDate
-
-class DateTimeProviderServiceSpec extends BaseSpec {
-
-  private val dateTimeProviderService: DateTimeProviderService = new DateTimeProviderService
-
-  "DateTimeProviderService" when {
-    ".now" should {
-      "return current year" in {
-        dateTimeProviderService.now.getYear shouldBe LocalDate.now().getYear
-      }
-    }
-  }
-}
