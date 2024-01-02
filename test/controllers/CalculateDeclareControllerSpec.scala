@@ -18,7 +18,6 @@ package controllers
 
 import connectors.Cache
 import models._
-import java.time.{LocalDate, LocalDateTime}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -35,28 +34,31 @@ import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
 
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.Future
 
 class CalculateDeclareControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application =
     GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
-    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
-    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
-    .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
-    .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
-    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
-    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .build()
+      .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
+      .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+      .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
+      .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+      .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
+      .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
+      .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
+      .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
+      .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
+      .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+      .build()
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
     reset(injected[PurchasedProductService])
     reset(injected[UserInformationService])
     reset(injected[PayApiService])
+    reset(injected[DateTimeProviderService])
     reset(injected[DeclarationService])
     reset(injected[TravelDetailsService])
   }
@@ -678,6 +680,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(injected[DeclarationService].storeChargeReference(any(), any(), any())(any())) thenReturn Future.successful(
         JourneyData()
       )
+      when(injected[DateTimeProviderService].now) thenReturn dt
       when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
         CalculatorServiceSuccessResponse(
           CalculatorResponse(

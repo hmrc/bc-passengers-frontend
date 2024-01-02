@@ -17,20 +17,19 @@
 package services
 
 import controllers.routes
-
-import javax.inject.{Inject, Singleton}
 import models.{CalculatorResponse, ChargeReference, Country, UserInformation}
 import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.libs.json._
 import play.mvc.Http.Status._
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
+import java.time.{LocalDateTime, ZoneOffset}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

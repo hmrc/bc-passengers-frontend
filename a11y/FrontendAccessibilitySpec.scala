@@ -17,7 +17,6 @@
 import config.AppConfig
 import controllers._
 import models._
-import org.joda.time.DateTime
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.api.data.Forms._
@@ -34,6 +33,8 @@ import views.html.purchased_products._
 import views.html.templates.GovukLayoutWrapper
 import views.html.tobacco.tobacco_input
 import views.html.travel_details._
+
+import java.time.LocalDateTime
 
 class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with AccessibilityConstants {
 
@@ -78,7 +79,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
     DeclarationRetrievalDto.form()
   )
   implicit val arbEnterYourDetailsForm: Arbitrary[Form[EnterYourDetailsDto]]           = fixed(
-    EnterYourDetailsDto.form(DateTime.now())
+    EnterYourDetailsDto.form(LocalDateTime.now())
   )
   implicit val arbSelectProductsForm: Arbitrary[Form[SelectProductsDto]]               = fixed(SelectProductsDto.form)
 

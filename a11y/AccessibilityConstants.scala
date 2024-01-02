@@ -15,8 +15,9 @@
  */
 
 import models._
-import org.joda.time._
-import org.joda.time.format.DateTimeFormat
+
+import java.time.{LocalDate, LocalTime}
+import java.time.format.DateTimeFormatter
 
 trait AccessibilityConstants {
   private val weightOrVolume: BigDecimal = 40

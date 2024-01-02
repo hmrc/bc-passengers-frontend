@@ -16,12 +16,12 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
-import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalTime}
+import ai.x.play.json.Jsonx
+import play.api.libs.json.{Json, OFormat}
 import util.{parseLocalDate, parseLocalTime}
+
+import java.time.{LocalDate, LocalTime}
 object PurchasedProductInstance {
   implicit val formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
 }

@@ -16,14 +16,12 @@
 
 package models
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-import util.{formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
 import play.api.data.Forms._
-import play.api.data.Forms.tuple
 import play.api.data.validation._
 import play.api.data.{Form, Mapping}
+import util.{formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
 
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 import scala.util.Try
 
 object OtherGoodsDto {

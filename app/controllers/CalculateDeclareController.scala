@@ -45,6 +45,7 @@ class CalculateDeclareController @Inject() (
   val userInformationService: UserInformationService,
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
+  val dateTimeProviderService: DateTimeProviderService,
   publicAction: PublicAction,
   dashboardAction: DashboardAction,
   declareAction: DeclareAction,
@@ -67,7 +68,7 @@ class CalculateDeclareController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def receiptDateTime: LocalDateTime       = LocalDateTime.now()
+  def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
@@ -114,7 +115,7 @@ class CalculateDeclareController @Inject() (
               Ok(
                 enter_your_details(
                   EnterYourDetailsDto
-                    .form(LocalDateTime.now())
+                    .form(receiptDateTime)
                     .fill(EnterYourDetailsDto.fromUserInformation(userInformation)),
                   portsOfArrivalService.getAllPortsNI,
                   context.getJourneyData.euCountryCheck,
@@ -127,7 +128,7 @@ class CalculateDeclareController @Inject() (
               Ok(
                 enter_your_details(
                   EnterYourDetailsDto
-                    .form(LocalDateTime.now())
+                    .form(receiptDateTime)
                     .fill(EnterYourDetailsDto.fromUserInformation(userInformation)),
                   portsOfArrivalService.getAllPorts,
                   context.getJourneyData.euCountryCheck,
@@ -142,7 +143,7 @@ class CalculateDeclareController @Inject() (
             Future.successful(
               Ok(
                 enter_your_details(
-                  EnterYourDetailsDto.form(LocalDateTime.now()),
+                  EnterYourDetailsDto.form(receiptDateTime),
                   portsOfArrivalService.getAllPortsNI,
                   context.getJourneyData.euCountryCheck,
                   backLinkModel.backLink
@@ -153,7 +154,7 @@ class CalculateDeclareController @Inject() (
             Future.successful(
               Ok(
                 enter_your_details(
-                  EnterYourDetailsDto.form(LocalDateTime.now()),
+                  EnterYourDetailsDto.form(receiptDateTime),
                   portsOfArrivalService.getAllPorts,
                   context.getJourneyData.euCountryCheck,
                   backLinkModel.backLink
@@ -165,7 +166,7 @@ class CalculateDeclareController @Inject() (
   }
 
   def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    val form      = EnterYourDetailsDto.form(LocalDateTime.now())
+    val form      = EnterYourDetailsDto.form(receiptDateTime)
     val boundForm = form.bindFromRequest()
 
     boundForm.fold(
@@ -190,7 +191,7 @@ class CalculateDeclareController @Inject() (
               userInformation,
               calculatorResponse,
               context.getJourneyData,
-              LocalDateTime.now(),
+              receiptDateTime,
               correlationId
             )
             declarationResult flatMap {
@@ -242,7 +243,7 @@ class CalculateDeclareController @Inject() (
         userInformation,
         calculatorResponse,
         context.getJourneyData,
-        LocalDateTime.now(),
+        receiptDateTime,
         correlationId
       ) flatMap {
         case DeclarationServiceFailureResponse     =>
