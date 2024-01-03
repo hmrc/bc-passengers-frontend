@@ -18,6 +18,7 @@ package services
 
 import connectors.Cache
 import models._
+
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime, LocalTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -35,6 +36,7 @@ import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
 import util.BaseSpec
 
+import java.util.Locale
 import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {
@@ -186,7 +188,7 @@ class PayApiServiceSpec extends BaseSpec {
       "LHR",
       "",
       LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a"))
+      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a",Locale.UK))
     )
     val calculatorResponse: CalculatorResponse = CalculatorResponse(
       Some(
@@ -415,7 +417,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -446,7 +448,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -486,7 +488,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
       )
 
       override lazy val httpResponse: HttpResponse =

@@ -16,8 +16,9 @@
 
 import models._
 
-import java.time.{LocalDate,LocalTime}
+import java.time.{LocalDate, LocalTime}
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 trait AccessibilityConstants {
   private val weightOrVolume: BigDecimal = 40
@@ -131,7 +132,7 @@ trait AccessibilityConstants {
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
     dateOfArrival = LocalDate.parse("2023-05-06"),
-    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a"))
+    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
   )
 
   val purchasedItems: List[PurchasedItem] = List(

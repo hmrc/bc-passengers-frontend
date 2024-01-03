@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
+import java.util.Locale
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -94,7 +95,7 @@ class PayApiService @Inject() (
     val userDateOfArrival: String    = LocalDateTime
       .of(userInformation.dateOfArrival, userInformation.timeOfArrival)
       .atZone(ZoneOffset.UTC)
-      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss",Locale.UK))
 
     val requestBody: JsObject = Json.obj(
       "chargeReference"    -> chargeReference.value,
