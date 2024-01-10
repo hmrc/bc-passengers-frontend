@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
-import util.BaseSpec
+import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
 import java.util.Locale
 import scala.concurrent.Future
@@ -188,7 +188,7 @@ class PayApiServiceSpec extends BaseSpec {
       "LHR",
       "",
       LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a",Locale.UK))
+      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a", Locale.UK))
     )
     val calculatorResponse: CalculatorResponse = CalculatorResponse(
       Some(
@@ -417,7 +417,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a", Locale.UK))
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -448,7 +448,7 @@ class PayApiServiceSpec extends BaseSpec {
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
         dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
+        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a", Locale.UK))
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -487,8 +487,8 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
+        dateOfArrival = parseLocalDate("2018-7-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
       )
 
       override lazy val httpResponse: HttpResponse =

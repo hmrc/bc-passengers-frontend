@@ -17,6 +17,7 @@
 import models._
 
 import java.time.{LocalDate, LocalTime}
+import util.parseLocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -131,7 +132,7 @@ trait AccessibilityConstants {
     emailAddress = "blaketyler@gmail.com",
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
-    dateOfArrival = LocalDate.parse("2023-05-06"),
+    dateOfArrival = parseLocalDate("2023-05-06"),
     timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
   )
 

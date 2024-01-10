@@ -26,7 +26,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import util.{BaseSpec, parseLocalTime}
+import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -70,7 +70,7 @@ class UserInformationServiceSpec extends BaseSpec {
             "abc@gmail.com",
             "Newcastle Airport",
             "",
-            LocalDate.parse("2018-08-31"),
+            parseLocalDate("2018-08-31"),
             parseLocalTime("12:20 pm")
           )
         )
@@ -88,7 +88,7 @@ class UserInformationServiceSpec extends BaseSpec {
                 "abc@gmail.com",
                 "Newcastle Airport",
                 "",
-                LocalDate.parse("2018-08-31"),
+                parseLocalDate("2018-08-31"),
                 parseLocalTime("12:20 pm")
               )
             )

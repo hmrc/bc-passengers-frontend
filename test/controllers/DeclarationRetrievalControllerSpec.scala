@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.PreviousDeclarationService
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
 
 import scala.concurrent.Future
 
@@ -299,7 +299,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         "abc@gmail.com",
         "Newcastle Airport",
         "",
-        LocalDate.parse("2021-04-01"),
+        parseLocalDate("2021-04-01"),
         parseLocalTime("12:20 pm")
       )
       val purchasedProductInstances  = List(

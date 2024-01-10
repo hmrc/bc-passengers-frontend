@@ -95,7 +95,7 @@ class PayApiService @Inject() (
     val userDateOfArrival: String    = LocalDateTime
       .of(userInformation.dateOfArrival, userInformation.timeOfArrival)
       .atZone(ZoneOffset.UTC)
-      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss",Locale.UK))
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.UK))
 
     val requestBody: JsObject = Json.obj(
       "chargeReference"    -> chargeReference.value,

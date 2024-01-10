@@ -20,7 +20,7 @@ import models._
 
 import java.time.{LocalDate, LocalTime}
 import play.twirl.api.HtmlFormat
-import util.parseLocalTime
+import util.{parseLocalDate, parseLocalTime}
 import views.BaseViewSpec
 import views.html.declaration.zero_declaration
 
@@ -108,7 +108,7 @@ class ZeroDeclarationViewSpec extends BaseViewSpec {
     emailAddress = "blaketyler@gmail.com",
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
-    dateOfArrival = LocalDate.parse("2023-05-06"),
+    dateOfArrival = parseLocalDate("2023-05-06"),
     timeOfArrival = parseLocalTime("12:20 pm")
   )
 

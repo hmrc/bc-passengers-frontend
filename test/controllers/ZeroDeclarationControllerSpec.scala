@@ -32,7 +32,7 @@ import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
 import services.{DeclarationService, DeclarationServiceFailureResponse, DeclarationServiceSuccessResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
 
 import scala.concurrent.Future
 
@@ -197,7 +197,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     "abc@gmail.com",
     "LHR",
     "",
-    LocalDate.parse("2018-11-12"),
+    parseLocalDate("2018-11-12"),
     parseLocalTime("12:20 pm")
   )
 
