@@ -19,8 +19,7 @@ package models
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsValue, Json}
 import util.BaseSpec
-
-import java.time.LocalDate
+import util.parseLocalDate
 import java.time.format.DateTimeFormatter
 
 class CalculatorServiceRequestSpec extends BaseSpec {
@@ -29,7 +28,7 @@ class CalculatorServiceRequestSpec extends BaseSpec {
 
     trait Setup {
 
-      def todaysDate: String = LocalDate.parse("2019-04-30").format(DateTimeFormatter.ISO_DATE)
+      def todaysDate: String = parseLocalDate("2019-04-30").format(DateTimeFormatter.ISO_DATE)
 
       implicit val messages: MessagesApi = injected[MessagesApi]
 

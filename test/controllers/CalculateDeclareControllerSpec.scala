@@ -32,9 +32,8 @@ import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalTime}
-
-import java.time.{LocalDate, LocalDateTime}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class CalculateDeclareControllerSpec extends BaseSpec {
@@ -626,7 +625,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       "abc@gmail.com",
       "LHR",
       "",
-      LocalDate.parse("2018-11-12"),
+      parseLocalDate("2018-11-12"),
       parseLocalTime("12:20 pm")
     )
 

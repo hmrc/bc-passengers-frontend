@@ -17,7 +17,7 @@
 import models._
 
 import java.time.{LocalDate, LocalTime}
-import util.parseLocalDate
+import util.{parseLocalDate,parseLocalTime}
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -133,7 +133,7 @@ trait AccessibilityConstants {
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
     dateOfArrival = parseLocalDate("2023-05-06"),
-    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a",Locale.UK))
+    timeOfArrival = parseLocalTime("12:20 pm")
   )
 
   val purchasedItems: List[PurchasedItem] = List(

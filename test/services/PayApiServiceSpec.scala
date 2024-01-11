@@ -187,8 +187,8 @@ class PayApiServiceSpec extends BaseSpec {
       "abc@gmail.com",
       "LHR",
       "",
-      LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("h:m a", Locale.UK))
+      parseLocalDate("2018-11-12"),
+      parseLocalTime("12:20 pm")
     )
     val calculatorResponse: CalculatorResponse = CalculatorResponse(
       Some(
@@ -416,8 +416,8 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a", Locale.UK))
+        dateOfArrival = parseLocalDate("2018-07-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -447,8 +447,8 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-07-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormatter.ofPattern("hh:mm a", Locale.UK))
+        dateOfArrival = parseLocalDate("2018-07-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
       )
 
       override lazy val httpResponse: HttpResponse =
