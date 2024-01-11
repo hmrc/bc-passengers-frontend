@@ -17,10 +17,10 @@
 package services
 
 import javax.inject.Singleton
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 
 @Singleton
 class DateTimeProviderService {
 
-  def now: DateTime = DateTime.now()
+  def now: LocalDateTime = LocalDateTime.now()
 }

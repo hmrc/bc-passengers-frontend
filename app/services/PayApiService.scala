@@ -17,17 +17,20 @@
 package services
 
 import controllers.routes
-import javax.inject.{Inject, Singleton}
 import models.{CalculatorResponse, ChargeReference, Country, UserInformation}
 import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.libs.json._
 import play.mvc.Http.Status._
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneOffset}
+import java.util.Locale
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -89,13 +92,15 @@ class PayApiService @Inject() (
       else { backUrlDeclaration }
 
     def previouslyPaidAmount: String = amountPaidPreviously.getOrElse("0.00")
+    val userDateOfArrival: String    = LocalDateTime
+      .of(userInformation.dateOfArrival, userInformation.timeOfArrival)
+      .atZone(ZoneOffset.UTC)
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.UK))
 
     val requestBody: JsObject = Json.obj(
       "chargeReference"    -> chargeReference.value,
       "taxToPayInPence"    -> amountPence,
-      "dateOfArrival"      -> userInformation.dateOfArrival
-        .toDateTime(userInformation.timeOfArrival)
-        .toString("yyyy-MM-dd'T'HH:mm:ss"),
+      "dateOfArrival"      -> userDateOfArrival,
       "passengerName"      -> s"${userInformation.firstName} ${userInformation.lastName}",
       "placeOfArrival"     -> getPlaceOfArrival(userInformation),
       "returnUrl"          -> returnUrl,

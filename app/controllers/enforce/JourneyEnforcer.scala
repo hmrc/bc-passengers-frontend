@@ -41,7 +41,7 @@ class JourneyEnforcer {
   def apply(q: JourneyStep*)(block: => Future[Result])(implicit context: LocalContext): Future[Result] =
     if (q.exists(_.meetsAllPrerequisites)) block else redirect
 
-  def redirect(implicit context: LocalContext): Future[Result] =
+  private def redirect(implicit context: LocalContext): Future[Result] =
     logAndRedirect(
       s"Enforcer prerequisites not met for ${context.request.path}, redirecting",
       routes.TravelDetailsController.newSession

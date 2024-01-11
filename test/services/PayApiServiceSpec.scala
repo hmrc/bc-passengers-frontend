@@ -18,8 +18,9 @@ package services
 
 import connectors.Cache
 import models._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, LocalDate, LocalTime}
+
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -33,8 +34,9 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
-import util.BaseSpec
+import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
+import java.util.Locale
 import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {
@@ -185,8 +187,8 @@ class PayApiServiceSpec extends BaseSpec {
       "abc@gmail.com",
       "LHR",
       "",
-      LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+      parseLocalDate("2018-11-12"),
+      parseLocalTime("12:20 pm")
     )
     val calculatorResponse: CalculatorResponse = CalculatorResponse(
       Some(
@@ -346,7 +348,7 @@ class PayApiServiceSpec extends BaseSpec {
       isAnyItemOverAllowance = true
     )
 
-    val receiptDateTime: DateTime = DateTime.parse("2018-11-12T13:56:01+0000")
+    val receiptDateTime: LocalDateTime = LocalDateTime.parse("2018-11-12T13:56:01.0000")
     lazy val s: PayApiService = {
       val service = injected[PayApiService]
       when(
@@ -414,8 +416,8 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-7-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+        dateOfArrival = parseLocalDate("2018-07-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -445,8 +447,8 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-7-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+        dateOfArrival = parseLocalDate("2018-07-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
       )
 
       override lazy val httpResponse: HttpResponse =
@@ -485,8 +487,8 @@ class PayApiServiceSpec extends BaseSpec {
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
         enterPlaceOfArrival = "LHR",
-        dateOfArrival = LocalDate.parse("2018-7-12"),
-        timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+        dateOfArrival = parseLocalDate("2018-7-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
       )
 
       override lazy val httpResponse: HttpResponse =

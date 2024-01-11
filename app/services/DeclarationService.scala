@@ -19,11 +19,9 @@ package services
 import audit.AuditingTools
 import connectors.Cache
 import models._
-import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.{Lang, MessagesApi}
-import play.api.libs.json.JodaWrites._
 import play.api.libs.json.Reads._
 import util._
 import play.api.libs.json._
@@ -33,6 +31,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneOffset}
+import java.util.Locale
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -116,11 +117,12 @@ class DeclarationService @Inject() (
     userInformation: UserInformation,
     calculatorResponse: CalculatorResponse,
     journeyData: JourneyData,
-    receiptDateTime: DateTime,
+    receiptDateTime: LocalDateTime,
     correlationId: String
   )(implicit hc: HeaderCarrier, messages: MessagesApi): Future[DeclarationServiceResponse] = {
 
-    val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val rd =
+      receiptDateTime.atZone(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK))
 
     val partialDeclarationMessage =
       buildPartialDeclarationOrAmendmentMessage(userInformation, calculatorResponse, journeyData, rd)
@@ -177,11 +179,12 @@ class DeclarationService @Inject() (
     userInformation: UserInformation,
     calculatorResponse: CalculatorResponse,
     journeyData: JourneyData,
-    receiptDateTime: DateTime,
+    receiptDateTime: LocalDateTime,
     correlationId: String
   )(implicit hc: HeaderCarrier, messages: MessagesApi): Future[DeclarationServiceResponse] = {
 
-    val rd = receiptDateTime.withZone(DateTimeZone.UTC).toString("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val rd =
+      receiptDateTime.atZone(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK))
 
     val partialDeclarationMessage =
       buildPartialDeclarationOrAmendmentMessage(userInformation, calculatorResponse, journeyData, rd)
@@ -316,7 +319,8 @@ class DeclarationService @Inject() (
         "portOfEntry"           -> getPlaceOfArrivalCode,
         "portOfEntryName"       -> getPlaceOfArrival,
         "expectedDateOfArrival" -> o.dateOfArrival,
-        "timeOfEntry"           -> s"${formattedTwoDecimals(o.timeOfArrival.getHourOfDay)}:${formattedTwoDecimals(o.timeOfArrival.getMinuteOfHour)}",
+        "timeOfEntry"           ->
+          s"${formattedTwoDecimals(o.timeOfArrival.getHour)}:${formattedTwoDecimals(o.timeOfArrival.getMinute)}",
         "messageTypes"          -> Json.obj("messageType" -> getMessageTypes),
         "travellingFrom"        -> getTravellingFrom,
         "onwardTravelGBNI"      -> getOnwardTravel,

@@ -18,8 +18,6 @@ package controllers
 
 import connectors.Cache
 import models._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, LocalDate, LocalTime}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -34,32 +32,33 @@ import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class CalculateDeclareControllerSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
-    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
-    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
-    .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
-    .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
-    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
-    .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
-    .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .build()
+  override implicit lazy val app: Application =
+    GuiceApplicationBuilder()
+      .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
+      .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+      .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
+      .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
+      .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
+      .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
+      .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
+      .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
+      .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
+      .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+      .build()
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
     reset(injected[PurchasedProductService])
     reset(injected[UserInformationService])
     reset(injected[PayApiService])
-    reset(injected[DeclarationService])
     reset(injected[DateTimeProviderService])
+    reset(injected[DeclarationService])
     reset(injected[TravelDetailsService])
   }
 
@@ -626,11 +625,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       "abc@gmail.com",
       "LHR",
       "",
-      LocalDate.parse("2018-11-12"),
-      LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+      parseLocalDate("2018-11-12"),
+      parseLocalTime("12:20 pm")
     )
 
-    lazy val dt: DateTime = DateTime.parse("2018-11-23T06:21:00Z")
+    lazy val dt: LocalDateTime = LocalDateTime.parse("2018-11-23T06:21:00")
 
     lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
       ProductPath("alcohol/beer"),

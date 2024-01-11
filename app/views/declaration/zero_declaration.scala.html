@@ -74,7 +74,7 @@
         @messages("label.date_of_arrival")
       </dt>
       <dd class="govuk-summary-list__value">
-        @userInformation.get.dateOfArrival.toString("dd MMMM YYYY")
+        @formatLocalDate(userInformation.get.dateOfArrival, "dd MMMM YYYY")
       </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -82,7 +82,7 @@
         @messages("label.time_of_arrival")
       </dt>
       <dd class="govuk-summary-list__value">
-        @userInformation.get.timeOfArrival.toString("hh:mm aa")
+        @formatLocalTime(userInformation.get.timeOfArrival)
       </dd>
     </div>
     <div class="govuk-summary-list__row">

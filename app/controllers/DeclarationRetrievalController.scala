@@ -19,10 +19,9 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DeclarationNotFoundAction, DeclarationRetrievalAction}
-
 import javax.inject.Inject
 import models.{DeclarationRetrievalDto, PreviousDeclarationRequest}
-import org.joda.time.{DateTime, DateTimeZone}
+import java.time.{LocalDateTime, ZoneOffset}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -38,9 +37,9 @@ class DeclarationRetrievalController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   val backLinkModel: BackLinkModel,
-  val declaration_Not_Found: views.html.amendments.declaration_not_found,
   val travelDetailsService: services.TravelDetailsService,
   val previousDeclarationService: services.PreviousDeclarationService,
+  val declaration_Not_Found: views.html.amendments.declaration_not_found,
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
@@ -82,21 +81,21 @@ class DeclarationRetrievalController @Inject() (
               if (journeyData.get.declarationResponse.isDefined) {
                 val date       = journeyData.get.userInformation.get.dateOfArrival
                 val time       = journeyData.get.userInformation.get.timeOfArrival
-                val dateTime   = new DateTime(
+                val dateTime   = LocalDateTime.of(
                   date.getYear,
-                  date.getMonthOfYear,
+                  date.getMonth,
                   date.getDayOfMonth,
-                  time.getHourOfDay,
-                  time.getMinuteOfHour,
-                  time.getSecondOfMinute
+                  time.getHour,
+                  time.getMinute,
+                  time.getSecond
                 )
                 val amendState = journeyData.get.amendState.getOrElse("")
 
                 if (
                   dateTime
-                    .withZone(DateTimeZone.UTC)
-                    .plusHours(24)
-                    .isBefore(DateTime.now().withZone(DateTimeZone.UTC))
+                    .atZone(ZoneOffset.UTC)
+                    .plusDays(1L)
+                    .isBefore(LocalDateTime.now().atZone(ZoneOffset.UTC))
                 ) {
                   Redirect(routes.DeclarationRetrievalController.declarationNotFound)
                 } else if (amendState.equals("pending-payment")) {

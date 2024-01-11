@@ -30,8 +30,7 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import util.BaseSpec
-
+import util.{BaseSpec, formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
@@ -407,7 +406,7 @@ class CalculatorServiceSpec extends BaseSpec {
         ) thenReturn {
           Future.successful(
             List(
-              CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "USD", None)
+              CurrencyConversionRate(parseLocalDate("2018-08-01"), parseLocalDate("2018-08-31"), "USD", None)
             )
           )
         }
@@ -417,8 +416,8 @@ class CalculatorServiceSpec extends BaseSpec {
         ) thenReturn {
           Future.successful(
             List(
-              CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "AUD", Some("1.76")),
-              CurrencyConversionRate(LocalDate.parse("2018-08-01"), LocalDate.parse("2018-08-31"), "CHF", Some("1.26"))
+              CurrencyConversionRate(parseLocalDate("2018-08-01"), parseLocalDate("2018-08-31"), "AUD", Some("1.76")),
+              CurrencyConversionRate(parseLocalDate("2018-08-01"), parseLocalDate("2018-08-31"), "CHF", Some("1.26"))
             )
           )
         }
@@ -961,14 +960,14 @@ class CalculatorServiceSpec extends BaseSpec {
           Future.successful(
             List(
               CurrencyConversionRate(
-                LocalDate.parse("2018-08-01"),
-                LocalDate.parse("2018-08-31"),
+                parseLocalDate("2018-08-01"),
+                parseLocalDate("2018-08-31"),
                 "USD",
                 Some("1.4534")
               ),
               CurrencyConversionRate(
-                LocalDate.parse("2018-08-01"),
-                LocalDate.parse("2018-08-31"),
+                parseLocalDate("2018-08-01"),
+                parseLocalDate("2018-08-31"),
                 "CAD",
                 Some("1.7654")
               )

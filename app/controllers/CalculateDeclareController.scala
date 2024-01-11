@@ -21,7 +21,7 @@ import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
 import controllers.ControllerHelpers
 import models._
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services._
@@ -68,7 +68,7 @@ class CalculateDeclareController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def receiptDateTime: DateTime = dateTimeProviderService.now
+  def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {

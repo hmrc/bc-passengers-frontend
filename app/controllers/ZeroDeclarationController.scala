@@ -48,7 +48,6 @@ class ZeroDeclarationController @Inject() (
     declarationService.updateDeclaration(chargeReference) flatMap {
       case DeclarationServiceFailureResponse =>
         Future.successful(InternalServerError(errorTemplate()))
-
       case DeclarationServiceSuccessResponse =>
         val placeOfArrivalValue = portsOfArrivalService
           .getDisplayNameByCode(context.getJourneyData.userInformation.get.selectPlaceOfArrival)

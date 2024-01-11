@@ -15,8 +15,11 @@
  */
 
 import models._
-import org.joda.time._
-import org.joda.time.format.DateTimeFormat
+
+import java.time.{LocalDate, LocalTime}
+import util.{parseLocalDate,parseLocalTime}
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 trait AccessibilityConstants {
   private val weightOrVolume: BigDecimal = 40
@@ -129,8 +132,8 @@ trait AccessibilityConstants {
     emailAddress = "blaketyler@gmail.com",
     selectPlaceOfArrival = "",
     enterPlaceOfArrival = "Newcastle Airport",
-    dateOfArrival = LocalDate.parse("2023-05-06"),
-    timeOfArrival = LocalTime.parse("12:20 pm", DateTimeFormat.forPattern("hh:mm aa"))
+    dateOfArrival = parseLocalDate("2023-05-06"),
+    timeOfArrival = parseLocalTime("12:20 pm")
   )
 
   val purchasedItems: List[PurchasedItem] = List(

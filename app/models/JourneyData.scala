@@ -16,13 +16,12 @@
 
 package models
 
-import org.joda.time.{LocalDate, LocalTime}
-import play.api.libs.json.{Json, OFormat}
-import ai.x.play.json.Jsonx
 import ai.x.play.json.Encoders.encoder
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import ai.x.play.json.Jsonx
+import play.api.libs.json.{Json, OFormat}
+import util.{parseLocalDate, parseLocalTime}
 
+import java.time.{LocalDate, LocalTime}
 object PurchasedProductInstance {
   implicit val formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
 }
@@ -56,8 +55,8 @@ object UserInformation {
       dto.emailAddress.email,
       dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
       dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
-      new LocalDate(dto.dateTimeOfArrival.dateOfArrival),
-      LocalTime.parse(dto.dateTimeOfArrival.timeOfArrival, org.joda.time.format.DateTimeFormat.forPattern("hh:mm aa"))
+      parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
+      parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
 }
 case class UserInformation(
