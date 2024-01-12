@@ -18,19 +18,18 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
-
-import javax.inject.Inject
+import controllers.enforce.DashboardAction
 import models.{ProductPath, TobaccoDto}
 import play.api.data.Form
-import play.api.data.Forms.{mapping, text, _}
+import play.api.data.Forms._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -54,6 +53,17 @@ class TobaccoInputController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport
     with ControllerHelpers {
+
+  private def tobaccoUnit(productToken: String, tobaccoDto: TobaccoDto): String =
+    if (productToken == "rolling-tobacco" | productToken == "chewing-tobacco") {
+      /*
+        weight is asked for in grams but form transforms it into kilograms
+        we need to do a conversion to preserve the weight, to pass on to the limit exceed page.
+       */
+      tobaccoDto.weightOrVolume.map(weight => (weight * 1000).setScale(2)).getOrElse(BigDecimal(0)).toString
+    } else {
+      tobaccoDto.noOfSticks.getOrElse(0).toString
+    }
 
   val resilientForm: Form[TobaccoDto] = Form(
     mapping(
@@ -353,7 +363,7 @@ class TobaccoInputController @Inject() (
         ._1
     } { limits =>
       requireProduct(path) { product =>
-        def processNoOfSticksAddForm       =
+        def processNoOfSticksAddForm =
           noOfSticksForm(path)
             .bindFromRequest()
             .fold(
@@ -399,10 +409,15 @@ class TobaccoInputController @Inject() (
                     }
                   }
                 } else {
-                  Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(path)))
+                  Future.successful(
+                    Redirect(
+                      routes.LimitExceedController.loadLimitExceedPage(path, tobaccoUnit(product.token, dto))
+                    )
+                  )
                 }
             )
-        def processWeightAddForm           =
+
+        def processWeightAddForm =
           weightOrVolumeForm(path)
             .bindFromRequest()
             .fold(
@@ -448,9 +463,14 @@ class TobaccoInputController @Inject() (
                     }
                   }
                 } else {
-                  Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(path)))
+                  Future.successful(
+                    Redirect(
+                      routes.LimitExceedController.loadLimitExceedPage(path, tobaccoUnit(product.token, dto))
+                    )
+                  )
                 }
             )
+
         def processNoOfSticksWeightAddForm =
           weightOrVolumeNoOfSticksForm(path)
             .bindFromRequest()
@@ -497,7 +517,11 @@ class TobaccoInputController @Inject() (
                     }
                   }
                 } else {
-                  Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(path)))
+                  Future.successful(
+                    Redirect(
+                      routes.LimitExceedController.loadLimitExceedPage(path, tobaccoUnit(product.token, dto))
+                    )
+                  )
                 }
             )
 
@@ -577,7 +601,11 @@ class TobaccoInputController @Inject() (
                       }
                     }
                   } else {
-                    Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(ppi.path)))
+                    Future.successful(
+                      Redirect(
+                        routes.LimitExceedController.loadLimitExceedPage(ppi.path, tobaccoUnit(product.token, dto))
+                      )
+                    )
                   }
               )
 
@@ -629,7 +657,11 @@ class TobaccoInputController @Inject() (
                       }
                     }
                   } else {
-                    Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(ppi.path)))
+                    Future.successful(
+                      Redirect(
+                        routes.LimitExceedController.loadLimitExceedPage(ppi.path, tobaccoUnit(product.token, dto))
+                      )
+                    )
                   }
               )
 
@@ -681,7 +713,11 @@ class TobaccoInputController @Inject() (
                       }
                     }
                   } else {
-                    Future.successful(Redirect(routes.LimitExceedController.loadLimitExceedPage(ppi.path)))
+                    Future.successful(
+                      Redirect(
+                        routes.LimitExceedController.loadLimitExceedPage(ppi.path, tobaccoUnit(product.token, dto))
+                      )
+                    )
                   }
               )
 

@@ -30,7 +30,8 @@ import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.http.WsAllMethods
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import util.{BaseSpec, formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
+import util.{BaseSpec, parseLocalDate}
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.Future

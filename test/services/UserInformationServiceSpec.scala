@@ -18,7 +18,6 @@ package services
 
 import connectors.Cache
 import models.{JourneyData, UserInformation}
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar

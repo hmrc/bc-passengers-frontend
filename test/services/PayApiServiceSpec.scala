@@ -18,9 +18,6 @@ package services
 
 import connectors.Cache
 import models._
-
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -36,7 +33,7 @@ import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpResponse
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
-import java.util.Locale
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class PayApiServiceSpec extends BaseSpec {

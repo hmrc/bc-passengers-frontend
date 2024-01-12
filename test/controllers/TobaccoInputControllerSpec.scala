@@ -1262,7 +1262,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/900"
       )
     }
 
@@ -1287,7 +1287,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits/801"
       )
     }
 
@@ -1312,7 +1312,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/400"
       )
     }
 
@@ -1330,14 +1330,14 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ).withFormUrlEncodedBody(
         "country"        -> "FR",
         "currency"       -> "EUR",
-        "weightOrVolume" -> "1001.0",
+        "weightOrVolume" -> "1000.01",
         "cost"           -> "92.50"
       )
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/1000.01"
       )
     }
 
@@ -2015,8 +2015,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
-            "weightOrVolume" -> "400.0",
-            "noOfSticks"     -> "50",
+            "weightOrVolume" -> "50",
+            "noOfSticks"     -> "801",
             "cost"           -> "98.00"
           )
 
@@ -2024,7 +2024,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/801"
       )
     }
 
@@ -2041,7 +2041,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
-            "weightOrVolume" -> "201.0",
+            "weightOrVolume" -> "999.5",
             "noOfSticks"     -> "201",
             "cost"           -> "98.00"
           )
@@ -2050,7 +2050,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/201"
       )
     }
 
@@ -2067,7 +2067,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
-            "weightOrVolume" -> "1001.0",
+            "weightOrVolume" -> "1000.01",
+            "noOfSticks"     -> "50",
             "cost"           -> "98.00"
           )
 
@@ -2075,7 +2076,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/1000.01"
       )
     }
   }
