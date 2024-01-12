@@ -185,8 +185,8 @@ class CalculatorServiceRequestSpec extends BaseSpec {
           |    "isExcisePaid":false,
           |    "isCustomPaid":true,
           |    "metadata" : {
-          |      "description" : "1000g of dummy product name",
-          |      "descriptionLabels":{"description":"label.Xg_of_X","args":["1000","Dummy product name"]},
+          |      "description" : "1000.00g of dummy product name",
+          |      "descriptionLabels":{"description":"label.Xg_of_X","args":["1000.00","Dummy product name"]},
           |      "name" : "Dummy product name",
           |      "cost" : "2.00",
           |      "currency" : {

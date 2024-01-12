@@ -25,7 +25,7 @@ import services.{CalculatorService, ProductTreeService}
 import util.BaseSpec
 import views.html.errorTemplate
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class ControllerHelpersSpec extends BaseSpec with MockitoSugar with ControllerHelpers {
 
@@ -35,7 +35,6 @@ class ControllerHelpersSpec extends BaseSpec with MockitoSugar with ControllerHe
   def errorTemplate: errorTemplate           = mock[errorTemplate]
 
   implicit def appConfig: AppConfig                                = mock[AppConfig]
-  implicit def ec: ExecutionContext                                = mock[ExecutionContext]
   protected def controllerComponents: MessagesControllerComponents = mock[MessagesControllerComponents]
 
   "ControllerHelpers" when {

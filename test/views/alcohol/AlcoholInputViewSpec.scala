@@ -16,7 +16,7 @@
 
 package views.alcohol
 
-import controllers.AlcoholInputController
+import forms.AlcoholInputForm
 import models._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -66,7 +66,7 @@ class AlcoholInputViewSpec extends BaseViewSpec {
     )
   )
 
-  private val validForm: Form[AlcoholDto] = injected[AlcoholInputController]
+  private val validForm: Form[AlcoholDto] = injected[AlcoholInputForm]
     .alcoholForm(productPath)
     .bind(
       Map(

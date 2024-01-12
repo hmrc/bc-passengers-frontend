@@ -15,11 +15,7 @@
  */
 
 import models._
-
-import java.time.{LocalDate, LocalTime}
-import util.{parseLocalDate,parseLocalTime}
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import util.{parseLocalDate, parseLocalTime}
 
 trait AccessibilityConstants {
   private val weightOrVolume: BigDecimal = 40

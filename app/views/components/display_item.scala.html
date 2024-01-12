@@ -18,7 +18,7 @@
 @import util._
 
 @this()
-@(purchasedItem: PurchasedItem, description: String, isEU: Boolean, isGbNi: Boolean, isUkResident:Boolean, category: String)(implicit messages: Messages)
+@(purchasedItem: PurchasedItem, description: String, isEU: Boolean, isGbNi: Boolean, isUkResident:Boolean, category: String, idx: Int)(implicit messages: Messages)
 
 
     <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
@@ -87,14 +87,14 @@
     @if(purchasedItem.purchasedProductInstance.isEditable.contains(true)) {
         <div class="margin-bottom-20 edit-link">
             @if(category.contains("alcohol")){
-                <p class="govuk-body"><a class="govuk-link" href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item")
-                <span class="govuk-visually-hidden">@description</span></a></p>
+                <p class="govuk-body"><a class="govuk-link" id="alcohol-@idx" href="@routes.AlcoholInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)"
+                >@messages("label.edit_this_item")<span class="govuk-visually-hidden">@description</span></a></p>
             } else if(category.contains("otherGoods")) {
-                <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item")
-                <span class="govuk-visually-hidden">@description</span></a></p>
+                <p class="govuk-body"><a class="govuk-link" id="other-goods-@idx" href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)"
+                >@messages("label.edit_this_item")<span class="govuk-visually-hidden">@description</span></a></p>
             } else if(category.contains("tobacco")) {
-                <p class="govuk-body"><a class="govuk-link" href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)">@messages("label.edit_this_item")
-                <span class="govuk-visually-hidden">@description</span></a></p>
+                <p class="govuk-body"><a class="govuk-link" id="tobacco-@idx" href="@routes.TobaccoInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)"
+                >@messages("label.edit_this_item")<span class="govuk-visually-hidden">@description</span></a></p>
             }
         </div>
         <div class="margin-bottom-50">

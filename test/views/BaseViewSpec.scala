@@ -17,6 +17,7 @@
 package views
 
 import config.AppConfig
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
@@ -79,4 +80,16 @@ trait BaseViewSpec extends BaseSpec with ViewSpec {
       }
     }
   }
+
+  def pageWithExpectedMessages(view: HtmlFormat.Appendable, checks: Seq[(String, String)]): Unit =
+    checks.foreach { case (cssSelector, message) =>
+      s"element with cssSelector '$cssSelector'" should {
+
+        s"have message '$message'" in {
+          val doc  = document(view)
+          val elem = doc.select(cssSelector)
+          elem.first.text() mustBe message
+        }
+      }
+    }
 }

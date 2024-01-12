@@ -32,6 +32,7 @@ import play.api.test.{FakeRequest, Injecting}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.alcohol.alcohol_input
@@ -61,30 +62,60 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
   trait LocalSetup {
 
-    lazy val cachedJourneyData: Option[JourneyData] = Some(
-      JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = None,
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            ProductPath("alcohol/beer"),
-            "iid0",
-            Some(20.0),
-            None,
-            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-            Some(Country("IT", "title.italy", "IT", isEu = true, isCountry = true, Nil)),
-            Some("EUR"),
-            Some(BigDecimal(12.99))
-          )
+    lazy val cachedJourneyData: Option[JourneyData] =
+      Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              path = ProductPath("alcohol/beer"),
+              iid = "iid0",
+              weightOrVolume = Some(20.0),
+              noOfSticks = Some(1),
+              country =
+                Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List("USA", "US", "American"))),
+              originCountry =
+                Some(Country("IT", "title.italy", "IT", isEu = true, isCountry = true, List("USA", "US", "American"))),
+              currency = Some("EUR"),
+              cost = Some(BigDecimal(12.99)),
+              isCustomPaid = Some(false),
+              isExcisePaid = Some(false),
+              isUccRelief = Some(false),
+              hasEvidence = Some(false),
+              isEditable = Some(true)
+            )
+          ),
+          workingInstance = Some(
+            PurchasedProductInstance(
+              path = ProductPath("alcohol/beer"),
+              iid = "iid0",
+              weightOrVolume = Some(30.0),
+              noOfSticks = Some(1),
+              country =
+                Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List("USA", "US", "American"))),
+              originCountry =
+                Some(Country("IT", "title.italy", "IT", isEu = true, isCountry = true, List("USA", "US", "American"))),
+              currency = Some("EUR"),
+              cost = Some(BigDecimal(12.99)),
+              isCustomPaid = Some(false),
+              isExcisePaid = Some(false),
+              isUccRelief = Some(false),
+              hasEvidence = Some(false),
+              isEditable = Some(true)
+            )
+          ),
+          defaultCountry = Some("USA"),
+          defaultOriginCountry = Some("USA"),
+          defaultCurrency = Some("EUR")
         )
       )
-    )
 
     lazy val cachedGBNIJourneyData: Option[JourneyData] = Some(
       JourneyData(
@@ -785,6 +816,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
+            "country"        -> "FR",
             "currency"       -> "EUR",
             "weightOrVolume" -> "111",
             "cost"           -> "12.50"
@@ -793,7 +825,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/volume"
       )
     }
 
@@ -814,7 +846,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits/volume"
       )
     }
 
@@ -834,7 +866,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
     }
 
@@ -956,7 +988,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
     }
   }
 
-  "Posting processEditForm" should {
+  "POST processEditForm" should {
 
     "return a 404 when iid is not found in journey data" in new LocalSetup {
 
@@ -981,9 +1013,11 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+        FakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+          .withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-beer" -> "111")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
+            "originCountry"  -> "IN",
             "currency"       -> "EUR",
             "weightOrVolume" -> "111",
             "cost"           -> "12.50"
@@ -992,7 +1026,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/edit/volume"
       )
     }
 
@@ -1025,7 +1059,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any()
       )(any())
 
-      verify(injected[Cache], times(2)).store(any())(any())
+      verify(injected[Cache], times(1)).store(any())(any())
     }
 
     "modify the relevant PPI in the JourneyData and redirect to UK VAT Paid page for GBNI Journey" in new LocalSetup {

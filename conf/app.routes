@@ -81,7 +81,12 @@ GET        /keep-alive                                                          
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard
 POST       /tell-us                                                                    controllers.CalculateDeclareController.calculate
 
-GET        /goods/$path<.+>/upper-limits                                               controllers.LimitExceedController.loadLimitExceedPage(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/volume                                        controllers.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/weight                                        controllers.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/units-of-product                              controllers.LimitExceedController.onPageLoadAddJourneyNoOfSticks(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/edit/volume                                   controllers.LimitExceedController.onPageLoadEditAlcoholVolume(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/edit/weight                                   controllers.LimitExceedController.onPageLoadEditTobaccoWeight(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/edit/units-of-product                         controllers.LimitExceedController.onPageLoadEditNoOfSticks(path: ProductPath)
 
 GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)
@@ -95,18 +100,17 @@ GET        /enter-goods/alcohol/:iid/edit                                       
 POST       /enter-goods/alcohol/:iid/edit                                              controllers.AlcoholInputController.processEditForm(iid: String)
 
 
-GET        /enter-goods/$path<tobacco/(cigarettes|heated-tobacco)>/tell-us             controllers.TobaccoInputController.displayNoOfSticksAddForm(path: ProductPath)
+GET        /enter-goods/$path<tobacco/(cigarettes|heated-tobacco)>/tell-us             controllers.TobaccoInputController.displayCigaretteAndHeatedTobaccoForm(path: ProductPath)
 POST       /enter-goods/$path<tobacco/(cigarettes|heated-tobacco)>/tell-us             controllers.TobaccoInputController.processAddForm(path: ProductPath)
 
-GET        /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.displayNoOfSticksWeightAddForm(path: ProductPath)
+GET        /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.displayCigarAndCigarilloForm(path: ProductPath)
 POST       /enter-goods/$path<tobacco/(cigars|cigarillos)>/tell-us                     controllers.TobaccoInputController.processAddForm(path: ProductPath)
 
-GET        /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.TobaccoInputController.displayWeightAddForm(path: ProductPath)
+GET        /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.TobaccoInputController.displayLooseTobaccoForm(path: ProductPath)
 POST       /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us               controllers.TobaccoInputController.processAddForm(path: ProductPath)
 
 GET        /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.displayEditForm(iid: String)
 POST       /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.processEditForm(iid: String)
-
 
 GET        /enter-goods/other-goods/tell-us                                            controllers.OtherGoodsInputController.displayAddForm()
 POST       /enter-goods/other-goods/tell-us                                            controllers.OtherGoodsInputController.processAddForm()

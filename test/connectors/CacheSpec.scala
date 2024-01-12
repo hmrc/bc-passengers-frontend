@@ -24,13 +24,11 @@ import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import util.BaseSpec
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class CacheSpec extends BaseSpec with MockitoSugar {
 
   private val mockBCPassengersSessionRepository: BCPassengersSessionRepository = mock[BCPassengersSessionRepository]
-
-  implicit val ec: ExecutionContext = ExecutionContext.global
 
   private val cache: Cache = new Cache(mockBCPassengersSessionRepository, ec)
 
@@ -75,7 +73,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
 
     ".fetch" should {
       "return None" in {
-        when(mockBCPassengersSessionRepository.fetch()(any[HeaderCarrier]))
+        when(mockBCPassengersSessionRepository.get()(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
 
         val result: Future[Option[JourneyData]] = cache.fetch
@@ -84,7 +82,7 @@ class CacheSpec extends BaseSpec with MockitoSugar {
       }
 
       "return journeyData" in {
-        when(mockBCPassengersSessionRepository.fetch()(any[HeaderCarrier]))
+        when(mockBCPassengersSessionRepository.get()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(

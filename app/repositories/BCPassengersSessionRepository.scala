@@ -18,19 +18,16 @@ package repositories
 
 import com.google.inject.Singleton
 import com.mongodb.client.model.Updates
-
 import org.mongodb.scala.model.Filters.equal
-import org.mongodb.scala.model.{FindOneAndUpdateOptions, IndexModel, IndexOptions, ReturnDocument}
 import org.mongodb.scala.model.Indexes.ascending
-
-import javax.inject._
-
+import org.mongodb.scala.model.{FindOneAndUpdateOptions, IndexModel, IndexOptions, ReturnDocument}
 import play.api.libs.json.{Format, JsObject, Json, Writes}
-import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.util.concurrent.TimeUnit
+import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -51,10 +48,9 @@ class BCPassengersSessionRepository @Inject() (
       )
     ) {
 
-  def fetch[T]()(implicit hc: HeaderCarrier): Future[Option[JsObject]] =
+  def get()(implicit hc: HeaderCarrier): Future[Option[JsObject]] =
     hc.sessionId match {
-      case Some(id) =>
-        collection.find(equal("_id", id.value)).headOption()
+      case Some(id) => collection.find(equal("_id", id.value)).headOption()
       case _        => Future.failed[Option[JsObject]](new Exception("Could not find sessionId in HeaderCarrier"))
     }
 

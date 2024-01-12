@@ -33,6 +33,7 @@ import repositories.BCPassengersSessionRepository
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
+
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
@@ -794,21 +795,52 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     "Display the previous-declaration page" in new LocalSetup {
 
-      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
-        Some(
-          JourneyData(
-            prevDeclaration = Some(true),
-            euCountryCheck = Some("nonEuOnly"),
-            isVatResClaimed = None,
-            isBringingDutyFree = None,
-            bringingOverAllowance = Some(true),
-            ageOver17 = Some(true),
-            privateCraft = Some(false),
-            userInformation = Some(ui),
-            calculatorResponse = Some(crWithinLimitLow)
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         =
+        Future.successful(
+          Some(
+            JourneyData(
+              prevDeclaration = Some(true),
+              euCountryCheck = Some("nonEuOnly"),
+              isVatResClaimed = None,
+              isBringingDutyFree = None,
+              bringingOverAllowance = Some(true),
+              ageOver17 = Some(true),
+              privateCraft = Some(false),
+              userInformation = Some(ui),
+              calculatorResponse = Some(crWithinLimitLow)
+            )
           )
         )
-      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
+
+    "Display the previous-declaration page condition: Great Britain && calculation response Zero && deltaCalculation.exists &&  isAnyItemOverAllowance == true" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         =
+        Future.successful(
+          Some(
+            JourneyData(
+              prevDeclaration = Some(true),
+              euCountryCheck = Some("greatBritain"),
+              isVatResClaimed = None,
+              isBringingDutyFree = None,
+              bringingOverAllowance = Some(true),
+              ageOver17 = Some(true),
+              privateCraft = Some(false),
+              userInformation = Some(ui),
+              calculatorResponse = Some(crZero),
+              deltaCalculation = Some(zeroDeltaCalculation)
+            )
+          )
+        )
       override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse: DeclarationServiceResponse =
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))

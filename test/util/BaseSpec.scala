@@ -16,6 +16,7 @@
 
 package util
 
+import config.AppConfig
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
@@ -23,20 +24,28 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContentAsEmpty
+import play.api.inject.{Injector, bind}
+import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 
+import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.reflect.ClassTag
 
 trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach {
+
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
     .build()
-  implicit lazy val hc: HeaderCarrier         = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
+
+  lazy val injector: Injector = app.injector
+
+  implicit lazy val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
+
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
 
   private def addToken[T](fakeRequest: FakeRequest[T]): FakeRequest[T] =
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
@@ -44,9 +53,8 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
   def injected[T](c: Class[T]): T                                      = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T                   = app.injector.instanceOf[T](evidence)
 
-  def enhancedFakeRequest(method: String, uri: String): FakeRequest[AnyContentAsEmpty.type] = addToken(
-    FakeRequest(method, uri)
-  )
+  def enhancedFakeRequest(method: String, uri: String): FakeRequest[AnyContentAsEmpty.type] =
+    addToken(FakeRequest(method, uri))
 
   def getFormErrors(form: Form[_]): Set[(String, String)] = form.errors.map(error => error.key -> error.message).toSet
 

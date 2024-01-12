@@ -19,8 +19,6 @@ package util
 import models.ProductPath
 import play.api.data.validation._
 
-import java.math.RoundingMode
-
 class UtilSpec extends BaseSpec {
 
   "Validating a cost" should {
@@ -81,32 +79,63 @@ class UtilSpec extends BaseSpec {
     }
   }
 
-  "Formatting with decimalFormat5" when {
-    "using the HALF_UP rounding mode" should {
-      "preserve the correct value in 5 decimal places" in {
-        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) = (0.00, 0.99, 0.01)
+  ".cigarAndCigarilloConstraint" when {
 
-        start
-          .to(end, step)
-          .foreach(value =>
-            BigDecimal(decimalFormat5.format(value.toDouble / 1000)) shouldBe BigDecimal(
-              decimalFormat5.format(value / 1000)
-            )
-          )
+    "the productToken is cigars" when {
+
+      "numberOfSticks is under limit of 200" should {
+
+        "return true" in {
+          util.cigarAndCigarilloConstraint(199, "cigars") shouldBe true
+        }
+      }
+
+      "numberOfSticks is == limit of 200" should {
+
+        "return true" in {
+          util.cigarAndCigarilloConstraint(200, "cigars") shouldBe true
+        }
+      }
+
+      "numberOfSticks is over limit of 200" should {
+
+        "return false" in {
+          util.cigarAndCigarilloConstraint(201, "cigars") shouldBe false
+        }
       }
     }
 
-    "using the UP rounding mode" should {
-      "not preserve the correct value in 5 decimal places" in {
-        val values: Seq[BigDecimal] = Seq(0.07, 0.13, 0.14, 0.26, 0.28, 0.52, 0.56, 0.77, 0.81, 0.89)
+    "the productToken is cigarillos" when {
 
-        decimalFormat5.setRoundingMode(RoundingMode.UP)
+      "numberOfSticks is under limit of 400" should {
 
-        values.foreach(value =>
-          BigDecimal(decimalFormat5.format(value.toDouble / 1000)) should not be BigDecimal(
-            decimalFormat5.format(value / 1000)
-          )
-        )
+        "return true" in {
+          util.cigarAndCigarilloConstraint(199, "cigarillos") shouldBe true
+        }
+      }
+
+      "numberOfSticks == limit of 400" should {
+
+        "return true" in {
+          util.cigarAndCigarilloConstraint(400, "cigarillos") shouldBe true
+        }
+      }
+
+      "numberOfSticks over limit of 400" should {
+
+        "return false" in {
+          util.cigarAndCigarilloConstraint(401, "cigarillos") shouldBe false
+        }
+      }
+    }
+
+    "the productToken is something weird" when {
+
+      "numberOfSticks is under a limit" should {
+
+        "return false" in {
+          util.cigarAndCigarilloConstraint(199, "something_smelly") shouldBe false
+        }
       }
     }
   }

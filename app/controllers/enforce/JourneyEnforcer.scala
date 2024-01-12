@@ -19,15 +19,14 @@ package controllers.enforce
 import config.AppConfig
 import connectors.Cache
 import controllers.{LocalContext, routes}
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class JourneyEnforcer {
@@ -272,25 +271,21 @@ class DeclareAction @Inject() (appConfig: AppConfig, publicAction: PublicAction,
     }
 
   private def declarationJourney(context: LocalContext): Boolean = context.journeyData.isDefined &&
-    (context.getJourneyData.calculatorResponse.fold(false)(x =>
+    (context.getJourneyData.calculatorResponse.exists(x =>
       BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <= appConfig.paymentLimit
     ) ||
-      (context.getJourneyData.euCountryCheck.getOrElse(
-        ""
-      ) == "greatBritain" && context.getJourneyData.calculatorResponse.fold(false)(x =>
-        BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance
-      )))
+      (context.getJourneyData.euCountryCheck.contains("greatBritain") && context.getJourneyData.calculatorResponse
+        .exists(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
 
   private def amendmentJourney(context: LocalContext): Boolean =
     context.journeyData.isDefined && context.getJourneyData.calculatorResponse.isDefined &&
       (context.getJourneyData.deltaCalculation.fold(false)(x =>
         BigDecimal(x.allTax) > 0 && BigDecimal(x.allTax) <= appConfig.paymentLimit
       ) ||
-        (context.getJourneyData.euCountryCheck.getOrElse(
-          ""
-        ) == "greatBritain" && context.getJourneyData.deltaCalculation.fold(false)(x =>
-          BigDecimal(x.allTax) == 0 && context.getJourneyData.calculatorResponse.get.isAnyItemOverAllowance
-        )))
+        (context.getJourneyData.euCountryCheck.contains("greatBritain") && context.getJourneyData.deltaCalculation
+          .exists(x =>
+            BigDecimal(x.allTax) == 0 && context.getJourneyData.calculatorResponse.get.isAnyItemOverAllowance
+          )))
 
 }
 
@@ -301,13 +296,11 @@ class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction
     publicAction { implicit context =>
       if (
         context.journeyData.isDefined && !context.getJourneyData.prevDeclaration.getOrElse(false) &&
-        (context.getJourneyData.calculatorResponse.fold(false)(x =>
+        (context.getJourneyData.calculatorResponse.exists(x =>
           BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <= appConfig.paymentLimit
         ) ||
-          (context.getJourneyData.euCountryCheck.getOrElse(
-            ""
-          ) == "greatBritain" && context.getJourneyData.calculatorResponse
-            .fold(false)(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
+          (context.getJourneyData.euCountryCheck.contains("greatBritain") && context.getJourneyData.calculatorResponse
+            .exists(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
       ) {
         block(context)
       } else {

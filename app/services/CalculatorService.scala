@@ -16,21 +16,20 @@
 
 package services
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import connectors.Cache
-
-import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json, Reads}
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
 
@@ -73,7 +72,7 @@ class CalculatorService @Inject() (
           LimitUsageSuccessResponse((r \ "limits").as[Map[String, String]])
         }
 
-      case None =>
+      case _ =>
         logger.error("No items available for limits request")
         Future.successful(LimitUsageCantBuildCalcReqResponse)
     }
@@ -227,5 +226,4 @@ class CalculatorService @Inject() (
       }
     }
   }
-
 }
