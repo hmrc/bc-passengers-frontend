@@ -25,7 +25,6 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import scala.util.Try
 
-
 package object util {
 
   val decimalFormat10: DecimalFormat = {

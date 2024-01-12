@@ -20,103 +20,39 @@
 @this(
     govukLayout: templates.GovukLayoutWrapper,
     h1: components.h1,
+    h2: components.h2,
     p: components.p,
     warning: components.warning,
     button: components.button,
-    formHelper: FormWithCSRF,
+    formHelper: FormWithCSRF
 )
-@(itemType: String, headerLabel: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(enteredAmount: String, token: String, productName: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(messages(headerLabel)  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
+@govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
 
-    @h1(messages(headerLabel))
+    @h1(messages("limitExceeded.h1"))
 
-    @if(itemType.contains("tobacco")) {
+    @p(Html(messages("limitExceeded.p1", enteredAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
 
-        @p(Html(messages("label.limit_exceed_tobacco")), id=Some("table-heading-tobacco"))
-        <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-visually-hidden">@messages(headerLabel)</caption>
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="table-60 govuk-table__header" >@messages("label.type_of_tobacco")</th>
-                <th class="govuk-table__header">@messages("label.amount")</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.cigarettes")</td>
-                <td class="govuk-table__cell">@messages("label.800")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.cigars")</td>
-                <td class="govuk-table__cell">@messages("label.200")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.cigarillos")</td>
-                <td class="govuk-table__cell">@messages("label.400")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.loose_tobacco")</td>
-                <td class="govuk-table__cell">@messages("label.1_kg")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.tobacco_for_heating")</td>
-                <td class="govuk-table__cell">@messages("label.800_sticks")</td>
-            </tr>
-            </tbody>
-        </table>
+    @p(Html(messages("limitExceeded.p2", messages(s"limitExceeded.p2.$token"))), id=Some("limit-exceeded-cannot-use-service"))
 
-        <div class="govuk-inset-text">
-            @p(Html(messages("label.must_declare_over_limits_tobacco")))
-            @p(Html(messages("label.bringing_for_personal_use_tobacco")))
-            @p(Html(messages("label.border_force_officer_will_calculate")))
-        </div>
+    @p(Html(messages("limitExceeded.p3")), id=Some("item-removed"))
 
-    @warning(Html(messages("text.warning_for_false_declaration_tobacco")))
+    @h2(messages("limitExceeded.h2a"), id = Some("what-you-must-do"))
 
-    } else if(itemType.contains("alcohol")) {
+    @p(Html(messages("limitExceeded.p4")), id=Some("red-channel"))
 
-        @p(Html(messages("label.limit_exceed_alcohol")), id=Some("table-heading-alcohol"))
-        <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-visually-hidden">@messages(headerLabel)</caption>
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="table-60 govuk-table__header">@messages("label.type_of_alcohol")</th>
-                <th class="govuk-table__header">@messages("label.amount")</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.beer")</td>
-                <td class="govuk-table__cell">@messages("label.110_litres")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.wine")</td>
-                <td class="govuk-table__cell">@messages("label.90_litres")<br>@messages("label.including_sparkling_wine")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.spirits")</td>
-                <td class="govuk-table__cell">@messages("label.10_litres")</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@messages("label.other_alcoholic_drinks")</td>
-                <td class="govuk-table__cell">@messages("label.20_litres")</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div class="govuk-inset-text">
-            @p(Html(messages("label.must_declare_over_limits_alcohol")))
-            @p(Html(messages("label.bringing_for_personal_use_alcohol")))
-            @p(Html(messages("label.border_force_officer_will_calculate")))
-        </div>
-
-    @warning(Html(messages("text.warning_for_false_declaration_alcohol")))
+    @if(productName.contains("alcohol")) {
+        @warning(Html(messages("limitExceeded.warning.alcohol")))
+    } else {
+        @warning(Html(messages("limitExceeded.warning.tobacco")))
     }
 
-    <br>
+    @h2(messages("limitExceeded.h2b"), id = Some("other-items"))
+
+    @p(Html(messages("limitExceeded.p5")), id=Some("declare-other-items"))
 
     @formHelper(action = routes.SelectProductController.nextStep) {
-        @button(messages("label.continue_to_add_items"))
+        @button(messages("label.continue"))
     }
 }

@@ -18,8 +18,6 @@ package services
 
 import connectors.Cache
 import models._
-
-import java.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar
@@ -36,6 +34,7 @@ import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import util.{BaseSpec, EnhancedJsObject, parseLocalDate, parseLocalTime}
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {

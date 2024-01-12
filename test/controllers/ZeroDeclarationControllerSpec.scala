@@ -19,7 +19,6 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import models._
-import java.time.LocalDate
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}

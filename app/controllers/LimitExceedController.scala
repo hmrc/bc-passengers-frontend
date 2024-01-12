@@ -19,13 +19,13 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.LimitExceedAction
-import javax.inject.Inject
-import models.ProductPath
+import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LimitExceedController @Inject() (
@@ -43,11 +43,10 @@ class LimitExceedController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def loadLimitExceedPage(path: ProductPath): Action[AnyContent] = limitExceedAction { implicit context =>
-    requireProduct(path) { product =>
-      Future.successful(
-        Ok(limitExceedPage(product.name, s"heading.${product.applicableLimits.last.toLowerCase}.limit-exceeded"))
-      )
+  def loadLimitExceedPage(path: ProductPath, weightOrVolume: String): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        Future(Ok(limitExceedPage(weightOrVolume, product.token, product.name)))
+      }
     }
-  }
 }

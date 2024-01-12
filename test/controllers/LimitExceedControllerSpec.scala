@@ -52,20 +52,21 @@ class LimitExceedControllerSpec extends BaseSpec {
     reset(mockAppConfig)
   }
 
-  lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
-    ProductPath("alcohol/beer"),
-    "iid0",
-    Some(1.54332),
-    None,
-    Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-    None,
-    Some("AUD"),
-    Some(BigDecimal(10.234)),
-    None,
-    None,
-    None,
-    isEditable = Some(false)
-  )
+  lazy val oldAlcohol: PurchasedProductInstance                         =
+    PurchasedProductInstance(
+      path = ProductPath("alcohol/beer"),
+      iid = "iid0",
+      weightOrVolume = Some(1.54332),
+      noOfSticks = None,
+      country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+      originCountry = None,
+      currency = Some("AUD"),
+      cost = Some(BigDecimal(10.234)),
+      searchTerm = None,
+      isVatPaid = None,
+      isCustomPaid = None,
+      isEditable = Some(false)
+    )
   lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
 
   "loadLimitExceedPage" should {
@@ -91,7 +92,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest(
           "GET",
-          "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
+          "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/111.5"
         )
       ).get
       status(result) shouldBe OK
@@ -101,19 +102,13 @@ class LimitExceedControllerSpec extends BaseSpec {
 
       doc
         .getElementsByTag("h1")
-        .text() shouldBe "You cannot use this service to declare more than 20 litres of other alcoholic drinks"
+        .text() shouldBe "There is a problem"
       doc
-        .getElementById("table-heading-alcohol")
-        .text() shouldBe "You cannot use this service to declare more than the following amounts of alcohol:"
+        .getElementById("entered-amount")
+        .text() shouldBe "You have entered 111.5 litres of cider."
       content     should include(
-        "You must declare alcohol over these limits in person to Border Force when you arrive in the UK."
-      )
-      content     should include("Type of alcohol")
-      content     should include(
-        "This is because Border Force need to be sure you are bringing the alcohol in for personal use only."
-      )
-      content     should include(
-        "Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due."
+        "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+          "They will calculate and take payment of the taxes and duties due."
       )
     }
 
@@ -136,26 +131,20 @@ class LimitExceedControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/201")
       ).get
       status(result) shouldBe OK
 
       val content = contentAsString(result)
       val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare more than 200 cigars"
+      doc.getElementsByTag("h1").text() shouldBe "There is a problem"
       doc
-        .getElementById("table-heading-tobacco")
-        .text()                         shouldBe "You cannot use this service to declare more than the following amounts of tobacco:"
+        .getElementById("entered-amount")
+        .text()                         shouldBe "You have entered 201 cigars."
       content                             should include(
-        "You must declare tobacco over these limits in person to Border Force when you arrive in the UK."
-      )
-      content                             should include("Type of tobacco")
-      content                             should include(
-        "This is because Border Force need to be sure you are bringing the tobacco in for personal use only."
-      )
-      content                             should include(
-        "Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due."
+        "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+          "They will calculate and take payment of the taxes and duties due."
       )
     }
 

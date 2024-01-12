@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import models.{AlcoholDto, ProductPath}
 import play.api.data.Form
@@ -27,7 +28,6 @@ import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
-import controllers.ControllerHelpers
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -195,15 +195,16 @@ class AlcoholInputController @Inject() (
               ),
             dto =>
               if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
-                val item = newPurchaseService.insertPurchases(
-                  path,
-                  Some(dto.weightOrVolume),
-                  None,
-                  dto.country,
-                  dto.originCountry,
-                  dto.currency,
-                  List(dto.cost)
-                )
+                val item =
+                  newPurchaseService.insertPurchases(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost)
+                  )
                 cache.store(item._1) map { _ =>
                   (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                     case (Some(true), Some("greatBritain")) =>
@@ -218,10 +219,11 @@ class AlcoholInputController @Inject() (
                   }
                 }
               } else {
-                Future.successful(
+                Future(
                   Redirect(
-                    routes.LimitExceedController.loadLimitExceedPage(path =
-                      calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
+                    routes.LimitExceedController.loadLimitExceedPage(
+                      path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get,
+                      dto.weightOrVolume.toString()
                     )
                   )
                 )
@@ -231,80 +233,82 @@ class AlcoholInputController @Inject() (
     }
   }
 
-  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    requirePurchasedProductInstance(iid) { ppi =>
-      requireProduct(ppi.path) { product =>
-        requireLimitUsage {
-          val dto = resilientForm.bindFromRequest().value.get
-          newPurchaseService.updatePurchase(
-            ppi.path,
-            iid,
-            Some(dto.weightOrVolume),
-            None,
-            dto.country,
-            dto.originCountry,
-            dto.currency,
-            dto.cost
-          )
-        } { limits =>
-          alcoholForm(ppi.path)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(
-                  BadRequest(
-                    alcohol_input(
-                      formWithErrors,
-                      backLinkModel.backLink,
-                      customBackLink = true,
-                      product,
-                      ppi.path,
-                      Some(iid),
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck
-                    )
-                  )
-                ),
-              dto =>
-                if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
-                  cache.store(
-                    newPurchaseService.updatePurchase(
-                      ppi.path,
-                      iid,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      dto.cost
-                    )
-                  ) map { _ =>
-                    (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                      case (Some(true), Some("greatBritain")) =>
-                        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
-                      case (Some(false), Some("euOnly"))      =>
-                        if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                          Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
-                        } else {
-                          Redirect(routes.SelectProductController.nextStep)
-                        }
-                      case _                                  => Redirect(routes.SelectProductController.nextStep)
-                    }
-                  }
-                } else {
+  def processEditForm(iid: String): Action[AnyContent] =
+    dashboardAction { implicit context =>
+      requirePurchasedProductInstance(iid) { ppi =>
+        requireProduct(ppi.path) { product =>
+          requireLimitUsage {
+            val dto = resilientForm.bindFromRequest().value.get
+            newPurchaseService.updatePurchase(
+              ppi.path,
+              iid,
+              Some(dto.weightOrVolume),
+              None,
+              dto.country,
+              dto.originCountry,
+              dto.currency,
+              dto.cost
+            )
+          } { limits =>
+            alcoholForm(ppi.path)
+              .bindFromRequest()
+              .fold(
+                formWithErrors =>
                   Future.successful(
-                    Redirect(
-                      routes.LimitExceedController.loadLimitExceedPage(path =
-                        calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get
+                    BadRequest(
+                      alcohol_input(
+                        formWithErrors,
+                        backLinkModel.backLink,
+                        customBackLink = true,
+                        product,
+                        ppi.path,
+                        Some(iid),
+                        countriesService.getAllCountries,
+                        countriesService.getAllCountriesAndEu,
+                        currencyService.getAllCurrencies,
+                        context.getJourneyData.euCountryCheck
                       )
                     )
-                  )
-                }
-            )
+                  ),
+                dto =>
+                  if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
+                    cache.store(
+                      newPurchaseService.updatePurchase(
+                        ppi.path,
+                        iid,
+                        Some(dto.weightOrVolume),
+                        None,
+                        dto.country,
+                        dto.originCountry,
+                        dto.currency,
+                        dto.cost
+                      )
+                    ) map { _ =>
+                      (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                        case (Some(true), Some("greatBritain")) =>
+                          Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
+                        case (Some(false), Some("euOnly"))      =>
+                          if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                            Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
+                          } else {
+                            Redirect(routes.SelectProductController.nextStep)
+                          }
+                        case _                                  => Redirect(routes.SelectProductController.nextStep)
+                      }
+                    }
+                  } else {
+                    Future(
+                      Redirect(
+                        routes.LimitExceedController.loadLimitExceedPage(
+                          path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get,
+                          dto.weightOrVolume.toString()
+                        )
+                      )
+                    )
+                  }
+              )
+          }
         }
       }
     }
-  }
 }
