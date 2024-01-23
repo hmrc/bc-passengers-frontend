@@ -230,142 +230,145 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
     "Tobacco" should {
 
-      "the user enters too many cigarettes" should {
+      "display correct content for view" when {
 
-        val view = viewApply("801", "cigarettes", "label.tobacco.cigarettes")
+        "the user enters too many cigarettes" should {
 
-        val expectedContent =
-          Seq(
-            Selectors.p(1)    -> "You have entered 801 cigarettes.",
-            Selectors.p(2)    -> "You cannot use this service to declare more than 800 cigarettes.",
-            Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-            Selectors.h2(1)   -> "What you must do",
-            Selectors.p(4)    ->
-              (
-                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                  "They will calculate and take payment of the taxes and duties due."
-              ),
-            Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-            Selectors.h2(2)   -> "If you have other items to declare",
-            Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
-          )
+          val view = viewApply("801", "cigarettes", "label.tobacco.cigarettes")
 
-        behave like pageWithExpectedMessages(view, expectedContent)
-      }
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You have entered 801 cigarettes.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 800 cigarettes.",
+              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
 
-      "the user enters too many cigarillos" should {
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
 
-        val view = viewApply("401", "cigarillos", "label.tobacco.cigarillos")
+        "the user enters too many cigarillos" should {
 
-        val expectedContent =
-          Seq(
-            Selectors.p(1)    -> "You have entered 401 cigarillos.",
-            Selectors.p(2)    -> "You cannot use this service to declare more than 400 cigarillos.",
-            Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-            Selectors.h2(1)   -> "What you must do",
-            Selectors.p(4)    ->
-              (
-                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                  "They will calculate and take payment of the taxes and duties due."
-              ),
-            Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-            Selectors.h2(2)   -> "If you have other items to declare",
-            Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
-          )
+          val view = viewApply("401", "cigarillos", "label.tobacco.cigarillos")
 
-        behave like pageWithExpectedMessages(view, expectedContent)
-      }
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You have entered 401 cigarillos.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 400 cigarillos.",
+              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
 
-      "the user enters too many cigars" should {
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
 
-        val view = viewApply("201", "cigars", "label.tobacco.cigars")
+        "the user enters too many cigars" should {
 
-        val expectedContent =
-          Seq(
-            Selectors.p(1)    -> "You have entered 201 cigars.",
-            Selectors.p(2)    -> "You cannot use this service to declare more than 200 cigars.",
-            Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-            Selectors.h2(1)   -> "What you must do",
-            Selectors.p(4)    ->
-              (
-                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                  "They will calculate and take payment of the taxes and duties due."
-              ),
-            Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-            Selectors.h2(2)   -> "If you have other items to declare",
-            Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
-          )
+          val view = viewApply("201", "cigars", "label.tobacco.cigars")
 
-        behave like pageWithExpectedMessages(view, expectedContent)
-      }
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You have entered 201 cigars.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 200 cigars.",
+              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
 
-      "the user enters much heated-tobacco" should {
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
 
-        val view = viewApply("801", "heated-tobacco", "label.tobacco.heated-tobacco")
+        "the user enters much heated-tobacco" should {
 
-        val expectedContent =
-          Seq(
-            Selectors.p(1)    -> "You have entered 801 tobacco sticks.",
-            Selectors.p(2)    -> "You cannot use this service to declare more than 800 tobacco sticks.",
-            Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-            Selectors.h2(1)   -> "What you must do",
-            Selectors.p(4)    ->
-              (
-                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                  "They will calculate and take payment of the taxes and duties due."
-              ),
-            Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-            Selectors.h2(2)   -> "If you have other items to declare",
-            Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
-          )
+          val view = viewApply("801", "heated-tobacco", "label.tobacco.heated-tobacco")
 
-        behave like pageWithExpectedMessages(view, expectedContent)
-      }
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You have entered 801 tobacco sticks.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 800 tobacco sticks.",
+              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
 
-      "the user enters much chewing-tobacco" should {
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
 
-        val view = viewApply("1001", "chewing-tobacco", "label.tobacco.chewing-tobacco")
+        "the user enters much chewing-tobacco" should {
 
-        val expectedContent =
-          Seq(
-            Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
-            Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
-            Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-            Selectors.h2(1)   -> "What you must do",
-            Selectors.p(4)    ->
-              (
-                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                  "They will calculate and take payment of the taxes and duties due."
-              ),
-            Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-            Selectors.h2(2)   -> "If you have other items to declare",
-            Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
-          )
+          val view = viewApply("1001", "chewing-tobacco", "label.tobacco.chewing-tobacco")
 
-        behave like pageWithExpectedMessages(view, expectedContent)
-      }
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
+              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
 
-      "the user enters much rolling-tobacco" should {
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
 
-        val view = viewApply("1001", "rolling-tobacco", "label.tobacco.rolling-tobacco")
+        "the user enters much rolling-tobacco" should {
 
-        val expectedContent =
-          Seq(
-            Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
-            Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
-            Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-            Selectors.h2(1)   -> "What you must do",
-            Selectors.p(4)    ->
-              (
-                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                  "They will calculate and take payment of the taxes and duties due."
-              ),
-            Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-            Selectors.h2(2)   -> "If you have other items to declare",
-            Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
-          )
+          val view = viewApply("1001", "rolling-tobacco", "label.tobacco.rolling-tobacco")
 
-        behave like pageWithExpectedMessages(view, expectedContent)
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
+              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
       }
     }
   }

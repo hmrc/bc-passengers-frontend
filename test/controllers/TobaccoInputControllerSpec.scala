@@ -1262,7 +1262,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/900"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
       )
     }
 
@@ -1287,7 +1287,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits/801"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits"
       )
     }
 
@@ -1312,7 +1312,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/400"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
       )
     }
 
@@ -1337,7 +1337,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/1000.01"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
       )
     }
 
@@ -2024,7 +2024,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/801"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
       )
     }
 
@@ -2050,7 +2050,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/201"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
       )
     }
 
@@ -2076,7 +2076,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/1000.01"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
       )
     }
   }
