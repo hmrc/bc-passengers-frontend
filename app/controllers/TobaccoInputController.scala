@@ -386,7 +386,6 @@ class TobaccoInputController @Inject() (
                 ),
               dto =>
                 if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
-                  println(limits, product.applicableLimits)
                   val item = newPurchaseService.insertPurchases(
                     path,
                     dto.weightOrVolume,
@@ -443,7 +442,6 @@ class TobaccoInputController @Inject() (
                 ),
               dto =>
                 if (calculatorLimitConstraintOptionBigDecimal(limits, product.applicableLimits)) {
-                  println(limits, product.applicableLimits)
                   val item = newPurchaseService.insertPurchases(
                     path,
                     dto.weightOrVolume,
@@ -500,7 +498,6 @@ class TobaccoInputController @Inject() (
                 ),
               dto =>
                 if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
-                  println(limits, product.applicableLimits)
                   val item = newPurchaseService.insertPurchases(
                     path,
                     dto.weightOrVolume,
@@ -585,7 +582,6 @@ class TobaccoInputController @Inject() (
                   ),
                 dto =>
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
-                    println(limits, product.applicableLimits)
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -644,7 +640,6 @@ class TobaccoInputController @Inject() (
                   ),
                 dto =>
                   if (calculatorLimitConstraintOptionBigDecimal(limits, product.applicableLimits)) {
-                    println(limits, product.applicableLimits)
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -703,7 +698,6 @@ class TobaccoInputController @Inject() (
                   ),
                 dto =>
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
-                    println(limits, product.applicableLimits)
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,

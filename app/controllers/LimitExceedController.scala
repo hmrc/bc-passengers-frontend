@@ -22,7 +22,6 @@ import controllers.enforce.LimitExceedAction
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.HtmlFormat
 import services.{CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -51,8 +50,7 @@ class LimitExceedController @Inject() (
         userInput match {
           case Some(inputAmount) =>
             Future(Ok(limitExceedView(inputAmount, product.token, product.name)))
-          case _                           =>
-            println("failure")
+          case _                 =>
             Future(InternalServerError(errorTemplate()))
         }
       }
