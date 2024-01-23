@@ -386,6 +386,7 @@ class TobaccoInputController @Inject() (
                 ),
               dto =>
                 if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
+                  println(limits, product.applicableLimits)
                   val item = newPurchaseService.insertPurchases(
                     path,
                     dto.weightOrVolume,
@@ -411,8 +412,10 @@ class TobaccoInputController @Inject() (
                 } else {
                   Future.successful(
                     Redirect(
-                      routes.LimitExceedController.loadLimitExceedPage(path, tobaccoUnit(product.token, dto))
+                      routes.LimitExceedController.loadLimitExceedPage(path)
                     )
+                      .removingFromSession("userAlcoholInput")
+                      .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
                   )
                 }
             )
@@ -440,6 +443,7 @@ class TobaccoInputController @Inject() (
                 ),
               dto =>
                 if (calculatorLimitConstraintOptionBigDecimal(limits, product.applicableLimits)) {
+                  println(limits, product.applicableLimits)
                   val item = newPurchaseService.insertPurchases(
                     path,
                     dto.weightOrVolume,
@@ -465,8 +469,10 @@ class TobaccoInputController @Inject() (
                 } else {
                   Future.successful(
                     Redirect(
-                      routes.LimitExceedController.loadLimitExceedPage(path, tobaccoUnit(product.token, dto))
+                      routes.LimitExceedController.loadLimitExceedPage(path)
                     )
+                      .removingFromSession("userAlcoholInput")
+                      .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
                   )
                 }
             )
@@ -494,6 +500,7 @@ class TobaccoInputController @Inject() (
                 ),
               dto =>
                 if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
+                  println(limits, product.applicableLimits)
                   val item = newPurchaseService.insertPurchases(
                     path,
                     dto.weightOrVolume,
@@ -519,8 +526,10 @@ class TobaccoInputController @Inject() (
                 } else {
                   Future.successful(
                     Redirect(
-                      routes.LimitExceedController.loadLimitExceedPage(path, tobaccoUnit(product.token, dto))
+                      routes.LimitExceedController.loadLimitExceedPage(path)
                     )
+                      .removingFromSession("userAlcoholInput")
+                      .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
                   )
                 }
             )
@@ -576,6 +585,7 @@ class TobaccoInputController @Inject() (
                   ),
                 dto =>
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
+                    println(limits, product.applicableLimits)
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -603,8 +613,10 @@ class TobaccoInputController @Inject() (
                   } else {
                     Future.successful(
                       Redirect(
-                        routes.LimitExceedController.loadLimitExceedPage(ppi.path, tobaccoUnit(product.token, dto))
+                        routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
+                        .removingFromSession("userAlcoholInput")
+                        .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
                     )
                   }
               )
@@ -632,6 +644,7 @@ class TobaccoInputController @Inject() (
                   ),
                 dto =>
                   if (calculatorLimitConstraintOptionBigDecimal(limits, product.applicableLimits)) {
+                    println(limits, product.applicableLimits)
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -659,8 +672,10 @@ class TobaccoInputController @Inject() (
                   } else {
                     Future.successful(
                       Redirect(
-                        routes.LimitExceedController.loadLimitExceedPage(ppi.path, tobaccoUnit(product.token, dto))
+                        routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
+                        .removingFromSession("userAlcoholInput")
+                        .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
                     )
                   }
               )
@@ -688,6 +703,7 @@ class TobaccoInputController @Inject() (
                   ),
                 dto =>
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
+                    println(limits, product.applicableLimits)
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -715,8 +731,10 @@ class TobaccoInputController @Inject() (
                   } else {
                     Future.successful(
                       Redirect(
-                        routes.LimitExceedController.loadLimitExceedPage(ppi.path, tobaccoUnit(product.token, dto))
+                        routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
+                        .removingFromSession("userAlcoholInput")
+                        .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
                     )
                   }
               )

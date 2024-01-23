@@ -222,10 +222,11 @@ class AlcoholInputController @Inject() (
                 Future(
                   Redirect(
                     routes.LimitExceedController.loadLimitExceedPage(
-                      path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get,
-                      dto.weightOrVolume.toString()
+                      path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
                   )
+                    .removingFromSession("userTobaccoInput")
+                    .addingToSession("userAlcoholInput" -> dto.weightOrVolume.toString())
                 )
               }
           )
@@ -299,11 +300,13 @@ class AlcoholInputController @Inject() (
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.loadLimitExceedPage(
-                          path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get,
-                          dto.weightOrVolume.toString()
-                        )
+                        routes.LimitExceedController
+                          .loadLimitExceedPage(
+                            path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get
+                          )
                       )
+                        .removingFromSession("userTobaccoInput")
+                        .addingToSession("userAlcoholInput" -> dto.weightOrVolume.toString())
                     )
                   }
               )

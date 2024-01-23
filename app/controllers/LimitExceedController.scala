@@ -22,6 +22,7 @@ import controllers.enforce.LimitExceedAction
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.HtmlFormat
 import services.{CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -34,7 +35,7 @@ class LimitExceedController @Inject() (
   val calculatorService: CalculatorService,
   limitExceedAction: LimitExceedAction,
   val errorTemplate: views.html.errorTemplate,
-  val limitExceedPage: views.html.purchased_products.limit_exceed,
+  val limitExceedView: views.html.purchased_products.limit_exceed,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   val backLinkModel: BackLinkModel,
@@ -43,10 +44,23 @@ class LimitExceedController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def loadLimitExceedPage(path: ProductPath, weightOrVolume: String): Action[AnyContent] =
+  def loadLimitExceedPage(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
+      val alcoholInput: Option[String]                 = context.request.session.data.get("userAlcoholInput")
+      val tobaccoInput: Option[String]                 = context.request.session.data.get("userTobaccoInput")
+      val userInputs: (Option[String], Option[String]) = (alcoholInput, tobaccoInput)
+
       requireProduct(path) { product =>
-        Future(Ok(limitExceedPage(weightOrVolume, product.token, product.name)))
+        val limitExceedPageF: String => HtmlFormat.Appendable = limitExceedView(_, product.token, product.name)
+        userInputs match {
+          case (Some(alcoholAmount), None) =>
+            Future(Ok(limitExceedPageF(alcoholAmount)))
+          case (None, Some(tobaccoAmount)) =>
+            Future(Ok(limitExceedPageF(tobaccoAmount)).removingFromSession("userTobaccoInput"))
+          case _                           =>
+            println("failure")
+            Future(InternalServerError(errorTemplate()))
+        }
       }
     }
 }

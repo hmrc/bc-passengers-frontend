@@ -83,7 +83,7 @@ package object util {
     applicableLimits: List[String] = Nil
   ): Boolean = {
 
-    val errors =
+    val errors: Seq[(String, BigDecimal)] =
       for (limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
 
     if (errors.nonEmpty) false else true
