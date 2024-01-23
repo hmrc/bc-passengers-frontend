@@ -16,13 +16,12 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
 import models.JourneyData
-
+import play.api.libs.json._
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.libs.json._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -38,9 +37,9 @@ class Cache @Inject() (
     sessionRepository.store("journeyData", journeyData).flatMap(_ => fetch)
 
   def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
-    sessionRepository.fetch[JourneyData]().map {
-      case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
-      case _          => Option.empty
+    sessionRepository.get().map {
+      case Some(jsObj) => (jsObj \ "journeyData").asOpt[JourneyData]
+      case _           => Option.empty
     }
 
   def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier): Future[JsObject] =

@@ -16,6 +16,7 @@
 
 import config.AppConfig
 import controllers._
+import forms._
 import models._
 import org.scalacheck.Arbitrary
 import play.api.data.Form
@@ -39,14 +40,14 @@ import java.time.LocalDateTime
 class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with AccessibilityConstants {
 
   private val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
-  private val alcoholInputController: AlcoholInputController       = app.injector.instanceOf[AlcoholInputController]
-  private val tobaccoInputController: TobaccoInputController       = app.injector.instanceOf[TobaccoInputController]
+  private val alcoholInputForm: AlcoholInputForm                   = app.injector.instanceOf[AlcoholInputForm]
+  private val tobaccoInputForm: TobaccoInputForm                   = app.injector.instanceOf[TobaccoInputForm]
   private val otherGoodsInputController: OtherGoodsInputController = app.injector.instanceOf[OtherGoodsInputController]
   private val messagesApi: MessagesApi                             = app.injector.instanceOf[MessagesApi]
 
   private val booleanForm: Form[Boolean]          = Form("value" -> boolean)
-  private val alcoholForm: Form[AlcoholDto]       = alcoholInputController.resilientForm
-  private val tobaccoForm: Form[TobaccoDto]       = tobaccoInputController.resilientForm
+  private val alcoholForm: Form[AlcoholDto]       = alcoholInputForm.resilientForm
+  private val tobaccoForm: Form[TobaccoDto]       = tobaccoInputForm.resilientForm
   private val otherGoodsForm: Form[OtherGoodsDto] = otherGoodsInputController.addCostForm
 
   override implicit val arbAsciiString: Arbitrary[String]           = fixed("1.20")
@@ -69,7 +70,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
 
   implicit val arbPrivateCraftForm: Arbitrary[Form[PrivateCraftDto]]                   = fixed(PrivateCraftDto.form)
   implicit val arbIrishBorderForm: Arbitrary[Form[IrishBorderDto]]                     = fixed(IrishBorderDto.form)
-  implicit val arbBringingOverAllowanceForm: Arbitrary[Form[BringingOverAllowanceDto]] = fixed(BringingOverAllowanceDto.form)
+  implicit val arbBringingOverAllowanceForm: Arbitrary[Form[BringingOverAllowanceDto]] = fixed(
+    BringingOverAllowanceDto.form
+  )
   implicit val arbEuCountryCheckForm: Arbitrary[Form[EuCountryCheckDto]]               = fixed(EuCountryCheckDto.form)
   implicit val arbClaimedVatResForm: Arbitrary[Form[ClaimedVatResDto]]                 = fixed(ClaimedVatResDto.form)
   implicit val arbConfirmAgeForm: Arbitrary[Form[AgeOver17Dto]]                        = fixed(AgeOver17Dto.form)
@@ -109,20 +112,21 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
     // errors
     case purchase_price_out_of_bounds: purchase_price_out_of_bounds             => render(purchase_price_out_of_bounds)
     // other_goods
-     case other_goods_input: other_goods_input                                  => render(other_goods_input)
+    case other_goods_input: other_goods_input                                   => render(other_goods_input)
     // purchased_products
     case dashboard: dashboard                                                   => render(dashboard)
     case done: done                                                             => render(done)
     case limit_exceed: limit_exceed                                             => render(limit_exceed)
     case nothing_to_declare: nothing_to_declare                                 => render(nothing_to_declare)
-    case over_ninety_seven_thousand_pounds: over_ninety_seven_thousand_pounds   => render(over_ninety_seven_thousand_pounds)
+    case over_ninety_seven_thousand_pounds: over_ninety_seven_thousand_pounds   =>
+      render(over_ninety_seven_thousand_pounds)
     case select_products: select_products                                       => render(select_products)
     case remove: remove                                                         => render(remove)
     case zero_to_declare: zero_to_declare                                       => render(zero_to_declare)
     // tobacco
     case tobacco_input: tobacco_input                                           => render(tobacco_input)
     // travel_details
-    case arriving_ni: arriving_ni => render(arriving_ni)
+    case arriving_ni: arriving_ni                                               => render(arriving_ni)
     case bringing_duty_free_question: bringing_duty_free_question               => render(bringing_duty_free_question)
     case confirm_age: confirm_age                                               => render(confirm_age)
     case did_you_claim_tax_back: did_you_claim_tax_back                         => render(did_you_claim_tax_back)
@@ -130,7 +134,8 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
     case duty_free_allowance_question_mix: duty_free_allowance_question_mix     => render(duty_free_allowance_question_mix)
     case eu_country_check: eu_country_check                                     => render(eu_country_check)
     case eu_evidence_item: eu_evidence_item                                     => render(eu_evidence_item)
-    case goods_bought_inside_and_outside_eu: goods_bought_inside_and_outside_eu => render(goods_bought_inside_and_outside_eu)
+    case goods_bought_inside_and_outside_eu: goods_bought_inside_and_outside_eu =>
+      render(goods_bought_inside_and_outside_eu)
     case goods_bought_inside_eu: goods_bought_inside_eu                         => render(goods_bought_inside_eu)
     case goods_bought_outside_eu: goods_bought_outside_eu                       => render(goods_bought_outside_eu)
     case irish_border: irish_border                                             => render(irish_border)

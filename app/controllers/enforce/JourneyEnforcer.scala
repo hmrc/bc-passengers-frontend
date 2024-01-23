@@ -296,13 +296,11 @@ class UserInfoAction @Inject() (appConfig: AppConfig, publicAction: PublicAction
     publicAction { implicit context =>
       if (
         context.journeyData.isDefined && !context.getJourneyData.prevDeclaration.getOrElse(false) &&
-        (context.getJourneyData.calculatorResponse.fold(false)(x =>
+        (context.getJourneyData.calculatorResponse.exists(x =>
           BigDecimal(x.calculation.allTax) > 0 && BigDecimal(x.calculation.allTax) <= appConfig.paymentLimit
         ) ||
-          (context.getJourneyData.euCountryCheck.getOrElse(
-            ""
-          ) == "greatBritain" && context.getJourneyData.calculatorResponse
-            .fold(false)(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
+          (context.getJourneyData.euCountryCheck.contains("greatBritain") && context.getJourneyData.calculatorResponse
+            .exists(x => BigDecimal(x.calculation.allTax) == 0 && x.isAnyItemOverAllowance)))
       ) {
         block(context)
       } else {

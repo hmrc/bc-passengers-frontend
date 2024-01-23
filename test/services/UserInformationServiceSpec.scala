@@ -24,10 +24,9 @@ import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UserInformationServiceSpec extends BaseSpec {

@@ -20,9 +20,8 @@ import config.AppConfig
 import connectors.Cache
 import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
+import forms.AlcoholInputForm
 import models.{AlcoholDto, ProductPath}
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
@@ -31,15 +30,16 @@ import util._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class AlcoholInputController @Inject() (
   val cache: Cache,
+  alcoholInputForm: AlcoholInputForm,
   val productTreeService: ProductTreeService,
   val newPurchaseService: NewPurchaseService,
   val countriesService: CountriesService,
   val currencyService: CurrencyService,
   val calculatorService: CalculatorService,
+  alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
   val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val errorTemplate: views.html.errorTemplate,
@@ -51,46 +51,7 @@ class AlcoholInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  val resilientForm: Form[AlcoholDto] = Form(
-    mapping(
-      "weightOrVolume" -> optional(text)
-        .transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), _ => None),
-      "country"        -> ignored(""),
-      "originCountry"  -> optional(text),
-      "currency"       -> ignored(""),
-      "cost"           -> ignored(BigDecimal(0)),
-      "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid"   -> optional(boolean),
-      "hasEvidence"    -> optional(boolean)
-    )(AlcoholDto.apply)(AlcoholDto.unapply)
-  )
-
-  def alcoholForm(path: ProductPath): Form[AlcoholDto] = Form(
-    mapping(
-      "weightOrVolume" -> optional(text)
-        .verifying("error.required.volume." + path.toMessageKey, _.isDefined)
-        .verifying(
-          "error.invalid.characters.volume",
-          x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
-        )
-        .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString))
-        .verifying("error.max.decimal.places.volume", _.scale <= 3)
-        .transform[BigDecimal](identity, identity),
-      "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
-      "originCountry"  -> optional(text),
-      "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "cost"           -> text
-        .transform[String](s => s.filter(_ != ','), identity)
-        .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
-        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
-      "isVatPaid"      -> optional(boolean),
-      "isExcisePaid"   -> optional(boolean),
-      "isCustomPaid"   -> optional(boolean),
-      "hasEvidence"    -> optional(boolean)
-    )(AlcoholDto.apply)(AlcoholDto.unapply)
-  )
-
+  // scalastyle:off
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
@@ -100,7 +61,8 @@ class AlcoholInputController @Inject() (
           Future.successful(
             Ok(
               alcohol_input(
-                alcoholForm(path)
+                alcoholInputForm
+                  .alcoholForm(path)
                   .bind(
                     Map(
                       "country"       -> defaultCountry.getOrElse(""),
@@ -137,7 +99,7 @@ class AlcoholInputController @Inject() (
               Future.successful(
                 Ok(
                   alcohol_input(
-                    alcoholForm(ppi.path).fill(dto),
+                    alcoholInputForm.alcoholForm(ppi.path).fill(dto),
                     backLinkModel.backLink,
                     customBackLink = true,
                     product,
@@ -159,7 +121,8 @@ class AlcoholInputController @Inject() (
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireLimitUsage {
-      val dto = resilientForm.bindFromRequest().value.get
+      val dto =
+        alcoholInputForm.resilientForm.bindFromRequest().value.get
       newPurchaseService
         .insertPurchases(
           path,
@@ -173,7 +136,8 @@ class AlcoholInputController @Inject() (
         ._1
     } { limits =>
       requireProduct(path) { product =>
-        alcoholForm(path)
+        alcoholInputForm
+          .alcoholForm(path)
           .bindFromRequest()
           .fold(
             formWithErrors =>
@@ -193,7 +157,10 @@ class AlcoholInputController @Inject() (
                   )
                 )
               ),
-            dto =>
+            dto => {
+              lazy val totalWeightAndVolume =
+                alcoholAndTobaccoCalculationService.alcoholAddHelper(context.getJourneyData, dto, product.token)
+
               if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
                 val item =
                   newPurchaseService.insertPurchases(
@@ -222,12 +189,13 @@ class AlcoholInputController @Inject() (
                 Future(
                   Redirect(
                     routes.LimitExceedController.loadLimitExceedPage(
-                      path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get,
-                      dto.weightOrVolume.toString()
+                      path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
-                  )
+                  ).removingFromSession(s"user-amount-input-${product.token}")
+                    .addingToSession(s"user-amount-input-${product.token}" -> totalWeightAndVolume.toString())
                 )
               }
+            }
           )
       }
     }
@@ -238,7 +206,7 @@ class AlcoholInputController @Inject() (
       requirePurchasedProductInstance(iid) { ppi =>
         requireProduct(ppi.path) { product =>
           requireLimitUsage {
-            val dto = resilientForm.bindFromRequest().value.get
+            val dto = alcoholInputForm.resilientForm.bindFromRequest().value.get
             newPurchaseService.updatePurchase(
               ppi.path,
               iid,
@@ -250,7 +218,8 @@ class AlcoholInputController @Inject() (
               dto.cost
             )
           } { limits =>
-            alcoholForm(ppi.path)
+            alcoholInputForm
+              .alcoholForm(ppi.path)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
@@ -270,7 +239,9 @@ class AlcoholInputController @Inject() (
                       )
                     )
                   ),
-                dto =>
+                dto => {
+                  lazy val alcoholTotalVolume =
+                    alcoholAndTobaccoCalculationService.alcoholEditHelper(context.getJourneyData, dto, product.token)
                   if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
                     cache.store(
                       newPurchaseService.updatePurchase(
@@ -299,13 +270,18 @@ class AlcoholInputController @Inject() (
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.loadLimitExceedPage(
-                          path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get,
-                          dto.weightOrVolume.toString()
-                        )
+                        routes.LimitExceedController.loadLimitExceedPage(path = ppi.path)
                       )
+                        .removingFromSession(s"user-amount-input-${product.token}")
+                        .addingToSession(
+                          s"user-amount-input-${product.token}" ->
+                            alcoholTotalVolume
+                              .setScale(2, BigDecimal.RoundingMode.HALF_UP)
+                              .toString()
+                        )
                     )
                   }
+                }
               )
           }
         }

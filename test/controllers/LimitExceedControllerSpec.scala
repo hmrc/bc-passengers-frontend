@@ -27,8 +27,10 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -90,10 +92,10 @@ class LimitExceedControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest(
+        FakeRequest(
           "GET",
-          "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/111.5"
-        )
+          "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
+        ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "111.5")
       ).get
       status(result) shouldBe OK
 
@@ -131,7 +133,10 @@ class LimitExceedControllerSpec extends BaseSpec {
       )
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/201")
+        FakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigars" -> "201")
       ).get
       status(result) shouldBe OK
 

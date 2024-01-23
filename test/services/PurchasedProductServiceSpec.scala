@@ -24,11 +24,10 @@ import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.BCPassengersSessionRepository
 import util.BaseSpec
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PurchasedProductServiceSpec extends BaseSpec {

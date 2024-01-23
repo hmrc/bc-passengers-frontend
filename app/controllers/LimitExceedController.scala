@@ -34,7 +34,7 @@ class LimitExceedController @Inject() (
   val calculatorService: CalculatorService,
   limitExceedAction: LimitExceedAction,
   val errorTemplate: views.html.errorTemplate,
-  val limitExceedPage: views.html.purchased_products.limit_exceed,
+  val limitExceedView: views.html.purchased_products.limit_exceed,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   val backLinkModel: BackLinkModel,
@@ -43,10 +43,16 @@ class LimitExceedController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def loadLimitExceedPage(path: ProductPath, weightOrVolume: String): Action[AnyContent] =
+  def loadLimitExceedPage(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-        Future(Ok(limitExceedPage(weightOrVolume, product.token, product.name)))
+        val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
+        userInput match {
+          case Some(inputAmount) =>
+            Future(Ok(limitExceedView(inputAmount, product.token, product.name)))
+          case _                 =>
+            Future(InternalServerError(errorTemplate()))
+        }
       }
     }
 }
