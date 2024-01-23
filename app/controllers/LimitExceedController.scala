@@ -46,17 +46,11 @@ class LimitExceedController @Inject() (
 
   def loadLimitExceedPage(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
-      val alcoholInput: Option[String]                 = context.request.session.data.get("userAlcoholInput")
-      val tobaccoInput: Option[String]                 = context.request.session.data.get("userTobaccoInput")
-      val userInputs: (Option[String], Option[String]) = (alcoholInput, tobaccoInput)
-
+      val userInput: Option[String] = context.request.session.data.get("userAmountInput")
       requireProduct(path) { product =>
-        val limitExceedPageF: String => HtmlFormat.Appendable = limitExceedView(_, product.token, product.name)
-        userInputs match {
-          case (Some(alcoholAmount), None) =>
-            Future(Ok(limitExceedPageF(alcoholAmount)))
-          case (None, Some(tobaccoAmount)) =>
-            Future(Ok(limitExceedPageF(tobaccoAmount)).removingFromSession("userTobaccoInput"))
+        userInput match {
+          case Some(inputAmount) =>
+            Future(Ok(limitExceedView(inputAmount, product.token, product.name)))
           case _                           =>
             println("failure")
             Future(InternalServerError(errorTemplate()))

@@ -414,8 +414,8 @@ class TobaccoInputController @Inject() (
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path)
                     )
-                      .removingFromSession("userAlcoholInput")
-                      .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
+                      .removingFromSession("userAmountInput")
+                      .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
                   )
                 }
             )
@@ -471,8 +471,8 @@ class TobaccoInputController @Inject() (
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path)
                     )
-                      .removingFromSession("userAlcoholInput")
-                      .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
+                      .removingFromSession("userAmountInput")
+                      .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
                   )
                 }
             )
@@ -528,8 +528,8 @@ class TobaccoInputController @Inject() (
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path)
                     )
-                      .removingFromSession("userAlcoholInput")
-                      .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
+                      .removingFromSession("userAmountInput")
+                      .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
                   )
                 }
             )
@@ -615,8 +615,8 @@ class TobaccoInputController @Inject() (
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
-                        .removingFromSession("userAlcoholInput")
-                        .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
+                        .removingFromSession("userAmountInput")
+                        .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
                     )
                   }
               )
@@ -674,8 +674,8 @@ class TobaccoInputController @Inject() (
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
-                        .removingFromSession("userAlcoholInput")
-                        .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
+                        .removingFromSession("userAmountInput")
+                        .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
                     )
                   }
               )
@@ -733,8 +733,8 @@ class TobaccoInputController @Inject() (
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
-                        .removingFromSession("userAlcoholInput")
-                        .addingToSession("userTobaccoInput" -> tobaccoUnit(product.token, dto))
+                        .removingFromSession("userAmountInput")
+                        .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
                     )
                   }
               )

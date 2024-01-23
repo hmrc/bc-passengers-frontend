@@ -118,7 +118,7 @@ class DashboardController @Inject() (
                   jd.euCountryCheck.contains("euOnly"),
                   jd.isUKResident.contains(true)
                 )
-              ).removingFromSession("userAlcoholInput", "userTobaccoInput")
+              ).removingFromSession("userAmountInput", "userAmountInput")
           }
         }
       }
