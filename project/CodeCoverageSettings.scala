@@ -4,8 +4,8 @@ import scoverage.ScoverageKeys.*
 object CodeCoverageSettings {
   private val excludedPackages: Seq[String] = Seq(
     "<empty>",
-    "components.*",
-    "Routes.*"
+    ".*components.*",
+    ".*Routes.*"
   )
 
   val settings: Seq[Setting[?]] = Seq(
