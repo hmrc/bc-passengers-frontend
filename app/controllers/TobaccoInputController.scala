@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.Cache
 import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
-import models.{ProductPath, TobaccoDto}
+import models.{JourneyData, ProductPath, TobaccoDto}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.I18nSupport
@@ -54,15 +54,26 @@ class TobaccoInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private def tobaccoUnit(productToken: String, tobaccoDto: TobaccoDto): String =
+  private def tobaccoUnit(data: Option[JourneyData], productToken: String, tobaccoDto: TobaccoDto): String =
     if (productToken == "rolling-tobacco" | productToken == "chewing-tobacco") {
       /*
         weight is asked for in grams but form transforms it into kilograms
         we need to do a conversion to preserve the weight, to pass on to the limit exceed page.
        */
-      tobaccoDto.weightOrVolume.map(weight => (weight * 1000).setScale(2)).getOrElse(BigDecimal(0)).toString
+      val previousTotalWeightOrVolume: BigDecimal =
+        calculatorService.calculateTotalWeightOrVolumeForItemType(data, productToken)
+      val totalWeightAndVolume                    =
+        previousTotalWeightOrVolume +
+          tobaccoDto.weightOrVolume
+            .map(weight => (weight * 1000).setScale(2))
+            .getOrElse(BigDecimal(0))
+
+      totalWeightAndVolume.toString()
     } else {
-      tobaccoDto.noOfSticks.getOrElse(0).toString
+      (
+        calculatorService.calculateTotalNumberOfSticksForItemType(data, productToken) +
+          tobaccoDto.noOfSticks.getOrElse(0)
+      ).toString
     }
 
   val resilientForm: Form[TobaccoDto] = Form(
@@ -409,13 +420,13 @@ class TobaccoInputController @Inject() (
                     }
                   }
                 } else {
-                  Future.successful(
+                  cache.fetch.map { data =>
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path)
                     )
                       .removingFromSession("userAmountInput")
-                      .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
-                  )
+                      .addingToSession("userAmountInput" -> tobaccoUnit(data, product.token, dto))
+                  }
                 }
             )
 
@@ -465,13 +476,13 @@ class TobaccoInputController @Inject() (
                     }
                   }
                 } else {
-                  Future.successful(
+                  cache.fetch.map { data =>
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path)
                     )
                       .removingFromSession("userAmountInput")
-                      .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
-                  )
+                      .addingToSession("userAmountInput" -> tobaccoUnit(data, product.token, dto))
+                  }
                 }
             )
 
@@ -521,13 +532,13 @@ class TobaccoInputController @Inject() (
                     }
                   }
                 } else {
-                  Future.successful(
+                  cache.fetch.map { data =>
                     Redirect(
                       routes.LimitExceedController.loadLimitExceedPage(path)
                     )
                       .removingFromSession("userAmountInput")
-                      .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
-                  )
+                      .addingToSession("userAmountInput" -> tobaccoUnit(data, product.token, dto))
+                  }
                 }
             )
 
@@ -607,13 +618,13 @@ class TobaccoInputController @Inject() (
                       }
                     }
                   } else {
-                    Future.successful(
+                    cache.fetch.map { data =>
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
                         .removingFromSession("userAmountInput")
-                        .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
-                    )
+                        .addingToSession("userAmountInput" -> tobaccoUnit(data, product.token, dto))
+                    }
                   }
               )
 
@@ -665,13 +676,13 @@ class TobaccoInputController @Inject() (
                       }
                     }
                   } else {
-                    Future.successful(
+                    cache.fetch.map { data =>
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
                         .removingFromSession("userAmountInput")
-                        .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
-                    )
+                        .addingToSession("userAmountInput" -> tobaccoUnit(data, product.token, dto))
+                    }
                   }
               )
 
@@ -723,13 +734,13 @@ class TobaccoInputController @Inject() (
                       }
                     }
                   } else {
-                    Future.successful(
+                    cache.fetch.map { data =>
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                       )
                         .removingFromSession("userAmountInput")
-                        .addingToSession("userAmountInput" -> tobaccoUnit(product.token, dto))
-                    )
+                        .addingToSession("userAmountInput" -> tobaccoUnit(data, product.token, dto))
+                    }
                   }
               )
 

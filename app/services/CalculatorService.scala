@@ -16,21 +16,20 @@
 
 package services
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import connectors.Cache
-
-import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json, Reads}
 import services.http.WsAllMethods
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
 
@@ -227,5 +226,23 @@ class CalculatorService @Inject() (
       }
     }
   }
+
+  def calculateTotalWeightOrVolumeForItemType(data: Option[JourneyData], productToken: String): BigDecimal =
+    data
+      .fold(BigDecimal(0))(
+        _.purchasedProductInstances
+          .filter(_.path.toString.contains(productToken))
+          .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+          .sum
+      )
+
+  def calculateTotalNumberOfSticksForItemType(data: Option[JourneyData], productToken: String): Int =
+    data
+      .fold(0)(
+        _.purchasedProductInstances
+          .filter(_.path.toString.contains(productToken))
+          .map(_.noOfSticks.getOrElse(0))
+          .sum
+      )
 
 }

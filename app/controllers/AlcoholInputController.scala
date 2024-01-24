@@ -221,15 +221,8 @@ class AlcoholInputController @Inject() (
               } else {
                 cache.fetch.map { data =>
                   val previousTotalWeightOrVolume: BigDecimal =
-                    data
-                      .map(
-                        _.purchasedProductInstances
-                          .filter(_.path.toString.contains(product.token))
-                          .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
-                          .foldLeft(BigDecimal(0))(_ + _)
-                      )
-                      .getOrElse(BigDecimal(0))
-                  val totalWeightAndVolume = previousTotalWeightOrVolume + dto.weightOrVolume
+                    calculatorService.calculateTotalWeightOrVolumeForItemType(data, product.token)
+                  val totalWeightAndVolume                    = previousTotalWeightOrVolume + dto.weightOrVolume
                   Redirect(
                     routes.LimitExceedController.loadLimitExceedPage(
                       path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
@@ -308,16 +301,19 @@ class AlcoholInputController @Inject() (
                       }
                     }
                   } else {
-                    Future(
+                    cache.fetch.map { data =>
+                      val previousTotalWeightOrVolume: BigDecimal =
+                        calculatorService.calculateTotalWeightOrVolumeForItemType(data, product.token)
+                      val totalWeightAndVolume                    = previousTotalWeightOrVolume + dto.weightOrVolume
                       Redirect(
                         routes.LimitExceedController
-                          .loadLimitExceedPage(
-                            path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get
+                          .loadLimitExceedPage(path =
+                            calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).get
                           )
                       )
                         .removingFromSession("userAmountInput")
-                        .addingToSession("userAmountInput" -> dto.weightOrVolume.toString())
-                    )
+                        .addingToSession("userAmountInput" -> totalWeightAndVolume.toString())
+                    }
                   }
               )
           }
