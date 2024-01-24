@@ -94,7 +94,7 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  def cigarAndCigarilloForm(path: ProductPath): Form[TobaccoDto] = Form(
+  private def cigarAndCigarilloForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> text
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
@@ -135,7 +135,7 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  def cigaretteAndHeatedTobaccoForm(path: ProductPath): Form[TobaccoDto] = Form(
+  private def cigaretteAndHeatedTobaccoForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> text
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
@@ -162,7 +162,7 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  def looseTobaccoWeightForm(path: ProductPath): Form[TobaccoDto] = Form(
+  private def looseTobaccoWeightForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> ignored[Option[Int]](None),
       "weightOrVolume" -> optional(text)
@@ -194,39 +194,40 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
-      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
-    } else {
-      requireProduct(path) { product =>
-        withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-          Future.successful(
-            Ok(
-              no_of_sticks_input(
-                cigaretteAndHeatedTobaccoForm(path)
-                  .bind(
-                    Map(
-                      "country"       -> defaultCountry.getOrElse(""),
-                      "originCountry" -> defaultOriginCountry.getOrElse(""),
-                      "currency"      -> defaultCurrency.getOrElse("")
+  def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction {
+    implicit context =>
+      if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
+        Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+      } else {
+        requireProduct(path) { product =>
+          withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+            Future.successful(
+              Ok(
+                no_of_sticks_input(
+                  cigaretteAndHeatedTobaccoForm(path)
+                    .bind(
+                      Map(
+                        "country"       -> defaultCountry.getOrElse(""),
+                        "originCountry" -> defaultOriginCountry.getOrElse(""),
+                        "currency"      -> defaultCurrency.getOrElse("")
+                      )
                     )
-                  )
-                  .discardingErrors,
-                backLinkModel.backLink,
-                customBackLink = false,
-                product,
-                path,
-                None,
-                countriesService.getAllCountries,
-                countriesService.getAllCountriesAndEu,
-                currencyService.getAllCurrencies,
-                context.getJourneyData.euCountryCheck
+                    .discardingErrors,
+                  backLinkModel.backLink,
+                  customBackLink = false,
+                  product,
+                  path,
+                  None,
+                  countriesService.getAllCountries,
+                  countriesService.getAllCountriesAndEu,
+                  currencyService.getAllCurrencies,
+                  context.getJourneyData.euCountryCheck
+                )
               )
             )
-          )
+          }
         }
       }
-    }
   }
 
   def displayLooseTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
@@ -360,20 +361,19 @@ class TobaccoInputController @Inject() (
   }
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    requireLimitUsage {
-      val dto = resilientForm.bindFromRequest().value.get
-      newPurchaseService
-        .insertPurchases(
-          path,
-          dto.weightOrVolume,
-          dto.noOfSticks,
-          dto.country,
-          dto.originCountry,
-          dto.currency,
-          List(dto.cost)
-        )
-        ._1
-    } { limits =>
+    val dto              = resilientForm.bindFromRequest().value.get
+    val (journeyData, _) =
+      newPurchaseService.insertPurchases(
+        path,
+        dto.weightOrVolume,
+        dto.noOfSticks,
+        dto.country,
+        dto.originCountry,
+        dto.currency,
+        List(dto.cost)
+      )
+
+    requireLimitUsage(journeyData) { limits =>
       requireProduct(path) { product =>
         def processNoOfSticksAddForm =
           cigaretteAndHeatedTobaccoForm(path)
@@ -566,13 +566,11 @@ class TobaccoInputController @Inject() (
                       (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                         case (Some(true), Some("greatBritain")) =>
                           Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, itemId))
-                        case (Some(false), Some("euOnly"))      =>
-                          if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                            Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, itemId))
-                          } else {
-                            Redirect(routes.SelectProductController.nextStep)
-                          }
-                        case _                                  => Redirect(routes.SelectProductController.nextStep)
+                        case (Some(false), Some("euOnly"))
+                            if countriesService.isInEu(dto.originCountry.getOrElse("")) =>
+                          Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, itemId))
+                        case _                                  =>
+                          Redirect(routes.SelectProductController.nextStep)
                       }
                     }
                   } else {
@@ -710,21 +708,22 @@ class TobaccoInputController @Inject() (
                     )
                   ),
                 success = dto => {
-                  val totalWeightAndVolumeForPreviousItemType: Future[BigDecimal] = for {
-                    data: Option[JourneyData]              <- cache.fetch
-                    previousTotalWeightOrVolume: BigDecimal =
-                      calculatorService.calculateTotalWeightOrVolumeForItemType(data, product.token)
-                    totalWeightAndVolume: BigDecimal        =
-                      previousTotalWeightOrVolume +
-                        dto.weightOrVolume
-                          .map(weight => (weight * 1000).setScale(2, BigDecimal.RoundingMode.HALF_UP))
-                          .getOrElse(BigDecimal(0))
-                  } yield totalWeightAndVolume
 
-                  totalWeightAndVolumeForPreviousItemType.flatMap { weightAndVolume =>
-                    println(weightAndVolume)
-                    println(limits.getOrElse(product.applicableLimits.head, BigDecimal(0)))
-                    if (calculatorLimitConstraintOptionBigDecimal(weightAndVolume)) {
+                  val totalWeightForLooseTobacco: Future[BigDecimal] =
+                    for {
+                      data: Option[JourneyData]                 <- cache.fetch
+                      chewingTobaccoTotalWeight: BigDecimal      =
+                        calculatorService.calculateTotalWeightOrVolumeForItemType(data, "chewing-tobacco")
+                      rollingTobaccoTotalWeight: BigDecimal      =
+                        calculatorService.calculateTotalWeightOrVolumeForItemType(data, "rolling-tobacco")
+                      looseTobaccoTotalWeightInGrams: BigDecimal =
+                        (dto.weightOrVolume
+                          .getOrElse(BigDecimal(0)) + chewingTobaccoTotalWeight + rollingTobaccoTotalWeight)
+                          .setScale(2, BigDecimal.RoundingMode.HALF_UP) * 1000
+                    } yield looseTobaccoTotalWeightInGrams
+
+                  totalWeightForLooseTobacco.flatMap { weightAndVolume =>
+                    if (looseTobaccoWeightConstraint(weightAndVolume)) {
                       cache.store(
                         newPurchaseService.updatePurchase(
                           ppi.path,
