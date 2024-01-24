@@ -219,15 +219,25 @@ class AlcoholInputController @Inject() (
                   }
                 }
               } else {
-                Future(
+                cache.fetch.map { data =>
+                  val previousTotalWeightOrVolume: BigDecimal =
+                    data
+                      .map(
+                        _.purchasedProductInstances
+                          .filter(_.path.toString.contains(product.token))
+                          .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+                          .foldLeft(BigDecimal(0))(_ + _)
+                      )
+                      .getOrElse(BigDecimal(0))
+                  val totalWeightAndVolume = previousTotalWeightOrVolume + dto.weightOrVolume
                   Redirect(
                     routes.LimitExceedController.loadLimitExceedPage(
                       path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
-                  )
-                    .removingFromSession("userAmountInput")
-                    .addingToSession("userAmountInput" -> dto.weightOrVolume.toString())
-                )
+                  ).removingFromSession("userAmountInput")
+                    //                    .addingToSession("userAmountInput" -> dto.weightOrVolume.toString())
+                    .addingToSession("userAmountInput" -> totalWeightAndVolume.toString())
+                }
               }
           )
       }
