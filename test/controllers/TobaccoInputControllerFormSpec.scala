@@ -31,7 +31,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
       s".noOfSticksForm($item)" should {
         "fail on empty string in noOfSticks" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "",
@@ -48,7 +48,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail on invalid characters in noOfSticks" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "***",
@@ -65,7 +65,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail on decimal number in noOfSticks" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "4.0",
@@ -82,7 +82,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail on empty string in country" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "500",
@@ -97,7 +97,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail on empty string in currency" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "500",
@@ -112,7 +112,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail on empty string in cost" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "500",
@@ -128,7 +128,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
         invalidCostInputs.foreach { costInput =>
           s"fail on special characters in cost=$costInput" in {
             val form: Form[TobaccoDto] = injected[TobaccoInputController]
-              .noOfSticksForm(path)
+              .cigaretteAndHeatedTobaccoForm(path)
               .bind(
                 Map(
                   "noOfSticks" -> "500",
@@ -144,7 +144,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail on more than 2 decimal places in cost" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "500",
@@ -159,7 +159,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
         "fail when cost exceeds 9,999,999,999" in {
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "500",
@@ -175,7 +175,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
         "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
           val noOfSticks: Int        = 1000
           val form: Form[TobaccoDto] = injected[TobaccoInputController]
-            .noOfSticksForm(path)
+            .cigaretteAndHeatedTobaccoForm(path)
             .bind(
               Map(
                 "noOfSticks" -> "1000",
@@ -195,7 +195,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on empty string in weightOrVolume" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "",
@@ -212,7 +212,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on special characters in weightOrVolume" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "***",
@@ -227,7 +227,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on more than 2 decimal places in weightOrVolume" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "4.567",
@@ -242,7 +242,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on empty string in country" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "500",
@@ -257,7 +257,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on empty string in currency" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "500",
@@ -272,7 +272,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on empty string in cost" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "500",
@@ -287,7 +287,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "pass on cost with comma separated thousands" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "500",
@@ -302,7 +302,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "return the correct result when filled" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeForm(path)
+          .looseTobaccoWeightForm(path)
           .bind(
             Map(
               "weightOrVolume" -> "50",
@@ -346,7 +346,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "fail on weightOrVolume with more than 2 decimal places" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeNoOfSticksForm(path)
+          .cigarAndCigarilloForm(path)
           .bind(
             Map(
               "noOfSticks"     -> "10",
@@ -362,7 +362,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "pass on cost with comma separated thousands" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeNoOfSticksForm(path)
+          .cigarAndCigarilloForm(path)
           .bind(
             Map(
               "noOfSticks"     -> "10",
@@ -378,7 +378,7 @@ class TobaccoInputControllerFormSpec extends BaseSpec {
 
       "return the correct result when filled" in {
         val form: Form[TobaccoDto] = injected[TobaccoInputController]
-          .weightOrVolumeNoOfSticksForm(path)
+          .cigarAndCigarilloForm(path)
           .bind(
             Map(
               "noOfSticks"     -> "10",

@@ -45,8 +45,8 @@ class LimitExceedController @Inject() (
 
   def loadLimitExceedPage(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
-      val userInput: Option[String] = context.request.session.data.get("userAmountInput")
       requireProduct(path) { product =>
+        val userInput: Option[String] = context.request.session.data.get(s"userAmountInput${product.token}")
         userInput match {
           case Some(inputAmount) =>
             Future(Ok(limitExceedView(inputAmount, product.token, product.name)))

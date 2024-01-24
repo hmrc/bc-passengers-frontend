@@ -67,7 +67,7 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
   )
 
   private val validForm: Form[TobaccoDto] = injected[TobaccoInputController]
-    .weightOrVolumeNoOfSticksForm(productPath)
+    .cigarAndCigarilloForm(productPath)
     .bind(
       Map(
         "noOfSticks"     -> "10",

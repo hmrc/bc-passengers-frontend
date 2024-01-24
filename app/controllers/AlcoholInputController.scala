@@ -227,9 +227,8 @@ class AlcoholInputController @Inject() (
                     routes.LimitExceedController.loadLimitExceedPage(
                       path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
-                  ).removingFromSession("userAmountInput")
-                    //                    .addingToSession("userAmountInput" -> dto.weightOrVolume.toString())
-                    .addingToSession("userAmountInput" -> totalWeightAndVolume.toString())
+                  ).removingFromSession(s"userAmountInput${product.token}")
+                    .addingToSession(s"userAmountInput${product.token}" -> totalWeightAndVolume.toString())
                 }
               }
           )

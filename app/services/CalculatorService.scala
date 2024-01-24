@@ -231,7 +231,10 @@ class CalculatorService @Inject() (
     data
       .fold(BigDecimal(0))(
         _.purchasedProductInstances
-          .filter(_.path.toString.contains(productToken))
+          .filter{ x =>
+            println(x.path.toString + " 100000000")
+            x.path.toString.contains(productToken)
+          }
           .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
           .sum
       )

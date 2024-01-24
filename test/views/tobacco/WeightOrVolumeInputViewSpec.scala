@@ -67,7 +67,7 @@ class WeightOrVolumeInputViewSpec extends BaseViewSpec {
   )
 
   private val validForm: Form[TobaccoDto] = injected[TobaccoInputController]
-    .weightOrVolumeForm(productPath)
+    .looseTobaccoWeightForm(productPath)
     .bind(
       Map(
         "weightOrVolume" -> "50",
