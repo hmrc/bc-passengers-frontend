@@ -95,7 +95,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         FakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
-        ).withSession(SessionKeys.sessionId -> "fakesessionid", "userAmountInput" -> "111.5")
+        ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "111.5")
       ).get
       status(result) shouldBe OK
 
@@ -136,7 +136,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         FakeRequest(
           "GET",
           "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
-        ).withSession(SessionKeys.sessionId -> "fakesessionid", "userAmountInput" -> "201")
+        ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigars" -> "201")
       ).get
       status(result) shouldBe OK
 

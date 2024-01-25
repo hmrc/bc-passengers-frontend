@@ -72,7 +72,7 @@ class CalculatorService @Inject() (
           LimitUsageSuccessResponse((r \ "limits").as[Map[String, String]])
         }
 
-      case None =>
+      case _ =>
         logger.error("No items available for limits request")
         Future.successful(LimitUsageCantBuildCalcReqResponse)
     }
@@ -231,10 +231,7 @@ class CalculatorService @Inject() (
     data
       .fold(BigDecimal(0))(
         _.purchasedProductInstances
-          .filter{ x =>
-            println(x.path.toString + " 100000000")
-            x.path.toString.contains(productToken)
-          }
+          .filter(_.path.toString.contains(productToken))
           .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
           .sum
       )

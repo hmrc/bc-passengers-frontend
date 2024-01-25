@@ -98,3 +98,4 @@ case class LimitRequest(
   isArrivingNI: Boolean,
   items: List[SpeculativeItem]
 )
+

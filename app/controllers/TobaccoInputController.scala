@@ -55,28 +55,6 @@ class TobaccoInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private def tobaccoUnit(data: Option[JourneyData], productToken: String, tobaccoDto: TobaccoDto): String =
-    if (productToken == "rolling-tobacco" | productToken == "chewing-tobacco") {
-      /*
-        weight is asked for in grams but form transforms it into kilograms
-        we need to do a conversion to preserve the weight, to pass on to the limit exceed page.
-       */
-      val previousTotalWeightOrVolume: BigDecimal =
-        calculatorService.calculateTotalWeightOrVolumeForItemType(data, productToken)
-      val totalWeightAndVolume                    =
-        previousTotalWeightOrVolume +
-          tobaccoDto.weightOrVolume
-            .map(weight => (weight * 1000).setScale(2, BigDecimal.RoundingMode.HALF_UP))
-            .getOrElse(BigDecimal(0))
-
-      totalWeightAndVolume.toString()
-    } else {
-      (
-        calculatorService.calculateTotalNumberOfSticksForItemType(data, productToken) +
-          tobaccoDto.noOfSticks.getOrElse(0)
-      ).toString
-    }
-
   val resilientForm: Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> optional(text)
@@ -94,7 +72,7 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  private def cigarAndCigarilloForm(path: ProductPath): Form[TobaccoDto] = Form(
+  def cigarAndCigarilloForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> text
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
@@ -135,7 +113,7 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  private def cigaretteAndHeatedTobaccoForm(path: ProductPath): Form[TobaccoDto] = Form(
+  def cigaretteAndHeatedTobaccoForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> text
         .verifying("error.no_of_sticks.required." + path.toMessageKey, noOfSticks => noOfSticks.nonEmpty)
@@ -162,7 +140,7 @@ class TobaccoInputController @Inject() (
     )(TobaccoDto.apply)(TobaccoDto.unapply)
   )
 
-  private def looseTobaccoWeightForm(path: ProductPath): Form[TobaccoDto] = Form(
+  def looseTobaccoWeightForm(path: ProductPath): Form[TobaccoDto] = Form(
     mapping(
       "noOfSticks"     -> ignored[Option[Int]](None),
       "weightOrVolume" -> optional(text)
@@ -405,10 +383,11 @@ class TobaccoInputController @Inject() (
                   totalNoOfSticks: Int             =
                     previousTotalWeightOrVolume +
                       dto.noOfSticks.getOrElse(0)
+
                 } yield totalNoOfSticks
 
                 totalNoOfSticksForItemType.flatMap { noOfSticks =>
-                  if (BigDecimal(noOfSticks) > limits.getOrElse(product.applicableLimits.head, BigDecimal(0))) {
+                  if (cigaretteAndHeatedTobaccoConstraint(noOfSticks)) {
                     val (journeyData: JourneyData, itemId: String) =
                       newPurchaseService.insertPurchases(
                         path = path,
@@ -424,12 +403,9 @@ class TobaccoInputController @Inject() (
                       (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                         case (Some(true), Some("greatBritain")) =>
                           Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, itemId))
-                        case (Some(false), Some("euOnly"))      =>
-                          if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                            Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, itemId))
-                          } else {
-                            Redirect(routes.SelectProductController.nextStep)
-                          }
+                        case (Some(false), Some("euOnly"))
+                            if countriesService.isInEu(dto.originCountry.getOrElse("")) =>
+                          Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, itemId))
                         case _                                  => Redirect(routes.SelectProductController.nextStep)
                       }
                     }
@@ -438,8 +414,8 @@ class TobaccoInputController @Inject() (
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(path)
                       )
-                        .removingFromSession(s"userAmountInput${product.token}")
-                        .addingToSession(s"userAmountInput${product.token}" -> tobaccoUnit(data, product.token, dto))
+                        .removingFromSession(s"user-amount-input-${product.token}")
+                        .addingToSession(s"user-amount-input-${product.token}" -> noOfSticks.toString)
                     }
                   }
                 }
@@ -470,16 +446,23 @@ class TobaccoInputController @Inject() (
               success = dto => {
                 val totalWeightForLooseTobacco: Future[BigDecimal] =
                   for {
-                    data: Option[JourneyData]                 <- cache.fetch
-                    chewingTobaccoTotalWeight: BigDecimal      =
+                    data: Option[JourneyData]            <- cache.fetch
+                    chewingTobaccoTotalWeight: BigDecimal =
                       calculatorService.calculateTotalWeightOrVolumeForItemType(data, "chewing-tobacco")
-                    rollingTobaccoTotalWeight: BigDecimal      =
+                    rollingTobaccoTotalWeight: BigDecimal =
                       calculatorService.calculateTotalWeightOrVolumeForItemType(data, "rolling-tobacco")
-                    looseTobaccoTotalWeightInGrams: BigDecimal =
+//                    looseTobaccoTotalWeightInGrams: BigDecimal =
+//                      (dto.weightOrVolume
+//                        .getOrElse(BigDecimal(0)) + chewingTobaccoTotalWeight + rollingTobaccoTotalWeight)
+//                        .setScale(5, BigDecimal.RoundingMode.HALF_UP) * 1000
+                  } yield {
+                    val looseTobaccoTotalWeightInGrams: BigDecimal =
                       (dto.weightOrVolume
-                        .getOrElse(BigDecimal(0)) + chewingTobaccoTotalWeight + rollingTobaccoTotalWeight)
-                        .setScale(2, BigDecimal.RoundingMode.HALF_UP) * 1000
-                  } yield looseTobaccoTotalWeightInGrams
+                        .getOrElse(BigDecimal(0)) +
+                        chewingTobaccoTotalWeight + rollingTobaccoTotalWeight)
+                        .setScale(5, BigDecimal.RoundingMode.HALF_UP) * 1000
+                    looseTobaccoTotalWeightInGrams
+                  }
 
                 totalWeightForLooseTobacco.flatMap { weightInGrams =>
                   if (looseTobaccoWeightConstraint(weightInGrams)) {
@@ -506,9 +489,11 @@ class TobaccoInputController @Inject() (
                   } else {
                     Future(
                       Redirect(routes.LimitExceedController.loadLimitExceedPage(path))
-                        .removingFromSession(s"userAmountInput${product.token}")
+                        .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(
-                          s"userAmountInput${product.token}" -> weightInGrams.toString()
+                          s"user-amount-input-${product.token}" -> weightInGrams
+                            .setScale(2, BigDecimal.RoundingMode.HALF_UP)
+                            .toString()
                         )
                     )
                   }
@@ -548,9 +533,7 @@ class TobaccoInputController @Inject() (
                 } yield totalNoOfSticks
 
                 totalNoOfSticksForItemType.flatMap { noOfSticks =>
-                  println(" +++++++ " + noOfSticks)
-                  println(" ++++++++ " + limits.getOrElse(product.applicableLimits.head, BigDecimal(0)))
-                  if (BigDecimal(noOfSticks) > limits.getOrElse(product.applicableLimits.head, BigDecimal(0))) {
+                  if (cigarAndCigarilloConstraint(noOfSticks, product.token)) {
                     val (journeyData: JourneyData, itemId: String) =
                       newPurchaseService.insertPurchases(
                         path,
@@ -578,8 +561,8 @@ class TobaccoInputController @Inject() (
                       Redirect(
                         routes.LimitExceedController.loadLimitExceedPage(path)
                       )
-                        .removingFromSession(s"userAmountInput${product.token}")
-                        .addingToSession(s"userAmountInput${product.token}" -> tobaccoUnit(data, product.token, dto))
+                        .removingFromSession(s"user-amount-input-${product.token}")
+                        .addingToSession(s"user-amount-input-${product.token}" -> noOfSticks.toString)
                     }
                   }
                 }
@@ -646,9 +629,7 @@ class TobaccoInputController @Inject() (
                   } yield totalNoOfSticks
 
                   totalNoOfSticksForItemType.flatMap { noOfSticks =>
-                    println(noOfSticks)
-                    println(limits.getOrElse(product.applicableLimits.head, BigDecimal(0)))
-                    if (BigDecimal(noOfSticks) > limits.getOrElse(product.applicableLimits.head, BigDecimal(0))) {
+                    if (cigaretteAndHeatedTobaccoConstraint(noOfSticks)) {
                       cache.store(
                         newPurchaseService.updatePurchase(
                           ppi.path,
@@ -678,8 +659,8 @@ class TobaccoInputController @Inject() (
                         Redirect(
                           routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                         )
-                          .removingFromSession(s"userAmountInput${product.token}")
-                          .addingToSession(s"userAmountInput${product.token}" -> tobaccoUnit(data, product.token, dto))
+                          .removingFromSession(s"user-amount-input-${product.token}")
+                          .addingToSession(s"user-amount-input-${product.token}" -> noOfSticks.toString)
                       }
                     }
                   }
@@ -709,21 +690,59 @@ class TobaccoInputController @Inject() (
                   ),
                 success = dto => {
 
-                  val totalWeightForLooseTobacco: Future[BigDecimal] =
+                  val grabOriginalWeight: Future[Option[BigDecimal]] =
                     for {
-                      data: Option[JourneyData]                 <- cache.fetch
-                      chewingTobaccoTotalWeight: BigDecimal      =
-                        calculatorService.calculateTotalWeightOrVolumeForItemType(data, "chewing-tobacco")
-                      rollingTobaccoTotalWeight: BigDecimal      =
-                        calculatorService.calculateTotalWeightOrVolumeForItemType(data, "rolling-tobacco")
-                      looseTobaccoTotalWeightInGrams: BigDecimal =
-                        (dto.weightOrVolume
-                          .getOrElse(BigDecimal(0)) + chewingTobaccoTotalWeight + rollingTobaccoTotalWeight)
-                          .setScale(2, BigDecimal.RoundingMode.HALF_UP) * 1000
-                    } yield looseTobaccoTotalWeightInGrams
+                      data: Option[JourneyData]          <- cache.fetch
+                      originalWeight: Option[BigDecimal] <-
+                        Future(
+                          data.map(_.purchasedProductInstances.filter(_.iid == iid).flatMap(_.weightOrVolume).head)
+                        )
+                    } yield originalWeight
 
-                  totalWeightForLooseTobacco.flatMap { weightAndVolume =>
-                    if (looseTobaccoWeightConstraint(weightAndVolume)) {
+                  val totalWeightForLooseTobaccoPlusUserAnswers: Future[BigDecimal] =
+                    for {
+                      jd: JourneyData                      <- cache.store(
+                                                                newPurchaseService.updatePurchase(
+                                                                  ppi.path,
+                                                                  iid,
+                                                                  dto.weightOrVolume,
+                                                                  dto.noOfSticks,
+                                                                  dto.country,
+                                                                  dto.originCountry,
+                                                                  dto.currency,
+                                                                  dto.cost
+                                                                )
+                                                              )
+                      chewingTobaccoTotalWeight: BigDecimal =
+                        calculatorService.calculateTotalWeightOrVolumeForItemType(Some(jd), "chewing-tobacco")
+                      rollingTobaccoTotalWeight: BigDecimal =
+                        calculatorService.calculateTotalWeightOrVolumeForItemType(Some(jd), "rolling-tobacco")
+                    } yield {
+                      val looseTobaccoTotalWeightInGrams: BigDecimal =
+                        (chewingTobaccoTotalWeight + rollingTobaccoTotalWeight)
+                          .setScale(5, BigDecimal.RoundingMode.HALF_UP) * 1000
+                      looseTobaccoTotalWeightInGrams
+                    }
+
+                  val updatedLooseTobaccoWeightsWithCleanup = for {
+                    w                  <- grabOriginalWeight
+                    updatedUserAnswers <- totalWeightForLooseTobaccoPlusUserAnswers
+                    _: JourneyData     <- cache.store(
+                                            newPurchaseService.updatePurchase(
+                                              ppi.path,
+                                              iid,
+                                              w,
+                                              dto.noOfSticks,
+                                              dto.country,
+                                              dto.originCountry,
+                                              dto.currency,
+                                              dto.cost
+                                            )
+                                          )
+                  } yield updatedUserAnswers
+
+                  updatedLooseTobaccoWeightsWithCleanup.flatMap { priorWeightAndVolume =>
+                    if (looseTobaccoWeightConstraint(priorWeightAndVolume)) {
                       cache.store(
                         newPurchaseService.updatePurchase(
                           ppi.path,
@@ -746,15 +765,17 @@ class TobaccoInputController @Inject() (
                         }
                       }
                     } else {
-                      cache.fetch.map { data =>
+                      Future(
                         Redirect(
                           routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                         )
-                          .removingFromSession(s"userAmountInput${product.token}")
+                          .removingFromSession(s"user-amount-input-${product.token}")
                           .addingToSession(
-                            s"userAmountInput${product.token}" -> tobaccoUnit(data, product.token, dto)
+                            s"user-amount-input-${product.token}" -> priorWeightAndVolume
+                              .setScale(2, BigDecimal.RoundingMode.HALF_UP)
+                              .toString
                           )
-                      }
+                      )
                     }
                   }
                 }
@@ -792,7 +813,7 @@ class TobaccoInputController @Inject() (
                   } yield totalNoOfSticks
 
                   totalNoOfSticksForItemType.flatMap { noOfSticks =>
-                    if (BigDecimal(noOfSticks) > limits.getOrElse(product.applicableLimits.head, BigDecimal(0))) {
+                    if (cigarAndCigarilloConstraint(noOfSticks, product.token)) {
                       cache.store(
                         newPurchaseService.updatePurchase(
                           ppi.path,
@@ -822,8 +843,8 @@ class TobaccoInputController @Inject() (
                         Redirect(
                           routes.LimitExceedController.loadLimitExceedPage(ppi.path)
                         )
-                          .removingFromSession(s"userAmountInput${product.token}")
-                          .addingToSession(s"userAmountInput${product.token}" -> tobaccoUnit(data, product.token, dto))
+                          .removingFromSession(s"user-amount-input-${product.token}")
+                          .addingToSession(s"user-amount-input-${product.token}" -> noOfSticks.toString)
                       }
                     }
                   }

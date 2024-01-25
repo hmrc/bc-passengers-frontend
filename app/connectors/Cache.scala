@@ -40,7 +40,9 @@ class Cache @Inject() (
   def fetch(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     sessionRepository.fetch[JourneyData]().map {
       case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
-      case _          => Option.empty
+      case _          =>
+        println("Mikey +++++++++")
+        Option.empty
     }
 
   def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier): Future[JsObject] =
