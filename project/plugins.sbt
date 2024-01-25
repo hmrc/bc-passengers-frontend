@@ -3,10 +3,6 @@ resolvers += Resolver.url("HMRC-open-artefacts-ivy2", url("https://open.artefact
   Resolver.ivyStylePatterns
 )
 
-// To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
-// Try to remove when sbt 1.8.0+ and scoverage is 2.0.7+
-ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
-
 addSbtPlugin("uk.gov.hmrc"         % "sbt-auto-build"           % "3.20.0")
 addSbtPlugin("org.playframework"   % "sbt-plugin"               % "3.0.1")
 addSbtPlugin("uk.gov.hmrc"         % "sbt-distributables"       % "2.4.0")
@@ -18,4 +14,4 @@ addSbtPlugin("com.timushev.sbt"    % "sbt-updates"              % "0.6.4")
 addSbtPlugin("net.ground5hark.sbt" % "sbt-concat"               % "0.2.0")
 addSbtPlugin("com.typesafe.sbt"    % "sbt-uglify"               % "2.0.0")
 addSbtPlugin("org.scalameta"       % "sbt-scalafmt"             % "2.5.2")
-addSbtPlugin("uk.gov.hmrc"         % "sbt-accessibility-linter" % "0.36.0")
+addSbtPlugin("uk.gov.hmrc"         % "sbt-accessibility-linter" % "0.38.0")

@@ -13,7 +13,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
     "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.16.1",
     "org.webjars.npm"               % "accessible-autocomplete"    % "2.0.4",
-    "ai.x"                         %% "play-json-extensions"       % "0.42.0"
+    "ai.x"                         %% "play-json-extensions"       % "0.42.0" //ExclusionRule in build.sbt for old play-json version
   )
   private val test           = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapPlayVersion,

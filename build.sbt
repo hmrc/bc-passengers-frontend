@@ -4,6 +4,11 @@ val appName = "bc-passengers-frontend"
 
 ThisBuild / majorVersion := 1
 ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / excludeDependencies ++= Seq(
+  // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
+  // Specifically affects play-json-extensions dependency
+  ExclusionRule(organization = "com.typesafe.play")
+)
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
@@ -14,7 +19,6 @@ lazy val microservice = Project(appName, file("."))
     pipelineStages := Seq(digest),
     PlayKeys.playDefaultPort := 9008
   )
-  // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
   .settings(
     routesImport ++= Seq("binders.Binders._", "models._")
   )
