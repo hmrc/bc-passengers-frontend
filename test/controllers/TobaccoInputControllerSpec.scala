@@ -19,7 +19,6 @@ package controllers
 import connectors.Cache
 import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import play.api.test.Helpers.{status, route => rt, _}
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
@@ -29,6 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{status, route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services._
@@ -1217,12 +1217,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def noOfSticks: Option[Int]            = None
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        FakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us")
-          .withSession(SessionKeys.sessionId -> "fakesessionid", "user-input-amount-rolling-tobacco" -> "400.00")
-//        enhancedFakeRequest(
-//        "POST",
-//        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
-//      )
+        enhancedFakeRequest(
+          "POST",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
+        )
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
@@ -2068,118 +2066,6 @@ class TobaccoInputControllerSpec extends BaseSpec {
       def productPath: ProductPath           = ProductPath("tobacco/chewing-tobacco")
       def weightOrVolume: Option[BigDecimal] = Some(1001)
       def noOfSticks: Option[Int]            = None
-
-      val realMongoData =
-        JourneyData(
-          Some(false),
-          Some("euOnly"),
-          Some(false),
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          Some(true),
-          Some(true),
-          Some(true),
-          None,
-          List(),
-          List(
-            PurchasedProductInstance(
-              ProductPath("tobacco/chewing-tobacco"),
-              "udhswo",
-              Some(0.05),
-              None,
-              Some(Country("US", "title.united_states_of_america", "US", false, true, List("USA", "US", "American"))),
-              None,
-              Some("GBP"),
-              Some(10000),
-              None,
-              None,
-              Some(false),
-              None,
-              None,
-              None,
-              Some(true)
-            ),
-            PurchasedProductInstance(
-              ProductPath("tobacco/rolling-tobacco"),
-              "LlFzSV",
-              Some(0.85),
-              None,
-              Some(Country("US", "title.united_states_of_america", "US", false, true, List("USA", "US", "American"))),
-              None,
-              Some("GBP"),
-              Some(999),
-              None,
-              None,
-              Some(false),
-              None,
-              None,
-              None,
-              Some(true)
-            )
-          ),
-          Some(
-            PurchasedProductInstance(
-              ProductPath("tobacco/chewing-tobacco"),
-              "udhswo",
-              Some(0.05),
-              None,
-              Some(Country("US", "title.united_states_of_america", "US", false, true, List("USA", "US", "American"))),
-              None,
-              Some("GBP"),
-              Some(10000),
-              None,
-              None,
-              Some(false),
-              None,
-              None,
-              None,
-              Some(true)
-            )
-          ),
-          None,
-          None,
-          None,
-          Some("US"),
-          None,
-          Some("GBP"),
-          None,
-          None,
-          None,
-          None,
-          None,
-          None
-        )
-
-      lazy val cachedJourneyDataMikey =
-        JourneyData(
-          prevDeclaration = Some(false),
-          euCountryCheck = Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
-          isVatResClaimed = Some(true),
-          isBringingDutyFree = None,
-          bringingOverAllowance = Some(true),
-          privateCraft = Some(false),
-          ageOver17 = Some(true),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              productPath,
-              "iid0",
-              weightOrVolume,
-              noOfSticks,
-              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None,
-              Some("EUR"),
-              Some(BigDecimal(12.99))
-            )
-          ),
-          defaultCountry = Some("FR"),
-          defaultOriginCountry = Some("FR"),
-          defaultCurrency = Some("EUR")
-        )
 
       val cacheDataWithWorkingInstance =
         JourneyData(
