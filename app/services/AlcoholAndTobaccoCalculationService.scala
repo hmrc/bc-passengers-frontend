@@ -75,7 +75,7 @@ class AlcoholAndTobaccoCalculationService {
           chewingTobaccoTotalWeight +
           rollingTobaccoTotalWeight
       )
-        .setScale(5, BigDecimal.RoundingMode.HALF_UP) * 1000
+        .setScale(2, BigDecimal.RoundingMode.HALF_UP) * 1000
 
     looseTobaccoTotalWeightInGrams
   }
@@ -105,7 +105,7 @@ class AlcoholAndTobaccoCalculationService {
           rollingTobaccoTotalWeight -
           originalWeight
       )
-        .setScale(5, BigDecimal.RoundingMode.HALF_UP) * 1000
+        .setScale(2, BigDecimal.RoundingMode.HALF_UP) * 1000
 
     looseTobaccoTotalWeightInGrams
   }

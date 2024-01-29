@@ -169,7 +169,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
 
             val actual   = service.looseTobaccoAddHelper(data, tobaccoDto)
-            val expected = BigDecimal(800.00000)
+            val expected = BigDecimal(800.00)
 
             actual shouldBe expected
           }
@@ -214,7 +214,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
 
             val actual   = service.looseTobaccoAddHelper(data, tobaccoDto)
-            val expected = BigDecimal(1000.00000)
+            val expected = BigDecimal(1000.00)
 
             actual shouldBe expected
           }
@@ -264,7 +264,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
 
             val actual   = service.looseTobaccoAddHelper(data, tobaccoDto)
-            val expected = BigDecimal(900.00000)
+            val expected = BigDecimal(900.00)
 
             actual shouldBe expected
           }
@@ -320,7 +320,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
                 hasEvidence = None
               )
 
-            val actual = service.alcoholEditHelper(data, alcoholDto, "wine")
+            val actual   = service.alcoholEditHelper(data, alcoholDto, "wine")
             val expected = BigDecimal(0.9)
 
             actual shouldBe expected
@@ -376,7 +376,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
                 hasEvidence = None
               )
 
-            val actual = service.alcoholEditHelper(data, alcoholDto, "wine")
+            val actual   = service.alcoholEditHelper(data, alcoholDto, "wine")
             val expected = BigDecimal(0.4)
 
             actual shouldBe expected
@@ -432,7 +432,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
 
             val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(900.00000)
+            val expected = BigDecimal(900.00)
 
             actual shouldBe expected
           }
@@ -484,7 +484,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
 
             val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(900.00000)
+            val expected = BigDecimal(900.00)
 
             actual shouldBe expected
           }
@@ -541,7 +541,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
 
             val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(600.00000)
+            val expected = BigDecimal(600.00)
 
             actual shouldBe expected
           }
@@ -573,7 +573,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
                   iid = "item4",
                   weightOrVolume = Some(0.1)
                 ),
-                  PurchasedProductInstance(
+                PurchasedProductInstance(
                   ProductPath("tobacco/cigars"),
                   iid = "item5",
                   noOfSticks = Some(100),
@@ -609,8 +609,8 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
                 hasEvidence = None
               )
 
-            val actual = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(600.00000)
+            val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
+            val expected = BigDecimal(600.00)
 
             actual shouldBe expected
           }
