@@ -273,7 +273,7 @@ class TobaccoInputController @Inject() (
               dto => {
                 lazy val totalNoOfSticksForItemType =
                   alcoholAndTobaccoCalculationService
-                    .noOfSticksTobaccoAddHelper(context.getJourneyData, dto, product.token)
+                    .noOfSticksTobaccoAddHelper(context.getJourneyData, dto.noOfSticks, product.token)
                 if (cigaretteAndHeatedTobaccoConstraint(totalNoOfSticksForItemType)) {
                   val (journeyData: JourneyData, itemId: String) =
                     newPurchaseService.insertPurchases(
@@ -295,7 +295,7 @@ class TobaccoInputController @Inject() (
                       routes.LimitExceedController.onPageLoadAddJourneyNoOfSticks(path)
                     )
                       .removingFromSession(s"user-amount-input-${product.token}")
-                      .addingToSession(s"user-amount-input-${product.token}" -> totalNoOfSticksForItemType.toString)
+                      .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
                   )
                 }
               }
@@ -377,7 +377,7 @@ class TobaccoInputController @Inject() (
               dto => {
                 lazy val totalNoOfSticksForItemType =
                   alcoholAndTobaccoCalculationService
-                    .noOfSticksTobaccoAddHelper(context.getJourneyData, dto, product.token)
+                    .noOfSticksTobaccoAddHelper(context.getJourneyData, dto.noOfSticks, product.token)
                 if (cigarAndCigarilloConstraint(totalNoOfSticksForItemType, product.token)) {
                   val (journeyData: JourneyData, itemId: String) =
                     newPurchaseService.insertPurchases(
@@ -395,11 +395,11 @@ class TobaccoInputController @Inject() (
                 } else {
                   Future(
                     Redirect(
-                      routes.LimitExceedController.onPageLoadEditTobaccoWeight(path)
+                      routes.LimitExceedController.onPageLoadAddJourneyNoOfSticks(path)
                     )
-//                      .removingFromSession(s"user-amount-input-${product.token}")
+                      .removingFromSession(s"user-amount-input-${product.token}")
                       .addingToSession(
-                        s"user-amount-input-${product.token}" -> dto.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                        s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString
                       )
                   )
                 }

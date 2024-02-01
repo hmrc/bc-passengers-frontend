@@ -1418,29 +1418,47 @@ limitExceeded.title = There is a problem
 limitExceeded.h1 = There is a problem
 limitExceeded.p1 = You have entered {0} {1}
 
-limitExceeded.p1.beer = litres of beer.
-limitExceeded.p1.cider = litres of cider.
-limitExceeded.p1.non-sparkling-cider = litres of cider.
-limitExceeded.p1.sparkling-cider = litres of cider.
-limitExceeded.p1.sparkling-cider-up = litres of cider.
-limitExceeded.p1.sparkling-wine = litres of sparkling wine.
-limitExceeded.p1.spirits = litres of spirits.
-limitExceeded.p1.wine = litres of wine.
-limitExceeded.p1.other = litres of other alcohol.
+limitExceeded.p1.beer = litre(s) of beer.
+limitExceeded.p1.cider = litre(s) of cider.
+limitExceeded.p1.non-sparkling-cider = litre(s) of cider.
+limitExceeded.p1.sparkling-cider = litre(s) of cider.
+limitExceeded.p1.sparkling-cider-up = litre(s) of cider.
+limitExceeded.p1.sparkling-wine = litre(s) of sparkling wine.
+limitExceeded.p1.spirits = litre(s) of spirits.
+limitExceeded.p1.wine = litre(s) of wine.
+limitExceeded.p1.other = litre(s) of other alcohol.
 
-limitExceeded.p1.cigarettes = cigarettes.
-limitExceeded.p1.cigarillos = cigarillos.
-limitExceeded.p1.cigars = cigars.
+limitExceeded.p1.cigarettes = cigarette(s).
+limitExceeded.p1.cigarillos = cigarillo(s).
+limitExceeded.p1.cigars = cigar(s).
 limitExceeded.p1.heated-tobacco = tobacco sticks.
-limitExceeded.p1.chewing-tobacco = g of tobacco.
-limitExceeded.p1.rolling-tobacco = g of tobacco.
+limitExceeded.p1.chewing-tobacco = g of pipe or chewing tobacco.
+limitExceeded.p1.rolling-tobacco = g of pipe or chewing tobacco.
 
 limitExceeded.p2 = You cannot use this service to declare more than {0}
 limitExceeded.p3 = This item will be removed from your goods to declare.
-limitExceeded.p3.alcohol.edit = You have tried to enter {0} litres on the previous page which has taken you over the limit. The product quantity has been reset to {1} litres.
+limitExceeded.p3.alcohol.edit = You have tried to enter {0} litres on the previous page which has taken you over the limit. The product quantity has been reset to {1} litre(s).
 limitExceeded.p3.tobacco.loose.edit = You have tried to enter {0}g on the previous page which has taken you over the limit. The product quantity has been reset to {1}g.
 limitExceeded.p3.tobacco.cigars.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
-limitExceeded.p3.tobacco.cigarettes.edit = You have tried to enter {0} sticks on the previous page which has taken you over the limit. The product quantity has been reset to {1} sticks.
+limitExceeded.p3.tobacco.cigarettes.edit = You have tried to enter {0} sticks on the previous page which has taken you over the limit. The product quantity has been reset to {1} stick(s).
+
+limitExceeded.add.panelIndent.beer = {0} litre(s) of beer
+limitExceeded.add.panelIndent.cider = {0} litre(s) of cider
+limitExceeded.add.panelIndent.non-sparkling-cider = {0} litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-cider = {0} litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-cider-up = {0} litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-wine = {0} litre(s) of sparkling wine
+limitExceeded.add.panelIndent.other = {0} litre(s) of other alcohol
+limitExceeded.add.panelIndent.chewing-tobacco = {0}g of pipe or chewing tobacco
+limitExceeded.add.panelIndent.rolling-tobacco = {0}g of rolling tobacco
+
+limitExceeded.add.panelIndent.cigarettes = {0} cigarette(s)
+limitExceeded.add.panelIndent.cigarillos = {0} cigarillo(s)
+limitExceeded.add.panelIndent.cigars = {0} cigar(s)
+limitExceeded.add.panelIndent.heated-tobacco = {0}g tobacco stick(s)
+limitExceeded.add.panelIndent.chewing-tobacco = {0}g of pipe or chewing tobacco
+limitExceeded.add.panelIndent.rolling-tobacco = {0}g of pipe or chewing tobacco
+
 limitExceeded.h2a = What you must do
 limitExceeded.p4 = You must use the red channel to declare this item in person to Border Force when you arrive in the UK. They will calculate and take payment of the taxes and duties due.
 limitExceeded.warning.alcohol = If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.
@@ -1455,7 +1473,7 @@ limitExceeded.p2.sparkling-cider-up = 20 litres of cider.
 limitExceeded.p2.sparkling-wine = 60 litres of sparkling wine.
 limitExceeded.p2.spirits = 10 litres of spirits.
 limitExceeded.p2.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine).
-limitExceeded.p2.other = 20 litres of other alcohol.
+limitExceeded.p2.other = 10 litres of other alcohol.
 
 limitExceeded.p2.cigarettes = 800 cigarettes.
 limitExceeded.p2.cigarillos = 400 cigarillos.

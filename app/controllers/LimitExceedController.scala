@@ -54,9 +54,20 @@ class LimitExceedController @Inject() (
         val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
         val userInputBigDecimalFormatted    = userInputBigDecimal.setScale(2, RoundingMode.HALF_UP)
 
+        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
+
+        val totalAccPreviouslyAddedVolume =
+          alcoholAndTobaccoCalculationService.alcoholAddHelper(
+            context.getJourneyData,
+            BigDecimal(0),
+            product.token
+          )
+
+        val totalAccNoOfVolume: BigDecimal = (totalAccPreviouslyAddedVolume + userInputBigDecimal).setScale(2, RoundingMode.HALF_UP)
+
         userInput match {
           case Some(_) =>
-            Future(Ok(limitExceedViewAdd(userInputBigDecimalFormatted.toString(), product.token, product.name)))
+            Future(Ok(limitExceedViewAdd(totalAccNoOfVolume.toString(), userInputBigDecimalFormatted.toString(), product.token, product.name, showPanelIndent)))
           case _       =>
             Future(InternalServerError(errorTemplate()))
         }
@@ -68,19 +79,23 @@ class LimitExceedController @Inject() (
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
         val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
+        val userInputBigDecimalFormatted =  (userInputBigDecimal * 1000).setScale(2, RoundingMode.HALF_UP)
 
         val totalAccWeightForTobaccoProduct =
           alcoholAndTobaccoCalculationService.looseTobaccoAddHelper(
             context.getJourneyData,
-            Some(userInputBigDecimal)
+            None
           )
 
-        val userInputBigDecimalFormatted =
+//        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.nonEmpty
+        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
+
+        val totalAccWeight =
           ((totalAccWeightForTobaccoProduct + userInputBigDecimal) * 1000).setScale(2, RoundingMode.HALF_UP)
 
         userInput match {
           case Some(_) =>
-            Future(Ok(limitExceedViewAdd(userInputBigDecimalFormatted.toString(), product.token, product.name)))
+            Future(Ok(limitExceedViewAdd(totalAccWeight.toString(), userInputBigDecimalFormatted.toString, product.token, product.name, showPanelIndent)))
           case _       =>
             Future(InternalServerError(errorTemplate()))
         }
@@ -94,9 +109,25 @@ class LimitExceedController @Inject() (
 
         val userInputInt: Int = userInput.map(_.toInt).getOrElse(0)
 
+        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
+//        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.nonEmpty
+
+        val totalAccPreviouslyAddedNoOfSticks =
+          alcoholAndTobaccoCalculationService.noOfSticksTobaccoAddHelper(
+            context.getJourneyData,
+            None,
+            product.token
+          )
+
+        val totalAccNoOfSticks: Int = totalAccPreviouslyAddedNoOfSticks + userInputInt
+
+        println(totalAccPreviouslyAddedNoOfSticks)
+        println(totalAccNoOfSticks)
+        println(userInputInt)
+
         userInput match {
           case Some(_) =>
-            Future(Ok(limitExceedViewAdd(userInputInt.toString, product.token, product.name)))
+            Future(Ok(limitExceedViewAdd(totalAccNoOfSticks.toString, userInputInt.toString, product.token, product.name, showPanelIndent)))
           case _       =>
             Future(InternalServerError(errorTemplate()))
         }
@@ -130,7 +161,6 @@ class LimitExceedController @Inject() (
 
         userInput match {
           case Some(_) =>
-            println("Alcohol")
             Future(
               Ok(
                 limitExceedViewEdit(
@@ -171,7 +201,6 @@ class LimitExceedController @Inject() (
 
         userInput match {
           case Some(_) =>
-            println("Tobacco")
             Future(
               Ok(
                 limitExceedViewEdit(
@@ -192,6 +221,7 @@ class LimitExceedController @Inject() (
   def onPageLoadEditNoOfSticks(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
+
         val originalAmountEntered: Int =
           context.getJourneyData.workingInstance.flatMap(_.noOfSticks).getOrElse(0)
 
@@ -205,6 +235,11 @@ class LimitExceedController @Inject() (
             Some(userInputInt),
             product.token
           )
+
+        println(totalAccNoOfSticks)
+        println(userInputInt)
+        println(userInput)
+        println(originalAmountEntered)
 
         userInput match {
           case Some(_) =>

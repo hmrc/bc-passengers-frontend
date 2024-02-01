@@ -16,11 +16,15 @@
 
 package services
 
-import models.{AlcoholDto, JourneyData, TobaccoDto}
+import models.JourneyData
 
 class AlcoholAndTobaccoCalculationService {
 
-  def alcoholAddHelper(contextJourneyData: JourneyData, weightOrVolume: BigDecimal, productToken: String): BigDecimal = {
+  def alcoholAddHelper(
+    contextJourneyData: JourneyData,
+    weightOrVolume: BigDecimal,
+    productToken: String
+  ): BigDecimal = {
 
     val alcoholProductTotalVolume: BigDecimal =
       contextJourneyData.purchasedProductInstances
@@ -36,7 +40,11 @@ class AlcoholAndTobaccoCalculationService {
     totalAlcoholVolume
   }
 
-  def alcoholEditHelper(contextJourneyData: JourneyData, weightOrVolume: BigDecimal, productToken: String): BigDecimal = {
+  def alcoholEditHelper(
+    contextJourneyData: JourneyData,
+    weightOrVolume: BigDecimal,
+    productToken: String
+  ): BigDecimal = {
 
     val originalVolume: BigDecimal =
       contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElse(BigDecimal(0))
@@ -112,7 +120,7 @@ class AlcoholAndTobaccoCalculationService {
 
   def noOfSticksTobaccoAddHelper(
     contextJourneyData: JourneyData,
-    dto: TobaccoDto,
+    noOfSticks: Option[Int],
     productToken: String
   ): Int = {
     val totalNoOfSticks: Int          =
@@ -121,7 +129,7 @@ class AlcoholAndTobaccoCalculationService {
         .map(_.noOfSticks.getOrElse(0))
         .sum
     val totalNoOfSticksAfterCalc: Int =
-      dto.noOfSticks.getOrElse(0) + totalNoOfSticks
+      noOfSticks.getOrElse(0) + totalNoOfSticks
 
     totalNoOfSticksAfterCalc
   }

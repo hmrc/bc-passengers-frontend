@@ -30,6 +30,7 @@ import util._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal.RoundingMode
 
 class AlcoholInputController @Inject() (
   val cache: Cache,
@@ -192,7 +193,7 @@ class AlcoholInputController @Inject() (
                       path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
                   ).removingFromSession(s"user-amount-input-${product.token}")
-                    .addingToSession(s"user-amount-input-${product.token}" -> totalWeightAndVolume.toString())
+                    .addingToSession(s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString())
                 )
               }
             }
