@@ -1432,11 +1432,15 @@ limitExceeded.p1.cigarettes = cigarettes.
 limitExceeded.p1.cigarillos = cigarillos.
 limitExceeded.p1.cigars = cigars.
 limitExceeded.p1.heated-tobacco = tobacco sticks.
-limitExceeded.p1.chewing-tobacco = grams of tobacco.
-limitExceeded.p1.rolling-tobacco = grams of tobacco.
+limitExceeded.p1.chewing-tobacco = g of tobacco.
+limitExceeded.p1.rolling-tobacco = g of tobacco.
 
 limitExceeded.p2 = You cannot use this service to declare more than {0}
 limitExceeded.p3 = This item will be removed from your goods to declare.
+limitExceeded.p3.alcohol.edit = You have tried to enter {0} litres on the previous page which has taken you over the limit. The product quantity has been reset to {1} litres.
+limitExceeded.p3.tobacco.loose.edit = You have tried to enter {0}g on the previous page which has taken you over the limit. The product quantity has been reset to {1}g.
+limitExceeded.p3.tobacco.cigars.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
+limitExceeded.p3.tobacco.cigarettes.edit = You have tried to enter {0} sticks on the previous page which has taken you over the limit. The product quantity has been reset to {1} sticks.
 limitExceeded.h2a = What you must do
 limitExceeded.p4 = You must use the red channel to declare this item in person to Border Force when you arrive in the UK. They will calculate and take payment of the taxes and duties due.
 limitExceeded.warning.alcohol = If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.

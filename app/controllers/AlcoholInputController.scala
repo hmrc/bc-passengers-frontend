@@ -21,7 +21,7 @@ import connectors.Cache
 import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import forms.AlcoholInputForm
-import models.{AlcoholDto, ProductPath}
+import models.{AlcoholDto, JourneyData, ProductPath}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
@@ -159,10 +159,10 @@ class AlcoholInputController @Inject() (
               ),
             dto => {
               lazy val totalWeightAndVolume =
-                alcoholAndTobaccoCalculationService.alcoholAddHelper(context.getJourneyData, dto, product.token)
+                alcoholAndTobaccoCalculationService.alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
 
               if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
-                val item =
+                val (journeyData, item) =
                   newPurchaseService.insertPurchases(
                     path,
                     Some(dto.weightOrVolume),
@@ -172,13 +172,13 @@ class AlcoholInputController @Inject() (
                     dto.currency,
                     List(dto.cost)
                   )
-                cache.store(item._1) map { _ =>
+                cache.store(journeyData) map { _ =>
                   (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                     case (Some(true), Some("greatBritain")) =>
-                      Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, item._2))
+                      Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, item))
                     case (Some(false), Some("euOnly"))      =>
                       if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item._2))
+                        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item))
                       } else {
                         Redirect(routes.SelectProductController.nextStep)
                       }
@@ -188,7 +188,7 @@ class AlcoholInputController @Inject() (
               } else {
                 Future(
                   Redirect(
-                    routes.LimitExceedController.loadLimitExceedPage(
+                    routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(
                       path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
                   ).removingFromSession(s"user-amount-input-${product.token}")
@@ -239,9 +239,9 @@ class AlcoholInputController @Inject() (
                       )
                     )
                   ),
-                dto => {
+                success = dto => {
                   lazy val alcoholTotalVolume =
-                    alcoholAndTobaccoCalculationService.alcoholEditHelper(context.getJourneyData, dto, product.token)
+                    alcoholAndTobaccoCalculationService.alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token)
                   if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
                     cache.store(
                       newPurchaseService.updatePurchase(
@@ -254,7 +254,7 @@ class AlcoholInputController @Inject() (
                         dto.currency,
                         dto.cost
                       )
-                    ) map { _ =>
+                    ) map { _: JourneyData =>
                       (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                         case (Some(true), Some("greatBritain")) =>
                           Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
@@ -270,14 +270,11 @@ class AlcoholInputController @Inject() (
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.loadLimitExceedPage(path = ppi.path)
+                        routes.LimitExceedController.onPageLoadEditAlcoholVolume(path = ppi.path)
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(
-                          s"user-amount-input-${product.token}" ->
-                            alcoholTotalVolume
-                              .setScale(2, BigDecimal.RoundingMode.HALF_UP)
-                              .toString()
+                          s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString()
                         )
                     )
                   }

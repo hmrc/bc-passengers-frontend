@@ -2029,7 +2029,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/edit/units-of-product"
       )
     }
 
@@ -2055,17 +2055,13 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/edit/units-of-product"
       )
     }
 
     "redirect to limit exceed warning page for loose tobacco edit" in {
 
       lazy val fakeLimits: Map[String, String] = Map("L-LOOSE" -> "1.1")
-
-      def productPath: ProductPath           = ProductPath("tobacco/chewing-tobacco")
-      def weightOrVolume: Option[BigDecimal] = Some(1001)
-      def noOfSticks: Option[Int]            = None
 
       val cacheDataWithWorkingInstance =
         JourneyData(
@@ -2200,7 +2196,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/edit/tobacco/weight-or-volume"
       )
     }
   }

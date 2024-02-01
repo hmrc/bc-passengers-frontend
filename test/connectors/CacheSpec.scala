@@ -24,7 +24,7 @@ import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import util.BaseSpec
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class CacheSpec extends BaseSpec with MockitoSugar {
 

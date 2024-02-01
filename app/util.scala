@@ -67,6 +67,17 @@ package object util {
     }
   }
 
+  def calculatorLimitConstraintOptionBigDecimal(
+    limits: Map[String, BigDecimal] = Map.empty,
+    applicableLimits: List[String] = Nil
+  ): Boolean = {
+
+    val errors =
+      for (limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
+
+    if (errors.nonEmpty) false else true
+  }
+
   def cigaretteAndHeatedTobaccoConstraint(numberOfSticks: Int): Boolean = numberOfSticks <= 800
 
   def cigarAndCigarilloConstraint(numberOfSticks: Int, productType: String): Boolean =
@@ -79,6 +90,17 @@ package object util {
   def looseTobaccoWeightConstraint(looseTobaccoWeight: BigDecimal): Boolean = {
     val oneThousandGrams = BigDecimal(1000)
     looseTobaccoWeight <= oneThousandGrams
+  }
+
+  def calculatorLimitConstraintOptionInt(
+    limits: Map[String, BigDecimal] = Map.empty,
+    applicableLimits: List[String] = Nil
+  ): Boolean = {
+
+    val errors =
+      for (limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
+
+    if (errors.nonEmpty) false else true
   }
 
   def calculatorLimitConstraintBigDecimal(

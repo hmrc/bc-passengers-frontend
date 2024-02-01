@@ -17,14 +17,16 @@
 package views.purchased_products
 
 import play.twirl.api.HtmlFormat
-import views.html.purchased_products.limit_exceed
+import views.html.purchased_products.limit_exceed_edit
 import views.{BaseSelectors, BaseViewSpec}
 
-class LimitExceedViewSpec extends BaseViewSpec {
+class LimitExceedEditViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable =
-    injected[limit_exceed].apply(
+    injected[limit_exceed_edit].apply(
       "110",
+      "0",
+      "0",
       "cigars",
       "label.tobacco.cigars"
     )(
@@ -34,8 +36,10 @@ class LimitExceedViewSpec extends BaseViewSpec {
     )
 
   val viewViaRender: HtmlFormat.Appendable =
-    injected[limit_exceed].render(
+    injected[limit_exceed_edit].render(
       "110.2",
+      "0",
+      "0",
       "cigars",
       "label.tobacco.cigars",
       request = request,
@@ -44,13 +48,23 @@ class LimitExceedViewSpec extends BaseViewSpec {
     )
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[limit_exceed].f("110.2", "cigars", "label.tobacco.cigars")(request, messages, appConfig)
+    injected[limit_exceed_edit].f("110.2", "0", "0", "cigars", "label.tobacco.cigars")(request, messages, appConfig)
 
   object Selectors extends BaseSelectors
 
-  def viewApply(amount: String, item: String, productName: String): HtmlFormat.Appendable =
-    injected[limit_exceed]
-      .apply(amount, item, productName)(request = request, messages = messages, appConfig = appConfig)
+  def viewApply(
+    amount: String,
+    originalAmountEntered: String,
+    userInput: String,
+    item: String,
+    productName: String
+  ): HtmlFormat.Appendable =
+    injected[limit_exceed_edit]
+      .apply(amount, originalAmountEntered, userInput, item, productName)(
+        request = request,
+        messages = messages,
+        appConfig = appConfig
+      )
 
   "LimitExceedView" when {
 
@@ -65,7 +79,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.5", "beer", "label.alcohol.beer")
+          val view = viewApply("110.5", "100", "10.5", "beer", "label.alcohol.beer")
 
           val expectedContent =
             Seq(
@@ -88,7 +102,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much non-sparkling cider" should {
 
-          val view = viewApply("20.01", "non-sparkling-cider", "label.alcohol.non-sparkling-cider")
+          val view = viewApply("20.01", "15", "5.01", "non-sparkling-cider", "label.alcohol.non-sparkling-cider")
 
           val expectedContent =
             Seq(
@@ -111,7 +125,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much sparkling-cider" should {
 
-          val view = viewApply("20.01", "sparkling-cider", "label.alcohol.sparkling-cider")
+          val view = viewApply("20.01", "15.00", "5.01", "sparkling-cider", "label.alcohol.sparkling-cider")
 
           val expectedContent =
             Seq(
@@ -134,7 +148,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much sparkling-cider-up" should {
 
-          val view = viewApply("20.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up")
+          val view = viewApply("20.01", "15.00", "5.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up")
 
           val expectedContent =
             Seq(
@@ -157,7 +171,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much spirits" should {
 
-          val view = viewApply("10.01", "spirits", "label.alcohol.spirits")
+          val view = viewApply("10.01", "8.00", "2.01", "spirits", "label.alcohol.spirits")
 
           val expectedContent =
             Seq(
@@ -180,7 +194,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much wine" should {
 
-          val view = viewApply("90.01", "wine", "label.alcohol.wine")
+          val view = viewApply("90.01", "80.00", "10.01", "wine", "label.alcohol.wine")
 
           val expectedContent =
             Seq(
@@ -205,7 +219,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too much other alcohol" should {
 
-          val view = viewApply("20.01", "other", "label.alcohol.other")
+          val view = viewApply("20.01", "20.00", "20.01", "other", "label.alcohol.other")
 
           val expectedContent =
             Seq(
@@ -234,7 +248,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too many cigarettes" should {
 
-          val view = viewApply("801", "cigarettes", "label.tobacco.cigarettes")
+          val view = viewApply("801","800", "801", "cigarettes", "label.tobacco.cigarettes")
 
           val expectedContent =
             Seq(
@@ -257,7 +271,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too many cigarillos" should {
 
-          val view = viewApply("401", "cigarillos", "label.tobacco.cigarillos")
+          val view = viewApply("401","100", "201", "cigarillos", "label.tobacco.cigarillos")
 
           val expectedContent =
             Seq(
@@ -280,7 +294,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters too many cigars" should {
 
-          val view = viewApply("201", "cigars", "label.tobacco.cigars")
+          val view = viewApply("201","50", "81", "cigars", "label.tobacco.cigars")
 
           val expectedContent =
             Seq(
@@ -303,7 +317,7 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters much heated-tobacco" should {
 
-          val view = viewApply("801", "heated-tobacco", "label.tobacco.heated-tobacco")
+          val view = viewApply("801", "100", "201", "heated-tobacco", "label.tobacco.heated-tobacco")
 
           val expectedContent =
             Seq(
@@ -326,11 +340,11 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters much chewing-tobacco" should {
 
-          val view = viewApply("1001", "chewing-tobacco", "label.tobacco.chewing-tobacco")
+          val view = viewApply("1001.00", "100.00", "201.00", "chewing-tobacco", "label.tobacco.chewing-tobacco")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
+              Selectors.p(1)    -> "You have entered 1001.01 grams of tobacco.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -349,11 +363,11 @@ class LimitExceedViewSpec extends BaseViewSpec {
 
         "the user enters much rolling-tobacco" should {
 
-          val view = viewApply("1001", "rolling-tobacco", "label.tobacco.rolling-tobacco")
+          val view = viewApply("1000.01", "100.01", "200.01", "rolling-tobacco", "label.tobacco.rolling-tobacco")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
+              Selectors.p(1)    -> "You have entered 1001.01 grams of tobacco.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",

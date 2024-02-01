@@ -16,7 +16,7 @@
 
 package services
 
-import models.{AlcoholDto, _}
+import models._
 import util.BaseSpec
 
 class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
@@ -53,20 +53,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val alcoholDto =
-              AlcoholDto(
-                weightOrVolume = 0.5,
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val alcoholDtoVolume = BigDecimal(0.5)
 
-            val actual   = service.alcoholAddHelper(data, alcoholDto, "beer")
+            val actual   = service.alcoholAddHelper(data, alcoholDtoVolume, "beer")
             val expected = 0.8
 
             actual shouldBe expected
@@ -107,20 +96,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val alcoholDto =
-              AlcoholDto(
-                weightOrVolume = 0.5,
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val alcoholDtoVolume = BigDecimal(0.5)
 
-            val actual   = service.alcoholAddHelper(data, alcoholDto, "beer")
+            val actual   = service.alcoholAddHelper(data, alcoholDtoVolume, "beer")
             val expected = 0.8
 
             actual shouldBe expected
@@ -154,22 +132,10 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.5),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val tobaccoDtoWeight = Some(BigDecimal(0.5))
 
-            val actual   = service.looseTobaccoAddHelper(data, tobaccoDto)
-            val expected = BigDecimal(800.00)
+            val actual   = service.looseTobaccoAddHelper(data, tobaccoDtoWeight)
+            val expected = BigDecimal(0.80000)
 
             actual shouldBe expected
           }
@@ -199,22 +165,10 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.5),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val tobaccoDtoWeight = Some(BigDecimal(0.5))
 
-            val actual   = service.looseTobaccoAddHelper(data, tobaccoDto)
-            val expected = BigDecimal(1000.00)
+            val actual   = service.looseTobaccoAddHelper(data, tobaccoDtoWeight)
+            val expected = BigDecimal(1.00000)
 
             actual shouldBe expected
           }
@@ -249,22 +203,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.5),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
-
-            val actual   = service.looseTobaccoAddHelper(data, tobaccoDto)
-            val expected = BigDecimal(900.00)
+            val tobaccoDtoWeight = Some(BigDecimal(0.5))
+            val actual           = service.looseTobaccoAddHelper(data, tobaccoDtoWeight)
+            val expected         = BigDecimal(0.90000)
 
             actual shouldBe expected
           }
@@ -307,20 +248,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val alcoholDto =
-              AlcoholDto(
-                weightOrVolume = 0.5,
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val alcoholDtoVolume = BigDecimal(0.5)
 
-            val actual   = service.alcoholEditHelper(data, alcoholDto, "wine")
+            val actual   = service.alcoholEditHelper(data, alcoholDtoVolume, "wine")
             val expected = BigDecimal(0.9)
 
             actual shouldBe expected
@@ -363,20 +293,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val alcoholDto =
-              AlcoholDto(
-                weightOrVolume = 0.3,
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val alcoholDtoVolume = BigDecimal(0.3)
 
-            val actual   = service.alcoholEditHelper(data, alcoholDto, "wine")
+            val actual   = service.alcoholEditHelper(data, alcoholDtoVolume, "wine")
             val expected = BigDecimal(0.4)
 
             actual shouldBe expected
@@ -417,22 +336,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.5),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
-
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(900.00)
+            val tobaccoDtoWeight = Some(BigDecimal(0.5))
+            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val expected         = BigDecimal(0.90000)
 
             actual shouldBe expected
           }
@@ -469,22 +375,9 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.6),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
-
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(900.00)
+            val tobaccoDtoWeight = Some(BigDecimal(0.6))
+            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val expected = BigDecimal(0.90000)
 
             actual shouldBe expected
           }
@@ -526,22 +419,10 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.3),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val tobaccoDtoWeight = Some(BigDecimal(0.3))
 
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(600.00)
+            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val expected = BigDecimal(0.60000)
 
             actual shouldBe expected
           }
@@ -595,22 +476,10 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
               )
             )
 
-            val tobaccoDto =
-              TobaccoDto(
-                noOfSticks = None,
-                weightOrVolume = Some(0.3),
-                country = "FR",
-                originCountry = None,
-                currency = "EUR",
-                cost = 1000.00,
-                isVatPaid = None,
-                isExcisePaid = None,
-                isCustomPaid = None,
-                hasEvidence = None
-              )
+            val tobaccoDtoWeight = Some(BigDecimal(0.3))
 
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDto)
-            val expected = BigDecimal(600.00)
+            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val expected = BigDecimal(0.60000)
 
             actual shouldBe expected
           }

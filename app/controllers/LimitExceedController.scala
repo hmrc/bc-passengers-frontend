@@ -22,19 +22,23 @@ import controllers.enforce.LimitExceedAction
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CalculatorService, ProductTreeService}
+import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.purchased_products.{limit_exceed_add, limit_exceed_edit}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal.RoundingMode
 
 class LimitExceedController @Inject() (
   val cache: Cache,
+  alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
   val productTreeService: ProductTreeService,
   val calculatorService: CalculatorService,
   limitExceedAction: LimitExceedAction,
   val errorTemplate: views.html.errorTemplate,
-  val limitExceedView: views.html.purchased_products.limit_exceed,
+  limitExceedViewAdd: limit_exceed_add,
+  limitExceedViewEdit: limit_exceed_edit,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   val backLinkModel: BackLinkModel,
@@ -43,14 +47,179 @@ class LimitExceedController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  def loadLimitExceedPage(path: ProductPath): Action[AnyContent] =
+  def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
+        val userInputBigDecimalFormatted    = userInputBigDecimal.setScale(2, RoundingMode.HALF_UP)
+
+        userInput match {
+          case Some(_) =>
+            Future(Ok(limitExceedViewAdd(userInputBigDecimalFormatted.toString(), product.token, product.name)))
+          case _       =>
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadAddJourneyTobaccoWeight(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
+
+        val totalAccWeightForTobaccoProduct =
+          alcoholAndTobaccoCalculationService.looseTobaccoAddHelper(
+            context.getJourneyData,
+            Some(userInputBigDecimal)
+          )
+
+        val userInputBigDecimalFormatted =
+          ((totalAccWeightForTobaccoProduct + userInputBigDecimal) * 1000).setScale(2, RoundingMode.HALF_UP)
+
+        userInput match {
+          case Some(_) =>
+            Future(Ok(limitExceedViewAdd(userInputBigDecimalFormatted.toString(), product.token, product.name)))
+          case _       =>
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadAddJourneyNoOfSticks(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
+
+        val userInputInt: Int = userInput.map(_.toInt).getOrElse(0)
+
         userInput match {
-          case Some(inputAmount) =>
-            Future(Ok(limitExceedView(inputAmount, product.token, product.name)))
-          case _                 =>
+          case Some(_) =>
+            Future(Ok(limitExceedViewAdd(userInputInt.toString, product.token, product.name)))
+          case _       =>
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadEditAlcoholVolume(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val originalAmountEntered: BigDecimal =
+          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElse(BigDecimal(0))
+
+        val originalAmountFormatted = originalAmountEntered.setScale(2, RoundingMode.HALF_UP)
+
+        val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
+
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
+
+        val totalAccWeightForAlcoholProduct =
+          alcoholAndTobaccoCalculationService.alcoholEditHelper(
+            context.getJourneyData,
+            userInputBigDecimal,
+            product.token
+          )
+
+        val userInputBigDecimalFormatted = userInputBigDecimal.setScale(2, RoundingMode.HALF_UP)
+
+        val totaledAmount: BigDecimal = totalAccWeightForAlcoholProduct
+
+        val totaledAmountFormatted: BigDecimal = totaledAmount.setScale(2, RoundingMode.HALF_UP)
+
+        userInput match {
+          case Some(_) =>
+            println("Alcohol")
+            Future(
+              Ok(
+                limitExceedViewEdit(
+                  totaledAmountFormatted.toString,
+                  originalAmountFormatted.toString,
+                  userInputBigDecimalFormatted.toString(),
+                  product.token,
+                  product.name
+                )
+              )
+            )
+          case _       =>
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadEditTobaccoWeight(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val originalAmountEntered: BigDecimal =
+          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElse(BigDecimal(0))
+
+        val originalAmountFormatted = (originalAmountEntered * 1000).setScale(2, RoundingMode.HALF_UP)
+
+        val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
+
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
+
+        val totalAccWeightForLooseTobacco =
+          alcoholAndTobaccoCalculationService.looseTobaccoEditHelper(context.getJourneyData, Some(userInputBigDecimal))
+
+        val userInputBigDecimalFormatted = (userInputBigDecimal * 1000).setScale(2, RoundingMode.HALF_UP)
+
+        val totaledAmount: BigDecimal = totalAccWeightForLooseTobacco
+
+        val totaledAmountFormatted: BigDecimal = (totaledAmount * 1000).setScale(2, RoundingMode.HALF_UP)
+
+        userInput match {
+          case Some(_) =>
+            println("Tobacco")
+            Future(
+              Ok(
+                limitExceedViewEdit(
+                  totaledAmountFormatted.toString,
+                  originalAmountFormatted.toString,
+                  userInputBigDecimalFormatted.toString(),
+                  product.token,
+                  product.name
+                )
+              )
+            )
+          case _       =>
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadEditNoOfSticks(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val originalAmountEntered: Int =
+          context.getJourneyData.workingInstance.flatMap(_.noOfSticks).getOrElse(0)
+
+        val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
+
+        val userInputInt: Int = userInput.map(_.toInt).getOrElse(0)
+
+        val totalAccNoOfSticks =
+          alcoholAndTobaccoCalculationService.noOfSticksTobaccoEditHelper(
+            context.getJourneyData,
+            Some(userInputInt),
+            product.token
+          )
+
+        userInput match {
+          case Some(_) =>
+            Future(
+              Ok(
+                limitExceedViewEdit(
+                  totalAccNoOfSticks.toString,
+                  originalAmountEntered.toString,
+                  userInputInt.toString,
+                  product.token,
+                  product.name
+                )
+              )
+            )
+          case _       =>
             Future(InternalServerError(errorTemplate()))
         }
       }

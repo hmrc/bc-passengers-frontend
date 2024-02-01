@@ -71,111 +71,369 @@ class LimitExceedControllerSpec extends BaseSpec {
     )
   lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
 
-  "loadLimitExceedPage" should {
+  "loadLimitExceedPage" when {
 
-    "load limit exceeded page for cider and display alcohol content" in {
-      when(mockCache.fetch(any())).thenReturn(
-        Future.successful(
-          Some(
-            JourneyData(
-              Some(false),
-              Some("greatBritain"),
-              arrivingNICheck = Some(true),
-              isVatResClaimed = None,
-              isBringingDutyFree = None,
-              bringingOverAllowance = Some(true),
-              ageOver17 = Some(true),
-              privateCraft = Some(false)
+    ".onPageLoadAddJourney" should {
+
+      "load limit exceeded page for cider and display alcohol content" in {
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false)
+              )
             )
           )
         )
-      )
-      val result: Future[Result] = route(
-        app,
-        FakeRequest(
-          "GET",
-          "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
-        ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "111.5")
-      ).get
-      status(result) shouldBe OK
+        val result: Future[Result] = route(
+          app,
+          FakeRequest(
+            "GET",
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
+          ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "111.5")
+        ).get
+        status(result) shouldBe OK
 
-      val content = contentAsString(result)
-      val doc     = Jsoup.parse(content)
+        val content = contentAsString(result)
+        val doc     = Jsoup.parse(content)
 
-      doc
-        .getElementsByTag("h1")
-        .text() shouldBe "There is a problem"
-      doc
-        .getElementById("entered-amount")
-        .text() shouldBe "You have entered 111.5 litres of cider."
-      content     should include(
-        "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-          "They will calculate and take payment of the taxes and duties due."
-      )
+        doc
+          .getElementsByTag("h1")
+          .text() shouldBe "There is a problem"
+        doc
+          .getElementById("entered-amount")
+          .text() shouldBe "You have entered 111.50 litres of cider."
+        content     should include(
+          "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+            "They will calculate and take payment of the taxes and duties due."
+        )
+      }
+
+      "load limit exceeded page for cigars and display tobacco content" in {
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false)
+              )
+            )
+          )
+        )
+        val result: Future[Result] = route(
+          app,
+          FakeRequest(
+            "GET",
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+          ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigars" -> "201")
+        ).get
+        status(result) shouldBe OK
+
+        val content = contentAsString(result)
+        val doc     = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+        doc
+          .getElementById("entered-amount")
+          .text()                         shouldBe "You have entered 201.00 cigars."
+        content                             should include(
+          "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+            "They will calculate and take payment of the taxes and duties due."
+        )
+      }
+
+      "do not load limit exceed page if the path is incorrect" in {
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false)
+              )
+            )
+          )
+        )
+        val result: Future[Result] = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")
+        ).get
+        status(result) shouldBe NOT_FOUND
+      }
     }
 
-    "load limit exceeded page for cigars and display tobacco content" in {
-      when(mockCache.fetch(any())).thenReturn(
-        Future.successful(
-          Some(
-            JourneyData(
-              Some(false),
-              Some("greatBritain"),
-              arrivingNICheck = Some(true),
-              isVatResClaimed = None,
-              isBringingDutyFree = None,
-              bringingOverAllowance = Some(true),
-              ageOver17 = Some(true),
-              privateCraft = Some(false)
+    ".onPageLoadEditAlcoholWeightOrVolume" should {
+
+      "load limit exceeded page for cider and display alcohol content" in {
+
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false),
+                purchasedProductInstances = List(
+                  PurchasedProductInstance(
+                    ProductPath("alcohol/non-sparkling-cider"),
+                    iid = "iid0",
+                    weightOrVolume = Some(20.0),
+                    noOfSticks = None,
+                    country = None,
+                    originCountry = None,
+                    currency = Some("EUR"),
+                    cost = Some(BigDecimal(12.99))
+                  )
+                ),
+                workingInstance = Some(
+                  PurchasedProductInstance(
+                    ProductPath("alcohol/non-sparkling-cider"),
+                    "iid0",
+                    Some(20.0),
+                    None,
+                    None,
+                    None,
+                    Some("EUR"),
+                    Some(BigDecimal(12.99))
+                  )
+                )
+              )
             )
           )
         )
-      )
-      val result: Future[Result] = route(
-        app,
-        FakeRequest(
-          "GET",
-          "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
-        ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigars" -> "201")
-      ).get
-      status(result) shouldBe OK
+        val result: Future[Result] = route(
+          app,
+          FakeRequest(
+            "GET",
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/edit/alcohol/weight-or-volume"
+          ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "50.50")
+        ).get
+        status(result) shouldBe OK
 
-      val content = contentAsString(result)
-      val doc     = Jsoup.parse(content)
+        val content = contentAsString(result)
+        val doc     = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "There is a problem"
-      doc
-        .getElementById("entered-amount")
-        .text()                         shouldBe "You have entered 201 cigars."
-      content                             should include(
-        "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-          "They will calculate and take payment of the taxes and duties due."
-      )
+        doc
+          .getElementsByTag("h1")
+          .text() shouldBe "There is a problem"
+        doc
+          .getElementById("entered-amount")
+          .text() shouldBe "You have entered 50.50 litres of cider."
+        doc
+          .getElementById("item-edited")
+          .text() shouldBe "You have tried to enter 50.50 litres on the previous page which has taken you over the limit. The product quantity has been reset to 20.00 litres."
+        content     should include(
+          "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+            "They will calculate and take payment of the taxes and duties due."
+        )
+      }
+
+      "do not load limit exceed page if the path is incorrect" in {
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false),
+                purchasedProductInstances = List(
+                  PurchasedProductInstance(
+                    ProductPath("alcohol/non-sparkling-cider"),
+                    iid = "iid0",
+                    weightOrVolume = Some(20.0),
+                    noOfSticks = None,
+                    country = None,
+                    originCountry = None,
+                    currency = Some("EUR"),
+                    cost = Some(BigDecimal(12.99))
+                  )
+                ),
+                workingInstance = Some(
+                  PurchasedProductInstance(
+                    ProductPath("alcohol/non-sparkling-cider"),
+                    "iid0",
+                    Some(20.0),
+                    None,
+                    None,
+                    None,
+                    Some("EUR"),
+                    Some(BigDecimal(12.99))
+                  )
+                )
+              )
+            )
+          )
+        )
+        val result: Future[Result] = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")
+        ).get
+        status(result) shouldBe NOT_FOUND
+      }
     }
 
-    "do not load limit exceed page if the path is incorrect" in {
-      when(mockCache.fetch(any())).thenReturn(
-        Future.successful(
-          Some(
-            JourneyData(
-              Some(false),
-              Some("greatBritain"),
-              arrivingNICheck = Some(true),
-              isVatResClaimed = None,
-              isBringingDutyFree = None,
-              bringingOverAllowance = Some(true),
-              ageOver17 = Some(true),
-              privateCraft = Some(false)
+    ".onPageLoadEditNoOfSticks" should {
+
+      "load limit exceeded page for cigarettes and display correct content for cigarettes" in {
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false),
+                purchasedProductInstances = List(
+                  PurchasedProductInstance(
+                    ProductPath("tobacco/cigars"),
+                    iid = "iid0",
+                    weightOrVolume = None,
+                    noOfSticks = Some(800),
+                    country = None,
+                    originCountry = None,
+                    currency = Some("EUR"),
+                    cost = Some(BigDecimal(12.99))
+                  )
+                ),
+                workingInstance = Some(
+                  PurchasedProductInstance(
+                    ProductPath("tobacco/cigars"),
+                    "iid0",
+                    None,
+                    noOfSticks = Some(800),
+                    None,
+                    None,
+                    Some("EUR"),
+                    Some(BigDecimal(12.99))
+                  )
+                )
+              )
             )
           )
         )
-      )
-      val result: Future[Result] = route(
-        app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods/yyy/zzz/upper-limits")
-      ).get
-      status(result) shouldBe NOT_FOUND
+        val result: Future[Result] = route(
+          app,
+          FakeRequest(
+            "GET",
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/edit/units-of-product"
+          ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigarettes" -> "801")
+        ).get
+        status(result) shouldBe OK
+
+        val content = contentAsString(result)
+        val doc = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+        doc
+          .getElementById("entered-amount")
+          .text() shouldBe "You have entered 1601 cigarettes."
+        doc
+          .getElementById("item-edited")
+          .text() shouldBe "You have tried to enter 801 sticks on the previous page which has taken you over the limit. The product quantity has been reset to 800 sticks."
+        content should include(
+          "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+            "They will calculate and take payment of the taxes and duties due."
+        )
+      }
+
+
+      "load limit exceeded page for cigars and display tobacco content" in {
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                Some(false),
+                Some("greatBritain"),
+                arrivingNICheck = Some(true),
+                isVatResClaimed = None,
+                isBringingDutyFree = None,
+                bringingOverAllowance = Some(true),
+                ageOver17 = Some(true),
+                privateCraft = Some(false),
+                purchasedProductInstances = List(
+                  PurchasedProductInstance(
+                    ProductPath("tobacco/cigars"),
+                    iid = "iid0",
+                    weightOrVolume = None,
+                    noOfSticks = Some(200),
+                    country = None,
+                    originCountry = None,
+                    currency = Some("EUR"),
+                    cost = Some(BigDecimal(12.99))
+                  )
+                ),
+                workingInstance = Some(
+                  PurchasedProductInstance(
+                    ProductPath("tobacco/cigars"),
+                    "iid0",
+                    None,
+                    noOfSticks = Some(200),
+                    None,
+                    None,
+                    Some("EUR"),
+                    Some(BigDecimal(12.99))
+                  )
+                )
+              )
+            )
+          )
+        )
+        val result: Future[Result] = route(
+          app,
+          FakeRequest(
+            "GET",
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/edit/units-of-product"
+          ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigars" -> "201")
+        ).get
+        status(result) shouldBe OK
+
+        val content = contentAsString(result)
+        val doc     = Jsoup.parse(content)
+
+        doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+        doc
+          .getElementById("entered-amount")
+          .text()                         shouldBe "You have entered 401 cigars."
+        doc
+          .getElementById("item-edited")
+          .text()                         shouldBe "You have tried to enter 201 cigars on the previous page which has taken you over the limit. The product quantity has been reset to 200 cigars."
+        content                             should include(
+          "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+            "They will calculate and take payment of the taxes and duties due."
+        )
+      }
     }
   }
-
 }
