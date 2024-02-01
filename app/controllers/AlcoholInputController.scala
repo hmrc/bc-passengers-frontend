@@ -30,7 +30,6 @@ import util._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.math.BigDecimal.RoundingMode
 
 class AlcoholInputController @Inject() (
   val cache: Cache,
@@ -51,6 +50,20 @@ class AlcoholInputController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport
     with ControllerHelpers {
+
+  private def navigationHelper(
+    jd: JourneyData,
+    productPath: ProductPath,
+    itemId: String,
+    originCountry: Option[String]
+  ) =
+    (jd.arrivingNICheck, jd.euCountryCheck) match {
+      case (Some(true), Some("greatBritain"))                                                    =>
+        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, itemId))
+      case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
+        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, itemId))
+      case _                                                                                     => Redirect(routes.SelectProductController.nextStep)
+    }
 
   // scalastyle:off
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
@@ -160,7 +173,8 @@ class AlcoholInputController @Inject() (
               ),
             dto => {
               lazy val totalWeightAndVolume =
-                alcoholAndTobaccoCalculationService.alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
+                alcoholAndTobaccoCalculationService
+                  .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
 
               if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
                 val (journeyData, item) =
@@ -174,17 +188,7 @@ class AlcoholInputController @Inject() (
                     List(dto.cost)
                   )
                 cache.store(journeyData) map { _ =>
-                  (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                    case (Some(true), Some("greatBritain")) =>
-                      Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, item))
-                    case (Some(false), Some("euOnly"))      =>
-                      if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, item))
-                      } else {
-                        Redirect(routes.SelectProductController.nextStep)
-                      }
-                    case _                                  => Redirect(routes.SelectProductController.nextStep)
-                  }
+                  navigationHelper(context.getJourneyData, path, item, dto.originCountry)
                 }
               } else {
                 Future(
@@ -242,7 +246,8 @@ class AlcoholInputController @Inject() (
                   ),
                 success = dto => {
                   lazy val alcoholTotalVolume =
-                    alcoholAndTobaccoCalculationService.alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token)
+                    alcoholAndTobaccoCalculationService
+                      .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token)
                   if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
                     cache.store(
                       newPurchaseService.updatePurchase(
@@ -256,17 +261,7 @@ class AlcoholInputController @Inject() (
                         dto.cost
                       )
                     ) map { _: JourneyData =>
-                      (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                        case (Some(true), Some("greatBritain")) =>
-                          Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
-                        case (Some(false), Some("euOnly"))      =>
-                          if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                            Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
-                          } else {
-                            Redirect(routes.SelectProductController.nextStep)
-                          }
-                        case _                                  => Redirect(routes.SelectProductController.nextStep)
-                      }
+                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
                     Future(

@@ -24,9 +24,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_add].apply(
-      "110",
-      "cigars",
-      "label.tobacco.cigars"
+      totalAccAmount = "110",
+      userInput = "0.01",
+      token = "cigars",
+      productName = "label.tobacco.cigars",
+      showPanelIndent = false
     )(
       request = request,
       messages = messages,
@@ -36,21 +38,23 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
   val viewViaRender: HtmlFormat.Appendable =
     injected[limit_exceed_add].render(
       "110.2",
+      "0.02",
       "cigars",
       "label.tobacco.cigars",
+      false,
       request = request,
       messages = messages,
       appConfig = appConfig
     )
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[limit_exceed_add].f("110.2", "cigars", "label.tobacco.cigars")(request, messages, appConfig)
+    injected[limit_exceed_add].f("110.2", "0.02","cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors
 
-  def viewApply(amount: String, item: String, productName: String): HtmlFormat.Appendable =
+  def viewApply(amount: String, userInput:String, item: String, productName: String): HtmlFormat.Appendable =
     injected[limit_exceed_add]
-      .apply(amount, item, productName)(request = request, messages = messages, appConfig = appConfig)
+      .apply(amount, userInput, item, productName, false)(request = request, messages = messages, appConfig = appConfig)
 
   "LimitExceedView" when {
 

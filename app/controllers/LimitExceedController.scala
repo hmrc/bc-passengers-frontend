@@ -121,10 +121,6 @@ class LimitExceedController @Inject() (
 
         val totalAccNoOfSticks: Int = totalAccPreviouslyAddedNoOfSticks + userInputInt
 
-        println(totalAccPreviouslyAddedNoOfSticks)
-        println(totalAccNoOfSticks)
-        println(userInputInt)
-
         userInput match {
           case Some(_) =>
             Future(Ok(limitExceedViewAdd(totalAccNoOfSticks.toString, userInputInt.toString, product.token, product.name, showPanelIndent)))
@@ -235,11 +231,6 @@ class LimitExceedController @Inject() (
             Some(userInputInt),
             product.token
           )
-
-        println(totalAccNoOfSticks)
-        println(userInputInt)
-        println(userInput)
-        println(originalAmountEntered)
 
         userInput match {
           case Some(_) =>

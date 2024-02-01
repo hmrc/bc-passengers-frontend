@@ -343,7 +343,7 @@ class TobaccoInputController @Inject() (
                 } else {
                   Future(
                     Redirect(routes.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path))
-//                      .removingFromSession(s"user-amount-input-${product.token}")
+                      .removingFromSession(s"user-amount-input-${product.token}")
                       .addingToSession(
                         s"user-amount-input-${product.token}" -> dto.weightOrVolume.getOrElse(BigDecimal(0)).toString()
                       )
@@ -481,7 +481,7 @@ class TobaccoInputController @Inject() (
                       Redirect(
                         routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path)
                       )
-//                        .removingFromSession(s"user-amount-input-${product.token}")
+                        .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
                     )
                   }
