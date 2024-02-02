@@ -54,13 +54,18 @@ class TobaccoInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private def navigationHelper(jd: JourneyData, productPath: ProductPath, itemId: String, originCountry: Option[String]) =
+  private def navigationHelper(
+    jd: JourneyData,
+    productPath: ProductPath,
+    itemId: String,
+    originCountry: Option[String]
+  ) =
     (jd.arrivingNICheck, jd.euCountryCheck) match {
-      case (Some(true), Some("greatBritain"))                                                        =>
+      case (Some(true), Some("greatBritain"))                                                    =>
         Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, itemId))
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, itemId))
-      case _                                                                                         => Redirect(routes.SelectProductController.nextStep)
+      case _                                                                                     => Redirect(routes.SelectProductController.nextStep)
     }
 
   def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction {
@@ -541,10 +546,11 @@ class TobaccoInputController @Inject() (
                     Future(
                       Redirect(
                         routes.LimitExceedController.onPageLoadEditTobaccoWeight(ppi.path)
-                      ).addingToSession(
-                        s"user-amount-input-${product.token}" ->
-                          dto.weightOrVolume.getOrElse(BigDecimal(0)).toString
-                      )
+                      ).removingFromSession(s"user-amount-input-${product.token}")
+                        .addingToSession(
+                          s"user-amount-input-${product.token}" ->
+                            dto.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                        )
                     )
                   }
                 }

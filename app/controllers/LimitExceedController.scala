@@ -192,7 +192,7 @@ class LimitExceedController @Inject() (
 
         val totaledAmountFormatted: BigDecimal = totaledAmount.setScale(2, RoundingMode.HALF_UP)
 
-        // TODO: Move into conent helper class then inject in
+        // TODO: Move into content helper class then inject into controller
         val p1Content =
           alcoholAndTobaccoCalculationService.selectProduct(product.name)(
             p(
@@ -328,7 +328,7 @@ class LimitExceedController @Inject() (
 
         val totaledAmountFormatted: BigDecimal = (totaledAmount * 1000).setScale(2, RoundingMode.HALF_UP)
 
-        // TODO: Move into conent helper class then inject in
+        // TODO: Move into content helper class then inject into controller
         val p1Content =
           alcoholAndTobaccoCalculationService.selectProduct(product.name)(
             p(
@@ -461,7 +461,7 @@ class LimitExceedController @Inject() (
             product.token
           )
 
-        // TODO: Move into conent helper class then inject in
+        // TODO: Move into content helper class then inject into controller
         val p1Content =
           alcoholAndTobaccoCalculationService.selectProduct(product.name)(
             p(
