@@ -23,7 +23,6 @@ import play.twirl.api.{Html, HtmlFormat}
 import javax.inject.Inject
 
 class LimitExceededContentHelperService @Inject() (
-  alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
   p: views.html.components.p,
   messages: MessagesApi
 )(implicit val langs: Langs) {
@@ -46,7 +45,7 @@ class LimitExceededContentHelperService @Inject() (
     totalAmount: String
   )(implicit lang: Lang) = {
     val p1Content =
-      alcoholAndTobaccoCalculationService.selectProduct(productTreeLeaf.name)(
+      selectProduct(productTreeLeaf.name)(
         p(
           Html(
             messages(
@@ -80,7 +79,7 @@ class LimitExceededContentHelperService @Inject() (
       )
 
     val p2Content =
-      alcoholAndTobaccoCalculationService.selectProduct(productTreeLeaf.name)(
+      selectProduct(productTreeLeaf.name)(
         p(
           Html(
             messages(
@@ -111,7 +110,7 @@ class LimitExceededContentHelperService @Inject() (
       )
 
     val p3Content =
-      alcoholAndTobaccoCalculationService.selectProduct(productTreeLeaf.name)(
+      selectProduct(productTreeLeaf.name)(
         p(
           Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${productTreeLeaf.token}")))
         ),
@@ -129,7 +128,7 @@ class LimitExceededContentHelperService @Inject() (
       )
 
     val p4Content: HtmlFormat.Appendable =
-      alcoholAndTobaccoCalculationService.selectProduct(productTreeLeaf.name)(
+      selectProduct(productTreeLeaf.name)(
         p(
           Html(
             messages(

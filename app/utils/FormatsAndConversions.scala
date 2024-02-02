@@ -34,16 +34,6 @@ trait FormatsAndConversions {
       override def toBigDecimal(value: Int): BigDecimal = BigDecimal(value)
     }
 
-//  implicit val doubleToBigDecimal: ToBigDecimal[Double] =
-//    new ToBigDecimal[Double] {
-//      override def toBigDecimal(value: Double): BigDecimal = BigDecimal(value)
-//    }
-//
-//  implicit val floatToBigDecimal: ToBigDecimal[Float] =
-//    new ToBigDecimal[Float] {
-//      override def toBigDecimal(value: Float): BigDecimal = BigDecimal(value)
-//    }
-
   implicit class CovertToBigDecimal[A](value: A)(implicit tc: ToBigDecimal[A]) {
     def toBigDecimal: BigDecimal =
       tc.toBigDecimal(value)
@@ -52,10 +42,13 @@ trait FormatsAndConversions {
   implicit class BigDecimalHelper(value: BigDecimal) {
     def format2dps: BigDecimal =
       value.setScale(2, RoundingMode.HALF_UP)
+
+    def format5dps: BigDecimal =
+      value.setScale(5, RoundingMode.HALF_UP)
   }
 
   implicit class OptionBigDecimalHelper(value: Option[BigDecimal]) {
-    def orElseZero: BigDecimal =
+    def getOrElseZero: BigDecimal =
       value.getOrElse(BigDecimal(0))
   }
 }

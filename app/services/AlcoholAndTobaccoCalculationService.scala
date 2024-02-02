@@ -17,8 +17,9 @@
 package services
 
 import models.JourneyData
+import utils.FormatsAndConversions
 
-class AlcoholAndTobaccoCalculationService {
+class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
 
   def alcoholAddHelper(
     contextJourneyData: JourneyData,
@@ -29,13 +30,12 @@ class AlcoholAndTobaccoCalculationService {
     val alcoholProductTotalVolume: BigDecimal =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString.contains(productToken))
-        .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+        .map(_.weightOrVolume.getOrElseZero)
         .sum
         .bigDecimal
 
     val totalAlcoholVolume: BigDecimal =
-      (weightOrVolume + alcoholProductTotalVolume)
-        .setScale(5, BigDecimal.RoundingMode.HALF_UP)
+      (weightOrVolume + alcoholProductTotalVolume).format5dps
 
     totalAlcoholVolume
   }
@@ -47,18 +47,17 @@ class AlcoholAndTobaccoCalculationService {
   ): BigDecimal = {
 
     val originalVolume: BigDecimal =
-      contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElse(BigDecimal(0))
+      contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
     val alcoholProductTotalVolume: BigDecimal =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString.contains(productToken))
-        .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+        .map(_.weightOrVolume.getOrElseZero)
         .sum
         .bigDecimal
 
     val totalAlcoholVolume: BigDecimal =
-      (weightOrVolume + alcoholProductTotalVolume - originalVolume)
-        .setScale(5, BigDecimal.RoundingMode.HALF_UP)
+      (weightOrVolume + alcoholProductTotalVolume - originalVolume).format5dps
 
     totalAlcoholVolume
   }
@@ -67,23 +66,22 @@ class AlcoholAndTobaccoCalculationService {
     val chewingTobaccoTotalWeight: BigDecimal =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString == "tobacco/chewing-tobacco")
-        .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+        .map(_.weightOrVolume.getOrElseZero)
         .sum
         .bigDecimal
 
     val rollingTobaccoTotalWeight: BigDecimal      =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString == "tobacco/rolling-tobacco")
-        .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+        .map(_.weightOrVolume.getOrElseZero)
         .sum
         .bigDecimal
     val looseTobaccoTotalWeightInGrams: BigDecimal =
       (
-        weightOrVolume.getOrElse(BigDecimal(0)) +
+        weightOrVolume.getOrElseZero +
           chewingTobaccoTotalWeight +
           rollingTobaccoTotalWeight
-      )
-        .setScale(5, BigDecimal.RoundingMode.HALF_UP)
+      ).format5dps
 
     looseTobaccoTotalWeightInGrams
   }
@@ -91,29 +89,28 @@ class AlcoholAndTobaccoCalculationService {
   def looseTobaccoEditHelper(contextJourneyData: JourneyData, weightOrVolume: Option[BigDecimal]): BigDecimal = {
 
     val originalWeight: BigDecimal =
-      contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElse(BigDecimal(0))
+      contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
     val chewingTobaccoTotalWeight: BigDecimal =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString == "tobacco/chewing-tobacco")
-        .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+        .map(_.weightOrVolume.getOrElseZero)
         .sum
         .bigDecimal
 
     val rollingTobaccoTotalWeight: BigDecimal      =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString == "tobacco/rolling-tobacco")
-        .map(_.weightOrVolume.getOrElse(BigDecimal(0)))
+        .map(_.weightOrVolume.getOrElseZero)
         .sum
         .bigDecimal
     val looseTobaccoTotalWeightInGrams: BigDecimal =
       (
-        weightOrVolume.getOrElse(BigDecimal(0)) +
+        weightOrVolume.getOrElseZero +
           chewingTobaccoTotalWeight +
           rollingTobaccoTotalWeight -
           originalWeight
-      )
-        .setScale(5, BigDecimal.RoundingMode.HALF_UP)
+      ).format5dps
 
     looseTobaccoTotalWeightInGrams
   }
@@ -151,16 +148,4 @@ class AlcoholAndTobaccoCalculationService {
 
     totalNoOfSticksAfterCalc
   }
-
-  def selectProduct[A](productName: String)(alcohol: A, stickTobacco: A, looseTobacco: A): A =
-    productName match {
-      case name if name.contains("alcohol")    => alcohol
-      case name if name.contains("cigarettes") => stickTobacco
-      case name if name.contains("cigars")     => stickTobacco
-      case name if name.contains("cigarillos") => stickTobacco
-      case name if name.contains("chewing")    => looseTobacco
-      case name if name.contains("rolling")    => looseTobacco
-      case _                                   => throw new RuntimeException("Help me") // handle an exception here
-    }
-
 }

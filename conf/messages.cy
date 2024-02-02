@@ -1461,6 +1461,10 @@ limitExceeded.p2.heated-tobacco = 800 darn o dybaco gwresogi
 limitExceeded.p2.chewing-tobacco = 1000 gram o dybaco
 limitExceeded.p2.rolling-tobacco = 1000 gram o dybaco
 
+
+# Limit Exceeded Edit Page
+
+
 #Previous declaration page content change
 label.check_tax_and_declare = Gwirio’r dreth ar nwyddau a’u datgan
 label.add_goods_previous_declaration = Ychwanegu nwyddau at ddatganiad blaenorol

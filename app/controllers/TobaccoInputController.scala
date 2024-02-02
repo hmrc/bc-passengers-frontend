@@ -27,6 +27,7 @@ import play.api.mvc._
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import util._
+import utils.FormatsAndConversions
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +53,8 @@ class TobaccoInputController @Inject() (
 )(implicit val appConfig: AppConfig, implicit val ec: ExecutionContext)
     extends FrontendController(controllerComponents)
     with I18nSupport
-    with ControllerHelpers {
+    with ControllerHelpers
+    with FormatsAndConversions {
 
   private def navigationHelper(
     jd: JourneyData,
@@ -350,7 +352,7 @@ class TobaccoInputController @Inject() (
                     Redirect(routes.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path))
                       .removingFromSession(s"user-amount-input-${product.token}")
                       .addingToSession(
-                        s"user-amount-input-${product.token}" -> dto.weightOrVolume.getOrElse(BigDecimal(0)).toString()
+                        s"user-amount-input-${product.token}" -> dto.weightOrVolume.getOrElseZero.toString()
                       )
                   )
                 }
@@ -549,7 +551,7 @@ class TobaccoInputController @Inject() (
                       ).removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(
                           s"user-amount-input-${product.token}" ->
-                            dto.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                            dto.weightOrVolume.getOrElseZero.toString
                         )
                     )
                   }
@@ -603,7 +605,7 @@ class TobaccoInputController @Inject() (
                         routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path)
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
-                        .addingToSession(s"user-amount-input-${product.token}" -> totalNoOfSticksForItemType.toString)
+                        .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
                     )
                   }
                 }

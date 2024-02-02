@@ -1445,6 +1445,7 @@ limitExceeded.add.panelIndent.non-sparkling-cider = {0} litre(s) of cider
 limitExceeded.add.panelIndent.sparkling-cider = {0} litre(s) of cider
 limitExceeded.add.panelIndent.sparkling-cider-up = {0} litre(s) of cider
 limitExceeded.add.panelIndent.sparkling-wine = {0} litre(s) of sparkling wine
+limitExceeded.add.panelIndent.spirits = {0} litre(s) of spirits
 limitExceeded.add.panelIndent.other = {0} litre(s) of other alcohol
 
 limitExceeded.add.panelIndent.cigarettes = {0} cigarette(s)

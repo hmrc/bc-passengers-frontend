@@ -56,9 +56,9 @@ class LimitExceedController @Inject() (
   def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-        val userInput: Option[String]    = context.request.session.data.get(s"user-amount-input-${product.token}")
-        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).orElseZero
-        val userInputBigDecimalFormatted = userInputBigDecimal.format2dps
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
+        val userInputBigDecimalFormatted    = userInputBigDecimal.format2dps
 
         val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
 
@@ -95,7 +95,7 @@ class LimitExceedController @Inject() (
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
-        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).orElseZero
+        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
         val userInputBigDecimalFormatted    = (userInputBigDecimal * 1000).format2dps
 
         val totalAccWeightForTobaccoProduct =
@@ -169,7 +169,7 @@ class LimitExceedController @Inject() (
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
         val originalAmountEntered: BigDecimal =
-          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).orElseZero
+          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
         val originalAmountFormatted = originalAmountEntered.format2dps
 
@@ -191,134 +191,133 @@ class LimitExceedController @Inject() (
         val totaledAmountFormatted: BigDecimal = totaledAmount.format2dps
 
         // TODO: Move into content helper class then inject into controller
-        val p1Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.alcohol",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputBigDecimalFormatted.toString
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputBigDecimalFormatted.toString
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.loose.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputBigDecimalFormatted.toString
-                )
-              )
-            )
-          )
-
-        val p2Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.alcohol",
-                  totaledAmountFormatted,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.tobacco",
-                  totaledAmountFormatted,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.loose.tobacco",
-                  totaledAmountFormatted,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            )
-          )
-
-        val p3Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${product.token}")))),
-            p(Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.${product.token}")))),
-            p(
-              Html(
-                messages("limitExceeded.p3.edit.loose.tobacco", messages(s"limitExceeded.max.limit.${product.token}"))
-              )
-            )
-          )
-
-        val p4Content: HtmlFormat.Appendable =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.alcohol",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.loose.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            )
-          )
-
-        val section1Content: Html =
-          HtmlFormat.fill(
-            Seq(
-              p1Content,
-              p2Content,
-              p3Content,
-              p4Content
-            )
-          )
+//        val p1Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.alcohol",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputBigDecimalFormatted.toString
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputBigDecimalFormatted.toString
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.loose.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputBigDecimalFormatted.toString
+//                )
+//              )
+//            )
+//          )
+//
+//        val p2Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.alcohol",
+//                  totaledAmountFormatted,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.tobacco",
+//                  totaledAmountFormatted,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.loose.tobacco",
+//                  totaledAmountFormatted,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            )
+//          )
+//
+//        val p3Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${product.token}")))),
+//            p(Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.${product.token}")))),
+//            p(
+//              Html(
+//                messages("limitExceeded.p3.edit.loose.tobacco", messages(s"limitExceeded.max.limit.${product.token}"))
+//              )
+//            )
+//          )
+//
+//        val p4Content: HtmlFormat.Appendable =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.alcohol",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.loose.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            )
+//          )
+//
+//        val section1Content: Html =
+//          HtmlFormat.fill(
+//            Seq(
+//              p1Content,
+//              p2Content,
+//              p3Content,
+//              p4Content
+//            )
+//          )
 
         userInput match {
           case Some(_) =>
             Future(
               Ok(
                 limitExceedViewEdit(
-                  totaledAmountFormatted.toString,
-                  originalAmountFormatted.toString,
-                  userInputBigDecimalFormatted.toString(),
-                  product.token,
-                  product.name,
-                  section1Content
+                  totalEnteredAmount = totaledAmountFormatted.toString,
+                  originalAmountEntered = originalAmountFormatted.toString,
+                  userInput = userInputBigDecimalFormatted.toString(),
+                  token = product.token,
+                  productName = product.name
                 )
               )
             )
@@ -332,7 +331,7 @@ class LimitExceedController @Inject() (
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
         val originalAmountEntered: BigDecimal =
-          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).orElseZero
+          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
         val originalAmountFormatted = (originalAmountEntered * 1000).format2dps
 
@@ -350,122 +349,122 @@ class LimitExceedController @Inject() (
         val totaledAmountFormatted: BigDecimal = (totaledAmount * 1000).format2dps
 
         // TODO: Move into content helper class then inject into controller
-        val p1Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.alcohol",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputBigDecimalFormatted.toString
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputBigDecimalFormatted.toString
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.loose.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputBigDecimalFormatted.toString
-                )
-              )
-            )
-          )
-
-        val p2Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.alcohol",
-                  totaledAmountFormatted,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.tobacco",
-                  totaledAmountFormatted,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.loose.tobacco",
-                  totaledAmountFormatted,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            )
-          )
-
-        val p3Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${product.token}")))),
-            p(Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.${product.token}")))),
-            p(
-              Html(
-                messages("limitExceeded.p3.edit.loose.tobacco", messages(s"limitExceeded.max.limit.${product.token}"))
-              )
-            )
-          )
-
-        val p4Content: HtmlFormat.Appendable =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.alcohol",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.loose.tobacco",
-                  originalAmountFormatted.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            )
-          )
-
-        val section1Content: Html =
-          HtmlFormat.fill(
-            Seq(
-              p1Content,
-              p2Content,
-              p3Content,
-              p4Content
-            )
-          )
+//        val p1Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.alcohol",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputBigDecimalFormatted.toString
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputBigDecimalFormatted.toString
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.loose.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputBigDecimalFormatted.toString
+//                )
+//              )
+//            )
+//          )
+//
+//        val p2Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.alcohol",
+//                  totaledAmountFormatted,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.tobacco",
+//                  totaledAmountFormatted,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.loose.tobacco",
+//                  totaledAmountFormatted,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            )
+//          )
+//
+//        val p3Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${product.token}")))),
+//            p(Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.${product.token}")))),
+//            p(
+//              Html(
+//                messages("limitExceeded.p3.edit.loose.tobacco", messages(s"limitExceeded.max.limit.${product.token}"))
+//              )
+//            )
+//          )
+//
+//        val p4Content: HtmlFormat.Appendable =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.alcohol",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.loose.tobacco",
+//                  originalAmountFormatted.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            )
+//          )
+//
+//        val section1Content: Html =
+//          HtmlFormat.fill(
+//            Seq(
+//              p1Content,
+//              p2Content,
+//              p3Content,
+//              p4Content
+//            )
+//          )
 
         userInput match {
           case Some(_) =>
@@ -476,8 +475,7 @@ class LimitExceedController @Inject() (
                   originalAmountFormatted.toString,
                   userInputBigDecimalFormatted.toString(),
                   product.token,
-                  product.name,
-                  section1Content
+                  product.name
                 )
               )
             )
@@ -505,122 +503,122 @@ class LimitExceedController @Inject() (
           )
 
         // TODO: Move into content helper class then inject into controller
-        val p1Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.alcohol",
-                  originalAmountEntered.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputInt.toString
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.tobacco",
-                  originalAmountEntered.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputInt.toString
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p1.edit.loose.tobacco",
-                  originalAmountEntered.toString,
-                  messages(s"limitExceeded.unit.${product.token}"),
-                  userInputInt.toString
-                )
-              )
-            )
-          )
-
-        val p2Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.alcohol",
-                  totalAccNoOfSticks,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.tobacco",
-                  totalAccNoOfSticks,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p2.edit.loose.tobacco",
-                  totalAccNoOfSticks,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            )
-          )
-
-        val p3Content =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${product.token}")))),
-            p(Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.${product.token}")))),
-            p(
-              Html(
-                messages("limitExceeded.p3.edit.loose.tobacco", messages(s"limitExceeded.max.limit.${product.token}"))
-              )
-            )
-          )
-
-        val p4Content: HtmlFormat.Appendable =
-          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.alcohol",
-                  originalAmountEntered.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.tobacco",
-                  originalAmountEntered.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            ),
-            p(
-              Html(
-                messages(
-                  "limitExceeded.p4.edit.loose.tobacco",
-                  originalAmountEntered.toString,
-                  messages(s"limitExceeded.unit.${product.token}")
-                )
-              )
-            )
-          )
-
-        val section1Content: Html =
-          HtmlFormat.fill(
-            Seq(
-              p1Content,
-              p2Content,
-              p3Content,
-              p4Content
-            )
-          )
+//        val p1Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.alcohol",
+//                  originalAmountEntered.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputInt.toString
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.tobacco",
+//                  originalAmountEntered.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputInt.toString
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p1.edit.loose.tobacco",
+//                  originalAmountEntered.toString,
+//                  messages(s"limitExceeded.unit.${product.token}"),
+//                  userInputInt.toString
+//                )
+//              )
+//            )
+//          )
+//
+//        val p2Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.alcohol",
+//                  totalAccNoOfSticks,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.tobacco",
+//                  totalAccNoOfSticks,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p2.edit.loose.tobacco",
+//                  totalAccNoOfSticks,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            )
+//          )
+//
+//        val p3Content =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.${product.token}")))),
+//            p(Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.${product.token}")))),
+//            p(
+//              Html(
+//                messages("limitExceeded.p3.edit.loose.tobacco", messages(s"limitExceeded.max.limit.${product.token}"))
+//              )
+//            )
+//          )
+//
+//        val p4Content: HtmlFormat.Appendable =
+//          alcoholAndTobaccoCalculationService.selectProduct(product.name)(
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.alcohol",
+//                  originalAmountEntered.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.tobacco",
+//                  originalAmountEntered.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            ),
+//            p(
+//              Html(
+//                messages(
+//                  "limitExceeded.p4.edit.loose.tobacco",
+//                  originalAmountEntered.toString,
+//                  messages(s"limitExceeded.unit.${product.token}")
+//                )
+//              )
+//            )
+//          )
+//
+//        val section1Content: Html =
+//          HtmlFormat.fill(
+//            Seq(
+//              p1Content,
+//              p2Content,
+//              p3Content,
+//              p4Content
+//            )
+//          )
 
         userInput match {
           case Some(_) =>
@@ -631,8 +629,7 @@ class LimitExceedController @Inject() (
                   originalAmountEntered.toString,
                   userInputInt.toString,
                   product.token,
-                  product.name,
-                  section1Content
+                  product.name
                 )
               )
             )
