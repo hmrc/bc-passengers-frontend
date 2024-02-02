@@ -1528,8 +1528,8 @@ limitExceeded.p2.edit.alcohol = This means your total is now {0} {1}
 limitExceeded.p2.edit.tobacco = This means your total is now {0} {1}
 limitExceeded.p2.edit.loose.tobacco = This means your total is now {0}{1}
 
-limitExceeded.p3.edit.alcohol = You cannot use this service to declare more than {0} {1}
-limitExceeded.p3.edit.tobacco = You cannot use this service to declare more than {0} {1}
+limitExceeded.p3.edit.alcohol = You cannot use this service to declare more than {0}
+limitExceeded.p3.edit.tobacco = You cannot use this service to declare more than {0}
 limitExceeded.p3.edit.loose.tobacco = You cannot use this service to declare more than {0}
 
 limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1}
