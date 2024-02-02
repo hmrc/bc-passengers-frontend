@@ -33,7 +33,13 @@
 
     @h1(messages("limitExceeded.h1"))
 
-    @p(Html(messages("limitExceeded.p1", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
+    @if(productName.contains("alcohol")) {
+        @p(Html(messages("limitExceeded.p1.add.alcohol", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
+    } else if(token == "rolling-tobacco" || token == "chewing-tobacco") {
+        @p(Html(messages("limitExceeded.p1.add.loose.tobacco", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
+    } else {
+        @p(Html(messages("limitExceeded.p1.add.tobacco", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
+    }
 
     @p(Html(messages("limitExceeded.p2", messages(s"limitExceeded.p2.$token"))), id=Some("limit-exceeded-cannot-use-service"))
 

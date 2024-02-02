@@ -76,6 +76,7 @@ class LimitExceedControllerSpec extends BaseSpec {
     ".onPageLoadAddJourney" should {
 
       "load limit exceeded page for cider and display alcohol content" in {
+
         when(mockCache.fetch(any())).thenReturn(
           Future.successful(
             Some(
@@ -87,16 +88,18 @@ class LimitExceedControllerSpec extends BaseSpec {
                 isBringingDutyFree = None,
                 bringingOverAllowance = Some(true),
                 ageOver17 = Some(true),
-                privateCraft = Some(false)
+                privateCraft = Some(false),
+
               )
             )
           )
         )
+
         val result: Future[Result] = route(
           app,
           FakeRequest(
             "GET",
-            "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits"
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/volume"
           ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "111.5")
         ).get
         status(result) shouldBe OK
@@ -109,7 +112,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           .text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered 111.50 litres of cider."
+          .text() shouldBe "You have entered 111.50 litre(s) of cider."
         content     should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -137,7 +140,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           app,
           FakeRequest(
             "GET",
-            "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/units-of-product"
           ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-cigars" -> "201")
         ).get
         status(result) shouldBe OK
@@ -148,7 +151,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text()                         shouldBe "You have entered 201.00 cigars."
+          .text()                         shouldBe "You have entered 201 cigar(s)."
         content                             should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -228,7 +231,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           app,
           FakeRequest(
             "GET",
-            "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/edit/alcohol/weight-or-volume"
+            "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/edit/volume"
           ).withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-non-sparkling-cider" -> "50.50")
         ).get
         status(result) shouldBe OK
@@ -241,10 +244,10 @@ class LimitExceedControllerSpec extends BaseSpec {
           .text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered 50.50 litres of cider."
+          .text() shouldBe "You have entered 50.50 litre(s) of cider."
         doc
           .getElementById("item-edited")
-          .text() shouldBe "You have tried to enter 50.50 litres on the previous page which has taken you over the limit. The product quantity has been reset to 20.00 litres."
+          .text() shouldBe "You have tried to enter 50.50 litres on the previous page which has taken you over the limit. The product quantity has been reset to 20.00 litre(s)."
         content     should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -358,10 +361,10 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered 1601 cigarettes."
+          .text() shouldBe "You have entered 1 cigarette(s)."
         doc
           .getElementById("item-edited")
-          .text() shouldBe "You have tried to enter 801 sticks on the previous page which has taken you over the limit. The product quantity has been reset to 800 sticks."
+          .text() shouldBe "You have tried to enter 801 sticks on the previous page which has taken you over the limit. The product quantity has been reset to 800 stick(s)."
         content should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -425,7 +428,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text()                         shouldBe "You have entered 401 cigars."
+          .text()                         shouldBe "You have entered 201 cigar(s)."
         doc
           .getElementById("item-edited")
           .text()                         shouldBe "You have tried to enter 201 cigars on the previous page which has taken you over the limit. The product quantity has been reset to 200 cigars."

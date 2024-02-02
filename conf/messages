@@ -1412,11 +1412,14 @@ label.no_existing_declaration = the details you have entered do not match an exi
 label.payment_issue = there was an issue when you previously tried to add goods to your declaration and your payment was not completed - you will now need to speak to a border force officer at your arrival location to declare any additional goods
 label.already_passed_custom = your scheduled time of arrival is in the past - if your journey has been delayed and you have goods to declare, speak to a border force officer at your arrival location
 
-# limit exceed page
+# Limit exceeded Add page
 
 limitExceeded.title = There is a problem
 limitExceeded.h1 = There is a problem
-limitExceeded.p1 = You have entered {0} {1}
+
+limitExceeded.p1.add.alcohol = You have entered {0} {1}
+limitExceeded.p1.add.tobacco = You have entered {0} {1}
+limitExceeded.p1.add.loose.tobacco = You have entered {0}{1}
 
 limitExceeded.p1.beer = litre(s) of beer.
 limitExceeded.p1.cider = litre(s) of cider.
@@ -1433,7 +1436,7 @@ limitExceeded.p1.cigarillos = cigarillo(s).
 limitExceeded.p1.cigars = cigar(s).
 limitExceeded.p1.heated-tobacco = tobacco sticks.
 limitExceeded.p1.chewing-tobacco = g of pipe or chewing tobacco.
-limitExceeded.p1.rolling-tobacco = g of pipe or chewing tobacco.
+limitExceeded.p1.rolling-tobacco = g of rolling tobacco.
 
 limitExceeded.p2 = You cannot use this service to declare more than {0}
 limitExceeded.p3 = This item will be removed from your goods to declare.
@@ -1442,13 +1445,13 @@ limitExceeded.p3.tobacco.loose.edit = You have tried to enter {0}g on the previo
 limitExceeded.p3.tobacco.cigars.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
 limitExceeded.p3.tobacco.cigarettes.edit = You have tried to enter {0} sticks on the previous page which has taken you over the limit. The product quantity has been reset to {1} stick(s).
 
-limitExceeded.add.panelIndent.beer = {0} litre(s) of beer
-limitExceeded.add.panelIndent.cider = {0} litre(s) of cider
-limitExceeded.add.panelIndent.non-sparkling-cider = {0} litre(s) of cider
-limitExceeded.add.panelIndent.sparkling-cider = {0} litre(s) of cider
-limitExceeded.add.panelIndent.sparkling-cider-up = {0} litre(s) of cider
-limitExceeded.add.panelIndent.sparkling-wine = {0} litre(s) of sparkling wine
-limitExceeded.add.panelIndent.other = {0} litre(s) of other alcohol
+limitExceeded.add.panelIndent.beer = {0}litre(s) of beer
+limitExceeded.add.panelIndent.cider = {0}litre(s) of cider
+limitExceeded.add.panelIndent.non-sparkling-cider = {0}litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-cider = {0}litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-cider-up = {0}litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-wine = {0}litre(s) of sparkling wine
+limitExceeded.add.panelIndent.other = {0}litre(s) of other alcohol
 limitExceeded.add.panelIndent.chewing-tobacco = {0}g of pipe or chewing tobacco
 limitExceeded.add.panelIndent.rolling-tobacco = {0}g of rolling tobacco
 
@@ -1457,7 +1460,7 @@ limitExceeded.add.panelIndent.cigarillos = {0} cigarillo(s)
 limitExceeded.add.panelIndent.cigars = {0} cigar(s)
 limitExceeded.add.panelIndent.heated-tobacco = {0}g tobacco stick(s)
 limitExceeded.add.panelIndent.chewing-tobacco = {0}g of pipe or chewing tobacco
-limitExceeded.add.panelIndent.rolling-tobacco = {0}g of pipe or chewing tobacco
+limitExceeded.add.panelIndent.rolling-tobacco = {0}g of rolling tobacco
 
 limitExceeded.h2a = What you must do
 limitExceeded.p4 = You must use the red channel to declare this item in person to Border Force when you arrive in the UK. They will calculate and take payment of the taxes and duties due.
@@ -1482,6 +1485,56 @@ limitExceeded.p2.heated-tobacco = 800 tobacco sticks.
 limitExceeded.p2.chewing-tobacco = 1000 grams of tobacco.
 limitExceeded.p2.rolling-tobacco = 1000 grams of tobacco.
 
+# Limit exceeded Edit page
+
+limitExceeded.unit.beer = litre(s) of beer
+limitExceeded.unit.cider = litre(s) of cider
+limitExceeded.unit.non-sparkling-cider = litre(s) of cider
+limitExceeded.unit.sparkling-cider = litre(s) of cider
+limitExceeded.unit.sparkling-cider-up = litre(s) of cider
+limitExceeded.unit.sparkling-wine = litre(s) of sparkling wine
+limitExceeded.unit.spirits = litre(s) of spirits
+limitExceeded.unit.wine = litre(s) of wine
+limitExceeded.unit.other = litre(s) of other alcohol
+
+limitExceeded.unit.cigarettes = cigarette(s)
+limitExceeded.unit.cigarillos = cigarillo(s)
+limitExceeded.unit.cigars = cigar(s)
+limitExceeded.unit.heated-tobacco = tobacco sticks
+limitExceeded.unit.chewing-tobacco = g of pipe or chewing tobacco
+limitExceeded.unit.rolling-tobacco = g of rolling tobacco
+
+limitExceeded.max.limit.beer = 110 litres of beer
+limitExceeded.max.limit.non-sparkling-cider = 20 litres of cider
+limitExceeded.max.limit.sparkling-cider = 20 litres of cider
+limitExceeded.max.limit.sparkling-cider-up = 20 litres of cider
+limitExceeded.max.limit.sparkling-wine = 60 litres of sparkling wine
+limitExceeded.max.limit.spirits = 10 litres of spirits
+limitExceeded.max.limit.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
+limitExceeded.max.limit.other = 10 litres of other alcohol
+
+limitExceeded.max.limit.cigarettes = 800 cigarettes
+limitExceeded.max.limit.cigarillos = 400 cigarillos
+limitExceeded.max.limit.cigars = 200 cigars
+limitExceeded.max.limit.heated-tobacco = 800 tobacco sticks
+limitExceeded.max.limit.chewing-tobacco = 1000g of tobacco
+limitExceeded.max.limit.rolling-tobacco = 1000g of tobacco
+
+limitExceeded.p1.edit.alcohol = You changed {0} {1} to {2} {1}
+limitExceeded.p1.edit.tobacco = You changed {0} {1} to {2} {1}
+limitExceeded.p1.edit.loose.tobacco = You changed {0}{1} to {2}{1}
+
+limitExceeded.p2.edit.alcohol = This means your total is now {0} {1}
+limitExceeded.p2.edit.tobacco = This means your total is now {0} {1}
+limitExceeded.p2.edit.loose.tobacco = This means your total is now {0}{1}
+
+limitExceeded.p3.edit.alcohol = You cannot use this service to declare more than {0} {1}
+limitExceeded.p3.edit.tobacco = You cannot use this service to declare more than {0} {1}
+limitExceeded.p3.edit.loose.tobacco = You cannot use this service to declare more than {0}
+
+limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1}
+limitExceeded.p4.edit.tobacco = We will change your item back to {0} {1}
+limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1}
 
 #Previous declaration page content change
 label.check_tax_and_declare = Check tax on goods and declare them

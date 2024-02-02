@@ -48,11 +48,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
     )
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[limit_exceed_add].f("110.2", "0.02","cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
+    injected[limit_exceed_add].f("110.2", "0.02", "cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors
 
-  def viewApply(amount: String, userInput:String, item: String, productName: String): HtmlFormat.Appendable =
+  def viewApply(amount: String, userInput: String, item: String, productName: String): HtmlFormat.Appendable =
     injected[limit_exceed_add]
       .apply(amount, userInput, item, productName, false)(request = request, messages = messages, appConfig = appConfig)
 
@@ -69,11 +69,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.5", "beer", "label.alcohol.beer")
+          val view = viewApply("110.5", "0.05", "beer", "label.alcohol.beer")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 110.5 litres of beer.",
+              Selectors.p(1)    -> "You have entered 110.5 litre(s) of beer.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -92,11 +92,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much non-sparkling cider" should {
 
-          val view = viewApply("20.01", "non-sparkling-cider", "label.alcohol.non-sparkling-cider")
+          val view = viewApply("20.01", "0.01", "non-sparkling-cider", "label.alcohol.non-sparkling-cider")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of cider.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -115,11 +115,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much sparkling-cider" should {
 
-          val view = viewApply("20.01", "sparkling-cider", "label.alcohol.sparkling-cider")
+          val view = viewApply("20.01", "0.01", "sparkling-cider", "label.alcohol.sparkling-cider")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of cider.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -138,11 +138,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much sparkling-cider-up" should {
 
-          val view = viewApply("20.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up")
+          val view = viewApply("20.01", "0.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of cider.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -161,11 +161,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much spirits" should {
 
-          val view = viewApply("10.01", "spirits", "label.alcohol.spirits")
+          val view = viewApply("10.01", "0.01", "spirits", "label.alcohol.spirits")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 10.01 litres of spirits.",
+              Selectors.p(1)    -> "You have entered 10.01 litre(s) of spirits.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 10 litres of spirits.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -184,11 +184,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much wine" should {
 
-          val view = viewApply("90.01", "wine", "label.alcohol.wine")
+          val view = viewApply("90.01", "0.01", "wine", "label.alcohol.wine")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 90.01 litres of wine.",
+              Selectors.p(1)    -> "You have entered 90.01 litre(s) of wine.",
               Selectors.p(
                 2
               )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
@@ -209,12 +209,12 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much other alcohol" should {
 
-          val view = viewApply("20.01", "other", "label.alcohol.other")
+          val view = viewApply("20.01", "0.01", "other", "label.alcohol.other")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of other alcohol.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of other alcohol.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of other alcohol.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 10 litres of other alcohol.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    ->
@@ -238,11 +238,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too many cigarettes" should {
 
-          val view = viewApply("801", "cigarettes", "label.tobacco.cigarettes")
+          val view = viewApply("801", "1", "cigarettes", "label.tobacco.cigarettes")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 801 cigarettes.",
+              Selectors.p(1)    -> "You have entered 801 cigarette(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 800 cigarettes.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -261,11 +261,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too many cigarillos" should {
 
-          val view = viewApply("401", "cigarillos", "label.tobacco.cigarillos")
+          val view = viewApply("401", "1", "cigarillos", "label.tobacco.cigarillos")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 401 cigarillos.",
+              Selectors.p(1)    -> "You have entered 401 cigarillo(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 400 cigarillos.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -284,11 +284,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too many cigars" should {
 
-          val view = viewApply("201", "cigars", "label.tobacco.cigars")
+          val view = viewApply("201", "1", "cigars", "label.tobacco.cigars")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 201 cigars.",
+              Selectors.p(1)    -> "You have entered 201 cigar(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 200 cigars.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -307,7 +307,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters much heated-tobacco" should {
 
-          val view = viewApply("801", "heated-tobacco", "label.tobacco.heated-tobacco")
+          val view = viewApply("801", "1", "heated-tobacco", "label.tobacco.heated-tobacco")
 
           val expectedContent =
             Seq(
@@ -330,11 +330,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters much chewing-tobacco" should {
 
-          val view = viewApply("1001", "chewing-tobacco", "label.tobacco.chewing-tobacco")
+          val view = viewApply("1001", "1", "chewing-tobacco", "label.tobacco.chewing-tobacco")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
+              Selectors.p(1)    -> "You have entered 1001g of pipe or chewing tobacco.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -353,11 +353,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters much rolling-tobacco" should {
 
-          val view = viewApply("1001", "rolling-tobacco", "label.tobacco.rolling-tobacco")
+          val view = viewApply("1001", "1", "rolling-tobacco", "label.tobacco.rolling-tobacco")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001 grams of tobacco.",
+              Selectors.p(1)    -> "You have entered 1001g of rolling tobacco.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",

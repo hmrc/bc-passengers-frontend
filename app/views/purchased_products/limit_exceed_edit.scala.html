@@ -26,25 +26,13 @@
     button: components.button,
     formHelper: FormWithCSRF
 )
-@(totalEnteredAmount: String, originalAmountEntered:String, userInput:String, token: String, productName: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(totalEnteredAmount: String, originalAmountEntered:String, userInput:String, token: String, productName: String, section1:Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
 
     @h1(messages("limitExceeded.h1"))
 
-    @p(Html(messages("limitExceeded.p1", totalEnteredAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
-
-    @p(Html(messages("limitExceeded.p2", messages(s"limitExceeded.p2.$token"))), id=Some("limit-exceeded-cannot-use-service"))
-
-    @if(productName.contains("alcohol")) {
-        @p(Html(messages("limitExceeded.p3.alcohol.edit", userInput, originalAmountEntered)), id= Some("item-edited"))
-    } else if(token == "rolling-tobacco" || token == "chewing-tobacco") {
-        @p(Html(messages("limitExceeded.p3.tobacco.loose.edit", userInput, originalAmountEntered)), id= Some("item-edited"))
-    } else if(token == "cigars" || token == "cigarillos") {
-        @p(Html(messages("limitExceeded.p3.tobacco.cigars.edit", userInput, token, originalAmountEntered)), id= Some("item-edited"))
-    } else {
-        @p(Html(messages("limitExceeded.p3.tobacco.cigarettes.edit", userInput, originalAmountEntered)), id= Some("item-edited"))
-    }
+    @section1
 
     @h2(messages("limitExceeded.h2a"), id = Some("what-you-must-do"))
 

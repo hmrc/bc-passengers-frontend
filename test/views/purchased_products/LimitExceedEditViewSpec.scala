@@ -83,7 +83,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 110.5 litres of beer.",
+              Selectors.p(1)    -> "You have entered 110.5 litre(s) of beer.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -106,7 +106,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of cider.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -129,7 +129,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of cider.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -152,7 +152,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of cider.",
+              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -175,7 +175,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 10.01 litres of spirits.",
+              Selectors.p(1)    -> "You have entered 10.01 litre(s) of spirits.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 10 litres of spirits.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -198,7 +198,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 90.01 litres of wine.",
+              Selectors.p(1)    -> "You have entered 90.01 litre(s) of wine.",
               Selectors.p(
                 2
               )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
@@ -252,7 +252,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 801 cigarettes.",
+              Selectors.p(1)    -> "You have entered 801 cigarette(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 800 cigarettes.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -275,7 +275,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 401 cigarillos.",
+              Selectors.p(1)    -> "You have entered 401 cigarillo(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 400 cigarillos.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -298,7 +298,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 201 cigars.",
+              Selectors.p(1)    -> "You have entered 201 cigar(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 200 cigars.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -321,7 +321,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 801 tobacco sticks.",
+              Selectors.p(1)    -> "You have entered 801 tobacco stick(s).",
               Selectors.p(2)    -> "You cannot use this service to declare more than 800 tobacco sticks.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -344,8 +344,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001.01 grams of tobacco.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
+              Selectors.p(1)    -> "You have entered 1001.01g of pipe or chewing tobacco.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 1000g of tobacco.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    ->
@@ -367,8 +367,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001.01 grams of tobacco.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 1000 grams of tobacco.",
+              Selectors.p(1)    -> "You have entered 1001.01g of tobacco.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 1000g of tobacco.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    ->

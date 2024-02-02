@@ -84,8 +84,8 @@ POST       /tell-us                                                             
 GET        /goods/$path<.+>/upper-limits/volume                                        controllers.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path: ProductPath)
 GET        /goods/$path<.+>/upper-limits/weight                                        controllers.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path: ProductPath)
 GET        /goods/$path<.+>/upper-limits/units-of-product                              controllers.LimitExceedController.onPageLoadAddJourneyNoOfSticks(path: ProductPath)
-GET        /goods/upper-limits/$path<.+>/edit/volume                                   controllers.LimitExceedController.onPageLoadEditAlcoholVolume(path: ProductPath)
-GET        /goods/upper-limits/$path<.+>/edit/weight                                   controllers.LimitExceedController.onPageLoadEditTobaccoWeight(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/edit/volume                                   controllers.LimitExceedController.onPageLoadEditAlcoholVolume(path: ProductPath)
+GET        /goods/$path<.+>/upper-limits/edit/weight                                   controllers.LimitExceedController.onPageLoadEditTobaccoWeight(path: ProductPath)
 GET        /goods/$path<.+>/upper-limits/edit/units-of-product                         controllers.LimitExceedController.onPageLoadEditNoOfSticks(path: ProductPath)
 
 GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)

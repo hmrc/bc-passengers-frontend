@@ -1267,7 +1267,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/units-of-product"
       )
     }
 
@@ -1292,7 +1292,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits/units-of-product"
       )
     }
 
@@ -1317,7 +1317,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/units-of-product"
       )
     }
 
@@ -1342,7 +1342,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/weight"
       )
     }
 
@@ -2196,7 +2196,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/edit/tobacco/weight-or-volume"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/edit/weight"
       )
     }
   }

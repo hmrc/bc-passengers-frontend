@@ -152,4 +152,15 @@ class AlcoholAndTobaccoCalculationService {
     totalNoOfSticksAfterCalc
   }
 
+  def selectProduct[A](productName: String)(alcohol: A, stickTobacco: A, looseTobacco: A): A =
+    productName match {
+      case name if name.contains("alcohol")    => alcohol
+      case name if name.contains("cigarettes") => stickTobacco
+      case name if name.contains("cigars")     => stickTobacco
+      case name if name.contains("cigarillos") => stickTobacco
+      case name if name.contains("chewing")    => looseTobacco
+      case name if name.contains("rolling")    => looseTobacco
+      case _                                   => throw new RuntimeException("Help me") // handle an exception here
+    }
+
 }
