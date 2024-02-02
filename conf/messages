@@ -397,13 +397,7 @@ label.enter_currency = Enter currency
 label.how_much_did_you_pay_for_this_ = How much did you pay for this {0}?
 label.price_in = Price in {0}
 
-
-
 error.required.cost = Enter the price
-
-
-
-
 
 error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
@@ -1417,9 +1411,9 @@ label.already_passed_custom = your scheduled time of arrival is in the past - if
 limitExceeded.title = There is a problem
 limitExceeded.h1 = There is a problem
 
-limitExceeded.p1.add.alcohol = You have entered {0} {1}
-limitExceeded.p1.add.tobacco = You have entered {0} {1}
-limitExceeded.p1.add.loose.tobacco = You have entered {0}{1}
+limitExceeded.p1.add.alcohol = You have entered a total of {0} {1}
+limitExceeded.p1.add.tobacco = You have entered a total of {0} {1}
+limitExceeded.p1.add.loose.tobacco = You have entered a total of {0}{1}
 
 limitExceeded.p1.beer = litre(s) of beer.
 limitExceeded.p1.cider = litre(s) of cider.
@@ -1445,20 +1439,18 @@ limitExceeded.p3.tobacco.loose.edit = You have tried to enter {0}g on the previo
 limitExceeded.p3.tobacco.cigars.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
 limitExceeded.p3.tobacco.cigarettes.edit = You have tried to enter {0} sticks on the previous page which has taken you over the limit. The product quantity has been reset to {1} stick(s).
 
-limitExceeded.add.panelIndent.beer = {0}litre(s) of beer
-limitExceeded.add.panelIndent.cider = {0}litre(s) of cider
-limitExceeded.add.panelIndent.non-sparkling-cider = {0}litre(s) of cider
-limitExceeded.add.panelIndent.sparkling-cider = {0}litre(s) of cider
-limitExceeded.add.panelIndent.sparkling-cider-up = {0}litre(s) of cider
-limitExceeded.add.panelIndent.sparkling-wine = {0}litre(s) of sparkling wine
-limitExceeded.add.panelIndent.other = {0}litre(s) of other alcohol
-limitExceeded.add.panelIndent.chewing-tobacco = {0}g of pipe or chewing tobacco
-limitExceeded.add.panelIndent.rolling-tobacco = {0}g of rolling tobacco
+limitExceeded.add.panelIndent.beer = {0} litre(s) of beer
+limitExceeded.add.panelIndent.cider = {0} litre(s) of cider
+limitExceeded.add.panelIndent.non-sparkling-cider = {0} litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-cider = {0} litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-cider-up = {0} litre(s) of cider
+limitExceeded.add.panelIndent.sparkling-wine = {0} litre(s) of sparkling wine
+limitExceeded.add.panelIndent.other = {0} litre(s) of other alcohol
 
 limitExceeded.add.panelIndent.cigarettes = {0} cigarette(s)
 limitExceeded.add.panelIndent.cigarillos = {0} cigarillo(s)
 limitExceeded.add.panelIndent.cigars = {0} cigar(s)
-limitExceeded.add.panelIndent.heated-tobacco = {0}g tobacco stick(s)
+limitExceeded.add.panelIndent.heated-tobacco = {0} tobacco stick(s)
 limitExceeded.add.panelIndent.chewing-tobacco = {0}g of pipe or chewing tobacco
 limitExceeded.add.panelIndent.rolling-tobacco = {0}g of rolling tobacco
 
@@ -1476,14 +1468,14 @@ limitExceeded.p2.sparkling-cider-up = 20 litres of cider.
 limitExceeded.p2.sparkling-wine = 60 litres of sparkling wine.
 limitExceeded.p2.spirits = 10 litres of spirits.
 limitExceeded.p2.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine).
-limitExceeded.p2.other = 10 litres of other alcohol.
+limitExceeded.p2.other = 20 litres of other alcohol.
 
 limitExceeded.p2.cigarettes = 800 cigarettes.
 limitExceeded.p2.cigarillos = 400 cigarillos.
 limitExceeded.p2.cigars = 200 cigars.
 limitExceeded.p2.heated-tobacco = 800 tobacco sticks.
-limitExceeded.p2.chewing-tobacco = 1000 grams of tobacco.
-limitExceeded.p2.rolling-tobacco = 1000 grams of tobacco.
+limitExceeded.p2.chewing-tobacco = 1000g of tobacco.
+limitExceeded.p2.rolling-tobacco = 1000g of tobacco.
 
 # Limit exceeded Edit page
 
@@ -1511,7 +1503,7 @@ limitExceeded.max.limit.sparkling-cider-up = 20 litres of cider
 limitExceeded.max.limit.sparkling-wine = 60 litres of sparkling wine
 limitExceeded.max.limit.spirits = 10 litres of spirits
 limitExceeded.max.limit.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
-limitExceeded.max.limit.other = 10 litres of other alcohol
+limitExceeded.max.limit.other = 20 litres of other alcohol
 
 limitExceeded.max.limit.cigarettes = 800 cigarettes
 limitExceeded.max.limit.cigarillos = 400 cigarillos

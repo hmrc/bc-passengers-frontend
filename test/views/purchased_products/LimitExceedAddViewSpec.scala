@@ -214,7 +214,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
           val expectedContent =
             Seq(
               Selectors.p(1)    -> "You have entered 20.01 litre(s) of other alcohol.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 10 litres of other alcohol.",
+              Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of other alcohol.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    ->
