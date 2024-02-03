@@ -1493,7 +1493,7 @@ limitExceeded.unit.other = litre(s) of other alcohol
 limitExceeded.unit.cigarettes = cigarette(s)
 limitExceeded.unit.cigarillos = cigarillo(s)
 limitExceeded.unit.cigars = cigar(s)
-limitExceeded.unit.heated-tobacco = tobacco sticks
+limitExceeded.unit.heated-tobacco = tobacco stick(s)
 limitExceeded.unit.chewing-tobacco = g of pipe or chewing tobacco
 limitExceeded.unit.rolling-tobacco = g of rolling tobacco
 

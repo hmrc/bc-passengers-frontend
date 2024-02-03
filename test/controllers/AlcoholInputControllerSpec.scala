@@ -825,7 +825,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/volume"
       )
     }
 
@@ -846,7 +846,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits/volume"
       )
     }
 
@@ -866,7 +866,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
     }
 
@@ -1027,7 +1027,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/edit/alcohol/weight-or-volume"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/edit/volume"
       )
     }
 

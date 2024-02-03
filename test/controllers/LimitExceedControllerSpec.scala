@@ -112,7 +112,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           .text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered 111.50 litre(s) of cider."
+          .text() shouldBe "You have entered a total of 111.50 litre(s) of cider."
         content     should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -151,7 +151,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text()                         shouldBe "You have entered 201 cigar(s)."
+          .text()                         shouldBe "You have entered a total of 201 cigar(s)."
         content                             should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -244,10 +244,10 @@ class LimitExceedControllerSpec extends BaseSpec {
           .text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered 50.50 litre(s) of cider."
+          .text() shouldBe "You changed 20.00 litre(s) of cider to 50.50 litre(s) of cider"
         doc
-          .getElementById("item-edited")
-          .text() shouldBe "You have tried to enter 50.50 litres on the previous page which has taken you over the limit. The product quantity has been reset to 20.00 litre(s)."
+          .getElementById("new-total-amount")
+          .text() shouldBe "This means your total is now 50.50 litre(s) of cider"
         content     should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -320,7 +320,7 @@ class LimitExceedControllerSpec extends BaseSpec {
                 privateCraft = Some(false),
                 purchasedProductInstances = List(
                   PurchasedProductInstance(
-                    ProductPath("tobacco/cigars"),
+                    ProductPath("tobacco/cigarettes"),
                     iid = "iid0",
                     weightOrVolume = None,
                     noOfSticks = Some(800),
@@ -332,7 +332,7 @@ class LimitExceedControllerSpec extends BaseSpec {
                 ),
                 workingInstance = Some(
                   PurchasedProductInstance(
-                    ProductPath("tobacco/cigars"),
+                    ProductPath("tobacco/cigarettes"),
                     "iid0",
                     None,
                     noOfSticks = Some(800),
@@ -361,10 +361,10 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered 1 cigarette(s)."
+          .text() shouldBe "You changed 800 cigarette(s) to 801 cigarette(s)"
         doc
-          .getElementById("item-edited")
-          .text() shouldBe "You have tried to enter 801 sticks on the previous page which has taken you over the limit. The product quantity has been reset to 800 stick(s)."
+          .getElementById("new-total-amount")
+          .text() shouldBe "This means your total is now 801 cigarette(s)"
         content should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -428,10 +428,10 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text()                         shouldBe "You have entered 201 cigar(s)."
+          .text()                         shouldBe "You changed 200 cigar(s) to 201 cigar(s)"
         doc
-          .getElementById("item-edited")
-          .text()                         shouldBe "You have tried to enter 201 cigars on the previous page which has taken you over the limit. The product quantity has been reset to 200 cigars."
+          .getElementById("new-total-amount")
+          .text()                         shouldBe "This means your total is now 201 cigar(s)"
         content                             should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."

@@ -15,6 +15,7 @@
  *@
 
 @import views.ViewUtils._
+@import views.LimitExceededViewUtils
 @import util._
 
 @this(
@@ -25,25 +26,20 @@
     panelIndent: components.panelIndent,
     warning: components.warning,
     button: components.button,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    limitExceededViewUtils:LimitExceededViewUtils
 )
 @(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@userInputSectionContent = {
+    @limitExceededViewUtils.addViewContent(productName, token, totalAccAmount)
+}
 
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
 
     @h1(messages("limitExceeded.h1"))
 
-    @if(productName.contains("alcohol")) {
-        @p(Html(messages("limitExceeded.p1.add.alcohol", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
-    } else if(token == "rolling-tobacco" || token == "chewing-tobacco") {
-        @p(Html(messages("limitExceeded.p1.add.loose.tobacco", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
-    } else {
-        @p(Html(messages("limitExceeded.p1.add.tobacco", totalAccAmount, messages(s"limitExceeded.p1.$token"))), id=Some("entered-amount"))
-    }
-
-    @p(Html(messages("limitExceeded.p2", messages(s"limitExceeded.p2.$token"))), id=Some("limit-exceeded-cannot-use-service"))
-
-    @p(Html(messages("limitExceeded.p3")), id=Some("item-removed"))
+    @userInputSectionContent
 
     @if(showPanelIndent) {
         @panelIndent(Html(messages(s"limitExceeded.add.panelIndent.${token}", userInput)))

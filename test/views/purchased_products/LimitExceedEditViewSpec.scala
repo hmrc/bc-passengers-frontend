@@ -79,22 +79,22 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.5", "100", "10.5", "beer", "label.alcohol.beer")
+          val view = viewApply("110.5", "9.00", "10.5", "beer", "label.alcohol.beer")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 110.5 litre(s) of beer.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 110 litres of beer.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.p(1)    -> "You changed 9.00 litre(s) of beer to 10.5 litre(s) of beer",
+              Selectors.p(2)    -> "This means your total is now 110.5 litre(s) of beer",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 110 litres of beer",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
-                (
-                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                    "They will calculate and take payment of the taxes and duties due."
-                ),
+              Selectors.p(4)    -> "We will change your item back to 9.00 litre(s) of beer",
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(5)    -> (
+                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                  "They will calculate and take payment of the taxes and duties due."
+              ),
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -106,18 +106,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.p(1)    -> "You changed 15 litre(s) of cider to 5.01 litre(s) of cider",
+              Selectors.p(2)    -> "This means your total is now 20.01 litre(s) of cider",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(4)    -> "We will change your item back to 15 litre(s) of cider",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -125,22 +126,22 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too much sparkling-cider" should {
 
-          val view = viewApply("20.01", "15.00", "5.01", "sparkling-cider", "label.alcohol.sparkling-cider")
+          val view = viewApply("20.01", "3.00", "5.01", "sparkling-cider", "label.alcohol.sparkling-cider")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.p(1)    -> "You changed 3.00 litre(s) of cider to 5.01 litre(s) of cider",
+              Selectors.p(2)    -> "This means your total is now 20.01 litre(s) of cider",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
-                (
-                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
-                    "They will calculate and take payment of the taxes and duties due."
-                ),
+              Selectors.p(4)    -> "We will change your item back to 3.00 litre(s) of cider",
+              Selectors.p(5)    -> (
+                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                  "They will calculate and take payment of the taxes and duties due."
+              ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -148,22 +149,23 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too much sparkling-cider-up" should {
 
-          val view = viewApply("20.01", "15.00", "5.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up")
+          val view = viewApply("20.01", "3.00", "5.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litre(s) of cider.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.p(1)    -> "You changed 3.00 litre(s) of cider to 5.01 litre(s) of cider",
+              Selectors.p(2)    -> "This means your total is now 20.01 litre(s) of cider",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(4)    -> "We will change your item back to 3.00 litre(s) of cider",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -171,22 +173,23 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too much spirits" should {
 
-          val view = viewApply("10.01", "8.00", "2.01", "spirits", "label.alcohol.spirits")
+          val view = viewApply("10.01", "1.00", "2.01", "spirits", "label.alcohol.spirits")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 10.01 litre(s) of spirits.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 10 litres of spirits.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.p(1)    -> "You changed 1.00 litre(s) of spirits to 2.01 litre(s) of spirits",
+              Selectors.p(2)    -> "This means your total is now 10.01 litre(s) of spirits",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 10 litres of spirits",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(4)    -> "We will change your item back to 1.00 litre(s) of spirits",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -194,24 +197,23 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too much wine" should {
 
-          val view = viewApply("90.01", "80.00", "10.01", "wine", "label.alcohol.wine")
+          val view = viewApply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 90.01 litre(s) of wine.",
-              Selectors.p(
-                2
-              )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 9.00 litre(s) of wine to 10.01 litre(s) of wine",
+              Selectors.p(2) -> "This means your total is now 90.01 litre(s) of wine",
+              Selectors.p(3) -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine)",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 9.00 litre(s) of wine",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -223,18 +225,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 20.01 litres of other alcohol.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of other alcohol.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 20.00 litre(s) of other alcohol to 20.01 litre(s) of other alcohol",
+              Selectors.p(2) -> "This means your total is now 20.01 litre(s) of other alcohol",
+              Selectors.p(3) -> "You cannot use this service to declare more than 20 litres of other alcohol",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 20.00 litre(s) of other alcohol",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -248,22 +251,23 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too many cigarettes" should {
 
-          val view = viewApply("801","800", "801", "cigarettes", "label.tobacco.cigarettes")
+          val view = viewApply("801", "300", "301", "cigarettes", "label.tobacco.cigarettes")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 801 cigarette(s).",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 800 cigarettes.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 300 cigarette(s) to 301 cigarette(s)",
+              Selectors.p(2) -> "This means your total is now 801 cigarette(s)",
+              Selectors.p(3) -> "You cannot use this service to declare more than 800 cigarettes",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 300 cigarette(s)",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -271,22 +275,23 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too many cigarillos" should {
 
-          val view = viewApply("401","100", "201", "cigarillos", "label.tobacco.cigarillos")
+          val view = viewApply("401", "100", "201", "cigarillos", "label.tobacco.cigarillos")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 401 cigarillo(s).",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 400 cigarillos.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 100 cigarillo(s) to 201 cigarillo(s)",
+              Selectors.p(2) -> "This means your total is now 401 cigarillo(s)",
+              Selectors.p(3) -> "You cannot use this service to declare more than 400 cigarillos",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 100 cigarillo(s)",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -294,22 +299,23 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
         "the user enters too many cigars" should {
 
-          val view = viewApply("201","50", "81", "cigars", "label.tobacco.cigars")
+          val view = viewApply("201", "50", "81", "cigars", "label.tobacco.cigars")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 201 cigar(s).",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 200 cigars.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 50 cigar(s) to 81 cigar(s)",
+              Selectors.p(2) -> "This means your total is now 201 cigar(s)",
+              Selectors.p(3) -> "You cannot use this service to declare more than 200 cigars",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 50 cigar(s)",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -321,18 +327,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 801 tobacco stick(s).",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 800 tobacco sticks.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 100 tobacco stick(s) to 201 tobacco stick(s)",
+              Selectors.p(2) -> "This means your total is now 801 tobacco stick(s)",
+              Selectors.p(3) -> "You cannot use this service to declare more than 800 tobacco sticks",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 100 tobacco stick(s)",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -344,18 +351,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001.01g of pipe or chewing tobacco.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 1000g of tobacco.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
+              Selectors.p(1)    -> "You changed 100.00g of pipe or chewing tobacco to 201.00g of pipe or chewing tobacco",
+              Selectors.p(2)    -> "This means your total is now 1001.00g of pipe or chewing tobacco",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of tobacco",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(4) -> "We will change your item back to 100.00g of pipe or chewing tobacco",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -367,18 +375,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered 1001.01g of tobacco.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 1000g of tobacco.",
-              Selectors.p(3)    -> "This item will be removed from your goods to declare.",
-              Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    ->
+              Selectors.p(1) -> "You changed 100.01g of rolling tobacco to 200.01g of rolling tobacco",
+              Selectors.p(2) -> "This means your total is now 1000.01g of rolling tobacco",
+              Selectors.p(3) -> "You cannot use this service to declare more than 1000g of tobacco",
+              Selectors.h2(1) -> "What you must do",
+              Selectors.p(4) -> "We will change your item back to 100.01g of rolling tobacco",
+              Selectors.p(5) ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                ),
+                  ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)

@@ -535,14 +535,7 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                        case (Some(true), Some("greatBritain")) =>
-                          Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, itemId))
-                        case (Some(false), Some("euOnly"))
-                            if countriesService.isInEu(dto.originCountry.getOrElse("")) =>
-                          Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, itemId))
-                        case _                                  => Redirect(routes.SelectProductController.nextStep)
-                      }
+                      navigationHelper(context.getJourneyData, ppi.path, itemId, dto.originCountry)
                     }
                   } else {
                     Future(
