@@ -21,7 +21,7 @@ import models.{AlcoholDto, ProductPath}
 import play.api.data.Form
 import util.BaseSpec
 
-class AlcoholInputFormFormSpec extends BaseSpec {
+class AlcoholInputFormSpec extends BaseSpec {
 
   val alcoholItems: Seq[String]      = List("beer", "sparkling-wine", "spirits", "wine", "other", "cider")
   val invalidCostInputs: Seq[String] = List("   ", "----", "***", "$5", "£399.70", "-100")

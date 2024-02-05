@@ -172,11 +172,6 @@ class AlcoholInputController @Inject() (
                 )
               ),
             dto => {
-
-              lazy val totalWeightAndVolume =
-                alcoholAndTobaccoCalculationService
-                  .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
-
               if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
                 val (journeyData, item) =
                   newPurchaseService.insertPurchases(

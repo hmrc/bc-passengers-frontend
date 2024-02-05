@@ -1013,7 +1013,6 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.1")
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-//        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
         FakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
           .withSession(SessionKeys.sessionId -> "fakesessionid", "user-amount-input-beer" -> "111")
           .withFormUrlEncodedBody(

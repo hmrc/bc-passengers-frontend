@@ -50,11 +50,23 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
   val viewViaF: HtmlFormat.Appendable =
     injected[limit_exceed_add].f("110.2", "0.02", "cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
 
-  object Selectors extends BaseSelectors
+  object Selectors extends BaseSelectors {
+    val panelIndent = "#main-content > div > div > div > div.govuk-inset-text"
+  }
 
-  def viewApply(amount: String, userInput: String, item: String, productName: String): HtmlFormat.Appendable =
+  def viewApply(
+    amount: String,
+    userInput: String,
+    item: String,
+    productName: String,
+    showPanel: Boolean = false
+  ): HtmlFormat.Appendable =
     injected[limit_exceed_add]
-      .apply(amount, userInput, item, productName, false)(request = request, messages = messages, appConfig = appConfig)
+      .apply(amount, userInput, item, productName, showPanel)(
+        request = request,
+        messages = messages,
+        appConfig = appConfig
+      )
 
   "LimitExceedView" when {
 
@@ -69,11 +81,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.5", "0.05", "beer", "label.alcohol.beer")
+          val view = viewApply("110.500", "0.05", "beer", "label.alcohol.beer")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You have entered a total of 110.5 litres of beer.",
+              Selectors.p(1)    -> "You have entered a total of 110.500 litres of beer.",
               Selectors.p(2)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.h2(1)   -> "What you must do",
@@ -230,6 +242,39 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
           behave like pageWithExpectedMessages(view, expectedContent)
         }
       }
+
+      def panelIndentTests(
+        item: String,
+        productKey: String,
+        panelMessage: String
+      ) =
+        s"display the correct content when the showing the panel indent for: $item" when {
+
+          s"the user enters too much $item" should {
+
+            val view = viewApply("110.500", "2.000", item, productKey, true)
+
+            val expectedContent =
+              Seq(
+                Selectors.panelIndent -> s"2.000 litres of $panelMessage"
+              )
+
+            behave like pageWithExpectedMessages(view, expectedContent)
+          }
+
+        }
+
+      Seq(
+        ("beer", "label.alcohol.beer", "beer"),
+        ("non-sparkling-cider", "label.alcohol.non-sparkling-cider", "cider"),
+        ("sparkling-cider", "label.alcohol.sparkling-cider", "cider"),
+        ("sparkling-cider-up", "label.alcohol.sparkling-cider-up", "cider"),
+        ("wine", "label.alcohol.wine", "wine"),
+        ("spirits", "label.alcohol.spirits", "spirits"),
+        ("other", "label.alcohol.other-alcohol", "other alcohol")
+      ).foreach { case (item, productKey, panelMessage) =>
+        panelIndentTests(item, productKey, panelMessage)
+      }
     }
 
     "Tobacco" should {
@@ -372,6 +417,39 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        def panelIndentTests[A](amount: A, userInput: A, item: String, productKey: String, panelMessage: String) =
+          s"display the correct content when the showing the panel indent for: $item" when {
+
+            s"the user enters too much $item" should {
+
+              val view = viewApply(amount.toString, userInput.toString, item, productKey, true)
+
+              val expectedContent =
+                Seq(
+                  Selectors.panelIndent -> s"$userInput$panelMessage"
+                )
+
+              behave like pageWithExpectedMessages(view, expectedContent)
+            }
+
+          }
+
+        Seq(
+          (800, 1, "cigarettes", "label.tobacco.cigarettes", " cigarette"),
+          (400, 1, "cigarillos", "label.tobacco.cigarillos", " cigarillo"),
+          (200, 1, "cigars", "label.tobacco.cigars", " cigar"),
+          (800, 1, "heated-tobacco", "label.tobacco.heated-tobacco", " tobacco stick")
+        ).foreach { case (amount, userInput, item, productKey, panelMessage) =>
+          panelIndentTests[Int](amount, userInput, item, productKey, panelMessage)
+        }
+
+        Seq(
+          (1000.01, 300.57, "chewing-tobacco", "label.tobacco.chewing-tobacco", "g of pipe or chewing tobacco"),
+          (1000.01, 300.57, "rolling-tobacco", "label.tobacco.rolling-tobacco", "g of rolling tobacco")
+        ).foreach { case (amount, userInput, item, productKey, panelMessage) =>
+          panelIndentTests[BigDecimal](amount, userInput, item, productKey, panelMessage)
         }
       }
     }

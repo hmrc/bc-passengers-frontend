@@ -54,7 +54,7 @@ class LimitExceedController @Inject() (
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
         val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
-        val userInputBigDecimalFormatted    = userInputBigDecimal.format2dps
+        val userInputBigDecimalFormatted    = userInputBigDecimal.format3dps
 
         val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
 

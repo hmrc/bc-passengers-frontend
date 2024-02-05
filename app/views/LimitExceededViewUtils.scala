@@ -140,47 +140,30 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     val content =
       selectProduct(productName)(
         alcohol = Option(
-          determineSinglularOrPlural(
-            userInput,
-            panelIndent(
-              Html(
-                messages(
-                  "limitExceeded.add.panelIndent",
+          panelIndent(
+            Html(
+              messages(
+                "limitExceeded.add.panelIndent",
+                userInput,
+                determineSinglularOrPlural(
                   userInput,
                   messages("limitExceeded.litre"),
-                  messages(s"limitExceeded.$productToken")
-                )
-              )
-            ),
-            panelIndent(
-              Html(
-                messages(
-                  "limitExceeded.add.panelIndent",
-                  userInput,
-                  messages("limitExceeded.litres"),
-                  messages(s"limitExceeded.$productToken")
-                )
+                  messages("limitExceeded.litres")
+                ),
+                messages(s"limitExceeded.$productToken")
               )
             )
           )
         ),
         stickTobacco = Option(
-          determineSinglularOrPlural(
-            userInput,
-            panelIndent(
-              Html(
-                messages(
-                  "limitExceeded.add.panelIndent.tobacco",
+          panelIndent(
+            Html(
+              messages(
+                "limitExceeded.add.panelIndent.tobacco",
+                userInput,
+                determineSinglularOrPlural(
                   userInput,
-                  messages(s"limitExceeded.$productToken.singular")
-                )
-              )
-            ),
-            panelIndent(
-              Html(
-                messages(
-                  "limitExceeded.add.panelIndent.tobacco",
-                  userInput,
+                  messages(s"limitExceeded.$productToken.singular"),
                   messages(s"limitExceeded.$productToken.plural")
                 )
               )
@@ -188,17 +171,9 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
           )
         ),
         looseTobacco = Option(
-          determineSinglularOrPlural(
-            userInput,
-            panelIndent(
-              Html(
-                messages("limitExceeded.add.panelIndent", userInput, messages(s"limitExceeded.$productToken.singular"))
-              )
-            ),
-            panelIndent(
-              Html(
-                messages("limitExceeded.add.panelIndent", userInput, messages(s"limitExceeded.$productToken.plural"))
-              )
+          panelIndent(
+            Html(
+              messages("limitExceeded.add.panelIndent.loose.tobacco", userInput, messages(s"limitExceeded.grams.of"), messages(s"limitExceeded.$productToken"))
             )
           )
         )
