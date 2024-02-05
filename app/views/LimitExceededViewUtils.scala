@@ -173,7 +173,12 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
         looseTobacco = Option(
           panelIndent(
             Html(
-              messages("limitExceeded.add.panelIndent.loose.tobacco", userInput, messages(s"limitExceeded.grams.of"), messages(s"limitExceeded.$productToken"))
+              messages(
+                "limitExceeded.add.panelIndent.loose.tobacco",
+                userInput,
+                messages(s"limitExceeded.grams.of"),
+                messages(s"limitExceeded.$productToken")
+              )
             )
           )
         )

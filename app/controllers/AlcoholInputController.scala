@@ -171,7 +171,7 @@ class AlcoholInputController @Inject() (
                   )
                 )
               ),
-            dto => {
+            dto =>
               if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).isEmpty) {
                 val (journeyData, item) =
                   newPurchaseService.insertPurchases(
@@ -196,7 +196,6 @@ class AlcoholInputController @Inject() (
                     .addingToSession(s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString())
                 )
               }
-            }
           )
       }
     }

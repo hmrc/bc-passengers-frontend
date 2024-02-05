@@ -1406,7 +1406,7 @@ label.no_existing_declaration = the details you have entered do not match an exi
 label.payment_issue = there was an issue when you previously tried to add goods to your declaration and your payment was not completed - you will now need to speak to a border force officer at your arrival location to declare any additional goods
 label.already_passed_custom = your scheduled time of arrival is in the past - if your journey has been delayed and you have goods to declare, speak to a border force officer at your arrival location
 
-# Limit exceeded Add page
+############## Limit exceeded Add page ##############
 
 limitExceeded.title = There is a problem
 limitExceeded.h1 = There is a problem
@@ -1462,7 +1462,7 @@ limitExceeded.warning.tobacco = If you do not declare tobacco over the service l
 limitExceeded.h2b = If you have other items to declare
 limitExceeded.p5 = You can continue to use this service to declare other alcohol, tobacco and goods.
 
-# Limit exceeded Edit page
+############## Limit exceeded Edit page ##############
 
 limitExceeded.max.limit.beer = 110 litres of beer
 limitExceeded.max.limit.non-sparkling-cider = 20 litres of cider
@@ -1500,7 +1500,10 @@ limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1} of {2}.
 limitExceeded.p4.edit.tobacco = We will change your item back to {0} {1}.
 limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1} {2}.
 
-#Previous declaration page content change
+
+############## Previous declaration page content change ##############
+
+
 label.check_tax_and_declare = Check tax on goods and declare them
 label.add_goods_previous_declaration = Add goods to a previous declaration
 
