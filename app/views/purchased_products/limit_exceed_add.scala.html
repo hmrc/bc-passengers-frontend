@@ -35,6 +35,10 @@
     @limitExceededViewUtils.addViewContent(productName, token, totalAccAmount)
 }
 
+@panelContent = {
+    @limitExceededViewUtils.addViewPanelContent(productName, token, userInput)
+}
+
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
 
     @h1(messages("limitExceeded.h1"))
@@ -42,7 +46,7 @@
     @userInputSectionContent
 
     @if(showPanelIndent) {
-        @panelIndent(Html(messages(s"limitExceeded.add.panelIndent.${token}", userInput)))
+        @panelContent
     }
 
     @h2(messages("limitExceeded.h2a"), id = Some("what-you-must-do"))

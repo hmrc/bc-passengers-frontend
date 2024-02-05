@@ -23,7 +23,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import javax.inject.Inject
 
 @Singleton
-class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
+class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent: views.html.components.panelIndent) {
 
   def selectProduct[A](
     productName: String
@@ -39,6 +39,12 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
       case _                                   => None
     }
 
+  def determineSinglularOrPlural[A](amount: String, singular: A, plural: A) =
+    amount match {
+      case "1.00" | "1" | "1.000" => singular
+      case _                      => plural
+    }
+
   def addViewContent(
     productName: String,
     productToken: String,
@@ -46,22 +52,59 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
   )(implicit messages: Messages): Html = {
     val p1 =
       selectProduct(productName)(
-        Option(
-          p(
-            Html(messages("limitExceeded.p1.add.alcohol", totalAmount, messages(s"limitExceeded.p1.$productToken"))),
-            id = Some("entered-amount")
+        alcohol = Option(
+          determineSinglularOrPlural(
+            amount = totalAmount,
+            singular = p(
+              Html(
+                messages(
+                  "limitExceeded.p1.add.alcohol",
+                  totalAmount,
+                  messages("limitExceeded.litre"),
+                  messages(s"limitExceeded.$productToken")
+                )
+              ),
+              id = Some("entered-amount")
+            ),
+            plural = p(
+              Html(
+                messages(
+                  "limitExceeded.p1.add.alcohol",
+                  totalAmount,
+                  messages("limitExceeded.litres"),
+                  messages(s"limitExceeded.$productToken")
+                )
+              ),
+              id = Some("entered-amount")
+            )
           )
         ),
-        Option(
-          p(
-            Html(messages("limitExceeded.p1.add.tobacco", totalAmount, messages(s"limitExceeded.p1.$productToken"))),
-            id = Some("entered-amount")
+        stickTobacco = Option(
+          determineSinglularOrPlural(
+            totalAmount,
+            p(
+              Html(
+                messages("limitExceeded.p1.add.tobacco", totalAmount, messages(s"limitExceeded.$productToken.singular"))
+              ),
+              id = Some("entered-amount")
+            ),
+            p(
+              Html(
+                messages("limitExceeded.p1.add.tobacco", totalAmount, messages(s"limitExceeded.$productToken.plural"))
+              ),
+              id = Some("entered-amount")
+            )
           )
         ),
-        Option(
+        looseTobacco = Option(
           p(
             Html(
-              messages("limitExceeded.p1.add.loose.tobacco", totalAmount, messages(s"limitExceeded.p1.$productToken"))
+              messages(
+                "limitExceeded.p1.add.loose.tobacco",
+                totalAmount,
+                messages(s"limitExceeded.grams.of"),
+                messages(s"limitExceeded.$productToken")
+              )
             ),
             id = Some("entered-amount")
           )
@@ -70,7 +113,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
 
     val p2 = Option(
       p(
-        Html(messages("limitExceeded.p2", messages(s"limitExceeded.p2.$productToken"))),
+        Html(messages("limitExceeded.p2", messages(s"limitExceeded.max.limit.$productToken"))),
         id = Some("limit-exceeded-cannot-use-service")
       )
     )
@@ -89,6 +132,83 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
     section1Content
   }
 
+  def addViewPanelContent(
+    productName: String,
+    productToken: String,
+    userInput: String
+  )(implicit messages: Messages): Html = {
+    val content =
+      selectProduct(productName)(
+        alcohol = Option(
+          determineSinglularOrPlural(
+            userInput,
+            panelIndent(
+              Html(
+                messages(
+                  "limitExceeded.add.panelIndent",
+                  userInput,
+                  messages("limitExceeded.litre"),
+                  messages(s"limitExceeded.$productToken")
+                )
+              )
+            ),
+            panelIndent(
+              Html(
+                messages(
+                  "limitExceeded.add.panelIndent",
+                  userInput,
+                  messages("limitExceeded.litres"),
+                  messages(s"limitExceeded.$productToken")
+                )
+              )
+            )
+          )
+        ),
+        stickTobacco = Option(
+          determineSinglularOrPlural(
+            userInput,
+            panelIndent(
+              Html(
+                messages(
+                  "limitExceeded.add.panelIndent.tobacco",
+                  userInput,
+                  messages(s"limitExceeded.$productToken.singular")
+                )
+              )
+            ),
+            panelIndent(
+              Html(
+                messages(
+                  "limitExceeded.add.panelIndent.tobacco",
+                  userInput,
+                  messages(s"limitExceeded.$productToken.plural")
+                )
+              )
+            )
+          )
+        ),
+        looseTobacco = Option(
+          determineSinglularOrPlural(
+            userInput,
+            panelIndent(
+              Html(
+                messages("limitExceeded.add.panelIndent", userInput, messages(s"limitExceeded.$productToken.singular"))
+              )
+            ),
+            panelIndent(
+              Html(
+                messages("limitExceeded.add.panelIndent", userInput, messages(s"limitExceeded.$productToken.plural"))
+              )
+            )
+          )
+        )
+      )
+
+    HtmlFormat.fill(
+      Seq(content).flatten
+    )
+  }
+
   def editViewContent(
     productName: String,
     productToken: String,
@@ -103,10 +223,24 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
           p(
             Html(
               messages(
-                "limitExceeded.p1.edit.alcohol",
+                "limitExceeded.p1.edit.alcohol.a",
                 originalAmountFormatted,
-                messages(s"limitExceeded.unit.$productToken"),
-                userInput
+                determineSinglularOrPlural(
+                  originalAmountFormatted,
+                  messages("limitExceeded.litre"),
+                  messages("limitExceeded.litres")
+                ),
+                messages(s"limitExceeded.$productToken"),
+                messages(
+                  "limitExceeded.p1.edit.alcohol.b",
+                  userInput,
+                  determineSinglularOrPlural(
+                    userInput,
+                    messages("limitExceeded.litre"),
+                    messages("limitExceeded.litres")
+                  ),
+                  messages(s"limitExceeded.$productToken")
+                )
               )
             ),
             id = Some("entered-amount")
@@ -116,10 +250,22 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
           p(
             Html(
               messages(
-                "limitExceeded.p1.edit.tobacco",
+                "limitExceeded.p1.edit.tobacco.a",
                 originalAmountFormatted,
-                messages(s"limitExceeded.unit.$productToken"),
-                userInput
+                determineSinglularOrPlural(
+                  originalAmountFormatted,
+                  messages(s"limitExceeded.$productToken.singular"),
+                  messages(s"limitExceeded.$productToken.plural")
+                ),
+                messages(
+                  "limitExceeded.p1.edit.tobacco.b",
+                  userInput,
+                  determineSinglularOrPlural(
+                    userInput,
+                    messages(s"limitExceeded.$productToken.singular"),
+                    messages(s"limitExceeded.$productToken.plural")
+                  )
+                )
               )
             ),
             id = Some("entered-amount")
@@ -131,7 +277,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
               messages(
                 "limitExceeded.p1.edit.loose.tobacco",
                 originalAmountFormatted,
-                messages(s"limitExceeded.unit.$productToken"),
+                messages("limitExceeded.grams.of"),
+                messages(s"limitExceeded.$productToken"),
                 userInput
               )
             ),
@@ -142,37 +289,57 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
 
     val p2Content =
       selectProduct(productName)(
-        Option(
-          p(
-            Html(
-              messages(
-                "limitExceeded.p2.edit.alcohol",
-                totalAmount,
-                messages(s"limitExceeded.unit.$productToken")
-              )
+        alcohol = Option(
+          determineSinglularOrPlural(
+            totalAmount,
+            p(
+              Html(
+                messages(
+                  "limitExceeded.p2.edit.alcohol",
+                  totalAmount,
+                  messages(s"limitExceeded.litre"),
+                  messages(s"limitExceeded.$productToken")
+                )
+              ),
+              id = Some("new-total-amount")
             ),
-            id = Some("new-total-amount")
+            p(
+              Html(
+                messages(
+                  "limitExceeded.p2.edit.alcohol",
+                  totalAmount,
+                  messages(s"limitExceeded.litres"),
+                  messages(s"limitExceeded.$productToken")
+                )
+              ),
+              id = Some("new-total-amount")
+            )
           )
         ),
-        Option(
+        stickTobacco = Option(
           p(
             Html(
               messages(
                 "limitExceeded.p2.edit.tobacco",
                 totalAmount,
-                messages(s"limitExceeded.unit.$productToken")
+                determineSinglularOrPlural(
+                  totalAmount,
+                  messages(s"limitExceeded.$productToken.singular"),
+                  messages(s"limitExceeded.$productToken.plural")
+                )
               )
             ),
             id = Some("new-total-amount")
           )
         ),
-        Option(
+        looseTobacco = Option(
           p(
             Html(
               messages(
                 "limitExceeded.p2.edit.loose.tobacco",
                 totalAmount,
-                messages(s"limitExceeded.unit.$productToken")
+                messages(s"limitExceeded.grams.of"),
+                messages(s"limitExceeded.$productToken")
               )
             ),
             id = Some("new-total-amount")
@@ -182,17 +349,17 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
 
     val p3Content =
       selectProduct(productName)(
-        Option(
+        alcohol = Option(
           p(
             Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.$productToken")))
           )
         ),
-        Option(
+        stickTobacco = Option(
           p(
             Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.$productToken")))
           )
         ),
-        Option(
+        looseTobacco = Option(
           p(
             Html(
               messages(
@@ -206,35 +373,45 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p) {
 
     val p4Content =
       selectProduct(productName)(
-        Option(
+        alcohol = Option(
           p(
             Html(
               messages(
                 "limitExceeded.p4.edit.alcohol",
                 originalAmountFormatted,
-                messages(s"limitExceeded.unit.$productToken")
+                determineSinglularOrPlural(
+                  originalAmountFormatted,
+                  messages(s"limitExceeded.litre"),
+                  messages(s"limitExceeded.litres")
+                ),
+                messages(s"limitExceeded.$productToken")
               )
             )
           )
         ),
-        Option(
+        stickTobacco = Option(
           p(
             Html(
               messages(
                 "limitExceeded.p4.edit.tobacco",
                 originalAmountFormatted,
-                messages(s"limitExceeded.unit.$productToken")
+                determineSinglularOrPlural(
+                  originalAmountFormatted,
+                  messages(s"limitExceeded.$productToken.singular"),
+                  messages(s"limitExceeded.$productToken.plural")
+                )
               )
             )
           )
         ),
-        Option(
+        looseTobacco = Option(
           p(
             Html(
               messages(
                 "limitExceeded.p4.edit.loose.tobacco",
                 originalAmountFormatted,
-                messages(s"limitExceeded.unit.$productToken")
+                messages(s"limitExceeded.grams.of"),
+                messages(s"limitExceeded.$productToken")
               )
             )
           )

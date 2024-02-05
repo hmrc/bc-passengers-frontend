@@ -88,8 +88,7 @@ class LimitExceedControllerSpec extends BaseSpec {
                 isBringingDutyFree = None,
                 bringingOverAllowance = Some(true),
                 ageOver17 = Some(true),
-                privateCraft = Some(false),
-
+                privateCraft = Some(false)
               )
             )
           )
@@ -112,7 +111,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           .text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You have entered a total of 111.50 litre(s) of cider."
+          .text() shouldBe "You have entered a total of 111.500 litres of cider."
         content     should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -151,7 +150,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text()                         shouldBe "You have entered a total of 201 cigar(s)."
+          .text()                         shouldBe "You have entered a total of 201 cigars."
         content                             should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -244,10 +243,10 @@ class LimitExceedControllerSpec extends BaseSpec {
           .text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You changed 20.00 litre(s) of cider to 50.50 litre(s) of cider"
+          .text() shouldBe "You changed 20.000 litres of cider to 50.500 litres of cider."
         doc
           .getElementById("new-total-amount")
-          .text() shouldBe "This means your total is now 50.50 litre(s) of cider"
+          .text() shouldBe "This means your total is now 50.500 litres of cider."
         content     should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
@@ -356,21 +355,20 @@ class LimitExceedControllerSpec extends BaseSpec {
         status(result) shouldBe OK
 
         val content = contentAsString(result)
-        val doc = Jsoup.parse(content)
+        val doc     = Jsoup.parse(content)
 
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text() shouldBe "You changed 800 cigarette(s) to 801 cigarette(s)"
+          .text()                         shouldBe "You changed 800 cigarettes to 801 cigarettes."
         doc
           .getElementById("new-total-amount")
-          .text() shouldBe "This means your total is now 801 cigarette(s)"
-        content should include(
+          .text()                         shouldBe "This means your total is now 801 cigarettes."
+        content                             should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."
         )
       }
-
 
       "load limit exceeded page for cigars and display tobacco content" in {
         when(mockCache.fetch(any())).thenReturn(
@@ -428,10 +426,10 @@ class LimitExceedControllerSpec extends BaseSpec {
         doc.getElementsByTag("h1").text() shouldBe "There is a problem"
         doc
           .getElementById("entered-amount")
-          .text()                         shouldBe "You changed 200 cigar(s) to 201 cigar(s)"
+          .text()                         shouldBe "You changed 200 cigars to 201 cigars."
         doc
           .getElementById("new-total-amount")
-          .text()                         shouldBe "This means your total is now 201 cigar(s)"
+          .text()                         shouldBe "This means your total is now 201 cigars."
         content                             should include(
           "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
             "They will calculate and take payment of the taxes and duties due."

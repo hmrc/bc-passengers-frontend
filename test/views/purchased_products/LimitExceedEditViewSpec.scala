@@ -77,17 +77,40 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
       "display correct content for view" when {
 
+        "the user enters a single litre of alcohol" should {
+
+          val view = viewApply("110.5", "9.00", "1.00", "beer", "label.alcohol.beer")
+
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You changed 9.00 litres of beer to 1.00 litre of beer.",
+              Selectors.p(2)    -> "This means your total is now 110.5 litres of beer.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 110 litres of beer.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 9.00 litres of beer.",
+              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(5)    -> (
+                "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                  "They will calculate and take payment of the taxes and duties due."
+              ),
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
         "the user enters too much beer" should {
 
           val view = viewApply("110.5", "9.00", "10.5", "beer", "label.alcohol.beer")
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You changed 9.00 litre(s) of beer to 10.5 litre(s) of beer",
-              Selectors.p(2)    -> "This means your total is now 110.5 litre(s) of beer",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 110 litres of beer",
+              Selectors.p(1)    -> "You changed 9.00 litres of beer to 10.5 litres of beer.",
+              Selectors.p(2)    -> "This means your total is now 110.5 litres of beer.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    -> "We will change your item back to 9.00 litre(s) of beer",
+              Selectors.p(4)    -> "We will change your item back to 9.00 litres of beer.",
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(5)    -> (
@@ -106,11 +129,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You changed 15 litre(s) of cider to 5.01 litre(s) of cider",
-              Selectors.p(2)    -> "This means your total is now 20.01 litre(s) of cider",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider",
+              Selectors.p(1)    -> "You changed 15 litres of cider to 5.01 litres of cider.",
+              Selectors.p(2)    -> "This means your total is now 20.01 litres of cider.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    -> "We will change your item back to 15 litre(s) of cider",
+              Selectors.p(4)    -> "We will change your item back to 15 litres of cider.",
               Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
@@ -130,11 +153,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You changed 3.00 litre(s) of cider to 5.01 litre(s) of cider",
-              Selectors.p(2)    -> "This means your total is now 20.01 litre(s) of cider",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider",
+              Selectors.p(1)    -> "You changed 3.00 litres of cider to 5.01 litres of cider.",
+              Selectors.p(2)    -> "This means your total is now 20.01 litres of cider.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    -> "We will change your item back to 3.00 litre(s) of cider",
+              Selectors.p(4)    -> "We will change your item back to 3.00 litres of cider.",
               Selectors.p(5)    -> (
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                   "They will calculate and take payment of the taxes and duties due."
@@ -153,11 +176,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You changed 3.00 litre(s) of cider to 5.01 litre(s) of cider",
-              Selectors.p(2)    -> "This means your total is now 20.01 litre(s) of cider",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider",
+              Selectors.p(1)    -> "You changed 3.00 litres of cider to 5.01 litres of cider.",
+              Selectors.p(2)    -> "This means your total is now 20.01 litres of cider.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    -> "We will change your item back to 3.00 litre(s) of cider",
+              Selectors.p(4)    -> "We will change your item back to 3.00 litres of cider.",
               Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
@@ -177,11 +200,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You changed 1.00 litre(s) of spirits to 2.01 litre(s) of spirits",
-              Selectors.p(2)    -> "This means your total is now 10.01 litre(s) of spirits",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 10 litres of spirits",
+              Selectors.p(1)    -> "You changed 1.00 litre of spirits to 2.01 litres of spirits.",
+              Selectors.p(2)    -> "This means your total is now 10.01 litres of spirits.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 10 litres of spirits.",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4)    -> "We will change your item back to 1.00 litre(s) of spirits",
+              Selectors.p(4)    -> "We will change your item back to 1.00 litre of spirits.",
               Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
@@ -201,18 +224,20 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 9.00 litre(s) of wine to 10.01 litre(s) of wine",
-              Selectors.p(2) -> "This means your total is now 90.01 litre(s) of wine",
-              Selectors.p(3) -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine)",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 9.00 litre(s) of wine",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 9.00 litres of wine to 10.01 litres of wine.",
+              Selectors.p(2)    -> "This means your total is now 90.01 litres of wine.",
+              Selectors.p(
+                3
+              )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 9.00 litres of wine.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
+              Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
@@ -225,19 +250,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 20.00 litre(s) of other alcohol to 20.01 litre(s) of other alcohol",
-              Selectors.p(2) -> "This means your total is now 20.01 litre(s) of other alcohol",
-              Selectors.p(3) -> "You cannot use this service to declare more than 20 litres of other alcohol",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 20.00 litre(s) of other alcohol",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 20.00 litres of other alcohol to 20.01 litres of other alcohol.",
+              Selectors.p(2)    -> "This means your total is now 20.01 litres of other alcohol.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of other alcohol.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 20.00 litres of other alcohol.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -255,19 +280,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 300 cigarette(s) to 301 cigarette(s)",
-              Selectors.p(2) -> "This means your total is now 801 cigarette(s)",
-              Selectors.p(3) -> "You cannot use this service to declare more than 800 cigarettes",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 300 cigarette(s)",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 300 cigarettes to 301 cigarettes.",
+              Selectors.p(2)    -> "This means your total is now 801 cigarettes.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 800 cigarettes.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 300 cigarettes.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -279,19 +304,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 100 cigarillo(s) to 201 cigarillo(s)",
-              Selectors.p(2) -> "This means your total is now 401 cigarillo(s)",
-              Selectors.p(3) -> "You cannot use this service to declare more than 400 cigarillos",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 100 cigarillo(s)",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 100 cigarillos to 201 cigarillos.",
+              Selectors.p(2)    -> "This means your total is now 401 cigarillos.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 400 cigarillos.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 100 cigarillos.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -303,19 +328,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 50 cigar(s) to 81 cigar(s)",
-              Selectors.p(2) -> "This means your total is now 201 cigar(s)",
-              Selectors.p(3) -> "You cannot use this service to declare more than 200 cigars",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 50 cigar(s)",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 50 cigars to 81 cigars.",
+              Selectors.p(2)    -> "This means your total is now 201 cigars.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 200 cigars.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 50 cigars.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -327,19 +352,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 100 tobacco stick(s) to 201 tobacco stick(s)",
-              Selectors.p(2) -> "This means your total is now 801 tobacco stick(s)",
-              Selectors.p(3) -> "You cannot use this service to declare more than 800 tobacco sticks",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 100 tobacco stick(s)",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 100 tobacco sticks to 201 tobacco sticks.",
+              Selectors.p(2)    -> "This means your total is now 801 tobacco sticks.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 800 tobacco sticks.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 100 tobacco sticks.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -351,19 +376,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1)    -> "You changed 100.00g of pipe or chewing tobacco to 201.00g of pipe or chewing tobacco",
-              Selectors.p(2)    -> "This means your total is now 1001.00g of pipe or chewing tobacco",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of tobacco",
+              Selectors.p(1)    -> "You changed 100.00g of pipe or chewing tobacco to 201.00g of pipe or chewing tobacco.",
+              Selectors.p(2)    -> "This means your total is now 1001.00g of pipe or chewing tobacco.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of tobacco.",
               Selectors.h2(1)   -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 100.00g of pipe or chewing tobacco",
-              Selectors.p(5) ->
+              Selectors.p(4)    -> "We will change your item back to 100.00g of pipe or chewing tobacco.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -375,19 +400,19 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
           val expectedContent =
             Seq(
-              Selectors.p(1) -> "You changed 100.01g of rolling tobacco to 200.01g of rolling tobacco",
-              Selectors.p(2) -> "This means your total is now 1000.01g of rolling tobacco",
-              Selectors.p(3) -> "You cannot use this service to declare more than 1000g of tobacco",
-              Selectors.h2(1) -> "What you must do",
-              Selectors.p(4) -> "We will change your item back to 100.01g of rolling tobacco",
-              Selectors.p(5) ->
+              Selectors.p(1)    -> "You changed 100.01g of rolling tobacco to 200.01g of rolling tobacco.",
+              Selectors.p(2)    -> "This means your total is now 1000.01g of rolling tobacco.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of tobacco.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 100.01g of rolling tobacco.",
+              Selectors.p(5)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
-                  ),
+                ),
               Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
-              Selectors.h2(2) -> "If you have other items to declare",
-              Selectors.p(6) -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)

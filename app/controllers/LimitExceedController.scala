@@ -66,7 +66,7 @@ class LimitExceedController @Inject() (
           )
 
         val totalAccNoOfVolume: BigDecimal =
-          (totalAccPreviouslyAddedVolume + userInputBigDecimal).format2dps
+          (totalAccPreviouslyAddedVolume + userInputBigDecimal).format3dps
 
         userInput match {
           case Some(_) =>
@@ -167,7 +167,7 @@ class LimitExceedController @Inject() (
         val originalAmountEntered: BigDecimal =
           context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
-        val originalAmountFormatted = originalAmountEntered.format2dps
+        val originalAmountFormatted = originalAmountEntered.format3dps
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
@@ -180,11 +180,11 @@ class LimitExceedController @Inject() (
             product.token
           )
 
-        val userInputBigDecimalFormatted = userInputBigDecimal.format2dps
+        val userInputBigDecimalFormatted = userInputBigDecimal.format3dps
 
         val totaledAmount: BigDecimal = totalAccWeightForAlcoholProduct
 
-        val totaledAmountFormatted: BigDecimal = totaledAmount.format2dps
+        val totaledAmountFormatted: BigDecimal = totaledAmount.format3dps
 
         userInput match {
           case Some(_) =>
@@ -248,7 +248,6 @@ class LimitExceedController @Inject() (
   def onPageLoadEditNoOfSticks(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-
         val originalAmountEntered: Int =
           context.getJourneyData.workingInstance.flatMap(_.noOfSticks).getOrElse(0)
 

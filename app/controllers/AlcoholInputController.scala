@@ -172,6 +172,7 @@ class AlcoholInputController @Inject() (
                 )
               ),
             dto => {
+
               lazy val totalWeightAndVolume =
                 alcoholAndTobaccoCalculationService
                   .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)

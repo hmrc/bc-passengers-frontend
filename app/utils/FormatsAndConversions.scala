@@ -43,6 +43,9 @@ trait FormatsAndConversions {
     def format2dps: BigDecimal =
       value.setScale(2, RoundingMode.HALF_UP)
 
+    def format3dps: BigDecimal =
+      value.setScale(3, RoundingMode.HALF_UP)
+
     def format5dps: BigDecimal =
       value.setScale(5, RoundingMode.HALF_UP)
   }

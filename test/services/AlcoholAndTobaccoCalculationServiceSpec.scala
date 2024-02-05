@@ -376,8 +376,8 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(BigDecimal(0.6))
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
-            val expected = BigDecimal(0.90000)
+            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val expected         = BigDecimal(0.90000)
 
             actual shouldBe expected
           }
