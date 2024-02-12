@@ -199,7 +199,7 @@ class LimitExceedController @Inject() (
                 )
               )
             )
-          case _       =>
+          case _ =>
             Future(InternalServerError(errorTemplate()))
         }
       }

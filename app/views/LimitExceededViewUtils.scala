@@ -331,12 +331,14 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
       selectProduct(productName)(
         alcohol = Option(
           p(
-            Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.$productToken")))
+            Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.$productToken"))),
+            id = Some("limit-exceeded-cannot-use-service")
           )
         ),
         stickTobacco = Option(
           p(
-            Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.$productToken")))
+            Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.$productToken"))),
+            id = Some("limit-exceeded-cannot-use-service")
           )
         ),
         looseTobacco = Option(
@@ -346,7 +348,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 "limitExceeded.p3.edit.loose.tobacco",
                 messages(s"limitExceeded.max.limit.$productToken")
               )
-            )
+            ),
+            id = Some("limit-exceeded-cannot-use-service")
           )
         )
       )
@@ -366,7 +369,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 ),
                 messages(s"limitExceeded.$productToken")
               )
-            )
+            ),
+            id = Some("revert-back")
           )
         ),
         stickTobacco = Option(
@@ -381,7 +385,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                   messages(s"limitExceeded.$productToken.plural")
                 )
               )
-            )
+            ),
+            id = Some("revert-back")
           )
         ),
         looseTobacco = Option(
@@ -393,7 +398,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 messages(s"limitExceeded.grams.of"),
                 messages(s"limitExceeded.$productToken")
               )
-            )
+            ),
+            id = Some("revert-back")
           )
         )
       )
