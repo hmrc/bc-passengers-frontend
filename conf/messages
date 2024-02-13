@@ -1446,11 +1446,6 @@ limitExceeded.rolling-tobacco = rolling tobacco
 limitExceeded.p2 = You cannot use this service to declare more than {0}.
 limitExceeded.p3 = This item will be removed from your goods to declare.
 
-limitExceeded.p3.alcohol.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
-limitExceeded.p3.tobacco.loose.edit = You have tried to enter {0}g on the previous page which has taken you over the limit. The product quantity has been reset to {1}g.
-limitExceeded.p3.tobacco.cigars.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
-limitExceeded.p3.tobacco.cigarettes.edit = You have tried to enter {0} {1} on the previous page which has taken you over the limit. The product quantity has been reset to {2} {1}.
-
 limitExceeded.add.panelIndent = {0} {1} of {2}
 limitExceeded.add.panelIndent.tobacco = {0} {1}
 limitExceeded.add.panelIndent.loose.tobacco = {0}{1} {2}

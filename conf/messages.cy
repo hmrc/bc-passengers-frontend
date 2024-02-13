@@ -1412,31 +1412,50 @@ label.no_existing_declaration = nid yw’r manylion a nodwyd gennych yn cyd-fynd
 label.payment_issue = roedd problem pan wnaethoch geisio ychwanegu nwyddau at eich datganiad yn flaenorol ac ni chwblhawyd eich taliad - bydd angen i chi nawr siarad â swyddog llu’r ffiniau yn eich man cyrraedd i ddatgan unrhyw nwyddau ychwanegol
 label.already_passed_custom = mae’ch amser cyrraedd disgwyliedig yn y gorffennol - os gohiriwyd eich taith a bod gennych nwyddau i’w datgan, siaradwch â swyddog Llu’r Ffiniau yn eich man cyrraedd
 
-# limit exceed page
+############## Limit exceeded Add page ##############
 
 limitExceeded.title = Mae problem wedi codi
 limitExceeded.h1 = Mae problem wedi codi
-limitExceeded.p1 = Rydych wedi nodi {0} {1}.
 
-limitExceeded.p1.beer = litr o gwrw
-limitExceeded.p1.cider = litr o seidr
-limitExceeded.p1.non-sparkling-cider = litr o seidr
-limitExceeded.p1.sparkling-cider = litr o seidr
-limitExceeded.p1.sparkling-cider-up = litr o seidr
-limitExceeded.p1.sparkling-wine = litr o win pefriog
-limitExceeded.p1.spirits = litr o wirodydd
-limitExceeded.p1.wine = litr o win
-limitExceeded.p1.other = litr o alcohol arall
+limitExceeded.p1.add.alcohol = Rydych wedi nodi cyfanswm o {0} {1} o {2}.
+limitExceeded.p1.add.tobacco = Rydych wedi nodi cyfanswm o {0} {1}.
+limitExceeded.p1.add.loose.tobacco = Rydych wedi nodi cyfanswm o {0}{1} {2}.
 
-limitExceeded.p1.cigarettes = sigarét
-limitExceeded.p1.cigarillos = sigarilo
-limitExceeded.p1.cigars = sigâr
-limitExceeded.p1.heated-tobacco = darn o dybaco gwresogi
-limitExceeded.p1.chewing-tobacco = gram o dybaco
-limitExceeded.p1.rolling-tobacco = gram o dybaco
+limitExceeded.litre = litr
+limitExceeded.litres = litr
+
+limitExceeded.grams.of = g o
+
+limitExceeded.beer = gwrw
+limitExceeded.cider = seidr
+limitExceeded.non-sparkling-cider = seidr
+limitExceeded.sparkling-cider = seidr
+limitExceeded.sparkling-cider-up = seidr
+limitExceeded.sparkling-wine = gwin win pefriog
+limitExceeded.spirits = wirodydd
+limitExceeded.wine = win
+limitExceeded.other = alcohol arall
+
+limitExceeded.cigarettes.singular = sigarét
+limitExceeded.cigarillos.singular = sigarilo
+limitExceeded.cigars.singular = sigâr
+limitExceeded.heated-tobacco.singular = darn o dybaco gwresogi
+
+limitExceeded.cigarettes.plural = sigaréts
+limitExceeded.cigarillos.plural = sigarilos
+limitExceeded.cigars.plural = sigarau
+limitExceeded.heated-tobacco.plural = darnau o dybaco gwresogi
+
+limitExceeded.chewing-tobacco = dybaco cetyn neu gnoi
+limitExceeded.rolling-tobacco = dybaco rholio
 
 limitExceeded.p2 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na {0}.
 limitExceeded.p3 = Bydd yr eitem hon yn cael ei dileu o’ch nwyddau i’w datgan.
+
+limitExceeded.add.panelIndent = {0} {1} o {2}
+limitExceeded.add.panelIndent.tobacco = {0} {1}
+limitExceeded.add.panelIndent.loose.tobacco = {0}{1} {2}
+
 limitExceeded.h2a = Yr hyn y mae’n rhaid i chi ei wneud
 limitExceeded.p4 = Mae’n rhaid i chi ddefnyddio’r sianel goch i ddatgan yr eitem hon, yn bersonol, i Lu’r Ffiniau pan fyddwch yn cyrraedd y DU. Byddant yn cyfrifo’r trethi a’r tollau sy’n ddyledus ac yn cymryd taliad ohonynt.
 limitExceeded.warning.alcohol = Os nad ydych yn datgan alcohol dros derfyn y gwasanaeth yn bersonol, neu os gwnewch ddatganiad ffug, mae’n bosibl y bydd yn rhaid i chi dalu cosb ac mae’n bosibl y bydd eich alcohol yn cael ei atafaelu.
@@ -1444,25 +1463,43 @@ limitExceeded.warning.tobacco = Os nad ydych yn datgan tybaco dros derfyn y gwas
 limitExceeded.h2b = Os oes gennych eitemau eraill i’w datgan
 limitExceeded.p5 = Gallwch barhau i ddefnyddio’r gwasanaeth hwn er mwyn datgan alcohol, tybaco a nwyddau eraill.
 
-limitExceeded.p2.beer = 110 litr o gwrw
-limitExceeded.p2.cider = 20 litr o seidr
-limitExceeded.p2.non-sparkling-cider = 20 litr o seidr
-limitExceeded.p2.sparkling-cider = 20 litr o seidr
-limitExceeded.p2.sparkling-cider-up = 20 litr o seidr
-limitExceeded.p2.sparkling-wine = 60 litr o win pefriog
-limitExceeded.p2.spirits = 10 litr o wirodydd
-limitExceeded.p2.wine = 90 litr o win (mae hyn yn cynnwys hyd at 60 litr o win pefriog)
-limitExceeded.p2.other = 20 litr o alcohol arall
+############## Limit exceeded Edit page ##############
 
-limitExceeded.p2.cigarettes = 800 sigarét
-limitExceeded.p2.cigarillos = 400 sigarilo
-limitExceeded.p2.cigars = 200 sigâr
-limitExceeded.p2.heated-tobacco = 800 darn o dybaco gwresogi
-limitExceeded.p2.chewing-tobacco = 1000 gram o dybaco
-limitExceeded.p2.rolling-tobacco = 1000 gram o dybaco
+limitExceeded.max.limit.beer = 110 litr o gwrw
+limitExceeded.max.limit.non-sparkling-cider = 20 litr o seidr
+limitExceeded.max.limit.sparkling-cider = 20 litr o seidr
+limitExceeded.max.limit.sparkling-cider-up = 20 litr o seidr
+limitExceeded.max.limit.sparkling-wine = 60 litr o win pefriog
+limitExceeded.max.limit.spirits = 10 litr o wirodydd
+limitExceeded.max.limit.wine = 90 litr o win (mae hyn yn cynnwys hyd at 60 litr o win pefriog)
+limitExceeded.max.limit.other = 20 litr o alcohol arall
 
+limitExceeded.max.limit.cigarettes = 800 sigarét
+limitExceeded.max.limit.cigarillos = 400 sigarilo
+limitExceeded.max.limit.cigars = 200 sigar
+limitExceeded.max.limit.heated-tobacco = 800 darn o dybaco gwresogi
+limitExceeded.max.limit.chewing-tobacco = 1000 gram o dybaco
+limitExceeded.max.limit.rolling-tobacco = 1000 gram o dybaco
 
-# Limit Exceeded Edit Page
+limitExceeded.p1.edit.alcohol.a = Rydych wedi newid {0} {1} o {2} {3}.
+limitExceeded.p1.edit.alcohol.b = i {0} {1} o {2}
+
+limitExceeded.p1.edit.tobacco.a = Rydych wedi newid {0} {1} {2}.
+limitExceeded.p1.edit.tobacco.b = i {0} {1}
+
+limitExceeded.p1.edit.loose.tobacco = Rydych wedi newid {0}{1} {2} i {3}{1} {2}.
+
+limitExceeded.p2.edit.alcohol = Mae hyn yn golygu bod eich cyfanswm bellach yn {0} {1} o {2}.
+limitExceeded.p2.edit.tobacco = Mae hyn yn golygu bod eich cyfanswm bellach yn {0} {1}.
+limitExceeded.p2.edit.loose.tobacco = Mae hyn yn golygu bod eich cyfanswm bellach yn {0}{1} {2}.
+
+limitExceeded.p3.edit.alcohol = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na {0}.
+limitExceeded.p3.edit.tobacco = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na {0}.
+limitExceeded.p3.edit.loose.tobacco = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na {0}.
+
+limitExceeded.p4.edit.alcohol = Byddwn yn newid eich eitem yn ôl i {0} {1} o {2}.
+limitExceeded.p4.edit.tobacco = Byddwn yn newid eich eitem yn ôl i {0} {1}.
+limitExceeded.p4.edit.loose.tobacco = Byddwn yn newid eich eitem yn ôl i {0}{1} {2}.
 
 
 #Previous declaration page content change

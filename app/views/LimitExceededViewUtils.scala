@@ -25,7 +25,7 @@ import javax.inject.Inject
 @Singleton
 class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent: views.html.components.panelIndent) {
 
-  def selectProduct[A](
+  private[views] def selectProduct[A](
     productName: String
   )(alcohol: Option[A], stickTobacco: Option[A], looseTobacco: Option[A]): Option[A] =
     productName match {
@@ -34,12 +34,12 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
       case name if name.contains("cigars")     => stickTobacco
       case name if name.contains("cigarillos") => stickTobacco
       case name if name.contains("heated")     => stickTobacco
-      case name if name.contains("chewin")     => looseTobacco
-      case name if name.contains("rollin")     => looseTobacco
+      case name if name.contains("chewing")    => looseTobacco
+      case name if name.contains("rolling")    => looseTobacco
       case _                                   => None
     }
 
-  def determineSinglularOrPlural[A](amount: String, singular: A, plural: A) =
+  private[views] def determineSinglularOrPlural[A](amount: String, singular: A, plural: A) =
     amount match {
       case "1.00" | "1" | "1.000" => singular
       case _                      => plural
@@ -50,6 +50,9 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     productToken: String,
     totalAmount: String
   )(implicit messages: Messages): Html = {
+
+    println("add langauge = " + messages.lang.code)
+
     val p1 =
       selectProduct(productName)(
         alcohol = Option(
