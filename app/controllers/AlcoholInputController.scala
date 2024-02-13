@@ -240,9 +240,6 @@ class AlcoholInputController @Inject() (
                     )
                   ),
                 success = dto => {
-                  lazy val alcoholTotalVolume =
-                    alcoholAndTobaccoCalculationService
-                      .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token)
                   if (calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, ppi.path).isEmpty) {
                     cache.store(
                       newPurchaseService.updatePurchase(

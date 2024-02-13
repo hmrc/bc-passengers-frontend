@@ -464,11 +464,7 @@ class TobaccoInputController @Inject() (
                     )
                   ),
                 dto => {
-                  lazy val totalNoOfSticksForItemType =
-                    alcoholAndTobaccoCalculationService
-                      .noOfSticksTobaccoEditHelper(context.getJourneyData, dto.noOfSticks, product.token)
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
-                    //                  if (calculatorLimitConstraintBigDecimal(totalNoOfSticksForItemType)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -521,7 +517,6 @@ class TobaccoInputController @Inject() (
                   val updatedUserAnswers =
                     alcoholAndTobaccoCalculationService
                       .looseTobaccoEditHelper(context.getJourneyData, dto.weightOrVolume)
-//                  if (calculatorLimitConstraintOptionBigDecimal(limits, product.applicableLimits)) {
                   if (looseTobaccoWeightConstraint(updatedUserAnswers * 1000)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
