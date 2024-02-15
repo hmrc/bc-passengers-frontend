@@ -193,7 +193,7 @@ class AlcoholInputController @Inject() (
                       path = calculatorLimitConstraintBigDecimal(limits, product.applicableLimits, path).get
                     )
                   ).removingFromSession(s"user-amount-input-${product.token}")
-                    .addingToSession(s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString())
+                    .addingToSession(s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString)
                 )
               }
           )
@@ -262,7 +262,7 @@ class AlcoholInputController @Inject() (
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(
-                          s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString()
+                          s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString
                         )
                     )
                   }

@@ -24,7 +24,7 @@ import scala.jdk.CollectionConverters.IterableHasAsScala
 
 trait ViewSpec {
 
-  def document(html: Html): Document = Jsoup.parse(html.toString())
+  def document(html: Html): Document = Jsoup.parse(html.toString)
 
   def getErrorTitle(doc: Document): String = doc.select(".govuk-error-summary__title").text()
 

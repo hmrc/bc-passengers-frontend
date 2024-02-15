@@ -352,7 +352,7 @@ class TobaccoInputController @Inject() (
                     Redirect(routes.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path))
                       .removingFromSession(s"user-amount-input-${product.token}")
                       .addingToSession(
-                        s"user-amount-input-${product.token}" -> dto.weightOrVolume.getOrElseZero.toString()
+                        s"user-amount-input-${product.token}" -> dto.weightOrVolume.getOrElseZero.toString
                       )
                   )
                 }

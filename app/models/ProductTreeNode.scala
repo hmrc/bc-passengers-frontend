@@ -51,13 +51,13 @@ case class ProductTreeLeaf(
               List(
                 noOfSticks.toString,
                 name + ".single",
-                (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString()
+                (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString
               )
             )
           } else {
             (
               "label.X_X_Xg",
-              List(noOfSticks.toString, name, (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString())
+              List(noOfSticks.toString, name, (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString)
             )
           }
 
@@ -71,7 +71,7 @@ case class ProductTreeLeaf(
             }
       case "tobacco"               =>
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
-          yield ("label.Xg_of_X", List((weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString(), name))
+          yield ("label.Xg_of_X", List((weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString, name))
 
       case "alcohol"     =>
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)

@@ -358,14 +358,14 @@ class DeclarationService @Inject() (
           Json.obj(
             "additionalExciseGBP"  -> (BigDecimal(total.excise) - BigDecimal(liability.totalExciseGBP))
               .setScale(2)
-              .toString(),
+              .toString,
             "additionalCustomsGBP" -> (BigDecimal(total.customs) - BigDecimal(liability.totalCustomsGBP))
               .setScale(2)
-              .toString(),
-            "additionalVATGBP"     -> (BigDecimal(total.vat) - BigDecimal(liability.totalVATGBP)).setScale(2).toString(),
+              .toString,
+            "additionalVATGBP"     -> (BigDecimal(total.vat) - BigDecimal(liability.totalVATGBP)).setScale(2).toString,
             "additionalTotalGBP"   -> (BigDecimal(total.allTax) - BigDecimal(liability.grandTotalGBP))
               .setScale(2)
-              .toString()
+              .toString
           )
         )
       } else {
@@ -385,7 +385,7 @@ class DeclarationService @Inject() (
                 Json.obj(
                   "commodityDescription" -> messages(item.metadata.name).take(40),
                   "quantity"             -> item.noOfUnits.filter(_ != 0).fold[JsValue](JsNull)(x => JsString(x.toString)),
-                  "weight"               -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString((x * 1000).toString())),
+                  "weight"               -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString((x * 1000).toString)),
                   "goodsValue"           -> item.metadata.cost,
                   "valueCurrency"        -> item.metadata.currency.code,
                   "valueCurrencyName"    -> messages(item.metadata.currency.displayName),
@@ -393,7 +393,7 @@ class DeclarationService @Inject() (
                   "originCountryName"    -> messages(item.metadata.country.countryName),
                   "exchangeRate"         -> {
                     val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
-                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
+                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString else exchangeRate.toString
                   },
                   "exchangeRateDate"     -> item.metadata.exchangeRate.date,
                   "goodsValueGBP"        -> item.purchaseCost,
@@ -425,7 +425,7 @@ class DeclarationService @Inject() (
               band.items.map { item =>
                 Json.obj(
                   "commodityDescription" -> messages(item.metadata.name).take(40),
-                  "volume"               -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString(x.toString())),
+                  "volume"               -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString(x.toString)),
                   "goodsValue"           -> item.metadata.cost,
                   "valueCurrency"        -> item.metadata.currency.code,
                   "valueCurrencyName"    -> messages(item.metadata.currency.displayName),
@@ -433,7 +433,7 @@ class DeclarationService @Inject() (
                   "originCountryName"    -> messages(item.metadata.country.countryName),
                   "exchangeRate"         -> {
                     val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
-                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
+                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString else exchangeRate.toString
                   },
                   "exchangeRateDate"     -> item.metadata.exchangeRate.date,
                   "goodsValueGBP"        -> item.purchaseCost,
@@ -473,7 +473,7 @@ class DeclarationService @Inject() (
                   "originCountryName"    -> messages(item.metadata.country.countryName),
                   "exchangeRate"         -> {
                     val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
-                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString() else exchangeRate.toString()
+                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString else exchangeRate.toString
                   },
                   "exchangeRateDate"     -> item.metadata.exchangeRate.date,
                   "goodsValueGBP"        -> item.purchaseCost,

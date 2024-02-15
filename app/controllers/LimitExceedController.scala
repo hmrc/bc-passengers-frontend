@@ -73,7 +73,7 @@ class LimitExceedController @Inject() (
             Future(
               Ok(
                 limitExceedViewAdd(
-                  totalAccNoOfVolume.toString(),
+                  totalAccNoOfVolume.toString,
                   userInputBigDecimalFormatted.toString,
                   product.token,
                   product.name,
@@ -110,7 +110,7 @@ class LimitExceedController @Inject() (
             Future(
               Ok(
                 limitExceedViewAdd(
-                  totalAccWeight.toString(),
+                  totalAccWeight.toString,
                   userInputBigDecimalFormatted.toString,
                   product.token,
                   product.name,
