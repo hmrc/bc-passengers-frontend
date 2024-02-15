@@ -67,14 +67,20 @@ package object util {
     }
   }
 
-  def cigaretteAndHeatedTobaccoConstraint(numberOfSticks: Int): Boolean = numberOfSticks <= 800
+  def cigaretteAndHeatedTobaccoConstraint(numberOfSticks: Int): Boolean = {
+    val cigarettesMaximumAmount = 800
+    numberOfSticks <= cigarettesMaximumAmount
+  }
 
-  def cigarAndCigarilloConstraint(numberOfSticks: Int, productType: String): Boolean =
+  def cigarAndCigarilloConstraint(numberOfSticks: Int, productType: String): Boolean = {
+    val cigarsMaximumAmount     = 200
+    val cigarillosMaximumAmount = 400
     productType match {
-      case "cigars"     => numberOfSticks <= 200
-      case "cigarillos" => numberOfSticks <= 400
+      case "cigars"     => numberOfSticks <= cigarsMaximumAmount
+      case "cigarillos" => numberOfSticks <= cigarillosMaximumAmount
       case _            => false
     }
+  }
 
   def looseTobaccoWeightConstraint(looseTobaccoWeight: BigDecimal): Boolean = {
     val oneThousandGrams = BigDecimal(1000)

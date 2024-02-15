@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package controllers
+package forms
 
-import forms.AlcoholInputForm
 import models.{AlcoholDto, ProductPath}
 import play.api.data.Form
 import util.BaseSpec

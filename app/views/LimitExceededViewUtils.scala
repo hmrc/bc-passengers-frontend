@@ -19,11 +19,14 @@ package views
 import jakarta.inject.Singleton
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import utils.FormatsAndConversions
 
 import javax.inject.Inject
+import scala.math.BigDecimal.RoundingMode
 
 @Singleton
-class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent: views.html.components.panelIndent) {
+class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent: views.html.components.panelIndent)
+    extends FormatsAndConversions {
 
   private[views] def selectProduct[A](
     productName: String
@@ -39,10 +42,11 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
       case _                                   => None
     }
 
-  private[views] def determineSinglularOrPlural[A](amount: String, singular: A, plural: A) =
-    amount match {
-      case "1.00" | "1" | "1.000" => singular
-      case _                      => plural
+  private[views] def determineSingularOrPlural[A](amount: String, singular: A, plural: A) =
+    if (amount.toBigDecimal.setScale(0, RoundingMode.HALF_UP) == 1) {
+      singular
+    } else {
+      plural
     }
 
   def addViewContent(
@@ -54,7 +58,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     val p1 =
       selectProduct(productName)(
         alcohol = Option(
-          determineSinglularOrPlural(
+          determineSingularOrPlural(
             amount = totalAmount,
             singular = p(
               Html(
@@ -81,7 +85,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
           )
         ),
         stickTobacco = Option(
-          determineSinglularOrPlural(
+          determineSingularOrPlural(
             totalAmount,
             p(
               Html(
@@ -146,7 +150,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.add.panelIndent",
                 userInput,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   userInput,
                   messages("limitExceeded.litre"),
                   messages("limitExceeded.litres")
@@ -162,7 +166,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.add.panelIndent.tobacco",
                 userInput,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   userInput,
                   messages(s"limitExceeded.$productToken.singular"),
                   messages(s"limitExceeded.$productToken.plural")
@@ -206,7 +210,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.p1.edit.alcohol.a",
                 originalAmountFormatted,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   originalAmountFormatted,
                   messages("limitExceeded.litre"),
                   messages("limitExceeded.litres")
@@ -215,7 +219,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 messages(
                   "limitExceeded.p1.edit.alcohol.b",
                   userInput,
-                  determineSinglularOrPlural(
+                  determineSingularOrPlural(
                     userInput,
                     messages("limitExceeded.litre"),
                     messages("limitExceeded.litres")
@@ -233,7 +237,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.p1.edit.tobacco.a",
                 originalAmountFormatted,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   originalAmountFormatted,
                   messages(s"limitExceeded.$productToken.singular"),
                   messages(s"limitExceeded.$productToken.plural")
@@ -241,7 +245,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 messages(
                   "limitExceeded.p1.edit.tobacco.b",
                   userInput,
-                  determineSinglularOrPlural(
+                  determineSingularOrPlural(
                     userInput,
                     messages(s"limitExceeded.$productToken.singular"),
                     messages(s"limitExceeded.$productToken.plural")
@@ -271,7 +275,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     val p2Content =
       selectProduct(productName)(
         alcohol = Option(
-          determineSinglularOrPlural(
+          determineSingularOrPlural(
             totalAmount,
             p(
               Html(
@@ -303,7 +307,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.p2.edit.tobacco",
                 totalAmount,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   totalAmount,
                   messages(s"limitExceeded.$productToken.singular"),
                   messages(s"limitExceeded.$productToken.plural")
@@ -363,7 +367,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.p4.edit.alcohol",
                 originalAmountFormatted,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   originalAmountFormatted,
                   messages(s"limitExceeded.litre"),
                   messages(s"limitExceeded.litres")
@@ -380,7 +384,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
               messages(
                 "limitExceeded.p4.edit.tobacco",
                 originalAmountFormatted,
-                determineSinglularOrPlural(
+                determineSingularOrPlural(
                   originalAmountFormatted,
                   messages(s"limitExceeded.$productToken.singular"),
                   messages(s"limitExceeded.$productToken.plural")

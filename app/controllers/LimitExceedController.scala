@@ -54,7 +54,7 @@ class LimitExceedController @Inject() (
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
         val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
-        val userInputBigDecimalFormatted    = userInputBigDecimal.format3dps
+        val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
 
         val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
 
@@ -66,7 +66,7 @@ class LimitExceedController @Inject() (
           )
 
         val totalAccNoOfVolume: BigDecimal =
-          (totalAccPreviouslyAddedVolume + userInputBigDecimal).format3dps
+          (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
 
         userInput match {
           case Some(_) =>
@@ -74,7 +74,7 @@ class LimitExceedController @Inject() (
               Ok(
                 limitExceedViewAdd(
                   totalAccNoOfVolume.toString(),
-                  userInputBigDecimalFormatted.toString(),
+                  userInputBigDecimalFormatted.toString,
                   product.token,
                   product.name,
                   showPanelIndent
@@ -92,7 +92,7 @@ class LimitExceedController @Inject() (
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
         val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
-        val userInputBigDecimalFormatted    = (userInputBigDecimal * 1000).format2dps
+        val userInputBigDecimalFormatted    = (userInputBigDecimal * 1000).formatDecimalPlaces(2)
 
         val totalAccWeightForTobaccoProduct =
           alcoholAndTobaccoCalculationService.looseTobaccoAddHelper(
@@ -103,7 +103,7 @@ class LimitExceedController @Inject() (
         val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
 
         val totalAccWeight =
-          ((totalAccWeightForTobaccoProduct + userInputBigDecimal) * 1000).format2dps
+          ((totalAccWeightForTobaccoProduct + userInputBigDecimal) * 1000).formatDecimalPlaces(2)
 
         userInput match {
           case Some(_) =>
@@ -167,7 +167,7 @@ class LimitExceedController @Inject() (
         val originalAmountEntered: BigDecimal =
           context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
-        val originalAmountFormatted = originalAmountEntered.format3dps
+        val originalAmountFormatted = originalAmountEntered.formatDecimalPlaces(3)
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
@@ -180,11 +180,11 @@ class LimitExceedController @Inject() (
             product.token
           )
 
-        val userInputBigDecimalFormatted = userInputBigDecimal.format3dps
+        val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
 
         val totaledAmount: BigDecimal = totalAccWeightForAlcoholProduct
 
-        val totaledAmountFormatted: BigDecimal = totaledAmount.format3dps
+        val totaledAmountFormatted: BigDecimal = totaledAmount.formatDecimalPlaces(3)
 
         userInput match {
           case Some(_) =>
@@ -193,7 +193,7 @@ class LimitExceedController @Inject() (
                 limitExceedViewEdit(
                   totalEnteredAmount = totaledAmountFormatted.toString,
                   originalAmountEntered = originalAmountFormatted.toString,
-                  userInput = userInputBigDecimalFormatted.toString(),
+                  userInput = userInputBigDecimalFormatted.toString,
                   token = product.token,
                   productName = product.name
                 )
@@ -211,7 +211,7 @@ class LimitExceedController @Inject() (
         val originalAmountEntered: BigDecimal =
           context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
 
-        val originalAmountFormatted = (originalAmountEntered * 1000).format2dps
+        val originalAmountFormatted = (originalAmountEntered * 1000).formatDecimalPlaces(2)
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
@@ -220,11 +220,11 @@ class LimitExceedController @Inject() (
         val totalAccWeightForLooseTobacco =
           alcoholAndTobaccoCalculationService.looseTobaccoEditHelper(context.getJourneyData, Some(userInputBigDecimal))
 
-        val userInputBigDecimalFormatted = (userInputBigDecimal * 1000).format2dps
+        val userInputBigDecimalFormatted = (userInputBigDecimal * 1000).formatDecimalPlaces(2)
 
         val totaledAmount: BigDecimal = totalAccWeightForLooseTobacco
 
-        val totaledAmountFormatted: BigDecimal = (totaledAmount * 1000).format2dps
+        val totaledAmountFormatted: BigDecimal = (totaledAmount * 1000).formatDecimalPlaces(2)
 
         userInput match {
           case Some(_) =>
@@ -233,7 +233,7 @@ class LimitExceedController @Inject() (
                 limitExceedViewEdit(
                   totaledAmountFormatted.toString,
                   originalAmountFormatted.toString,
-                  userInputBigDecimalFormatted.toString(),
+                  userInputBigDecimalFormatted.toString,
                   product.token,
                   product.name
                 )

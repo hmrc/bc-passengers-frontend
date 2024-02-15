@@ -35,7 +35,7 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
         .bigDecimal
 
     val totalAlcoholVolume: BigDecimal =
-      (weightOrVolume + alcoholProductTotalVolume).format5dps
+      (weightOrVolume + alcoholProductTotalVolume).formatDecimalPlaces(5)
 
     totalAlcoholVolume
   }
@@ -57,7 +57,7 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
         .bigDecimal
 
     val totalAlcoholVolume: BigDecimal =
-      (weightOrVolume + alcoholProductTotalVolume - originalVolume).format5dps
+      (weightOrVolume + alcoholProductTotalVolume - originalVolume).formatDecimalPlaces(5)
 
     totalAlcoholVolume
   }
@@ -81,7 +81,7 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
         weightOrVolume.getOrElseZero +
           chewingTobaccoTotalWeight +
           rollingTobaccoTotalWeight
-      ).format5dps
+      ).formatDecimalPlaces(5)
 
     looseTobaccoTotalWeightInGrams
   }
@@ -110,7 +110,7 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
           chewingTobaccoTotalWeight +
           rollingTobaccoTotalWeight -
           originalWeight
-      ).format5dps
+      ).formatDecimalPlaces(5)
 
     looseTobaccoTotalWeightInGrams
   }

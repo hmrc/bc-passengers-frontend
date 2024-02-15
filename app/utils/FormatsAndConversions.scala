@@ -39,15 +39,10 @@ trait FormatsAndConversions {
       tc.toBigDecimal(value)
   }
 
-  implicit class BigDecimalHelper(value: BigDecimal) {
-    def format2dps: BigDecimal =
-      value.setScale(2, RoundingMode.HALF_UP)
+  implicit class BigDecimalDecimalFormatter(value: BigDecimal) {
 
-    def format3dps: BigDecimal =
-      value.setScale(3, RoundingMode.HALF_UP)
-
-    def format5dps: BigDecimal =
-      value.setScale(5, RoundingMode.HALF_UP)
+    def formatDecimalPlaces(scale: Int): BigDecimal =
+      value.setScale(scale, RoundingMode.HALF_UP)
   }
 
   implicit class OptionBigDecimalHelper(value: Option[BigDecimal]) {

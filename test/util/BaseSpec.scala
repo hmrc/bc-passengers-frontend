@@ -16,7 +16,6 @@
 
 package util
 
-import config.AppConfig
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
@@ -26,13 +25,12 @@ import play.api.Application
 import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
-import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 
-import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
 
 trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach {

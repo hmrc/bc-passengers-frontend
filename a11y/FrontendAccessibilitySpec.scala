@@ -116,7 +116,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
     // purchased_products
     case dashboard: dashboard                                                   => render(dashboard)
     case done: done                                                             => render(done)
-    case limit_exceed: limit_exceed                                             => render(limit_exceed)
+    case limit_exceed                                             => render(limit_exceed)
     case nothing_to_declare: nothing_to_declare                                 => render(nothing_to_declare)
     case over_ninety_seven_thousand_pounds: over_ninety_seven_thousand_pounds   =>
       render(over_ninety_seven_thousand_pounds)
