@@ -16,6 +16,8 @@
 
 package models
 
+import utils.FormatsAndConversions
+
 import scala.math.BigDecimal.RoundingMode
 
 sealed trait ProductTreeNode {
@@ -31,7 +33,8 @@ case class ProductTreeLeaf(
   rateID: String,
   templateId: String,
   applicableLimits: List[String]
-) extends ProductTreeNode {
+) extends ProductTreeNode
+    with FormatsAndConversions {
 
   override def isLeaf: Boolean = true
 
@@ -51,13 +54,13 @@ case class ProductTreeLeaf(
               List(
                 noOfSticks.toString,
                 name + ".single",
-                (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString
+                (weightOrVolume * 1000).formatDecimalPlaces(2).toString
               )
             )
           } else {
             (
               "label.X_X_Xg",
-              List(noOfSticks.toString, name, (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString)
+              List(noOfSticks.toString, name, (weightOrVolume * 1000).formatDecimalPlaces(2).toString)
             )
           }
 
@@ -71,7 +74,7 @@ case class ProductTreeLeaf(
             }
       case "tobacco"               =>
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
-          yield ("label.Xg_of_X", List((weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString, name))
+          yield ("label.Xg_of_X", List((weightOrVolume * 1000).formatDecimalPlaces(2).toString, name))
 
       case "alcohol"     =>
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
