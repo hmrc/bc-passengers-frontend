@@ -19,6 +19,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
 
+import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalTime}
@@ -27,6 +28,18 @@ import scala.util.Try
 
 // scalastyle:off magic.number
 package object util {
+
+  val decimalFormat10: DecimalFormat = {
+    val df = new DecimalFormat("0.##########")
+    df.setRoundingMode(RoundingMode.DOWN)
+    df
+  }
+
+  val decimalFormat5: DecimalFormat = {
+    val df = new DecimalFormat("0.#####")
+    df.setRoundingMode(RoundingMode.HALF_UP)
+    df
+  }
 
   def formatMonetaryValue(value: String): String = {
     val df            = new DecimalFormat("#,###.00")

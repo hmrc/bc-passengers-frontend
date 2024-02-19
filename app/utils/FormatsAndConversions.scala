@@ -43,6 +43,9 @@ trait FormatsAndConversions {
 
     def formatDecimalPlaces(scale: Int): BigDecimal =
       value.setScale(scale, RoundingMode.HALF_UP)
+
+    def stripTrailingZerosToString: String =
+      value.bigDecimal.stripTrailingZeros().toPlainString
   }
 
   implicit class OptionBigDecimalHelper(value: Option[BigDecimal]) {
