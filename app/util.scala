@@ -18,26 +18,15 @@ import models.ProductPath
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
-import java.time.{LocalDate, LocalTime}
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import java.math.RoundingMode
+
 import java.text.DecimalFormat
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalTime}
+import java.util.Locale
 import scala.util.Try
 
+// scalastyle:off magic.number
 package object util {
-
-  val decimalFormat10: DecimalFormat = {
-    val df = new DecimalFormat("0.##########")
-    df.setRoundingMode(RoundingMode.DOWN)
-    df
-  }
-
-  val decimalFormat5: DecimalFormat = {
-    val df = new DecimalFormat("0.#####")
-    df.setRoundingMode(RoundingMode.HALF_UP)
-    df
-  }
 
   def formatMonetaryValue(value: String): String = {
     val df            = new DecimalFormat("#,###.00")
@@ -78,18 +67,27 @@ package object util {
     }
   }
 
-  def calculatorLimitConstraintOptionInt(
-    limits: Map[String, BigDecimal] = Map.empty,
-    applicableLimits: List[String] = Nil
-  ): Boolean = {
-
-    val errors =
-      for (limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
-
-    if (errors.nonEmpty) false else true
+  def cigaretteAndHeatedTobaccoConstraint(numberOfSticks: Int): Boolean = {
+    val cigarettesMaximumAmount = 800
+    numberOfSticks <= cigarettesMaximumAmount
   }
 
-  def calculatorLimitConstraintOptionBigDecimal(
+  def cigarAndCigarilloConstraint(numberOfSticks: Int, productType: String): Boolean = {
+    val cigarsMaximumAmount     = 200
+    val cigarillosMaximumAmount = 400
+    productType match {
+      case "cigars"     => numberOfSticks <= cigarsMaximumAmount
+      case "cigarillos" => numberOfSticks <= cigarillosMaximumAmount
+      case _            => false
+    }
+  }
+
+  def looseTobaccoWeightConstraint(looseTobaccoWeight: BigDecimal): Boolean = {
+    val oneThousandGrams = BigDecimal(1000)
+    looseTobaccoWeight <= oneThousandGrams
+  }
+
+  def calculatorLimitConstraintOptionInt(
     limits: Map[String, BigDecimal] = Map.empty,
     applicableLimits: List[String] = Nil
   ): Boolean = {

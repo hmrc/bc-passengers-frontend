@@ -86,11 +86,11 @@ class ProductTreeService {
               List("L-HTB")
             ),
             ProductTreeLeaf(
-              "chewing-tobacco",
-              "label.tobacco.chewing-tobacco",
-              "TOB/A1/OTHER",
-              "tobacco",
-              List("L-LOOSE")
+              token = "chewing-tobacco",
+              name = "label.tobacco.chewing-tobacco",
+              rateID = "TOB/A1/OTHER",
+              templateId = "tobacco",
+              applicableLimits = List("L-LOOSE")
             ),
             ProductTreeLeaf(
               "rolling-tobacco",

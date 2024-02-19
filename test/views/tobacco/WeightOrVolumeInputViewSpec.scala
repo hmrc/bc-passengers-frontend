@@ -16,7 +16,7 @@
 
 package views.tobacco
 
-import controllers.TobaccoInputController
+import forms.TobaccoInputForm
 import models._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -66,16 +66,17 @@ class WeightOrVolumeInputViewSpec extends BaseViewSpec {
     )
   )
 
-  private val validForm: Form[TobaccoDto] = injected[TobaccoInputController]
-    .weightOrVolumeForm(productPath)
-    .bind(
-      Map(
-        "weightOrVolume" -> "50",
-        "country"        -> "FR",
-        "currency"       -> "EUR",
-        "cost"           -> "100.00"
+  private val validForm: Form[TobaccoDto] =
+    injected[TobaccoInputForm]
+      .looseTobaccoWeightForm(productPath)
+      .bind(
+        Map(
+          "weightOrVolume" -> "50",
+          "country"        -> "FR",
+          "currency"       -> "EUR",
+          "cost"           -> "100.00"
+        )
       )
-    )
 
   val viewViaApply: HtmlFormat.Appendable = injected[weight_or_volume_input].apply(
     form = validForm,

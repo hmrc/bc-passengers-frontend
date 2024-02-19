@@ -17,10 +17,9 @@
 package services
 
 import controllers.LocalContext
-
-import javax.inject.Inject
 import models.{JourneyData, OtherGoodsSearchItem, ProductPath, PurchasedProductInstance}
 
+import javax.inject.Inject
 import scala.util.Random
 
 class NewPurchaseService @Inject() (

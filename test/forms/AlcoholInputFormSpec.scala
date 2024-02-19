@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
+package forms
 
 import models.{AlcoholDto, ProductPath}
 import play.api.data.Form
 import util.BaseSpec
 
-class AlcoholInputControllerFormSpec extends BaseSpec {
+class AlcoholInputFormSpec extends BaseSpec {
 
   val alcoholItems: Seq[String]      = List("beer", "sparkling-wine", "spirits", "wine", "other", "cider")
   val invalidCostInputs: Seq[String] = List("   ", "----", "***", "$5", "£399.70", "-100")
 
-  "AlcoholInputController" when {
+  "AlcoholInputForm" when {
     alcoholItems.foreach { item =>
       val path: ProductPath = ProductPath(path = s"alcohol/$item")
 
       s".alcoholForm($path)" should {
 
         "fail on empty string in weightOrVolume" in {
-          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+          val form: Form[AlcoholDto] = injected[AlcoholInputForm]
             .alcoholForm(path)
             .bind(
               Map(
@@ -49,7 +49,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         }
 
         "fail on special character in weightOrVolume" in {
-          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+          val form: Form[AlcoholDto] = injected[AlcoholInputForm]
             .alcoholForm(path)
             .bind(
               Map(
@@ -64,7 +64,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         }
 
         "fail on empty in weightOrVolume" in {
-          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+          val form: Form[AlcoholDto] = injected[AlcoholInputForm]
             .alcoholForm(path)
             .bind(
               Map(
@@ -79,7 +79,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         }
 
         "fail on more than 3 decimal places in weightOrVolume" in {
-          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+          val form: Form[AlcoholDto] = injected[AlcoholInputForm]
             .alcoholForm(path)
             .bind(
               Map(
@@ -94,7 +94,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         }
 
         "pass on cost with comma separated thousands" in {
-          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+          val form: Form[AlcoholDto] = injected[AlcoholInputForm]
             .alcoholForm(path)
             .bind(
               Map(
@@ -110,7 +110,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         }
 
         "pass on more than allowance and sending empty limits so shouldn't validate maximum limits" in {
-          val form: Form[AlcoholDto] = injected[AlcoholInputController]
+          val form: Form[AlcoholDto] = injected[AlcoholInputForm]
             .alcoholForm(path)
             .bind(
               Map(
@@ -127,7 +127,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
 
         invalidCostInputs.foreach { costInput =>
           s"fail on special characters in cost=$costInput" in {
-            val form: Form[AlcoholDto] = injected[AlcoholInputController]
+            val form: Form[AlcoholDto] = injected[AlcoholInputForm]
               .alcoholForm(path)
               .bind(
                 Map(
@@ -157,7 +157,7 @@ class AlcoholInputControllerFormSpec extends BaseSpec {
         isCustomPaid = None,
         hasEvidence = None
       )
-      val form: Form[AlcoholDto]     = injected[AlcoholInputController].resilientForm
+      val form: Form[AlcoholDto]     = injected[AlcoholInputForm].resilientForm
         .bind(
           Map(
             "weightOrVolume" -> "50"

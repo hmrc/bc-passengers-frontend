@@ -65,18 +65,18 @@
       <div class="add-more">
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
       </div>
-      @alcoholPurchasedItemList.map { purchasedItem =>
+      @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
-          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol")
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
         }
       }
       @if(previousAlcoholPurchasedItemList.nonEmpty){
         @p(Html(messages("label.previously_declared_alcohol")), classes="govuk-body govuk-!-font-weight-bold previous-alcohol")
         <br>
       }
-      @previousAlcoholPurchasedItemList.map { purchasedItem =>
+      @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
-          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol")
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
         }
       }
     }
@@ -91,18 +91,18 @@
       <div class="add-more">
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
       </div>
-        @tobaccoPurchasedItemList.map { purchasedItem =>
+        @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = true).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco")
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
           }
         }
         @if(previousTobaccoPurchasedItemList.nonEmpty){
           @p(Html(messages("label.previously_declared_tobacco")), classes="govuk-body govuk-!-font-weight-bold previous-tobacco")
           <br>
         }
-        @previousTobaccoPurchasedItemList.map { purchasedItem =>
+        @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = true).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco")
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
         }
       }
     }
@@ -126,18 +126,18 @@
         @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
       </div>
     }
-      @otherGoodsPurchasedItemList.map { purchasedItem =>
+      @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
-          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods")
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
         }
       }
       @if(previousOtherGoodsPurchasedItemList.nonEmpty){
         @p(Html(messages("label.previously_declared_other_goods")), classes="govuk-body govuk-!-font-weight-bold previous-othergoods")
         <br>
       }
-      @previousOtherGoodsPurchasedItemList.map { purchasedItem =>
+      @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
-          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods")
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
       }
     }
   </div>

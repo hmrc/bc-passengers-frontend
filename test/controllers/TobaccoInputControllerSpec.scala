@@ -19,7 +19,7 @@ package controllers
 import connectors.Cache
 import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
 import play.api.data.Form
@@ -31,7 +31,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
-import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
+import services._
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.tobacco._
@@ -48,15 +49,15 @@ class TobaccoInputControllerSpec extends BaseSpec {
     .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(
-      bind[views.html.tobacco.no_of_sticks_input].toInstance(MockitoSugar.mock[views.html.tobacco.no_of_sticks_input])
+      bind[no_of_sticks_input].toInstance(MockitoSugar.mock[no_of_sticks_input])
     )
     .overrides(
-      bind[views.html.tobacco.weight_or_volume_input]
-        .toInstance(MockitoSugar.mock[views.html.tobacco.weight_or_volume_input])
+      bind[weight_or_volume_input]
+        .toInstance(MockitoSugar.mock[weight_or_volume_input])
     )
     .overrides(
-      bind[views.html.tobacco.no_of_sticks_weight_or_volume_input]
-        .toInstance(MockitoSugar.mock[views.html.tobacco.no_of_sticks_weight_or_volume_input])
+      bind[no_of_sticks_weight_or_volume_input]
+        .toInstance(MockitoSugar.mock[no_of_sticks_weight_or_volume_input])
     )
     .build()
 
@@ -78,30 +79,32 @@ class TobaccoInputControllerSpec extends BaseSpec {
     def weightOrVolume: Option[BigDecimal]
     def noOfSticks: Option[Int]
 
-    lazy val cachedJourneyData: Option[JourneyData] = Some(
-      JourneyData(
-        prevDeclaration = Some(false),
-        Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
-        isVatResClaimed = Some(true),
-        isBringingDutyFree = None,
-        bringingOverAllowance = Some(true),
-        privateCraft = Some(false),
-        ageOver17 = Some(true),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            productPath,
-            "iid0",
-            weightOrVolume,
-            noOfSticks,
-            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-            None,
-            Some("EUR"),
-            Some(BigDecimal(12.99))
+    lazy val cachedJourneyData: Option[JourneyData] =
+      Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = Some(true),
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          selectedAliases = List(),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              productPath,
+              "iid0",
+              weightOrVolume,
+              noOfSticks,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(12.99))
+            )
           )
         )
       )
-    )
 
     lazy val cachedGBNIJourneyData: Some[JourneyData] = Some(
       JourneyData(
@@ -1213,15 +1216,17 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
       override def noOfSticks: Option[Int]            = None
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
-        "POST",
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
-      ).withFormUrlEncodedBody(
-        "country"        -> "FR",
-        "currency"       -> "EUR",
-        "weightOrVolume" -> "400.0",
-        "cost"           -> "92.50"
-      )
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest(
+          "POST",
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/rolling-tobacco/tell-us"
+        )
+          .withFormUrlEncodedBody(
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "400.0",
+            "cost"           -> "92.50"
+          )
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
@@ -1262,7 +1267,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/units-of-product"
       )
     }
 
@@ -1287,7 +1292,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/heated-tobacco/upper-limits/units-of-product"
       )
     }
 
@@ -1312,7 +1317,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/units-of-product"
       )
     }
 
@@ -1330,14 +1335,14 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ).withFormUrlEncodedBody(
         "country"        -> "FR",
         "currency"       -> "EUR",
-        "weightOrVolume" -> "1001.0",
+        "weightOrVolume" -> "1000.01",
         "cost"           -> "92.50"
       )
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/weight"
       )
     }
 
@@ -2015,8 +2020,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
-            "weightOrVolume" -> "400.0",
-            "noOfSticks"     -> "50",
+            "weightOrVolume" -> "50",
+            "noOfSticks"     -> "801",
             "cost"           -> "98.00"
           )
 
@@ -2024,7 +2029,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/edit/units-of-product"
       )
     }
 
@@ -2041,7 +2046,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody(
             "country"        -> "FR",
             "currency"       -> "EUR",
-            "weightOrVolume" -> "201.0",
+            "weightOrVolume" -> "999.5",
             "noOfSticks"     -> "201",
             "cost"           -> "98.00"
           )
@@ -2050,34 +2055,149 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/edit/units-of-product"
       )
     }
 
-    "redirect to limit exceed warning page for loose tobacco edit" in new LocalSetup {
+    "redirect to limit exceed warning page for loose tobacco edit" in {
 
-      override lazy val fakeLimits: Map[String, String] = Map("L-LOOSE" -> "1.1")
+      lazy val fakeLimits: Map[String, String] = Map("L-LOOSE" -> "1.1")
 
-      override def productPath: ProductPath           = ProductPath("tobacco/chewing-tobacco")
-      override def weightOrVolume: Option[BigDecimal] = Some(1001)
-      override def noOfSticks: Option[Int]            = None
+      val cacheDataWithWorkingInstance =
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isUKVatPaid = None,
+          isUKVatExcisePaid = None,
+          isUKResident = None,
+          isUccRelief = None,
+          isVatResClaimed = Some(true),
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          irishBorder = None,
+          selectedAliases = List(),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              path = ProductPath("tobacco/chewing-tobacco"),
+              iid = "iid0",
+              weightOrVolume = Some(0.7),
+              noOfSticks = None,
+              country = Some(Country("FR", "title.france", "FR", true, true, List())),
+              originCountry = None,
+              currency = Some("EUR"),
+              cost = Some(12.99),
+              searchTerm = None,
+              isVatPaid = None,
+              isCustomPaid = None,
+              isExcisePaid = None,
+              isUccRelief = None,
+              hasEvidence = None,
+              isEditable = Some(true)
+            ),
+            PurchasedProductInstance(
+              path = ProductPath("tobacco/rolling-tobacco"),
+              iid = "iid1",
+              weightOrVolume = Some(0.1),
+              noOfSticks = None,
+              country = Some(Country("FR", "title.france", "FR", true, true, List())),
+              originCountry = None,
+              currency = Some("EUR"),
+              cost = Some(12.99),
+              searchTerm = None,
+              isVatPaid = None,
+              isCustomPaid = None,
+              isExcisePaid = None,
+              isUccRelief = None,
+              hasEvidence = None,
+              isEditable = Some(true)
+            ),
+            PurchasedProductInstance(
+              path = ProductPath("tobacco/chewing-tobacco"),
+              iid = "iid2",
+              weightOrVolume = Some(0.1),
+              noOfSticks = None,
+              country = Some(Country("FR", "title.france", "FR", true, true, List())),
+              originCountry = None,
+              currency = Some("EUR"),
+              cost = Some(12.99),
+              searchTerm = None,
+              isVatPaid = None,
+              isCustomPaid = None,
+              isExcisePaid = None,
+              isUccRelief = None,
+              hasEvidence = None,
+              isEditable = Some(true)
+            )
+          ),
+          workingInstance = Some(
+            PurchasedProductInstance(
+              path = ProductPath("tobacco/chewing-tobacco"),
+              iid = "iid3",
+              weightOrVolume = Some(0.1),
+              noOfSticks = None,
+              country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List())),
+              originCountry = None,
+              currency = Some("EUR"),
+              cost = Some(12.99),
+              searchTerm = None,
+              isVatPaid = None,
+              isCustomPaid = None,
+              isExcisePaid = None,
+              isUccRelief = None,
+              hasEvidence = None,
+              isEditable = Some(true)
+            )
+          ),
+          userInformation = None,
+          calculatorResponse = None,
+          chargeReference = None,
+          defaultCountry = Some("FR"),
+          defaultOriginCountry = Some("FR"),
+          defaultCurrency = Some("EUR"),
+          previousDeclarationRequest = None,
+          declarationResponse = None,
+          deltaCalculation = None,
+          amendmentCount = None,
+          pendingPayment = None,
+          amendState = None
+        )
+
+      when(injected[CalculatorService].limitUsage(any())(any())).thenReturn(
+        Future.successful(LimitUsageSuccessResponse(fakeLimits))
+      )
+
+      when(injected[Cache].fetch(any()))
+        .thenReturn(Future.successful(Some(cacheDataWithWorkingInstance)))
+
+      when(injected[Cache].store(any())(any()))
+        .thenReturn(Future.successful(cacheDataWithWorkingInstance))
+
+      when(
+        injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
+          any()
+        )
+      ).thenReturn(cacheDataWithWorkingInstance)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        FakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+          .withSession(SessionKeys.sessionId -> "fakesessionid")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
+            "originCountry"  -> "FR",
             "currency"       -> "EUR",
-            "weightOrVolume" -> "1001.0",
+            "weightOrVolume" -> "300.00",
             "cost"           -> "98.00"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = rt(app, req).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/edit/weight"
       )
     }
   }
-  // scalastyle:on magic.number
 }

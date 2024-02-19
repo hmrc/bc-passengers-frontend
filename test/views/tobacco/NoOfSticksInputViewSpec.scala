@@ -16,7 +16,7 @@
 
 package views.tobacco
 
-import controllers.TobaccoInputController
+import forms.TobaccoInputForm
 import models._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -66,16 +66,17 @@ class NoOfSticksInputViewSpec extends BaseViewSpec {
     )
   )
 
-  private val validForm: Form[TobaccoDto] = injected[TobaccoInputController]
-    .noOfSticksForm(productPath)
-    .bind(
-      Map(
-        "noOfSticks" -> "500",
-        "country"    -> "FR",
-        "currency"   -> "EUR",
-        "cost"       -> "100.00"
+  private val validForm: Form[TobaccoDto] =
+    injected[TobaccoInputForm]
+      .cigaretteAndHeatedTobaccoForm(productPath)
+      .bind(
+        Map(
+          "noOfSticks" -> "500",
+          "country"    -> "FR",
+          "currency"   -> "EUR",
+          "cost"       -> "100.00"
+        )
       )
-    )
 
   val viewViaApply: HtmlFormat.Appendable = injected[no_of_sticks_input].apply(
     form = validForm,

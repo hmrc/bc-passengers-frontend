@@ -45,12 +45,12 @@ class BCPassengersSessionRepositoryISpec
 
   "fetch" should {
     "return None if no data exists" in {
-      repository.fetch[JourneyData]().futureValue shouldBe None
+      repository.get().futureValue shouldBe None
     }
     "return Some Journey Data if data exists" in {
       await(repository.store[JourneyData]("journeyData", JourneyData(euCountryCheck = Some("Yes"))))
 
-      val data = await(repository.fetch[JourneyData]())
+      val data = await(repository.get())
 
       (data.value \ "_id").toString                     should include("fakesessionid")
       Some(JourneyData(euCountryCheck = Some("Yes"))) shouldBe (data.value \ "journeyData").asOpt[JourneyData]
@@ -59,7 +59,7 @@ class BCPassengersSessionRepositoryISpec
     "return Error if no session id exists" in {
       implicit val hc: HeaderCarrier = HeaderCarrier()
       intercept[Exception](
-        await(repository.fetch[JourneyData]())
+        await(repository.get())
       ).getMessage shouldBe "Could not find sessionId in HeaderCarrier"
     }
   }
@@ -68,7 +68,7 @@ class BCPassengersSessionRepositoryISpec
     "insert new record if no data exists" in {
       await(repository.store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(true))))
 
-      val journeyData: Option[JourneyData] = await(repository.fetch[JourneyData]().map {
+      val journeyData: Option[JourneyData] = await(repository.get().map {
         case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
         case _          => Option.empty
       })
@@ -88,7 +88,7 @@ class BCPassengersSessionRepositoryISpec
           .store[JourneyData]("journeyData", JourneyData(arrivingNICheck = Some(false), euCountryCheck = Some("Yes")))
       )
 
-      val journeyData: Option[JourneyData] = await(repository.fetch[JourneyData]().map {
+      val journeyData: Option[JourneyData] = await(repository.get().map {
         case Some(jobs) => (jobs \ "journeyData").asOpt[JourneyData]
         case _          => Option.empty
       })

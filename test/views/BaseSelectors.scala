@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package views
 
-@(msg: String, id:Option[String] = None)(implicit messages: Messages)
+trait BaseSelectors {
 
-@if(id.isDefined){
-<h2 class="govuk-heading-m" id="@id">@messages(msg)</h2>
-} else {
-<h2 class="govuk-heading-m">@messages(msg)</h2>
+  val p: Int => String      = i => s"main p:nth-of-type($i)"
+  val h2: Int => String     = i => s"main h2:nth-of-type($i)"
+  val bullet: Int => String = i => s"main ul.govuk-list.govuk-list--bullet li:nth-of-type($i)"
+  val warning               = "main .govuk-warning-text__text"
+
 }
-

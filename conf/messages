@@ -397,13 +397,7 @@ label.enter_currency = Enter currency
 label.how_much_did_you_pay_for_this_ = How much did you pay for this {0}?
 label.price_in = Price in {0}
 
-
-
 error.required.cost = Enter the price
-
-
-
-
 
 error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
@@ -1412,32 +1406,99 @@ label.no_existing_declaration = the details you have entered do not match an exi
 label.payment_issue = there was an issue when you previously tried to add goods to your declaration and your payment was not completed - you will now need to speak to a border force officer at your arrival location to declare any additional goods
 label.already_passed_custom = your scheduled time of arrival is in the past - if your journey has been delayed and you have goods to declare, speak to a border force officer at your arrival location
 
-#limit exceed page
-heading.l-cigrt.limit-exceeded = You cannot use this service to declare more than 800 cigarettes
-heading.l-cigar.limit-exceeded = You cannot use this service to declare more than 200 cigars
-heading.l-crilo.limit-exceeded = You cannot use this service to declare more than 400 cigarillos
-heading.l-loose.limit-exceeded = You cannot use this service to declare more than 1kg of loose tobacco
-heading.l-htb.limit-exceeded = You cannot use this service to declare more than 800 sticks of tobacco for heating
-heading.l-beer.limit-exceeded = You cannot use this service to declare more than 110 litres of beer
-heading.l-wine.limit-exceeded = You cannot use this service to declare more than 90 litres of wine
-heading.l-winesp.limit-exceeded = You cannot use this service to declare more than 60 litres of sparkling wine
-heading.l-spirit.limit-exceeded = You cannot use this service to declare more than 10 litres of spirits
-heading.l-alcoth.limit-exceeded = You cannot use this service to declare more than 20 litres of other alcoholic drinks
-label.limit_exceed_alcohol = You cannot use this service to declare more than the following amounts of alcohol:
-label.limit_exceed_tobacco = You cannot use this service to declare more than the following amounts of tobacco:
-label.including_sparkling_wine = (including a maximum of 60 litres of sparkling wine)
-label.must_declare_over_limits_alcohol = You must declare alcohol over these limits in person to Border Force when you arrive in the UK.
-label.must_declare_over_limits_tobacco = You must declare tobacco over these limits in person to Border Force when you arrive in the UK.
-label.bringing_for_personal_use_alcohol = This is because Border Force need to be sure you are bringing the alcohol in for personal use only.
-label.bringing_for_personal_use_tobacco = This is because Border Force need to be sure you are bringing the tobacco in for personal use only.
-label.border_force_officer_will_calculate = Once a Border Force officer is sure of this, they will calculate and take payment of the taxes and duties due.
-text.warning_for_false_declaration_alcohol = If you do not declare alcohol over these limits in person, or make a false declaration, you may have to pay a penalty and your alcohol may be seized.
-text.warning_for_false_declaration_tobacco = If you do not declare tobacco over these limits in person, or make a false declaration, you may have to pay a penalty and your tobacco may be seized.
-label.continue_to_add_items = Continue to add items
-label.type_of_alcohol = Type of alcohol
-label.type_of_tobacco = Type of tobacco
+############## Limit exceeded Add page ##############
 
-#Previous declaration page content change
+limitExceeded.title = There is a problem
+limitExceeded.h1 = There is a problem
+
+limitExceeded.p1.add.alcohol = You have entered a total of {0} {1} of {2}.
+limitExceeded.p1.add.tobacco = You have entered a total of {0} {1}.
+limitExceeded.p1.add.loose.tobacco = You have entered a total of {0}{1} {2}.
+
+limitExceeded.litre = litre
+limitExceeded.litres = litres
+
+limitExceeded.grams.of = g of
+
+limitExceeded.beer = beer
+limitExceeded.cider = cider
+limitExceeded.non-sparkling-cider = cider
+limitExceeded.sparkling-cider = cider
+limitExceeded.sparkling-cider-up = cider
+limitExceeded.sparkling-wine = sparkling wine
+limitExceeded.spirits = spirits
+limitExceeded.wine = wine
+limitExceeded.other = other alcohol
+
+limitExceeded.cigarettes.singular = cigarette
+limitExceeded.cigarillos.singular = cigarillo
+limitExceeded.cigars.singular = cigar
+limitExceeded.heated-tobacco.singular = tobacco stick
+
+limitExceeded.cigarettes.plural = cigarettes
+limitExceeded.cigarillos.plural = cigarillos
+limitExceeded.cigars.plural = cigars
+limitExceeded.heated-tobacco.plural = tobacco sticks
+
+limitExceeded.chewing-tobacco = pipe or chewing tobacco
+limitExceeded.rolling-tobacco = rolling tobacco
+
+limitExceeded.p2 = You cannot use this service to declare more than {0}.
+limitExceeded.p3 = This item will be removed from your goods to declare.
+
+limitExceeded.add.panelIndent = {0} {1} of {2}
+limitExceeded.add.panelIndent.tobacco = {0} {1}
+limitExceeded.add.panelIndent.loose.tobacco = {0}{1} {2}
+
+limitExceeded.h2a = What you must do
+limitExceeded.p4 = You must use the red channel to declare this item in person to Border Force when you arrive in the UK. They will calculate and take payment of the taxes and duties due.
+limitExceeded.warning.alcohol = If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.
+limitExceeded.warning.tobacco = If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.
+limitExceeded.h2b = If you have other items to declare
+limitExceeded.p5 = You can continue to use this service to declare other alcohol, tobacco and goods.
+
+############## Limit exceeded Edit page ##############
+
+limitExceeded.max.limit.beer = 110 litres of beer
+limitExceeded.max.limit.non-sparkling-cider = 20 litres of cider
+limitExceeded.max.limit.sparkling-cider = 20 litres of cider
+limitExceeded.max.limit.sparkling-cider-up = 20 litres of cider
+limitExceeded.max.limit.sparkling-wine = 60 litres of sparkling wine
+limitExceeded.max.limit.spirits = 10 litres of spirits
+limitExceeded.max.limit.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
+limitExceeded.max.limit.other = 20 litres of other alcohol
+
+limitExceeded.max.limit.cigarettes = 800 cigarettes
+limitExceeded.max.limit.cigarillos = 400 cigarillos
+limitExceeded.max.limit.cigars = 200 cigars
+limitExceeded.max.limit.heated-tobacco = 800 tobacco sticks
+limitExceeded.max.limit.chewing-tobacco = 1000g of tobacco
+limitExceeded.max.limit.rolling-tobacco = 1000g of tobacco
+
+limitExceeded.p1.edit.alcohol.a = You changed {0} {1} of {2} {3}.
+limitExceeded.p1.edit.alcohol.b = to {0} {1} of {2}
+
+limitExceeded.p1.edit.tobacco.a = You changed {0} {1} {2}.
+limitExceeded.p1.edit.tobacco.b = to {0} {1}
+
+limitExceeded.p1.edit.loose.tobacco = You changed {0}{1} {2} to {3}{1} {2}.
+
+limitExceeded.p2.edit.alcohol = This means your total is now {0} {1} of {2}.
+limitExceeded.p2.edit.tobacco = This means your total is now {0} {1}.
+limitExceeded.p2.edit.loose.tobacco = This means your total is now {0}{1} {2}.
+
+limitExceeded.p3.edit.alcohol = You cannot use this service to declare more than {0}.
+limitExceeded.p3.edit.tobacco = You cannot use this service to declare more than {0}.
+limitExceeded.p3.edit.loose.tobacco = You cannot use this service to declare more than {0}.
+
+limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1} of {2}.
+limitExceeded.p4.edit.tobacco = We will change your item back to {0} {1}.
+limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1} {2}.
+
+
+############## Previous declaration page content change ##############
+
+
 label.check_tax_and_declare = Check tax on goods and declare them
 label.add_goods_previous_declaration = Add goods to a previous declaration
 

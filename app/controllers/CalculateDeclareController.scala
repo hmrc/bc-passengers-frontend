@@ -283,7 +283,7 @@ class CalculateDeclareController @Inject() (
         calculatorResponse,
         (deltaAllTax * 100).toInt,
         isAmendment = true,
-        Some(amountPaidPreviously.toString()),
+        Some(amountPaidPreviously.toString),
         Some(amendState)
       ) map {
         case PayApiServiceFailureResponse      => InternalServerError(errorTemplate())
