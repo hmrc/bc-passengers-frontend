@@ -19,7 +19,6 @@ package models
 import utils.FormatsAndConversions
 
 import util.decimalFormat10
-import utils.FormatsAndConversions
 
 sealed trait ProductTreeNode {
   def name: String
