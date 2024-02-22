@@ -18,26 +18,7 @@ package utils
 
 import scala.math.BigDecimal.RoundingMode
 
-trait ToBigDecimal[A] {
-  def toBigDecimal(value: A): BigDecimal
-}
-
 trait FormatsAndConversions {
-
-  implicit val stringToBigDecimal: ToBigDecimal[String] =
-    new ToBigDecimal[String] {
-      override def toBigDecimal(value: String): BigDecimal = BigDecimal(value)
-    }
-
-  implicit val intToBigDecimal: ToBigDecimal[Int] =
-    new ToBigDecimal[Int] {
-      override def toBigDecimal(value: Int): BigDecimal = BigDecimal(value)
-    }
-
-  implicit class CovertToBigDecimal[A](value: A)(implicit tc: ToBigDecimal[A]) {
-    def toBigDecimal: BigDecimal =
-      tc.toBigDecimal(value)
-  }
 
   implicit class BigDecimalDecimalFormatter(value: BigDecimal) {
 

@@ -43,7 +43,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     }
 
   private[views] def determineSingularOrPlural[A](amount: String, singular: A, plural: A) =
-    if (amount.toBigDecimal.setScale(0, RoundingMode.HALF_UP) == 1) {
+    if (BigDecimal(amount).setScale(0, RoundingMode.HALF_UP) == 1) {
       singular
     } else {
       plural

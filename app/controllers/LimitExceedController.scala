@@ -24,7 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.FormatsAndConversions
+import utils.InstanceDecider
 import views.html.purchased_products.{limit_exceed_add, limit_exceed_edit}
 
 import javax.inject.Inject
@@ -47,13 +47,13 @@ class LimitExceedController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport
     with ControllerHelpers
-    with FormatsAndConversions {
+    with InstanceDecider {
 
   def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
-        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
         val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
 
         val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
@@ -61,7 +61,7 @@ class LimitExceedController @Inject() (
         val totalAccPreviouslyAddedVolume =
           alcoholAndTobaccoCalculationService.alcoholAddHelper(
             context.getJourneyData,
-            0.toBigDecimal,
+            BigDecimal(0),
             product.token
           )
 
@@ -73,8 +73,8 @@ class LimitExceedController @Inject() (
             Future(
               Ok(
                 limitExceedViewAdd(
-                  totalAccNoOfVolume.toString,
-                  userInputBigDecimalFormatted.toString,
+                  totalAccNoOfVolume.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
                   product.token,
                   product.name,
                   showPanelIndent
@@ -91,7 +91,7 @@ class LimitExceedController @Inject() (
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
-        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElseZero
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
         val userInputBigDecimalFormatted    = (userInputBigDecimal * 1000).formatDecimalPlaces(2)
 
         val totalAccWeightForTobaccoProduct =
@@ -110,8 +110,8 @@ class LimitExceedController @Inject() (
             Future(
               Ok(
                 limitExceedViewAdd(
-                  totalAccWeight.toString,
-                  userInputBigDecimalFormatted.toString,
+                  totalAccWeight.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
                   product.token,
                   product.name,
                   showPanelIndent
@@ -164,14 +164,14 @@ class LimitExceedController @Inject() (
   def onPageLoadEditAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-        val originalAmountEntered: BigDecimal =
-          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
+
+        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData)
 
         val originalAmountFormatted = originalAmountEntered.formatDecimalPlaces(3)
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
-        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElse(0)
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
 
         val totalAccWeightForAlcoholProduct =
           alcoholAndTobaccoCalculationService.alcoholEditHelper(
@@ -191,9 +191,9 @@ class LimitExceedController @Inject() (
             Future(
               Ok(
                 limitExceedViewEdit(
-                  totalEnteredAmount = totaledAmountFormatted.toString,
-                  originalAmountEntered = originalAmountFormatted.toString,
-                  userInput = userInputBigDecimalFormatted.toString,
+                  totalEnteredAmount = totaledAmountFormatted.stripTrailingZerosToString,
+                  originalAmountEntered = originalAmountFormatted.stripTrailingZerosToString,
+                  userInput = userInputBigDecimalFormatted.stripTrailingZerosToString,
                   token = product.token,
                   productName = product.name
                 )
@@ -208,14 +208,14 @@ class LimitExceedController @Inject() (
   def onPageLoadEditTobaccoWeight(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-        val originalAmountEntered: BigDecimal =
-          context.getJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
+
+        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData)
 
         val originalAmountFormatted = (originalAmountEntered * 1000).formatDecimalPlaces(2)
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
-        val userInputBigDecimal: BigDecimal = userInput.map(s => s.toBigDecimal).getOrElse(0)
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
 
         val totalAccWeightForLooseTobacco =
           alcoholAndTobaccoCalculationService.looseTobaccoEditHelper(context.getJourneyData, Some(userInputBigDecimal))
@@ -231,9 +231,9 @@ class LimitExceedController @Inject() (
             Future(
               Ok(
                 limitExceedViewEdit(
-                  totaledAmountFormatted.toString,
-                  originalAmountFormatted.toString,
-                  userInputBigDecimalFormatted.toString,
+                  totaledAmountFormatted.stripTrailingZerosToString,
+                  originalAmountFormatted.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
                   product.token,
                   product.name
                 )
@@ -248,11 +248,12 @@ class LimitExceedController @Inject() (
   def onPageLoadEditNoOfSticks(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-        val originalAmountEntered: Int =
-          context.getJourneyData.workingInstance.flatMap(_.noOfSticks).getOrElse(0)
+
+        val originalAmountEntered: Int = originalAmountEnteredNoOfSticks(context.getJourneyData)
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
+        println("LimitExceedController " + userInput) // should return None
         val userInputInt: Int = userInput.map(_.toInt).getOrElse(0)
 
         val totalAccNoOfSticks: Int =
