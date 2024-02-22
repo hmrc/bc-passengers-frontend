@@ -218,6 +218,32 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
+        "the user enters too much sparkling-wine" should {
+
+          val view = viewApply("90.01", "9.00", "10.01", "sparkling-wine", "label.alcohol.sparkling-wine")
+
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You changed 9.00 litres of sparkling wine to 10.01 litres of sparkling wine.",
+              Selectors.p(2)    -> "This means your total is now 90.01 litres of sparkling wine.",
+              Selectors.p(
+                3
+              )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 9.00 litres of sparkling wine.",
+              Selectors.p(5)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
         "the user enters too much wine" should {
 
           val view = viewApply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine")

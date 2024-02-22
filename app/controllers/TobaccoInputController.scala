@@ -464,7 +464,7 @@ class TobaccoInputController @Inject() (
                       )
                     )
                   ),
-                (dto: TobaccoDto) => {
+                (dto: TobaccoDto) =>
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
@@ -489,7 +489,6 @@ class TobaccoInputController @Inject() (
                         .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
                     )
                   }
-                }
               )
 
           def processTobaccoEditForm: Future[Result] =

@@ -1425,10 +1425,10 @@ limitExceeded.cider = cider
 limitExceeded.non-sparkling-cider = cider
 limitExceeded.sparkling-cider = cider
 limitExceeded.sparkling-cider-up = cider
-limitExceeded.sparkling-wine = sparkling wine
-limitExceeded.spirits = spirits
-limitExceeded.wine = wine
 limitExceeded.other = other alcohol
+limitExceeded.sparkling-wine = sparkling wine
+limitExceeded.wine = wine
+limitExceeded.spirits = spirits
 
 limitExceeded.cigarettes.singular = cigarette
 limitExceeded.cigarillos.singular = cigarillo
@@ -1463,10 +1463,10 @@ limitExceeded.max.limit.beer = 110 litres of beer
 limitExceeded.max.limit.non-sparkling-cider = 20 litres of cider
 limitExceeded.max.limit.sparkling-cider = 20 litres of cider
 limitExceeded.max.limit.sparkling-cider-up = 20 litres of cider
-limitExceeded.max.limit.sparkling-wine = 60 litres of sparkling wine
-limitExceeded.max.limit.spirits = 10 litres of spirits
-limitExceeded.max.limit.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
 limitExceeded.max.limit.other = 20 litres of other alcohol
+limitExceeded.max.limit.sparkling-wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
+limitExceeded.max.limit.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
+limitExceeded.max.limit.spirits = 10 litres of spirits
 
 limitExceeded.max.limit.cigarettes = 800 cigarettes
 limitExceeded.max.limit.cigarillos = 400 cigarillos

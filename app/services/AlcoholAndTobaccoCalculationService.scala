@@ -30,7 +30,13 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
 
   private def sumAlcoholProductTotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
     contextJourneyData.purchasedProductInstances
-      .filter(_.path.toString.contains(productToken))
+      .filter { product =>
+        if (productToken.contains("sparkling-cider")) {
+          product.path.toString.contains("sparkling-cider")
+        } else {
+          product.path.toString.contains(productToken)
+        }
+      }
       .map(_.weightOrVolume.getOrElseZero)
       .sum
 

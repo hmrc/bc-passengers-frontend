@@ -35,12 +35,6 @@ package object util {
     df
   }
 
-  val decimalFormat5: DecimalFormat = {
-    val df = new DecimalFormat("0.#####")
-    df.setRoundingMode(RoundingMode.HALF_UP)
-    df
-  }
-
   def formatMonetaryValue(value: String): String = {
     val df            = new DecimalFormat("#,###.00")
     val monetaryValue = BigDecimal(value)

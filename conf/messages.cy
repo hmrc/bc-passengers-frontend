@@ -1431,10 +1431,10 @@ limitExceeded.cider = seidr
 limitExceeded.non-sparkling-cider = seidr
 limitExceeded.sparkling-cider = seidr
 limitExceeded.sparkling-cider-up = seidr
-limitExceeded.sparkling-wine = gwin win pefriog
-limitExceeded.spirits = wirodydd
-limitExceeded.wine = win
 limitExceeded.other = alcohol arall
+limitExceeded.sparkling-wine = gwin win pefriog
+limitExceeded.wine = win
+limitExceeded.spirits = wirodydd
 
 limitExceeded.cigarettes.singular = sigarét
 limitExceeded.cigarillos.singular = sigarilo
@@ -1469,10 +1469,10 @@ limitExceeded.max.limit.beer = 110 litr o gwrw
 limitExceeded.max.limit.non-sparkling-cider = 20 litr o seidr
 limitExceeded.max.limit.sparkling-cider = 20 litr o seidr
 limitExceeded.max.limit.sparkling-cider-up = 20 litr o seidr
-limitExceeded.max.limit.sparkling-wine = 60 litr o win pefriog
-limitExceeded.max.limit.spirits = 10 litr o wirodydd
-limitExceeded.max.limit.wine = 90 litr o win (mae hyn yn cynnwys hyd at 60 litr o win pefriog)
 limitExceeded.max.limit.other = 20 litr o alcohol arall
+limitExceeded.max.limit.sparkling-wine = 90 litr o win (mae hyn yn cynnwys hyd at 60 litr o win pefriog)
+limitExceeded.max.limit.wine = 90 litr o win (mae hyn yn cynnwys hyd at 60 litr o win pefriog)
+limitExceeded.max.limit.spirits = 10 litr o wirodydd
 
 limitExceeded.max.limit.cigarettes = 800 sigarét
 limitExceeded.max.limit.cigarillos = 400 sigarilo
