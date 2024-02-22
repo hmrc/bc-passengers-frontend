@@ -1026,7 +1026,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/edit/volume"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/iid0/edit/volume"
       )
     }
 

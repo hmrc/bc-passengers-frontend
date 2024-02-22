@@ -72,13 +72,14 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
   def alcoholEditHelper(
     contextJourneyData: JourneyData,
     weightOrVolume: BigDecimal,
-    productToken: String
+    productToken: String,
+    iid: String
   ): BigDecimal = {
 
     val previouslyDeclaredAlcoholVolume: BigDecimal =
       sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken)
 
-    val originalVolume: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData)
+    val originalVolume: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData, iid)
 
     val alcoholProductTotalVolume: BigDecimal =
       sumAlcoholProductTotalVolume(contextJourneyData, productToken)
@@ -108,9 +109,13 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
     looseTobaccoTotalWeightInGrams
   }
 
-  def looseTobaccoEditHelper(contextJourneyData: JourneyData, weightOrVolume: Option[BigDecimal]): BigDecimal = {
+  def looseTobaccoEditHelper(
+    contextJourneyData: JourneyData,
+    weightOrVolume: Option[BigDecimal],
+    iid: String
+  ): BigDecimal = {
 
-    val originalWeight: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData)
+    val originalWeight: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData, iid)
 
     val previouslyDeclaredLooseTobaccoWeight: BigDecimal =
       sumPreviouslyDeclaredLooseTobaccoWeight(contextJourneyData)
@@ -157,7 +162,8 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
   def noOfSticksTobaccoEditHelper(
     contextJourneyData: JourneyData,
     noOfSticks: Option[Int],
-    productToken: String
+    productToken: String,
+    iid: String
   ): Int = {
 
     val previousDeclarationTotalNoOfSticks: Int = //amend journey ignore
@@ -167,7 +173,7 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
         .map(_.noOfSticks.getOrElse(0))
         .sum
 
-    val originalNoOfSticks: Int = originalAmountEnteredNoOfSticks(contextJourneyData)
+    val originalNoOfSticks: Int = originalAmountEnteredNoOfSticks(contextJourneyData, iid)
 
     val totalNoOfSticks: Int =
       contextJourneyData.purchasedProductInstances

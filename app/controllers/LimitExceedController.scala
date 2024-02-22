@@ -161,11 +161,10 @@ class LimitExceedController @Inject() (
       }
     }
 
-  def onPageLoadEditAlcoholVolume(path: ProductPath): Action[AnyContent] =
+  def onPageLoadEditAlcoholVolume(path: ProductPath, iid: String): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-
-        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData)
+        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData, iid)
 
         val originalAmountFormatted = originalAmountEntered.formatDecimalPlaces(3)
 
@@ -177,7 +176,8 @@ class LimitExceedController @Inject() (
           alcoholAndTobaccoCalculationService.alcoholEditHelper(
             context.getJourneyData,
             userInputBigDecimal,
-            product.token
+            product.token,
+            iid
           )
 
         val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
@@ -205,11 +205,10 @@ class LimitExceedController @Inject() (
       }
     }
 
-  def onPageLoadEditTobaccoWeight(path: ProductPath): Action[AnyContent] =
+  def onPageLoadEditTobaccoWeight(path: ProductPath, iid: String): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-
-        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData)
+        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData, iid)
 
         val originalAmountFormatted = (originalAmountEntered * 1000).formatDecimalPlaces(2)
 
@@ -218,7 +217,11 @@ class LimitExceedController @Inject() (
         val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElse(0)
 
         val totalAccWeightForLooseTobacco =
-          alcoholAndTobaccoCalculationService.looseTobaccoEditHelper(context.getJourneyData, Some(userInputBigDecimal))
+          alcoholAndTobaccoCalculationService.looseTobaccoEditHelper(
+            context.getJourneyData,
+            Some(userInputBigDecimal),
+            iid
+          )
 
         val userInputBigDecimalFormatted = (userInputBigDecimal * 1000).formatDecimalPlaces(2)
 
@@ -245,11 +248,10 @@ class LimitExceedController @Inject() (
       }
     }
 
-  def onPageLoadEditNoOfSticks(path: ProductPath): Action[AnyContent] =
+  def onPageLoadEditNoOfSticks(path: ProductPath, iid: String): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
-
-        val originalAmountEntered: Int = originalAmountEnteredNoOfSticks(context.getJourneyData)
+        val originalAmountEntered: Int = originalAmountEnteredNoOfSticks(context.getJourneyData, iid)
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
@@ -260,7 +262,8 @@ class LimitExceedController @Inject() (
           alcoholAndTobaccoCalculationService.noOfSticksTobaccoEditHelper(
             context.getJourneyData,
             Some(userInputInt),
-            product.token
+            product.token,
+            iid
           )
 
         userInput match {

@@ -2029,7 +2029,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/edit/units-of-product"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigarettes/upper-limits/iid0/edit/units-of-product"
       )
     }
 
@@ -2055,7 +2055,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/edit/units-of-product"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/cigars/upper-limits/iid0/edit/units-of-product"
       )
     }
 
@@ -2196,7 +2196,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/edit/weight"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/iid0/edit/weight"
       )
     }
   }

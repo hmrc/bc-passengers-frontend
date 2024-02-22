@@ -20,16 +20,16 @@ import models.JourneyData
 
 trait InstanceDecider extends FormatsAndConversions {
 
-  def originalAmountEnteredWeightOrVolume(journeyData: JourneyData): BigDecimal =
+  def originalAmountEnteredWeightOrVolume(journeyData: JourneyData, iid: String): BigDecimal =
     journeyData.workingInstance match {
       case Some(workingProductInstance) => workingProductInstance.weightOrVolume.getOrElseZero
-      case None                         => journeyData.purchasedProductInstances.flatMap(_.weightOrVolume).sum
+      case None                         => journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.weightOrVolume).sum
     }
 
-  def originalAmountEnteredNoOfSticks(journeyData: JourneyData): Int =
+  def originalAmountEnteredNoOfSticks(journeyData: JourneyData, iid: String): Int =
     journeyData.workingInstance match {
       case Some(workingProductInstance) => workingProductInstance.noOfSticks.getOrElse(0)
-      case None                         => journeyData.purchasedProductInstances.flatMap(_.noOfSticks).sum
+      case None                         => journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.noOfSticks).sum
     }
 
 }

@@ -463,7 +463,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
 
             val alcoholDtoVolume = BigDecimal(0.5)
 
-            val actual   = service.alcoholEditHelper(data, alcoholDtoVolume, "wine")
+            val actual   = service.alcoholEditHelper(data, alcoholDtoVolume, "wine", "item1")
             val expected = BigDecimal(0.9)
 
             actual shouldBe expected
@@ -508,7 +508,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
 
             val alcoholDtoVolume = BigDecimal(0.3)
 
-            val actual   = service.alcoholEditHelper(data, alcoholDtoVolume, "wine")
+            val actual   = service.alcoholEditHelper(data, alcoholDtoVolume, "wine", "item2")
             val expected = BigDecimal(0.4)
 
             actual shouldBe expected
@@ -550,7 +550,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(50)
-            val actual           = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarettes")
+            val actual           = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarettes", "item1")
             val expected         = 70
 
             actual shouldBe expected
@@ -589,7 +589,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(50)
-            val actual           = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarillo")
+            val actual           = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarillo", "item1")
             val expected         = 70
 
             actual shouldBe expected
@@ -650,7 +650,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
 
             val tobaccoDtoWeight = Some(50)
 
-            val actual   = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarillo")
+            val actual   = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarillo", "item1")
             val expected = 90
 
             actual shouldBe expected
@@ -704,7 +704,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(50)
-            val actual           = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarettes")
+            val actual           = service.noOfSticksTobaccoEditHelper(data, tobaccoDtoWeight, "tobacco/cigarettes", "item1")
             val expected         = 80
 
             actual shouldBe expected
@@ -747,7 +747,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(BigDecimal(0.5))
-            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight, "item1")
             val expected         = BigDecimal(0.90000)
 
             actual shouldBe expected
@@ -786,7 +786,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(BigDecimal(0.6))
-            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight, "item1")
             val expected         = BigDecimal(0.90000)
 
             actual shouldBe expected
@@ -831,7 +831,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
 
             val tobaccoDtoWeight = Some(BigDecimal(0.3))
 
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight, "item1")
             val expected = BigDecimal(0.60000)
 
             actual shouldBe expected
@@ -888,7 +888,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
 
             val tobaccoDtoWeight = Some(BigDecimal(0.3))
 
-            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val actual   = service.looseTobaccoEditHelper(data, tobaccoDtoWeight, "item1")
             val expected = BigDecimal(0.60000)
 
             actual shouldBe expected
@@ -942,7 +942,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             )
 
             val tobaccoDtoWeight = Some(BigDecimal(0.5))
-            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight)
+            val actual           = service.looseTobaccoEditHelper(data, tobaccoDtoWeight, "item1")
             val expected         = BigDecimal(1.00000)
 
             actual shouldBe expected

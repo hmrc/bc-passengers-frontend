@@ -54,14 +54,14 @@ class AlcoholInputController @Inject() (
   private def navigationHelper(
     jd: JourneyData,
     productPath: ProductPath,
-    itemId: String,
+    iid: String,
     originCountry: Option[String]
   ) =
     (jd.arrivingNICheck, jd.euCountryCheck) match {
       case (Some(true), Some("greatBritain"))                                                    =>
-        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, itemId))
+        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, iid))
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
-        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, itemId))
+        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
       case _                                                                                     => Redirect(routes.SelectProductController.nextStep)
     }
 
@@ -258,7 +258,7 @@ class AlcoholInputController @Inject() (
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.onPageLoadEditAlcoholVolume(path = ppi.path)
+                        routes.LimitExceedController.onPageLoadEditAlcoholVolume(path = ppi.path, iid)
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(
