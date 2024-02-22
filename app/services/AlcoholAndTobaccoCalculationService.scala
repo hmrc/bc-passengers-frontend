@@ -50,7 +50,6 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
       )
       .map(_.weightOrVolume.getOrElseZero)
       .sum
-      .bigDecimal
 
   def alcoholAddHelper(
     contextJourneyData: JourneyData,
