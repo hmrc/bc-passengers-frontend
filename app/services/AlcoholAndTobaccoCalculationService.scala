@@ -166,7 +166,7 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
     iid: String
   ): Int = {
 
-    val previousDeclarationTotalNoOfSticks: Int = //amend journey ignore
+    val previousDeclarationTotalNoOfSticks: Int =
       contextJourneyData.declarationResponse
         .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
         .filter(_.path.toString.contains(productToken))
