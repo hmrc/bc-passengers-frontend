@@ -255,7 +255,6 @@ class LimitExceedController @Inject() (
 
         val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
 
-        println("LimitExceedController " + userInput) // should return None
         val userInputInt: Int = userInput.map(_.toInt).getOrElse(0)
 
         val totalAccNoOfSticks: Int =

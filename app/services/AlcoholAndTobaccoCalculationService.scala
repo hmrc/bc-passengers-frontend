@@ -181,15 +181,9 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider {
         .map(_.noOfSticks.getOrElse(0))
         .sum
 
-    println("noOfSticks " + noOfSticks)
-    println("previously added amend jouney " + previousDeclarationTotalNoOfSticks)
-    println("original no sticks " + originalNoOfSticks)
-    println("total no sticks " + totalNoOfSticks)
-
     val totalNoOfSticksAfterCalc: Int =
       noOfSticks.getOrElse(0) + previousDeclarationTotalNoOfSticks + totalNoOfSticks - originalNoOfSticks
 
-    println("totalNoOfSticksAfterCalc " + totalNoOfSticksAfterCalc)
     totalNoOfSticksAfterCalc
   }
 }

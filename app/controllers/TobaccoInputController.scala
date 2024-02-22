@@ -465,7 +465,6 @@ class TobaccoInputController @Inject() (
                     )
                   ),
                 (dto: TobaccoDto) => {
-                  println(dto.noOfSticks + "********* user form input *********")
                   if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
@@ -482,7 +481,6 @@ class TobaccoInputController @Inject() (
                       navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
-                    println(s"user-amount-input-${product.token} " + "hello" * 20)
                     Future(
                       Redirect(
                         routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path, iid)
@@ -536,7 +534,6 @@ class TobaccoInputController @Inject() (
                       navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
-                    println(s"user-amount-input-${product.token}" + "hello" * 20)
                     Future(
                       Redirect(
                         routes.LimitExceedController.onPageLoadEditTobaccoWeight(ppi.path, iid)
@@ -589,11 +586,9 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      println(s"user-amount-input-${product.token}" + "*** Hey" * 20)
                       navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
-                    println(s"user-amount-input-${product.token}" + "hello" * 20)
                     Future(
                       Redirect(
                         routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path, iid)
