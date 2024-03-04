@@ -18,18 +18,11 @@ package utils
 
 import models.JourneyData
 
-trait InstanceDecider extends FormatsAndConversions {
+trait InstanceDecider {
 
   def originalAmountEnteredWeightOrVolume(journeyData: JourneyData, iid: String): BigDecimal =
-    journeyData.workingInstance match {
-      case Some(workingProductInstance) => workingProductInstance.weightOrVolume.getOrElseZero
-      case None                         => journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.weightOrVolume).sum
-    }
+    journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.weightOrVolume).sum
 
   def originalAmountEnteredNoOfSticks(journeyData: JourneyData, iid: String): Int =
-    journeyData.workingInstance match {
-      case Some(workingProductInstance) => workingProductInstance.noOfSticks.getOrElse(0)
-      case None                         => journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.noOfSticks).sum
-    }
-
+    journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.noOfSticks).sum
 }

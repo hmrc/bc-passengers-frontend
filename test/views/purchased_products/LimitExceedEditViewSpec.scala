@@ -17,18 +17,18 @@
 package views.purchased_products
 
 import play.twirl.api.HtmlFormat
-import views.html.purchased_products.limit_exceed_edit
 import views.{BaseSelectors, BaseViewSpec}
+import views.html.purchased_products.limit_exceed_edit
 
 class LimitExceedEditViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_edit].apply(
-      "110",
-      "0",
-      "0",
-      "cigars",
-      "label.tobacco.cigars"
+      totalEnteredAmount = "110",
+      originalAmountEntered = "0",
+      userInput = "0",
+      token = "cigars",
+      productName = "label.tobacco.cigars"
     )(
       request = request,
       messages = messages,
@@ -37,18 +37,20 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
 
   val viewViaRender: HtmlFormat.Appendable =
     injected[limit_exceed_edit].render(
-      "110.2",
-      "0",
-      "0",
-      "cigars",
-      "label.tobacco.cigars",
+      totalEnteredAmount = "110.2",
+      originalAmountEntered = "0",
+      userInput = "0",
+      token = "cigars",
+      productName = "label.tobacco.cigars",
+      showGroupMessage = false,
       request = request,
       messages = messages,
       appConfig = appConfig
     )
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[limit_exceed_edit].f("110.2", "0", "0", "cigars", "label.tobacco.cigars")(request, messages, appConfig)
+    injected[limit_exceed_edit]
+      .f("110.2", "0", "0", "cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors
 
@@ -57,10 +59,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
     originalAmountEntered: String,
     userInput: String,
     item: String,
-    productName: String
+    productName: String,
+    showGroupMessage: Boolean = false
   ): HtmlFormat.Appendable =
     injected[limit_exceed_edit]
-      .apply(amount, originalAmountEntered, userInput, item, productName)(
+      .apply(amount, originalAmountEntered, userInput, item, productName, showGroupMessage)(
         request = request,
         messages = messages,
         appConfig = appConfig
@@ -88,7 +91,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of beer.",
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(5)    -> (
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
@@ -111,7 +115,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of beer.",
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(5)    -> (
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
@@ -139,7 +144,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -162,7 +168,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                   "They will calculate and take payment of the taxes and duties due."
               ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -186,7 +193,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -210,7 +218,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -228,7 +237,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(2)    -> "This means your total is now 90.01 litres of sparkling wine.",
               Selectors.p(
                 3
-              )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
+              )                 -> "You cannot use this service to declare more than 60 litres of sparkling wine.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of sparkling wine.",
               Selectors.p(5)    ->
@@ -236,7 +245,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -254,6 +264,33 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(2)    -> "This means your total is now 90.01 litres of wine.",
               Selectors.p(
                 3
+              )                 -> "You cannot use this service to declare more than 90 litres of wine.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 9.00 litres of wine.",
+              Selectors.p(5)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        "the user enters too much wine when sparkling wine has been previously added" should {
+
+          val view = viewApply("100.01", "9.00", "20.01", "wine", "label.alcohol.wine", showGroupMessage = true)
+
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You changed 9.00 litres of wine to 20.01 litres of wine.",
+              Selectors.p(2)    -> "This means your total is now 100.01 litres of wine (this includes sparkling wine).",
+              Selectors.p(
+                3
               )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of wine.",
@@ -262,7 +299,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -286,7 +324,35 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare alcohol over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your alcohol may be seized.",
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        "the user enters too much other alcohol when cider has been previously added" should {
+
+          val view = viewApply("30.01", "10.00", "20.01", "other", "label.alcohol.other", showGroupMessage = true)
+
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You changed 10.00 litres of other alcohol to 20.01 litres of other alcohol.",
+              Selectors.p(2)    -> ("This means your total is now 30.01 litres of all other " +
+                "alcoholic drinks (including cider, port, sherry and alcohol up to 22%)."),
+              Selectors.p(3)    -> ("You cannot use this service to declare more than 20 litres of all " +
+                "other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)."),
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 10.00 litres of other alcohol.",
+              Selectors.p(5)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -316,7 +382,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -340,7 +407,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -364,7 +432,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -372,7 +441,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters much heated-tobacco" should {
+        "the user enters too many heated-tobacco" should {
 
           val view = viewApply("801", "100", "201", "heated-tobacco", "label.tobacco.heated-tobacco")
 
@@ -388,7 +457,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -396,7 +466,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters much chewing-tobacco" should {
+        "the user enters too much chewing-tobacco" should {
 
           val view = viewApply("1001.00", "100.00", "201.00", "chewing-tobacco", "label.tobacco.chewing-tobacco")
 
@@ -404,7 +474,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
             Seq(
               Selectors.p(1)    -> "You changed 100.00g of pipe or chewing tobacco to 201.00g of pipe or chewing tobacco.",
               Selectors.p(2)    -> "This means your total is now 1001.00g of pipe or chewing tobacco.",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of tobacco.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of pipe or chewing tobacco.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100.00g of pipe or chewing tobacco.",
               Selectors.p(5)    ->
@@ -412,7 +482,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
@@ -420,7 +491,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters much rolling-tobacco" should {
+        "the user enters too much rolling-tobacco" should {
 
           val view = viewApply("1000.01", "100.01", "200.01", "rolling-tobacco", "label.tobacco.rolling-tobacco")
 
@@ -428,7 +499,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
             Seq(
               Selectors.p(1)    -> "You changed 100.01g of rolling tobacco to 200.01g of rolling tobacco.",
               Selectors.p(2)    -> "This means your total is now 1000.01g of rolling tobacco.",
-              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of tobacco.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of rolling tobacco.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100.01g of rolling tobacco.",
               Selectors.p(5)    ->
@@ -436,7 +507,40 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
                 ),
-              Selectors.warning -> "Warning If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.",
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
+              Selectors.h2(2)   -> "If you have other items to declare",
+              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        "the user enters too much rolling-tobacco when chewing-tobacco has been previously added" should {
+
+          val view = viewApply(
+            "1000.01",
+            "100.01",
+            "200.01",
+            "rolling-tobacco",
+            "label.tobacco.rolling-tobacco",
+            showGroupMessage = true
+          )
+
+          val expectedContent =
+            Seq(
+              Selectors.p(1)    -> "You changed 100.01g of rolling tobacco to 200.01g of rolling tobacco.",
+              Selectors.p(2)    -> "This means your total is now 1000.01g of loose tobacco.",
+              Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of loose tobacco.",
+              Selectors.h2(1)   -> "What you must do",
+              Selectors.p(4)    -> "We will change your item back to 100.01g of rolling tobacco.",
+              Selectors.p(5)    ->
+                (
+                  "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
+                    "They will calculate and take payment of the taxes and duties due."
+                ),
+              Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
+                "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )

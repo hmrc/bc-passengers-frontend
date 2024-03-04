@@ -20,11 +20,11 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.LimitExceedAction
 import models._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.InstanceDecider
+import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 import views.html.purchased_products.{limit_exceed_add, limit_exceed_edit}
 
 import javax.inject.Inject
@@ -41,13 +41,29 @@ class LimitExceedController @Inject() (
   limitExceedViewEdit: limit_exceed_edit,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
-  val backLinkModel: BackLinkModel,
-  implicit val messages: MessagesApi,
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
-    with I18nSupport
     with ControllerHelpers
-    with InstanceDecider {
+    with InstanceDecider
+    with ProductDetector
+    with FormatsAndConversions {
+
+  private val logger: Logger = Logger(this.getClass)
+
+  private def showAlcoholGroupMessage(journeyData: JourneyData, productToken: String): Boolean = productToken match {
+    case token if token == "wine"           => checkProductExists(journeyData, "alcohol/sparkling-wine")
+    case token if token == "sparkling-wine" => checkProductExists(journeyData, "alcohol/wine")
+    case token if token == "other"          => checkProductExists(journeyData, "cider")
+    case token if token.contains("cider")   => checkProductExists(journeyData, "other")
+    case _                                  => false
+  }
+
+  private def showLooseTobaccoGroupMessage(journeyData: JourneyData, productToken: String): Boolean =
+    if (productToken == "chewing-tobacco") {
+      checkProductExists(journeyData, "rolling-tobacco")
+    } else {
+      checkProductExists(journeyData, "chewing-tobacco")
+    }
 
   def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
@@ -55,8 +71,6 @@ class LimitExceedController @Inject() (
         val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
         val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
         val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
-
-        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
 
         val totalAccPreviouslyAddedVolume =
           alcoholAndTobaccoCalculationService.alcoholAddHelper(
@@ -68,6 +82,16 @@ class LimitExceedController @Inject() (
         val totalAccNoOfVolume: BigDecimal =
           (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
 
+        val showPanelIndent: Boolean = checkAlcoholProductExists(
+          productToken = product.token,
+          wineOrSparklingExists = checkProductExists(context.getJourneyData, "wine"),
+          ciderOrOtherAlcoholExists =
+            checkProductExists(context.getJourneyData, "cider") || checkProductExists(context.getJourneyData, "other"),
+          beerOrSpiritExists = checkProductExists(context.getJourneyData, path.toString)
+        )
+
+        val showGroupMessage: Boolean = showAlcoholGroupMessage(context.getJourneyData, product.token)
+
         userInput match {
           case Some(_) =>
             Future(
@@ -77,11 +101,13 @@ class LimitExceedController @Inject() (
                   userInputBigDecimalFormatted.stripTrailingZerosToString,
                   product.token,
                   product.name,
-                  showPanelIndent
+                  showPanelIndent,
+                  showGroupMessage
                 )
               )
             )
           case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyAlcoholVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -100,10 +126,13 @@ class LimitExceedController @Inject() (
             None
           )
 
-        val showPanelIndent: Boolean = context.getJourneyData.purchasedProductInstances.exists(_.path == path)
-
         val totalAccWeight =
           ((totalAccWeightForTobaccoProduct + userInputBigDecimal) * 1000).formatDecimalPlaces(2)
+
+        val showPanelIndent: Boolean = checkProductExists(context.getJourneyData, "chewing-tobacco") ||
+          checkProductExists(context.getJourneyData, "rolling-tobacco")
+
+        val showGroupMessage: Boolean = showLooseTobaccoGroupMessage(context.getJourneyData, product.token)
 
         userInput match {
           case Some(_) =>
@@ -114,11 +143,13 @@ class LimitExceedController @Inject() (
                   userInputBigDecimalFormatted.stripTrailingZerosToString,
                   product.token,
                   product.name,
-                  showPanelIndent
+                  showPanelIndent,
+                  showGroupMessage
                 )
               )
             )
           case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyTobaccoWeight] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -156,6 +187,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyNoOfSticks] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -186,6 +218,8 @@ class LimitExceedController @Inject() (
 
         val totaledAmountFormatted: BigDecimal = totaledAmount.formatDecimalPlaces(3)
 
+        val showGroupMessage: Boolean = showAlcoholGroupMessage(context.getJourneyData, product.token)
+
         userInput match {
           case Some(_) =>
             Future(
@@ -195,11 +229,13 @@ class LimitExceedController @Inject() (
                   originalAmountEntered = originalAmountFormatted.stripTrailingZerosToString,
                   userInput = userInputBigDecimalFormatted.stripTrailingZerosToString,
                   token = product.token,
-                  productName = product.name
+                  productName = product.name,
+                  showGroupMessage = showGroupMessage
                 )
               )
             )
           case _       =>
+            logger.error("[LimitExceedController][onPageLoadEditAlcoholVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -229,6 +265,8 @@ class LimitExceedController @Inject() (
 
         val totaledAmountFormatted: BigDecimal = (totaledAmount * 1000).formatDecimalPlaces(2)
 
+        val showGroupMessage: Boolean = showLooseTobaccoGroupMessage(context.getJourneyData, product.token)
+
         userInput match {
           case Some(_) =>
             Future(
@@ -238,11 +276,13 @@ class LimitExceedController @Inject() (
                   originalAmountFormatted.stripTrailingZerosToString,
                   userInputBigDecimalFormatted.stripTrailingZerosToString,
                   product.token,
-                  product.name
+                  product.name,
+                  showGroupMessage
                 )
               )
             )
           case _       =>
+            logger.error("[LimitExceedController][onPageLoadEditTobaccoWeight] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -279,6 +319,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
+            logger.error("[LimitExceedController][onPageLoadEditNoOfSticks] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }

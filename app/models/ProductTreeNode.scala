@@ -16,8 +16,6 @@
 
 package models
 
-import utils.FormatsAndConversions
-
 import util.decimalFormat10
 
 sealed trait ProductTreeNode {
@@ -33,8 +31,7 @@ case class ProductTreeLeaf(
   rateID: String,
   templateId: String,
   applicableLimits: List[String]
-) extends ProductTreeNode
-    with FormatsAndConversions {
+) extends ProductTreeNode {
 
   override def isLeaf: Boolean = true
 

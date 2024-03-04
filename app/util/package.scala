@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import models.ProductPath
+import models.JourneyData
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
+import utils.ProductDetector
 
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -27,11 +28,17 @@ import java.util.Locale
 import scala.util.Try
 
 // scalastyle:off magic.number
-package object util {
+package object util extends ProductDetector {
 
   val decimalFormat10: DecimalFormat = {
     val df = new DecimalFormat("0.##########")
     df.setRoundingMode(RoundingMode.DOWN)
+    df
+  }
+
+  val decimalFormat5: DecimalFormat = {
+    val df = new DecimalFormat("0.#####")
+    df.setRoundingMode(RoundingMode.HALF_UP)
     df
   }
 
@@ -74,27 +81,28 @@ package object util {
     }
   }
 
-  def cigaretteAndHeatedTobaccoConstraint(numberOfSticks: Int): Boolean = {
-    val cigarettesMaximumAmount = 800
-    numberOfSticks <= cigarettesMaximumAmount
-  }
-
-  def cigarAndCigarilloConstraint(numberOfSticks: Int, productType: String): Boolean = {
-    val cigarsMaximumAmount     = 200
-    val cigarillosMaximumAmount = 400
-    productType match {
-      case "cigars"     => numberOfSticks <= cigarsMaximumAmount
-      case "cigarillos" => numberOfSticks <= cigarillosMaximumAmount
-      case _            => false
-    }
-  }
-
   def looseTobaccoWeightConstraint(looseTobaccoWeight: BigDecimal): Boolean = {
-    val oneThousandGrams = BigDecimal(1000)
+    val oneThousandGrams: BigDecimal = 1000
     looseTobaccoWeight <= oneThousandGrams
   }
 
-  def calculatorLimitConstraintOptionInt(
+  def alcoholVolumeConstraint(journeyData: JourneyData, alcoholVolume: BigDecimal, productToken: String): Boolean = {
+    val wineLimit: BigDecimal          = 90
+    val sparklingWineLimit: BigDecimal = if (checkProductExists(journeyData, "alcohol/wine")) 90 else 60
+    val beerLimit: BigDecimal          = 110
+    val spiritsLimit: BigDecimal       = 10
+    val ciderOrOtherLimit: BigDecimal  = 20
+
+    productToken match {
+      case "wine"           => alcoholVolume <= wineLimit
+      case "sparkling-wine" => alcoholVolume <= sparklingWineLimit
+      case "beer"           => alcoholVolume <= beerLimit
+      case "spirits"        => alcoholVolume <= spiritsLimit
+      case _                => alcoholVolume <= ciderOrOtherLimit
+    }
+  }
+
+  def calculatorLimitConstraint(
     limits: Map[String, BigDecimal] = Map.empty,
     applicableLimits: List[String] = Nil
   ): Boolean = {
@@ -102,34 +110,7 @@ package object util {
     val errors =
       for (limit <- applicableLimits; amount <- limits.get(limit) if amount > BigDecimal(1.0)) yield (limit, amount)
 
-    if (errors.nonEmpty) false else true
-  }
-
-  def calculatorLimitConstraintBigDecimal(
-    limits: Map[String, BigDecimal] = Map.empty,
-    applicableLimits: List[String] = Nil,
-    path: ProductPath
-  ): Option[ProductPath] = {
-
-    val errors =
-      for (limit <- applicableLimits; amount <- limits.get(limit); if amount > BigDecimal(1.0)) yield (limit, amount)
-
-    if (errors.isEmpty) { None }
-    else {
-      Some(
-        errors
-          .sortBy(_._2)
-          .reverse
-          .take(1)
-          .map { x =>
-            x._1.toLowerCase match {
-              case "l-wine" => ProductPath("alcohol/wine")
-              case _        => path
-            }
-          }
-          .head
-      )
-    }
+    errors.isEmpty
   }
 
   def bigDecimalCostCheckConstraint(errorSubString: String): Constraint[String] =

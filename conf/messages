@@ -1426,8 +1426,15 @@ limitExceeded.non-sparkling-cider = cider
 limitExceeded.sparkling-cider = cider
 limitExceeded.sparkling-cider-up = cider
 limitExceeded.other = other alcohol
+limitExceeded.group.cider = all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.group.non-sparkling-cider = all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.group.sparkling-cider = all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.group.sparkling-cider-up = all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.group.other = all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
 limitExceeded.sparkling-wine = sparkling wine
 limitExceeded.wine = wine
+limitExceeded.group.sparkling-wine = wine (this includes sparkling wine)
+limitExceeded.group.wine = wine (this includes sparkling wine)
 limitExceeded.spirits = spirits
 
 limitExceeded.cigarettes.singular = cigarette
@@ -1442,8 +1449,9 @@ limitExceeded.heated-tobacco.plural = tobacco sticks
 
 limitExceeded.chewing-tobacco = pipe or chewing tobacco
 limitExceeded.rolling-tobacco = rolling tobacco
+limitExceeded.loose_tobacco = loose tobacco
 
-limitExceeded.p2 = You cannot use this service to declare more than {0}.
+limitExceeded.you_cannot_use_this_service = You cannot use this service to declare more than {0}.
 limitExceeded.p3 = This item will be removed from your goods to declare.
 
 limitExceeded.add.panelIndent = {0} {1} of {2}
@@ -1464,16 +1472,24 @@ limitExceeded.max.limit.non-sparkling-cider = 20 litres of cider
 limitExceeded.max.limit.sparkling-cider = 20 litres of cider
 limitExceeded.max.limit.sparkling-cider-up = 20 litres of cider
 limitExceeded.max.limit.other = 20 litres of other alcohol
-limitExceeded.max.limit.sparkling-wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
-limitExceeded.max.limit.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
+limitExceeded.max.limit.group.non-sparkling-cider = 20 litres of all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.max.limit.group.sparkling-cider = 20 litres of all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.max.limit.group.sparkling-cider-up = 20 litres of all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.max.limit.group.other = 20 litres of all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+limitExceeded.max.limit.sparkling-wine = 60 litres of sparkling wine
+limitExceeded.max.limit.wine = 90 litres of wine
+limitExceeded.max.limit.group.wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
+limitExceeded.max.limit.group.sparkling-wine = 90 litres of wine (this includes up to 60 litres of sparkling wine)
 limitExceeded.max.limit.spirits = 10 litres of spirits
 
 limitExceeded.max.limit.cigarettes = 800 cigarettes
 limitExceeded.max.limit.cigarillos = 400 cigarillos
 limitExceeded.max.limit.cigars = 200 cigars
 limitExceeded.max.limit.heated-tobacco = 800 tobacco sticks
-limitExceeded.max.limit.chewing-tobacco = 1000g of tobacco
-limitExceeded.max.limit.rolling-tobacco = 1000g of tobacco
+limitExceeded.max.limit.chewing-tobacco = 1000g of pipe or chewing tobacco
+limitExceeded.max.limit.rolling-tobacco = 1000g of rolling tobacco
+limitExceeded.max.limit.group.chewing-tobacco = 1000g of loose tobacco
+limitExceeded.max.limit.group.rolling-tobacco = 1000g of loose tobacco
 
 limitExceeded.p1.edit.alcohol.a = You changed {0} {1} of {2} {3}.
 limitExceeded.p1.edit.alcohol.b = to {0} {1} of {2}
@@ -1487,14 +1503,9 @@ limitExceeded.p2.edit.alcohol = This means your total is now {0} {1} of {2}.
 limitExceeded.p2.edit.tobacco = This means your total is now {0} {1}.
 limitExceeded.p2.edit.loose.tobacco = This means your total is now {0}{1} {2}.
 
-limitExceeded.p3.edit.alcohol = You cannot use this service to declare more than {0}.
-limitExceeded.p3.edit.tobacco = You cannot use this service to declare more than {0}.
-limitExceeded.p3.edit.loose.tobacco = You cannot use this service to declare more than {0}.
-
 limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1} of {2}.
 limitExceeded.p4.edit.tobacco = We will change your item back to {0} {1}.
 limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1} {2}.
-
 
 ############## Previous declaration page content change ##############
 

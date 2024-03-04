@@ -17,25 +17,35 @@
 package services
 
 import models.{JourneyData, PurchasedProductInstance}
-import utils.InstanceDecider
+import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 
-class AlcoholAndTobaccoCalculationService extends InstanceDecider {
+class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDetector with FormatsAndConversions {
 
   private def sumPreviouslyDeclaredAlcoholVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
     contextJourneyData.declarationResponse
       .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
-      .filter(_.path.toString.contains(productToken))
+      .filter { product =>
+        checkAlcoholProductExists(
+          productToken = productToken,
+          wineOrSparklingExists = product.path.toString.contains("wine"),
+          ciderOrOtherAlcoholExists =
+            product.path.toString.contains("cider") || product.path.toString.contains("other"),
+          beerOrSpiritExists = product.path.toString.contains(productToken)
+        )
+      }
       .map(_.weightOrVolume.getOrElseZero)
       .sum
 
   private def sumAlcoholProductTotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
     contextJourneyData.purchasedProductInstances
       .filter { product =>
-        if (productToken.contains("sparkling-cider")) {
-          product.path.toString.contains("sparkling-cider")
-        } else {
-          product.path.toString.contains(productToken)
-        }
+        checkAlcoholProductExists(
+          productToken = productToken,
+          wineOrSparklingExists = product.path.toString.contains("wine"),
+          ciderOrOtherAlcoholExists =
+            product.path.toString.contains("cider") || product.path.toString.contains("other"),
+          beerOrSpiritExists = product.path.toString.contains(productToken)
+        )
       }
       .map(_.weightOrVolume.getOrElseZero)
       .sum

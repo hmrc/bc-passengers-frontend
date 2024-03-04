@@ -16,8 +16,10 @@
 
 package util
 
-import models.ProductPath
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import play.api.data.validation._
+
+import java.math.RoundingMode
 
 class UtilSpec extends BaseSpec {
 
@@ -35,12 +37,12 @@ class UtilSpec extends BaseSpec {
 
     "restrict negative value like -95 to old constraint" in {
 
-      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(Valid) should be(false)
+      bigDecimalCostCheckConstraint("cost").apply("-95.00").equals(Valid) shouldBe false
     }
 
     "restrict negative value like -9.50" in {
 
-      blankOkCostCheckConstraint("cost").apply("-9.50").equals(Valid) should be(false)
+      blankOkCostCheckConstraint("cost").apply("-9.50").equals(Valid) shouldBe false
     }
 
     "return failed validation when a value greater than 9999999999 is passed" in {
@@ -67,75 +69,137 @@ class UtilSpec extends BaseSpec {
   }
 
   "validating limits" should {
-    "return the correct product path" in {
-      calculatorLimitConstraintBigDecimal(
+    "return true when there are no errors" in {
+      calculatorLimitConstraint(
         limits = Map(
           "L-WINE"   -> 2.2222,
           "L-WINESP" -> 4.4444
         ),
-        applicableLimits = List("L-WINE", "L-WINESP"),
-        path = ProductPath(path = "alcohol/sparkling-wine")
-      ) shouldBe Some(ProductPath(path = "alcohol/sparkling-wine"))
+        applicableLimits = List.empty
+      ) shouldBe true
+    }
+
+    "return false when there are errors" in {
+      calculatorLimitConstraint(
+        limits = Map(
+          "L-WINE"   -> 2.2222,
+          "L-WINESP" -> 4.4444
+        ),
+        applicableLimits = List("L-WINE", "L-WINESP")
+      ) shouldBe false
     }
   }
 
-  ".cigarAndCigarilloConstraint" when {
+  "Formatting with decimalFormat5" when {
+    "using the HALF_UP rounding mode" should {
+      "preserve the correct value in 5 decimal places" in {
+        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) = (0.00, 0.99, 0.01)
 
-    "the productToken is cigars" when {
+        start
+          .to(end, step)
+          .foreach(value =>
+            BigDecimal(decimalFormat5.format(value.toDouble / 1000)) shouldBe BigDecimal(
+              decimalFormat5.format(value / 1000)
+            )
+          )
+      }
+    }
 
-      "numberOfSticks is under limit of 200" should {
+    "using the UP rounding mode" should {
+      "not preserve the correct value in 5 decimal places" in {
+        val values: Seq[BigDecimal] = Seq(0.07, 0.13, 0.14, 0.26, 0.28, 0.52, 0.56, 0.77, 0.81, 0.89)
 
-        "return true" in {
-          util.cigarAndCigarilloConstraint(199, "cigars") shouldBe true
+        decimalFormat5.setRoundingMode(RoundingMode.UP)
+
+        values.foreach(value =>
+          BigDecimal(decimalFormat5.format(value.toDouble / 1000)) should not be BigDecimal(
+            decimalFormat5.format(value / 1000)
+          )
+        )
+      }
+    }
+  }
+
+  "validating loose tobacco weight" should {
+    "return true" when {
+      "supplied weight is less than 1000 grams" in {
+        looseTobaccoWeightConstraint(BigDecimal(1)) shouldBe true
+      }
+
+      "supplied weight is equal to 1000 grams" in {
+        looseTobaccoWeightConstraint(BigDecimal(1000.00)) shouldBe true
+      }
+    }
+
+    "return false when supplied weight is greater than 1000 grams" in {
+      looseTobaccoWeightConstraint(2000.00) shouldBe false
+    }
+  }
+
+  "validating alcohol volume" should {
+    val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+      path = ProductPath("alcohol/wine"),
+      iid = "iid0",
+      weightOrVolume = Some(20.00),
+      currency = Some("GBP"),
+      cost = Some(100.00)
+    )
+
+    def journeyData(purchasedProductInstances: List[PurchasedProductInstance]): JourneyData = JourneyData(
+      prevDeclaration = Some(false),
+      euCountryCheck = Some("greatBritain"),
+      arrivingNICheck = Some(true),
+      bringingOverAllowance = Some(true),
+      isUKResident = Some(false),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = purchasedProductInstances
+    )
+
+    "return true" when {
+      Seq(
+        ("beer", 109),
+        ("spirits", 9),
+        ("wine", 89),
+        ("sparkling-wine", 89),
+        ("other", 19),
+        ("non-sparkling-cider", 19),
+        ("sparkling-cider", 19),
+        ("sparkling-cider-up", 19)
+      ).foreach { case (productToken, volume) =>
+        s"supplied volume is less than the limit for $productToken" in {
+          alcoholVolumeConstraint(journeyData(List(purchasedProductInstance)), volume, productToken) shouldBe true
         }
       }
 
-      "numberOfSticks is == limit of 200" should {
-
-        "return true" in {
-          util.cigarAndCigarilloConstraint(200, "cigars") shouldBe true
-        }
-      }
-
-      "numberOfSticks is over limit of 200" should {
-
-        "return false" in {
-          util.cigarAndCigarilloConstraint(201, "cigars") shouldBe false
+      Seq(
+        ("beer", 110),
+        ("spirits", 10),
+        ("wine", 90),
+        ("sparkling-wine", 90),
+        ("other", 20),
+        ("non-sparkling-cider", 20),
+        ("sparkling-cider", 20),
+        ("sparkling-cider-up", 20)
+      ).foreach { case (productToken, volume) =>
+        s"supplied volume is equal to the limit for $productToken" in {
+          alcoholVolumeConstraint(journeyData(List(purchasedProductInstance)), volume, productToken) shouldBe true
         }
       }
     }
 
-    "the productToken is cigarillos" when {
-
-      "numberOfSticks is under limit of 400" should {
-
-        "return true" in {
-          util.cigarAndCigarilloConstraint(199, "cigarillos") shouldBe true
-        }
-      }
-
-      "numberOfSticks == limit of 400" should {
-
-        "return true" in {
-          util.cigarAndCigarilloConstraint(400, "cigarillos") shouldBe true
-        }
-      }
-
-      "numberOfSticks over limit of 400" should {
-
-        "return false" in {
-          util.cigarAndCigarilloConstraint(401, "cigarillos") shouldBe false
-        }
-      }
-    }
-
-    "the productToken is something weird" when {
-
-      "numberOfSticks is under a limit" should {
-
-        "return false" in {
-          util.cigarAndCigarilloConstraint(199, "something_smelly") shouldBe false
-        }
+    Seq(
+      ("beer", 110.001),
+      ("spirits", 10.001),
+      ("wine", 90.001),
+      ("sparkling-wine", 60.001),
+      ("other", 20.001),
+      ("non-sparkling-cider", 20.001),
+      ("sparkling-cider", 20.001),
+      ("sparkling-cider-up", 20.001)
+    ).foreach { case (productToken, volume) =>
+      s"return false when supplied volume is greater than the limit for $productToken" in {
+        alcoholVolumeConstraint(journeyData(Nil), volume, productToken) shouldBe false
       }
     }
   }

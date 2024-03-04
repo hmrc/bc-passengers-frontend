@@ -96,7 +96,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             PurchasedProductInstance(
               path = ProductPath("alcohol/beer"),
               iid = "iid0",
-              weightOrVolume = Some(30.0),
+              weightOrVolume = Some(20.0),
               noOfSticks = Some(1),
               country =
                 Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List("USA", "US", "American"))),

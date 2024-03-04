@@ -2085,7 +2085,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
               iid = "iid0",
               weightOrVolume = Some(0.7),
               noOfSticks = None,
-              country = Some(Country("FR", "title.france", "FR", true, true, List())),
+              country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List())),
               originCountry = None,
               currency = Some("EUR"),
               cost = Some(12.99),
@@ -2102,7 +2102,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
               iid = "iid1",
               weightOrVolume = Some(0.1),
               noOfSticks = None,
-              country = Some(Country("FR", "title.france", "FR", true, true, List())),
+              country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List())),
               originCountry = None,
               currency = Some("EUR"),
               cost = Some(12.99),
@@ -2119,7 +2119,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
               iid = "iid2",
               weightOrVolume = Some(0.1),
               noOfSticks = None,
-              country = Some(Country("FR", "title.france", "FR", true, true, List())),
+              country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List())),
               originCountry = None,
               currency = Some("EUR"),
               cost = Some(12.99),
@@ -2135,7 +2135,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
           workingInstance = Some(
             PurchasedProductInstance(
               path = ProductPath("tobacco/chewing-tobacco"),
-              iid = "iid3",
+              iid = "iid2",
               weightOrVolume = Some(0.1),
               noOfSticks = None,
               country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List())),
@@ -2182,7 +2182,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ).thenReturn(cacheDataWithWorkingInstance)
 
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        FakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+        FakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid2/edit")
           .withSession(SessionKeys.sessionId -> "fakesessionid")
           .withFormUrlEncodedBody(
             "country"        -> "FR",
@@ -2196,7 +2196,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/iid0/edit/weight"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/tobacco/chewing-tobacco/upper-limits/iid2/edit/weight"
       )
     }
   }
