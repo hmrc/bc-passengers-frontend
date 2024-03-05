@@ -1,9 +1,9 @@
-import uk.gov.hmrc.DefaultBuildSettings._
+import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
 val appName = "bc-passengers-frontend"
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.13"
 ThisBuild / excludeDependencies ++= Seq(
   // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
   // Specifically affects play-json-extensions dependency

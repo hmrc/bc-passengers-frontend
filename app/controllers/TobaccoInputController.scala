@@ -59,15 +59,16 @@ class TobaccoInputController @Inject() (
   private def navigationHelper(
     jd: JourneyData,
     productPath: ProductPath,
-    itemId: String,
+    iid: String,
     originCountry: Option[String]
-  ) =
+  ): Result =
     (jd.arrivingNICheck, jd.euCountryCheck) match {
       case (Some(true), Some("greatBritain"))                                                    =>
-        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, itemId))
+        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, iid))
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
-        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, itemId))
-      case _                                                                                     => Redirect(routes.SelectProductController.nextStep)
+        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
+      case _                                                                                     =>
+        Redirect(routes.SelectProductController.nextStep)
     }
 
   def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction {
@@ -100,7 +101,7 @@ class TobaccoInputController @Inject() (
                   currencyService.getAllCurrencies,
                   context.getJourneyData.euCountryCheck
                 )
-              ).removingFromSession(s"user-amount-input-${product.token}")
+              )
             )
           }
         }
@@ -136,7 +137,7 @@ class TobaccoInputController @Inject() (
                 currencyService.getAllCurrencies,
                 context.getJourneyData.euCountryCheck
               )
-            ).removingFromSession(s"user-amount-input-${product.token}")
+            )
           )
         }
       }
@@ -173,15 +174,15 @@ class TobaccoInputController @Inject() (
                   currencyService.getAllCurrencies,
                   context.getJourneyData.euCountryCheck
                 )
-              ).removingFromSession(s"user-amount-input-${product.token}")
+              )
             )
           }
         }
       }
     }
 
-  def displayEditForm(itemId: String): Action[AnyContent] = dashboardAction { implicit context =>
-    requirePurchasedProductInstance(itemId) { ppi =>
+  def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         TobaccoDto
           .fromPurchasedProductInstance(ppi)
@@ -196,7 +197,7 @@ class TobaccoInputController @Inject() (
                       customBackLink = true,
                       product,
                       ppi.path,
-                      Some(itemId),
+                      Some(iid),
                       countriesService.getAllCountries,
                       countriesService.getAllCountriesAndEu,
                       currencyService.getAllCurrencies,
@@ -211,7 +212,7 @@ class TobaccoInputController @Inject() (
                       customBackLink = true,
                       product,
                       ppi.path,
-                      Some(itemId),
+                      Some(iid),
                       countriesService.getAllCountries,
                       countriesService.getAllCountriesAndEu,
                       currencyService.getAllCurrencies,
@@ -226,7 +227,7 @@ class TobaccoInputController @Inject() (
                       customBackLink = true,
                       product,
                       ppi.path,
-                      Some(itemId),
+                      Some(iid),
                       countriesService.getAllCountries,
                       countriesService.getAllCountriesAndEu,
                       currencyService.getAllCurrencies,
@@ -255,7 +256,7 @@ class TobaccoInputController @Inject() (
 
     requireLimitUsage(journeyData) { limits =>
       requireProduct(path) { product =>
-        def processNoOfSticksAddForm =
+        def processNoOfSticksAddForm: Future[Result] =
           tobaccoInputForm
             .cigaretteAndHeatedTobaccoForm(path)
             .bindFromRequest()
@@ -277,12 +278,9 @@ class TobaccoInputController @Inject() (
                     )
                   )
                 ),
-              dto => {
-                lazy val totalNoOfSticksForItemType =
-                  alcoholAndTobaccoCalculationService
-                    .noOfSticksTobaccoAddHelper(context.getJourneyData, dto.noOfSticks, product.token)
-                if (cigaretteAndHeatedTobaccoConstraint(totalNoOfSticksForItemType)) {
-                  val (journeyData: JourneyData, itemId: String) =
+              dto =>
+                if (calculatorLimitConstraint(limits, product.applicableLimits)) {
+                  val (journeyData: JourneyData, iid: String) =
                     newPurchaseService.insertPurchases(
                       path = path,
                       weightOrVolume = dto.weightOrVolume,
@@ -294,7 +292,7 @@ class TobaccoInputController @Inject() (
                     )
 
                   cache.store(journeyData) map { _ =>
-                    navigationHelper(context.getJourneyData, path, itemId, dto.originCountry)
+                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
                   }
                 } else {
                   Future(
@@ -305,10 +303,9 @@ class TobaccoInputController @Inject() (
                       .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
                   )
                 }
-              }
             )
 
-        def processWeightAddForm =
+        def processWeightAddForm: Future[Result] =
           tobaccoInputForm
             .looseTobaccoWeightForm(path)
             .bindFromRequest()
@@ -334,7 +331,7 @@ class TobaccoInputController @Inject() (
                 lazy val totalWeightForLooseTobacco =
                   alcoholAndTobaccoCalculationService.looseTobaccoAddHelper(context.getJourneyData, dto.weightOrVolume)
                 if (looseTobaccoWeightConstraint(totalWeightForLooseTobacco * 1000)) {
-                  val (journeyData: JourneyData, itemId: String) =
+                  val (journeyData: JourneyData, iid: String) =
                     newPurchaseService.insertPurchases(
                       path,
                       dto.weightOrVolume,
@@ -345,7 +342,7 @@ class TobaccoInputController @Inject() (
                       List(dto.cost)
                     )
                   cache.store(journeyData).map { _ =>
-                    navigationHelper(context.getJourneyData, path, itemId, dto.originCountry)
+                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
                   }
                 } else {
                   Future(
@@ -359,7 +356,7 @@ class TobaccoInputController @Inject() (
               }
             )
 
-        def processNoOfSticksWeightAddForm =
+        def processNoOfSticksWeightAddForm: Future[Result] =
           tobaccoInputForm
             .cigarAndCigarilloForm(path)
             .bindFromRequest()
@@ -381,12 +378,9 @@ class TobaccoInputController @Inject() (
                     )
                   )
                 ),
-              dto => {
-                lazy val totalNoOfSticksForItemType =
-                  alcoholAndTobaccoCalculationService
-                    .noOfSticksTobaccoAddHelper(context.getJourneyData, dto.noOfSticks, product.token)
-                if (cigarAndCigarilloConstraint(totalNoOfSticksForItemType, product.token)) {
-                  val (journeyData: JourneyData, itemId: String) =
+              dto =>
+                if (calculatorLimitConstraint(limits, product.applicableLimits)) {
+                  val (journeyData: JourneyData, iid: String) =
                     newPurchaseService.insertPurchases(
                       path,
                       dto.weightOrVolume,
@@ -397,7 +391,7 @@ class TobaccoInputController @Inject() (
                       List(dto.cost)
                     )
                   cache.store(journeyData) map { _ =>
-                    navigationHelper(context.getJourneyData, path, itemId, dto.originCountry)
+                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
                   }
                 } else {
                   Future(
@@ -410,7 +404,6 @@ class TobaccoInputController @Inject() (
                       )
                   )
                 }
-              }
             )
 
         product.templateId match {
@@ -425,14 +418,14 @@ class TobaccoInputController @Inject() (
     }
   }
 
-  def processEditForm(itemId: String): Action[AnyContent] = dashboardAction { implicit context =>
-    requirePurchasedProductInstance(itemId) { ppi =>
+  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { product =>
         requireLimitUsage {
           val dto = tobaccoInputForm.resilientForm.bindFromRequest().value.get
           newPurchaseService.updatePurchase(
             ppi.path,
-            itemId,
+            iid,
             dto.weightOrVolume,
             dto.noOfSticks,
             dto.country,
@@ -455,7 +448,7 @@ class TobaccoInputController @Inject() (
                         customBackLink = true,
                         product,
                         ppi.path,
-                        Some(itemId),
+                        Some(iid),
                         countriesService.getAllCountries,
                         countriesService.getAllCountriesAndEu,
                         currencyService.getAllCurrencies,
@@ -464,11 +457,11 @@ class TobaccoInputController @Inject() (
                     )
                   ),
                 dto =>
-                  if (calculatorLimitConstraintOptionInt(limits, product.applicableLimits)) {
+                  if (calculatorLimitConstraint(limits, product.applicableLimits)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
-                        itemId,
+                        iid,
                         dto.weightOrVolume,
                         dto.noOfSticks,
                         dto.country,
@@ -477,12 +470,12 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      navigationHelper(context.getJourneyData, ppi.path, itemId, dto.originCountry)
+                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path)
+                        routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path, iid)
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
@@ -504,7 +497,7 @@ class TobaccoInputController @Inject() (
                         customBackLink = true,
                         product,
                         ppi.path,
-                        Some(itemId),
+                        Some(iid),
                         countriesService.getAllCountries,
                         countriesService.getAllCountriesAndEu,
                         currencyService.getAllCurrencies,
@@ -515,12 +508,12 @@ class TobaccoInputController @Inject() (
                 success = dto => {
                   val updatedUserAnswers =
                     alcoholAndTobaccoCalculationService
-                      .looseTobaccoEditHelper(context.getJourneyData, dto.weightOrVolume)
+                      .looseTobaccoEditHelper(context.getJourneyData, dto.weightOrVolume, iid)
                   if (looseTobaccoWeightConstraint(updatedUserAnswers * 1000)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
-                        itemId,
+                        iid,
                         dto.weightOrVolume,
                         dto.noOfSticks,
                         dto.country,
@@ -529,12 +522,12 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      navigationHelper(context.getJourneyData, ppi.path, itemId, dto.originCountry)
+                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.onPageLoadEditTobaccoWeight(ppi.path)
+                        routes.LimitExceedController.onPageLoadEditTobaccoWeight(ppi.path, iid)
                       ).removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(
                           s"user-amount-input-${product.token}" ->
@@ -559,7 +552,7 @@ class TobaccoInputController @Inject() (
                         customBackLink = true,
                         product,
                         ppi.path,
-                        Some(itemId),
+                        Some(iid),
                         countriesService.getAllCountries,
                         countriesService.getAllCountriesAndEu,
                         currencyService.getAllCurrencies,
@@ -567,15 +560,12 @@ class TobaccoInputController @Inject() (
                       )
                     )
                   ),
-                dto => {
-                  lazy val totalNoOfSticksForItemType =
-                    alcoholAndTobaccoCalculationService
-                      .noOfSticksTobaccoEditHelper(context.getJourneyData, dto.noOfSticks, product.token)
-                  if (cigarAndCigarilloConstraint(totalNoOfSticksForItemType, product.token)) {
+                dto =>
+                  if (calculatorLimitConstraint(limits, product.applicableLimits)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
-                        itemId,
+                        iid,
                         dto.weightOrVolume,
                         dto.noOfSticks,
                         dto.country,
@@ -584,18 +574,17 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      navigationHelper(context.getJourneyData, ppi.path, itemId, dto.originCountry)
+                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path)
+                        routes.LimitExceedController.onPageLoadEditNoOfSticks(ppi.path, iid)
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(s"user-amount-input-${product.token}" -> dto.noOfSticks.getOrElse(0).toString)
                     )
                   }
-                }
               )
 
           product.templateId match {
@@ -610,5 +599,4 @@ class TobaccoInputController @Inject() (
       }
     }
   }
-
 }

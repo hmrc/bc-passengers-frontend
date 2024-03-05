@@ -71,8 +71,8 @@ class TobaccoInputForm @Inject() (
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map(x => x.toString))
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
         .transform[Option[BigDecimal]](
-          grams => grams.map(x => (x / 1000).setScale(2, BigDecimal.RoundingMode.HALF_UP)),
-          kilos => kilos.map(x => (x * 1000).setScale(2, BigDecimal.RoundingMode.HALF_UP))
+          grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble / 1000))),
+          kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))
         ),
       "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
       "originCountry"  -> optional(text),
@@ -130,8 +130,8 @@ class TobaccoInputForm @Inject() (
         .transform[Option[BigDecimal]](grams => grams.map(x => BigDecimal(x)), kilos => kilos.map(x => x.toString))
         .verifying("error.max.decimal.places.weight", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
         .transform[Option[BigDecimal]](
-          grams => grams.map(x => (x / 1000)),
-          kilos => kilos.map(x => (x * 1000).setScale(2, BigDecimal.RoundingMode.HALF_UP))
+          grams => grams.map(x => BigDecimal(decimalFormat5.format(x.toDouble / 1000))),
+          kilos => kilos.map(x => BigDecimal(decimalFormat5.format(x * 1000)))
         ),
       "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
       "originCountry"  -> optional(text),

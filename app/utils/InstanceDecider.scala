@@ -16,21 +16,13 @@
 
 package utils
 
-import scala.math.BigDecimal.RoundingMode
+import models.JourneyData
 
-trait FormatsAndConversions {
+trait InstanceDecider {
 
-  implicit class BigDecimalDecimalFormatter(value: BigDecimal) {
+  def originalAmountEnteredWeightOrVolume(journeyData: JourneyData, iid: String): BigDecimal =
+    journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.weightOrVolume).sum
 
-    def formatDecimalPlaces(scale: Int): BigDecimal =
-      value.setScale(scale, RoundingMode.HALF_UP)
-
-    def stripTrailingZerosToString: String =
-      value.bigDecimal.stripTrailingZeros().toPlainString
-  }
-
-  implicit class OptionBigDecimalHelper(value: Option[BigDecimal]) {
-    def getOrElseZero: BigDecimal =
-      value.getOrElse(BigDecimal(0))
-  }
+  def originalAmountEnteredNoOfSticks(journeyData: JourneyData, iid: String): Int =
+    journeyData.purchasedProductInstances.filter(_.iid == iid).flatMap(_.noOfSticks).sum
 }

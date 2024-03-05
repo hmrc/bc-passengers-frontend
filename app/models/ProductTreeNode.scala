@@ -16,7 +16,7 @@
 
 package models
 
-import scala.math.BigDecimal.RoundingMode
+import util.decimalFormat10
 
 sealed trait ProductTreeNode {
   def name: String
@@ -40,7 +40,7 @@ case class ProductTreeLeaf(
     long: Boolean
   ): Option[(String, List[String])] =
     templateId match {
-      case "cigars" if long =>
+      case "cigars" if long        =>
         for {
           noOfSticks     <- purchasedProductInstance.noOfSticks
           weightOrVolume <- purchasedProductInstance.weightOrVolume
@@ -51,16 +51,12 @@ case class ProductTreeLeaf(
               List(
                 noOfSticks.toString,
                 name + ".single",
-                (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString
+                decimalFormat10.format(weightOrVolume * 1000)
               )
             )
           } else {
-            (
-              "label.X_X_Xg",
-              List(noOfSticks.toString, name, (weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString)
-            )
+            ("label.X_X_Xg", List(noOfSticks.toString, name, decimalFormat10.format(weightOrVolume * 1000)))
           }
-
       case "cigarettes" | "cigars" =>
         for (noOfSticks <- purchasedProductInstance.noOfSticks)
           yield
@@ -71,9 +67,8 @@ case class ProductTreeLeaf(
             }
       case "tobacco"               =>
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
-          yield ("label.Xg_of_X", List((weightOrVolume * 1000).setScale(2, RoundingMode.HALF_UP).toString, name))
-
-      case "alcohol"     =>
+          yield ("label.Xg_of_X", List(decimalFormat10.format(weightOrVolume * 1000), name))
+      case "alcohol"               =>
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
           yield
             if (weightOrVolume == BigDecimal(1)) {
@@ -81,7 +76,7 @@ case class ProductTreeLeaf(
             } else {
               ("label.X_litres_X", List(weightOrVolume.toString, name))
             }
-      case "other-goods" =>
+      case "other-goods"           =>
         Some((name, Nil))
     }
 

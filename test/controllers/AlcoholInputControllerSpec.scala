@@ -96,7 +96,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             PurchasedProductInstance(
               path = ProductPath("alcohol/beer"),
               iid = "iid0",
-              weightOrVolume = Some(30.0),
+              weightOrVolume = Some(20.0),
               noOfSticks = Some(1),
               country =
                 Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, List("USA", "US", "American"))),
@@ -1026,7 +1026,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/edit/volume"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/iid0/edit/volume"
       )
     }
 

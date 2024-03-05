@@ -16,10 +16,56 @@
 
 package services
 
-import models.JourneyData
-import utils.FormatsAndConversions
+import models.{JourneyData, PurchasedProductInstance}
+import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 
-class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
+class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDetector with FormatsAndConversions {
+
+  private def sumPreviouslyDeclaredAlcoholVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
+    contextJourneyData.declarationResponse
+      .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
+      .filter { product =>
+        checkAlcoholProductExists(
+          productToken = productToken,
+          wineOrSparklingExists = product.path.toString.contains("wine"),
+          ciderOrOtherAlcoholExists =
+            product.path.toString.contains("cider") || product.path.toString.contains("other"),
+          beerOrSpiritExists = product.path.toString.contains(productToken)
+        )
+      }
+      .map(_.weightOrVolume.getOrElseZero)
+      .sum
+
+  private def sumAlcoholProductTotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
+    contextJourneyData.purchasedProductInstances
+      .filter { product =>
+        checkAlcoholProductExists(
+          productToken = productToken,
+          wineOrSparklingExists = product.path.toString.contains("wine"),
+          ciderOrOtherAlcoholExists =
+            product.path.toString.contains("cider") || product.path.toString.contains("other"),
+          beerOrSpiritExists = product.path.toString.contains(productToken)
+        )
+      }
+      .map(_.weightOrVolume.getOrElseZero)
+      .sum
+
+  private def sumPreviouslyDeclaredLooseTobaccoWeight(contextJourneyData: JourneyData): BigDecimal =
+    contextJourneyData.declarationResponse
+      .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
+      .filter(product =>
+        product.path.toString == "tobacco/chewing-tobacco" || product.path.toString == "tobacco/rolling-tobacco"
+      )
+      .map(_.weightOrVolume.getOrElseZero)
+      .sum
+
+  private def sumLooseTobaccoTotalWeight(contextJourneyData: JourneyData): BigDecimal =
+    contextJourneyData.purchasedProductInstances
+      .filter(product =>
+        product.path.toString == "tobacco/chewing-tobacco" || product.path.toString == "tobacco/rolling-tobacco"
+      )
+      .map(_.weightOrVolume.getOrElseZero)
+      .sum
 
   def alcoholAddHelper(
     contextJourneyData: JourneyData,
@@ -27,15 +73,14 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
     productToken: String
   ): BigDecimal = {
 
+    val previouslyDeclaredAlcoholVolume: BigDecimal =
+      sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken)
+
     val alcoholProductTotalVolume: BigDecimal =
-      contextJourneyData.purchasedProductInstances
-        .filter(_.path.toString.contains(productToken))
-        .map(_.weightOrVolume.getOrElseZero)
-        .sum
-        .bigDecimal
+      sumAlcoholProductTotalVolume(contextJourneyData, productToken)
 
     val totalAlcoholVolume: BigDecimal =
-      (weightOrVolume + alcoholProductTotalVolume).formatDecimalPlaces(5)
+      (weightOrVolume + previouslyDeclaredAlcoholVolume + alcoholProductTotalVolume).formatDecimalPlaces(5)
 
     totalAlcoholVolume
   }
@@ -43,72 +88,62 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
   def alcoholEditHelper(
     contextJourneyData: JourneyData,
     weightOrVolume: BigDecimal,
-    productToken: String
+    productToken: String,
+    iid: String
   ): BigDecimal = {
 
-    val originalVolume: BigDecimal =
-      contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
+    val previouslyDeclaredAlcoholVolume: BigDecimal =
+      sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken)
+
+    val originalVolume: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData, iid)
 
     val alcoholProductTotalVolume: BigDecimal =
-      contextJourneyData.purchasedProductInstances
-        .filter(_.path.toString.contains(productToken))
-        .map(_.weightOrVolume.getOrElseZero)
-        .sum
-        .bigDecimal
+      sumAlcoholProductTotalVolume(contextJourneyData, productToken)
 
     val totalAlcoholVolume: BigDecimal =
-      (weightOrVolume + alcoholProductTotalVolume - originalVolume).formatDecimalPlaces(5)
+      (weightOrVolume + previouslyDeclaredAlcoholVolume + alcoholProductTotalVolume - originalVolume)
+        .formatDecimalPlaces(5)
 
     totalAlcoholVolume
   }
 
   def looseTobaccoAddHelper(contextJourneyData: JourneyData, weightOrVolume: Option[BigDecimal]): BigDecimal = {
-    val chewingTobaccoTotalWeight: BigDecimal =
-      contextJourneyData.purchasedProductInstances
-        .filter(_.path.toString == "tobacco/chewing-tobacco")
-        .map(_.weightOrVolume.getOrElseZero)
-        .sum
-        .bigDecimal
 
-    val rollingTobaccoTotalWeight: BigDecimal      =
-      contextJourneyData.purchasedProductInstances
-        .filter(_.path.toString == "tobacco/rolling-tobacco")
-        .map(_.weightOrVolume.getOrElseZero)
-        .sum
-        .bigDecimal
+    val previouslyDeclaredLooseTobaccoWeight: BigDecimal =
+      sumPreviouslyDeclaredLooseTobaccoWeight(contextJourneyData)
+
+    val looseTobaccoTotalWeight: BigDecimal =
+      sumLooseTobaccoTotalWeight(contextJourneyData)
+
     val looseTobaccoTotalWeightInGrams: BigDecimal =
       (
         weightOrVolume.getOrElseZero +
-          chewingTobaccoTotalWeight +
-          rollingTobaccoTotalWeight
+          previouslyDeclaredLooseTobaccoWeight +
+          looseTobaccoTotalWeight
       ).formatDecimalPlaces(5)
 
     looseTobaccoTotalWeightInGrams
   }
 
-  def looseTobaccoEditHelper(contextJourneyData: JourneyData, weightOrVolume: Option[BigDecimal]): BigDecimal = {
+  def looseTobaccoEditHelper(
+    contextJourneyData: JourneyData,
+    weightOrVolume: Option[BigDecimal],
+    iid: String
+  ): BigDecimal = {
 
-    val originalWeight: BigDecimal =
-      contextJourneyData.workingInstance.flatMap(_.weightOrVolume).getOrElseZero
+    val originalWeight: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData, iid)
 
-    val chewingTobaccoTotalWeight: BigDecimal =
-      contextJourneyData.purchasedProductInstances
-        .filter(_.path.toString == "tobacco/chewing-tobacco")
-        .map(_.weightOrVolume.getOrElseZero)
-        .sum
-        .bigDecimal
+    val previouslyDeclaredLooseTobaccoWeight: BigDecimal =
+      sumPreviouslyDeclaredLooseTobaccoWeight(contextJourneyData)
 
-    val rollingTobaccoTotalWeight: BigDecimal      =
-      contextJourneyData.purchasedProductInstances
-        .filter(_.path.toString == "tobacco/rolling-tobacco")
-        .map(_.weightOrVolume.getOrElseZero)
-        .sum
-        .bigDecimal
+    val looseTobaccoTotalWeight: BigDecimal =
+      sumLooseTobaccoTotalWeight(contextJourneyData)
+
     val looseTobaccoTotalWeightInGrams: BigDecimal =
       (
         weightOrVolume.getOrElseZero +
-          chewingTobaccoTotalWeight +
-          rollingTobaccoTotalWeight -
+          previouslyDeclaredLooseTobaccoWeight +
+          looseTobaccoTotalWeight -
           originalWeight
       ).formatDecimalPlaces(5)
 
@@ -120,13 +155,22 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
     noOfSticks: Option[Int],
     productToken: String
   ): Int = {
-    val totalNoOfSticks: Int          =
+
+    val previousDeclarationTotalNoOfSticks: Int =
+      contextJourneyData.declarationResponse
+        .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
+        .filter(_.path.toString.contains(productToken))
+        .map(_.noOfSticks.getOrElse(0))
+        .sum
+
+    val totalNoOfSticks: Int =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString.contains(productToken))
         .map(_.noOfSticks.getOrElse(0))
         .sum
+
     val totalNoOfSticksAfterCalc: Int =
-      noOfSticks.getOrElse(0) + totalNoOfSticks
+      noOfSticks.getOrElse(0) + previousDeclarationTotalNoOfSticks + totalNoOfSticks
 
     totalNoOfSticksAfterCalc
   }
@@ -134,17 +178,27 @@ class AlcoholAndTobaccoCalculationService extends FormatsAndConversions {
   def noOfSticksTobaccoEditHelper(
     contextJourneyData: JourneyData,
     noOfSticks: Option[Int],
-    productToken: String
+    productToken: String,
+    iid: String
   ): Int = {
-    val originalNoOfSticks: Int       =
-      contextJourneyData.workingInstance.flatMap(_.noOfSticks).getOrElse(0)
-    val totalNoOfSticks: Int          =
+
+    val previousDeclarationTotalNoOfSticks: Int =
+      contextJourneyData.declarationResponse
+        .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
+        .filter(_.path.toString.contains(productToken))
+        .map(_.noOfSticks.getOrElse(0))
+        .sum
+
+    val originalNoOfSticks: Int = originalAmountEnteredNoOfSticks(contextJourneyData, iid)
+
+    val totalNoOfSticks: Int =
       contextJourneyData.purchasedProductInstances
         .filter(_.path.toString.contains(productToken))
         .map(_.noOfSticks.getOrElse(0))
         .sum
+
     val totalNoOfSticksAfterCalc: Int =
-      noOfSticks.getOrElse(0) + totalNoOfSticks - originalNoOfSticks
+      noOfSticks.getOrElse(0) + previousDeclarationTotalNoOfSticks + totalNoOfSticks - originalNoOfSticks
 
     totalNoOfSticksAfterCalc
   }

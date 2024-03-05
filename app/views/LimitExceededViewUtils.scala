@@ -22,7 +22,6 @@ import play.twirl.api.{Html, HtmlFormat}
 import utils.FormatsAndConversions
 
 import javax.inject.Inject
-import scala.math.BigDecimal.RoundingMode
 
 @Singleton
 class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent: views.html.components.panelIndent)
@@ -43,7 +42,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     }
 
   private[views] def determineSingularOrPlural[A](amount: String, singular: A, plural: A) =
-    if (amount.toBigDecimal.setScale(0, RoundingMode.HALF_UP) == 1) {
+    if (BigDecimal(amount).stripTrailingZerosToString == "1") {
       singular
     } else {
       plural
@@ -52,7 +51,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
   def addViewContent(
     productName: String,
     productToken: String,
-    totalAmount: String
+    totalAmount: String,
+    showGroupMessage: Boolean
   )(implicit messages: Messages): Html = {
 
     val p1 =
@@ -66,7 +66,9 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                   "limitExceeded.p1.add.alcohol",
                   totalAmount,
                   messages("limitExceeded.litre"),
-                  messages(s"limitExceeded.$productToken")
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
                 )
               ),
               id = Some("entered-amount")
@@ -77,7 +79,9 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                   "limitExceeded.p1.add.alcohol",
                   totalAmount,
                   messages("limitExceeded.litres"),
-                  messages(s"limitExceeded.$productToken")
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
                 )
               ),
               id = Some("entered-amount")
@@ -108,7 +112,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 "limitExceeded.p1.add.loose.tobacco",
                 totalAmount,
                 messages(s"limitExceeded.grams.of"),
-                messages(s"limitExceeded.$productToken")
+                messages(if (showGroupMessage) "limitExceeded.loose_tobacco" else s"limitExceeded.$productToken")
               )
             ),
             id = Some("entered-amount")
@@ -118,7 +122,18 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
 
     val p2 = Option(
       p(
-        Html(messages("limitExceeded.p2", messages(s"limitExceeded.max.limit.$productToken"))),
+        Html(
+          messages(
+            "limitExceeded.you_cannot_use_this_service",
+            messages(
+              if (showGroupMessage) {
+                s"limitExceeded.max.limit.group.$productToken"
+              } else {
+                s"limitExceeded.max.limit.$productToken"
+              }
+            )
+          )
+        ),
         id = Some("limit-exceeded-cannot-use-service")
       )
     )
@@ -199,7 +214,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     productToken: String,
     totalAmount: String,
     originalAmountFormatted: String,
-    userInput: String
+    userInput: String,
+    showGroupMessage: Boolean
   )(implicit messages: Messages): Html = {
 
     val p1Content =
@@ -283,7 +299,9 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                   "limitExceeded.p2.edit.alcohol",
                   totalAmount,
                   messages(s"limitExceeded.litre"),
-                  messages(s"limitExceeded.$productToken")
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
                 )
               ),
               id = Some("new-total-amount")
@@ -294,7 +312,9 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                   "limitExceeded.p2.edit.alcohol",
                   totalAmount,
                   messages(s"limitExceeded.litres"),
-                  messages(s"limitExceeded.$productToken")
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
                 )
               ),
               id = Some("new-total-amount")
@@ -324,7 +344,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                 "limitExceeded.p2.edit.loose.tobacco",
                 totalAmount,
                 messages(s"limitExceeded.grams.of"),
-                messages(s"limitExceeded.$productToken")
+                messages(if (showGroupMessage) "limitExceeded.loose_tobacco" else s"limitExceeded.$productToken")
               )
             ),
             id = Some("new-total-amount")
@@ -332,32 +352,23 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
         )
       )
 
-    val p3Content =
-      selectProduct(productName)(
-        alcohol = Option(
-          p(
-            Html(messages("limitExceeded.p3.edit.alcohol", messages(s"limitExceeded.max.limit.$productToken"))),
-            id = Some("limit-exceeded-cannot-use-service")
+    val p3Content = Option(
+      p(
+        Html(
+          messages(
+            "limitExceeded.you_cannot_use_this_service",
+            messages(
+              if (showGroupMessage) {
+                s"limitExceeded.max.limit.group.$productToken"
+              } else {
+                s"limitExceeded.max.limit.$productToken"
+              }
+            )
           )
         ),
-        stickTobacco = Option(
-          p(
-            Html(messages("limitExceeded.p3.edit.tobacco", messages(s"limitExceeded.max.limit.$productToken"))),
-            id = Some("limit-exceeded-cannot-use-service")
-          )
-        ),
-        looseTobacco = Option(
-          p(
-            Html(
-              messages(
-                "limitExceeded.p3.edit.loose.tobacco",
-                messages(s"limitExceeded.max.limit.$productToken")
-              )
-            ),
-            id = Some("limit-exceeded-cannot-use-service")
-          )
-        )
+        id = Some("limit-exceeded-cannot-use-service")
       )
+    )
 
     val p4Content =
       selectProduct(productName)(

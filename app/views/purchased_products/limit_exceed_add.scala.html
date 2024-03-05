@@ -29,10 +29,10 @@
     formHelper: FormWithCSRF,
     limitExceededViewUtils:LimitExceededViewUtils
 )
-@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @userInputSectionContent = {
-    @limitExceededViewUtils.addViewContent(productName, token, totalAccAmount)
+    @limitExceededViewUtils.addViewContent(productName, token, totalAccAmount, showGroupMessage)
 }
 
 @panelContent = {
