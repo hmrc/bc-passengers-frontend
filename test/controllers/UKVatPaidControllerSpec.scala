@@ -269,34 +269,48 @@ class UKVatPaidControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to the tell us page in the add other goods journey when successfully submitted and uk resident" in {
+    Seq(
+      "other-goods/adult/adult-clothing",
+      "other-goods/adult/adult-footwear",
+      "other-goods/carpets-fabric/carpets",
+      "other-goods/carpets-fabric/fabrics",
+      "other-goods/childrens/childrens-clothing",
+      "other-goods/childrens/childrens-footwear",
+      "other-goods/electronic-devices/televisions",
+      "other-goods/electronic-devices/other"
+    ).foreach { path =>
+      "redirect to the tell us page via the path /check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step" when {
+        s"data in path $path is successfully submitted and a uk resident i.e. GBNI journey" in {
+          val ppi: PurchasedProductInstance = PurchasedProductInstance(
+            iid = "brTuNh",
+            path = ProductPath(path),
+            isVatPaid = Some(false)
+          )
 
-      val ppi               = PurchasedProductInstance(
-        iid = "brTuNh",
-        path = ProductPath("other-goods/adult/adult-clothing"),
-        isVatPaid = Some(false)
-      )
-      val jd                = JourneyData(
-        euCountryCheck = Some("greatBritain"),
-        arrivingNICheck = Some(true),
-        isUKResident = Some(true),
-        purchasedProductInstances = List(ppi)
-      )
-      val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
-      val response          = route(
-        app,
-        enhancedFakeRequest(
-          "POST",
-          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/brTuNh/gb-ni-vat-check"
-        )
-          .withFormUrlEncodedBody("isUKVatPaid" -> "true")
-      ).get
+          val jd: JourneyData = JourneyData(
+            euCountryCheck = Some("greatBritain"),
+            arrivingNICheck = Some(true),
+            isUKResident = Some(true),
+            purchasedProductInstances = List(ppi)
+          )
 
-      status(response)           shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+          val cachedJourneyData: Future[Some[JourneyData]] = Future.successful(Some(jd))
+          when(mockCache.fetch(any())) thenReturn cachedJourneyData
+          when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
 
+          val response: Future[Result] = route(
+            app,
+            enhancedFakeRequest(
+              "POST",
+              s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$path/brTuNh/gb-ni-vat-check"
+            )
+              .withFormUrlEncodedBody("isUKVatPaid" -> "true")
+          ).get
+
+          status(response)           shouldBe SEE_OTHER
+          redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+        }
+      }
     }
 
     "return a bad request when user selects an invalid value" in {
