@@ -173,7 +173,7 @@ class SelectProductControllerSpec extends BaseSpec {
       }
     }
 
-    "return the select products other goods page given path /other-goods (branch" in new LocalSetup {
+    "return the select products other goods page given path /other-goods" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
@@ -185,19 +185,29 @@ class SelectProductControllerSpec extends BaseSpec {
       Option(doc.getElementById("tokens-antiques")) should not be None
     }
 
-    "return the select products page given path /other-goods/carpets-cotton-fabric" in new LocalSetup {
+    Seq(
+      ("other-goods/carpets-fabric", List("tokens-carpets", "tokens-fabrics"), "items of carpet or fabric"),
+      ("other-goods/adult", List("tokens-adult-clothing", "tokens-adult-footwear"), "adult clothing or footwear"),
+      (
+        "other-goods/childrens",
+        List("tokens-childrens-clothing", "tokens-childrens-footwear"),
+        "children’s clothing or footwear"
+      ),
+      ("other-goods/electronic-devices", List("tokens-televisions", "tokens-other"), "electronic devices")
+    ).foreach { case (path, idList, specificContent) =>
+      s"return the select products page given path $path with two radio options" in new LocalSetup {
+        override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
 
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+        override val result: Future[Result] = route(
+          app,
+          enhancedFakeRequest("GET", s"/check-tax-on-goods-you-bring-into-the-uk/select-goods/$path")
+        ).get
 
-      override val result: Future[Result] = route(
-        app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/carpets-fabric")
-      ).get
-
-      status(result) shouldBe OK
-      h1             shouldBe "What items of carpet or fabric do you want to add?"
-      forAll(List("tokens-carpets", "tokens-fabrics")) { cb =>
-        Option(doc.getElementById(cb)) should not be None
+        status(result) shouldBe OK
+        h1             shouldBe s"What $specificContent do you want to add?"
+        forAll(idList) { cb =>
+          Option(doc.getElementById(cb)) should not be None
+        }
       }
     }
 
@@ -301,7 +311,6 @@ class SelectProductControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us"
       )
-
     }
 
     "addSelectedProducts to keystore and then redirect to searchGoods when the value is a ProductTreeLeaf" in new LocalSetup {
@@ -318,7 +327,63 @@ class SelectProductControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us"
       )
+    }
 
+    Seq(
+      ("other-goods/carpets-fabric", "carpets"),
+      ("other-goods/carpets-fabric", "fabrics"),
+      ("other-goods/adult", "adult-clothing"),
+      ("other-goods/adult", "adult-footwear"),
+      ("other-goods/childrens", "childrens-clothing"),
+      ("other-goods/childrens", "childrens-footwear"),
+      ("other-goods/electronic-devices", "televisions"),
+      ("other-goods/electronic-devices", "other")
+    ).foreach { case (path, token) =>
+      s"redirect to other goods tell us page with path /enter-goods/other-goods/tell-us for the submitted token $token" in new LocalSetup {
+        override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+        val result: Future[Result] = route(
+          app,
+          enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/select-goods/$path")
+            .withFormUrlEncodedBody("tokens" -> token)
+        ).get
+
+        val redirectUrl: String = redirectLocation(result).get
+
+        status(result) shouldBe SEE_OTHER
+        redirectUrl    shouldBe "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us"
+
+        val redirectResult: Future[Result] = route(app, enhancedFakeRequest("GET", redirectUrl)).get
+
+        contentAsString(redirectResult) should include("Tell us about the Item of other goods")
+      }
+    }
+
+    Seq(
+      ("other-goods/carpets-fabric", "tokens-carpets", "Select carpets or fabrics"),
+      ("other-goods/adult", "tokens-adult-clothing", "Select adult clothing or adult footwear"),
+      ("other-goods/childrens", "tokens-childrens-clothing", "Select children’s clothing or children’s footwear"),
+      ("other-goods/electronic-devices", "tokens-televisions", "Select televisions or all other electronic devices")
+    ).foreach { case (path, firstToken, errorMessage) =>
+      s"return 400 when no radio option is submitted for the path $path displaying error message" which {
+        "links to the first radio option" in new LocalSetup {
+          override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+          val result: Future[Result] = route(
+            app,
+            enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/select-goods/$path")
+          ).get
+
+          status(result) shouldBe BAD_REQUEST
+
+          doc.getElementsByClass("govuk-error-summary__title").text() shouldBe "There is a problem"
+
+          doc
+            .getElementsByClass("govuk-error-summary__body")
+            .select(s"a[href=#$firstToken]")
+            .html() shouldBe errorMessage
+        }
+      }
     }
   }
 

@@ -97,6 +97,7 @@ label.loose_tobacco=Tybaco rhydd
 label.tobacco_for_heating = Tybaco gwresogi
 label.110_litres=110 litr
 label.90_litres=90 litr
+label.including_sparkling_wine = (gan gynnwys uchafswm o 60 litr o win pefriog)
 label.60_litres=60 litr
 label.10_litres=10 litr
 label.20_litres=20 litr

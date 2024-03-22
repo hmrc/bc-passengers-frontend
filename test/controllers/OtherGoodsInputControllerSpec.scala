@@ -629,23 +629,63 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       verify(injected[Cache], times(1)).store(any())(any())
     }
 
-    "add a PPI to the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
+    Seq(
+      ("other-goods/adult/adult-clothing", "label.other-goods.adult.adult-clothing"),
+      ("other-goods/adult/adult-footwear", "label.other-goods.adult.adult-footwear"),
+      ("other-goods/carpets-fabric/carpets", "label.other-goods.carpets-fabric.carpets"),
+      ("other-goods/carpets-fabric/fabrics", "label.other-goods.carpets-fabric.fabrics"),
+      ("other-goods/childrens/childrens-clothing", "label.other-goods.childrens.childrens-clothing"),
+      ("other-goods/childrens/childrens-footwear", "label.other-goods.childrens.childrens-footwear"),
+      ("other-goods/electronic-devices/televisions", "label.other-goods.electronic-devices.televisions"),
+      ("other-goods/electronic-devices/other", "label.other-goods.electronic-devices.other")
+    ).foreach { case (path, searchTerm) =>
+      s"add PPI to the JourneyData with path $path and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
+        val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+            .withFormUrlEncodedBody(
+              "searchTerm" -> searchTerm,
+              "country"    -> "FR",
+              "currency"   -> "EUR",
+              "cost"       -> "12.12"
+            )
 
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-          .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.adult.adult-clothing",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
-          )
+        val result: Future[Result] = gbNIRoute(app, req).get
+        status(result)           shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(
+          s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$path/pid/gb-ni-vat-check"
+        )
+      }
+    }
 
-      val result: Future[Result] = gbNIRoute(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/pid/gb-ni-vat-check"
-      )
+    Seq(
+      ("other-goods/adult/adult-clothing", "label.other-goods.adult.adult-clothing"),
+      ("other-goods/adult/adult-footwear", "label.other-goods.adult.adult-footwear"),
+      ("other-goods/carpets-fabric/carpets", "label.other-goods.carpets-fabric.carpets"),
+      ("other-goods/carpets-fabric/fabrics", "label.other-goods.carpets-fabric.fabrics"),
+      ("other-goods/childrens/childrens-clothing", "label.other-goods.childrens.childrens-clothing"),
+      ("other-goods/childrens/childrens-footwear", "label.other-goods.childrens.childrens-footwear"),
+      ("other-goods/electronic-devices/televisions", "label.other-goods.electronic-devices.televisions"),
+      ("other-goods/electronic-devices/other", "label.other-goods.electronic-devices.other")
+    ).foreach { case (path, searchTerm) =>
+      s"add PPI to the JourneyData with path $path and redirect to tell us page via the path " +
+        "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step" when {
+          "Non EU journey" in new LocalSetup {
+            val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+              enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+                .withFormUrlEncodedBody(
+                  "searchTerm" -> searchTerm,
+                  "country"    -> "FR",
+                  "currency"   -> "EUR",
+                  "cost"       -> "12.12"
+                )
+
+            val result: Future[Result] = route(app, req).get
+            status(result)           shouldBe SEE_OTHER
+            redirectLocation(result) shouldBe Some(
+              "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step"
+            )
+          }
+        }
     }
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
