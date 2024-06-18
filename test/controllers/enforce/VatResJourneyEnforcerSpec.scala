@@ -20,8 +20,7 @@ import config.AppConfig
 import controllers.LocalContext
 import controllers.enforce.vatres._
 import models.JourneyData
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import org.scalatest.exceptions.TestFailedException
 import play.api.mvc.Result
 import play.api.mvc.Results._
@@ -35,7 +34,7 @@ import scala.concurrent.Future
 class VatResJourneyEnforcerSpec extends BaseSpec {
 
   lazy val enforcer: JourneyEnforcer = injected[JourneyEnforcer]
-  lazy val mockAppConfig: AppConfig  = MockitoSugar.mock[AppConfig]
+  lazy val mockAppConfig: AppConfig  = mock(classOf[AppConfig])
 
   trait GridSetup {
 

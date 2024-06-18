@@ -19,8 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import org.jsoup.Jsoup
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,9 +31,9 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 class PublicControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 

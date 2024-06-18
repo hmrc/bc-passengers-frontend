@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings.itSettings
 val appName = "bc-passengers-frontend"
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / excludeDependencies ++= Seq(
   // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
   // Specifically affects play-json-extensions dependency
@@ -44,7 +44,6 @@ Concat.groups := Seq(
   "javascripts/application.js" ->
     group(
       Seq(
-        "lib/govuk-frontend/govuk/all.js",
         "javascripts/jquery.min.js",
         "javascripts/autocomplete.js"
       )

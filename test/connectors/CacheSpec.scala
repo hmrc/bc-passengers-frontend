@@ -18,7 +18,7 @@ package connectors
 
 import models.JourneyData
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.libs.json.{JsObject, Json, Writes}
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,9 +26,10 @@ import util.BaseSpec
 
 import scala.concurrent.Future
 
-class CacheSpec extends BaseSpec with MockitoSugar {
+class CacheSpec extends BaseSpec {
 
-  private val mockBCPassengersSessionRepository: BCPassengersSessionRepository = mock[BCPassengersSessionRepository]
+  private val mockBCPassengersSessionRepository: BCPassengersSessionRepository =
+    mock(classOf[BCPassengersSessionRepository])
 
   private val cache: Cache = new Cache(mockBCPassengersSessionRepository, ec)
 

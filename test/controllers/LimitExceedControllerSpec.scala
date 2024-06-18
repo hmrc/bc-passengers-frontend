@@ -21,8 +21,7 @@ import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, when}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -35,7 +34,7 @@ import scala.concurrent.Future
 
 class LimitExceedControllerSpec extends BaseSpec {
 
-  private val mockCache: Cache = MockitoSugar.mock[Cache]
+  private val mockCache: Cache = mock(classOf[Cache])
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mockCache))

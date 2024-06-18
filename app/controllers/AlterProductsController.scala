@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AlterProductsController @Inject() (
   val cache: Cache,
   val calculatorService: CalculatorService,
-  val purhasedProductService: PurchasedProductService,
+  val purchasedProductService: PurchasedProductService,
   val currencyService: CurrencyService,
   val countriesService: CountriesService,
   val productTreeService: ProductTreeService,
@@ -58,7 +58,7 @@ class AlterProductsController @Inject() (
         formWithErrors => Future.successful(BadRequest(remove(formWithErrors, path, iid))),
         confirmRemoveDto =>
           if (confirmRemoveDto.confirmRemove) {
-            purhasedProductService.removePurchasedProductInstance(context.getJourneyData, iid) map { _ =>
+            purchasedProductService.removePurchasedProductInstance(context.getJourneyData, iid) map { _ =>
               Redirect(routes.DashboardController.showDashboard)
             }
           } else {

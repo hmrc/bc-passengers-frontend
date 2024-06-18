@@ -19,10 +19,10 @@ package controllers.enforce
 import controllers.LocalContext
 import models.JourneyData
 
-class JourneyStep(preceeding: List[JourneyStep], predicate: List[JourneyStep] => Option[JourneyData] => Boolean) {
+class JourneyStep(preceding: List[JourneyStep], predicate: List[JourneyStep] => Option[JourneyData] => Boolean) {
 
   def meetsAllPrerequisites(implicit context: LocalContext): Boolean = {
-    val prereqsMet: List[JourneyStep] = preceeding.filter(_.meetsAllPrerequisites)
-    (preceeding.isEmpty || prereqsMet.nonEmpty) && predicate(prereqsMet)(context.journeyData)
+    val prereqsMet: List[JourneyStep] = preceding.filter(_.meetsAllPrerequisites)
+    (preceding.isEmpty || prereqsMet.nonEmpty) && predicate(prereqsMet)(context.journeyData)
   }
 }

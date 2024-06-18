@@ -30,6 +30,7 @@
     languageSwitch: HmrcLanguageSelect,
     header: HmrcHeader,
     hmrcHead: HmrcHead,
+    hmrcScripts: HmrcScripts,
     footer: HmrcStandardFooter,
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
@@ -46,7 +47,6 @@
 
 @head = {
     @inlineLinkElem
-    <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css"><![endif]-->
     <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"><!--<![endif]-->
 
     @if(timeout) {
@@ -63,15 +63,8 @@
     }
 }
 
-@scripts = {
-    <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
-    <script @CSPNonce.attr >window.GOVUKFrontend.initAll();</script>
-    <script @CSPNonce.attr >window.HMRCFrontend.initAll();</script>
-
+@scriptsBlock = {
     <script @CSPNonce.attr src='@routes.Assets.versioned("javascripts/application.js")'></script>
-
     @inlineScript
 }
 
@@ -121,6 +114,5 @@
     ))),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(footer()),
-    bodyEndBlock = None,
-    scriptsBlock = Some(scripts)
+    bodyEndBlock = Some(hmrcScripts(scriptsBlock = Some(scriptsBlock)))
 )(content)

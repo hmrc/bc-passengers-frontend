@@ -17,16 +17,17 @@
 package filters
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import util.BaseSpec
+
 import scala.concurrent.Future
 
-class DisableBrowserCacheFilterSpec extends BaseSpec with MockitoSugar {
+class DisableBrowserCacheFilterSpec extends BaseSpec {
 
-  implicit val mockMaterializer: Materializer = mock[Materializer]
+  implicit val mockMaterializer: Materializer = mock(classOf[Materializer])
 
   private val disableBrowserCacheFilter: DisableBrowserCacheFilter = new DisableBrowserCacheFilter()
 

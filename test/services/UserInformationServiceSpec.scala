@@ -20,7 +20,6 @@ import connectors.Cache
 import models.{JourneyData, UserInformation}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,7 +31,7 @@ import scala.concurrent.Future
 class UserInformationServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .build()
 
   override def beforeEach(): Unit =

@@ -20,7 +20,6 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -33,8 +32,8 @@ import scala.concurrent.Future
 class SelectProductServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .build()
 
   override def beforeEach(): Unit =

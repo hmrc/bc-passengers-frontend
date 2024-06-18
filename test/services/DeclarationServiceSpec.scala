@@ -20,7 +20,6 @@ import connectors.Cache
 import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.i18n.MessagesApi
@@ -42,10 +41,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
   implicit val messages: MessagesApi = injected[MessagesApi]
 
   override lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[AuditConnector].toInstance(MockitoSugar.mock[AuditConnector]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[WsAllMethods].toInstance(mock(classOf[WsAllMethods])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[AuditConnector].toInstance(mock(classOf[AuditConnector])))
     .configure(
       "microservice.services.bc-passengers-declarations.host" -> "bc-passengers-declarations.service",
       "microservice.services.bc-passengers-declarations.port" -> "80"

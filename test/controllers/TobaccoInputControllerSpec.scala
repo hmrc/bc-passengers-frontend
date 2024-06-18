@@ -18,9 +18,9 @@ package controllers
 
 import connectors.Cache
 import models._
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -43,21 +43,19 @@ class TobaccoInputControllerSpec extends BaseSpec {
   // scalastyle:off magic.number
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
-    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
+    .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(
-      bind[no_of_sticks_input].toInstance(MockitoSugar.mock[no_of_sticks_input])
-    )
+    .overrides(bind[no_of_sticks_input].toInstance(mock(classOf[no_of_sticks_input])))
     .overrides(
       bind[weight_or_volume_input]
-        .toInstance(MockitoSugar.mock[weight_or_volume_input])
+        .toInstance(mock(classOf[weight_or_volume_input]))
     )
     .overrides(
       bind[no_of_sticks_weight_or_volume_input]
-        .toInstance(MockitoSugar.mock[no_of_sticks_weight_or_volume_input])
+        .toInstance(mock(classOf[no_of_sticks_weight_or_volume_input]))
     )
     .build()
 

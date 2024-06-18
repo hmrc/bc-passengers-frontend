@@ -20,7 +20,6 @@ import connectors.Cache
 import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -33,9 +32,9 @@ import scala.concurrent.Future
 class PreviousDeclarationServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .build()
 
   override def beforeEach(): Unit =

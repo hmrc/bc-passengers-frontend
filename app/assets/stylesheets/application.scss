@@ -1,7 +1,7 @@
-$govuk-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/govuk-frontend/govuk/assets/";
+$govuk-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/govuk-frontend/dist/govuk/assets/";
 $hmrc-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/hmrc-frontend/hmrc/";
 
-@import "lib/govuk-frontend/govuk/all";
+@import "lib/govuk-frontend/dist/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 
 @import "timeout-dialog";

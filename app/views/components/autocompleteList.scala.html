@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.{components => hmrcComponent}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{toClasses => govukToClasses}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 @import views.html.helper.CSPNonce
 @this(select: GovukSelect)
 
@@ -63,7 +64,7 @@
             selected = k == form(id).value.getOrElse(""),
             attributes = Map("id" -> (id + s"-$k"), "label" -> " "))
         },
-        formGroupClasses = "form-field-group"
+        formGroup = FormGroup(classes = Some("form-field-group"))
     ))
 </div>
 

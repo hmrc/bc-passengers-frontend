@@ -16,18 +16,18 @@
 
 package controllers
 
-import org.mockito.scalatest.MockitoSugar
+import org.mockito.Mockito._
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.BaseSpec
 
-class LocalLanguageControllerSpec extends BaseSpec with MockitoSugar {
+class LocalLanguageControllerSpec extends BaseSpec {
 
   private val localLanguageController: LocalLanguageController = new LocalLanguageController(
-    languageUtils = mock[LanguageUtils],
-    controllerComponent = mock[ControllerComponents],
-    messagesApi = mock[MessagesApi]
+    languageUtils = mock(classOf[LanguageUtils]),
+    controllerComponent = mock(classOf[ControllerComponents]),
+    messagesApi = mock(classOf[MessagesApi])
   )
 
   "LocalLanguageController" when {
