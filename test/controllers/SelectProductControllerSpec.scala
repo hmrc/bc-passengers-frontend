@@ -23,7 +23,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import org.scalatest.Inspectors._
 import play.api.Application
 import play.api.http.Writeable
@@ -53,10 +52,10 @@ class SelectProductControllerSpec extends BaseSpec {
   )
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[SelectProductService].toInstance(MockitoSugar.mock[SelectProductService]))
-    .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
+    .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
@@ -66,14 +65,14 @@ class SelectProductControllerSpec extends BaseSpec {
   }
 
   val controllerHelpers: ControllerHelpers = new Object with ControllerHelpers {
-    override def cache: Cache                                                 = MockitoSugar.mock[Cache]
-    override def productTreeService: ProductTreeService                       = MockitoSugar.mock[ProductTreeService]
-    override def calculatorService: CalculatorService                         = MockitoSugar.mock[CalculatorService]
-    override def errorTemplate: errorTemplate                                 = MockitoSugar.mock[errorTemplate]
-    override implicit def appConfig: AppConfig                                = MockitoSugar.mock[AppConfig]
-    override implicit def ec: ExecutionContext                                = MockitoSugar.mock[ExecutionContext]
+    override def cache: Cache                                                 = mock(classOf[Cache])
+    override def productTreeService: ProductTreeService                       = mock(classOf[ProductTreeService])
+    override def calculatorService: CalculatorService                         = mock(classOf[CalculatorService])
+    override def errorTemplate: errorTemplate                                 = mock(classOf[errorTemplate])
+    override implicit def appConfig: AppConfig                                = mock(classOf[AppConfig])
+    override implicit def ec: ExecutionContext                                = mock(classOf[ExecutionContext])
     override protected def controllerComponents: MessagesControllerComponents =
-      MockitoSugar.mock[MessagesControllerComponents]
+      mock(classOf[MessagesControllerComponents])
   }
 
   trait LocalSetup {

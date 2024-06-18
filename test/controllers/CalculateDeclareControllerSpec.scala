@@ -22,7 +22,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -41,15 +40,15 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application =
     GuiceApplicationBuilder()
-      .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-      .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-      .overrides(bind[PurchasedProductService].toInstance(MockitoSugar.mock[PurchasedProductService]))
-      .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
-      .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
-      .overrides(bind[UserInformationService].toInstance(MockitoSugar.mock[UserInformationService]))
-      .overrides(bind[PayApiService].toInstance(MockitoSugar.mock[PayApiService]))
-      .overrides(bind[DateTimeProviderService].toInstance(MockitoSugar.mock[DateTimeProviderService]))
-      .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
+      .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+      .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+      .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
+      .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
+      .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
+      .overrides(bind[UserInformationService].toInstance(mock(classOf[UserInformationService])))
+      .overrides(bind[PayApiService].toInstance(mock(classOf[PayApiService])))
+      .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
+      .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
       .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
       .build()
 

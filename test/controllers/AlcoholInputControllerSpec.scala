@@ -18,9 +18,9 @@ package controllers
 
 import connectors.Cache
 import models._
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.{ArgumentCaptor, MockitoSugar}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -46,12 +46,12 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
   val injectedAlcoholInput: alcohol_input            = inject[alcohol_input]
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
-    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
+    .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[alcohol_input].toInstance(MockitoSugar.mock[alcohol_input]))
+    .overrides(bind[alcohol_input].toInstance(mock(classOf[alcohol_input])))
     .build()
 
   override def beforeEach(): Unit = {

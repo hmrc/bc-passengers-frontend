@@ -16,55 +16,53 @@
 
 package views.viewmodels
 
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.Json
 import util.BaseSpec
 
-class TimeInputSpec extends BaseSpec {
-
-  private val json: JsValue = Json.parse(
-    """
-      |{
-      |    "id": "",
-      |    "items": [],
-      |    "periodSelectItems": [],
-      |    "formGroup": {
-      |        "classes": ""
-      |    },
-      |    "classes": "",
-      |    "attributes": {
-      |        "id": "someId"
-      |    },
-      |    "showSelectPeriod": true
-      |}
-    """.stripMargin
-  )
-
-  private val model: TimeInput = TimeInput(attributes = Map("id" -> "someId"))
+class TimeInputSpec extends BaseSpec with TimeInputConstants {
 
   "TimeInput" when {
+
     ".defaultObject" should {
-      "return default model" in {
-        TimeInput.defaultObject shouldBe model.copy(attributes = Map.empty)
+
+      "return default empty model" in {
+
+        TimeInput.defaultObject shouldBe modelEmptyFields
       }
     }
 
-    "read from valid JSON" should {
+    "Json Reads" should {
+
       "produce the expected TimeInput model" when {
+
         "all mandatory defaulted fields are specified" in {
-          json.as[TimeInput] shouldBe model
+
+          jsonMandatoryFields.as[TimeInput] shouldBe modelMandatoryFields
         }
 
-        "all mandatory defaulted fields are not specified" in {
-          val json: JsValue = JsObject.empty
+        "all mandatory defaulted fields are empty" in {
 
-          json.as[TimeInput] shouldBe model.copy(attributes = Map.empty)
+          jsonEmptyFields.as[TimeInput] shouldBe modelEmptyFields
         }
       }
     }
 
-    "written to JSON" should {
-      "produce the expected JSON" in {
-        Json.toJson(model) shouldBe json
+    "Json Writes" when {
+
+      "given the mandatory fields are empty" should {
+
+        "produce the expected JSON" in {
+
+          Json.toJson(modelEmptyFields) shouldBe jsonEmptyFields
+        }
+      }
+
+      "given all the mandatory fields are filled" should {
+
+        "produce the expected JSON" in {
+
+          Json.toJson(modelMandatoryFields) shouldBe jsonMandatoryFields
+        }
       }
     }
   }

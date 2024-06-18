@@ -26,7 +26,11 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
 
 ## Tests
 
-To run the tests locally, simply run `./run_all_tests.sh`
+To format and check the code style, compile code, run tests with coverage, generate a coverage report, and check for dependency updates:
+
+```bash
+./run_all_tests.sh
+```
 
 ## Accessibility Tests
 

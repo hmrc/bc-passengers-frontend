@@ -18,8 +18,7 @@ package controllers
 
 import config.AppConfig
 import models.JourneyData
-import org.mockito.Mockito.{reset, when}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,8 +30,8 @@ import util.BaseSpec
 class VatResBackLinkModelSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
     .build()
 
   trait LocalSetup {

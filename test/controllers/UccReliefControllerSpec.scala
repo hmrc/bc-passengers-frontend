@@ -21,8 +21,7 @@ import connectors.Cache
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,12 +36,12 @@ import scala.concurrent.Future
 
 class UccReliefControllerSpec extends BaseSpec {
 
-  val mockTravelDetailService: TravelDetailsService = MockitoSugar.mock[TravelDetailsService]
-  val mockCache: Cache                              = MockitoSugar.mock[Cache]
-  val mockAppConfig: AppConfig                      = MockitoSugar.mock[AppConfig]
+  val mockTravelDetailService: TravelDetailsService = mock(classOf[TravelDetailsService])
+  val mockCache: Cache                              = mock(classOf[Cache])
+  val mockAppConfig: AppConfig                      = mock(classOf[AppConfig])
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])

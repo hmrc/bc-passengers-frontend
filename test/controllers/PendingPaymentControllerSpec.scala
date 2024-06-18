@@ -20,8 +20,7 @@ import connectors.Cache
 import models.{Calculation, CalculatorResponse, JourneyData}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, when}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,11 +35,11 @@ import scala.concurrent.Future
 
 class PendingPaymentControllerSpec extends BaseSpec {
 
-  val calculatorService: CalculatorService = MockitoSugar.mock[CalculatorService]
-  val mockCache: Cache                     = MockitoSugar.mock[Cache]
+  val calculatorService: CalculatorService = mock(classOf[CalculatorService])
+  val mockCache: Cache                     = mock(classOf[Cache])
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[CalculatorService].toInstance(calculatorService))
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])

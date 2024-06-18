@@ -21,8 +21,7 @@ import connectors.Cache
 import models._
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, when}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,12 +36,12 @@ import scala.concurrent.Future
 
 class ZeroDeclarationControllerSpec extends BaseSpec {
 
-  val mockCache: Cache         = MockitoSugar.mock[Cache]
-  val mockAppConfig: AppConfig = MockitoSugar.mock[AppConfig]
+  val mockCache: Cache         = mock(classOf[Cache])
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[DeclarationService].toInstance(MockitoSugar.mock[DeclarationService]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(bind[AppConfig].toInstance(mockAppConfig))

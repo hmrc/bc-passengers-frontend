@@ -20,7 +20,6 @@ import connectors.Cache
 import models._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -39,9 +38,9 @@ import scala.concurrent.Future
 class PayApiServiceSpec extends BaseSpec {
   // scalastyle:off magic.number
   override lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[WsAllMethods].toInstance(MockitoSugar.mock[WsAllMethods]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[WsAllMethods].toInstance(mock(classOf[WsAllMethods])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .configure(
       "microservice.services.pay-api.host" -> "pay-api.service",
       "microservice.services.pay-api.port" -> "80"

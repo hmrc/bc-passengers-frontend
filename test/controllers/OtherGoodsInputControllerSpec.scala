@@ -18,9 +18,9 @@ package controllers
 
 import connectors.Cache
 import models._
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.mockito.{ArgumentCaptor, MockitoSugar}
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -41,11 +41,11 @@ import scala.concurrent.Future
 class OtherGoodsInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[NewPurchaseService].toInstance(MockitoSugar.mock[NewPurchaseService]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[other_goods_input].toInstance(MockitoSugar.mock[other_goods_input]))
+    .overrides(bind[other_goods_input].toInstance(mock(classOf[other_goods_input])))
     .build()
 
   override def beforeEach(): Unit = {

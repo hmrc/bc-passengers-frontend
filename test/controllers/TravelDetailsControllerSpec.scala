@@ -22,8 +22,7 @@ import models.JourneyData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -42,11 +41,11 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 class TravelDetailsControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(MockitoSugar.mock[BCPassengersSessionRepository]))
-    .overrides(bind[TravelDetailsService].toInstance(MockitoSugar.mock[TravelDetailsService]))
-    .overrides(bind[CalculatorService].toInstance(MockitoSugar.mock[CalculatorService]))
-    .overrides(bind[Cache].toInstance(MockitoSugar.mock[Cache]))
-    .overrides(bind[AppConfig].toInstance(MockitoSugar.mock[AppConfig]))
+    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
+    .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
+    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 

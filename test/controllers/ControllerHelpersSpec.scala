@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import services.{CalculatorService, ProductTreeService}
@@ -27,15 +27,15 @@ import views.html.errorTemplate
 
 import scala.concurrent.Future
 
-class ControllerHelpersSpec extends BaseSpec with MockitoSugar with ControllerHelpers {
+class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
 
-  def cache: Cache                           = mock[Cache]
-  def productTreeService: ProductTreeService = mock[ProductTreeService]
-  def calculatorService: CalculatorService   = mock[CalculatorService]
-  def errorTemplate: errorTemplate           = mock[errorTemplate]
+  def cache: Cache                           = mock(classOf[Cache])
+  def productTreeService: ProductTreeService = mock(classOf[ProductTreeService])
+  def calculatorService: CalculatorService   = mock(classOf[CalculatorService])
+  def errorTemplate: errorTemplate           = mock(classOf[errorTemplate])
 
-  implicit def appConfig: AppConfig                                = mock[AppConfig]
-  protected def controllerComponents: MessagesControllerComponents = mock[MessagesControllerComponents]
+  implicit def appConfig: AppConfig                                = mock(classOf[AppConfig])
+  protected def controllerComponents: MessagesControllerComponents = mock(classOf[MessagesControllerComponents])
 
   "ControllerHelpers" when {
     ".logAndRedirect" should {
