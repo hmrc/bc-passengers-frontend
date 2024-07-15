@@ -17,11 +17,13 @@
 package config
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.{Request, RequestHeader}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+
+import scala.concurrent.ExecutionContext.global
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject() (
@@ -30,7 +32,9 @@ class ErrorHandler @Inject() (
   implicit val appConfig: AppConfig
 ) extends FrontendErrorHandler {
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
-    request: Request[_]
-  ): Html =
-    error_template()
+    request: RequestHeader
+  ): Future[Html] =
+    Future(error_template())
+
+  override protected implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 }
