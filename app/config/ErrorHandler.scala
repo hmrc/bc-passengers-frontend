@@ -22,7 +22,7 @@ import play.api.mvc.{Request, RequestHeader}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 
-import scala.concurrent.ExecutionContext.global
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -30,11 +30,13 @@ class ErrorHandler @Inject() (
   val messagesApi: MessagesApi,
   val error_template: views.html.errorTemplate,
   implicit val appConfig: AppConfig
-) extends FrontendErrorHandler {
+  )(implicit executionContext: ExecutionContext) extends FrontendErrorHandler {
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
-    request: RequestHeader
-  ): Future[Html] =
-    Future(error_template())
+                                                                                          request: RequestHeader
 
-  override protected implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  ): Future[Html] = {
+    Future(error_template())(ec)
+  }
+
+  override protected implicit val ec: ExecutionContext = executionContext
 }
