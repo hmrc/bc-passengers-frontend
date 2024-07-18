@@ -37,7 +37,6 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocal
 import scala.concurrent.Future
 
 class DeclarationRetrievalControllerSpec extends BaseSpec {
-  // scalastyle:off magic.number
   val mockPreviousDeclarationService: PreviousDeclarationService = mock(classOf[PreviousDeclarationService])
   val mockCache: Cache                                           = mock(classOf[Cache])
   val mockAppConfig: AppConfig                                   = mock(classOf[AppConfig])
@@ -453,5 +452,4 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "Your declaration cannot be found"
     }
   }
-  // scalastyle:on magic.number
 }

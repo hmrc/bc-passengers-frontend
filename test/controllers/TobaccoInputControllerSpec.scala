@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, route => rt, _}
+import play.api.test.Helpers.{route => rt, _}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services._
@@ -40,7 +40,6 @@ import views.html.tobacco._
 import scala.concurrent.Future
 
 class TobaccoInputControllerSpec extends BaseSpec {
-  // scalastyle:off magic.number
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))

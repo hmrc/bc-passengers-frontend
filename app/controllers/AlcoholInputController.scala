@@ -66,7 +66,6 @@ class AlcoholInputController @Inject() (
         Redirect(routes.SelectProductController.nextStep)
     }
 
-  // scalastyle:off
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))

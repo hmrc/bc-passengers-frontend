@@ -16,40 +16,34 @@
 
 package services
 
-import connectors.Cache
 import models._
-import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import play.api.Application
+import org.scalatest.concurrent.ScalaFutures
+import play.api.Configuration
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.test.Helpers._
-import repositories.BCPassengersSessionRepository
-import services.http.WsAllMethods
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
-import java.time.LocalDateTime
+import java.net.URL
 import scala.concurrent.Future
 
-class PayApiServiceSpec extends BaseSpec {
-  // scalastyle:off magic.number
-  override lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
-    .overrides(bind[WsAllMethods].toInstance(mock(classOf[WsAllMethods])))
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
-    .configure(
-      "microservice.services.pay-api.host" -> "pay-api.service",
-      "microservice.services.pay-api.port" -> "80"
-    )
-    .build()
+class PayApiServiceSpec extends BaseSpec with ScalaFutures {
+
+  private val mockRequestBuilder: RequestBuilder = mock(classOf[RequestBuilder])
+  private val mockHttpClient: HttpClientV2       = mock(classOf[HttpClientV2])
+  private val mockServicesConfig: ServicesConfig = mock(classOf[ServicesConfig])
+  private val mockConfiguration: Configuration   = mock(classOf[Configuration])
+  private val countriesService: CountriesService = new CountriesService
 
   override def beforeEach(): Unit = {
-    reset(app.injector.instanceOf[WsAllMethods])
-    reset(app.injector.instanceOf[Cache])
+    reset(mockHttpClient)
+    reset(mockRequestBuilder)
     super.beforeEach()
   }
 
@@ -173,7 +167,7 @@ class PayApiServiceSpec extends BaseSpec {
        |}
     """.stripMargin)
 
-  trait LocalSetup {
+  private trait Setup {
     def httpResponse: HttpResponse
     val userInformation: UserInformation       = UserInformation(
       "Harry",
@@ -344,70 +338,87 @@ class PayApiServiceSpec extends BaseSpec {
       isAnyItemOverAllowance = true
     )
 
-    val receiptDateTime: LocalDateTime = LocalDateTime.parse("2018-11-12T13:56:01.0000")
-    lazy val s: PayApiService = {
-      val service = injected[PayApiService]
-      when(
-        service.wsAllMethods.POST[JsValue, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(httpResponse)
-      service
-    }
+    val payUrl: String = "http://localhost:9057/pay-api/pngr/pngr/journey/start"
+
+    val urlCapture: ArgumentCaptor[URL]      = ArgumentCaptor.forClass(classOf[URL])
+    val bodyCapture: ArgumentCaptor[JsValue] = ArgumentCaptor.forClass(classOf[JsValue])
+
+    when(mockServicesConfig.baseUrl("pay-api")).thenReturn("http://localhost:9057")
+    when(mockConfiguration.getOptional[String]("feedback-frontend.host")).thenReturn(Some("http://localhost:9514"))
+    when(mockConfiguration.getOptional[String]("bc-passengers-frontend.host")).thenReturn(Some("http://localhost:9008"))
+    when(mockRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilder)
+    when(mockRequestBuilder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(Future.successful(httpResponse))
+    when(mockHttpClient.post(any())(any())).thenReturn(mockRequestBuilder)
+
+    lazy val s: PayApiService = new PayApiService(
+      httpClient = mockHttpClient,
+      configuration = mockConfiguration,
+      servicesConfig = mockServicesConfig,
+      countriesService = countriesService,
+      ec = ec
+    )
   }
 
   "Calling requestPaymentUrl" should {
 
     implicit val messages: Messages = injected[MessagesApi].preferred(enhancedFakeRequest("POST", "/nowhere"))
 
-    "return PayApiServiceFailureResponse when client returns 400" in new LocalSetup {
+    "return PayApiServiceFailureResponse when client returns 400" in new Setup {
 
       override lazy val httpResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, "")
 
       val r: PayApiServiceResponse =
-        await(
-          s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
-        )
+        s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
+          .futureValue
+
       r shouldBe PayApiServiceFailureResponse
-      verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
-        meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
-        meq(exampleJson),
-        any()
-      )(any(), any(), any(), any())
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$payUrl"
+      bodyCapture.getValue shouldBe exampleJson
     }
 
-    "return PayApiServiceFailureResponse when client returns 500" in new LocalSetup {
+    "return PayApiServiceFailureResponse when client returns 500" in new Setup {
 
       override lazy val httpResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, "")
 
       val r: PayApiServiceResponse =
-        await(
-          s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
-        )
+        s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
+          .futureValue
+
       r shouldBe PayApiServiceFailureResponse
-      verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
-        meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
-        meq(exampleJson),
-        any()
-      )(any(), any(), any(), any())
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$payUrl"
+      bodyCapture.getValue shouldBe exampleJson
     }
 
-    "return a PayApiServiceSuccessResponse with a payment url when http client returns 201" in new LocalSetup {
+    "return a PayApiServiceSuccessResponse with a payment url when http client returns 201" in new Setup {
 
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val r: PayApiServiceResponse                 =
-        await(
-          s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
-        )
+        s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
+          .futureValue
+
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
-        meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
-        meq(exampleJson),
-        any()
-      )(any(), any(), any(), any())
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$payUrl"
+      bodyCapture.getValue shouldBe exampleJson
     }
 
-    "return a PayApiServiceSuccessResponse with a payment url when http client returns 201 (when in BST)" in new LocalSetup {
+    "return a PayApiServiceSuccessResponse with a payment url when http client returns 201 (when in BST)" in new Setup {
 
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
@@ -420,25 +431,26 @@ class PayApiServiceSpec extends BaseSpec {
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
       val r: PayApiServiceResponse                 =
-        await(
-          s.requestPaymentUrl(
-            exampleChargeRef,
-            uiWithBstArrival,
-            calculatorResponse,
-            9700000,
-            isAmendment = false,
-            None
-          )
-        )
+        s.requestPaymentUrl(
+          exampleChargeRef,
+          uiWithBstArrival,
+          calculatorResponse,
+          9700000,
+          isAmendment = false,
+          None
+        ).futureValue
+
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
-        meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
-        meq(exampleJsonForBstArrival),
-        any()
-      )(any(), any(), any(), any())
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$payUrl"
+      bodyCapture.getValue shouldBe exampleJsonForBstArrival
     }
 
-    "return a PayApiServiceSuccessResponse with a declare-your-good back url in amendment journey" in new LocalSetup {
+    "return a PayApiServiceSuccessResponse with a declare-your-good back url in amendment journey" in new Setup {
 
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
@@ -460,7 +472,7 @@ class PayApiServiceSpec extends BaseSpec {
           )
         )
 
-      val r: PayApiServiceResponse = await(
+      val r: PayApiServiceResponse =
         s.requestPaymentUrl(
           exampleChargeRef,
           uiWithBstArrival,
@@ -468,17 +480,19 @@ class PayApiServiceSpec extends BaseSpec {
           9700000,
           isAmendment = true,
           Some("100.99")
-        )
-      )
+        ).futureValue
+
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
-        meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
-        meq(expectedJsonForAmendment),
-        any()
-      )(any(), any(), any(), any())
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$payUrl"
+      bodyCapture.getValue shouldBe expectedJsonForAmendment
     }
 
-    "return a PayApiServiceSuccessResponse with a pending-payment back url in pending payment journey" in new LocalSetup {
+    "return a PayApiServiceSuccessResponse with a pending-payment back url in pending payment journey" in new Setup {
 
       val uiWithBstArrival: UserInformation = userInformation.copy(
         selectPlaceOfArrival = "",
@@ -500,7 +514,7 @@ class PayApiServiceSpec extends BaseSpec {
           )
         )
 
-      val r: PayApiServiceResponse = await(
+      val r: PayApiServiceResponse =
         s.requestPaymentUrl(
           exampleChargeRef,
           uiWithBstArrival,
@@ -509,14 +523,16 @@ class PayApiServiceSpec extends BaseSpec {
           isAmendment = true,
           Some("100.99"),
           Some("pending-payment")
-        )
-      )
+        ).futureValue
+
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
-      verify(s.wsAllMethods, times(1)).POST[JsValue, HttpResponse](
-        meq("http://pay-api.service:80/pay-api/pngr/pngr/journey/start"),
-        meq(expectedJsonForAmendment),
-        any()
-      )(any(), any(), any(), any())
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$payUrl"
+      bodyCapture.getValue shouldBe expectedJsonForAmendment
     }
   }
 
@@ -554,5 +570,4 @@ class PayApiServiceSpec extends BaseSpec {
       isValidChargeReference(ChargeReference.generate.value) shouldBe true
     }
   }
-  // scalastyle:on magic.number
 }

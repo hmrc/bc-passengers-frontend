@@ -18,45 +18,58 @@ package services
 
 import connectors.Cache
 import models._
-import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import play.api.Application
+import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import repositories.BCPassengersSessionRepository
-import services.http.WsAllMethods
-import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, parseLocalDate}
 
+import java.net.URL
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
 import scala.math.BigDecimal.RoundingMode
 
-class CalculatorServiceSpec extends BaseSpec {
-  // scalastyle:off magic.number
-  override lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
-    .overrides(bind[WsAllMethods].toInstance(mock(classOf[WsAllMethods])))
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
-    .configure(
-      "microservice.services.currency-conversion.host"        -> "currency-conversion.service",
-      "microservice.services.currency-conversion.port"        -> "80",
-      "microservice.services.passengers-duty-calculator.host" -> "passengers-duty-calculator.service",
-      "microservice.services.passengers-duty-calculator.port" -> "80"
-    )
-    .build()
+class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
+
+  private val mockGetRequestBuilder: RequestBuilder  = mock(classOf[RequestBuilder])
+  private val mockPostRequestBuilder: RequestBuilder = mock(classOf[RequestBuilder])
+  private val mockHttpClient: HttpClientV2           = mock(classOf[HttpClientV2])
+  private val mockCache: Cache                       = mock(classOf[Cache])
+  private val mockServicesConfig: ServicesConfig     = mock(classOf[ServicesConfig])
+  private val productTreeService: ProductTreeService = new ProductTreeService
+  private val currencyService: CurrencyService       = new CurrencyService
+
+  private val urlCapture: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
+  private val jsonBodyCapture: ArgumentCaptor[JsValue]            = ArgumentCaptor.forClass(classOf[JsValue])
+  private val journeyDataBodyCapture: ArgumentCaptor[JourneyData] = ArgumentCaptor.forClass(classOf[JourneyData])
+
+  implicit val messagesApi: MessagesApi = injected[MessagesApi]
 
   override def beforeEach(): Unit = {
-    reset(app.injector.instanceOf[WsAllMethods])
-    reset(app.injector.instanceOf[Cache])
+    reset(mockHttpClient)
+    reset(mockGetRequestBuilder)
+    reset(mockPostRequestBuilder)
+    reset(mockCache)
     super.beforeEach()
   }
 
   def todaysDate: String = LocalDate.now.format(DateTimeFormatter.ISO_DATE)
+
+  private val service: CalculatorService = new CalculatorService(
+    cache = mockCache,
+    httpClient = mockHttpClient,
+    productTreeService = productTreeService,
+    currencyService = currencyService,
+    servicesConfig = mockServicesConfig,
+    ec = ec
+  )
 
   "Calling CalculatorService.journeyDataToCalculatorRequest" should {
 
@@ -266,7 +279,7 @@ class CalculatorServiceSpec extends BaseSpec {
     )
 
     def getProductTreeLeaf(path: String): ProductTreeLeaf =
-      injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
+      productTreeService.productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
 
     val calcRequest = CalculatorServiceRequest(
       isPrivateCraft = false,
@@ -393,84 +406,80 @@ class CalculatorServiceSpec extends BaseSpec {
       )
     )
 
-    trait LocalSetup {
+    trait Setup {
 
-      lazy val service: CalculatorService = {
-
-        when(
-          injected[WsAllMethods].GET[List[CurrencyConversionRate]](
-            meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"),
-            any(),
-            any()
-          )(any(), any(), any())
-        ) thenReturn {
+      when(mockServicesConfig.baseUrl("currency-conversion")).thenReturn("http://localhost:9016")
+      when(mockGetRequestBuilder.execute(any[HttpReads[List[CurrencyConversionRate]]], any()))
+        .thenReturn(
           Future.successful(
             List(
               CurrencyConversionRate(parseLocalDate("2018-08-01"), parseLocalDate("2018-08-31"), "USD", None)
             )
           )
-        }
-
-        when(
-          injected[WsAllMethods].GET[List[CurrencyConversionRate]](any(), any(), any())(any(), any(), any())
-        ) thenReturn {
+        )
+      when(mockGetRequestBuilder.execute(any[HttpReads[List[CurrencyConversionRate]]], any()))
+        .thenReturn(
           Future.successful(
             List(
               CurrencyConversionRate(parseLocalDate("2018-08-01"), parseLocalDate("2018-08-31"), "AUD", Some("1.76")),
               CurrencyConversionRate(parseLocalDate("2018-08-01"), parseLocalDate("2018-08-31"), "CHF", Some("1.26"))
             )
           )
-        }
-
-        injected[CalculatorService]
-      }
+        )
+      when(mockHttpClient.get(any())(any())).thenReturn(mockGetRequestBuilder)
     }
 
-    "return None if there was a missing rate, making a call to the currency-conversion service" in new LocalSetup {
+    "return None if there was a missing rate, making a call to the currency-conversion service" in new Setup {
 
-      val response: Option[CalculatorServiceRequest] = await(
-        service.journeyDataToCalculatorRequest(missingRateJourneyData, missingRateJourneyData.purchasedProductInstances)
-      )
+      val url: String = s"http://localhost:9016/currency-conversion/rates/$todaysDate?cc=USD"
 
-      verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(
-        meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=USD"),
-        any(),
-        any()
-      )(any(), any(), any())
+      val response: Option[CalculatorServiceRequest] =
+        service
+          .journeyDataToCalculatorRequest(missingRateJourneyData, missingRateJourneyData.purchasedProductInstances)
+          .futureValue
 
       response shouldBe None
+
+      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
+
+      urlCapture.getValue shouldBe url"$url"
     }
 
-    "skip invalid instances (instances with missing required data)" in new LocalSetup {
+    "skip invalid instances (instances with missing required data)" in new Setup {
 
-      val response: CalculatorServiceRequest = await(
-        service.journeyDataToCalculatorRequest(imperfectJourneyData, imperfectJourneyData.purchasedProductInstances)
-      ).get
-
-      verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(
-        meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"),
-        any(),
-        any()
-      )(any(), any(), any())
-
-      response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token == "cigars"))
-    }
-
-    "transform journey data to a calculator request, making a call to the currency-conversion service" in new LocalSetup {
+      val url: String = s"http://localhost:9016/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"
 
       val response: CalculatorServiceRequest =
-        await(service.journeyDataToCalculatorRequest(goodJourneyData, goodJourneyData.purchasedProductInstances)).get
+        service
+          .journeyDataToCalculatorRequest(imperfectJourneyData, imperfectJourneyData.purchasedProductInstances)
+          .futureValue
+          .get
 
-      verify(injected[Cache], times(0)).fetch(any())
-      verify(injected[WsAllMethods], times(1)).GET(
-        meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"),
-        any(),
-        any()
-      )(any(), any(), any())
+      response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token == "cigars"))
+
+      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
+
+      urlCapture.getValue shouldBe url"$url"
+    }
+
+    "transform journey data to a calculator request, making a call to the currency-conversion service" in new Setup {
+
+      val url: String = s"http://localhost:9016/currency-conversion/rates/$todaysDate?cc=AUD&cc=CHF"
+
+      val response: CalculatorServiceRequest =
+        service
+          .journeyDataToCalculatorRequest(goodJourneyData, goodJourneyData.purchasedProductInstances)
+          .futureValue
+          .get
 
       response shouldBe calcRequest
+
+      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
+
+      urlCapture.getValue shouldBe url"$url"
     }
   }
 
@@ -681,7 +690,7 @@ class CalculatorServiceSpec extends BaseSpec {
     )
 
     def getProductTreeLeaf(path: String): ProductTreeLeaf =
-      injected[ProductTreeService].productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
+      productTreeService.productTree.getDescendant(ProductPath(path)).get.asInstanceOf[ProductTreeLeaf]
 
     val amendSpeculativeItem: List[SpeculativeItem] = List(
       SpeculativeItem(
@@ -917,26 +926,16 @@ class CalculatorServiceSpec extends BaseSpec {
     val limitRequest =
       LimitRequest(isPrivateCraft = false, isAgeOver17 = true, isArrivingNI = false, items = speculativeItem)
 
-    trait LocalSetup {
-
-      lazy val service: CalculatorService =
-        injected[CalculatorService]
-    }
-
-    "transform journey data to a limit request for an amendment journey" in new LocalSetup {
+    "transform journey data to a limit request for an amendment journey" in {
 
       val response: LimitRequest = service.journeyDataToLimitsRequest(amendJourneyData).get
-
-      verify(injected[Cache], times(0)).fetch(any())
 
       response shouldBe amendLimitRequest
     }
 
-    "transform journey data to a limit request for an original journey" in new LocalSetup {
+    "transform journey data to a limit request for an original journey" in {
 
       val response: LimitRequest = service.journeyDataToLimitsRequest(declareJourneyData).get
-
-      verify(injected[Cache], times(0)).fetch(any())
 
       response shouldBe limitRequest
     }
@@ -944,104 +943,110 @@ class CalculatorServiceSpec extends BaseSpec {
 
   "Calling CalculatorService.calculate" should {
 
-    trait LocalSetup {
+    val ccUrl: String  = s"http://localhost:9016/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"
+    val pdcUrl: String = "http://localhost:9027/passengers-duty-calculator/calculate"
 
-      def simulatePurchasePriceOutOfBounds: Boolean
+    val currencyConversionRates: List[CurrencyConversionRate] = List(
+      CurrencyConversionRate(
+        parseLocalDate("2018-08-01"),
+        parseLocalDate("2018-08-31"),
+        "USD",
+        Some("1.4534")
+      ),
+      CurrencyConversionRate(
+        parseLocalDate("2018-08-01"),
+        parseLocalDate("2018-08-31"),
+        "CAD",
+        Some("1.7654")
+      )
+    )
 
-      lazy val service: CalculatorService = {
+    val calculationResponse: CalculatorResponse = CalculatorResponse(
+      Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Calculation("0.00", "0.00", "0.00", "0.00"),
+      withinFreeAllowance = false,
+      limits = Map.empty,
+      isAnyItemOverAllowance = false
+    )
 
-        when(
-          injected[WsAllMethods].GET[List[CurrencyConversionRate]](
-            meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"),
-            any(),
-            any()
-          )(any(), any(), any())
-        ) thenReturn {
-          Future.successful(
-            List(
-              CurrencyConversionRate(
-                parseLocalDate("2018-08-01"),
-                parseLocalDate("2018-08-31"),
-                "USD",
-                Some("1.4534")
-              ),
-              CurrencyConversionRate(
-                parseLocalDate("2018-08-01"),
-                parseLocalDate("2018-08-31"),
-                "CAD",
-                Some("1.7654")
-              )
-            )
-          )
-        }
+    val jd: JourneyData = JourneyData(
+      euCountryCheck = Some("nonEuOnly"),
+      ageOver17 = Some(true),
+      arrivingNICheck = Some(false),
+      privateCraft = Some(false),
+      purchasedProductInstances = List(
+        PurchasedProductInstance(
+          ProductPath("other-goods/antiques"),
+          iid = "iid0",
+          country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+          currency = Some("CAD"),
+          cost = Some(BigDecimal("2.00"))
+        ),
+        PurchasedProductInstance(
+          ProductPath("tobacco/cigars"),
+          iid = "iid1",
+          country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+          currency = Some("USD"),
+          cost = Some(BigDecimal("4.00"))
+        )
+      )
+    )
 
-        if (simulatePurchasePriceOutOfBounds) {
-          when(
-            injected[WsAllMethods].POST[CalculatorServiceRequest, CalculatorResponse](
-              meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-              any(),
-              any()
-            )(any(), any(), any(), any())
-          ) thenReturn Future.failed(
-            UpstreamErrorResponse
-              .apply("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty)
-          )
-        } else {
-          when(
-            injected[WsAllMethods].POST[CalculatorServiceRequest, CalculatorResponse](
-              meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-              any(),
-              any()
-            )(any(), any(), any(), any())
-          ) thenReturn {
-            Future.successful(
-              CalculatorResponse(
-                Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-                Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-                Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
-                Calculation("0.00", "0.00", "0.00", "0.00"),
-                withinFreeAllowance = false,
-                limits = Map.empty,
-                isAnyItemOverAllowance = false
-              )
-            )
-          }
-        }
-
-        injected[CalculatorService]
-      }
-    }
-
-    "make a call to the currency-conversion service, the calculator service and return a valid response" in new LocalSetup {
-
-      val jd: JourneyData = JourneyData(
-        euCountryCheck = Some("nonEuOnly"),
-        ageOver17 = Some(true),
-        arrivingNICheck = Some(false),
-        privateCraft = Some(false),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            ProductPath("other-goods/antiques"),
-            iid = "iid0",
-            country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-            currency = Some("CAD"),
-            cost = Some(BigDecimal("2.00"))
-          ),
-          PurchasedProductInstance(
-            ProductPath("tobacco/cigars"),
-            iid = "iid1",
-            country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-            currency = Some("USD"),
-            cost = Some(BigDecimal("4.00"))
+    val json: JsValue = Json.toJson[CalculatorServiceRequest](
+      CalculatorServiceRequest(
+        isPrivateCraft = false,
+        isAgeOver17 = true,
+        isArrivingNI = false,
+        List(
+          PurchasedItem(
+            PurchasedProductInstance(
+              ProductPath("other-goods/antiques"),
+              "iid0",
+              None,
+              None,
+              Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+              None,
+              Some("CAD"),
+              Some(BigDecimal("2.00"))
+            ),
+            ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil),
+            Currency("CAD", "title.canadian_dollars_cad", Some("CAD"), Nil),
+            BigDecimal("1.13"),
+            ExchangeRate("1.7654", todaysDate)
           )
         )
       )
+    )(CalculatorServiceRequest.writes)
 
-      override lazy val simulatePurchasePriceOutOfBounds: Boolean = false
+    when(mockServicesConfig.baseUrl("passengers-duty-calculator")).thenReturn("http://localhost:9027")
+    when(mockServicesConfig.baseUrl("currency-conversion")).thenReturn("http://localhost:9016")
 
-      val messages: MessagesApi = injected[MessagesApi]
+    trait Setup {
 
-      val response: CalculatorServiceResponse = await(service.calculate(jd)(implicitly, messages))
+      when(mockGetRequestBuilder.execute(any[HttpReads[List[CurrencyConversionRate]]], any()))
+        .thenReturn(
+          Future.successful(
+            currencyConversionRates
+          )
+        )
+      when(mockHttpClient.get(any())(any())).thenReturn(mockGetRequestBuilder)
+
+      when(mockPostRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockPostRequestBuilder)
+      when(mockPostRequestBuilder.execute(any[HttpReads[CalculatorResponse]], any())).thenReturn(
+        Future.successful(calculationResponse)
+      )
+      when(mockHttpClient.post(any())(any())).thenReturn(mockPostRequestBuilder)
+    }
+
+    "make a call to the currency-conversion service, the calculator service and return a valid response" in new Setup {
+
+      when(mockPostRequestBuilder.execute(any[HttpReads[CalculatorResponse]], any())).thenReturn(
+        Future.successful(calculationResponse)
+      )
+
+      val response: CalculatorServiceResponse = service.calculate(jd).futureValue
 
       response.asInstanceOf[CalculatorServiceSuccessResponse].calculatorResponse shouldBe
         CalculatorResponse(
@@ -1054,119 +1059,50 @@ class CalculatorServiceSpec extends BaseSpec {
           isAnyItemOverAllowance = false
         )
 
-      verify(injected[WsAllMethods], times(1)).GET(
-        meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"),
-        any(),
-        any()
-      )(any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(any(), any(), any())
+      verify(mockPostRequestBuilder, times(1)).execute(any(), any())
 
-      verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
-        meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-        meq(
-          CalculatorServiceRequest(
-            isPrivateCraft = false,
-            isAgeOver17 = true,
-            isArrivingNI = false,
-            List(
-              PurchasedItem(
-                PurchasedProductInstance(
-                  ProductPath("other-goods/antiques"),
-                  "iid0",
-                  None,
-                  None,
-                  Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-                  None,
-                  Some("CAD"),
-                  Some(BigDecimal("2.00"))
-                ),
-                ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil),
-                Currency("CAD", "title.canadian_dollars_cad", Some("CAD"), Nil),
-                BigDecimal("1.13"),
-                ExchangeRate("1.7654", todaysDate)
-              )
-            )
-          )
-        ),
-        any()
-      )(any(), any(), any(), any())
+      urlCapture.getValue      shouldBe url"$pdcUrl"
+      jsonBodyCapture.getValue shouldBe json
+
+      verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
+      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue shouldBe url"$ccUrl"
     }
 
-    "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse" +
-      "when call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new LocalSetup {
+    "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse" when {
+      "call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new Setup {
 
-        val jd: JourneyData = JourneyData(
-          euCountryCheck = Some("nonEuOnly"),
-          ageOver17 = Some(true),
-          arrivingNICheck = Some(false),
-          privateCraft = Some(false),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              ProductPath("other-goods/antiques"),
-              iid = "iid0",
-              country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-              currency = Some("CAD"),
-              cost = Some(BigDecimal("2.00"))
-            ),
-            PurchasedProductInstance(
-              ProductPath("tobacco/cigars"),
-              iid = "iid1",
-              country = Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-              currency = Some("USD"),
-              cost = Some(BigDecimal("4.00"))
-            )
+        when(mockPostRequestBuilder.execute(any[HttpReads[CalculatorResponse]], any())).thenReturn(
+          Future.failed(
+            UpstreamErrorResponse
+              .apply("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty)
           )
         )
 
-        override lazy val simulatePurchasePriceOutOfBounds: Boolean = true
+        val response: CalculatorServiceResponse = service.calculate(jd).futureValue
 
-        val messages: MessagesApi = injected[MessagesApi]
+        response shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
 
-        await(
-          service.calculate(jd)(implicitly, messages)
-        ) shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
+        verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+        verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(any(), any(), any())
+        verify(mockPostRequestBuilder, times(1)).execute(any(), any())
 
-        verify(injected[WsAllMethods], times(1)).GET(
-          meq(s"http://currency-conversion.service:80/currency-conversion/rates/$todaysDate?cc=CAD&cc=USD"),
-          any(),
-          any()
-        )(any(), any(), any())
+        urlCapture.getValue      shouldBe url"$pdcUrl"
+        jsonBodyCapture.getValue shouldBe json
 
-        verify(injected[WsAllMethods], times(1)).POST[CalculatorServiceRequest, CalculatorResponse](
-          meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/calculate"),
-          meq(
-            CalculatorServiceRequest(
-              isPrivateCraft = false,
-              isAgeOver17 = true,
-              isArrivingNI = false,
-              List(
-                PurchasedItem(
-                  PurchasedProductInstance(
-                    ProductPath("other-goods/antiques"),
-                    "iid0",
-                    None,
-                    None,
-                    Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-                    None,
-                    Some("CAD"),
-                    Some(BigDecimal("2.00"))
-                  ),
-                  ProductTreeLeaf("antiques", "label.other-goods.antiques", "OGD/ART", "other-goods", Nil),
-                  Currency("CAD", "title.canadian_dollars_cad", Some("CAD"), Nil),
-                  BigDecimal("1.13"),
-                  ExchangeRate("1.7654", todaysDate)
-                )
-              )
-            )
-          ),
-          any()
-        )(any(), any(), any(), any())
+        verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
+        verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+
+        urlCapture.getValue shouldBe url"$ccUrl"
       }
+    }
 
     "return CalculatorServiceCantBuildCalcReqResponse" in {
-      val messages: MessagesApi      = injected[MessagesApi]
-      val service: CalculatorService = injected[CalculatorService]
 
-      val response: CalculatorServiceResponse = await(service.calculate(JourneyData())(implicitly, messages))
+      val response: CalculatorServiceResponse = service.calculate(JourneyData()).futureValue
 
       response shouldBe CalculatorServiceCantBuildCalcReqResponse
     }
@@ -1174,126 +1110,89 @@ class CalculatorServiceSpec extends BaseSpec {
 
   "Calling CalculatorService.storeCalculatorResponse" should {
 
+    val calculation: Calculation = Calculation("136.27", "150.00", "297.25", "583.52")
+
+    val calculatorResponse = CalculatorResponse(
+      None,
+      None,
+      None,
+      calculation,
+      withinFreeAllowance = true,
+      limits = Map.empty,
+      isAnyItemOverAllowance = false
+    )
+
     "store a new CalculatorServiceResponse in JourneyData" in {
 
-      lazy val s: CalculatorService = {
-        val service = app.injector.instanceOf[CalculatorService]
-        val mock    = service.cache
-        when(mock.fetch(any())) thenReturn Future.successful(None)
-        when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-        service
-      }
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
-      await(
-        s.storeCalculatorResponse(
-          JourneyData(),
+      val response: JourneyData = service.storeCalculatorResponse(JourneyData(), calculatorResponse).futureValue
+
+      response shouldBe JourneyData(calculatorResponse = Some(calculatorResponse))
+
+      verify(mockCache, times(1)).store(journeyDataBodyCapture.capture())(any())
+
+      journeyDataBodyCapture.getValue shouldBe JourneyData(
+        calculatorResponse = Some(
           CalculatorResponse(
             None,
             None,
             None,
-            Calculation("0.00", "0.00", "0.00", "0.00"),
+            calculation,
             withinFreeAllowance = true,
             limits = Map.empty,
             isAnyItemOverAllowance = false
           )
         )
       )
-
-      verify(s.cache, times(1)).store(
-        meq(
-          JourneyData(calculatorResponse =
-            Some(
-              CalculatorResponse(
-                None,
-                None,
-                None,
-                Calculation("0.00", "0.00", "0.00", "0.00"),
-                withinFreeAllowance = true,
-                limits = Map.empty,
-                isAnyItemOverAllowance = false
-              )
-            )
-          )
-        )
-      )(any())
-
     }
-
-  }
-
-  "Calling CalculatorService.storeCalculatorResponse" should {
 
     "store a new CalculatorServiceResponse along with deltaCalculation in JourneyData" in {
 
-      lazy val calcService: CalculatorService = {
-        val service = app.injector.instanceOf[CalculatorService]
-        val mock    = service.cache
-        when(mock.fetch(any())) thenReturn Future.successful(None)
-        when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-        service
-      }
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
       lazy val deltaCalc: Calculation = Calculation("96.27", "150.00", "109.25", "355.52")
 
-      await(
-        calcService.storeCalculatorResponse(
+      val response: JourneyData = service
+        .storeCalculatorResponse(
           JourneyData(),
+          calculatorResponse,
+          Some(deltaCalc)
+        )
+        .futureValue
+
+      response shouldBe JourneyData(calculatorResponse = Some(calculatorResponse), deltaCalculation = Some(deltaCalc))
+
+      verify(mockCache, times(1)).store(journeyDataBodyCapture.capture())(any())
+
+      journeyDataBodyCapture.getValue shouldBe JourneyData(
+        calculatorResponse = Some(
           CalculatorResponse(
             None,
             None,
             None,
-            Calculation("136.27", "150.00", "297.25", "583.52"),
+            calculation,
             withinFreeAllowance = true,
             limits = Map.empty,
             isAnyItemOverAllowance = false
-          ),
-          Some(deltaCalc)
-        )
-      )
-
-      verify(calcService.cache, times(1)).store(
-        meq(
-          JourneyData(
-            calculatorResponse = Some(
-              CalculatorResponse(
-                None,
-                None,
-                None,
-                Calculation("136.27", "150.00", "297.25", "583.52"),
-                withinFreeAllowance = true,
-                limits = Map.empty,
-                isAnyItemOverAllowance = false
-              )
-            ),
-            deltaCalculation = Some(deltaCalc)
           )
-        )
-      )(any())
-
+        ),
+        deltaCalculation = Some(deltaCalc)
+      )
     }
-
   }
 
   "Calling CalculatorService.getDeltaCalculation with old and new Calculation" should {
 
     "return deltaCalculation" in {
 
-      lazy val calcService: CalculatorService = {
-        val service = app.injector.instanceOf[CalculatorService]
-        val mock    = service.cache
-        when(mock.fetch(any())) thenReturn Future.successful(None)
-        when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-        service
-      }
-
       lazy val oldCalc: Calculation       = Calculation("96.27", "100.00", "109.25", "305.52")
       lazy val newCalc: Calculation       = Calculation("136.27", "150.00", "297.25", "583.52")
       lazy val deltaProbable: Calculation = Calculation("40.00", "50.00", "188.00", "278.00")
 
-      val deltaCalc: Calculation = calcService.getDeltaCalculation(oldCalc, newCalc)
+      val deltaCalc: Calculation = service.getDeltaCalculation(oldCalc, newCalc)
 
       deltaCalc shouldBe deltaProbable
-
     }
   }
 
@@ -1301,22 +1200,13 @@ class CalculatorServiceSpec extends BaseSpec {
 
     "return previousPaidCalculation" in {
 
-      lazy val calcService: CalculatorService = {
-        val service = app.injector.instanceOf[CalculatorService]
-        val mock    = service.cache
-        when(mock.fetch(any())) thenReturn Future.successful(None)
-        when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-        service
-      }
-
       lazy val deltaCalc: Calculation            = Calculation("96.27", "100.00", "109.25", "305.52")
       lazy val newCalc: Calculation              = Calculation("136.27", "150.00", "297.25", "583.52")
       lazy val previousPaidProbable: Calculation = Calculation("40.00", "50.00", "188.00", "278.00")
 
-      val previousPaidCalc: Calculation = calcService.getPreviousPaidCalculation(deltaCalc, newCalc)
+      val previousPaidCalc: Calculation = service.getPreviousPaidCalculation(deltaCalc, newCalc)
 
       previousPaidCalc shouldBe previousPaidProbable
-
     }
   }
 
@@ -1361,33 +1251,32 @@ class CalculatorServiceSpec extends BaseSpec {
       declarationResponse = Some(declarationResponse)
     )
 
-    val service: CalculatorService = injected[CalculatorService]
-
     "return LimitUsageSuccessResponse" in {
-      when(
-        injected[WsAllMethods].POST[LimitRequest, JsObject](
-          meq("http://passengers-duty-calculator.service:80/passengers-duty-calculator/limits"),
-          any(),
-          any()
-        )(any(), any(), any(), any())
-      ).thenReturn(Future.successful(jsonObj))
 
-      val response: LimitUsageResponse = await(service.limitUsage(journeyData))
+      val url: String   = "http://localhost:9027/passengers-duty-calculator/limits"
+      val body: JsValue = Json.toJson(service.journeyDataToLimitsRequest(journeyData))
+
+      when(mockServicesConfig.baseUrl("passengers-duty-calculator")).thenReturn("http://localhost:9027")
+      when(mockPostRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockPostRequestBuilder)
+      when(mockPostRequestBuilder.execute(any[HttpReads[JsObject]], any())).thenReturn(Future.successful(jsonObj))
+      when(mockHttpClient.post(any())(any())).thenReturn(mockPostRequestBuilder)
+
+      val response: LimitUsageResponse = service.limitUsage(journeyData).futureValue
 
       response shouldBe LimitUsageSuccessResponse(Map("L-WINE" -> "0.4444"))
 
-      verify(injected[WsAllMethods], times(1)).POST(
-        meq(s"http://passengers-duty-calculator.service:80/passengers-duty-calculator/limits"),
-        any(),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(any(), any(), any())
+      verify(mockPostRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue      shouldBe url"$url"
+      jsonBodyCapture.getValue shouldBe body
     }
 
     "return LimitUsageCantBuildCalcReqResponse" in {
-      val response: LimitUsageResponse = await(service.limitUsage(JourneyData()))
+      val response: LimitUsageResponse = service.limitUsage(JourneyData()).futureValue
 
       response shouldBe LimitUsageCantBuildCalcReqResponse
     }
   }
-  // scalastyle:on magic.number
 }

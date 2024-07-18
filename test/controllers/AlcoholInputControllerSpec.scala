@@ -27,7 +27,7 @@ import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
-import play.api.test.Helpers.{status, route => rt, _}
+import play.api.test.Helpers.{route => rt, _}
 import play.api.test.{FakeRequest, Injecting}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository

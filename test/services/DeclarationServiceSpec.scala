@@ -16,59 +16,80 @@
 
 package services
 
+import audit.AuditingTools
 import connectors.Cache
 import models._
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import play.api.Application
 import play.api.i18n.MessagesApi
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import repositories.BCPassengersSessionRepository
-import services.http.WsAllMethods
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, EnhancedJsObject, parseLocalDate, parseLocalTime}
 
+import java.net.URL
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
-  // scalastyle:off magic.number
   implicit val messages: MessagesApi = injected[MessagesApi]
 
-  override lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
-    .overrides(bind[WsAllMethods].toInstance(mock(classOf[WsAllMethods])))
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
-    .overrides(bind[AuditConnector].toInstance(mock(classOf[AuditConnector])))
-    .configure(
-      "microservice.services.bc-passengers-declarations.host" -> "bc-passengers-declarations.service",
-      "microservice.services.bc-passengers-declarations.port" -> "80"
-    )
-    .build()
+  private val mockRequestBuilder: RequestBuilder           = mock(classOf[RequestBuilder])
+  private val mockHttpClient: HttpClientV2                 = mock(classOf[HttpClientV2])
+  private val mockCache: Cache                             = mock(classOf[Cache])
+  private val mockServicesConfig: ServicesConfig           = mock(classOf[ServicesConfig])
+  private val mockAuditingTools: AuditingTools             = mock(classOf[AuditingTools])
+  private val mockAuditConnector: AuditConnector           = mock(classOf[AuditConnector])
+  private val portsOfArrivalService: PortsOfArrivalService = new PortsOfArrivalService
 
   override def beforeEach(): Unit = {
-    reset(injected[WsAllMethods])
-    reset(injected[Cache])
-    reset(injected[AuditConnector])
+    reset(mockHttpClient)
+    reset(mockRequestBuilder)
+    reset(mockCache)
+    reset(mockAuditConnector)
     super.beforeEach()
   }
 
-  trait LocalSetup {
+  private trait EndpointSetup {
+    def httpResponse: HttpResponse
+    def url: String
+
+    val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
+
+    val urlCapture: ArgumentCaptor[URL]                 = ArgumentCaptor.forClass(classOf[URL])
+    val bodyCapture: ArgumentCaptor[JsValue]            = ArgumentCaptor.forClass(classOf[JsValue])
+    val headerCapture: ArgumentCaptor[(String, String)] = ArgumentCaptor.forClass(classOf[(String, String)])
+
+    when(mockServicesConfig.baseUrl("bc-passengers-declarations")).thenReturn("http://localhost:9073")
+    when(mockRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilder)
+    when(mockRequestBuilder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(Future.successful(httpResponse))
+    when(mockHttpClient.post(any())(any())).thenReturn(mockRequestBuilder)
+  }
+
+  private trait Setup {
     def journeyDataInCache: Option[JourneyData]
 
-    lazy val declarationService: DeclarationService = {
-      val service = app.injector.instanceOf[DeclarationService]
-      val mock    = service.cache
-      when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
-      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-      when(mock.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
-      service
-    }
+    when(mockServicesConfig.getString("declarations.amend")).thenReturn("DeclarationAmend")
+    when(mockServicesConfig.getString("declarations.create")).thenReturn("DeclarationCreate")
+    when(mockServicesConfig.getString("declarations.euOnly")).thenReturn("EU Only")
+    when(mockServicesConfig.getString("declarations.nonEuOnly")).thenReturn("NON_EU Only")
+    when(mockServicesConfig.getString("declarations.greatBritain")).thenReturn("Great Britain")
+    when(mockServicesConfig.getString("declarations.telephonePrefix")).thenReturn("XPASSID")
+
+    val declarationService: DeclarationService = new DeclarationService(
+      cache = mockCache,
+      portsOfArrivalService = portsOfArrivalService,
+      httpClient = mockHttpClient,
+      servicesConfig = mockServicesConfig,
+      auditConnector = mockAuditConnector,
+      auditingTools = mockAuditingTools,
+      ec = ec
+    )
   }
 
   val userInformation: UserInformation = UserInformation(
@@ -395,16 +416,17 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         Some(("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false)))
     }
 
-    "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse if the backend returns 400" in new Setup with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, "")
 
-      val cid: String         = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/submit-declaration"
+
       val ui: UserInformation = userInformation.copy(identificationType = "passport", identificationNumber = "SX12345")
+
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
 
       val r: DeclarationServiceResponse = declarationService
         .submitDeclaration(ui, calculatorResponse, jd, LocalDateTime.parse("2018-05-31T12:14:08"), cid)
@@ -412,28 +434,26 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-declaration"),
-        meq(expectedTelephoneValueSendJson),
-        meq(
-          Seq(
-            "X-Correlation-ID" -> cid
-          )
-        )
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc), any())
+      urlCapture.getValue    shouldBe url"$url"
+      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue   shouldBe expectedTelephoneValueSendJson
     }
 
-    "return a DeclarationServiceFailureResponse if the backend returns 500" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse if the backend returns 500" in new Setup with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, "")
 
-      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/submit-declaration"
+
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
 
       val r: DeclarationServiceResponse = declarationService
         .submitDeclaration(
@@ -447,31 +467,28 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-declaration"),
-        meq(expectedSendJson),
-        meq(
-          Seq(
-            "X-Correlation-ID" -> cid
-          )
-        )
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc), any())
+      urlCapture.getValue    shouldBe url"$url"
+      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue   shouldBe expectedSendJson
     }
 
-    "return a DeclarationServiceSuccessResponse if the backend returns 202" in new LocalSetup {
+    "return a DeclarationServiceSuccessResponse if the backend returns 202" in new Setup with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn
-        Future.successful(HttpResponse.apply(ACCEPTED, expectedJsObj.toString))
+      override def httpResponse: HttpResponse = HttpResponse.apply(ACCEPTED, expectedJsObj.toString)
 
-      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/submit-declaration"
 
-      val r: DeclarationServiceResponse = await(
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+
+      val r: DeclarationServiceResponse =
         declarationService
           .submitDeclaration(
             userInformation,
@@ -480,21 +497,19 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             LocalDateTime.parse("2018-05-31T12:14:08"),
             cid
           )
-      )
+          .futureValue
 
       r shouldBe DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-declaration"),
-        meq(expectedSendJson),
-        meq(
-          Seq(
-            "X-Correlation-ID" -> cid
-          )
-        )
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc), any())
+      urlCapture.getValue    shouldBe url"$url"
+      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue   shouldBe expectedSendJson
     }
   }
 
@@ -698,16 +713,17 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       Some(("customerReference", Json.obj("idType" -> "passport", "idValue" -> "SX12345", "ukResident" -> false)))
     }
 
-    "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse if the backend returns 400" in new Setup with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, "")
 
-      val cid: String         = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/submit-amendment"
+
       val ui: UserInformation = userInformation.copy(identificationType = "passport", identificationNumber = "SX12345")
+
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
 
       val r: DeclarationServiceResponse = declarationService
         .submitAmendment(ui, calculatorResponse, jd, LocalDateTime.parse("2018-05-31T12:14:08"), cid)
@@ -715,28 +731,26 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-amendment"),
-        meq(expectedTelephoneValueSendJson),
-        meq(
-          Seq(
-            "X-Correlation-ID" -> cid
-          )
-        )
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc), any())
+      urlCapture.getValue    shouldBe url"$url"
+      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue   shouldBe expectedTelephoneValueSendJson
     }
 
-    "return a DeclarationServiceFailureResponse if the backend returns 500" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse if the backend returns 500" in new Setup with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, "")
 
-      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/submit-amendment"
+
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
 
       val r: DeclarationServiceResponse = declarationService
         .submitAmendment(
@@ -750,31 +764,28 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-amendment"),
-        meq(expectedJsObj),
-        meq(
-          Seq(
-            "X-Correlation-ID" -> cid
-          )
-        )
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc), any())
+      urlCapture.getValue    shouldBe url"$url"
+      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue   shouldBe expectedJsObj
     }
 
-    "return a DeclarationServiceSuccessResponse if the backend returns 202" in new LocalSetup {
+    "return a DeclarationServiceSuccessResponse if the backend returns 202" in new Setup with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[JsObject, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn
-        Future.successful(HttpResponse.apply(ACCEPTED, expectedJsObj.toString))
+      override def httpResponse: HttpResponse = HttpResponse.apply(ACCEPTED, expectedJsObj.toString)
 
-      val cid: String = "fe28db96-d9db-4220-9e12-f2d267267c29"
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/submit-amendment"
 
-      val r: DeclarationServiceResponse = await(
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+
+      val r: DeclarationServiceResponse =
         declarationService
           .submitAmendment(
             userInformation,
@@ -783,27 +794,25 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             LocalDateTime.parse("2018-05-31T12:14:08"),
             cid
           )
-      )
+          .futureValue
 
       r shouldBe DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-      verify(injected[WsAllMethods], times(1)).POST[JsObject, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/submit-amendment"),
-        meq(expectedJsObj),
-        meq(
-          Seq(
-            "X-Correlation-ID" -> cid
-          )
-        )
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      verify(injected[AuditConnector], times(1)).sendExtendedEvent(any())(meq(hc), any())
+      urlCapture.getValue    shouldBe url"$url"
+      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue   shouldBe expectedJsObj
     }
   }
 
   "Calling DeclarationService.buildPartialDeclarationMessage" should {
 
-    "truncate a product description to 40 characters if the product description is too big in the metadata." in new LocalSetup {
+    "truncate a product description to 40 characters if the product description is too big in the metadata." in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -929,7 +938,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "generate the correct payload and set euCountryCheck is nonEuOnly and arrivingNI flag is true" in new LocalSetup {
+    "generate the correct payload and set euCountryCheck is nonEuOnly and arrivingNI flag is true" in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -1407,7 +1416,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in new LocalSetup {
+    "generate the correct payload and adhere to the schema when journeyData a calculation with all product categories in" in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -1892,7 +1901,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "generate the correct payload and including ukVATPaid, ukExcisePaid, uccRelief, isMade and eu flags at item level" in new LocalSetup {
+    "generate the correct payload and including ukVATPaid, ukExcisePaid, uccRelief, isMade and eu flags at item level" in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -2392,7 +2401,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "format the idValue if idType is telephone and generate the correct payload GBNI journey in " in new LocalSetup {
+    "format the idValue if idType is telephone and generate the correct payload GBNI journey in " in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -2605,7 +2614,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
     }
 
-    "format the idValue to uppercase if idType is telephone and contains lowercase characters in " in new LocalSetup {
+    "format the idValue to uppercase if idType is telephone and contains lowercase characters in " in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -2647,7 +2656,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
     }
 
-    "format the idValue to uppercase if idType is not telephone and contains lowercase characters in " in new LocalSetup {
+    "format the idValue to uppercase if idType is not telephone and contains lowercase characters in " in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -2688,7 +2697,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       idValue shouldEqual "74A17B53C2125"
     }
 
-    "generate correct acknowledgment reference number for amendment" in new LocalSetup {
+    "generate correct acknowledgment reference number for amendment" in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
@@ -2771,208 +2780,227 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   "Calling DeclarationService.storeChargeReference" should {
 
-    "store charge reference information" in new LocalSetup {
+    "store charge reference information" in new Setup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      await(declarationService.storeChargeReference(JourneyData(), userInformation, "XJPR5768524625"))
+      val bodyCapture: ArgumentCaptor[JourneyData] = ArgumentCaptor.forClass(classOf[JourneyData])
 
-      verify(declarationService.cache, times(1)).store(
-        meq(JourneyData(userInformation = Some(userInformation), chargeReference = Some("XJPR5768524625")))
-      )(any())
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
+      val r: JourneyData =
+        declarationService.storeChargeReference(JourneyData(), userInformation, "XJPR5768524625").futureValue
+
+      r shouldBe JourneyData(chargeReference = Some("XJPR5768524625"), userInformation = Some(userInformation))
+
+      verify(mockCache, times(1)).store(bodyCapture.capture())(any())
+
+      bodyCapture.getValue shouldBe JourneyData(
+        userInformation = Some(userInformation),
+        chargeReference = Some("XJPR5768524625")
+      )
     }
   }
 
   "Calling DeclarationService.updateDeclaration" should {
 
-    "return a DeclarationServiceFailureResponse for update if the declaration returns 500" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse for update if the declaration returns 500" in new Setup
+      with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/update-payment"
 
       val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
-        meq(PaymentNotification("Successful", "XJPR5768524625")),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
 
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
     }
 
-    "return a DeclarationServiceFailureResponse for update if declaration returns a bad request" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse for update if declaration returns a bad request" in new Setup
+      with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/update-payment"
 
       val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
-        meq(PaymentNotification("Successful", "XJPR5768524625")),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
 
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
     }
 
-    "return a DeclarationServiceFailureResponse for update if the declaration is not found" in new LocalSetup {
+    "return a DeclarationServiceFailureResponse for update if the declaration is not found" in new Setup
+      with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(NOT_FOUND, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(NOT_FOUND, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/update-payment"
 
       val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
 
       r shouldBe DeclarationServiceFailureResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
-        meq(PaymentNotification("Successful", "XJPR5768524625")),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
 
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
     }
 
-    "return a DeclarationServiceSuccessResponse for update if the declaration returns 202" in new LocalSetup {
+    "return a DeclarationServiceSuccessResponse for update if the declaration returns 202" in new Setup
+      with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      when(
-        injected[WsAllMethods].POST[PaymentNotification, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(ACCEPTED, ""))
+      override def httpResponse: HttpResponse = HttpResponse.apply(ACCEPTED, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/update-payment"
 
       val r: DeclarationServiceResponse = declarationService.updateDeclaration("XJPR5768524625").futureValue
 
       r shouldBe DeclarationServiceSuccessResponse
 
-      verify(injected[WsAllMethods], times(1)).POST[PaymentNotification, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/update-payment"),
-        meq(PaymentNotification("Successful", "XJPR5768524625")),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
 
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
     }
   }
 
   "Calling DeclarationService.retrieveDeclaration" should {
 
-    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
-
-    "return a DeclarationServiceFailureResponse if the backend returns 400" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = None
-
-      when(
-        injected[WsAllMethods]
-          .POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(BAD_REQUEST, ""))
-
-      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
-
-      r shouldBe DeclarationServiceFailureResponse
-
-      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
-        meq(previousDeclarationRequest),
-        any()
-      )(any(), any(), any(), any())
-
-    }
-
-    "return a DeclarationServiceFailureResponse if the backend returns 500" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = None
-
-      when(
-        injected[WsAllMethods]
-          .POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(INTERNAL_SERVER_ERROR, ""))
-
-      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
-
-      r shouldBe DeclarationServiceFailureResponse
-
-      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
-        meq(previousDeclarationRequest),
-        any()
-      )(any(), any(), any(), any())
-
-    }
-
-    "return a DeclarationServiceFailureResponse if the backend returns NOT FOUND" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = None
-
-      when(
-        injected[WsAllMethods]
-          .POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn Future.successful(HttpResponse.apply(NOT_FOUND, ""))
-
-      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
-
-      r shouldBe DeclarationServiceFailureResponse
-
-      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
-        meq(previousDeclarationRequest),
-        any()
-      )(any(), any(), any(), any())
-
-    }
-
-    "return a DeclarationServiceSuccessResponse if the backend returns 200" in new LocalSetup {
-
-      override def journeyDataInCache: Option[JourneyData] = None
-
-      val expectedJson: JsObject = Json.obj(
-        "euCountryCheck"              -> "greatBritain",
-        "arrivingNI"                  -> true,
-        "isOver17"                    -> true,
-        "isUKResident"                -> false,
-        "isPrivateTravel"             -> true,
-        "amendmentCount"              -> 1,
-        "calculation"                 -> Json
-          .obj("excise" -> "160.45", "customs" -> "25012.50", "vat" -> "15134.59", "allTax" -> "40307.54"),
-        "liabilityDetails"            -> Json.obj(
-          "totalExciseGBP"  -> "32.0",
-          "totalCustomsGBP" -> "0.0",
-          "totalVATGBP"     -> "126.4",
-          "grandTotalGBP"   -> "158.40"
-        ),
-        "oldPurchaseProductInstances" -> Json.arr(
-          Json.obj(
-            "path"         -> "other-goods/adult/adult-footwear",
-            "iid"          -> "UnOGll",
-            "country"      -> Json.obj(
-              "code"            -> "IN",
-              "countryName"     -> "title.india",
-              "alphaTwoCode"    -> "IN",
-              "isEu"            -> false,
-              "isCountry"       -> true,
-              "countrySynonyms" -> Json.arr()
-            ),
-            "currency"     -> "GBP",
-            "cost"         -> 500,
-            "isVatPaid"    -> false,
-            "isCustomPaid" -> false,
-            "isUccRelief"  -> false
-          )
+    val expectedJson: JsObject = Json.obj(
+      "euCountryCheck"              -> "greatBritain",
+      "arrivingNI"                  -> true,
+      "isOver17"                    -> true,
+      "isUKResident"                -> false,
+      "isPrivateTravel"             -> true,
+      "amendmentCount"              -> 1,
+      "calculation"                 -> Json
+        .obj("excise" -> "160.45", "customs" -> "25012.50", "vat" -> "15134.59", "allTax" -> "40307.54"),
+      "liabilityDetails"            -> Json.obj(
+        "totalExciseGBP"  -> "32.0",
+        "totalCustomsGBP" -> "0.0",
+        "totalVATGBP"     -> "126.4",
+        "grandTotalGBP"   -> "158.40"
+      ),
+      "oldPurchaseProductInstances" -> Json.arr(
+        Json.obj(
+          "path"         -> "other-goods/adult/adult-footwear",
+          "iid"          -> "UnOGll",
+          "country"      -> Json.obj(
+            "code"            -> "IN",
+            "countryName"     -> "title.india",
+            "alphaTwoCode"    -> "IN",
+            "isEu"            -> false,
+            "isCountry"       -> true,
+            "countrySynonyms" -> Json.arr()
+          ),
+          "currency"     -> "GBP",
+          "cost"         -> 500,
+          "isVatPaid"    -> false,
+          "isCustomPaid" -> false,
+          "isUccRelief"  -> false
         )
       )
+    )
+
+    val expectedJsonWithDeltaCalcAndAmendState: JsObject = expectedJson ++ Json.obj(
+      "amendState"       -> Some("pending-payment"),
+      "deltaCalculation" -> Some(Calculation("0.00", "0.00", "0.00", "0.00"))
+    )
+
+    val previousDeclarationRequest = PreviousDeclarationRequest("Potter", "someReference")
+
+    "return a DeclarationServiceFailureResponse if the backend returns 400" in new Setup with EndpointSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      override def httpResponse: HttpResponse = HttpResponse.apply(BAD_REQUEST, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/retrieve-declaration"
+
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
+    }
+
+    "return a DeclarationServiceFailureResponse if the backend returns 500" in new Setup with EndpointSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      override def httpResponse: HttpResponse = HttpResponse.apply(INTERNAL_SERVER_ERROR, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/retrieve-declaration"
+
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
+    }
+
+    "return a DeclarationServiceFailureResponse if the backend returns NOT FOUND" in new Setup with EndpointSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      override def httpResponse: HttpResponse = HttpResponse.apply(NOT_FOUND, "")
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/retrieve-declaration"
+
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
+
+      r shouldBe DeclarationServiceFailureResponse
+
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
+
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
+    }
+
+    "return a DeclarationServiceSuccessResponse if the backend returns 200" in new Setup with EndpointSetup {
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      override def httpResponse: HttpResponse = HttpResponse.apply(OK, expectedJson.toString)
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/retrieve-declaration"
 
       val calculation: Calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
 
@@ -3016,65 +3044,26 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         declarationResponse = Some(declarationResponse)
       )
 
-      when(
-        injected[WsAllMethods]
-          .POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn
-        Future.successful(HttpResponse.apply(OK, expectedJson.toString))
-
-      val r: DeclarationServiceResponse = await(declarationService.retrieveDeclaration(previousDeclarationRequest))
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
 
       r shouldBe DeclarationServiceRetrieveSuccessResponse(jd)
 
-      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
-        meq(previousDeclarationRequest),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
 
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
     }
 
-    "return a DeclarationServiceSuccessResponse with amend state and delta calculation if the backend returns 200" in new LocalSetup {
+    "return a DeclarationServiceSuccessResponse with amend state and delta calculation if the backend returns 200" in new Setup
+      with EndpointSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
-      val expectedJson: JsObject = Json.obj(
-        "euCountryCheck"              -> "greatBritain",
-        "arrivingNI"                  -> true,
-        "isOver17"                    -> true,
-        "isUKResident"                -> false,
-        "isPrivateTravel"             -> true,
-        "amendmentCount"              -> 1,
-        "calculation"                 -> Json
-          .obj("excise" -> "160.45", "customs" -> "25012.50", "vat" -> "15134.59", "allTax" -> "40307.54"),
-        "liabilityDetails"            -> Json.obj(
-          "totalExciseGBP"  -> "32.0",
-          "totalCustomsGBP" -> "0.0",
-          "totalVATGBP"     -> "126.4",
-          "grandTotalGBP"   -> "158.40"
-        ),
-        "oldPurchaseProductInstances" -> Json.arr(
-          Json.obj(
-            "path"         -> "other-goods/adult/adult-footwear",
-            "iid"          -> "UnOGll",
-            "country"      -> Json.obj(
-              "code"            -> "IN",
-              "countryName"     -> "title.india",
-              "alphaTwoCode"    -> "IN",
-              "isEu"            -> false,
-              "isCountry"       -> true,
-              "countrySynonyms" -> Json.arr()
-            ),
-            "currency"     -> "GBP",
-            "cost"         -> 500,
-            "isVatPaid"    -> false,
-            "isCustomPaid" -> false,
-            "isUccRelief"  -> false
-          )
-        ),
-        "amendState"                  -> Some("pending-payment"),
-        "deltaCalculation"            -> Some(Calculation("0.00", "0.00", "0.00", "0.00"))
-      )
+      override def httpResponse: HttpResponse = HttpResponse.apply(OK, expectedJsonWithDeltaCalcAndAmendState.toString)
+
+      override def url: String = "http://localhost:9073/bc-passengers-declarations/retrieve-declaration"
 
       val calculation: Calculation = Calculation("160.45", "25012.50", "15134.59", "40307.54")
 
@@ -3120,23 +3109,16 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         deltaCalculation = Some(Calculation("0.00", "0.00", "0.00", "0.00"))
       )
 
-      when(
-        injected[WsAllMethods]
-          .POST[PreviousDeclarationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any())
-      ) thenReturn
-        Future.successful(HttpResponse.apply(OK, expectedJson.toString))
-
-      val r: DeclarationServiceResponse = await(declarationService.retrieveDeclaration(previousDeclarationRequest))
+      val r: DeclarationServiceResponse = declarationService.retrieveDeclaration(previousDeclarationRequest).futureValue
 
       r shouldBe DeclarationServiceRetrieveSuccessResponse(jd)
 
-      verify(injected[WsAllMethods], times(1)).POST[PreviousDeclarationRequest, HttpResponse](
-        meq("http://bc-passengers-declarations.service:80/bc-passengers-declarations/retrieve-declaration"),
-        meq(previousDeclarationRequest),
-        any()
-      )(any(), any(), any(), any())
+      verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(any(), any())
 
+      urlCapture.getValue  shouldBe url"$url"
+      bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
     }
   }
-  // scalastyle:on magic.number
 }
