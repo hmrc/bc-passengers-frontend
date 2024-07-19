@@ -36,7 +36,6 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends BaseSpec {
-  // scalastyle:off magic.number
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -3329,5 +3328,4 @@ class DashboardControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
   }
-  // scalastyle:on magic.number
 }

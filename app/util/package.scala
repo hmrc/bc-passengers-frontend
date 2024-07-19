@@ -27,7 +27,6 @@ import java.time.{LocalDate, LocalTime}
 import java.util.Locale
 import scala.util.Try
 
-// scalastyle:off magic.number
 package object util extends ProductDetector {
 
   val decimalFormat10: DecimalFormat = {

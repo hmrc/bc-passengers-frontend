@@ -25,9 +25,9 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Reads._
 import util._
 import play.api.libs.json._
-import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -40,8 +40,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeclarationService @Inject() (
   val cache: Cache,
-  val wsAllMethods: WsAllMethods,
   val portsOfArrivalService: PortsOfArrivalService,
+  httpClient: HttpClientV2,
   servicesConfig: ServicesConfig,
   auditConnector: AuditConnector,
   auditingTools: AuditingTools,
@@ -81,36 +81,39 @@ class DeclarationService @Inject() (
           } else { None }
       )
 
-    wsAllMethods.POST[PreviousDeclarationRequest, HttpResponse](
-      passengersDeclarationsBaseUrl + "/bc-passengers-declarations/retrieve-declaration",
-      previousDeclarationDetails
-    ) map {
-      case HttpResponse(OK, declarationResponse, _) =>
-        DeclarationServiceRetrieveSuccessResponse(
-          constructJourneyDataFromDeclarationResponse(Json.parse(declarationResponse))
-        )
-      case HttpResponse(BAD_REQUEST, _, _)          =>
-        logger.error(
-          "DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] BAD_REQUEST received from bc-passengers-declarations "
-        )
-        DeclarationServiceFailureResponse
-      case HttpResponse(NOT_FOUND, _, _)            =>
-        logger.error(
-          "DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] NOT_FOUND received from bc-passengers-declarations"
-        )
-        DeclarationServiceFailureResponse
-      case HttpResponse(status, _, _)               =>
-        logger.error(
-          s"DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
-        )
-        DeclarationServiceFailureResponse
-      case _                                        =>
-        logger.error(
-          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+    val url: String = s"$passengersDeclarationsBaseUrl/bc-passengers-declarations/retrieve-declaration"
+
+    httpClient
+      .post(url"$url")
+      .withBody(Json.toJson(previousDeclarationDetails))
+      .execute[HttpResponse]
+      .map {
+        case HttpResponse(OK, declarationResponse, _) =>
+          DeclarationServiceRetrieveSuccessResponse(
+            constructJourneyDataFromDeclarationResponse(Json.parse(declarationResponse))
+          )
+        case HttpResponse(BAD_REQUEST, _, _)          =>
+          logger.error(
+            "DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] BAD_REQUEST received from bc-passengers-declarations "
+          )
+          DeclarationServiceFailureResponse
+        case HttpResponse(NOT_FOUND, _, _)            =>
+          logger.error(
+            "DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] NOT_FOUND received from bc-passengers-declarations"
+          )
+          DeclarationServiceFailureResponse
+        case HttpResponse(status, _, _)               =>
+          logger.error(
+            s"DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+          )
+          DeclarationServiceFailureResponse
+        case _                                        =>
+          logger.error(
+            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
             | Unhandled declaration service response""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-    }
+          )
+          DeclarationServiceFailureResponse
+      }
   }
 
   def submitDeclaration(
@@ -137,10 +140,6 @@ class DeclarationService @Inject() (
         logger.error(s"[DeclarationService][submitDeclaration] Transforming declaration message with errors : $errors")
     }
 
-    val headers = Seq(
-      "X-Correlation-ID" -> correlationId
-    )
-
     def extractChargeReference(declaration: JsValue) =
       ChargeReference(
         (declaration \ "simpleDeclarationRequest" \ "requestDetail" \ "declarationHeader" \ "chargeReference")
@@ -148,31 +147,33 @@ class DeclarationService @Inject() (
           .value
       )
 
-    //First add correlation id etc
-    wsAllMethods.POST[JsObject, HttpResponse](
-      passengersDeclarationsBaseUrl + "/bc-passengers-declarations/submit-declaration",
-      partialDeclarationMessage,
-      headers
-    ) map {
-      case HttpResponse(ACCEPTED, declaration, _) =>
-        DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
-      case HttpResponse(BAD_REQUEST, _, _)        =>
-        logger.error(
-          "DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted"
-        )
-        DeclarationServiceFailureResponse
-      case HttpResponse(status, _, _)             =>
-        logger.error(
-          s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
-        )
-        DeclarationServiceFailureResponse
-      case _                                      =>
-        logger.error(
-          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+    val url: String = s"$passengersDeclarationsBaseUrl/bc-passengers-declarations/submit-declaration"
+
+    httpClient
+      .post(url"$url")
+      .setHeader("X-Correlation-ID" -> correlationId)
+      .withBody(partialDeclarationMessage)
+      .execute[HttpResponse]
+      .map {
+        case HttpResponse(ACCEPTED, declaration, _) =>
+          DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
+        case HttpResponse(BAD_REQUEST, _, _)        =>
+          logger.error(
+            "DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted"
+          )
+          DeclarationServiceFailureResponse
+        case HttpResponse(status, _, _)             =>
+          logger.error(
+            s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+          )
+          DeclarationServiceFailureResponse
+        case _                                      =>
+          logger.error(
+            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
             | Unhandled declaration service response""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-    }
+          )
+          DeclarationServiceFailureResponse
+      }
   }
 
   def submitAmendment(
@@ -199,10 +200,6 @@ class DeclarationService @Inject() (
         logger.error(s"[DeclarationService][submitDeclaration] Transforming declaration message with errors : $errors")
     }
 
-    val headers = Seq(
-      "X-Correlation-ID" -> correlationId
-    )
-
     def extractChargeReference(declaration: JsValue) =
       ChargeReference(
         (declaration \ "simpleDeclarationRequest" \ "requestDetail" \ "declarationHeader" \ "chargeReference")
@@ -210,33 +207,35 @@ class DeclarationService @Inject() (
           .value
       )
 
-    //First add correlation id etc
-    wsAllMethods.POST[JsObject, HttpResponse](
-      passengersDeclarationsBaseUrl + "/bc-passengers-declarations/submit-amendment",
-      partialDeclarationMessage,
-      headers
-    ) map {
-      case HttpResponse(ACCEPTED, declaration, _) =>
-        DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
-      case HttpResponse(BAD_REQUEST, _, _)        =>
-        logger.error(
-          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+    val url: String = s"$passengersDeclarationsBaseUrl/bc-passengers-declarations/submit-amendment"
+
+    httpClient
+      .post(url"$url")
+      .setHeader("X-Correlation-ID" -> correlationId)
+      .withBody(partialDeclarationMessage)
+      .execute[HttpResponse]
+      .map {
+        case HttpResponse(ACCEPTED, declaration, _) =>
+          DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
+        case HttpResponse(BAD_REQUEST, _, _)        =>
+          logger.error(
+            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
             | BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-      case HttpResponse(status, _, _)             =>
-        logger.error(
-          s"""DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+          )
+          DeclarationServiceFailureResponse
+        case HttpResponse(status, _, _)             =>
+          logger.error(
+            s"""DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
              | Unexpected status of $status received from bc-passengers-declarations, unable to proceed""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-      case _                                      =>
-        logger.error(
-          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+          )
+          DeclarationServiceFailureResponse
+        case _                                      =>
+          logger.error(
+            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
             | Unhandled declaration service response""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-    }
+          )
+          DeclarationServiceFailureResponse
+      }
   }
 
   def buildPartialDeclarationOrAmendmentMessage(
@@ -563,36 +562,40 @@ class DeclarationService @Inject() (
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 
-  def updateDeclaration(reference: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] =
-    wsAllMethods.POST[PaymentNotification, HttpResponse](
-      passengersDeclarationsBaseUrl + "/bc-passengers-declarations/update-payment",
-      PaymentNotification("Successful", reference)
-    ) map {
-      case HttpResponse(ACCEPTED, _, _)    =>
-        DeclarationServiceSuccessResponse
-      case HttpResponse(BAD_REQUEST, _, _) =>
-        logger.error(
-          "ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] BAD_REQUEST received from bc-passengers-declarations "
-        )
-        DeclarationServiceFailureResponse
-      case HttpResponse(NOT_FOUND, _, _)   =>
-        logger.error(
-          "ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] NOT_FOUND received from bc-passengers-declarations"
-        )
-        DeclarationServiceFailureResponse
-      case HttpResponse(status, _, _)      =>
-        logger.error(
-          s"""ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration]
+  def updateDeclaration(reference: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
+    val url: String = s"$passengersDeclarationsBaseUrl/bc-passengers-declarations/update-payment"
+
+    httpClient
+      .post(url"$url")
+      .withBody(Json.toJson(PaymentNotification("Successful", reference)))
+      .execute[HttpResponse]
+      .map {
+        case HttpResponse(ACCEPTED, _, _)    =>
+          DeclarationServiceSuccessResponse
+        case HttpResponse(BAD_REQUEST, _, _) =>
+          logger.error(
+            "ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] BAD_REQUEST received from bc-passengers-declarations "
+          )
+          DeclarationServiceFailureResponse
+        case HttpResponse(NOT_FOUND, _, _)   =>
+          logger.error(
+            "ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] NOT_FOUND received from bc-passengers-declarations"
+          )
+          DeclarationServiceFailureResponse
+        case HttpResponse(status, _, _)      =>
+          logger.error(
+            s"""ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration]
              | Unexpected status of $status received from bc-passengers-declarations, unable to proceed""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-      case _                               =>
-        logger.error(
-          """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
+          )
+          DeclarationServiceFailureResponse
+        case _                               =>
+          logger.error(
+            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
             | Unhandled declaration service response""".stripMargin
-        )
-        DeclarationServiceFailureResponse
-    }
+          )
+          DeclarationServiceFailureResponse
+      }
+  }
 
   private def formatDeclarationMessage(idType: String, idValue: String, receiptDateTime: String): Reads[JsObject] = {
 

@@ -22,6 +22,9 @@ import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{Lang, MessagesApi}
+import play.api.mvc.RequestHeader
+import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
 import views.html._
@@ -44,6 +47,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Accessib
   private val tobaccoInputForm: TobaccoInputForm                   = app.injector.instanceOf[TobaccoInputForm]
   private val otherGoodsInputController: OtherGoodsInputController = app.injector.instanceOf[OtherGoodsInputController]
   private val messagesApi: MessagesApi                             = app.injector.instanceOf[MessagesApi]
+  implicit val arbRequestHeader: Arbitrary[RequestHeader]          = fixed(FakeRequest().withCSRFToken)
 
   private val booleanForm: Form[Boolean]          = Form("value" -> boolean)
   private val alcoholForm: Form[AlcoholDto]       = alcoholInputForm.resilientForm

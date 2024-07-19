@@ -54,4 +54,3 @@ Assets / pipelineStages := Seq(concat, uglify)
 uglify / includeFilter := GlobFilter("application.js")
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt A11y/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle it/Test/scalastyle A11y/scalastyle")

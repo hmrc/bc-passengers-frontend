@@ -32,7 +32,6 @@ import utils.FormatsAndConversions
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-// scalastyle:off
 class TobaccoInputController @Inject() (
   val cache: Cache,
   tobaccoInputForm: TobaccoInputForm,

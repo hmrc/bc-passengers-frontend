@@ -22,9 +22,9 @@ import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.libs.json._
 import play.mvc.Http.Status._
-import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.format.DateTimeFormatter
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PayApiService @Inject() (
-  val wsAllMethods: WsAllMethods,
+  httpClient: HttpClientV2,
   configuration: Configuration,
   servicesConfig: ServicesConfig,
   val countriesService: CountriesService,
@@ -131,13 +131,18 @@ class PayApiService @Inject() (
             Json.obj()
           })
 
-    wsAllMethods.POST[JsValue, HttpResponse](payApiBaseUrl + "/pay-api/pngr/pngr/journey/start", requestBody) map { r =>
-      r.status match {
-        case CREATED => PayApiServiceSuccessResponse((r.json \ "nextUrl").as[JsString].value)
-        case _       => PayApiServiceFailureResponse
-      }
-    }
+    val url: String = s"$payApiBaseUrl/pay-api/pngr/pngr/journey/start"
 
+    httpClient
+      .post(url"$url")
+      .withBody(requestBody)
+      .execute[HttpResponse]
+      .map { r =>
+        r.status match {
+          case CREATED => PayApiServiceSuccessResponse((r.json \ "nextUrl").as[JsString].value)
+          case _       => PayApiServiceFailureResponse
+        }
+      }
   }
 }
 

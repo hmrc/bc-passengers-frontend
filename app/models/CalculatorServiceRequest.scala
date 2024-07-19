@@ -76,8 +76,7 @@ object LimitRequest {
 
   implicit val writes: OWrites[LimitRequest] = {
 
-    implicit val piw: Writes[SpeculativeItem] = (item: SpeculativeItem) => {
-
+    implicit val piw: Writes[SpeculativeItem] = (item: SpeculativeItem) =>
       Json
         .obj(
           "purchaseCost"   -> item.gbpCost.setScale(2, RoundingMode.DOWN).toString,
@@ -87,7 +86,6 @@ object LimitRequest {
           "metadata"       -> Json.obj()
         )
         .stripNulls
-    }
     Json.writes[LimitRequest]
   }
 }

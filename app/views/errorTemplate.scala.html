@@ -22,7 +22,7 @@
     p: components.p
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@()(implicit request: RequestHeader, messages: Messages, appConfig: config.AppConfig)
 
 @govuk_wrapper(pageTitle = Some(titleNoForm("technicalDifficultiesError.title", Some("Error")))){
 

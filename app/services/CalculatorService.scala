@@ -22,9 +22,9 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json, Reads}
-import services.http.WsAllMethods
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
@@ -47,7 +47,7 @@ case class CurrencyConversionRate(startDate: LocalDate, endDate: LocalDate, curr
 @Singleton
 class CalculatorService @Inject() (
   val cache: Cache,
-  wsAllMethods: WsAllMethods,
+  httpClient: HttpClientV2,
   productTreeService: ProductTreeService,
   currencyService: CurrencyService,
   servicesConfig: ServicesConfig,
@@ -65,12 +65,15 @@ class CalculatorService @Inject() (
     journeyDataToLimitsRequest(journeyData) match {
 
       case Some(limitRequest) =>
-        wsAllMethods.POST[LimitRequest, JsObject](
-          s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/limits",
-          limitRequest
-        ) map { r =>
-          LimitUsageSuccessResponse((r \ "limits").as[Map[String, String]])
-        }
+        val url: String = s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/limits"
+
+        httpClient
+          .post(url"$url")
+          .withBody(Json.toJson(limitRequest))
+          .execute[JsObject]
+          .map { r =>
+            LimitUsageSuccessResponse((r \ "limits").as[Map[String, String]])
+          }
 
       case _ =>
         logger.error("No items available for limits request")
@@ -88,12 +91,15 @@ class CalculatorService @Inject() (
     journeyDataToCalculatorRequest(journeyData, allPurchasedProductInstances) flatMap {
 
       case Some(calculatorRequest) =>
-        wsAllMethods.POST[CalculatorServiceRequest, CalculatorResponse](
-          s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate",
-          calculatorRequest
-        ) map { r =>
-          CalculatorServiceSuccessResponse(r)
-        } recover {
+        val url: String = s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate"
+
+        httpClient
+          .post(url"$url")
+          .withBody(Json.toJson(calculatorRequest))
+          .execute[CalculatorResponse]
+          .map { r =>
+            CalculatorServiceSuccessResponse(r)
+          } recover {
           case e: UpstreamErrorResponse if e.statusCode == REQUESTED_RANGE_NOT_SATISFIABLE =>
             CalculatorServicePurchasePriceOutOfBoundsFailureResponse
         }
@@ -213,17 +219,20 @@ class CalculatorService @Inject() (
     if (currenciesToFetch.isEmpty) {
       Future.successful(gbpEquivCurrencies)
     } else {
-      wsAllMethods.GET[List[CurrencyConversionRate]](
-        s"$currencyConversionBaseUrl/currency-conversion/rates/$todaysDate?$queryString"
-      ) map { currencyConversionRates =>
-        if (currencyConversionRates.exists(_.rate.isEmpty)) {
-          logger.error("Missing currency for " + currencyConversionRates.filter(_.rate.isEmpty).mkString(", "))
-        }
+      val url: String = s"$currencyConversionBaseUrl/currency-conversion/rates/$todaysDate?$queryString"
 
-        gbpEquivCurrencies ++ currencyConversionRates
-          .flatMap(ccr => ccr.rate.map(rate => (ccr.currencyCode, BigDecimal(rate))))
-          .toMap
-      }
+      httpClient
+        .get(url"$url")
+        .execute[List[CurrencyConversionRate]]
+        .map { currencyConversionRates =>
+          if (currencyConversionRates.exists(_.rate.isEmpty)) {
+            logger.error("Missing currency for " + currencyConversionRates.filter(_.rate.isEmpty).mkString(", "))
+          }
+
+          gbpEquivCurrencies ++ currencyConversionRates
+            .flatMap(ccr => ccr.rate.map(rate => (ccr.currencyCode, BigDecimal(rate))))
+            .toMap
+        }
     }
   }
 }
