@@ -52,8 +52,8 @@
                 hint = messages("label.if_you_bought_this_tobacco_"),
                 isPageHeading = false,
                 label = messages(s"label.country_this_tobacco_was_"),
-                hintText = "",
-                list = ("","") :: countries.map(c => (c.code,messages(c.countryName))),
+                hintText = messages("label.select_a_country"),
+                list =  countries.map(c => (c.code,messages(c.countryName))),
                 jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
             )
             @if(journeyStart.contains("euOnly")){
@@ -64,8 +64,8 @@
                 hint = messages("label.country_this_tobacco_was_produced_hint"),
                 isPageHeading = false,
                 label = messages(s"label.country_this_tobacco_was_produced"),
-                hintText = "",
-                list = ("","") :: countriesEU.map(c => (c.code,messages(c.countryName))),
+                hintText = messages("label.select_a_country"),
+                list = countriesEU.map(c => (c.code,messages(c.countryName))),
                 jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
               )
             }
@@ -74,11 +74,11 @@
                   id = "currency",
                   name = "currency",
                   isPageHint = false,
-                  hint = "",
+                  hint = messages("label.enter_currency"),
                   isPageHeading = false,
                   label = messages(s"label.currency_used_to_buy_this_tobacco"),
                   hintText = "",
-                  list = ("","") :: currencies.map(c => (c.code ,messages(c.displayName))),
+                  list = currencies.map(c => (c.code ,messages(c.displayName))),
                   jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
               )
 

@@ -1537,6 +1537,8 @@ site.warning = Warning
 time.period.am = am
 time.period.pm = pm
 
+label.select_a_country = Select a country
+
 # Technical Difficulties error page Messages
 technicalDifficultiesError.title = Sorry, there is a problem with the service - Error
 technicalDifficultiesError.heading = Sorry, there is a problem with the service
