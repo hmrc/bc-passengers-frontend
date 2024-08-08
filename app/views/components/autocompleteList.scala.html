@@ -57,12 +57,12 @@
         name = name,
         describedBy = if(hint) {Some(id + s"-hint")} else {None},
         errorMessage = form(id).error.map(fe => ErrorMessage(content = HtmlContent(messages(fe.message)))),
-        items = Seq(SelectItem(value = Some(""), attributes = Map("label" -> " "), text=(hintText))) ++ list.map {
+        items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
         case (k,v) => SelectItem(
             value = Some(k),
             text = v,
             selected = k == form(id).value.getOrElse(""),
-            attributes = Map("id" -> (id + s"-$k"), "label" -> " "))
+            attributes = Map("id" -> (id + s"-$k")))
         },
         formGroup = FormGroup(classes = Some("form-field-group"))
     ))
@@ -74,6 +74,7 @@
         selectElement: document.getElementById('@id'),
         displayMenu: 'inline',
         minLength: 2,
+        defaultValue: '',
         source: customSuggest,
         confirmOnBlur: true,
         onConfirm: function(confirmed) {

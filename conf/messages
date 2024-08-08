@@ -246,6 +246,7 @@ label.currency_used_to_buy_this_tobacco = Currency used to buy this tobacco
 label.if_you_bought_this_tobacco_ = If you bought this tobacco on a plane or boat, enter the country you were travelling from at the time of purchase.
 label.country_this_tobacco_was_produced_hint = If you are unsure where this tobacco was originally produced, leave this blank.
 label.total_weight_in_grams = Total weight in grams
+label.select_a_country = Select a country
 
 label.you_cannot_use_this_service=You cannot use this service
 label.you_cannot_declare_individual_items_worth_more_=You cannot declare individual items worth more than £2.1 billion using this service.

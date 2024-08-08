@@ -184,8 +184,8 @@
                     hint = messages("label.for_example_belfast_international_airport"),
                     isPageHeading = false,
                     label = messages(s"label.place_of_arrival_ni"),
-                    hintText = "",
-                    list = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    hintText = messages("label.select_a_country"),
+                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
                     labelClass = true
                 )
@@ -197,8 +197,8 @@
                     hint = messages("label.for_example_heathrow_airport_or_dover"),
                     isPageHeading = false,
                     label = messages(s"label.place_of_arrival_uk"),
-                    hintText = "",
-                    list = ("","") :: portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    hintText = messages("label.enter_place_of_arrival"),
+                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
                     labelClass = true
                 )
