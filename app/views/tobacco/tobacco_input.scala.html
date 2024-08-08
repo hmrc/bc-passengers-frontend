@@ -74,10 +74,10 @@
                   id = "currency",
                   name = "currency",
                   isPageHint = false,
-                  hint = messages("label.enter_currency"),
+                  hint = "",
                   isPageHeading = false,
                   label = messages(s"label.currency_used_to_buy_this_tobacco"),
-                  hintText = "",
+                  hintText = messages("label.enter_currency"),
                   list = currencies.map(c => (c.code ,messages(c.displayName))),
                   jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
               )
