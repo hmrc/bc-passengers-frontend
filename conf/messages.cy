@@ -246,6 +246,7 @@ label.currency_used_to_buy_this_tobacco=Yr arian cyfred a ddefnyddiwyd i brynu�
 label.if_you_bought_this_tobacco_=Os prynoch y tybaco hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu.
 label.country_this_tobacco_was_produced_hint = Os nad ydych yn siŵr lle y cafodd y tybaco hwn ei gynhyrchu’n wreiddiol, gadewch hyn yn wag
 label.total_weight_in_grams=Cyfanswm y pwysau mewn gramau
+label.select_a_country = Dewiswch wlad
 
 label.you_cannot_use_this_service=Ni allwch ddefnyddio’r gwasanaeth hwn
 label.you_cannot_declare_individual_items_worth_more_=Ni allwch ddatgan eitemau unigol sy’n werth mwy na £2.1 biliwn drwy’r gwasanaeth hwn.
