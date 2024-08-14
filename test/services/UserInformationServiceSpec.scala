@@ -24,6 +24,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.mongo.MongoComponent
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
 import scala.concurrent.Future
@@ -32,6 +33,7 @@ class UserInformationServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .build()
 
   override def beforeEach(): Unit =

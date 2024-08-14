@@ -28,6 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.mongo.MongoComponent
 import util.BaseSpec
 
 import scala.concurrent.Future
@@ -38,6 +39,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mockCache))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .build()
 
   override def beforeEach(): Unit = {

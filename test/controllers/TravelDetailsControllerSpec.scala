@@ -32,6 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
+import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -42,6 +43,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
     .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))

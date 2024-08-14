@@ -25,6 +25,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.BCPassengersSessionRepository
+import uk.gov.hmrc.mongo.MongoComponent
 import util.BaseSpec
 
 import scala.concurrent.Future
@@ -33,6 +34,7 @@ class PurchasedProductServiceSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .build()
 
