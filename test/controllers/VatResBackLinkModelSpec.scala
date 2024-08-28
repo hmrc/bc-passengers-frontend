@@ -25,12 +25,14 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import repositories.BCPassengersSessionRepository
+import uk.gov.hmrc.mongo.MongoComponent
 import util.BaseSpec
 
 class VatResBackLinkModelSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
     .build()
 

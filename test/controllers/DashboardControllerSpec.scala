@@ -30,6 +30,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, PurchasedProductService}
+import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
@@ -38,6 +39,7 @@ import scala.concurrent.Future
 class DashboardControllerSpec extends BaseSpec {
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])

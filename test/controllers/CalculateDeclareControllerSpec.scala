@@ -30,6 +30,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
 import services._
+import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
 
@@ -50,6 +51,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
       .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
       .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+      .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
       .build()
 
   override def beforeEach(): Unit = {
@@ -69,8 +71,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Future[Option[JourneyData]] =
       Future.successful(Some(JourneyData(None, Some("nonEuOnly"), Some(true), None, None, Some(true))))
-
-    when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
 
     lazy val crBelowLimit: CalculatorResponse = CalculatorResponse(
       Some(
@@ -659,28 +659,35 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
       when(
-        injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
+        app.injector.instanceOf[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
       ) thenReturn Future.successful(JourneyData())
-      when(injected[UserInformationService].storeUserInformation(any(), any())(any(), any())) thenReturn Future
+      when(
+        app.injector.instanceOf[UserInformationService].storeUserInformation(any(), any())(any(), any())
+      ) thenReturn Future
         .successful(JourneyData())
-      when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
+      when(app.injector.instanceOf[Cache].fetch(any())) thenReturn cachedJourneyData
       when(
-        injected[PayApiService].requestPaymentUrl(any(), any(), any(), any(), any(), any(), any())(any(), any())
+        app.injector
+          .instanceOf[PayApiService]
+          .requestPaymentUrl(any(), any(), any(), any(), any(), any(), any())(any(), any())
       ) thenReturn Future.successful(payApiResponse)
-      when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(
-        Some(JourneyData())
-      )
+      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future
+        .successful(
+          Some(JourneyData())
+        )
       when(
-        injected[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())
+        app.injector.instanceOf[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())
       ) thenReturn Future.successful(declarationServiceResponse)
       when(
-        injected[DeclarationService].submitAmendment(any(), any(), any(), any(), any())(any(), any())
+        app.injector.instanceOf[DeclarationService].submitAmendment(any(), any(), any(), any(), any())(any(), any())
       ) thenReturn Future.successful(declarationServiceResponse)
-      when(injected[DeclarationService].storeChargeReference(any(), any(), any())(any())) thenReturn Future.successful(
+      when(
+        app.injector.instanceOf[DeclarationService].storeChargeReference(any(), any(), any())(any())
+      ) thenReturn Future.successful(
         JourneyData()
       )
-      when(injected[DateTimeProviderService].now) thenReturn dt
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+      when(app.injector.instanceOf[DateTimeProviderService].now) thenReturn dt
+      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
         CalculatorServiceSuccessResponse(
           CalculatorResponse(
             None,
@@ -693,7 +700,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+      when(
+        app.injector.instanceOf[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())
+      ) thenReturn Future
         .successful(JourneyData())
 
       rt(app, req)
@@ -701,6 +710,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when there is no journey data" should {
+
     def test(page: String, isAmendmentsEnabled: Boolean, locationRoute: String): Unit =
       s"redirect to the $page page" in new LocalSetup {
         override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(None)
@@ -709,15 +719,27 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
         val app: Application = GuiceApplicationBuilder()
+          .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+          .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+          .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
+          .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
+          .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
+          .overrides(bind[UserInformationService].toInstance(mock(classOf[UserInformationService])))
+          .overrides(bind[PayApiService].toInstance(mock(classOf[PayApiService])))
+          .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
+          .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
+          .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+          .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
           .configure(
             "features.amendments" -> isAmendmentsEnabled
           )
           .build()
 
-        val response: Future[Result] = route(
-          app,
-          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")
-        ).get
+        val response: Future[Result] =
+          route(
+            app,
+            enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")
+          ).get
 
         status(response)           shouldBe SEE_OTHER
         redirectLocation(response) shouldBe Some(s"/check-tax-on-goods-you-bring-into-the-uk/$locationRoute")
@@ -760,6 +782,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when there is no journey data" should {
+
     def test(page: String, isAmendmentsEnabled: Boolean, locationRoute: String): Unit =
       s"redirect to the $page page" in new LocalSetup {
         override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(None)
@@ -768,6 +791,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
         val app: Application = GuiceApplicationBuilder()
+          .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+          .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+          .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
+          .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
+          .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
+          .overrides(bind[UserInformationService].toInstance(mock(classOf[UserInformationService])))
+          .overrides(bind[PayApiService].toInstance(mock(classOf[PayApiService])))
+          .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
+          .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
+          .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
           .configure(
             "features.amendments" -> isAmendmentsEnabled
           )

@@ -33,6 +33,7 @@ import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
 import services._
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.tobacco._
@@ -43,6 +44,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
   override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
     .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
