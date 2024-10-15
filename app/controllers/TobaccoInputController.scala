@@ -185,7 +185,11 @@ class TobaccoInputController @Inject() (
       requireProduct(ppi.path) { product =>
         TobaccoDto
           .fromPurchasedProductInstance(ppi)
-          .fold(logAndRenderError("Unable to construct dto from PurchasedProductInstance")) { dto =>
+          .fold(
+            logAndRenderError(
+              "[TobaccoInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
+            )
+          ) { dto =>
             Future.successful {
               product.templateId match {
                 case "cigarettes" =>

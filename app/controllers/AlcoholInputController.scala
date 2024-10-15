@@ -126,7 +126,10 @@ class AlcoholInputController @Inject() (
                   )
                 )
               )
-            case None      => logAndRenderError("Unable to construct dto from PurchasedProductInstance")
+            case None      =>
+              logAndRenderError(
+                "[AlcoholInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
+              )
           }
         }
       }

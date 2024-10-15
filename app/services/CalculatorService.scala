@@ -76,7 +76,7 @@ class CalculatorService @Inject() (
           }
 
       case _ =>
-        logger.error("No items available for limits request")
+        logger.error("[CalculatorService][limitUsage] No items available for limits request")
         Future.successful(LimitUsageCantBuildCalcReqResponse)
     }
 
@@ -105,7 +105,7 @@ class CalculatorService @Inject() (
         }
 
       case None =>
-        logger.error("No items available for calculation request")
+        logger.error("[CalculatorService][calculate] No items available for calculation request")
         Future.successful(CalculatorServiceCantBuildCalcReqResponse)
     }
   }
@@ -226,7 +226,11 @@ class CalculatorService @Inject() (
         .execute[List[CurrencyConversionRate]]
         .map { currencyConversionRates =>
           if (currencyConversionRates.exists(_.rate.isEmpty)) {
-            logger.error("Missing currency for " + currencyConversionRates.filter(_.rate.isEmpty).mkString(", "))
+            logger.error(
+              "[CalculatorService][getCurrencyConversionRates] Missing currency for " + currencyConversionRates
+                .filter(_.rate.isEmpty)
+                .mkString(", ")
+            )
           }
 
           gbpEquivCurrencies ++ currencyConversionRates

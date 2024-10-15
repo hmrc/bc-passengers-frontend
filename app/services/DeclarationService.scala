@@ -94,23 +94,23 @@ class DeclarationService @Inject() (
           )
         case HttpResponse(BAD_REQUEST, _, _)          =>
           logger.error(
-            "DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] BAD_REQUEST received from bc-passengers-declarations "
+            "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE BAD_REQUEST received from bc-passengers-declarations "
           )
           DeclarationServiceFailureResponse
         case HttpResponse(NOT_FOUND, _, _)            =>
           logger.error(
-            "DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] NOT_FOUND received from bc-passengers-declarations"
+            "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE NOT_FOUND received from bc-passengers-declarations"
           )
           DeclarationServiceFailureResponse
         case HttpResponse(status, _, _)               =>
           logger.error(
-            s"DECLARATION_RETRIEVAL_FAILURE [DeclarationService][retrieveDeclaration] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
           )
           DeclarationServiceFailureResponse
         case _                                        =>
           logger.error(
             """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
-            | Unhandled declaration service response""".stripMargin
+              | Unhandled declaration service response""".stripMargin
           )
           DeclarationServiceFailureResponse
       }
@@ -159,18 +159,17 @@ class DeclarationService @Inject() (
           DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
         case HttpResponse(BAD_REQUEST, _, _)        =>
           logger.error(
-            "DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted"
+            "[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted"
           )
           DeclarationServiceFailureResponse
         case HttpResponse(status, _, _)             =>
           logger.error(
-            s"DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference] Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+            s"[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
           )
           DeclarationServiceFailureResponse
         case _                                      =>
           logger.error(
-            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
-            | Unhandled declaration service response""".stripMargin
+            """[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE Unhandled declaration service response"""
           )
           DeclarationServiceFailureResponse
       }
@@ -197,7 +196,7 @@ class DeclarationService @Inject() (
       case JsSuccess(auditJson, _) =>
         auditConnector.sendExtendedEvent(auditingTools.buildDeclarationSubmittedDataEvent(auditJson))
       case JsError(errors)         =>
-        logger.error(s"[DeclarationService][submitDeclaration] Transforming declaration message with errors : $errors")
+        logger.error(s"[DeclarationService][submitAmendment] Transforming declaration message with errors : $errors")
     }
 
     def extractChargeReference(declaration: JsValue) =
@@ -219,20 +218,17 @@ class DeclarationService @Inject() (
           DeclarationServiceSuccessResponse(extractChargeReference(Json.parse(declaration)))
         case HttpResponse(BAD_REQUEST, _, _)        =>
           logger.error(
-            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
-            | BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted""".stripMargin
+            """[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted"""
           )
           DeclarationServiceFailureResponse
         case HttpResponse(status, _, _)             =>
           logger.error(
-            s"""DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
-             | Unexpected status of $status received from bc-passengers-declarations, unable to proceed""".stripMargin
+            s"""[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed"""
           )
           DeclarationServiceFailureResponse
         case _                                      =>
           logger.error(
-            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
-            | Unhandled declaration service response""".stripMargin
+            """[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE Unhandled declaration service response"""
           )
           DeclarationServiceFailureResponse
       }
@@ -574,24 +570,22 @@ class DeclarationService @Inject() (
           DeclarationServiceSuccessResponse
         case HttpResponse(BAD_REQUEST, _, _) =>
           logger.error(
-            "ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] BAD_REQUEST received from bc-passengers-declarations "
+            "[DeclarationService][updateDeclaration] ZERO_DECLARATION_UPDATE_FAILURE BAD_REQUEST received from bc-passengers-declarations "
           )
           DeclarationServiceFailureResponse
         case HttpResponse(NOT_FOUND, _, _)   =>
           logger.error(
-            "ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration] NOT_FOUND received from bc-passengers-declarations"
+            "[DeclarationService][updateDeclaration] ZERO_DECLARATION_UPDATE_FAILURE NOT_FOUND received from bc-passengers-declarations"
           )
           DeclarationServiceFailureResponse
         case HttpResponse(status, _, _)      =>
           logger.error(
-            s"""ZERO_DECLARATION_UPDATE_FAILURE [DeclarationService][updateDeclaration]
-             | Unexpected status of $status received from bc-passengers-declarations, unable to proceed""".stripMargin
+            s"""[DeclarationService][updateDeclaration] ZERO_DECLARATION_UPDATE_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed"""
           )
           DeclarationServiceFailureResponse
         case _                               =>
           logger.error(
-            """DECLARATION_SUBMIT_FAILURE [DeclarationService][extractChargeReference]
-            | Unhandled declaration service response""".stripMargin
+            """[DeclarationService][extractChargeReference] ZERO_DECLARATION_UPDATE_FAILURE Unhandled declaration service response"""
           )
           DeclarationServiceFailureResponse
       }

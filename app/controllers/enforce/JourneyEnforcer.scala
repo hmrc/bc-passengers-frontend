@@ -42,7 +42,7 @@ class JourneyEnforcer {
 
   private def redirect(implicit context: LocalContext): Future[Result] =
     logAndRedirect(
-      s"Enforcer prerequisites not met for ${context.request.path}, redirecting",
+      s"[JourneyEnforcer][redirect] Enforcer prerequisites not met for ${context.request.path}, redirecting",
       routes.TravelDetailsController.newSession
     )
 }
