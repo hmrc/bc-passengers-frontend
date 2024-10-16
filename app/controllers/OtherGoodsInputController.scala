@@ -193,7 +193,10 @@ class OtherGoodsInputController @Inject() (
               )
             )
           )
-        case None      => logAndRenderError("Unable to construct dto from PurchasedProductInstance")
+        case None      =>
+          logAndRenderError(
+            "[OtherGoodsInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
+          )
       }
     }
   }
