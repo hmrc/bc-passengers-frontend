@@ -1,0 +1,141 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.ViewUtils._
+@import util._
+
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  formHelper: FormWithCSRF,
+  displayItem: components.display_item,
+  h1: components.h1,
+  h2: components.h2,
+  p: components.p,
+  button: components.button
+)
+
+@(journeyData: JourneyData,
+  alcoholPurchasedItemList: List[PurchasedItem],
+  tobaccoPurchasedItemList: List[PurchasedItem],
+  otherGoodsPurchasedItemList: List[PurchasedItem],
+  previousAlcoholPurchasedItemList: List[PurchasedItem],
+  previousTobaccoPurchasedItemList: List[PurchasedItem],
+  previousOtherGoodsPurchasedItemList: List[PurchasedItem],
+  showCalculate: Boolean,
+  isAmendment: Boolean,
+  backLink: Option[String],
+  isIrishBorderQuestionEnabled: Boolean,
+  isGbNi: Boolean,
+  isEU: Boolean,
+  isUkResident: Boolean
+)(implicit request: Request[_], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
+
+@defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
+
+@govukLayout(pageTitle = Some(if(isAmendment) messages("label.tell_us_about_the_additional_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.tell_us_about_the_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+
+  @if(isAmendment) {
+    @h1(messages("label.your_previously_declared_goods_"))
+  } else {
+    @h1(messages("label.tell_us_about_the_goods_"))
+  }
+
+  @p(Html(messages("label.about_foreign_currencies")), id=Some("foreign-currency"))
+  <br>
+
+  <div class="alcohol">
+    @h2(messages("label.alcohol"))
+    @if(!alcoholPurchasedItemList.isEmpty || !previousAlcoholPurchasedItemList.isEmpty) {
+      @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+        }
+      }
+      @if(previousAlcoholPurchasedItemList.nonEmpty){
+        @p(Html(messages("label.previously_declared_alcohol")), classes="govuk-body govuk-!-font-weight-bold previous-alcohol")
+        <br>
+      }
+      @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+        }
+      }
+  </div>
+  <br>
+
+  <div class="tobacco">
+    @h2(messages("label.tobacco"))
+    @if(!tobaccoPurchasedItemList.isEmpty || !previousTobaccoPurchasedItemList.isEmpty){
+        @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+          }
+        }
+        @if(previousTobaccoPurchasedItemList.nonEmpty){
+          @p(Html(messages("label.previously_declared_tobacco")), classes="govuk-body govuk-!-font-weight-bold previous-tobacco")
+          <br>
+        }
+        @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+        }
+      }
+    }
+  </div>
+  <br>
+
+  <div class="other-goods">
+    @h2(messages("label.other_goods"))
+    @if(!otherGoodsPurchasedItemList.isEmpty && !previousOtherGoodsPurchasedItemList.isEmpty) {
+    if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
+      <div class="add-more">
+        <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
+      </div>
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
+      <div class="panel panel-border-wide">
+        @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
+      </div>
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
+      <div class="panel panel-border-wide">
+        @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
+      </div>
+    }
+      @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+        }
+      }
+      @if(previousOtherGoodsPurchasedItemList.nonEmpty){
+        @p(Html(messages("label.previously_declared_other_goods")), classes="govuk-body govuk-!-font-weight-bold previous-othergoods")
+        <br>
+      }
+      @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+      }
+    }
+  </div>
+  <br>
+
+
+      @formHelper(action = routes.PreviousGoodsController.showPreviousGoods) {
+        @button(messages("label.add_goods"))
+      }
+  }
+}
+}
+}
