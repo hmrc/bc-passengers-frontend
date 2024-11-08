@@ -140,6 +140,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "declaration-retrieval"                                                        =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
+      case "prev-goods"                                                                   =>
+        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "pending-payment"                                                              =>
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
