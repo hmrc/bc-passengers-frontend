@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PreviousGoodsController @Inject()(
+class PreviousGoodsController @Inject() (
   val countriesService: CountriesService,
   val cache: Cache,
   val purchasedProductService: PurchasedProductService,
