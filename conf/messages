@@ -665,7 +665,6 @@ label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
 
 label.calculate = Calculate taxes and duties
-label.calculate_change_in_tax_and_duties = Calculate change in taxes and duties
 
 title.afghanistan=Afghanistan
 title.aland_islands=Åland Islands

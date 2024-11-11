@@ -29,13 +29,9 @@
 )
 
 @(journeyData: JourneyData,
-  alcoholPurchasedItemList: List[PurchasedItem],
-  tobaccoPurchasedItemList: List[PurchasedItem],
-  otherGoodsPurchasedItemList: List[PurchasedItem],
   previousAlcoholPurchasedItemList: List[PurchasedItem],
   previousTobaccoPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
-  showCalculate: Boolean,
   isAmendment: Boolean,
   backLink: Option[String],
   isIrishBorderQuestionEnabled: Boolean,
@@ -48,11 +44,7 @@
 
 @govukLayout(pageTitle = Some(if(isAmendment) messages("label.your_previously_declared_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.tell_us_about_the_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
-  @if(isAmendment) {
-    @h1(messages("label.your_previously_declared_goods_"))
-  } else {
-    @h1(messages("label.tell_us_about_the_goods_"))
-  }
+  @h1(messages("label.your_previously_declared_goods_"))
 
   <div class="alcohol">
       @if(previousAlcoholPurchasedItemList.nonEmpty) {
@@ -87,15 +79,6 @@
 <br>
 
 <div class="other-goods">
-  @if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
-    <div class="panel panel-border-wide">
-      @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
-    </div>
-   } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
-    <div class="panel panel-border-wide">
-      @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
-    </div>
-   }
   @if(previousOtherGoodsPurchasedItemList.nonEmpty){
     @h2(messages("label.other_goods"))
     <dl class="govuk-summary-list">

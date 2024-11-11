@@ -62,21 +62,9 @@ class PreviousGoodsController @Inject() (
             maybeCalculatorRequest =>
               val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
-              val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "alcohol" && ppi.isEditable.contains(true) =>
-                  item
-              }
-
               val previousAlcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
                     if tid == "alcohol" && ppi.isEditable.contains(false) =>
-                  item
-              }
-
-              val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(true) =>
                   item
               }
 
@@ -86,31 +74,18 @@ class PreviousGoodsController @Inject() (
                   item
               }
 
-              val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" && ppi.isEditable.contains(true) =>
-                  item
-              }
-
               val previousOtherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
                     if tid == "other-goods" && ppi.isEditable.contains(false) =>
                   item
               }
 
-              val showCalculate =
-                !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
-
               Ok(
                 previousGoods(
                   jd,
-                  alcoholPurchasedItemList.reverse,
-                  tobaccoPurchasedItemList.reverse,
-                  otherGoodsPurchasedItemList.reverse,
                   previousAlcoholPurchasedItemList.reverse,
                   previousTobaccoPurchasedItemList.reverse,
                   previousOtherGoodsPurchasedItemList.reverse,
-                  showCalculate,
                   isAmendment,
                   backLinkModel.backLink,
                   appConfig.isIrishBorderQuestionEnabled,

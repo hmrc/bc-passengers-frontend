@@ -107,8 +107,6 @@ class DashboardController @Inject() (
                   alcoholPurchasedItemList.reverse,
                   tobaccoPurchasedItemList.reverse,
                   otherGoodsPurchasedItemList.reverse,
-                  previousAlcoholPurchasedItemList.reverse,
-                  previousTobaccoPurchasedItemList.reverse,
                   previousOtherGoodsPurchasedItemList.reverse,
                   showCalculate,
                   isAmendment,

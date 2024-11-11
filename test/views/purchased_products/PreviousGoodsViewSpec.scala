@@ -20,9 +20,9 @@ import models._
 import play.api.i18n.Lang
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
-import views.html.purchased_products.dashboard
+import views.html.purchased_products.{dashboard, previous_goods}
 
-class DashboardViewSpec extends BaseViewSpec {
+class PreviousGoodsViewSpec extends BaseViewSpec {
 
   private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (50, 10)
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
@@ -136,13 +136,11 @@ class DashboardViewSpec extends BaseViewSpec {
     )
   )
 
-  val viewViaApply: HtmlFormat.Appendable = injected[dashboard].apply(
+  val viewViaApply: HtmlFormat.Appendable = injected[previous_goods].apply(
     journeyData = JourneyData(),
-    alcoholPurchasedItemList = alcoholPurchasedItemList,
-    tobaccoPurchasedItemList = tobaccoPurchasedItemList,
-    otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+    previousAlcoholPurchasedItemList = alcoholPurchasedItemList,
+    previousTobaccoPurchasedItemList = tobaccoPurchasedItemList,
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
-    showCalculate = true,
     isAmendment = true,
     backLink = None,
     isIrishBorderQuestionEnabled = true,
@@ -156,13 +154,11 @@ class DashboardViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaRender: HtmlFormat.Appendable = injected[dashboard].render(
+  val viewViaRender: HtmlFormat.Appendable = injected[previous_goods].render(
     journeyData = JourneyData(),
-    alcoholPurchasedItemList = alcoholPurchasedItemList,
-    tobaccoPurchasedItemList = tobaccoPurchasedItemList,
-    otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+    previousAlcoholPurchasedItemList = alcoholPurchasedItemList,
+    previousTobaccoPurchasedItemList = tobaccoPurchasedItemList,
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
-    showCalculate = true,
     isAmendment = true,
     backLink = None,
     isIrishBorderQuestionEnabled = true,
@@ -175,13 +171,11 @@ class DashboardViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[dashboard].f(
+  val viewViaF: HtmlFormat.Appendable = injected[previous_goods].f(
     JourneyData(),
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,
     otherGoodsPurchasedItemList(),
-    otherGoodsPurchasedItemList(),
-    true,
     true,
     None,
     true,
@@ -190,49 +184,10 @@ class DashboardViewSpec extends BaseViewSpec {
     true
   )(request, messagesApi, Lang("en"), appConfig)
 
-  "DashboardView" when {
+  "PreviousGoodsView" when {
     renderViewTest(
-      title = "Tell us about your additional goods - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "Tell us about your additional goods"
+      title = "Your previously declared goods - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Your previously declared goods"
     )
-
-    def test(scenario: String, fillValue: Int): Unit =
-      s"the total size of otherGoodsPurchasedItemList and previousAlcoholPurchasedItemList is $scenario" should {
-        "return the correct message" in {
-
-          val message: String = "You cannot use this service to declare more than 50 other goods. " +
-            "You must declare any goods over this limit in person to Border Force when you arrive in the UK. " +
-            "Use the red ‘goods to declare’ channel or the red-point phone."
-
-          val viewViaApply: HtmlFormat.Appendable = injected[dashboard].apply(
-            journeyData = JourneyData(),
-            alcoholPurchasedItemList = alcoholPurchasedItemList,
-            tobaccoPurchasedItemList = tobaccoPurchasedItemList,
-            otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
-            previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
-            showCalculate = true,
-            isAmendment = true,
-            backLink = None,
-            isIrishBorderQuestionEnabled = true,
-            isGbNi = true,
-            isEU = false,
-            isUkResident = true
-          )(
-            request = request,
-            messagesApi = messagesApi,
-            lang = Lang("en"),
-            appConfig = appConfig
-          )
-
-          document(viewViaApply).getElementsByClass("panel-border-wide").text() shouldBe message
-        }
-      }
-
-    val input: Seq[(String, Int)] = Seq(
-      ("equal to 50", fillValueForEqualToMaxGoods),
-      ("greater to 50", fillValueForGreaterThanMaxGoods)
-    )
-
-    input.foreach(args => (test _).tupled(args))
   }
 }

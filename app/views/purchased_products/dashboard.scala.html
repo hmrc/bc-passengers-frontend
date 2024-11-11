@@ -32,8 +32,6 @@
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
-  previousAlcoholPurchasedItemList: List[PurchasedItem],
-  previousTobaccoPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
   showCalculate: Boolean,
   isAmendment: Boolean,
@@ -132,10 +130,6 @@
   @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
       <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder">@messages("label.calculate")</a>
-    } else if(isAmendment) {
-      @formHelper(action = routes.CalculateDeclareController.calculate) {
-        @button(messages("label.calculate_change_in_tax_and_duties"))
-      }
     } else {
       @formHelper(action = routes.CalculateDeclareController.calculate) {
         @button(messages("label.calculate"))
