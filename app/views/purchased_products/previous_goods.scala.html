@@ -60,7 +60,6 @@
     </dl>
     }
   </div>
-<br>
 
   <div class="tobacco">
     @if(previousTobaccoPurchasedItemList.nonEmpty){
@@ -76,7 +75,6 @@
       </dl>
       }
   </div>
-<br>
 
 <div class="other-goods">
   @if(previousOtherGoodsPurchasedItemList.nonEmpty){
@@ -92,7 +90,6 @@
     </dl>
   }
 </div>
-<br>
 
     @formHelper(action = routes.DashboardController.showDashboard) {
         @button(messages("label.add_goods"))

@@ -50,7 +50,7 @@ Concat.groups := Seq(
     )
 )
 
-Assets / pipelineStages := Seq(concat, uglify)
+Assets / pipelineStages := Seq(concat)
 uglify / includeFilter := GlobFilter("application.js")
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt A11y/scalafmt")
