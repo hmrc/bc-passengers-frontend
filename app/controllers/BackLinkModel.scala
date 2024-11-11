@@ -54,7 +54,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check"                                                              =>
         val iid = getIid(context.request.path)
-        context.request.path match {
+        path match {
           case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
@@ -85,7 +85,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         )
       case "eu-evidence-check" if eucc.contains("euOnly") & !arN                          =>
         val iid = getIid(context.request.path)
-        context.request.path match {
+        path match {
           case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
           case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))

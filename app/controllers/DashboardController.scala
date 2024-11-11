@@ -68,21 +68,9 @@ class DashboardController @Inject() (
                   item
               }
 
-              val previousAlcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "alcohol" && ppi.isEditable.contains(false) =>
-                  item
-              }
-
               val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
                     if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(true) =>
-                  item
-              }
-
-              val previousTobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(false) =>
                   item
               }
 
