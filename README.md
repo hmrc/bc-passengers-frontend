@@ -32,17 +32,6 @@ To format and check the code style, compile code, run tests with coverage, gener
 ./run_all_tests.sh
 ```
 
-## Accessibility Tests
-
-### Prerequisites
-Have node installed on your machine
-
-### Execute tests
-To run the tests locally, simply run:
-```bash
-sbt clean A11y/test
-```
-
 ## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
