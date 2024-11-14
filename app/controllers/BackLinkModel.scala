@@ -55,9 +55,12 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
       case "gb-ni-vat-check"                                                              =>
         val iid = getIid(context.request.path)
         context.request.path match {
-          case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/alcohol")     =>
+            Some(AlcoholInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/tobacco")     =>
+            Some(TobaccoInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/other-goods") =>
+            Some(OtherGoodsInputController.displayEditForm(iid))
         }
       case "gb-ni-excise-check"
           if context.request.path.contains("enter-goods/alcohol")
@@ -86,9 +89,12 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
       case "eu-evidence-check" if eucc.contains("euOnly") & !arN                          =>
         val iid = getIid(context.request.path)
         context.request.path match {
-          case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/alcohol")     =>
+            Some(AlcoholInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/tobacco")     =>
+            Some(TobaccoInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/other-goods") =>
+            Some(OtherGoodsInputController.displayEditForm(iid))
         }
       case "gb-ni-no-need-to-use-service"                                                 =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
