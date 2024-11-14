@@ -52,4 +52,4 @@ Concat.groups := Seq(
 
 Assets / pipelineStages := Seq(concat)
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt A11y/scalafmt")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt")
