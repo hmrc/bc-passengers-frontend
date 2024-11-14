@@ -54,10 +54,13 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.whereGoodsBought)
       case "gb-ni-vat-check"                                                              =>
         val iid = getIid(context.request.path)
-        path match {
-          case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+        context.request.path match {
+          case matchedPath if matchedPath.contains("enter-goods/alcohol")     =>
+            Some(AlcoholInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/tobacco")     =>
+            Some(TobaccoInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/other-goods") =>
+            Some(OtherGoodsInputController.displayEditForm(iid))
         }
       case "gb-ni-excise-check"
           if context.request.path.contains("enter-goods/alcohol")
@@ -85,10 +88,13 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         )
       case "eu-evidence-check" if eucc.contains("euOnly") & !arN                          =>
         val iid = getIid(context.request.path)
-        path match {
-          case path if path.contains("enter-goods/alcohol")     => Some(AlcoholInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/tobacco")     => Some(TobaccoInputController.displayEditForm(iid))
-          case path if path.contains("enter-goods/other-goods") => Some(OtherGoodsInputController.displayEditForm(iid))
+        context.request.path match {
+          case matchedPath if matchedPath.contains("enter-goods/alcohol")     =>
+            Some(AlcoholInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/tobacco")     =>
+            Some(TobaccoInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/other-goods") =>
+            Some(OtherGoodsInputController.displayEditForm(iid))
         }
       case "gb-ni-no-need-to-use-service"                                                 =>
         Some(UKExcisePaidController.loadUKExcisePaidPage)
@@ -114,7 +120,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.privateTravel)
       case _ if path.endsWith("tell-us") && !path.contains("enter-goods")                 =>
         if (prevDecl) {
-          Some(PreviousGoodsController.showPreviousGoods)
+          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
         } else {
           Some(TravelDetailsController.confirmAge)
         }
@@ -132,8 +138,6 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(appConfig.declareGoodsUrl)
       case "declaration-retrieval"                                                        =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
-      case "prev-goods"                                                                   =>
-        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "pending-payment"                                                              =>
         Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "no-further-amendments"                                                        =>
