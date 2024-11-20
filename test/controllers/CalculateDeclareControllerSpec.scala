@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,20 @@
 package controllers
 
 import connectors.Cache
-import models.*
+import models.UserInformation.getPreUser
+import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, *}
-import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers.{route => rt, *}
+import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
-import services.*
+import services._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
@@ -46,7 +47,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
       .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
       .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
-      .overrides(bind[UserInformationService].toInstance(mock(classOf[UserInformationService])))
+      .overrides(bind[PreUserInformationService].toInstance(mock(classOf[PreUserInformationService])))
       .overrides(bind[PayApiService].toInstance(mock(classOf[PayApiService])))
       .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
       .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
@@ -57,7 +58,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   override def beforeEach(): Unit = {
     reset(injected[Cache])
     reset(injected[PurchasedProductService])
-    reset(injected[UserInformationService])
+    reset(injected[PreUserInformationService])
     reset(injected[PayApiService])
     reset(injected[DateTimeProviderService])
     reset(injected[DeclarationService])
@@ -660,60 +661,54 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       when(
         app.injector.instanceOf[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ).thenReturn(Future.successful(JourneyData()))
+      ) thenReturn Future.successful(JourneyData())
       when(
-        app.injector.instanceOf[UserInformationService].storeUserInformation(any(), any())(any(), any())
-      ).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
-      when(app.injector.instanceOf[Cache].fetch(any())).thenReturn(cachedJourneyData)
+        app.injector.instanceOf[PreUserInformationService].storePreUserInformation(any(), any())(any(), any())
+      ) thenReturn Future.successful(JourneyData())
+      when(
+        app.injector
+          .instanceOf[PreUserInformationService]
+          .storeCompleteUserInformation(any(), any())(any(), any(), any())
+      ) thenReturn Future.successful(JourneyData())
+      when(app.injector.instanceOf[Cache].fetch(any())) thenReturn cachedJourneyData
       when(
         app.injector
           .instanceOf[PayApiService]
           .requestPaymentUrl(any(), any(), any(), any(), any(), any(), any())(any(), any())
-      ).thenReturn(Future.successful(payApiResponse))
-      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())).thenReturn(
-        Future
-          .successful(
-            Some(JourneyData())
-          )
-      )
+      ) thenReturn Future.successful(payApiResponse)
+      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future
+        .successful(
+          Some(JourneyData())
+        )
       when(
         app.injector.instanceOf[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())
-      ).thenReturn(Future.successful(declarationServiceResponse))
+      ) thenReturn Future.successful(declarationServiceResponse)
       when(
         app.injector.instanceOf[DeclarationService].submitAmendment(any(), any(), any(), any(), any())(any(), any())
-      ).thenReturn(Future.successful(declarationServiceResponse))
+      ) thenReturn Future.successful(declarationServiceResponse)
       when(
         app.injector.instanceOf[DeclarationService].storeChargeReference(any(), any(), any())(any())
-      ).thenReturn(
-        Future.successful(
-          JourneyData()
-        )
+      ) thenReturn Future.successful(
+        JourneyData()
       )
-      when(app.injector.instanceOf[DateTimeProviderService].now).thenReturn(dt)
-      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())).thenReturn(
-        Future.successful(
-          CalculatorServiceSuccessResponse(
-            CalculatorResponse(
-              None,
-              None,
-              None,
-              Calculation("0.00", "0.00", "0.00", "0.00"),
-              withinFreeAllowance = true,
-              Map.empty,
-              isAnyItemOverAllowance = false
-            )
+      when(app.injector.instanceOf[DateTimeProviderService].now) thenReturn dt
+      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceSuccessResponse(
+          CalculatorResponse(
+            None,
+            None,
+            None,
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = true,
+            Map.empty,
+            isAnyItemOverAllowance = false
           )
         )
       )
       when(
         app.injector.instanceOf[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())
-      ).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
+      ) thenReturn Future
+        .successful(JourneyData())
 
       rt(app, req)
     }
@@ -734,7 +729,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
           .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
           .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
-          .overrides(bind[UserInformationService].toInstance(mock(classOf[UserInformationService])))
+          .overrides(bind[PreUserInformationService].toInstance(mock(classOf[PreUserInformationService])))
           .overrides(bind[PayApiService].toInstance(mock(classOf[PayApiService])))
           .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
           .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
@@ -760,7 +755,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ("previous declaration", true, "previous-declaration")
     )
 
-    input.foreach(args => test.tupled(args))
+    input.foreach(args => (test _).tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when tax amount is 0.00" should {
@@ -806,7 +801,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
           .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
           .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
-          .overrides(bind[UserInformationService].toInstance(mock(classOf[UserInformationService])))
+          .overrides(bind[PreUserInformationService].toInstance(mock(classOf[PreUserInformationService])))
           .overrides(bind[PayApiService].toInstance(mock(classOf[PayApiService])))
           .overrides(bind[DateTimeProviderService].toInstance(mock(classOf[DateTimeProviderService])))
           .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
@@ -830,7 +825,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ("previous declaration", true, "previous-declaration")
     )
 
-    input.foreach(args => test.tupled(args))
+    input.foreach(args => (test _).tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when in amendment journey" should {
@@ -848,7 +843,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
               bringingOverAllowance = Some(true),
               ageOver17 = Some(true),
               privateCraft = Some(false),
-              userInformation = Some(ui),
+              preUserInformation = Some(getPreUser(ui)),
               calculatorResponse = Some(crWithinLimitLow)
             )
           )
@@ -877,7 +872,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
               bringingOverAllowance = Some(true),
               ageOver17 = Some(true),
               privateCraft = Some(false),
-              userInformation = Some(ui),
+              preUserInformation = Some(getPreUser(ui)),
               calculatorResponse = Some(crZero),
               deltaCalculation = Some(zeroDeltaCalculation)
             )
@@ -893,33 +888,33 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
+  }
 
-    "Calling GET /check-tax-on-goods-you-bring-into-the-uk/tax-due when in pending payment journey" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/tax-due when in pending payment journey" should {
 
-      "Display the previous-declaration page" in new LocalSetup {
+    "Display the previous-declaration page" in new LocalSetup {
 
-        override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
-          Some(
-            JourneyData(
-              prevDeclaration = Some(true),
-              euCountryCheck = Some("nonEuOnly"),
-              bringingOverAllowance = Some(true),
-              ageOver17 = Some(true),
-              privateCraft = Some(false),
-              amendState = Some("pending-payment")
-            )
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            prevDeclaration = Some(true),
+            euCountryCheck = Some("nonEuOnly"),
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            amendState = Some("pending-payment")
           )
         )
-        override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-        override lazy val declarationServiceResponse: DeclarationServiceResponse =
-          DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
-        val response: Future[Result] =
-          route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
+      val response: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tax-due")).get
 
-        status(response)           shouldBe SEE_OTHER
-        redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-      }
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
   }
 
@@ -1156,7 +1151,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             privateCraft = Some(false),
             calculatorResponse = Some(crZero),
             chargeReference = Some("XJPR5768524625"),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             declarationResponse = Some(declarationResponse),
             deltaCalculation = Some(zeroDeltaCalculation)
           )
@@ -1203,7 +1198,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+      doc.getElementsByTag("h1").text() shouldBe "What is your name?"
     }
 
     "Display the user-information page when at the higher end of the range" in new LocalSetup {
@@ -1230,7 +1225,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+      doc.getElementsByTag("h1").text() shouldBe "What is your name?"
     }
 
     "Display the where-goods-bought page when at the lower end of the range from GB to NI" in new LocalSetup {
@@ -1258,7 +1253,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Enter your details"
+      doc.getElementsByTag("h1").text() shouldBe "What is your name?"
     }
 
     "populate user-information page if user-information data is present in db" in new LocalSetup {
@@ -1271,7 +1266,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -1286,20 +1281,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()                                    shouldBe "Enter your details"
-      doc.getElementById("firstName").`val`()                              shouldBe "Harry"
-      doc.getElementById("lastName").`val`()                               shouldBe "Potter"
-      doc.getElementById("identification.identificationNumber").`val`()    shouldBe "SX12345"
-      doc.getElementById("emailAddress.email").`val`()                     shouldBe "abc@gmail.com"
-      doc.getElementById("dateTimeOfArrival.dateOfArrival.day").`val`()    shouldBe "12"
-      doc.getElementById("dateTimeOfArrival.dateOfArrival.month").`val`()  shouldBe "11"
-      doc.getElementById("dateTimeOfArrival.dateOfArrival.year").`val`()   shouldBe "2018"
-      doc.getElementById("dateTimeOfArrival.timeOfArrival.hour").`val`()   shouldBe "12"
-      doc.getElementById("dateTimeOfArrival.timeOfArrival.minute").`val`() shouldBe "20"
-      doc
-        .getElementById("dateTimeOfArrival.timeOfArrival.halfday")
-        .getElementsByAttribute("selected")
-        .`val`()                                                           shouldBe "pm"
+      doc.getElementsByTag("h1").text()       shouldBe "What is your name?"
+      doc.getElementById("firstName").`val`() shouldBe "Harry"
+      doc.getElementById("lastName").`val`()  shouldBe "Potter"
     }
 
     "populate user-information page if user-information data is present in db for GB NI journey" in new LocalSetup {
@@ -1312,7 +1296,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -1327,20 +1311,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()                                    shouldBe "Enter your details"
-      doc.getElementById("firstName").`val`()                              shouldBe "Harry"
-      doc.getElementById("lastName").`val`()                               shouldBe "Potter"
-      doc.getElementById("identification.identificationNumber").`val`()    shouldBe "SX12345"
-      doc.getElementById("emailAddress.email").`val`()                     shouldBe "abc@gmail.com"
-      doc.getElementById("dateTimeOfArrival.dateOfArrival.day").`val`()    shouldBe "12"
-      doc.getElementById("dateTimeOfArrival.dateOfArrival.month").`val`()  shouldBe "11"
-      doc.getElementById("dateTimeOfArrival.dateOfArrival.year").`val`()   shouldBe "2018"
-      doc.getElementById("dateTimeOfArrival.timeOfArrival.hour").`val`()   shouldBe "12"
-      doc.getElementById("dateTimeOfArrival.timeOfArrival.minute").`val`() shouldBe "20"
-      doc
-        .getElementById("dateTimeOfArrival.timeOfArrival.halfday")
-        .getElementsByAttribute("selected")
-        .`val`()                                                           shouldBe "pm"
+      doc.getElementsByTag("h1").text()       shouldBe "What is your name?"
+      doc.getElementById("firstName").`val`() shouldBe "Harry"
+      doc.getElementById("lastName").`val`()  shouldBe "Potter"
     }
   }
 
@@ -1400,7 +1373,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/enter-details" should {
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/journey-details" should {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
@@ -1426,20 +1399,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "firstName" -> "",
+            "lastName"  -> "Potter"
           )
       ).get
 
@@ -1470,20 +1431,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "123456789012345678901234567890123451234",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "firstName" -> "123456789012345678901234567890123451234",
+            "lastName"  -> "Potter"
           )
       ).get
 
@@ -1514,20 +1463,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "123456789012345678901234567890123451234",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "firstName" -> "Harry",
+            "lastName"  -> "123456789012345678901234567890123451234"
           )
       ).get
 
@@ -1545,6 +1482,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             isVatResClaimed = None,
             isBringingDutyFree = None,
             bringingOverAllowance = Some(true),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("passport")))),
             ageOver17 = Some(true),
             privateCraft = Some(false)
           )
@@ -1556,29 +1494,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/type-of-identification/number")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "12345678901234567890123456789012345612345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "identificationNumber" -> "12345678901234567890123456789012345612345"
           )
       ).get
 
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when identification number is not in correct format" in new LocalSetup {
+    "Return BAD REQUEST and display the identification number page when identification number is not in correct format" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1589,6 +1514,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             isVatResClaimed = None,
             isBringingDutyFree = None,
             bringingOverAllowance = Some(true),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("telephone")))),
             ageOver17 = Some(true),
             privateCraft = Some(false)
           )
@@ -1600,29 +1526,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/type-of-identification/number")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "telephone",
-            "identification.identificationNumber"     -> "abcdefgh",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "identificationNumber" -> "abcdefgh"
           )
       ).get
 
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when place of arrival is too long" in new LocalSetup {
+    "Return BAD REQUEST and display the journey details page when place of arrival is too long" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1644,14 +1557,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
             "placeOfArrival.selectPlaceOfArrival"     -> "",
             "placeOfArrival.enterPlaceOfArrival"      -> "123456789012345678901234567890123456123456",
             "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1666,7 +1573,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when only email address is entered" in new LocalSetup {
+    "Return BAD REQUEST and display what is your email page when only email address is entered" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1688,29 +1595,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/what-is-your-email")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "123456789012345678901234567890123456123456",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "email"        -> "abc@gmail.com",
+            "confirmEmail" -> ""
           )
       ).get
 
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when email address and confirm email address do not match" in new LocalSetup {
+    "Return BAD REQUEST and display what is your email page when email address and confirm email address do not match" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1732,29 +1627,17 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/what-is-your-email")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "xyz@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "123456789012345678901234567890123456123456",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "email"        -> "abc@gmail.com",
+            "confirmEmail" -> "xyz@gmail.com"
           )
       ).get
 
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when invalid telephone num ber is entered" in new LocalSetup {
+    "Return BAD REQUEST and display the identification number page when invalid telephone number is entered" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1765,6 +1648,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             isVatResClaimed = None,
             isBringingDutyFree = None,
             bringingOverAllowance = Some(true),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("telephone")))),
             ageOver17 = Some(true),
             privateCraft = Some(false)
           )
@@ -1776,29 +1660,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/type-of-identification/number")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "telephone",
-            "identification.identificationNumber"     -> "abcdefghi",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "identificationNumber" -> "abcdefghi"
           )
       ).get
 
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when the date is invalid" in new LocalSetup {
+    "Return BAD REQUEST and display the journey details page when the date is invalid" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1821,14 +1692,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
             "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
             "placeOfArrival.enterPlaceOfArrival"      -> "",
             "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1843,7 +1708,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display the user information when date entered is in past" in new LocalSetup {
+    "Return BAD REQUEST and display the journey details page when date entered is in past" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1865,14 +1730,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
             "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
             "placeOfArrival.enterPlaceOfArrival"      -> "",
             "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1908,7 +1767,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             ageOver17 = Some(true),
             privateCraft = Some(false),
             calculatorResponse = Some(crWithinLimitLow),
-            userInformation = Some(ui)
+            preUserInformation = Some(getPreUser(ui))
           )
         )
       )
@@ -1919,14 +1778,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
             "placeOfArrival.selectPlaceOfArrival"     -> "",
             "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
             "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1957,7 +1810,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             ageOver17 = Some(true),
             privateCraft = Some(false),
             calculatorResponse = Some(crWithinLimitLow),
-            userInformation = Some(ui)
+            preUserInformation = Some(getPreUser(ui))
           )
         )
       )
@@ -1966,14 +1819,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "passport",
-            "identification.identificationNumber"     -> "SX12345",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
             "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
             "placeOfArrival.enterPlaceOfArrival"      -> "",
             "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1987,106 +1834,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       status(response) shouldBe INTERNAL_SERVER_ERROR
 
-      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
-    }
-
-    "Return Hint Text When telephone number is entered" in new LocalSetup {
-
-      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
-        Some(
-          JourneyData(
-            prevDeclaration = Some(false),
-            euCountryCheck = Some("greatBritain"),
-            arrivingNICheck = Some(true),
-            isVatResClaimed = None,
-            isBringingDutyFree = None,
-            bringingOverAllowance = Some(true),
-            ageOver17 = Some(true),
-            privateCraft = Some(false)
-          )
-        )
-      )
-      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse: DeclarationServiceResponse =
-        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-
-      val response: Future[Result] = route(
-        app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
-          .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "telephone",
-            "identification.identificationNumber"     -> "08765432190",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-          )
-      ).get
-
-      val content: String = contentAsString(response)
-      val doc: Document   = Jsoup.parse(content)
-
-      doc
-        .getElementById("conditional-identificationType-telephone")
-        .text() shouldBe "For international numbers this will need to include the country code, for example +33 for France."
-    }
-
-    "Return Inset Text When euId is entered" in new LocalSetup {
-
-      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
-        Some(
-          JourneyData(
-            prevDeclaration = Some(false),
-            euCountryCheck = Some("greatBritain"),
-            arrivingNICheck = Some(true),
-            isVatResClaimed = None,
-            isBringingDutyFree = None,
-            bringingOverAllowance = Some(true),
-            ageOver17 = Some(true),
-            privateCraft = Some(false)
-          )
-        )
-      )
-      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse: DeclarationServiceResponse =
-        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-
-      val response: Future[Result] = route(
-        app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
-          .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "euId",
-            "identification.identificationNumber"     -> "ABC3456",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-          )
-      ).get
-
-      val content: String = contentAsString(response)
-      val doc: Document   = Jsoup.parse(content)
-
-      doc
-        .getElementsByClass("govuk-inset-text")
-        .text() shouldBe "You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK. " +
-        "Check the latest rules prior to your arrival in the UK (opens in a new tab)."
+      verify(injected[PreUserInformationService], times(1))
+        .storeCompleteUserInformation(any(), any())(any(), any(), any())
     }
 
     "Cache the submitted user information and redirect payment url when valid form " +
@@ -2104,7 +1853,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
               ageOver17 = Some(true),
               privateCraft = Some(false),
               calculatorResponse = Some(crWithinLimitLow),
-              userInformation = Some(ui)
+              preUserInformation = Some(getPreUser(ui))
             )
           )
         )
@@ -2115,14 +1864,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = route(
           app,
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
             .withFormUrlEncodedBody(
-              "firstName"                               -> "Harry",
-              "lastName"                                -> "Potter",
-              "identification.identificationType"       -> "passport",
-              "identification.identificationNumber"     -> "SX12345",
-              "emailAddress.email"                      -> "abc@gmail.com",
-              "emailAddress.confirmEmail"               -> "abc@gmail.com",
               "placeOfArrival.selectPlaceOfArrival"     -> "",
               "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
               "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -2137,7 +1880,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         status(response)               shouldBe SEE_OTHER
         redirectLocation(response).get shouldBe "http://example.com/payment-journey"
 
-        verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+        verify(injected[PreUserInformationService], times(1))
+          .storeCompleteUserInformation(any(), any())(any(), any(), any())
       }
 
     "Cache the submitted user information and redirect payment url when valid form input " +
@@ -2156,7 +1900,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
               privateCraft = Some(false),
               calculatorResponse = Some(crWithinLimitLow),
               chargeReference = Some("XJPR5768524625"),
-              userInformation = Some(ui)
+              preUserInformation = Some(getPreUser(ui))
             )
           )
         )
@@ -2167,14 +1911,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = route(
           app,
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
             .withFormUrlEncodedBody(
-              "firstName"                               -> "Harry",
-              "lastName"                                -> "Potter",
-              "identification.identificationType"       -> "telephone",
-              "identification.identificationNumber"     -> "07884559563",
-              "emailAddress.email"                      -> "abc@gmail.com",
-              "emailAddress.confirmEmail"               -> "abc@gmail.com",
               "placeOfArrival.selectPlaceOfArrival"     -> "",
               "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
               "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -2189,7 +1927,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         status(response)               shouldBe SEE_OTHER
         redirectLocation(response).get shouldBe "http://example.com/payment-journey"
 
-        verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+        verify(injected[PreUserInformationService], times(1))
+          .storeCompleteUserInformation(any(), any())(any(), any(), any())
       }
   }
 
@@ -2208,7 +1947,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             ageOver17 = Some(true),
             privateCraft = Some(false),
             calculatorResponse = Some(crWithinLimitLow),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             deltaCalculation = Some(deltaCalculation),
             declarationResponse = Some(declarationResponse)
           )
@@ -2237,7 +1976,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             ageOver17 = Some(true),
             privateCraft = Some(false),
             calculatorResponse = Some(crWithinLimitLow),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             deltaCalculation = Some(deltaCalculation),
             declarationResponse = Some(declarationResponse)
           )
@@ -2268,7 +2007,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             privateCraft = Some(false),
             calculatorResponse = Some(crZero),
             chargeReference = Some("XJPR5768524625"),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             declarationResponse = Some(declarationResponse),
             deltaCalculation = Some(zeroDeltaCalculation)
           )
@@ -2300,7 +2039,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             ageOver17 = Some(true),
             privateCraft = Some(false),
             calculatorResponse = Some(crWithinLimitLow),
-            userInformation = Some(ui),
+            preUserInformation = Some(getPreUser(ui)),
             deltaCalculation = Some(deltaCalculation),
             declarationResponse = Some(declarationResponse)
           )
@@ -2333,7 +2072,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
               ageOver17 = Some(true),
               privateCraft = Some(false),
               calculatorResponse = Some(crWithinLimitLow),
-              userInformation = Some(ui),
+              preUserInformation = Some(getPreUser(ui)),
               deltaCalculation = Some(deltaCalculation),
               declarationResponse = Some(declarationResponse)
             )
@@ -2366,7 +2105,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
               ageOver17 = Some(true),
               privateCraft = Some(false),
               calculatorResponse = Some(crWithinLimitLow),
-              userInformation = Some(ui),
+              preUserInformation = Some(getPreUser(ui)),
               deltaCalculation = Some(deltaCalculation),
               declarationResponse = Some(declarationResponse),
               amendState = Some("pending-payment")
@@ -2377,13 +2116,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           PayApiServiceSuccessResponse("http://example.com/payment-journey")
         override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse =
           DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-        when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())).thenReturn(
-          Calculation(
-            "0.00",
-            "0.00",
-            "0.00",
-            "0.00"
-          )
+        when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+          "0.00",
+          "0.00",
+          "0.00",
+          "0.00"
         )
 
         val response: Future[Result] =
@@ -2496,7 +2233,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             privateCraft = Some(false),
             calculatorResponse = Some(crZero),
             chargeReference = Some("XJPR5768524625"),
-            userInformation = Some(ui)
+            preUserInformation = Some(getPreUser(ui))
           )
         )
       )
@@ -2507,14 +2244,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
           .withFormUrlEncodedBody(
-            "firstName"                               -> "Harry",
-            "lastName"                                -> "Potter",
-            "identification.identificationType"       -> "telephone",
-            "identification.identificationNumber"     -> "07884559563",
-            "emailAddress.email"                      -> "abc@gmail.com",
-            "emailAddress.confirmEmail"               -> "abc@gmail.com",
             "placeOfArrival.selectPlaceOfArrival"     -> "",
             "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
             "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -2529,7 +2260,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response)               shouldBe SEE_OTHER
       redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete"
 
-      verify(injected[UserInformationService], times(1)).storeUserInformation(any(), any())(any(), any())
+      verify(injected[PreUserInformationService], times(1))
+        .storeCompleteUserInformation(any(), any())(any(), any(), any())
     }
 
   }
@@ -2565,7 +2297,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "calling GET .../ireland-to-northern-ireland" should {
+  "Calling GET .../ireland-to-northern-ireland" should {
 
     "return the ireland to northern ireland page unpopulated if there is no ireland answer in keystore" in new LocalSetup {
 

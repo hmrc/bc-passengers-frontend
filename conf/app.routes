@@ -131,8 +131,21 @@ GET        /tax-due                                                             
 
 GET        /declare-your-goods                                                         controllers.CalculateDeclareController.declareYourGoods
 
-GET        /user-information                                                           controllers.CalculateDeclareController.enterYourDetails
-POST       /user-information                                                           controllers.CalculateDeclareController.processEnterYourDetails
+GET        /user-information                                                           controllers.CalculateDeclareController.whatIsYourName
+POST       /user-information                                                           controllers.CalculateDeclareController.processWhatIsYourName
+
+GET        /type-of-identification                                                     controllers.CalculateDeclareController.typeOfIdentification
+POST       /type-of-identification                                                     controllers.CalculateDeclareController.processTypeOfIdentification
+
+GET        /type-of-identification/number                                              controllers.CalculateDeclareController.whatIsYourIdentificationNumber
+POST       /type-of-identification/number                                              controllers.CalculateDeclareController.processIdentificationNumber
+
+GET        /what-is-your-email                                                         controllers.CalculateDeclareController.whatIsYourEmail
+POST       /what-is-your-email                                                         controllers.CalculateDeclareController.processWhatIsYourEmail
+
+GET        /journey-details                                                            controllers.CalculateDeclareController.whatAreYourJourneyDetails
+POST       /journey-details                                                            controllers.CalculateDeclareController.processJourneyDetails
+
 GET        /process-amendment                                                          controllers.CalculateDeclareController.processAmendment
 
 GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage()

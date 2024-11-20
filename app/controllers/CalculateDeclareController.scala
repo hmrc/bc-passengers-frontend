@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,14 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
 import controllers.ControllerHelpers
-import models.*
+import models.PreUserInformation.getBasicUserInfo
+import models._
+import play.api.data.Form
+
 import java.time.LocalDateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.*
-import services.*
+import play.api.mvc._
+import services._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -42,7 +45,7 @@ class CalculateDeclareController @Inject() (
   val portsOfArrivalService: PortsOfArrivalService,
   val backLinkModel: BackLinkModel,
   val travelDetailsService: TravelDetailsService,
-  val userInformationService: UserInformationService,
+  val preUserInformationService: PreUserInformationService,
   val payApiService: PayApiService,
   val declarationService: DeclarationService,
   val dateTimeProviderService: DateTimeProviderService,
@@ -52,7 +55,14 @@ class CalculateDeclareController @Inject() (
   userInfoAction: UserInfoAction,
   val you_need_to_declare: views.html.declaration.declare_your_goods,
   val zero_to_declare_your_goods: views.html.declaration.zero_to_declare_your_goods,
-  val enter_your_details: views.html.declaration.enter_your_details,
+  val what_is_your_name: views.html.declaration.what_is_your_name,
+  val type_of_identification: views.html.declaration.type_of_identification,
+  val passport_id_number: views.html.declaration.passport_id_number,
+  val eu_id_number: views.html.declaration.eu_id_number,
+  val driving_license_number: views.html.declaration.driving_licence_number,
+  val telephone_number: views.html.declaration.phone_number,
+  val what_is_your_email: views.html.declaration.what_is_your_email,
+  val journey_details: views.html.declaration.journey_details,
   val errorTemplate: views.html.errorTemplate,
   val irish_border: views.html.travel_details.irish_border,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
@@ -71,7 +81,7 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
-    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
+    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
         "greatBritain"
@@ -105,69 +115,269 @@ class CalculateDeclareController @Inject() (
     }
   }
 
-  def enterYourDetails: Action[AnyContent] = userInfoAction { implicit context =>
-    context.getJourneyData.userInformation match {
-
-      case Some(userInformation) =>
-        context.getJourneyData.euCountryCheck match {
-          case Some("greatBritain") =>
-            Future.successful(
-              Ok(
-                enter_your_details(
-                  EnterYourDetailsDto
-                    .form(receiptDateTime)
-                    .fill(EnterYourDetailsDto.fromUserInformation(userInformation)),
-                  portsOfArrivalService.getAllPortsNI,
-                  context.getJourneyData.euCountryCheck,
-                  backLinkModel.backLink
-                )
-              )
+  def whatIsYourName: Action[AnyContent] = userInfoAction { implicit context =>
+    context.getJourneyData.preUserInformation match {
+      case Some(preUserInfo) =>
+        Future.successful(
+          Ok(
+            what_is_your_name(
+              WhatIsYourNameDto.form.fill(
+                WhatIsYourNameDto(preUserInfo.nameForm.firstName, preUserInfo.nameForm.lastName)
+              ),
+              backLinkModel.backLink
             )
-          case _                    =>
-            Future.successful(
-              Ok(
-                enter_your_details(
-                  EnterYourDetailsDto
-                    .form(receiptDateTime)
-                    .fill(EnterYourDetailsDto.fromUserInformation(userInformation)),
-                  portsOfArrivalService.getAllPorts,
-                  context.getJourneyData.euCountryCheck,
-                  backLinkModel.backLink
-                )
-              )
+          )
+        )
+      case _                 =>
+        Future.successful(
+          Ok(
+            what_is_your_name(
+              WhatIsYourNameDto.form,
+              backLinkModel.backLink
             )
-        }
-      case _                     =>
-        context.getJourneyData.euCountryCheck match {
-          case Some("greatBritain") =>
-            Future.successful(
-              Ok(
-                enter_your_details(
-                  EnterYourDetailsDto.form(receiptDateTime),
-                  portsOfArrivalService.getAllPortsNI,
-                  context.getJourneyData.euCountryCheck,
-                  backLinkModel.backLink
-                )
-              )
-            )
-          case _                    =>
-            Future.successful(
-              Ok(
-                enter_your_details(
-                  EnterYourDetailsDto.form(receiptDateTime),
-                  portsOfArrivalService.getAllPorts,
-                  context.getJourneyData.euCountryCheck,
-                  backLinkModel.backLink
-                )
-              )
-            )
-        }
+          )
+        )
     }
   }
 
-  def processEnterYourDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    val form      = EnterYourDetailsDto.form(receiptDateTime)
-    val boundForm = form.bindFromRequest()
+  def processWhatIsYourName: Action[AnyContent] = dashboardAction { implicit context =>
+    val initialForm = WhatIsYourNameDto.form
+    val boundForm   = initialForm.bindFromRequest()
+
+    boundForm.fold(
+      formWithErrors =>
+        Future.successful(
+          BadRequest(
+            what_is_your_name(formWithErrors, backLinkModel.backLink)
+          )
+        ),
+      whatIsYourNameDto => {
+        val preUserInformation = PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto)
+
+        preUserInformationService.storePreUserInformation(context.getJourneyData, Option(preUserInformation)) flatMap {
+          _ =>
+            Future.successful(Redirect(routes.CalculateDeclareController.typeOfIdentification))
+        }
+      }
+    )
+  }
+
+  def typeOfIdentification: Action[AnyContent] = dashboardAction { implicit context =>
+    context.getJourneyData.preUserInformation.flatMap(_.identification) match {
+      case Some(idForm) =>
+        Future.successful(
+          Ok(
+            type_of_identification(
+              IdentificationTypeDto.form.fill(IdentificationTypeDto(idForm.identificationType)),
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
+          )
+        )
+      case _            =>
+        Future.successful(
+          Ok(
+            type_of_identification(
+              IdentificationTypeDto.form,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
+          )
+        )
+    }
+  }
+
+  def processTypeOfIdentification: Action[AnyContent] = dashboardAction { implicit context =>
+    val initialForm = IdentificationTypeDto.form
+    val boundForm   = initialForm.bindFromRequest()
+
+    boundForm.fold(
+      formWithErrors =>
+        Future.successful(
+          BadRequest(
+            type_of_identification(formWithErrors, context.getJourneyData.euCountryCheck, backLinkModel.backLink)
+          )
+        ),
+      identificationTypeDto => {
+        val updatedPreUserInformation = context.getJourneyData.preUserInformation.map(
+          _.copy(identification = Some(IdentificationForm(identificationTypeDto.identificationType)))
+        )
+
+        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation) flatMap {
+          _ =>
+            Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
+        }
+      }
+    )
+  }
+
+  def whatIsYourIdentificationNumber: Action[AnyContent] = dashboardAction { implicit context =>
+    context.getJourneyData.preUserInformation.flatMap(_.identification) match {
+      case Some(idForm) =>
+        Future.successful(
+          Ok(
+            idForm.identificationType match {
+              case "passport"  =>
+                passport_id_number(
+                  IdentificationNumberDto
+                    .form(idForm.identificationType)
+                    .fill(
+                      IdentificationNumberDto(idForm.identificationNumber.getOrElse(""))
+                    ),
+                  backLinkModel.backLink
+                )
+              case "euId"      =>
+                eu_id_number(
+                  IdentificationNumberDto
+                    .form(idForm.identificationType)
+                    .fill(
+                      IdentificationNumberDto(idForm.identificationNumber.getOrElse(""))
+                    ),
+                  backLinkModel.backLink
+                )
+              case "driving"   =>
+                driving_license_number(
+                  IdentificationNumberDto
+                    .form(idForm.identificationType)
+                    .fill(
+                      IdentificationNumberDto(idForm.identificationNumber.getOrElse(""))
+                    ),
+                  backLinkModel.backLink
+                )
+              case "telephone" =>
+                telephone_number(
+                  IdentificationNumberDto
+                    .form(idForm.identificationType)
+                    .fill(
+                      IdentificationNumberDto(idForm.identificationNumber.getOrElse(""))
+                    ),
+                  backLinkModel.backLink
+                )
+            }
+          )
+        )
+      case _            =>
+        Future.successful(Redirect(routes.CalculateDeclareController.typeOfIdentification))
+    }
+  }
+
+  private def identificationErrorForm(form: Form[IdentificationNumberDto])(implicit lc: LocalContext): Future[Result] =
+    lc.getJourneyData.preUserInformation
+      .flatMap(_.identification.map(_.identificationType match {
+        case "passport"  => Future.successful(BadRequest(passport_id_number(form, backLinkModel.backLink)))
+        case "euId"      => Future.successful(BadRequest(eu_id_number(form, backLinkModel.backLink)))
+        case "driving"   => Future.successful(BadRequest(driving_license_number(form, backLinkModel.backLink)))
+        case "telephone" => Future.successful(BadRequest(telephone_number(form, backLinkModel.backLink)))
+      }))
+      .getOrElse(
+        Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
+      )
+
+  def processIdentificationNumber: Action[AnyContent] = dashboardAction { implicit context =>
+    val idType =
+      context.getJourneyData.preUserInformation.flatMap(_.identification.map(_.identificationType)).getOrElse("")
+
+    val initialForm = IdentificationNumberDto.form(idType)
+    val boundForm   = initialForm.bindFromRequest()
+
+    boundForm.fold(
+      formWithErrors => identificationErrorForm(formWithErrors),
+      identificationDto => {
+        val updatedPreUserInformation = context.getJourneyData.preUserInformation.map(preUserInfo =>
+          preUserInfo.copy(identification = Option(IdentificationForm(idType, Option(identificationDto.number))))
+        )
+
+        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation) flatMap {
+          _ =>
+            Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourEmail))
+        }
+      }
+    )
+  }
+
+  def whatIsYourEmail: Action[AnyContent] = dashboardAction { implicit context =>
+    context.getJourneyData.preUserInformation.flatMap(_.emailAddress) match {
+      case Some(email) =>
+        Future.successful(
+          Ok(
+            what_is_your_email(
+              EmailAddressDto.form.fill(EmailAddressDto(email, email)),
+              backLinkModel.backLink
+            )
+          )
+        )
+      case _           =>
+        Future.successful(
+          Ok(
+            what_is_your_email(
+              EmailAddressDto.form,
+              backLinkModel.backLink
+            )
+          )
+        )
+    }
+  }
+
+  def processWhatIsYourEmail: Action[AnyContent] = dashboardAction { implicit context =>
+    val initialForm = EmailAddressDto.form
+    val boundForm   = initialForm.bindFromRequest()
+
+    boundForm.fold(
+      formWithErrors =>
+        Future.successful(
+          BadRequest(
+            what_is_your_email(formWithErrors, backLinkModel.backLink)
+          )
+        ),
+      emailDto => {
+        val updatedPreUserInformation =
+          context.getJourneyData.preUserInformation.map(_.copy(emailAddress = Option(emailDto.email)))
+
+        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation) flatMap {
+          _ =>
+            Future.successful(Redirect(routes.CalculateDeclareController.whatAreYourJourneyDetails))
+        }
+      }
+    )
+  }
+
+  def whatAreYourJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
+    context.getJourneyData.preUserInformation.flatMap(_.arrivalForm) match {
+      case Some(arrival) =>
+        Future.successful(
+          Ok(
+            journey_details(
+              YourJourneyDetailsDto
+                .form(receiptDateTime)
+                .fill(
+                  YourJourneyDetailsDto(
+                    PlaceOfArrival(Some(arrival.selectPlaceOfArrival), Some(arrival.enterPlaceOfArrival)),
+                    DateTimeOfArrival(arrival.dateOfArrival.toString, arrival.timeOfArrival.toString)
+                  )
+                ),
+              portsOfArrivalService.getAllPorts,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
+          )
+        )
+      case _             =>
+        Future.successful(
+          Ok(
+            journey_details(
+              YourJourneyDetailsDto.form(receiptDateTime),
+              portsOfArrivalService.getAllPorts,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
+          )
+        )
+    }
+  }
+
+  def processJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
+    val initialForm = YourJourneyDetailsDto.form(receiptDateTime)
+    val boundForm   = initialForm.bindFromRequest()
 
     boundForm.fold(
       formWithErrors => {
@@ -177,50 +387,53 @@ class CalculateDeclareController @Inject() (
         }
         Future.successful(
           BadRequest(
-            enter_your_details(formWithErrors, ports, context.getJourneyData.euCountryCheck, backLinkModel.backLink)
+            journey_details(formWithErrors, ports, context.getJourneyData.euCountryCheck, backLinkModel.backLink)
           )
         )
       },
-      enterYourDetailsDto => {
-        val userInformation = UserInformation.build(enterYourDetailsDto)
-        val correlationId   = UUID.randomUUID.toString
-        userInformationService.storeUserInformation(context.getJourneyData, userInformation) flatMap { _ =>
-          requireCalculatorResponse { calculatorResponse =>
-            val allTax            = BigDecimal(calculatorResponse.calculation.allTax)
-            val declarationResult = declarationService.submitDeclaration(
-              userInformation,
-              calculatorResponse,
-              context.getJourneyData,
-              receiptDateTime,
-              correlationId
-            )
-            declarationResult flatMap {
-              case DeclarationServiceFailureResponse     =>
-                Future.successful(InternalServerError(errorTemplate()))
-              case DeclarationServiceSuccessResponse(cr) =>
-                if (
-                  allTax == 0 && context.getJourneyData.euCountryCheck
-                    .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
-                ) {
-                  declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap {
-                    _ =>
-                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+      journeyDetailsDto => {
+        val correlationId = UUID.randomUUID.toString
+
+        preUserInformationService.storeCompleteUserInformation(context.getJourneyData, journeyDetailsDto) flatMap {
+          journeyData =>
+            val userInformation = getBasicUserInfo(journeyData.preUserInformation)
+
+            requireCalculatorResponse { calculatorResponse =>
+              val allTax            = BigDecimal(calculatorResponse.calculation.allTax)
+              val declarationResult = declarationService.submitDeclaration(
+                userInformation,
+                calculatorResponse,
+                context.getJourneyData,
+                receiptDateTime,
+                correlationId
+              )
+              declarationResult flatMap {
+                case DeclarationServiceFailureResponse     =>
+                  Future.successful(InternalServerError(errorTemplate()))
+                case DeclarationServiceSuccessResponse(cr) =>
+                  if (
+                    allTax == 0 && context.getJourneyData.euCountryCheck
+                      .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
+                  ) {
+                    declarationService
+                      .storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
+                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+                    }
+                  } else {
+                    payApiService.requestPaymentUrl(
+                      cr,
+                      userInformation,
+                      calculatorResponse,
+                      (allTax * 100).toInt,
+                      isAmendment = false,
+                      None
+                    ) flatMap {
+                      case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
+                      case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
+                    }
                   }
-                } else {
-                  payApiService.requestPaymentUrl(
-                    cr,
-                    userInformation,
-                    calculatorResponse,
-                    (allTax * 100).toInt,
-                    isAmendment = false,
-                    None
-                  ) flatMap {
-                    case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
-                    case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
-                  }
-                }
+              }
             }
-          }
         }
       }
     )
@@ -229,7 +442,7 @@ class CalculateDeclareController @Inject() (
   def processAmendment: Action[AnyContent] = dashboardAction { implicit context =>
     val correlationId   = UUID.randomUUID.toString
     val userInformation =
-      context.getJourneyData.userInformation.getOrElse(throw new RuntimeException("no user Information"))
+      context.getJourneyData.buildUserInformation.getOrElse(throw new RuntimeException("no user Information"))
     val amendState      = context.getJourneyData.amendState.getOrElse("")
     requireCalculatorResponse { calculatorResponse =>
       val amountPaidPreviously = if (amendState.equals("pending-payment")) {
@@ -268,13 +481,13 @@ class CalculateDeclareController @Inject() (
     context: JourneyData,
     amountPaidPreviously: BigDecimal,
     amendState: String
-  )(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] = {
+  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val deltaAllTax = BigDecimal(context.deltaCalculation.get.allTax)
     if (
       deltaAllTax == 0 && context.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
     ) {
       declarationService.storeChargeReference(context, userInformation, cr.value) flatMap { _ =>
-        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
       }
     } else {
       payApiService.requestPaymentUrl(

@@ -72,6 +72,121 @@ case class UserInformation(
   timeOfArrival: LocalTime
 )
 
+object UserInformation {
+  implicit val formats: OFormat[UserInformation] = Json.format[UserInformation]
+
+  def build(pre: PreUserInformation): UserInformation =
+    UserInformation(
+      pre.nameForm.firstName,
+      pre.nameForm.lastName,
+      pre.identification.map(_.identificationType).getOrElse(""),
+      pre.identification.flatMap(_.identificationNumber).getOrElse(""),
+      pre.emailAddress.getOrElse(""),
+      pre.arrivalForm.map(_.selectPlaceOfArrival).getOrElse(""),
+      pre.arrivalForm.map(_.enterPlaceOfArrival).getOrElse(""),
+      pre.arrivalForm.map(arrival => parseLocalDate(arrival.dateOfArrival.toString)).getOrElse(LocalDate.now()),
+      pre.arrivalForm.map(arrival => parseLocalTime(arrival.timeOfArrival.toString)).getOrElse(LocalTime.now())
+    )
+
+  def getPreUser(userInfo: UserInformation): PreUserInformation =
+    PreUserInformation(
+      nameForm = WhatIsYourNameForm(
+        firstName = userInfo.firstName,
+        lastName = userInfo.lastName
+      ),
+      identification = Some(
+        IdentificationForm(
+          identificationType = userInfo.identificationType,
+          identificationNumber = Option(userInfo.identificationNumber)
+        )
+      ),
+      emailAddress = Some(userInfo.emailAddress),
+      arrivalForm = Some(
+        ArrivalForm(
+          selectPlaceOfArrival = userInfo.selectPlaceOfArrival,
+          enterPlaceOfArrival = userInfo.enterPlaceOfArrival,
+          dateOfArrival = userInfo.dateOfArrival,
+          timeOfArrival = userInfo.timeOfArrival
+        )
+      )
+    )
+}
+
+case class ArrivalForm(
+  selectPlaceOfArrival: String,
+  enterPlaceOfArrival: String,
+  dateOfArrival: LocalDate,
+  timeOfArrival: LocalTime
+)
+
+object ArrivalForm {
+  implicit val formats: OFormat[ArrivalForm] = Json.format[ArrivalForm]
+}
+
+case class PreUserInformation(
+  nameForm: WhatIsYourNameForm,
+  identification: Option[IdentificationForm] = None,
+  emailAddress: Option[String] = None,
+  arrivalForm: Option[ArrivalForm] = None
+) {
+
+  def buildUserInfo: Option[UserInformation] =
+    identification.flatMap(id =>
+      emailAddress.flatMap(email =>
+        arrivalForm.map(arrival =>
+          UserInformation(
+            firstName = nameForm.firstName,
+            lastName = nameForm.lastName,
+            identificationType = id.identificationType.toString,
+            identificationNumber = id.identificationNumber.getOrElse(""),
+            emailAddress = email,
+            selectPlaceOfArrival = arrival.selectPlaceOfArrival,
+            enterPlaceOfArrival = arrival.enterPlaceOfArrival,
+            dateOfArrival = arrival.dateOfArrival,
+            timeOfArrival = arrival.timeOfArrival
+          )
+        )
+      )
+    )
+}
+
+object PreUserInformation {
+  implicit val formats: OFormat[PreUserInformation] = Json.format[PreUserInformation]
+
+  def fromWhatIsYourNameDto(whatIsYourNameDto: WhatIsYourNameDto) =
+    PreUserInformation(
+      nameForm = WhatIsYourNameForm(
+        whatIsYourNameDto.firstName,
+        whatIsYourNameDto.lastName
+      )
+    )
+
+  def getBasicUserInfo(maybePreUserInfo: Option[PreUserInformation]): UserInformation =
+    UserInformation(
+      firstName = maybePreUserInfo.map(_.nameForm.firstName).getOrElse(""),
+      lastName = maybePreUserInfo.map(_.nameForm.lastName).getOrElse(""),
+      identificationType = maybePreUserInfo.flatMap(_.identification.map(_.identificationType)).getOrElse(""),
+      identificationNumber = maybePreUserInfo.flatMap(_.identification.flatMap(_.identificationNumber)).getOrElse(""),
+      emailAddress = maybePreUserInfo.flatMap(_.emailAddress).getOrElse(""),
+      selectPlaceOfArrival = maybePreUserInfo.flatMap(_.arrivalForm.map(_.selectPlaceOfArrival)).getOrElse(""),
+      enterPlaceOfArrival = maybePreUserInfo.flatMap(_.arrivalForm.map(_.enterPlaceOfArrival)).getOrElse(""),
+      dateOfArrival = maybePreUserInfo.flatMap(_.arrivalForm.map(_.dateOfArrival)).getOrElse(LocalDate.now()),
+      timeOfArrival = maybePreUserInfo.flatMap(_.arrivalForm.map(_.timeOfArrival)).getOrElse(LocalTime.now())
+    )
+}
+
+case class WhatIsYourNameForm(firstName: String, lastName: String)
+
+object WhatIsYourNameForm {
+  implicit val formats: OFormat[WhatIsYourNameForm] = Json.format[WhatIsYourNameForm]
+}
+
+case class IdentificationForm(identificationType: String, identificationNumber: Option[String] = None)
+
+object IdentificationForm {
+  implicit val formats: OFormat[IdentificationForm] = Json.format[IdentificationForm]
+}
+
 object PreviousDeclarationRequest {
   given formats: OFormat[PreviousDeclarationRequest] = Json.format[PreviousDeclarationRequest]
 
@@ -117,7 +232,7 @@ case class JourneyData(
   selectedAliases: List[ProductAlias] = Nil,
   purchasedProductInstances: List[PurchasedProductInstance] = Nil,
   workingInstance: Option[PurchasedProductInstance] = None,
-  userInformation: Option[UserInformation] = None,
+  preUserInformation: Option[PreUserInformation] = None,
   calculatorResponse: Option[CalculatorResponse] = None,
   chargeReference: Option[String] = None,
   defaultCountry: Option[String] = None,
@@ -164,4 +279,6 @@ case class JourneyData(
     this.copy(purchasedProductInstances = purchasedProductInstances.filterNot(_.iid == iid))
 
   def clearingWorking: JourneyData = this.copy(workingInstance = None)
+
+  def buildUserInformation: Option[UserInformation] = preUserInformation.flatMap(_.buildUserInfo)
 }

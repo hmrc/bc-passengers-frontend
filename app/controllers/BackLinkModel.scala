@@ -134,6 +134,14 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(CalculateDeclareController.showCalculation)
       case "user-information"                                                             =>
         Some(CalculateDeclareController.declareYourGoods)
+      case "number" if path.contains("type-of-identification")                            =>
+        Some(CalculateDeclareController.typeOfIdentification)
+      case "type-of-identification"                                                       =>
+        Some(CalculateDeclareController.whatIsYourName)
+      case "what-is-your-email"                                                           =>
+        Some(CalculateDeclareController.whatIsYourIdentificationNumber)
+      case "journey-details"                                                              =>
+        Some(CalculateDeclareController.whatIsYourEmail)
       case "previous-declaration"                                                         =>
         Some(appConfig.declareGoodsUrl)
       case "previous-goods"                                                               =>

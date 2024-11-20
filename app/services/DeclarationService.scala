@@ -18,6 +18,7 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
+import models.UserInformation.getPreUser
 import models.*
 import play.api.Logger
 import play.api.http.Status.*
@@ -65,7 +66,7 @@ class DeclarationService @Inject() (
         ageOver17 = (declarationResponse \ "isOver17").asOpt[Boolean],
         isUKResident = (declarationResponse \ "isUKResident").asOpt[Boolean],
         privateCraft = (declarationResponse \ "isPrivateTravel").asOpt[Boolean],
-        userInformation = (declarationResponse \ "userInformation").asOpt[UserInformation],
+        preUserInformation = (declarationResponse \ "preUserInformation").asOpt[PreUserInformation],
         previousDeclarationRequest = Some(previousDeclarationDetails),
         declarationResponse = Some(
           DeclarationResponse(
@@ -496,7 +497,7 @@ class DeclarationService @Inject() (
       journeyData.copy(
         prevDeclaration = None,
         previousDeclarationRequest = None,
-        userInformation = Some(userInformation),
+        preUserInformation = Some(getPreUser(userInformation)),
         purchasedProductInstances = cumulativePurchasedProductInstances,
         declarationResponse = None,
         deltaCalculation = journeyData.deltaCalculation,
@@ -548,7 +549,7 @@ class DeclarationService @Inject() (
   ): Future[JourneyData] = {
 
     val updatedJourneyData =
-      journeyData.copy(chargeReference = Some(chargeReference), userInformation = Some(userInformation))
+      journeyData.copy(chargeReference = Some(chargeReference), preUserInformation = Some(getPreUser(userInformation)))
 
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
