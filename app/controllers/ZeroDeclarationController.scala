@@ -50,8 +50,8 @@ class ZeroDeclarationController @Inject() (
         Future.successful(InternalServerError(errorTemplate()))
       case DeclarationServiceSuccessResponse =>
         val placeOfArrivalValue = portsOfArrivalService
-          .getDisplayNameByCode(context.getJourneyData.userInformation.get.selectPlaceOfArrival)
-          .getOrElse(context.getJourneyData.userInformation.get.enterPlaceOfArrival)
+          .getDisplayNameByCode(context.getJourneyData.buildUserInformation.get.selectPlaceOfArrival)
+          .getOrElse(context.getJourneyData.buildUserInformation.get.enterPlaceOfArrival)
 
         requireCalculatorResponse { calculatorResponse =>
           val (previousDeclaration, deltaCalculation, oldTax) =
@@ -71,7 +71,7 @@ class ZeroDeclarationController @Inject() (
                 previousDeclaration,
                 deltaCalculation,
                 oldTax,
-                context.getJourneyData.userInformation,
+                context.getJourneyData.buildUserInformation,
                 calculatorResponse,
                 calculatorResponse.asDto(applySorting = false),
                 chargeReference,
