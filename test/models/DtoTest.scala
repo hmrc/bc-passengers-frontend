@@ -21,7 +21,7 @@ import util.BaseSpec
 
 class DtoTest extends BaseSpec {
 
-  "Validating the EnterYourDetailsDto form" should {
+  "Validating the YourJourneyDetailsDto form" should {
 
     "allow the firstName to be any string that is 35 characters or under" in {
       val formData = Map(
@@ -43,7 +43,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -68,7 +68,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                      shouldBe true
       form.errors.size                    shouldBe 1
@@ -95,7 +95,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                      shouldBe true
       form.errors.size                    shouldBe 1
@@ -122,7 +122,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -147,7 +147,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                     shouldBe true
       form.errors.size                   shouldBe 1
@@ -174,7 +174,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                     shouldBe true
       form.errors.size                   shouldBe 1
@@ -201,7 +201,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -226,7 +226,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                              shouldBe true
       form.errors.size                                            shouldBe 1
@@ -253,7 +253,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -278,7 +278,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                                shouldBe true
       form.errors.size                                              shouldBe 1
@@ -305,7 +305,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -330,7 +330,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                           shouldBe true
       form.errors.size                         shouldBe 1
@@ -357,7 +357,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -382,7 +382,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                           shouldBe true
       form.errors.size                         shouldBe 1
@@ -409,7 +409,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -434,7 +434,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                         shouldBe true
       form.errors.size                       shouldBe 1
@@ -461,7 +461,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                         shouldBe true
       form.errors.size                       shouldBe 1
@@ -488,7 +488,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                         shouldBe true
       form.errors.size                       shouldBe 1
@@ -515,7 +515,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                         shouldBe true
       form.errors.size                       shouldBe 1
@@ -542,7 +542,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                         shouldBe true
       form.errors.size                       shouldBe 1
@@ -569,7 +569,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                      shouldBe true
       form.errors.size                                    shouldBe 2
@@ -597,7 +597,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -622,7 +622,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                                shouldBe true
       form.errors.size                                              shouldBe 1
@@ -649,7 +649,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -674,7 +674,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                               shouldBe true
       form.errors.size                                             shouldBe 1
@@ -701,7 +701,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                               shouldBe true
       form.errors.size                                             shouldBe 1
@@ -728,7 +728,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                           shouldBe true
       form.errors.size                         shouldBe 1
@@ -755,7 +755,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -782,7 +782,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -809,7 +809,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -836,7 +836,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
     }
@@ -861,7 +861,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.enter_a_date")
     }
@@ -886,7 +886,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.include_day_month_and_year")
     }
@@ -911,7 +911,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.year_length")
     }
@@ -936,7 +936,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
     }
@@ -961,7 +961,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -986,7 +986,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -1011,7 +1011,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                                shouldBe true
       form.errors.size                                              shouldBe 1
@@ -1038,7 +1038,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -1063,7 +1063,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1090,7 +1090,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1117,7 +1117,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -1142,7 +1142,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -1167,7 +1167,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                              shouldBe true
       form.errors.size                            shouldBe 1
@@ -1195,7 +1195,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
 
@@ -1221,7 +1221,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1248,7 +1248,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1275,7 +1275,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1

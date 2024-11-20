@@ -18,20 +18,20 @@ package services
 
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
-import models.{JourneyData, UserInformation}
+import models.{JourneyData, PreUserInformation}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserInformationService @Inject() (val cache: Cache) {
+class PreUserInformationService @Inject() (val cache: Cache) {
 
-  def storeUserInformation(journeyData: JourneyData, userInformation: UserInformation)(implicit
-    hc: HeaderCarrier,
-    ex: ExecutionContext
+  def storePreUserInformation(journeyData: JourneyData, preUserInformation: PreUserInformation)(implicit
+                                                                                       hc: HeaderCarrier,
+                                                                                       ex: ExecutionContext
   ): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.copy(userInformation = Some(userInformation))
+    val updatedJourneyData = journeyData.copy(preUserInformation = Some(preUserInformation))
 
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
