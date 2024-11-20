@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import models.UserInformation.getPreUser
 import models._
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers._
@@ -221,7 +222,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
               privateCraft = Some(false),
               calculatorResponse = Some(crZeroTax),
               chargeReference = Some("XJPR5768524625"),
-              userInformation = Some(ui)
+              preUserInformation = Some(getPreUser(ui))
             )
           )
         )
@@ -263,7 +264,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
               declarationResponse = Some(declarationResponse),
               deltaCalculation = Some(deltaCalculation),
               chargeReference = Some("XJPR5768524625"),
-              userInformation = Some(ui)
+              preUserInformation = Some(getPreUser(ui))
             )
           )
         )
@@ -308,7 +309,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
               calculatorResponse = Some(crZeroTax),
               declarationResponse = Some(declarationResponse),
               chargeReference = Some("XJPR5768524625"),
-              userInformation = Some(ui)
+              preUserInformation = Some(getPreUser(ui))
             )
           )
         )
@@ -344,7 +345,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
               calculatorResponse = Some(crZeroTax),
               declarationResponse = Some(declarationResponse),
               chargeReference = Some("XJPR5768524625"),
-              userInformation = Some(userInformationMock)
+              preUserInformation = Some(getPreUser(userInformationMock))
             )
           )
         )
@@ -388,7 +389,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
               privateCraft = Some(false),
               calculatorResponse = Some(crZeroTax),
               chargeReference = Some("XJPR5768524625"),
-              userInformation = Some(userInformationMock)
+              preUserInformation = Some(getPreUser(userInformationMock))
             )
           )
         )
