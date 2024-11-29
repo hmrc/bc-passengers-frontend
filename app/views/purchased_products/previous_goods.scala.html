@@ -16,11 +16,10 @@
 
 @import views.ViewUtils._
 @import util._
+@import views.html.components.linkAsButton
 
 @this(
   govukLayout: templates.GovukLayoutWrapper,
-  errorSummary: components.errorSummary,
-  formHelper: FormWithCSRF,
   displayItem: components.display_item,
   h1: components.h1,
   h2: components.h2,
@@ -32,69 +31,69 @@
   previousAlcoholPurchasedItemList: List[PurchasedItem],
   previousTobaccoPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
-  isAmendment: Boolean,
   backLink: Option[String],
   isIrishBorderQuestionEnabled: Boolean,
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
+)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: config.AppConfig)
 
-@defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
 
-@govukLayout(pageTitle = Some(if(isAmendment) messages("label.your_previously_declared_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.tell_us_about_the_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+@govukLayout(pageTitle = Some(messages("label.your_previously_declared_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
-  @h1(messages("label.your_previously_declared_goods_"))
+  @h1(messages("label.your_previously_declared_goods"))
 
-  <div class="alcohol">
-      @if(previousAlcoholPurchasedItemList.nonEmpty) {
+  @if(previousAlcoholPurchasedItemList.nonEmpty) {
+    <div class="alcohol">
       @h2(messages("label.alcohol"))
       <dl class="govuk-summary-list">
         <dt class="govuk-summary-list__key">
         @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-              @purchasedItem.descriptionLabels(long = false).map { description =>
-              @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
-              }
+          @purchasedItem.descriptionLabels(long = false).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+            }
           }
         </dt>
-    </dl>
-    }
-  </div>
-
-  <div class="tobacco">
-    @if(previousTobaccoPurchasedItemList.nonEmpty){
-      @h2(messages("label.tobacco"))
-      <dl class="govuk-summary-list">
-          <dt class="govuk-summary-list__key">
-          @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
-            @purchasedItem.descriptionLabels(long = true).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
-          }
-        }
-          </dt>
       </dl>
-      }
-  </div>
-
-<div class="other-goods">
-  @if(previousOtherGoodsPurchasedItemList.nonEmpty){
-    @h2(messages("label.other_goods"))
-    <dl class="govuk-summary-list">
-        <dt class="govuk-summary-list__key">
-      @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-        @purchasedItem.descriptionLabels(long = false).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
-         }
-        }
-        </dt>
-    </dl>
+    </div>
   }
-</div>
 
-    @formHelper(action = routes.DashboardController.showDashboard) {
-        @button(messages("label.add_goods"))
+  @if(previousTobaccoPurchasedItemList.nonEmpty){
+    <div class="tobacco">
+      @h2(messages("label.tobacco"))
+        <dl class="govuk-summary-list">
+          <dt class="govuk-summary-list__key">
+            @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
+              @purchasedItem.descriptionLabels(long = true).map { description =>
+                @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+              }
+            }
+          </dt>
+        </dl>
+    </div>
     }
-}
+
+  @if(previousOtherGoodsPurchasedItemList.nonEmpty){
+    <div class="other-goods">
+      @h2(messages("label.other_goods"))
+        <dl class="govuk-summary-list">
+          <dt class="govuk-summary-list__key">
+            @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+              @purchasedItem.descriptionLabels(long = false).map { description =>
+                @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+             }
+            }
+          </dt>
+        </dl>
+    </div>
+    }
+
+  @linkAsButton(
+    routes.DashboardController.showDashboard,
+    messages("label.add_goods"),
+    Some("add_goods")
+    )
+
 }
 
 

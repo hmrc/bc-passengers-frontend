@@ -79,13 +79,13 @@ class PreviousGoodsControllerSpec extends BaseSpec {
 
   val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
-  "Calling GET .../prev-goods" should {
+  "Calling GET .../previous-goods" should {
     "redirect to start if travel details are missing" in new LocalSetup {
 
       override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
 
       val result: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/prev-goods")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-goods")).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
@@ -206,7 +206,7 @@ class PreviousGoodsControllerSpec extends BaseSpec {
     )
     val result: Future[Result]        = route(
       app,
-      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/prev-goods").withFormUrlEncodedBody(
+      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-goods").withFormUrlEncodedBody(
         "firstName"      -> "Harry",
         "lastName"       -> "Potter",
         "passportNumber" -> "801375812",

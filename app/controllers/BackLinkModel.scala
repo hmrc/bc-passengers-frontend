@@ -136,6 +136,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(CalculateDeclareController.declareYourGoods)
       case "previous-declaration"                                                         =>
         Some(appConfig.declareGoodsUrl)
+      case "previous-goods"                                                               =>
+        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "declaration-retrieval"                                                        =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
       case "pending-payment"                                                              =>

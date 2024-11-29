@@ -54,7 +54,6 @@ class PreviousGoodsController @Inject() (
     } else {
       revertWorkingInstance {
         cache.fetch flatMap { journeyData: Option[JourneyData] =>
-          val isAmendment                  = context.getJourneyData.declarationResponse.isDefined
           val jd                           = journeyData.getOrElse(JourneyData())
           val allPurchasedProductInstances =
             jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances
@@ -86,7 +85,6 @@ class PreviousGoodsController @Inject() (
                   previousAlcoholPurchasedItemList.reverse,
                   previousTobaccoPurchasedItemList.reverse,
                   previousOtherGoodsPurchasedItemList.reverse,
-                  isAmendment,
                   backLinkModel.backLink,
                   appConfig.isIrishBorderQuestionEnabled,
                   jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),

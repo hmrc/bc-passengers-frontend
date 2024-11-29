@@ -140,7 +140,6 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     previousAlcoholPurchasedItemList = alcoholPurchasedItemList,
     previousTobaccoPurchasedItemList = tobaccoPurchasedItemList,
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
-    isAmendment = true,
     backLink = None,
     isIrishBorderQuestionEnabled = true,
     isGbNi = true,
@@ -148,7 +147,7 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     isUkResident = true
   )(
     request = request,
-    messagesApi = messagesApi,
+    messages = messages,
     lang = Lang("en"),
     appConfig = appConfig
   )
@@ -158,14 +157,13 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     previousAlcoholPurchasedItemList = alcoholPurchasedItemList,
     previousTobaccoPurchasedItemList = tobaccoPurchasedItemList,
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
-    isAmendment = true,
     backLink = None,
     isIrishBorderQuestionEnabled = true,
     isGbNi = true,
     isEU = false,
     isUkResident = true,
     request = request,
-    messagesApi = messagesApi,
+    messages = messages,
     lang = Lang("en"),
     appConfig = appConfig
   )
@@ -175,13 +173,12 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,
     otherGoodsPurchasedItemList(),
-    true,
     None,
     true,
     true,
     false,
     true
-  )(request, messagesApi, Lang("en"), appConfig)
+  )(request, messages, Lang("en"), appConfig)
 
   "PreviousGoodsView" when {
     renderViewTest(

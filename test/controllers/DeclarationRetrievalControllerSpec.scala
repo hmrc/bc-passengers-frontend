@@ -282,7 +282,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
           )
       ).get
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/prev-goods")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-goods")
       verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())
     }
 
