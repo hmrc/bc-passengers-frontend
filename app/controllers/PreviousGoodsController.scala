@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-import models.{ProductTreeLeaf, _}
+import models._
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DashboardController @Inject() (
+class PreviousGoodsController @Inject() (
   val countriesService: CountriesService,
   val cache: Cache,
   val purchasedProductService: PurchasedProductService,
@@ -38,7 +38,7 @@ class DashboardController @Inject() (
   val calculatorService: CalculatorService,
   val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
-  val dashboard: views.html.purchased_products.dashboard,
+  val previousGoods: views.html.purchased_products.previous_goods,
   val errorTemplate: views.html.errorTemplate,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
   override val controllerComponents: MessagesControllerComponents,
@@ -47,14 +47,13 @@ class DashboardController @Inject() (
 ) extends FrontendController(controllerComponents)
     with ControllerHelpers {
 
-  def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
+  def showPreviousGoods: Action[AnyContent] = dashboardAction { implicit context =>
     implicit val lang: Lang = context.request.lang
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     } else {
       revertWorkingInstance {
         cache.fetch flatMap { journeyData: Option[JourneyData] =>
-          val isAmendment                  = context.getJourneyData.declarationResponse.isDefined
           val jd                           = journeyData.getOrElse(JourneyData())
           val allPurchasedProductInstances =
             jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances
@@ -62,21 +61,15 @@ class DashboardController @Inject() (
             maybeCalculatorRequest =>
               val purchasedItemList = maybeCalculatorRequest.map(_.items).getOrElse(Nil)
 
-              val alcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              val previousAlcoholPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "alcohol" && ppi.isEditable.contains(true) =>
+                    if tid == "alcohol" && ppi.isEditable.contains(false) =>
                   item
               }
 
-              val tobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+              val previousTobaccoPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(true) =>
-                  item
-              }
-
-              val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" && ppi.isEditable.contains(true) =>
+                    if (tid == "cigarettes" | tid == "cigars" | tid == "tobacco") && ppi.isEditable.contains(false) =>
                   item
               }
 
@@ -86,18 +79,12 @@ class DashboardController @Inject() (
                   item
               }
 
-              val showCalculate =
-                !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
-
               Ok(
-                dashboard(
+                previousGoods(
                   jd,
-                  alcoholPurchasedItemList.reverse,
-                  tobaccoPurchasedItemList.reverse,
-                  otherGoodsPurchasedItemList.reverse,
+                  previousAlcoholPurchasedItemList.reverse,
+                  previousTobaccoPurchasedItemList.reverse,
                   previousOtherGoodsPurchasedItemList.reverse,
-                  showCalculate,
-                  isAmendment,
                   backLinkModel.backLink,
                   appConfig.isIrishBorderQuestionEnabled,
                   jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
@@ -110,4 +97,5 @@ class DashboardController @Inject() (
       }
     }
   }
+
 }
