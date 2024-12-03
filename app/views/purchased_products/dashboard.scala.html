@@ -63,15 +63,13 @@
   <div class="add-more">
     <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
   </div>
-  <dl class="govuk-summary-list">
-    <dt class="govuk-summary-list__key">
+  <ul class="govuk-summary-list">
       @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
       @purchasedItem.descriptionLabels(long = false).map { description =>
       @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
       }
       }
-    </dt>
-  </dl>
+  </ul>
   }
 </div>
 <br>
@@ -84,7 +82,7 @@
   <div class="add-more">
     <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
   </div>
-  <dl class="govuk-summary-list">
+  <ul class="govuk-summary-list">
     <dt class="govuk-summary-list__key">
       @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
       @purchasedItem.descriptionLabels(long = true).map { description =>
@@ -92,7 +90,7 @@
       }
       }
     </dt>
-  </dl>
+  </ul>
   }
 </div>
 <br>
@@ -114,7 +112,7 @@
         @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
       </div>
     }
-    <dl class="govuk-summary-list">
+    <ul class="govuk-summary-list">
       <dt class="govuk-summary-list__key">
       @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
@@ -122,7 +120,7 @@
         }
       }
       </dt>
-    </dl>
+    </ul>
   </div>
   <br>
 
