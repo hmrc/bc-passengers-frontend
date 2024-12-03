@@ -343,8 +343,6 @@ label.price_paid_for_this_item=Y pris a dalwyd am yr eitem hon
 label.country_the_item_was_produced_hint = Os nad ydych yn siŵr lle y cafodd yr eitem hon ei gwneud yn wreiddiol, gadewch hyn yn wag
 label.tell_us_about_the_goods_=Rhowch wybod i ni am eich nwyddau
 label.tell_us_about_the_additional_goods_ = Rhowch wybod i ni am eich nwyddau ychwanegol
-label.add_goods =Ychwanegu nwyddau
-label.your_previously_declared_goods = Eich nwyddau a ddatganwyd yn flaenorol
 label.about_foreign_currencies = Mae ein cyfrifiannell ar-lein yn derbyn bron pob arian cyfred tramor, a bydd yn cyfrifo’r dreth sy’n ddyledus mewn punnoedd Prydeinig.
 label.price_paid=Y pris a dalwyd
 label.price_format_description = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 1000.40, 1000.4 neu 1,000.
@@ -671,6 +669,7 @@ label.X_X={0} {1}
 label.X_X_Xg={0} {1}, {2}g
 
 label.calculate=Cyfrifo trethi a thollau
+label.calculate_change_in_tax_and_duties = Cyfrifo’r newid mewn trethi a thollau
 
 title.afghanistan=Afghanistan
 title.aland_islands=Ynysoedd Åland

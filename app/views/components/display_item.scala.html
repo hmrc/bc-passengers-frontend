@@ -80,7 +80,9 @@
           }
       }
     </dl>
-
+    @if(purchasedItem.purchasedProductInstance.isEditable.contains(false)) {
+        <br>
+    }
 
     @if(purchasedItem.purchasedProductInstance.isEditable.contains(true)) {
         <div class="margin-bottom-20 edit-link">
@@ -98,7 +100,6 @@
         <div class="margin-bottom-50">
             <p class="govuk-body"><a class="govuk-link" href="@routes.AlterProductsController.confirmRemove(purchasedItem.purchasedProductInstance.path, purchasedItem.purchasedProductInstance.iid)">@messages("label.remove_this_item")
             <span class="govuk-visually-hidden">@description</span></a></p>
-            <br>
         </div>
     }
 

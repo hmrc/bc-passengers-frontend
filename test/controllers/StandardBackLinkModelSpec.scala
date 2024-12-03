@@ -532,7 +532,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
       override def call: Call = routes.DashboardController.showDashboard
 
-      m.backLink(context) shouldBe Some(PreviousGoodsController.showPreviousGoods.url)
+      m.backLink(context) shouldBe Some(DeclarationRetrievalController.loadDeclarationRetrievalPage.url)
     }
   }
 

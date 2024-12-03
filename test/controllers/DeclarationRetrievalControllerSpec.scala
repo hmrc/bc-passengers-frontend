@@ -218,7 +218,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     }
 
-    "redirect to previous goods page following a successful retrieval" in {
+    "redirect to tell us page following a successful retrieval" in {
 
       val previousDeclarationRequest        = PreviousDeclarationRequest("Potter", "someReference")
       val calculation                       = Calculation("160.45", "25012.50", "15134.59", "40307.54")
@@ -282,7 +282,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
           )
       ).get
       status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-goods")
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
       verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())
     }
 

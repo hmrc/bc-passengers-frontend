@@ -32,6 +32,8 @@
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
+  previousAlcoholPurchasedItemList: List[PurchasedItem],
+  previousTobaccoPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
   showCalculate: Boolean,
   isAmendment: Boolean,
@@ -57,72 +59,87 @@
 
   <div class="alcohol">
     @h2(messages("label.alcohol"))
-      @if(alcoholPurchasedItemList.isEmpty) {
+    @if(alcoholPurchasedItemList.isEmpty && previousAlcoholPurchasedItemList.isEmpty) {
+      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
+    } else {
+      <div class="add-more">
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
-          } else {
-            <div class="add-more">
-                <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
-            </div>
-            <dl class="govuk-summary-list">
-              <dt class="govuk-summary-list__key">
-                @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-                  @purchasedItem.descriptionLabels(long = false).map { description =>
-                    @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
-                    }
-                  }
-              </dt>
-            </dl>
-          }
+      </div>
+      @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+        }
+      }
+      @if(previousAlcoholPurchasedItemList.nonEmpty){
+        @p(Html(messages("label.previously_declared_alcohol")), classes="govuk-body govuk-!-font-weight-bold previous-alcohol")
+        <br>
+      }
+      @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+        }
+      }
+    }
   </div>
   <br>
 
   <div class="tobacco">
     @h2(messages("label.tobacco"))
-      @if(tobaccoPurchasedItemList.isEmpty) {
+    @if(tobaccoPurchasedItemList.isEmpty && previousTobaccoPurchasedItemList.isEmpty){
+      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
+    } else {
+      <div class="add-more">
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
-          } else {
-          <div class="add-more">
-            <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
-          </div>
-          <dl class="govuk-summary-list">
-            <dt class="govuk-summary-list__key">
-              @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-                @purchasedItem.descriptionLabels(long = true).map { description =>
-                  @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
-                }
-              }
-            </dt>
-          </dl>
+      </div>
+        @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+          }
         }
+        @if(previousTobaccoPurchasedItemList.nonEmpty){
+          @p(Html(messages("label.previously_declared_tobacco")), classes="govuk-body govuk-!-font-weight-bold previous-tobacco")
+          <br>
+        }
+        @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+        }
+      }
+    }
   </div>
   <br>
 
   <div class="other-goods">
     @h2(messages("label.other_goods"))
-      @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
-         <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
-      } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
+    @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
+      <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
       <div class="add-more">
-          <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
+        <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
       </div>
-      <dl class="govuk-summary-list">
-        <dt class="govuk-summary-list__key">
-          @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-            @purchasedItem.descriptionLabels(long = false).map { description =>
-              @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
-            }
-          }
-        </dt>
-      </dl>
-        } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
-          <div class="panel panel-border-wide">
-            @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
-          </div>
-        } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
-          <div class="panel panel-border-wide">
-            @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
-          </div>
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
+      <div class="panel panel-border-wide">
+        @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
+      </div>
+    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
+      <div class="panel panel-border-wide">
+        @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
+      </div>
+    }
+      @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
         }
+      }
+      @if(previousOtherGoodsPurchasedItemList.nonEmpty){
+        @p(Html(messages("label.previously_declared_other_goods")), classes="govuk-body govuk-!-font-weight-bold previous-othergoods")
+        <br>
+      }
+      @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+      }
+    }
   </div>
   <br>
 
@@ -130,6 +147,10 @@
   @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
       <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder">@messages("label.calculate")</a>
+    } else if(isAmendment) {
+      @formHelper(action = routes.CalculateDeclareController.calculate) {
+        @button(messages("label.calculate_change_in_tax_and_duties"))
+      }
     } else {
       @formHelper(action = routes.CalculateDeclareController.calculate) {
         @button(messages("label.calculate"))

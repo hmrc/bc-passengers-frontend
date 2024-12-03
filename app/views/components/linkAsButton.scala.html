@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@this()
+
 @(
-href: Call,
+link: String,
 messageKey: String,
 id: Option[String] = None,
 )(implicit messages: Messages)
 
-<a href="@href" role="button" class="govuk-button govuk-button" @id.map(x => s"id=$x")>
+<a href="@link" role="button" class="govuk-button govuk-button" @id.map(x => s"id=$x")>
     @messages(messageKey)
 </a>

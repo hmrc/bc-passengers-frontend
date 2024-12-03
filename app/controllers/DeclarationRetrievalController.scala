@@ -101,7 +101,7 @@ class DeclarationRetrievalController @Inject() (
                 } else if (amendState.equals("pending-payment")) {
                   Redirect(routes.PendingPaymentController.loadPendingPaymentPage)
                 } else {
-                  Redirect(routes.PreviousGoodsController.showPreviousGoods)
+                  Redirect(routes.DashboardController.showDashboard)
                 }
               } else {
                 Redirect(routes.DeclarationRetrievalController.declarationNotFound)

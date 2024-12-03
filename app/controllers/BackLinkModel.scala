@@ -120,7 +120,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(TravelDetailsController.privateTravel)
       case _ if path.endsWith("tell-us") && !path.contains("enter-goods")                 =>
         if (prevDecl) {
-          Some(PreviousGoodsController.showPreviousGoods)
+          Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
         } else {
           Some(TravelDetailsController.confirmAge)
         }
@@ -136,8 +136,6 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(CalculateDeclareController.declareYourGoods)
       case "previous-declaration"                                                         =>
         Some(appConfig.declareGoodsUrl)
-      case "previous-goods"                                                               =>
-        Some(DeclarationRetrievalController.loadDeclarationRetrievalPage)
       case "declaration-retrieval"                                                        =>
         Some(PreviousDeclarationController.loadPreviousDeclarationPage)
       case "pending-payment"                                                              =>
