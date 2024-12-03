@@ -343,6 +343,8 @@ label.currency_used_to_buy_the_item = Currency used to buy the item
 label.price_paid_for_this_item = Price paid for this item
 label.tell_us_about_the_goods_ = Tell us about your goods
 label.tell_us_about_the_additional_goods_ = Tell us about your additional goods
+label.your_previously_declared_goods = Your previously declared goods
+label.add_goods = Add goods
 label.about_foreign_currencies = Our online calculator accepts most foreign currencies and will work out the tax due in British pounds.
 label.price_paid = Price paid
 label.price_format_description = Enter the amount without a currency sign. For example 1000.40, 1000.4 or 1,000.
@@ -663,7 +665,6 @@ label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
 
 label.calculate = Calculate taxes and duties
-label.calculate_change_in_tax_and_duties = Calculate change in taxes and duties
 
 title.afghanistan=Afghanistan
 title.aland_islands=Åland Islands

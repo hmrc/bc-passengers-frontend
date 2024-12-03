@@ -78,6 +78,8 @@ GET        /new-session                                                         
 
 GET        /keep-alive                                                                 controllers.TravelDetailsController.keepAlive
 
+GET        /previous-goods                                                             controllers.PreviousGoodsController.showPreviousGoods
+
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard
 POST       /tell-us                                                                    controllers.CalculateDeclareController.calculate
 
