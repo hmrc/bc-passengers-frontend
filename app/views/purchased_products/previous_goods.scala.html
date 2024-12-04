@@ -46,39 +46,39 @@
   @if(previousAlcoholPurchasedItemList.nonEmpty) {
     <div class="alcohol">
       @h2(messages("label.alcohol"))
-      <dl class="govuk-summary-list">
+      <div class="govuk-summary-list">
         @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
             @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
             }
           }
-      </dl>
+      </div>
     </div>
   }
 
   @if(previousTobaccoPurchasedItemList.nonEmpty){
     <div class="tobacco">
       @h2(messages("label.tobacco"))
-        <dl class="govuk-summary-list">
+        <div class="govuk-summary-list">
             @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
               @purchasedItem.descriptionLabels(long = true).map { description =>
                 @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
               }
             }
-        </dl>
+        </div>
     </div>
     }
 
   @if(previousOtherGoodsPurchasedItemList.nonEmpty){
     <div class="other-goods">
       @h2(messages("label.other_goods"))
-        <dl class="govuk-summary-list">
+        <div class="govuk-summary-list">
             @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
               @purchasedItem.descriptionLabels(long = false).map { description =>
                 @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
              }
             }
-        </dl>
+        </div>
     </div>
     }
 

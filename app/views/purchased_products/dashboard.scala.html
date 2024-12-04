@@ -63,14 +63,14 @@
       <div class="add-more">
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
       </div>
-    @if(alcoholPurchasedItemList.nonEmpty){
-    <dl class="govuk-summary-list">
+  @if(alcoholPurchasedItemList.nonEmpty){
+    <div class="govuk-summary-list">
         @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
             @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
           }
         }
-    </dl>
+    </div>
     }
   }
 </div>
@@ -85,13 +85,13 @@
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
       </div>
   @if(tobaccoPurchasedItemList.nonEmpty){
-    <dl class="govuk-summary-list">
+    <div class="govuk-summary-list">
         @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = true).map { description =>
             @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
           }
         }
-    </dl>
+    </div>
     }
   }
 </div>
@@ -115,13 +115,13 @@
     </div>
     }
     @if(otherGoodsPurchasedItemList.nonEmpty){
-      <dl class="govuk-summary-list">
+      <div class="govuk-summary-list">
           @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
             @purchasedItem.descriptionLabels(long = false).map { description =>
               @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
             }
           }
-      </dl>
+      </div>
     }
 </div>
 <br>
