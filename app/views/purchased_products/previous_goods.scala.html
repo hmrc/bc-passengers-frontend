@@ -46,39 +46,45 @@
   @if(previousAlcoholPurchasedItemList.nonEmpty) {
     <div class="alcohol">
       @h2(messages("label.alcohol"))
-      <ul class="govuk-summary-list">
+      <dl class="govuk-summary-list">
+        <dt class="govuk-summary-list__key">
         @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
             @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
             }
           }
-      </ul>
+        </dt>
+      </dl>
     </div>
   }
 
   @if(previousTobaccoPurchasedItemList.nonEmpty){
     <div class="tobacco">
       @h2(messages("label.tobacco"))
-        <ul class="govuk-summary-list">
+        <dl class="govuk-summary-list">
+          <dt class="govuk-summary-list__key">
             @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
               @purchasedItem.descriptionLabels(long = true).map { description =>
                 @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
               }
             }
-        </ul>
+          </dt>
+        </dl>
     </div>
     }
 
   @if(previousOtherGoodsPurchasedItemList.nonEmpty){
     <div class="other-goods">
       @h2(messages("label.other_goods"))
-        <ul class="govuk-summary-list">
+        <dl class="govuk-summary-list">
+          <dt class="govuk-summary-list__key">
             @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
               @purchasedItem.descriptionLabels(long = false).map { description =>
                 @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
              }
             }
-        </ul>
+          </dt>
+        </dl>
     </div>
     }
 
