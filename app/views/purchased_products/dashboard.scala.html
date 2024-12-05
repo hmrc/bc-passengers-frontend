@@ -57,48 +57,48 @@
 
 <div class="alcohol">
   @h2(messages("label.alcohol"))
-  @if(alcoholPurchasedItemList.isEmpty) {
-  <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
-  } else {
-  <div class="add-more">
-    <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
-  </div>
-  <dl class="govuk-summary-list">
-    <dt class="govuk-summary-list__key">
-      @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-      @purchasedItem.descriptionLabels(long = false).map { description =>
-      @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
-      }
-      }
-    </dt>
-  </dl>
+    @if(alcoholPurchasedItemList.isEmpty) {
+      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
+    } else {
+      <div class="add-more">
+        <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
+      </div>
+  @if(alcoholPurchasedItemList.nonEmpty){
+    <div class="govuk-summary-list">
+        @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = false).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+          }
+        }
+    </div>
+    }
   }
 </div>
 <br>
 
 <div class="tobacco">
   @h2(messages("label.tobacco"))
-  @if(tobaccoPurchasedItemList.isEmpty) {
-  <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
-  } else {
-  <div class="add-more">
-    <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
-  </div>
-  <dl class="govuk-summary-list">
-    <dt class="govuk-summary-list__key">
-      @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-      @purchasedItem.descriptionLabels(long = true).map { description =>
-      @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
-      }
-      }
-    </dt>
-  </dl>
+    @if(tobaccoPurchasedItemList.isEmpty) {
+      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
+    } else {
+      <div class="add-more">
+        <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
+      </div>
+  @if(tobaccoPurchasedItemList.nonEmpty){
+    <div class="govuk-summary-list">
+        @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = true).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+          }
+        }
+    </div>
+    }
   }
 </div>
 <br>
 
-  <div class="other-goods">
-    @h2(messages("label.other_goods"))
+<div class="other-goods">
+  @h2(messages("label.other_goods"))
     @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
       <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
@@ -106,25 +106,25 @@
         <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
       </div>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
-      <div class="panel panel-border-wide">
+     <div class="panel panel-border-wide">
         @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
-      </div>
+     </div>
     } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
-      <div class="panel panel-border-wide">
-        @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
+    <div class="panel panel-border-wide">
+      @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
+    </div>
+    }
+    @if(otherGoodsPurchasedItemList.nonEmpty){
+      <div class="govuk-summary-list">
+          @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+            @purchasedItem.descriptionLabels(long = false).map { description =>
+              @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+            }
+          }
       </div>
     }
-    <dl class="govuk-summary-list">
-      <dt class="govuk-summary-list__key">
-      @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-        @purchasedItem.descriptionLabels(long = false).map { description =>
-          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
-        }
-      }
-      </dt>
-    </dl>
-  </div>
-  <br>
+</div>
+<br>
 
 
   @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
