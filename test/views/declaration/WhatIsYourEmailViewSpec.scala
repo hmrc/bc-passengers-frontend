@@ -16,18 +16,19 @@
 
 package views.declaration
 
-import models.{EnterYourDetailsDto, PortsOfArrival}
-import java.time.LocalDateTime
+import models.{PortsOfArrival, YourJourneyDetailsDto}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
-import views.html.declaration.enter_your_details
+import views.html.declaration.journey_details
 
-class EnterYourDetailsViewSpec extends BaseViewSpec {
+import java.time.LocalDateTime
+
+class WhatIsYourEmailViewSpec extends BaseViewSpec {
 
   private val declarationTime: LocalDateTime = LocalDateTime.parse("2023-05-06T21:15:00.000")
 
-  private val emptyForm: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val emptyForm: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -48,7 +49,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidDate: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidDate: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -69,7 +70,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidTime: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidTime: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -90,7 +91,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidTelephone: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidTelephone: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -111,7 +112,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidPhoneMaxLength: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidPhoneMaxLength: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -132,7 +133,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidYearLength: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidYearLength: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -153,7 +154,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidEmailMaxLength: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidEmailMaxLength: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -174,7 +175,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidConfirmEmailMaxLength: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidConfirmEmailMaxLength: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -195,7 +196,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidEmailLength: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidEmailLength: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -216,7 +217,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidConfirmEmailLength: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidConfirmEmailLength: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -237,7 +238,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidEmailDontMatch: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidEmailDontMatch: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -258,7 +259,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidEmailDontMatchPattern: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidEmailDontMatchPattern: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -279,7 +280,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidFirstName: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidFirstName: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -300,7 +301,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidLastName: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidLastName: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -324,7 +325,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
   private val amountOfDaysInFuture                = 5
   private val dateInFutureFiveDays: LocalDateTime = LocalDateTime.now().plusDays(amountOfDaysInFuture)
 
-  private val formWithInvalidDateInFuture: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val formWithInvalidDateInFuture: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -345,7 +346,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
       )
     )
 
-  private val validForm: Form[EnterYourDetailsDto] = EnterYourDetailsDto
+  private val validForm: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -375,7 +376,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
     )
   )
 
-  val viewViaApply: HtmlFormat.Appendable = injected[enter_your_details].apply(
+  val viewViaApply: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
     portsOfArrival = portsOfArrival,
     journeyStart = None,
@@ -386,7 +387,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaRender: HtmlFormat.Appendable = injected[enter_your_details].render(
+  val viewViaRender: HtmlFormat.Appendable = injected[journey_details].render(
     validForm,
     portsOfArrival,
     None,
@@ -396,15 +397,15 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
     appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[enter_your_details].f(
+  val viewViaF: HtmlFormat.Appendable = injected[journey_details].f(
     validForm,
     portsOfArrival,
     None,
     None
   )(request, messages, appConfig)
 
-  private def buildView(form: Form[EnterYourDetailsDto]): HtmlFormat.Appendable =
-    injected[enter_your_details].apply(
+  private def buildView(form: Form[YourJourneyDetailsDto]): HtmlFormat.Appendable =
+    injected[journey_details].apply(
       form = form,
       portsOfArrival = portsOfArrival,
       journeyStart = None,
@@ -481,7 +482,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
     "#lastName" -> messages("error.last_name.valid")
   )
 
-  val invalidTestCases: Seq[(String, Form[EnterYourDetailsDto], Seq[(String, String)])] = Seq(
+  val invalidTestCases: Seq[(String, Form[YourJourneyDetailsDto], Seq[(String, String)])] = Seq(
     Tuple3("Empty form", emptyForm, expectedEmptyFormErrors),
     Tuple3("Invalid date form", formWithInvalidDate, expectedInvalidDateFormErrors),
     Tuple3("Invalid time form", formWithInvalidTime, expectedInvalidTimeFormErrors),
@@ -507,7 +508,7 @@ class EnterYourDetailsViewSpec extends BaseViewSpec {
     Tuple3("Invalid last name form", formWithInvalidLastName, expectedInvalidLastNameFormErrors)
   )
 
-  "EnterYourDetailsView" when {
+  "YourJourneyDetailsView" when {
     renderViewTest(
       title = "Enter your details - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Enter your details"
