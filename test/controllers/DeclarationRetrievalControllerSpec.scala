@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import models.UserInformation.getPreUser
 import models._
 
 import java.time.{LocalDate, LocalTime}
@@ -265,7 +266,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         privateCraft = Some(true),
         previousDeclarationRequest = Some(previousDeclarationRequest),
         declarationResponse = Some(declarationResponse),
-        userInformation = Some(userInformation)
+        preUserInformation = Some(getPreUser(userInformation))
       )
       when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))
       when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
@@ -334,7 +335,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
             privateCraft = Some(true),
             previousDeclarationRequest = Some(previousDeclarationRequest),
             declarationResponse = Some(declarationResponse),
-            userInformation = Some(userInformation)
+            preUserInformation = Some(getPreUser(userInformation))
           )
         )
       )
@@ -402,7 +403,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         privateCraft = Some(true),
         previousDeclarationRequest = Some(previousDeclarationRequest),
         declarationResponse = Some(declarationResponse),
-        userInformation = Some(userInformation),
+        preUserInformation = Some(getPreUser(userInformation)),
         amendState = Some("pending-payment")
       )
       when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))

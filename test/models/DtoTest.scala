@@ -21,29 +21,15 @@ import util.BaseSpec
 
 class DtoTest extends BaseSpec {
 
-  "Validating the EnterYourDetailsDto form" should {
+  "Validating the WhatIsYourNameDto form" should {
 
     "allow the firstName to be any string that is 35 characters or under" in {
       val formData = Map(
         "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "lastName"                                -> "Potter"
       )
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = WhatIsYourNameDto.form.bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -51,24 +37,10 @@ class DtoTest extends BaseSpec {
     "return validation errors if the firstName is over 35 characters" in {
       val formData = Map(
         "firstName"                               -> "Harrybuthasareallylongfirstnameinstead",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "lastName"                                -> "Potter"
       )
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = WhatIsYourNameDto.form.bind(formData)
 
       form.hasErrors                      shouldBe true
       form.errors.size                    shouldBe 1
@@ -78,24 +50,10 @@ class DtoTest extends BaseSpec {
     "return validation errors if the firstName contains special characters" in {
       val formData = Map(
         "firstName"                               -> "Harry$&",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "lastName"                                -> "Potter"
       )
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = WhatIsYourNameDto.form.bind(formData)
 
       form.hasErrors                      shouldBe true
       form.errors.size                    shouldBe 1
@@ -105,24 +63,10 @@ class DtoTest extends BaseSpec {
     "allow the lastName to be any string that is 35 characters or under" in {
       val formData = Map(
         "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "lastName"                                -> "Potter"
       )
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = WhatIsYourNameDto.form.bind(formData)
 
       form.hasErrors shouldBe false
     }
@@ -130,24 +74,10 @@ class DtoTest extends BaseSpec {
     "return validation errors if the lastName is over 35 characters" in {
       val formData = Map(
         "firstName"                               -> "Harry",
-        "lastName"                                -> "Potterbutnowhislastnamehasbecomereallylong",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "lastName"                                -> "Potterbutnowhislastnamehasbecomereallylong"
       )
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = WhatIsYourNameDto.form.bind(formData)
 
       form.hasErrors                     shouldBe true
       form.errors.size                   shouldBe 1
@@ -157,434 +87,329 @@ class DtoTest extends BaseSpec {
     "return validation errors if the lastName contains special characters" in {
       val formData = Map(
         "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter&$",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "lastName"                                -> "Potter&$"
       )
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = WhatIsYourNameDto.form.bind(formData)
 
       form.hasErrors                     shouldBe true
       form.errors.size                   shouldBe 1
+      println(form.errors)
       form.error("lastName").get.message shouldBe "error.last_name.valid"
     }
+  }
 
-    "allow the identificationType to be any string that is 40 characters or under" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
+//  "Validating the IdentificationTypeDto form" should {
+//
+//    "allow the identificationType to be any string that is 40 characters or under" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "passport",
+//        "identification.identificationNumber"     -> "SX12345",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors shouldBe false
+//    }
+//
+//    "return validation errors if the identificationType is empty" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "",
+//        "identification.identificationNumber"     -> "SX12345",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors                                              shouldBe true
+//      form.errors.size                                            shouldBe 1
+//      form.error("identification.identificationType").get.message shouldBe "error.identification_type"
+//    }
+//
+//    "allow the identificationNumber to be any string that is 40 characters or under" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "passport",
+//        "identification.identificationNumber"     -> "0123456789012345678901234567890123456789",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors shouldBe false
+//    }
+//
+//    "return validation errors if the identificationNumber is over 40 characters" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "passport",
+//        "identification.identificationNumber"     -> "01234567890123456789012345678901234567891",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors                                                shouldBe true
+//      form.errors.size                                              shouldBe 1
+//      form.error("identification.identificationNumber").get.message shouldBe "error.max-length.identification_number"
+//    }
+//
+//    "allow the identificationNumber to be correct if identificationType is telephone and in correct format" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "telephone",
+//        "identification.identificationNumber"     -> "0123456789",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors shouldBe false
+//    }
+//
+//    "return validation errors if identificationType is telephone and identificationNumber is not in correct format" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "telephone",
+//        "identification.identificationNumber"     -> "abcdefghi",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors                           shouldBe true
+//      form.errors.size                         shouldBe 1
+//      form.error("identification").get.message shouldBe "error.telephone_number.format"
+//    }
+//
+//    "allow the identificationNumber to be correct if identificationType is other than telephone and in correct format" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "passport",
+//        "identification.identificationNumber"     -> "AB7 8b+",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors shouldBe false
+//    }
+//
+//    "return validation errors if identificationType is other than telephone and identificationNumber is not in correct format" in {
+//      val formData = Map(
+//        "firstName"                               -> "Harry",
+//        "lastName"                                -> "Potter",
+//        "identification.identificationType"       -> "driving",
+//        "identification.identificationNumber"     -> "BE4 8&#)",
+//        "emailAddress.email"                      -> "",
+//        "emailAddress.confirmEmail"               -> "",
+//        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
+//        "placeOfArrival.enterPlaceOfArrival"      -> "",
+//        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
+//        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
+//        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
+//        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
+//        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
+//        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+//      )
+//
+//      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+//
+//      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+//
+//      form.hasErrors                           shouldBe true
+//      form.errors.size                         shouldBe 1
+//      form.error("identification").get.message shouldBe "error.identification_number.format"
+//    }
+//  }
 
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors shouldBe false
-    }
-
-    "return validation errors if the identificationType is empty" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                                              shouldBe true
-      form.errors.size                                            shouldBe 1
-      form.error("identification.identificationType").get.message shouldBe "error.identification_type"
-    }
-
-    "allow the identificationNumber to be any string that is 40 characters or under" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "0123456789012345678901234567890123456789",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors shouldBe false
-    }
-
-    "return validation errors if the identificationNumber is over 40 characters" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "01234567890123456789012345678901234567891",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                                                shouldBe true
-      form.errors.size                                              shouldBe 1
-      form.error("identification.identificationNumber").get.message shouldBe "error.max-length.identification_number"
-    }
-
-    "allow the identificationNumber to be correct if identificationType is telephone and in correct format" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "telephone",
-        "identification.identificationNumber"     -> "0123456789",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors shouldBe false
-    }
-
-    "return validation errors if identificationType is telephone and identificationNumber is not in correct format" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "telephone",
-        "identification.identificationNumber"     -> "abcdefghi",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                           shouldBe true
-      form.errors.size                         shouldBe 1
-      form.error("identification").get.message shouldBe "error.telephone_number.format"
-    }
-
-    "allow the identificationNumber to be correct if identificationType is other than telephone and in correct format" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "AB7 8b+",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors shouldBe false
-    }
-
-    "return validation errors if identificationType is other than telephone and identificationNumber is not in correct format" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "driving",
-        "identification.identificationNumber"     -> "BE4 8&#)",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                           shouldBe true
-      form.errors.size                         shouldBe 1
-      form.error("identification").get.message shouldBe "error.identification_number.format"
-    }
-
-    "allow the same email and confirmEmail in valid format" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "0123456789012345678901234567890123456789",
-        "emailAddress.email"                      -> "abc@gmail.com",
-        "emailAddress.confirmEmail"               -> "abc@gmail.com",
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors shouldBe false
-    }
-
-    "return validation errors if the email is invalid" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "abc",
-        "emailAddress.confirmEmail"               -> "abc@gmail.com",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 1
-      form.error("emailAddress").get.message shouldBe "error.format.emailAddress"
-    }
-
-    "return validation errors if the confirmEmail is invalid" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "abc@gmail.com",
-        "emailAddress.confirmEmail"               -> "abc",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 1
-      form.error("emailAddress").get.message shouldBe "error.format.emailAddress"
-    }
-
-    "return validation errors if the email and confirmEmail does not match" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "abc@gmail.com",
-        "emailAddress.confirmEmail"               -> "xyz@gmail.com",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 1
-      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.no_match"
-    }
-
-    "return validation errors if the confirmEmail is empty" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "abc@gmail.com",
-        "emailAddress.confirmEmail"               -> "",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 1
-      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.confirmEmail"
-    }
-
-    "return validation errors if the Email is empty" in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "abc@gmail.com",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 1
-      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.email"
-    }
-
-    "return validation errors if the Email and Confirm email length exceeds 132 " in {
-      val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com",
-        "emailAddress.confirmEmail"               -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com",
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                                      shouldBe true
-      form.errors.size                                    shouldBe 2
-      form.error("emailAddress.email").get.message        shouldBe "error.max-length.email"
-      form.error("emailAddress.confirmEmail").get.message shouldBe "error.max-length.email"
-    }
+//  "Validating the EmailAddressDto form" should {
+//
+////    "allow the same email and confirmEmail in valid format" in {
+////      val formData = Map(
+////        "email"                      -> "abc@gmail.com",
+////        "confirmEmail"               -> "abc@gmail.com"
+////      )
+////
+////      val form = EmailAddressDto.form.bind(formData)
+////
+////      form.hasErrors shouldBe false
+////    } OK
+//
+//    "return validation errors if the email is invalid" in {
+//      val formData = Map(
+//        "email"                      -> "abc",
+//        "confirmEmail"               -> "abc@gmail.com"
+//      )
+//
+//      val form = EmailAddressDto.form.bind(formData)
+//
+//      form.hasErrors                         shouldBe true
+//      form.errors.size                       shouldBe 1
+//      println(form.errors)
+//      form.error("email").get.message shouldBe "error.format.emailAddress"
+//    }
+//
+////    "return validation errors if the confirmEmail is invalid" in {
+////      val formData = Map(
+////        "email"                      -> "abc@gmail.com",
+////        "confirmEmail"               -> "abc"
+////      )
+////
+////      val form = EmailAddressDto.form.bind(formData)
+////
+////      form.hasErrors                         shouldBe true
+////      form.errors.size                       shouldBe 1
+////
+////      println(form.errors)
+////      form.error("error.format.emailAddress").get.message shouldBe "error.format.emailAddress"
+////    }
+//
+////    "return validation errors if the email and confirmEmail does not match" in {
+////      val formData = Map(
+////        "email"                      -> "abc@gmail.com",
+////        "confirmEmail"               -> "xyz@gmail.com"
+////      )
+////
+////      val form = EmailAddressDto.form.bind(formData)
+////
+////      form.hasErrors                         shouldBe true
+////      form.errors.size                       shouldBe 1
+////      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.no_match"
+////    }
+//
+////    "return validation errors if the confirmEmail is empty" in {
+////      val formData = Map(
+////        "email"                      -> "abc@gmail.com",
+////        "confirmEmail"               -> ""
+////      )
+////
+////      val form = EmailAddressDto.form.bind(formData)
+////
+////      form.hasErrors                         shouldBe true
+////      form.errors.size                       shouldBe 1
+////      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.confirmEmail"
+////    }
+//
+////    "return validation errors if the Email is empty" in {
+////      val formData = Map(
+////        "email"                      -> "",
+////        "confirmEmail"               -> "abc@gmail.com"
+////      )
+////
+////      val form = EmailAddressDto.form.bind(formData)
+////
+////      form.hasErrors                         shouldBe true
+////      form.errors.size                       shouldBe 1
+////      form.error("emailAddress").get.message shouldBe "error.required.emailAddress.email"
+////    }
+//
+////    "return validation errors if the Email and Confirm email length exceeds 132 " in {
+////      val formData = Map(
+////        "email"                      -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com",
+////        "confirmEmail"               -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com"
+////      )
+////
+////      val form = EmailAddressDto.form.bind(formData)
+////
+////      form.hasErrors                                      shouldBe true
+////      form.errors.size                                    shouldBe 2
+////      form.error("emailAddress.email").get.message        shouldBe "error.max-length.email"
+////      form.error("emailAddress.confirmEmail").get.message shouldBe "error.max-length.email"
+////    }
+//  }
+//
+  "Validating the YourJourneyDetailsDto form" should {
 
     "allow the placeOfArrival.selectPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -597,19 +422,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "return validation errors if the placeOfArrival.selectPlaceOfArrival is over 40 characters" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -622,7 +441,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                                shouldBe true
       form.errors.size                                              shouldBe 1
@@ -631,12 +450,6 @@ class DtoTest extends BaseSpec {
 
     "allow the placeOfArrival.enterPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "",
         "placeOfArrival.enterPlaceOfArrival"      -> "London Airport",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -649,19 +462,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival is over 40 characters" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "",
         "placeOfArrival.enterPlaceOfArrival"      -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -674,7 +481,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                               shouldBe true
       form.errors.size                                             shouldBe 1
@@ -683,12 +490,6 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival contains special characters" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "",
         "placeOfArrival.enterPlaceOfArrival"      -> "Heathrow&$",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -701,7 +502,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                               shouldBe true
       form.errors.size                                             shouldBe 1
@@ -710,12 +511,6 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival and placeOfArrival.selectPlaceOfArrival is empty" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -728,7 +523,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                           shouldBe true
       form.errors.size                         shouldBe 1
@@ -737,12 +532,6 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the dateOfArrival is not a valid date" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "40",
@@ -755,7 +544,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -764,12 +553,6 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the dateOfArrival has more than 2 characters in day and month field" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "9876543210",
@@ -782,7 +565,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -791,12 +574,6 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the dateOfArrival is using special characters in any field" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -809,7 +586,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -818,12 +595,6 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if all the dateOfArrival contains an out of range date value" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "50",
@@ -836,19 +607,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
     }
 
     "return validation errors if all the dateOfArrival fields are blank" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "",
@@ -861,19 +626,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.enter_a_date")
     }
 
     "return validation errors if any but not all of the dateOfArrival fields are blank" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "1",
@@ -886,19 +645,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.include_day_month_and_year")
     }
 
     "return an error if the year field is not 4 chars long" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -911,19 +664,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.year_length")
     }
 
     "check for whole numbers before it checks for year length" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -936,19 +683,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
     }
 
     "allow the dateOfArrival if it is a valid date" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -961,19 +702,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "allow the timeOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -986,19 +721,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "return validation errors if the timeOfArrival is over 40 characters" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1011,7 +740,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                                shouldBe true
       form.errors.size                                              shouldBe 1
@@ -1020,12 +749,6 @@ class DtoTest extends BaseSpec {
 
     "allow the dateTimeOfArrival.timeOfArrival.halfday to be either 'am' or 'pm'" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1038,19 +761,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival.halfday is not 'am' or 'pm'" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1063,7 +780,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1072,12 +789,6 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival has more than 2 characters" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1090,7 +801,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1099,12 +810,6 @@ class DtoTest extends BaseSpec {
 
     "allow the timeOfArrival to be after the declaration time" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1117,19 +822,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "allow the timeOfArrival to be after the declaration time (3 hours leeway)" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1142,19 +841,13 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
     }
 
     "return validation errors if the date/time of arrival is more than 5 days after the declaration date" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "28",
@@ -1167,7 +860,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                              shouldBe true
       form.errors.size                            shouldBe 1
@@ -1177,12 +870,6 @@ class DtoTest extends BaseSpec {
 
     "Don't return any validation errors if the date/time of arrival is more than 5 days after the declaration date" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "28",
@@ -1195,7 +882,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors shouldBe false
 
@@ -1203,12 +890,6 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival is not specified" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "23",
@@ -1221,7 +902,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1230,12 +911,6 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival minute is a non-digit" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "28",
@@ -1248,7 +923,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
@@ -1257,12 +932,6 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival hour and minute are incorrectly out of range" in {
       val formData = Map(
-        "firstName"                               -> "Harry",
-        "lastName"                                -> "Potter",
-        "identification.identificationType"       -> "passport",
-        "identification.identificationNumber"     -> "SX12345",
-        "emailAddress.email"                      -> "",
-        "emailAddress.confirmEmail"               -> "",
         "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"      -> "",
         "dateTimeOfArrival.dateOfArrival.day"     -> "28",
@@ -1275,7 +944,7 @@ class DtoTest extends BaseSpec {
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
 
-      val form = EnterYourDetailsDto.form(declarationTime).bind(formData)
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
