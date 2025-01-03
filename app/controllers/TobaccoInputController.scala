@@ -49,7 +49,7 @@ class TobaccoInputController @Inject() (
   val no_of_sticks_input: views.html.tobacco.no_of_sticks_input,
   val no_of_sticks_weight_or_volume_input: views.html.tobacco.no_of_sticks_weight_or_volume_input,
   override val controllerComponents: MessagesControllerComponents
-)(implicit val appConfig: AppConfig, implicit val ec: ExecutionContext)
+)(implicit val appConfig: AppConfig, val ec: ExecutionContext)
     extends FrontendController(controllerComponents)
     with I18nSupport
     with ControllerHelpers
@@ -67,7 +67,7 @@ class TobaccoInputController @Inject() (
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
       case _                                                                                     =>
-        Redirect(routes.SelectProductController.nextStep)
+        Redirect(routes.SelectProductController.nextStep())
     }
 
   def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction {

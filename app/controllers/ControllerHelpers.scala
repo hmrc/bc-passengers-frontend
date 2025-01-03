@@ -74,7 +74,7 @@ trait ControllerHelpers
   def requireLimitUsage(journeyData: JourneyData)(
     block: Map[String, BigDecimal] => Future[Result]
   )(implicit context: LocalContext, hc: HeaderCarrier): Future[Result] =
-    calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
+    calculatorService.limitUsage(journeyData) flatMap { (response: LimitUsageResponse) =>
       response match {
         case LimitUsageSuccessResponse(r) =>
           block(r.map(x => (x._1, BigDecimal(x._2))))

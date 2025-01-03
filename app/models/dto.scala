@@ -127,7 +127,7 @@ object EuCountryCheckDto {
       "euCountryCheck" -> optional(text)
         .verifying("error.eu_check", x => x.fold(false)(_.nonEmpty))
         .transform[String](_.get, s => Some(s))
-    )(EuCountryCheckDto.apply)(EuCountryCheckDto.unapply)
+    )(EuCountryCheckDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[String]))
   )
 }
 
@@ -139,7 +139,7 @@ object BringingOverAllowanceDto {
       "bringingOverAllowance" -> optional(boolean)
         .verifying("error.bringing_over_allowance", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(BringingOverAllowanceDto.apply)(BringingOverAllowanceDto.unapply)
+    )(BringingOverAllowanceDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class BringingOverAllowanceDto(bringingOverAllowance: Boolean)
@@ -150,7 +150,7 @@ object ClaimedVatResDto {
       "claimedVatRes" -> optional(boolean)
         .verifying("error.claimed_vat_res", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(ClaimedVatResDto.apply)(ClaimedVatResDto.unapply)
+    )(ClaimedVatResDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class ClaimedVatResDto(claimedVatRes: Boolean)
@@ -161,7 +161,7 @@ object BringingDutyFreeDto {
       "isBringingDutyFree" -> optional(boolean)
         .verifying("error.bringing_duty_free", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(BringingDutyFreeDto.apply)(BringingDutyFreeDto.unapply)
+    )(BringingDutyFreeDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class BringingDutyFreeDto(isBringingDutyFree: Boolean)
@@ -170,7 +170,7 @@ object AgeOver17Dto {
   val form: Form[AgeOver17Dto] = Form(
     mapping(
       "ageOver17" -> optional(boolean).verifying("error.over_17", _.isDefined).transform[Boolean](_.get, b => Option(b))
-    )(AgeOver17Dto.apply)(AgeOver17Dto.unapply)
+    )(AgeOver17Dto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class AgeOver17Dto(ageOver17: Boolean)
@@ -181,7 +181,7 @@ object IrishBorderDto {
       "irishBorder" -> optional(boolean)
         .verifying("error.irish_border", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(IrishBorderDto.apply)(IrishBorderDto.unapply)
+    )(IrishBorderDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class IrishBorderDto(irishBorder: Boolean)
@@ -193,7 +193,7 @@ object PrivateCraftDto {
       "privateCraft" -> optional(boolean)
         .verifying("error.private_craft", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(PrivateCraftDto.apply)(PrivateCraftDto.unapply)
+    )(PrivateCraftDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class PrivateCraftDto(privateCraft: Boolean)
@@ -204,7 +204,7 @@ object ConfirmRemoveDto {
       "confirmRemove" -> optional(boolean)
         .verifying("error.remove_product", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(ConfirmRemoveDto.apply)(ConfirmRemoveDto.unapply)
+    )(ConfirmRemoveDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
   )
 }
 case class ConfirmRemoveDto(confirmRemove: Boolean)
@@ -218,7 +218,7 @@ object SelectProductsDto {
       "tokens" -> text
         .verifying(getError, _.nonEmpty)
         .transform[List[String]](item => List(item), _.head)
-    )(SelectProductsDto.apply)(SelectProductsDto.unapply)
+    )(SelectProductsDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[List[String]]))
   )
 }
 case class SelectProductsDto(tokens: List[String])
@@ -389,12 +389,12 @@ object EnterYourDetailsDto extends Validators {
         "identificationType"   -> optional(text)
           .verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
         "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
-      )(Identification.apply)(Identification.unapply)
+      )(Identification.apply)(o => Some(Tuple.fromProductTyped(o)))
         .verifying(verifyIdentificationNumberConstraint(identificationPattern, telephoneNumberPattern)),
       "emailAddress"      -> mapping(
         "email"        -> text.verifying(maxLength(132, "email")),
         "confirmEmail" -> text.verifying(maxLength(132, "email"))
-      )(EmailAddress.apply)(EmailAddress.unapply)
+      )(EmailAddress.apply)(o => Some(Tuple.fromProductTyped(o)))
         .verifying(emailAddressMatchConstraint()),
       "placeOfArrival"    -> mapping(
         "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
@@ -403,13 +403,13 @@ object EnterYourDetailsDto extends Validators {
             .verifying(maxLength(40, "place_of_arrival"))
             .verifying(validateFieldsRegex("error.place_of_arrival.valid", validInputText))
         )
-      )(PlaceOfArrival.apply)(PlaceOfArrival.unapply)
+      )(PlaceOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
         .verifying()
         .verifying(placeOfArrivalConstraint),
       "dateTimeOfArrival" -> mapping(
         "dateOfArrival" -> mandatoryDate,
         "timeOfArrival" -> mandatoryTime
-      )(DateTimeOfArrival.apply)(DateTimeOfArrival.unapply)
+      )(DateTimeOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
         .verifying(
           "error.5_days",
           dto =>
@@ -432,7 +432,7 @@ object EnterYourDetailsDto extends Validators {
               .atZone(ZoneOffset.UTC)
               .isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L))
         )
-    )(EnterYourDetailsDto.apply)(EnterYourDetailsDto.unapply)
+    )(EnterYourDetailsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def fromUserInformation(userInformation: UserInformation): EnterYourDetailsDto =
@@ -463,7 +463,7 @@ object DeclarationRetrievalDto extends Validators {
       "referenceNumber" -> text
         .verifying(validateFieldsRegex("error.referenceNumber.invalid", chargeReferencePattern))
         .verifying(nonEmpty("referenceNumber"))
-    )(DeclarationRetrievalDto.apply)(DeclarationRetrievalDto.unapply)
+    )(DeclarationRetrievalDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 }
 

@@ -53,7 +53,7 @@ class PreviousGoodsController @Inject() (
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     } else {
       revertWorkingInstance {
-        cache.fetch flatMap { journeyData: Option[JourneyData] =>
+        cache.fetch flatMap { (journeyData: Option[JourneyData]) =>
           val jd                           = journeyData.getOrElse(JourneyData())
           val allPurchasedProductInstances =
             jd.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil) ++ jd.purchasedProductInstances

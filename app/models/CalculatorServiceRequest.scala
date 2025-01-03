@@ -48,7 +48,7 @@ object CalculatorServiceRequest {
           "metadata"       -> Json.obj(
             "description"       -> messages(
               descriptionLabels.description,
-              descriptionLabels.args.map(messages(_).toLowerCase): _*
+              descriptionLabels.args.map(messages(_).toLowerCase)*
             ),
             "descriptionLabels" -> descriptionLabels,
             "name"              -> item.name,

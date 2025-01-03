@@ -41,7 +41,7 @@ class PreviousDeclarationController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   val loadPreviousDeclarationPage: Action[AnyContent] = previousDeclarationAction { implicit context =>
     Future.successful {

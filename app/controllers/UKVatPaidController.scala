@@ -42,7 +42,7 @@ class UKVatPaidController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   def loadItemUKVatPaidPage(path: ProductPath, iid: String): Action[AnyContent] = uKVatPaidAction { implicit context =>
     Future.successful {
@@ -76,7 +76,7 @@ class UKVatPaidController @Inject() (
                 if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
                   Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
                 } else {
-                  Redirect(routes.SelectProductController.nextStep)
+                  Redirect(routes.SelectProductController.nextStep())
                 }
               } else {
                 Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))

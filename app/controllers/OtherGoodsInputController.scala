@@ -70,7 +70,7 @@ class OtherGoodsInputController @Inject() (
       "isUccRelief"   -> optional(boolean),
       "isCustomPaid"  -> optional(boolean),
       "hasEvidence"   -> optional(boolean)
-    )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
+    )(OtherGoodsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def continueForm(implicit context: LocalContext): Form[OtherGoodsDto] = Form(
@@ -99,7 +99,7 @@ class OtherGoodsInputController @Inject() (
       "isUccRelief"   -> optional(boolean),
       "isCustomPaid"  -> optional(boolean),
       "hasEvidence"   -> optional(boolean)
-    )(OtherGoodsDto.apply)(OtherGoodsDto.unapply)
+    )(OtherGoodsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   val displayAddForm: Action[AnyContent] = dashboardAction { implicit context =>
@@ -243,9 +243,9 @@ class OtherGoodsInputController @Inject() (
                   if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                     Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
                   } else {
-                    Redirect(routes.SelectProductController.nextStep)
+                    Redirect(routes.SelectProductController.nextStep())
                   }
-                case _                                  => Redirect(routes.SelectProductController.nextStep)
+                case _                                  => Redirect(routes.SelectProductController.nextStep())
               }
             }
           }
@@ -298,9 +298,9 @@ class OtherGoodsInputController @Inject() (
                     if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                       Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
                     } else {
-                      Redirect(routes.SelectProductController.nextStep)
+                      Redirect(routes.SelectProductController.nextStep())
                     }
-                  case _                                  => Redirect(routes.SelectProductController.nextStep)
+                  case _                                  => Redirect(routes.SelectProductController.nextStep())
                 }
               }
             }

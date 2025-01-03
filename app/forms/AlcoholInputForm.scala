@@ -42,7 +42,7 @@ class AlcoholInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(AlcoholDto.apply)(AlcoholDto.unapply)
+    )(AlcoholDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def alcoholForm(path: ProductPath): Form[AlcoholDto] = Form(
@@ -67,7 +67,7 @@ class AlcoholInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(AlcoholDto.apply)(AlcoholDto.unapply)
+    )(AlcoholDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

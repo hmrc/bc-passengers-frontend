@@ -37,7 +37,7 @@
   name,
   classes = classes.fold("")(x => x),
   label = Label(
-    content = Text(messages(label, headingMessageArgs:_*)),
+    content = Text(messages(label, headingMessageArgs*)),
     isPageHeading = isPageHeading,
     classes = labelClasses.getOrElse("") + (if(isPageHeading) "govuk-label--xl" else "")
   ),
@@ -45,7 +45,7 @@
       content = HtmlContent(hintHtml),
   )),
   value = form(name).value,
-  errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+  errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
   inputType = inputType,
   inputmode = if(isTelephone) Some("tel") else None,
   autocomplete = autocomplete

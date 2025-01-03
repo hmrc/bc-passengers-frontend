@@ -28,7 +28,7 @@ class CurrencyService {
 
   def isValidCurrencyCode(code: String): Boolean = getCurrencyByCode(code).isDefined
 
-  val currencies = List(
+  val currencies: List[Currency] = List(
     Currency(
       "AED",
       "title.united_arab_emirates_dirham_aed",

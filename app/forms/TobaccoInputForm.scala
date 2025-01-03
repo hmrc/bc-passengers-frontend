@@ -44,7 +44,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def cigarAndCigarilloForm(path: ProductPath): Form[TobaccoDto] = Form(
@@ -85,7 +85,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def cigaretteAndHeatedTobaccoForm(path: ProductPath): Form[TobaccoDto] = Form(
@@ -112,7 +112,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def looseTobaccoWeightForm(path: ProductPath): Form[TobaccoDto] = Form(
@@ -144,7 +144,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

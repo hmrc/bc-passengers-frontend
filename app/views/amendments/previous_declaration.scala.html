@@ -28,7 +28,7 @@
 
 @govukLayout(pageTitle = Some(title(form, "heading.previous_declaration")), backLink = backLink) {
 
-    @formHelper(action = routes.PreviousDeclarationController.postPreviousDeclarationPage) {
+    @formHelper(action = routes.PreviousDeclarationController.postPreviousDeclarationPage()) {
 
         @errorSummary(form.errors, Some("no"))
 

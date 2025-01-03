@@ -41,7 +41,7 @@ class ArrivingNIController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   val loadArrivingNIPage: Action[AnyContent] = arrivingNIAction { implicit context =>
     Future.successful {

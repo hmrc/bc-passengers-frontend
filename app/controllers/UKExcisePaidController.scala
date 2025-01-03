@@ -43,7 +43,7 @@ class UKExcisePaidController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
     Future.successful {
@@ -139,7 +139,7 @@ class UKExcisePaidController @Inject() (
             }
             cache
               .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
-              .map(_ => Redirect(routes.SelectProductController.nextStep))
+              .map(_ => Redirect(routes.SelectProductController.nextStep()))
           }
         )
   }

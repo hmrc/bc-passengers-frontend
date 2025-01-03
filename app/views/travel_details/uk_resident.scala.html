@@ -27,7 +27,7 @@ formHelper: FormWithCSRF
 
 @govukLayout(pageTitle = Some(title(form, "heading.uk-resident")), backLink = backLink) {
 
-@formHelper(action = routes.UKResidentController.postUKResidentPage){
+@formHelper(action = routes.UKResidentController.postUKResidentPage()){
 
 @errorSummary(form.errors, Some("value-yes"))
 

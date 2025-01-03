@@ -55,7 +55,7 @@
 
     @p(Html(messages("limitExceeded.p5")))
 
-    @formHelper(action = routes.SelectProductController.nextStep) {
+    @formHelper(action = routes.SelectProductController.nextStep()) {
         @button(messages("label.continue"))
     }
 }

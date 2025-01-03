@@ -41,7 +41,7 @@ class UKResidentController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   val loadUKResidentPage: Action[AnyContent] = uKResidentAction { implicit context =>
     Future.successful {

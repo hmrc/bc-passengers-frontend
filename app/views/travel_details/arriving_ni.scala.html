@@ -28,7 +28,7 @@
 
 @govukLayout(pageTitle = Some(title(form, "heading.arriving-ni")), backLink = backLink) {
 
-    @formHelper(action = routes.ArrivingNIController.postArrivingNIPage) {
+    @formHelper(action = routes.ArrivingNIController.postArrivingNIPage()) {
 
         @errorSummary(form.errors, Some("value-yes"))
 

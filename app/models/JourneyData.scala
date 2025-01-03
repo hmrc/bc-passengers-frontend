@@ -95,7 +95,7 @@ object PaymentNotification {
 case class PaymentNotification(status: String, reference: String)
 
 object JourneyData {
-  implicit val format: OFormat[JourneyData] = Jsonx.formatCaseClass
+  implicit val format: OFormat[JourneyData] = Json.format[JourneyData]
 }
 
 case class JourneyData(

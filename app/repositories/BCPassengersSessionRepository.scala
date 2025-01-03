@@ -25,6 +25,7 @@ import play.api.libs.json.{Format, JsObject, Json, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import org.mongodb.scala.SingleObservableFuture
 
 import java.util.concurrent.TimeUnit
 import javax.inject._

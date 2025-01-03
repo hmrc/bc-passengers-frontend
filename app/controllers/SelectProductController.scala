@@ -51,7 +51,7 @@ class SelectProductController @Inject() (
 
   def cancel(): Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
-      Future.successful(Redirect(routes.SelectProductController.nextStep))
+      Future.successful(Redirect(routes.SelectProductController.nextStep()))
     }
   }
 
@@ -144,7 +144,7 @@ class SelectProductController @Inject() (
               selectProductsDto.tokens.map(path.addingComponent)
             ) flatMap { journeyData =>
               purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-                Redirect(routes.SelectProductController.nextStep)
+                Redirect(routes.SelectProductController.nextStep())
               }
             }
           }
@@ -178,7 +178,7 @@ class SelectProductController @Inject() (
 
               pathsOrdered match {
                 case x :: _ if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
-                  Future.successful(Redirect(routes.SelectProductController.nextStep))
+                  Future.successful(Redirect(routes.SelectProductController.nextStep()))
 
                 case _ =>
                   purchasedProductService.clearWorkingInstance(journeyData) map { _ =>

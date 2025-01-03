@@ -204,7 +204,7 @@ class CalculateDeclareController @Inject() (
                 ) {
                   declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap {
                     _ =>
-                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
                   }
                 } else {
                   payApiService.requestPaymentUrl(
@@ -268,13 +268,13 @@ class CalculateDeclareController @Inject() (
     context: JourneyData,
     amountPaidPreviously: BigDecimal,
     amendState: String
-  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  )(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] = {
     val deltaAllTax = BigDecimal(context.deltaCalculation.get.allTax)
     if (
       deltaAllTax == 0 && context.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
     ) {
       declarationService.storeChargeReference(context, userInformation, cr.value) flatMap { _ =>
-        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
       }
     } else {
       payApiService.requestPaymentUrl(

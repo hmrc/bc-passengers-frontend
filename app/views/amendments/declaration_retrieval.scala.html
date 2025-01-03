@@ -30,7 +30,7 @@
 
 @govukLayout(pageTitle = Some(title(form, "heading.declaration_retrieval")), backLink = backLink) {
 
-    @formHelper(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage) {
+    @formHelper(action = routes.DeclarationRetrievalController.postDeclarationRetrievalPage()) {
 
     @errorSummary(form.errors)
 

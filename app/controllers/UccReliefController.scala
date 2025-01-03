@@ -45,7 +45,7 @@ class UccReliefController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   def loadUccReliefItemPage(path: ProductPath, iid: String): Action[AnyContent] = uccReliefAction { implicit context =>
     Future.successful {
@@ -74,7 +74,7 @@ class UccReliefController @Inject() (
           }
           cache
             .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
-            .map(_ => Redirect(routes.SelectProductController.nextStep))
+            .map(_ => Redirect(routes.SelectProductController.nextStep()))
         }
       )
   }
