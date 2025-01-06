@@ -17,7 +17,7 @@
 package views
 
 import config.AppConfig
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest

@@ -32,7 +32,7 @@ object CalculatorServiceRequest {
       val descriptionLabels =
         item.productTreeLeaf.getDescriptionLabels(item.purchasedProductInstance, long = false) match {
           case Some((messageKey, args)) => DescriptionLabels(messageKey, args)
-          case _                        => DescriptionLabels(item.name, List.empty) //Should not happen
+          case _                        => DescriptionLabels(item.name, List.empty) // Should not happen
         }
 
       Json

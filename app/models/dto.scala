@@ -127,7 +127,7 @@ object EuCountryCheckDto {
       "euCountryCheck" -> optional(text)
         .verifying("error.eu_check", x => x.fold(false)(_.nonEmpty))
         .transform[String](_.get, s => Some(s))
-    )(EuCountryCheckDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[String]))
+    )(EuCountryCheckDto.apply)(o => Some(o.euCountryCheck))
   )
 }
 
@@ -139,7 +139,7 @@ object BringingOverAllowanceDto {
       "bringingOverAllowance" -> optional(boolean)
         .verifying("error.bringing_over_allowance", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(BringingOverAllowanceDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(BringingOverAllowanceDto.apply)(o => Some(o.bringingOverAllowance))
   )
 }
 case class BringingOverAllowanceDto(bringingOverAllowance: Boolean)
@@ -150,7 +150,7 @@ object ClaimedVatResDto {
       "claimedVatRes" -> optional(boolean)
         .verifying("error.claimed_vat_res", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(ClaimedVatResDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(ClaimedVatResDto.apply)(o => Some(o.claimedVatRes))
   )
 }
 case class ClaimedVatResDto(claimedVatRes: Boolean)
@@ -161,7 +161,7 @@ object BringingDutyFreeDto {
       "isBringingDutyFree" -> optional(boolean)
         .verifying("error.bringing_duty_free", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(BringingDutyFreeDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(BringingDutyFreeDto.apply)(o => Some(o.isBringingDutyFree))
   )
 }
 case class BringingDutyFreeDto(isBringingDutyFree: Boolean)
@@ -170,7 +170,7 @@ object AgeOver17Dto {
   val form: Form[AgeOver17Dto] = Form(
     mapping(
       "ageOver17" -> optional(boolean).verifying("error.over_17", _.isDefined).transform[Boolean](_.get, b => Option(b))
-    )(AgeOver17Dto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(AgeOver17Dto.apply)(o => Some(o.ageOver17))
   )
 }
 case class AgeOver17Dto(ageOver17: Boolean)
@@ -181,7 +181,7 @@ object IrishBorderDto {
       "irishBorder" -> optional(boolean)
         .verifying("error.irish_border", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(IrishBorderDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(IrishBorderDto.apply)(o => Some(o.irishBorder))
   )
 }
 case class IrishBorderDto(irishBorder: Boolean)
@@ -193,7 +193,7 @@ object PrivateCraftDto {
       "privateCraft" -> optional(boolean)
         .verifying("error.private_craft", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(PrivateCraftDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(PrivateCraftDto.apply)(o => Some(o.privateCraft))
   )
 }
 case class PrivateCraftDto(privateCraft: Boolean)
@@ -204,7 +204,7 @@ object ConfirmRemoveDto {
       "confirmRemove" -> optional(boolean)
         .verifying("error.remove_product", _.isDefined)
         .transform[Boolean](_.get, b => Option(b))
-    )(ConfirmRemoveDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[Boolean]))
+    )(ConfirmRemoveDto.apply)(o => Some(o.confirmRemove))
   )
 }
 case class ConfirmRemoveDto(confirmRemove: Boolean)
@@ -218,7 +218,7 @@ object SelectProductsDto {
       "tokens" -> text
         .verifying(getError, _.nonEmpty)
         .transform[List[String]](item => List(item), _.head)
-    )(SelectProductsDto.apply)(o => Some(Tuple.fromProductTyped(o).asInstanceOf[List[String]]))
+    )(SelectProductsDto.apply)(o => Some(o.tokens))
   )
 }
 case class SelectProductsDto(tokens: List[String])

@@ -40,7 +40,7 @@ class LimitRequestSpec extends BaseSpec {
     """.stripMargin
   )
 
-  private val (weightOrVolume, noOfSticks): (BigDecimal, Int) = (50, 10)
+  private val (weightOrVolume, noOfSticks): (BigDecimal, Int) = (BigDecimal(50), 10)
 
   private val productPath: ProductPath = ProductPath(path = "tobacco/cigars")
 

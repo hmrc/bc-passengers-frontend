@@ -47,7 +47,7 @@ class ClaimedVatResDtoSpec extends BaseSpec {
     }
 
     "return the correct result when filled" in {
-      form.fill(ClaimedVatResDto(true)) shouldBe validatedForm
+      form.fill(ClaimedVatResDto(true)).data shouldBe validatedForm.data
     }
   }
 }

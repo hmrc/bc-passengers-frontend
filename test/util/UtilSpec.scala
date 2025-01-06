@@ -93,7 +93,8 @@ class UtilSpec extends BaseSpec {
   "Formatting with decimalFormat5" when {
     "using the HALF_UP rounding mode" should {
       "preserve the correct value in 5 decimal places" in {
-        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) = (0.00, 0.99, 0.01)
+        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) =
+          (BigDecimal(0.00), BigDecimal(0.99), BigDecimal(0.01))
 
         start
           .to(end, step)

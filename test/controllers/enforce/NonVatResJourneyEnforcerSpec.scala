@@ -52,7 +52,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
             case t: TestFailedException =>
               throw t.modifyMessage(
                 _.map(_ + " - when using params: " + acc.map(t => s"${t._1} = ${t._2}"))
-              ) //Show failing params
+              ) // Show failing params
           }
         } else {
           val (paramName, paramVals) = p.head

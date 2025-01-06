@@ -55,7 +55,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             case t: TestFailedException =>
               throw t.modifyMessage(
                 _.map(_ + " - when using params: " + acc.map(t => s"${t._1} = ${t._2}"))
-              ) //Show failing params
+              ) // Show failing params
           }
         } else {
           val (paramName, paramVals) = p.head
@@ -461,7 +461,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q2
+                ) // Q2
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -491,7 +491,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3, NoNeed
+                ) // Q3, NoNeed
                 =>
               status(res) shouldBe OK
             case _ =>
@@ -566,7 +566,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6, NoNeed
+                ) // Q6, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -596,7 +596,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3, NoNeed
+                ) // Q3, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -626,7 +626,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3
+                ) // Q3
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -656,7 +656,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q2
+                ) // Q2
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -686,7 +686,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6
+                ) // Q6
                 =>
               status(res) shouldBe OK
             case _ =>
@@ -764,7 +764,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6, NoNeed
+                ) // Q6, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -794,7 +794,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3, NoNeed
+                ) // Q3, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -824,7 +824,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3
+                ) // Q3
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -854,7 +854,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q2
+                ) // Q2
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -884,7 +884,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6
+                ) // Q6
                 =>
               status(res) shouldBe OK
             case _ =>

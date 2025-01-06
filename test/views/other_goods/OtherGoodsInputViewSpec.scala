@@ -249,7 +249,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             val doc: Document = document(viewViaApply(otherItemMode = otherItemMode, form = form))
             doc.title()                            should startWith(messages("label.error"))
             messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
-            List(id -> messages(errorKey)) shouldBe getErrorsInSummary(doc)
+            List(id -> messages(errorKey))       shouldBe getErrorsInSummary(doc)
           }
 
         errorInputs.foreach(args => (test _).tupled(args))

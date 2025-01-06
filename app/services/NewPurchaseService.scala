@@ -58,7 +58,7 @@ class NewPurchaseService @Inject() (
     (
       journeyData.copy(
         purchasedProductInstances = journeyData.purchasedProductInstances ++ dataToAdd,
-        //Added partial working instance to differenciate between new item and existing in ControllerHelpers.revertWorkingInstance
+        // Added partial working instance to differenciate between new item and existing in ControllerHelpers.revertWorkingInstance
         workingInstance = Some(PurchasedProductInstance(dataToAdd.head.path, dataToAdd.head.iid)),
         defaultCountry = Some(countryCode),
         defaultCurrency = Some(currency)

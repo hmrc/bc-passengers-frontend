@@ -235,7 +235,7 @@ class TravelDetailsService @Inject() (
     }
   def storeUKResident(
     journeyData: Option[JourneyData]
-  )(isUKResident: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]]      =
+  )(isUKResident: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     journeyData match {
       case Some(journeyData) if !journeyData.isUKResident.contains(isUKResident) =>
         val resetJourneyData = JourneyData(

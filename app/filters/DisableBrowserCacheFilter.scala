@@ -22,8 +22,8 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisableBrowserCacheFilter @Inject() (
-  implicit val mat: Materializer,
+class DisableBrowserCacheFilter @Inject() (implicit
+  val mat: Materializer,
   val ec: ExecutionContext
 ) extends Filter {
 

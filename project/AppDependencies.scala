@@ -11,7 +11,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
     "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.18.1",
     "org.webjars.npm"               % "accessible-autocomplete"    % "3.0.0",
-    "ai.x"                         %% "play-json-extensions"       % "0.42.0" cross(CrossVersion.for3Use2_13)
+    "ai.x"                         %% "play-json-extensions"       % "0.42.0" cross (CrossVersion.for3Use2_13)
   )
 
   private val test: Seq[ModuleID] = Seq(
@@ -19,5 +19,5 @@ object AppDependencies {
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30" % hmrcMongoVersion
   ).map(_ % Test)
 
-  def apply(): Seq[ModuleID]      = compile ++ test
+  def apply(): Seq[ModuleID] = compile ++ test
 }

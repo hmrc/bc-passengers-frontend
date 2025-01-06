@@ -24,7 +24,7 @@ import views.html.purchased_products.dashboard
 
 class DashboardViewSpec extends BaseViewSpec {
 
-  private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (50, 10)
+  private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (BigDecimal(50), 10)
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
 
   private val alcoholProductPath: ProductPath    = ProductPath(path = "alcohol/wine")

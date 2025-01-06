@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PurchasedProductService @Inject() (val cache: Cache) {
 
-  //TODO - move to NewPurchaseService
+  // TODO - move to NewPurchaseService
   def clearWorkingInstance(
     journeyData: JourneyData
   )(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
@@ -35,7 +35,7 @@ class PurchasedProductService @Inject() (val cache: Cache) {
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 
-  //TODO - move to NewPurchaseService
+  // TODO - move to NewPurchaseService
   def removePurchasedProductInstance(journeyData: JourneyData, iid: String)(implicit
     hc: HeaderCarrier,
     ex: ExecutionContext

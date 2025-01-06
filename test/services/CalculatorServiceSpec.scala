@@ -254,7 +254,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
           None,
           Some("AUD"),
           Some(1234)
-        ), //Note weightOrVolume = None
+        ), // Note weightOrVolume = None
         PurchasedProductInstance(
           ProductPath("tobacco/cigarettes"),
           "iid0",

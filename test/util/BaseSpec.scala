@@ -50,8 +50,8 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
   private def addToken[T](fakeRequest: FakeRequest[T]): FakeRequest[T] =
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
 
-  def injected[T](c: Class[T]): T                                      = app.injector.instanceOf(c)
-  def injected[T](implicit evidence: ClassTag[T]): T                   = app.injector.instanceOf[T](evidence)
+  def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
+  def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T](evidence)
 
   def enhancedFakeRequest(method: String, uri: String): FakeRequest[AnyContentAsEmpty.type] =
     addToken(FakeRequest(method, uri))

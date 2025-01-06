@@ -34,8 +34,9 @@ class PortsOfArrivalService {
     yield c.displayName
 
   def getCodeByDisplayName(displayName: String): Option[String] = for (
-    c <- ports.find(c => c.displayName == displayName)
-  ) yield c.code
+      c <- ports.find(c => c.displayName == displayName)
+    )
+    yield c.code
 
   def isInGB(code: String): Boolean = ports.exists(c => c.code == code && c.isGB)
 

@@ -24,7 +24,7 @@ import views.html.purchased_products.{dashboard, previous_goods}
 
 class PreviousGoodsViewSpec extends BaseViewSpec {
 
-  private val (weightOrVolume, noOfSticks): (BigDecimal, Int) = (50, 10)
+  private val (weightOrVolume, noOfSticks): (BigDecimal, Int) = (BigDecimal(50), 10)
 
   private val alcoholProductPath: ProductPath    = ProductPath(path = "alcohol/wine")
   private val tobaccoProductPath: ProductPath    = ProductPath(path = "tobacco/cigars")

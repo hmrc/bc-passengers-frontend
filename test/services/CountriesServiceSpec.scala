@@ -682,7 +682,7 @@ class CountriesServiceSpec extends BaseSpec {
 
   "getAllCountriesAndEU" should {
 
-    val countriesService = app.injector.instanceOf[CountriesService] //CountriesService.getAllCountries
+    val countriesService = app.injector.instanceOf[CountriesService] // CountriesService.getAllCountries
 
     "return the expected countries" in {
       countriesService.getAllCountriesAndEu shouldEqual expectedCountriesAndEu
@@ -700,7 +700,7 @@ class CountriesServiceSpec extends BaseSpec {
 
   "getAllCountries" should {
 
-    val countriesService = app.injector.instanceOf[CountriesService] //CountriesService.getAllCountries
+    val countriesService = app.injector.instanceOf[CountriesService] // CountriesService.getAllCountries
 
     "return the expected countries" in {
       countriesService.getAllCountries shouldEqual expectedCountries

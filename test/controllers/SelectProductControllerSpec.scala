@@ -294,7 +294,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "addSelectedProducts to keystore and then redirect to searchGoods when the value is a ProductTreeBranch" in new LocalSetup {
 
-      override lazy val addSelectedProductsAsAliasesResult: JourneyData = JourneyData(selectedAliases =
+      override def addSelectedProductsAsAliasesResult(): JourneyData = JourneyData(selectedAliases =
         List(
           ProductAlias("label.other-goods.carpets-fabric.fabrics", ProductPath("other-goods/carpets-fabric/fabrics"))
         )

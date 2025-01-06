@@ -404,7 +404,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val r: PayApiServiceResponse                 =
+      val r: PayApiServiceResponse =
         s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
           .futureValue
 
@@ -430,7 +430,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val r: PayApiServiceResponse                 =
+      val r: PayApiServiceResponse =
         s.requestPaymentUrl(
           exampleChargeRef,
           uiWithBstArrival,
@@ -462,7 +462,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val expectedJsonForAmendment: JsObject       = exampleJsonForBstArrival
+      val expectedJsonForAmendment: JsObject = exampleJsonForBstArrival
         .as[JsObject]
         .deepMerge(
           Json.obj(
@@ -504,7 +504,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val expectedJsonForAmendment: JsObject       = exampleJsonForBstArrival
+      val expectedJsonForAmendment: JsObject = exampleJsonForBstArrival
         .as[JsObject]
         .deepMerge(
           Json.obj(

@@ -441,7 +441,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
       urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      headerCapture.getValue shouldBe "X-Correlation-ID" -> cid
       bodyCapture.getValue   shouldBe expectedTelephoneValueSendJson
     }
 
@@ -474,7 +474,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
       urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      headerCapture.getValue shouldBe "X-Correlation-ID" -> cid
       bodyCapture.getValue   shouldBe expectedSendJson
     }
 
@@ -508,7 +508,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
       urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      headerCapture.getValue shouldBe "X-Correlation-ID" -> cid
       bodyCapture.getValue   shouldBe expectedSendJson
     }
   }
@@ -738,7 +738,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
       urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      headerCapture.getValue shouldBe "X-Correlation-ID" -> cid
       bodyCapture.getValue   shouldBe expectedTelephoneValueSendJson
     }
 
@@ -771,7 +771,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
       urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      headerCapture.getValue shouldBe "X-Correlation-ID" -> cid
       bodyCapture.getValue   shouldBe expectedJsObj
     }
 
@@ -805,7 +805,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
       urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
+      headerCapture.getValue shouldBe "X-Correlation-ID" -> cid
       bodyCapture.getValue   shouldBe expectedJsObj
     }
   }
@@ -3026,7 +3026,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           None,
           Some(false),
           None,
-          None
+          Some(true)
         )
       )
 
@@ -3089,7 +3089,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           None,
           Some(false),
           None,
-          None
+          Some(true)
         )
       )
 

@@ -368,8 +368,7 @@ class DeclarationService @Inject() (
         Json.toJson(JsNull)
       }
 
-    val declarationTobacco = {
-
+    val declarationTobacco =
       calculatorResponse.tobacco match {
         case Some(tobacco) =>
           Json.obj(
@@ -407,10 +406,8 @@ class DeclarationService @Inject() (
           )
         case None          => JsNull
       }
-    }
 
-    val declarationAlcohol = {
-
+    val declarationAlcohol =
       calculatorResponse.alcohol match {
         case Some(alcohol) =>
           Json.obj(
@@ -447,10 +444,8 @@ class DeclarationService @Inject() (
           )
         case None          => JsNull
       }
-    }
 
-    val declarationOther = {
-
+    val declarationOther =
       calculatorResponse.otherGoods match {
         case Some(other) =>
           Json.obj(
@@ -487,7 +482,6 @@ class DeclarationService @Inject() (
           )
         case None        => JsNull
       }
-    }
 
     def getJourneyData = {
 

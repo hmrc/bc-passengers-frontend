@@ -71,7 +71,7 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
-    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
+    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
         "greatBritain"
