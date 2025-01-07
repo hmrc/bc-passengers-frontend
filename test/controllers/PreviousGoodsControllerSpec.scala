@@ -71,8 +71,8 @@ class PreviousGoodsControllerSpec extends BaseSpec {
 
       when(
         injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ) thenReturn Future.successful(JourneyData())
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      ) `thenReturn` Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
       rt(app, req)
     }
   }
@@ -201,9 +201,10 @@ class PreviousGoodsControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
     val result: Future[Result]        = route(
       app,
       enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-goods").withFormUrlEncodedBody(

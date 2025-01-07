@@ -71,8 +71,8 @@ class DashboardControllerSpec extends BaseSpec {
 
       when(
         injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ) thenReturn Future.successful(JourneyData())
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      ) `thenReturn` Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
       rt(app, req)
     }
   }
@@ -177,9 +177,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
     val result: Future[Result]        = route(
       app,
       enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
@@ -306,9 +307,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
     val result: Future[Result]        = route(
       app,
       enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
@@ -331,9 +333,10 @@ class DashboardControllerSpec extends BaseSpec {
   "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {
 
     override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      None
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        None
+      )
     val result: Future[Result]                          = route(
       app,
       enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
@@ -1798,9 +1801,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -1918,9 +1922,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2038,9 +2043,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2158,9 +2164,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2278,9 +2285,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2401,9 +2409,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2519,9 +2528,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2635,9 +2645,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2751,9 +2762,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2862,9 +2874,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -2939,9 +2952,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -3036,9 +3050,10 @@ class DashboardControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) thenReturn Future.successful(
-      Some(csr)
-    )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
+      .successful(
+        Some(csr)
+      )
 
     val result: Future[Result] =
       route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get

@@ -190,8 +190,8 @@ class EUEvidenceControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -220,8 +220,8 @@ class EUEvidenceControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -250,8 +250,8 @@ class EUEvidenceControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -280,8 +280,8 @@ class EUEvidenceControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -310,8 +310,8 @@ class EUEvidenceControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
       val response          = route(
         app,
         enhancedFakeRequest(

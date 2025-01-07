@@ -68,8 +68,8 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
     lazy val context: LocalContext = {
 
-      when(injected[AppConfig].isVatResJourneyEnabled) thenReturn true
-      when(injected[AppConfig].isIrishBorderQuestionEnabled) thenReturn isIrishBorderQuestionEnabled
+      when(injected[AppConfig].isVatResJourneyEnabled) `thenReturn` true
+      when(injected[AppConfig].isIrishBorderQuestionEnabled) `thenReturn` isIrishBorderQuestionEnabled
 
       LocalContext(FakeRequest(call), "FAKESESSIONIN", journeyData)
     }

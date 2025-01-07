@@ -233,6 +233,6 @@ class DashboardViewSpec extends BaseViewSpec {
       ("greater to 50", fillValueForGreaterThanMaxGoods)
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 }

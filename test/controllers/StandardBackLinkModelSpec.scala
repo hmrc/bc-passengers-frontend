@@ -208,7 +208,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
     when(
       injected[AppConfig].declareGoodsUrl
-    ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
+    ) `thenReturn` "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     lazy val context: LocalContext = LocalContext(FakeRequest(call), "FAKESESSIONID", journeyData)
   }
 
@@ -217,7 +217,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
   "Going back to previous-declaration" should {
     "happen when on where-goods-bought inside amendments journey" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` true
       override val isIrishBorderQuestionEnabled           = false
       override val prevDeclaration: Option[Boolean]       = None
       override val euCountryCheck: Option[String]         = None
@@ -235,7 +235,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
   "Going back to gov.uk start page" should {
     "happen when on where-goods-bought in normal journey" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` false
       override val isIrishBorderQuestionEnabled           = false
       override val prevDeclaration: Option[Boolean]       = None
       override val euCountryCheck: Option[String]         = None
@@ -253,7 +253,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
   "Going back to gov.uk start page" should {
     "happen when on previous-declaration in amendments journey" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` true
       override val isIrishBorderQuestionEnabled           = false
       override val prevDeclaration: Option[Boolean]       = None
       override val euCountryCheck: Option[String]         = None

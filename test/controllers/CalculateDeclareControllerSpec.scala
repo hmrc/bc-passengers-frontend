@@ -660,34 +660,34 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       when(
         app.injector.instanceOf[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ) thenReturn Future.successful(JourneyData())
+      ) `thenReturn` Future.successful(JourneyData())
       when(
         app.injector.instanceOf[UserInformationService].storeUserInformation(any(), any())(any(), any())
-      ) thenReturn Future
+      ) `thenReturn` Future
         .successful(JourneyData())
-      when(app.injector.instanceOf[Cache].fetch(any())) thenReturn cachedJourneyData
+      when(app.injector.instanceOf[Cache].fetch(any())) `thenReturn` cachedJourneyData
       when(
         app.injector
           .instanceOf[PayApiService]
           .requestPaymentUrl(any(), any(), any(), any(), any(), any(), any())(any(), any())
-      ) thenReturn Future.successful(payApiResponse)
-      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future
+      ) `thenReturn` Future.successful(payApiResponse)
+      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())) `thenReturn` Future
         .successful(
           Some(JourneyData())
         )
       when(
         app.injector.instanceOf[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())
-      ) thenReturn Future.successful(declarationServiceResponse)
+      ) `thenReturn` Future.successful(declarationServiceResponse)
       when(
         app.injector.instanceOf[DeclarationService].submitAmendment(any(), any(), any(), any(), any())(any(), any())
-      ) thenReturn Future.successful(declarationServiceResponse)
+      ) `thenReturn` Future.successful(declarationServiceResponse)
       when(
         app.injector.instanceOf[DeclarationService].storeChargeReference(any(), any(), any())(any())
-      ) thenReturn Future.successful(
+      ) `thenReturn` Future.successful(
         JourneyData()
       )
-      when(app.injector.instanceOf[DateTimeProviderService].now) thenReturn dt
-      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+      when(app.injector.instanceOf[DateTimeProviderService].now) `thenReturn` dt
+      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())) `thenReturn` Future.successful(
         CalculatorServiceSuccessResponse(
           CalculatorResponse(
             None,
@@ -702,7 +702,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       )
       when(
         app.injector.instanceOf[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())
-      ) thenReturn Future
+      ) `thenReturn` Future
         .successful(JourneyData())
 
       rt(app, req)
@@ -750,7 +750,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ("previous declaration", true, "previous-declaration")
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when tax amount is 0.00" should {
@@ -820,7 +820,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ("previous declaration", true, "previous-declaration")
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when in amendment journey" should {
@@ -2367,7 +2367,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           PayApiServiceSuccessResponse("http://example.com/payment-journey")
         override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse =
           DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-        when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) `thenReturn` Calculation(
           "0.00",
           "0.00",
           "0.00",

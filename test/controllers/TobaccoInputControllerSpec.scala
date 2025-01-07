@@ -160,10 +160,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
     val formCaptor: ArgumentCaptor[Form[TobaccoDto]] = ArgumentCaptor.forClass(classOf[Form[TobaccoDto]])
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
+      when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
 
-      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(
+      when(injected[CalculatorService].limitUsage(any())(any())) `thenReturn` Future.successful(
         LimitUsageSuccessResponse(fakeLimits)
       )
       val insertedPurchase = (cachedJourneyData.get, "pid")
@@ -171,34 +171,34 @@ class TobaccoInputControllerSpec extends BaseSpec {
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) thenReturn insertedPurchase
+      ) `thenReturn` insertedPurchase
       when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) thenReturn cachedJourneyData.get
+      ) `thenReturn` cachedJourneyData.get
 
       when(
         injected[no_of_sticks_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
       when(
         injected[weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
       when(
         injected[no_of_sticks_weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
 
       rt(app, req)
     }
 
     def gbNIRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedGBNIJourneyData)
-      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedGBNIJourneyData)
+      when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
 
-      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(
+      when(injected[CalculatorService].limitUsage(any())(any())) `thenReturn` Future.successful(
         LimitUsageSuccessResponse(fakeLimits)
       )
       val insertedPurchase = (cachedGBNIJourneyData.get, "pid")
@@ -206,34 +206,34 @@ class TobaccoInputControllerSpec extends BaseSpec {
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) thenReturn insertedPurchase
+      ) `thenReturn` insertedPurchase
       when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) thenReturn cachedGBNIJourneyData.get
+      ) `thenReturn` cachedGBNIJourneyData.get
 
       when(
         injected[no_of_sticks_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
       when(
         injected[weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
       when(
         injected[no_of_sticks_weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
 
       rt(app, req)
     }
 
     def euGBRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedEUGBJourneyData)
-      when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedEUGBJourneyData)
+      when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
 
-      when(injected[CalculatorService].limitUsage(any())(any())) thenReturn Future.successful(
+      when(injected[CalculatorService].limitUsage(any())(any())) `thenReturn` Future.successful(
         LimitUsageSuccessResponse(fakeLimits)
       )
       val insertedPurchase = (cachedEUGBJourneyData.get, "pid")
@@ -241,25 +241,25 @@ class TobaccoInputControllerSpec extends BaseSpec {
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) thenReturn insertedPurchase
+      ) `thenReturn` insertedPurchase
       when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) thenReturn cachedEUGBJourneyData.get
+      ) `thenReturn` cachedEUGBJourneyData.get
 
       when(
         injected[no_of_sticks_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
       when(
         injected[weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
       when(
         injected[no_of_sticks_weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) thenReturn Html("")
+      ) `thenReturn` Html("")
 
       rt(app, req)
     }

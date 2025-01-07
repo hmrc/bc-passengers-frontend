@@ -41,7 +41,7 @@ class PublicControllerSpec extends BaseSpec {
 
   "Calling /time-out" should {
     "return 200 and start button redirects to where-goods-bought page when amendment feature is off" in {
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` false
       val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK
@@ -53,7 +53,7 @@ class PublicControllerSpec extends BaseSpec {
     }
 
     "return 200 and start button redirects to previous-declaration page when amendment feature is on" in {
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` true
       val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK

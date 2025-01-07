@@ -60,8 +60,8 @@ class TravelDetailsServiceSpec extends BaseSpec {
     lazy val travelDetailsService: TravelDetailsService = {
       val service = app.injector.instanceOf[TravelDetailsService]
       val mock    = service.cache
-      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-      when(mock.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
+      when(mock.store(any())(any())) `thenReturn` Future.successful(JourneyData())
+      when(mock.storeJourneyData(any())(any())) `thenReturn` Future.successful(Some(JourneyData()))
       service
     }
 

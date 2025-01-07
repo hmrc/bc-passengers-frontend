@@ -346,8 +346,9 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
     when(mockServicesConfig.baseUrl("pay-api")).thenReturn("http://localhost:9057")
     when(mockConfiguration.getOptional[String]("feedback-frontend.host")).thenReturn(Some("http://localhost:9514"))
     when(mockConfiguration.getOptional[String]("bc-passengers-frontend.host")).thenReturn(Some("http://localhost:9008"))
-    when(mockRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilder)
-    when(mockRequestBuilder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(Future.successful(httpResponse))
+    when(mockRequestBuilder.withBody(any())(using any(), any(), any())).thenReturn(mockRequestBuilder)
+    when(mockRequestBuilder.execute(using any[HttpReads[HttpResponse]], any()))
+      .thenReturn(Future.successful(httpResponse))
     when(mockHttpClient.post(any())(any())).thenReturn(mockRequestBuilder)
 
     lazy val s: PayApiService = new PayApiService(
@@ -374,8 +375,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJson
@@ -392,8 +393,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJson
@@ -411,8 +412,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJson
@@ -443,8 +444,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJsonForBstArrival
@@ -485,8 +486,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe expectedJsonForAmendment
@@ -528,8 +529,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe expectedJsonForAmendment

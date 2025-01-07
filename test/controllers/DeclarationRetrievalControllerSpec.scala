@@ -58,8 +58,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
     reset(mockAppConfig)
     when(
       injected[AppConfig].declareGoodsUrl
-    ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
-    when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+    ) `thenReturn` "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
+    when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` true
   }
 
   "loadDeclarationRetrievalPage" should {
@@ -75,7 +75,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
     }
 
     "redirect to start page when the amendments feature is off" in {
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` false
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
       val result: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
@@ -86,7 +86,7 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     "redirect to .../check-tax-on-goods-you-bring-into-the-uk when page is accessed after user says they have not made any previous declaration" in {
       val journeyData            = JourneyData(prevDeclaration = Some(false), previousDeclarationRequest = None)
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` true
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
       val result: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
@@ -126,8 +126,10 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
   "postDeclarationRetrievalPage" should {
     "redirect to .../where-goods-bought when user says they have not made any previous declaration" in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(
+        mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())
+      ) `thenReturn` cachedJourneyData
       val response          =
         route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")).get
       status(response)           shouldBe SEE_OTHER
@@ -137,8 +139,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     "return a bad request when user does not fill in required fields" in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` true
 
       val response = route(
         app,
@@ -176,8 +178,8 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     "return a bad request when user enters invalid fields" in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` true
 
       val response = route(
         app,
@@ -267,9 +269,9 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         declarationResponse = Some(declarationResponse),
         userInformation = Some(userInformation)
       )
-      when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))
-      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
-      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn Future
+      when(mockCache.fetch(any())) `thenReturn` Future.successful(Some(retrievedJourneyData))
+      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` true
+      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) `thenReturn` Future
         .successful(Some(retrievedJourneyData))
       val response                          = route(
         app,
@@ -338,9 +340,11 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
           )
         )
       )
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
-      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` true
+      when(
+        mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())
+      ) `thenReturn` cachedJourneyData
       val response                   = route(
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
@@ -405,9 +409,9 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
         userInformation = Some(userInformation),
         amendState = Some("pending-payment")
       )
-      when(mockCache.fetch(any())) thenReturn Future.successful(Some(retrievedJourneyData))
-      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
-      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn Future
+      when(mockCache.fetch(any())) `thenReturn` Future.successful(Some(retrievedJourneyData))
+      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` true
+      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) `thenReturn` Future
         .successful(Some(retrievedJourneyData))
       val response                          = route(
         app,
@@ -425,9 +429,11 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
 
     "redirect to declaration not found on an unsuccessful POST " in {
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(true))))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
-      when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` true
+      when(
+        mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())
+      ) `thenReturn` cachedJourneyData
       val response          = route(
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")

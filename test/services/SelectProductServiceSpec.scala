@@ -48,8 +48,8 @@ class SelectProductServiceSpec extends BaseSpec {
     lazy val selectProductService: SelectProductService = {
       val service = app.injector.instanceOf[SelectProductService]
       val mock    = service.cache
-      when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
-      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(mock.fetch(any())) `thenReturn` Future.successful(journeyDataInCache)
+      when(mock.store(any())(any())) `thenReturn` Future.successful(JourneyData())
       service
     }
 

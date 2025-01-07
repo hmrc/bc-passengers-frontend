@@ -55,8 +55,8 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     val controller: TravelDetailsController    = app.injector.instanceOf[TravelDetailsController]
     def cachedJourneyData: Option[JourneyData] = Some(JourneyData())
-    when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())) thenReturn Future.successful(
+    when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
+    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())) `thenReturn` Future.successful(
       Some(JourneyData())
     )
 
@@ -66,9 +66,9 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../did-you-claim-tax-back when user selects country in EU" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("euOnly"))(any())) thenReturn Future
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("euOnly"))(any())) `thenReturn` Future
         .successful(Some(JourneyData()))
-      when(controller.cache.fetch(any())) thenReturn Future.successful(
+      when(controller.cache.fetch(any())) `thenReturn` Future.successful(
         Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("euOnly")))
       )
 
@@ -86,9 +86,9 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../arrivals-from-outside-the-eu when user says they have only arrived from countries outside EU" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("nonEuOnly"))(any())) thenReturn Future
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("nonEuOnly"))(any())) `thenReturn` Future
         .successful(Some(JourneyData()))
-      when(controller.cache.fetch(any())) thenReturn Future.successful(
+      when(controller.cache.fetch(any())) `thenReturn` Future.successful(
         Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly")))
       )
 
@@ -106,10 +106,11 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../did-you-claim-tax-back when user says they have arrived from both EU and ROW countries" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("both"))(any())) thenReturn Future.successful(
-        Some(JourneyData())
-      )
-      when(controller.cache.fetch(any())) thenReturn Future.successful(
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("both"))(any())) `thenReturn` Future
+        .successful(
+          Some(JourneyData())
+        )
+      when(controller.cache.fetch(any())) `thenReturn` Future.successful(
         Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("both")))
       )
 
@@ -330,7 +331,7 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
         )
       )
 
-      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future
+      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) `thenReturn` Future
         .successful(Some(JourneyData()))
 
       val response: Future[Result] = route(

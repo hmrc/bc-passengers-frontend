@@ -95,11 +95,11 @@ class SelectProductControllerSpec extends BaseSpec {
         Future.successful(addSelectedProductsAsAliasesResult())
       }
 
-      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())) thenReturn Future.successful(
+      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())) `thenReturn` Future.successful(
         cachedJourneyData.get
       )
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-      when(injected[Cache].storeJourneyData(any())(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
+      when(injected[Cache].storeJourneyData(any())(any())) `thenReturn` Future.successful(cachedJourneyData)
 
       rt(app, req)
     }
@@ -406,7 +406,7 @@ class SelectProductControllerSpec extends BaseSpec {
           Future.successful(JourneyData())
         }
 
-        when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+        when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get
       }
@@ -472,7 +472,7 @@ class SelectProductControllerSpec extends BaseSpec {
         when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn {
           Future.successful(JourneyData())
         }
-        when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
+        when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get
       }

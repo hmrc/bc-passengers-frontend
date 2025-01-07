@@ -51,12 +51,12 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")
 
   def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
-  def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T](evidence)
+  def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T](using evidence)
 
   def enhancedFakeRequest(method: String, uri: String): FakeRequest[AnyContentAsEmpty.type] =
     addToken(FakeRequest(method, uri))
 
-  def getFormErrors(form: Form[_]): Set[(String, String)] = form.errors.map(error => error.key -> error.message).toSet
+  def getFormErrors(form: Form[?]): Set[(String, String)] = form.errors.map(error => error.key -> error.message).toSet
 
   def buildExpectedFormErrors(items: (String, String)*): Set[(String, String)] = items.toSet
 

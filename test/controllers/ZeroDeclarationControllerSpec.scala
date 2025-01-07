@@ -204,7 +204,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
   "loadDeclarationPage" should {
 
     "load the page for declaration" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(
+      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
         DeclarationServiceSuccessResponse
       )
       when(mockCache.fetch(any())).thenReturn(
@@ -244,7 +244,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "load the page for amendments" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(
+      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
         DeclarationServiceSuccessResponse
       )
       when(mockCache.fetch(any())).thenReturn(
@@ -290,7 +290,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data from keyStore when place of arrival is selected" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(
+      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
         DeclarationServiceSuccessResponse
       )
       when(mockCache.fetch(any())).thenReturn(
@@ -325,7 +325,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data from keyStore when place of arrival is entered" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(
+      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
         DeclarationServiceSuccessResponse
       )
       val userInformationMock    = ui.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "Belfast Seaport")
@@ -369,7 +369,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "return a INTERNAL_SERVER_ERROR for update if the declaration returns 500" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) thenReturn Future.successful(
+      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
         DeclarationServiceFailureResponse
       )
 

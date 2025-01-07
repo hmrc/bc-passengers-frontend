@@ -59,8 +59,8 @@ class AlterProductsControllerSpec extends BaseSpec {
 
       when(
         injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ) thenReturn Future.successful(JourneyData())
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      ) `thenReturn` Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
 
       rt(app, req)
     }

@@ -409,7 +409,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
     trait Setup {
 
       when(mockServicesConfig.baseUrl("currency-conversion")).thenReturn("http://localhost:9016")
-      when(mockGetRequestBuilder.execute(any[HttpReads[List[CurrencyConversionRate]]], any()))
+      when(mockGetRequestBuilder.execute(using any[HttpReads[List[CurrencyConversionRate]]], any()))
         .thenReturn(
           Future.successful(
             List(
@@ -417,7 +417,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
             )
           )
         )
-      when(mockGetRequestBuilder.execute(any[HttpReads[List[CurrencyConversionRate]]], any()))
+      when(mockGetRequestBuilder.execute(using any[HttpReads[List[CurrencyConversionRate]]], any()))
         .thenReturn(
           Future.successful(
             List(
@@ -440,7 +440,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
 
       response shouldBe None
 
-      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockGetRequestBuilder, times(1)).execute(using any(), any())
       verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
 
       urlCapture.getValue shouldBe url"$url"
@@ -458,7 +458,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
 
       response shouldBe calcRequest.copy(items = calcRequest.items.filterNot(_.productTreeLeaf.token == "cigars"))
 
-      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockGetRequestBuilder, times(1)).execute(using any(), any())
       verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
 
       urlCapture.getValue shouldBe url"$url"
@@ -476,7 +476,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
 
       response shouldBe calcRequest
 
-      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockGetRequestBuilder, times(1)).execute(using any(), any())
       verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
 
       urlCapture.getValue shouldBe url"$url"
@@ -1025,7 +1025,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
 
     trait Setup {
 
-      when(mockGetRequestBuilder.execute(any[HttpReads[List[CurrencyConversionRate]]], any()))
+      when(mockGetRequestBuilder.execute(using any[HttpReads[List[CurrencyConversionRate]]], any()))
         .thenReturn(
           Future.successful(
             currencyConversionRates
@@ -1033,8 +1033,8 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
         )
       when(mockHttpClient.get(any())(any())).thenReturn(mockGetRequestBuilder)
 
-      when(mockPostRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockPostRequestBuilder)
-      when(mockPostRequestBuilder.execute(any[HttpReads[CalculatorResponse]], any())).thenReturn(
+      when(mockPostRequestBuilder.withBody(any())(using any(), any(), any())).thenReturn(mockPostRequestBuilder)
+      when(mockPostRequestBuilder.execute(using any[HttpReads[CalculatorResponse]], any())).thenReturn(
         Future.successful(calculationResponse)
       )
       when(mockHttpClient.post(any())(any())).thenReturn(mockPostRequestBuilder)
@@ -1042,7 +1042,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
 
     "make a call to the currency-conversion service, the calculator service and return a valid response" in new Setup {
 
-      when(mockPostRequestBuilder.execute(any[HttpReads[CalculatorResponse]], any())).thenReturn(
+      when(mockPostRequestBuilder.execute(using any[HttpReads[CalculatorResponse]], any())).thenReturn(
         Future.successful(calculationResponse)
       )
 
@@ -1060,14 +1060,14 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
         )
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(any(), any(), any())
-      verify(mockPostRequestBuilder, times(1)).execute(any(), any())
+      verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(using any(), any(), any())
+      verify(mockPostRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue      shouldBe url"$pdcUrl"
       jsonBodyCapture.getValue shouldBe json
 
       verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
-      verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+      verify(mockGetRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue shouldBe url"$ccUrl"
     }
@@ -1075,7 +1075,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
     "make a call to the currency-conversion service, the calculator service and return CalculatorServicePurchasePriceOutOfBoundsFailureResponse" when {
       "call to calculator returns 416 REQUESTED_RANGE_NOT_SATISFIABLE" in new Setup {
 
-        when(mockPostRequestBuilder.execute(any[HttpReads[CalculatorResponse]], any())).thenReturn(
+        when(mockPostRequestBuilder.execute(using any[HttpReads[CalculatorResponse]], any())).thenReturn(
           Future.failed(
             UpstreamErrorResponse
               .apply("Any message", REQUESTED_RANGE_NOT_SATISFIABLE, REQUESTED_RANGE_NOT_SATISFIABLE, Map.empty)
@@ -1087,14 +1087,14 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
         response shouldBe CalculatorServicePurchasePriceOutOfBoundsFailureResponse
 
         verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-        verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(any(), any(), any())
-        verify(mockPostRequestBuilder, times(1)).execute(any(), any())
+        verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(using any(), any(), any())
+        verify(mockPostRequestBuilder, times(1)).execute(using any(), any())
 
         urlCapture.getValue      shouldBe url"$pdcUrl"
         jsonBodyCapture.getValue shouldBe json
 
         verify(mockHttpClient, times(1)).get(urlCapture.capture())(any())
-        verify(mockGetRequestBuilder, times(1)).execute(any(), any())
+        verify(mockGetRequestBuilder, times(1)).execute(using any(), any())
 
         urlCapture.getValue shouldBe url"$ccUrl"
       }
@@ -1257,8 +1257,8 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
       val body: JsValue = Json.toJson(service.journeyDataToLimitsRequest(journeyData))
 
       when(mockServicesConfig.baseUrl("passengers-duty-calculator")).thenReturn("http://localhost:9027")
-      when(mockPostRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockPostRequestBuilder)
-      when(mockPostRequestBuilder.execute(any[HttpReads[JsObject]], any())).thenReturn(Future.successful(jsonObj))
+      when(mockPostRequestBuilder.withBody(any())(using any(), any(), any())).thenReturn(mockPostRequestBuilder)
+      when(mockPostRequestBuilder.execute(using any[HttpReads[JsObject]], any())).thenReturn(Future.successful(jsonObj))
       when(mockHttpClient.post(any())(any())).thenReturn(mockPostRequestBuilder)
 
       val response: LimitUsageResponse = service.limitUsage(journeyData).futureValue
@@ -1266,8 +1266,8 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
       response shouldBe LimitUsageSuccessResponse(Map("L-WINE" -> "0.4444"))
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(any(), any(), any())
-      verify(mockPostRequestBuilder, times(1)).execute(any(), any())
+      verify(mockPostRequestBuilder, times(1)).withBody(jsonBodyCapture.capture())(using any(), any(), any())
+      verify(mockPostRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue      shouldBe url"$url"
       jsonBodyCapture.getValue shouldBe body

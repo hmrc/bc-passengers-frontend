@@ -33,16 +33,18 @@ class LocalLanguageControllerSpec extends BaseSpec {
   "LocalLanguageController" when {
     ".languageMap" should {
       "return the correct mapped languages" in {
-        localLanguageController.languageMap shouldBe Map(
-          "english" -> Lang("en"),
-          "cymraeg" -> Lang("cy")
+        localLanguageController.languageMap.shouldBe(
+          Map(
+            "english" -> Lang("en"),
+            "cymraeg" -> Lang("cy")
+          )
         )
       }
     }
 
     ".fallbackURL" should {
       "return the show dashboard url as the fallback url" in {
-        localLanguageController.fallbackURL shouldBe controllers.routes.DashboardController.showDashboard.url
+        localLanguageController.fallbackURL.shouldBe(controllers.routes.DashboardController.showDashboard.url)
       }
     }
   }

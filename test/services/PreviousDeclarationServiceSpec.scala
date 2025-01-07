@@ -61,8 +61,8 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
     lazy val previousDeclarationService: PreviousDeclarationService = {
       val service = app.injector.instanceOf[PreviousDeclarationService]
       val mock    = service.cache
-      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
-      when(mock.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
+      when(mock.store(any())(any())) `thenReturn` Future.successful(JourneyData())
+      when(mock.storeJourneyData(any())(any())) `thenReturn` Future.successful(Some(JourneyData()))
       service
     }
 

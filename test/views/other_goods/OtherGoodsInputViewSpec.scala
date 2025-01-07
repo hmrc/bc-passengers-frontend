@@ -229,7 +229,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).title shouldBe title
           }
 
-        titleInput.foreach(args => (test _).tupled(args))
+        titleInput.foreach(args => test.tupled(args))
       }
 
       "display the correct heading" when {
@@ -240,7 +240,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).select("h1").text shouldBe heading
           }
 
-        headingInput.foreach(args => (test _).tupled(args))
+        headingInput.foreach(args => test.tupled(args))
       }
 
       "have all info in error summary" when {
@@ -252,7 +252,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             List(id -> messages(errorKey))       shouldBe getErrorsInSummary(doc)
           }
 
-        errorInputs.foreach(args => (test _).tupled(args))
+        errorInputs.foreach(args => test.tupled(args))
       }
 
     }
@@ -266,7 +266,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).title shouldBe title
           }
 
-        titleInput.foreach(args => (test _).tupled(args))
+        titleInput.foreach(args => test.tupled(args))
       }
 
       "display the correct heading" when {
@@ -277,7 +277,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).select("h1").text shouldBe heading
           }
 
-        headingInput.foreach(args => (test _).tupled(args))
+        headingInput.foreach(args => test.tupled(args))
       }
     }
 
@@ -290,7 +290,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).title shouldBe title
           }
 
-        titleInput.foreach(args => (test _).tupled(args))
+        titleInput.foreach(args => test.tupled(args))
       }
 
       "display the correct heading" when {
@@ -301,7 +301,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).select("h1").text shouldBe heading
           }
 
-        headingInput.foreach(args => (test _).tupled(args))
+        headingInput.foreach(args => test.tupled(args))
       }
     }
   }

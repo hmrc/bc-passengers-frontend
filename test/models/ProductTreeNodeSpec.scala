@@ -125,9 +125,7 @@ class ProductTreeNodeSpec extends BaseSpec {
           )
         }
 
-      Seq((1, "label.tobacco.cigarettes.single"), (2, "label.tobacco.cigarettes")).foreach(args =>
-        (test _).tupled(args)
-      )
+      Seq((1, "label.tobacco.cigarettes.single"), (2, "label.tobacco.cigarettes")).foreach(args => test.tupled(args))
     }
 
     "return the correct display description for cigars" which {
@@ -168,7 +166,7 @@ class ProductTreeNodeSpec extends BaseSpec {
           )
         }
 
-      Seq((1, "label.tobacco.cigars.single"), (2, "label.tobacco.cigars")).foreach(args => (test _).tupled(args))
+      Seq((1, "label.tobacco.cigars.single"), (2, "label.tobacco.cigars")).foreach(args => test.tupled(args))
     }
   }
 

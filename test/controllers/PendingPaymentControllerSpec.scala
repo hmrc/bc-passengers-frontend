@@ -66,7 +66,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+      when(injected[CalculatorService].calculate(any())(any(), any())) `thenReturn` Future.successful(
         CalculatorServiceSuccessResponse(
           CalculatorResponse(
             None,
@@ -79,9 +79,9 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) `thenReturn` Future
         .successful(JourneyData())
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) `thenReturn` Calculation(
         "10.00",
         "10.00",
         "10.00",
@@ -110,7 +110,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+      when(injected[CalculatorService].calculate(any())(any(), any())) `thenReturn` Future.successful(
         CalculatorServiceSuccessResponse(
           CalculatorResponse(
             None,
@@ -123,9 +123,9 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) `thenReturn` Future
         .successful(JourneyData())
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) `thenReturn` Calculation(
         "10.00",
         "10.00",
         "10.00",
@@ -155,12 +155,12 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+      when(injected[CalculatorService].calculate(any())(any(), any())) `thenReturn` Future.successful(
         CalculatorServiceCantBuildCalcReqResponse
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) `thenReturn` Future
         .successful(JourneyData())
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) `thenReturn` Calculation(
         "10.00",
         "10.00",
         "0.00",
@@ -197,8 +197,8 @@ class PendingPaymentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.storeJourneyData(any())(any())) `thenReturn` Future.successful(Some(JourneyData()))
 
       val response = route(
         app,
@@ -232,8 +232,8 @@ class PendingPaymentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.storeJourneyData(any())(any())) `thenReturn` Future.successful(Some(JourneyData()))
 
       val response = route(
         app,
@@ -268,9 +268,9 @@ class PendingPaymentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.storeJourneyData(any())(any())) `thenReturn` Future.successful(Some(JourneyData()))
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) `thenReturn` Calculation(
         "0.00",
         "0.00",
         "0.00",

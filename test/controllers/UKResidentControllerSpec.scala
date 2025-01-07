@@ -114,8 +114,8 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())) `thenReturn` cachedJourneyData
 
       val response = route(
         app,
@@ -146,8 +146,8 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storeUKResident(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())) `thenReturn` cachedJourneyData
 
       val response = route(
         app,
@@ -176,7 +176,7 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
 
       val response = route(
         app,
