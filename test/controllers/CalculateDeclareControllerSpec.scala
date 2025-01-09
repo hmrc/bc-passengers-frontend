@@ -702,8 +702,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       )
       when(
         app.injector.instanceOf[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())
-      ) `thenReturn` Future
-        .successful(JourneyData())
+      ).thenReturn(
+        Future
+          .successful(JourneyData())
+      )
 
       rt(app, req)
     }
