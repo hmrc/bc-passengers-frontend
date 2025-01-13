@@ -17,10 +17,10 @@
 package controllers
 
 import connectors.Cache
-import models._
+import models.*
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.data.Form
 import play.api.http.Writeable
@@ -28,21 +28,21 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{route => rt, _}
+import play.api.test.Helpers.{route => rt, *}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
-import services._
+import services.*
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.tobacco._
+import views.html.tobacco.*
 
 import scala.concurrent.Future
 
 class TobaccoInputControllerSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -160,106 +160,112 @@ class TobaccoInputControllerSpec extends BaseSpec {
     val formCaptor: ArgumentCaptor[Form[TobaccoDto]] = ArgumentCaptor.forClass(classOf[Form[TobaccoDto]])
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
-      when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
+      when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
-      when(injected[CalculatorService].limitUsage(any())(any())) `thenReturn` Future.successful(
-        LimitUsageSuccessResponse(fakeLimits)
+      when(injected[CalculatorService].limitUsage(any())(any())).thenReturn(
+        Future.successful(
+          LimitUsageSuccessResponse(fakeLimits)
+        )
       )
       val insertedPurchase = (cachedJourneyData.get, "pid")
       when(
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) `thenReturn` insertedPurchase
+      ).thenReturn(insertedPurchase)
       when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) `thenReturn` cachedJourneyData.get
+      ).thenReturn(cachedJourneyData.get)
 
       when(
         injected[no_of_sticks_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
       when(
         injected[weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
       when(
         injected[no_of_sticks_weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
 
       rt(app, req)
     }
 
     def gbNIRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedGBNIJourneyData)
-      when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedGBNIJourneyData))
+      when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
-      when(injected[CalculatorService].limitUsage(any())(any())) `thenReturn` Future.successful(
-        LimitUsageSuccessResponse(fakeLimits)
+      when(injected[CalculatorService].limitUsage(any())(any())).thenReturn(
+        Future.successful(
+          LimitUsageSuccessResponse(fakeLimits)
+        )
       )
       val insertedPurchase = (cachedGBNIJourneyData.get, "pid")
       when(
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) `thenReturn` insertedPurchase
+      ).thenReturn(insertedPurchase)
       when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) `thenReturn` cachedGBNIJourneyData.get
+      ).thenReturn(cachedGBNIJourneyData.get)
 
       when(
         injected[no_of_sticks_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
       when(
         injected[weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
       when(
         injected[no_of_sticks_weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
 
       rt(app, req)
     }
 
     def euGBRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedEUGBJourneyData)
-      when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedEUGBJourneyData))
+      when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
-      when(injected[CalculatorService].limitUsage(any())(any())) `thenReturn` Future.successful(
-        LimitUsageSuccessResponse(fakeLimits)
+      when(injected[CalculatorService].limitUsage(any())(any())).thenReturn(
+        Future.successful(
+          LimitUsageSuccessResponse(fakeLimits)
+        )
       )
       val insertedPurchase = (cachedEUGBJourneyData.get, "pid")
       when(
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) `thenReturn` insertedPurchase
+      ).thenReturn(insertedPurchase)
       when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ) `thenReturn` cachedEUGBJourneyData.get
+      ).thenReturn(cachedEUGBJourneyData.get)
 
       when(
         injected[no_of_sticks_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
       when(
         injected[weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
       when(
         injected[no_of_sticks_weight_or_volume_input]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ) `thenReturn` Html("")
+      ).thenReturn(Html(""))
 
       rt(app, req)
     }

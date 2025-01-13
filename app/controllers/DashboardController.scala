@@ -19,10 +19,10 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-import models.{ProductTreeLeaf, _}
+import models.{ProductTreeLeaf, *}
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services._
+import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -48,7 +48,7 @@ class DashboardController @Inject() (
     with ControllerHelpers {
 
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
-    implicit val lang: Lang = context.request.lang
+    given lang: Lang = context.request.lang
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     } else {

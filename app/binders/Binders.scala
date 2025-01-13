@@ -35,7 +35,7 @@ object Binders {
       value.toString
   }
 
-  implicit val productPathJSLBinder: JavascriptLiteral[ProductPath] = new JavascriptLiteral[ProductPath] {
+  given productPathJSLBinder: JavascriptLiteral[ProductPath] = new JavascriptLiteral[ProductPath] {
     override def to(value: ProductPath): String = s"""'${value.toString}'"""
   }
 

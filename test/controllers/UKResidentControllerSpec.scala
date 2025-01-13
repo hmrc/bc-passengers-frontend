@@ -20,13 +20,13 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers.{defaultAwaitTimeout, route, status, *}
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.mongo.MongoComponent
@@ -41,7 +41,7 @@ class UKResidentControllerSpec extends BaseSpec {
   val mockCache: Cache                              = mock(classOf[Cache])
   val mockAppConfig: AppConfig                      = mock(classOf[AppConfig])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
@@ -114,8 +114,8 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockTravelDetailService.storeUKResident(any())(any())(any())) `thenReturn` cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,
@@ -146,8 +146,8 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockTravelDetailService.storeUKResident(any())(any())(any())) `thenReturn` cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockTravelDetailService.storeUKResident(any())(any())(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,
@@ -176,7 +176,7 @@ class UKResidentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,

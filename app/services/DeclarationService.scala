@@ -18,19 +18,19 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
-import models._
+import models.*
 import play.api.Logger
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.i18n.{Lang, MessagesApi}
-import play.api.libs.json.Reads._
-import util._
-import play.api.libs.json._
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http._
+import play.api.libs.json.Reads.*
+import util.*
+import play.api.libs.json.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
@@ -242,9 +242,9 @@ class DeclarationService @Inject() (
     rd: String
   )(implicit messages: MessagesApi): JsObject = {
 
-    implicit val lang: Lang = Lang("en")
-    val ni                  = "NI"
-    val gb                  = "GB"
+    given lang: Lang = Lang("en")
+    val ni           = "NI"
+    val gb           = "GB"
 
     def getBooleanValue(value: Option[Boolean]): Boolean =
       value match {

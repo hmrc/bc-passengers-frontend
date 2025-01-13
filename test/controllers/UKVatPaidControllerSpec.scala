@@ -20,13 +20,13 @@ import config.AppConfig
 import connectors.Cache
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.mongo.MongoComponent
@@ -41,7 +41,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
   val mockCache: Cache                              = mock(classOf[Cache])
   val mockAppConfig: AppConfig                      = mock(classOf[AppConfig])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
@@ -165,8 +165,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -192,8 +192,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -220,8 +220,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -252,8 +252,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
       val response          = route(
         app,
         enhancedFakeRequest(
@@ -296,8 +296,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
           )
 
           val cachedJourneyData: Future[Some[JourneyData]] = Future.successful(Some(jd))
-          when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-          when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
+          when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+          when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
 
           val response: Future[Result] = route(
             app,
@@ -323,8 +323,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockCache.store(any())(any())) `thenReturn` Future.successful(jd)
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
       val response          = route(
         app,
         enhancedFakeRequest(

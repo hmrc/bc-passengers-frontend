@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.data.Forms._
-import play.api.data.validation._
+import play.api.data.Forms.*
+import play.api.data.validation.*
 import play.api.data.{Form, Mapping}
 import util.{formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
 

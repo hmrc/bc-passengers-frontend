@@ -22,12 +22,12 @@ import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
 import models.{OtherGoodsDto, OtherGoodsSearchItem, ProductPath}
 import play.api.data.Form
-import play.api.data.Forms.{optional, _}
+import play.api.data.Forms.{optional, *}
 import play.api.i18n.I18nSupport
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import util._
+import util.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

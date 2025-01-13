@@ -26,7 +26,7 @@ class ProductListEntrySpec extends BaseSpec {
 
   private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
   private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  implicit val messages: Messages                      = messagesApi.preferred(request)
+  given messages: Messages                             = messagesApi.preferred(request)
 
   private val json: JsValue = Json.parse(
     """

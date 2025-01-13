@@ -17,7 +17,7 @@
 package connectors
 
 import models.JourneyData
-import play.api.libs.json._
+import play.api.libs.json.*
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 

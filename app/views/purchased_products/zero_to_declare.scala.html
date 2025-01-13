@@ -26,7 +26,7 @@
   button: components.button
 )
 
-@(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(if(deltaCalc.isDefined){messages("label.additional_tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}else{messages("label.tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}), backLink = backLink)  {
 

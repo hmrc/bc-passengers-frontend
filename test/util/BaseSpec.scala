@@ -16,7 +16,7 @@
 
 package util
 
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -43,9 +43,9 @@ trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite wi
 
   lazy val injector: Injector = app.injector
 
-  implicit lazy val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
+  given ec: ExecutionContext = injector.instanceOf[ExecutionContext]
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
+  given hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("fakesessionid")))
 
   private def addToken[T](fakeRequest: FakeRequest[T]): FakeRequest[T] =
     fakeRequest.withSession(SessionKeys.sessionId -> "fakesessionid")

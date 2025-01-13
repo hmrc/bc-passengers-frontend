@@ -17,7 +17,7 @@
 package controllers
 
 import models.JourneyData
-import play.api.mvc._
+import play.api.mvc.*
 
 case class LocalContext(request: Request[AnyContent], sessionId: String, journeyData: Option[JourneyData] = None) {
 

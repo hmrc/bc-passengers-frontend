@@ -19,11 +19,11 @@ package models
 import play.api.libs.json.{Json, OFormat}
 
 object DeclarationResponse {
-  implicit val formats: OFormat[DeclarationResponse] = Json.format[DeclarationResponse]
+  given formats: OFormat[DeclarationResponse] = Json.format[DeclarationResponse]
 }
 
 object LiabilityDetails {
-  implicit val formats: OFormat[LiabilityDetails] = Json.format[LiabilityDetails]
+  given formats: OFormat[LiabilityDetails] = Json.format[LiabilityDetails]
 }
 
 case class DeclarationResponse(

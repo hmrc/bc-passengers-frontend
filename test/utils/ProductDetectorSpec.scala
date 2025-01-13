@@ -16,8 +16,8 @@
 
 package utils
 
-import models._
-import util._
+import models.*
+import util.*
 
 class ProductDetectorSpec extends ProductDetector with BaseSpec {
 

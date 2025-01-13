@@ -27,7 +27,7 @@
     warning: components.warning
 )
 
-@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, isAmendment: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, isAmendment: Boolean, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(if(isAmendment) messages("label.amend_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.declare_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
     @if(isAmendment){

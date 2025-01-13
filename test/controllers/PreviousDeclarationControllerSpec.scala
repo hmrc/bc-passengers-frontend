@@ -20,13 +20,13 @@ import config.AppConfig
 import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers.{defaultAwaitTimeout, route, status, *}
 import repositories.BCPassengersSessionRepository
 import services.PreviousDeclarationService
 import uk.gov.hmrc.mongo.MongoComponent
@@ -41,7 +41,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
   val mockCache: Cache                                           = mock(classOf[Cache])
   val mockAppConfig: AppConfig                                   = mock(classOf[AppConfig])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[PreviousDeclarationService].toInstance(mockPreviousDeclarationService))
@@ -57,8 +57,8 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     reset(mockAppConfig)
     when(
       injected[AppConfig].declareGoodsUrl
-    ) `thenReturn` "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
-    when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` true
+    ).thenReturn("https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods")
+    when(injected[AppConfig].isAmendmentsEnabled).thenReturn(true)
   }
 
   "loadPreviousDeclarationPage" should {
@@ -76,7 +76,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     }
 
     "redirect to start page when the amendments feature is off" in {
-      when(injected[AppConfig].isAmendmentsEnabled) `thenReturn` false
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(false)
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
       val result: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
@@ -114,8 +114,8 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
 
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())) `thenReturn` cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,
@@ -133,8 +133,8 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = Some(false))))
 
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())) `thenReturn` cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockPreviousDeclarationService.storePrevDeclaration(any())(any())(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,
@@ -152,8 +152,8 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = None)))
 
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
-      when(mockAppConfig.isVatResJourneyEnabled) `thenReturn` false
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockAppConfig.isVatResJourneyEnabled).thenReturn(false)
 
       val response = route(
         app,
@@ -178,7 +178,7 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
     "return error summary box on the page head when trying to submit a blank form" in {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(prevDeclaration = None)))
-      when(mockCache.fetch(any())) `thenReturn` cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
 
       val response =
         route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get

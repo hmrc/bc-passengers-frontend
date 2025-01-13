@@ -17,15 +17,15 @@
 package services
 
 import connectors.Cache
-import models._
+import models.*
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.test.Helpers._
-import uk.gov.hmrc.http._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, parseLocalDate}
@@ -50,7 +50,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
   private val jsonBodyCapture: ArgumentCaptor[JsValue]            = ArgumentCaptor.forClass(classOf[JsValue])
   private val journeyDataBodyCapture: ArgumentCaptor[JourneyData] = ArgumentCaptor.forClass(classOf[JourneyData])
 
-  implicit val messagesApi: MessagesApi = injected[MessagesApi]
+  given messagesApi: MessagesApi = injected[MessagesApi]
 
   override def beforeEach(): Unit = {
     reset(mockHttpClient)

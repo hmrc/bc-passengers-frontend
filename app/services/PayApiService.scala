@@ -20,11 +20,11 @@ import controllers.routes
 import models.{CalculatorResponse, ChargeReference, Country, UserInformation}
 import play.api.Configuration
 import play.api.i18n.Messages
-import play.api.libs.json._
-import play.mvc.Http.Status._
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.json.*
+import play.mvc.Http.Status.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.libs.ws.writeableOf_JsValue
 

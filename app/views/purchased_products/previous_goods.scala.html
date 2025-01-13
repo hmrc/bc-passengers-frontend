@@ -36,7 +36,7 @@
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: config.AppConfig)
+)(implicit request: Request[?], messages: Messages, lang: Lang, appConfig: config.AppConfig)
 
 
 @govukLayout(pageTitle = Some(messages("label.your_previously_declared_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {

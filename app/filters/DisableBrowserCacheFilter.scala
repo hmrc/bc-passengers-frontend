@@ -18,7 +18,7 @@ package filters
 
 import org.apache.pekko.stream.Materializer
 import javax.inject.Inject
-import play.api.mvc._
+import play.api.mvc.*
 
 import scala.concurrent.{ExecutionContext, Future}
 

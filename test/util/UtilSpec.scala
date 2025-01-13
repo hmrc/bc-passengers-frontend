@@ -17,7 +17,7 @@
 package util
 
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
-import play.api.data.validation._
+import play.api.data.validation.*
 
 import java.math.RoundingMode
 

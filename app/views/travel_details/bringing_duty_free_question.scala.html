@@ -22,7 +22,7 @@
     yesNoRadio: components.yesNoRadio,
     button: components.button,
 )
-@(form: Form[BringingDutyFreeDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[BringingDutyFreeDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(messages("heading.are_you_bringing_in_duty_free_")), backLink = backLink) {
 

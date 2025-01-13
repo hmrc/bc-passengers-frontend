@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, OFormat}
 
 object Country {
-  implicit val formats: OFormat[Country] = Json.format[Country]
+  given formats: OFormat[Country] = Json.format[Country]
 }
 case class Country(
   code: String,

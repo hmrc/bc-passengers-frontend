@@ -33,7 +33,7 @@
     autoCompleteList: components.autocompleteList
 )
 
-@(form: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[EnterYourDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.enter_your_details")), backLink = backLink) {
 

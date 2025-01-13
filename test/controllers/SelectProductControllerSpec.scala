@@ -21,17 +21,17 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
-import org.scalatest.Inspectors._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
+import org.scalatest.Inspectors.*
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
-import play.api.test.Helpers.{route => rt, _}
+import play.api.test.Helpers.{route => rt, *}
 import repositories.BCPassengersSessionRepository
-import services._
+import services.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
@@ -52,7 +52,7 @@ class SelectProductControllerSpec extends BaseSpec {
     privateCraft = Some(false)
   )
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
@@ -95,11 +95,13 @@ class SelectProductControllerSpec extends BaseSpec {
         Future.successful(addSelectedProductsAsAliasesResult())
       }
 
-      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())) `thenReturn` Future.successful(
-        cachedJourneyData.get
+      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())).thenReturn(
+        Future.successful(
+          cachedJourneyData.get
+        )
       )
-      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
-      when(injected[Cache].storeJourneyData(any())(any())) `thenReturn` Future.successful(cachedJourneyData)
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
+      when(injected[Cache].storeJourneyData(any())(any())).thenReturn(Future.successful(cachedJourneyData))
 
       rt(app, req)
     }
@@ -406,7 +408,7 @@ class SelectProductControllerSpec extends BaseSpec {
           Future.successful(JourneyData())
         }
 
-        when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
+        when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get
       }
@@ -472,7 +474,7 @@ class SelectProductControllerSpec extends BaseSpec {
         when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn {
           Future.successful(JourneyData())
         }
-        when(injected[Cache].store(any())(any())) `thenReturn` Future.successful(JourneyData())
+        when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get
       }

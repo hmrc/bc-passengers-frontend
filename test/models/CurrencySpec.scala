@@ -21,8 +21,8 @@ import play.api.libs.json.{JsValue, Json}
 import util.BaseSpec
 
 class CurrencySpec extends BaseSpec {
-  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages: Messages       = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
+  given messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  given messages: Messages       = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
 
   private val json: JsValue   = Json.parse(
     """

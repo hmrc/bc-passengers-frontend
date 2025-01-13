@@ -18,7 +18,7 @@ package services
 
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
-import models._
+import models.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

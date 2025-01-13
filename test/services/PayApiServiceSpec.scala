@@ -16,16 +16,16 @@
 
 package services
 
-import models._
+import models.*
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsObject, JsValue, Json}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
@@ -362,7 +362,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
 
   "Calling requestPaymentUrl" should {
 
-    implicit val messages: Messages = injected[MessagesApi].preferred(enhancedFakeRequest("POST", "/nowhere"))
+    given messages: Messages = injected[MessagesApi].preferred(enhancedFakeRequest("POST", "/nowhere"))
 
     "return PayApiServiceFailureResponse when client returns 400" in new Setup {
 

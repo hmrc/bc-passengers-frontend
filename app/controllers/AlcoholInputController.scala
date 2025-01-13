@@ -23,10 +23,10 @@ import controllers.enforce.DashboardAction
 import forms.AlcoholInputForm
 import models.{AlcoholDto, JourneyData, ProductPath}
 import play.api.i18n.I18nSupport
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import util._
+import util.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

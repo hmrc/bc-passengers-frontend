@@ -21,7 +21,7 @@
     yesNoRadio: components.yesNoRadio,
     button: components.button
 )
-@(form: Form[BringingOverAllowanceDto], mixEuRow: Boolean, backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[BringingOverAllowanceDto], mixEuRow: Boolean, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(messages("heading.you_may_need_to_declare_all_your_goods")), backLink = backLink) {
 

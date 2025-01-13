@@ -26,7 +26,7 @@
     p: components.p,
     panelIndent: components.panelIndent
 )
-@(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "heading.goods_brought_into_gb")), backLink = backLink) {
 

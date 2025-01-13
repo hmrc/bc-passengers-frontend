@@ -16,7 +16,7 @@
 
 package services
 
-import models._
+import models.*
 import util.BaseSpec
 
 class ProductTreeServiceSpec extends BaseSpec {

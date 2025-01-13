@@ -18,9 +18,9 @@ package forms
 
 import models.{ProductPath, TobaccoDto}
 import play.api.data.Form
-import play.api.data.Forms._
-import services._
-import util._
+import play.api.data.Forms.*
+import services.*
+import util.*
 
 import javax.inject.Inject
 import scala.util.Try

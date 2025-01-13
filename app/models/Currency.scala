@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, OFormat}
 
 object Currency {
-  implicit val formats: OFormat[Currency] = Json.format[Currency]
+  given formats: OFormat[Currency] = Json.format[Currency]
 }
 case class Currency(
   code: String,

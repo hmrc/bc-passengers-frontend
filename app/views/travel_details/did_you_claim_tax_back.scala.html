@@ -21,7 +21,7 @@
     yesNoRadio: components.yesNoRadio,
     button: components.button
 )
-@(form: Form[ClaimedVatResDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[ClaimedVatResDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(messages("heading.did_you_claim_tax_back_on_")), backLink = backLink) {
 

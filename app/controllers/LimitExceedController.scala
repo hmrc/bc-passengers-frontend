@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.LimitExceedAction
-import models._
+import models.*
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}

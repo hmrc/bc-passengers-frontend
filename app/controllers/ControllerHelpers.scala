@@ -18,11 +18,11 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import models._
+import models.*
 import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.play.bootstrap.controller.{Utf8MimeTypes, WithJsonBody}
@@ -42,8 +42,8 @@ trait ControllerHelpers
 
   def errorTemplate: views.html.errorTemplate
 
-  implicit def appConfig: AppConfig
-  implicit def ec: ExecutionContext
+  given appConfig: AppConfig
+  given ec: ExecutionContext
 
   private val logger = Logger(this.getClass)
 

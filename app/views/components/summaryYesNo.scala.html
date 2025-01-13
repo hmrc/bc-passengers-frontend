@@ -19,7 +19,7 @@
         h2: components.h2
 )
 
-@(form: Form[_], h2Message: Option[String], name: String, hintMessage: Option[String] = None, keyPrefix: String = "site", hintHtml: Option[Html] = None)(implicit messages: Messages)
+@(form: Form[?], h2Message: Option[String], name: String, hintMessage: Option[String] = None, keyPrefix: String = "site", hintHtml: Option[Html] = None)(implicit messages: Messages)
 
 @govukRadios(Radios(
     classes = "govuk-radios--inline",

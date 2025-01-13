@@ -23,10 +23,10 @@ import controllers.enforce.DashboardAction
 import forms.TobaccoInputForm
 import models.{JourneyData, ProductPath, TobaccoDto}
 import play.api.i18n.I18nSupport
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import util._
+import util.*
 import utils.FormatsAndConversions
 
 import javax.inject.Inject

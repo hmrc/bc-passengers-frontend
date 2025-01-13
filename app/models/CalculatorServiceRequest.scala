@@ -18,7 +18,7 @@ package models
 
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.{Json, OWrites, Writes}
-import util._
+import util.*
 
 import scala.math.BigDecimal.RoundingMode
 
@@ -26,8 +26,8 @@ object CalculatorServiceRequest {
 
   implicit def writes(implicit messages: MessagesApi): OWrites[CalculatorServiceRequest] = {
 
-    implicit val piw: Writes[PurchasedItem] = (item: PurchasedItem) => {
-      implicit val defaultLanguage: Lang = Lang("en")
+    given piw: Writes[PurchasedItem] = (item: PurchasedItem) => {
+      given defaultLanguage: Lang = Lang("en")
 
       val descriptionLabels =
         item.productTreeLeaf.getDescriptionLabels(item.purchasedProductInstance, long = false) match {
@@ -74,9 +74,9 @@ case class CalculatorServiceRequest(
 
 object LimitRequest {
 
-  implicit val writes: OWrites[LimitRequest] = {
+  given writes: OWrites[LimitRequest] = {
 
-    implicit val piw: Writes[SpeculativeItem] = (item: SpeculativeItem) =>
+    given piw: Writes[SpeculativeItem] = (item: SpeculativeItem) =>
       Json
         .obj(
           "purchaseCost"   -> item.gbpCost.setScale(2, RoundingMode.DOWN).toString,

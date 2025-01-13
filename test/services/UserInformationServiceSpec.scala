@@ -18,8 +18,8 @@ package services
 
 import connectors.Cache
 import models.{JourneyData, UserInformation}
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class UserInformationServiceSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .build()
@@ -46,8 +46,8 @@ class UserInformationServiceSpec extends BaseSpec {
     lazy val s: UserInformationService = {
       val service = app.injector.instanceOf[UserInformationService]
       val mock    = service.cache
-      when(mock.fetch(any())) `thenReturn` Future.successful(journeyDataInCache)
-      when(mock.store(any())(any())) `thenReturn` Future.successful(JourneyData())
+      when(mock.fetch(any())).thenReturn(Future.successful(journeyDataInCache))
+      when(mock.store(any())(any())).thenReturn(Future.successful(JourneyData()))
       service
     }
   }

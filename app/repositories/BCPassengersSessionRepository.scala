@@ -28,7 +28,7 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import org.mongodb.scala.SingleObservableFuture
 
 import java.util.concurrent.TimeUnit
-import javax.inject._
+import javax.inject.*
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

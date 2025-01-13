@@ -17,7 +17,7 @@
 package util
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.mvc.{CookieHeaderEncoding, RequestHeader, Result, SessionCookieBaker}
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter

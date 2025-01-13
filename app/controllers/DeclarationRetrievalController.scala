@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.{DeclarationRetrievalDto, PreviousDeclarationRequest}
 import java.time.{LocalDateTime, ZoneOffset}
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}

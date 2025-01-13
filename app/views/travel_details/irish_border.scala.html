@@ -21,7 +21,7 @@
     yesNoRadio: components.yesNoRadio,
     button: components.button
 )
-@(form: Form[IrishBorderDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[IrishBorderDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(messages("label.are_entering_northern_ireland_")), backLink = backLink) {
 

@@ -31,7 +31,7 @@
     items: List[(String, String)],
     path: ProductPath,
     backLink: Option[String]
-)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), customBackLink = false) {
 

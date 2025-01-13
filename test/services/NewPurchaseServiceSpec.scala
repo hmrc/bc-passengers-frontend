@@ -17,7 +17,7 @@
 package services
 
 import controllers.LocalContext
-import models._
+import models.*
 import util.BaseSpec
 
 import scala.util.Random

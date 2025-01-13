@@ -40,7 +40,7 @@
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
+)(implicit request: Request[?], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
 
 @defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
 

@@ -37,6 +37,6 @@ object TimeInput {
 
   def defaultObject: TimeInput = TimeInput()
 
-  implicit val format: OFormat[TimeInput] = Json.format[TimeInput]
+  given format: OFormat[TimeInput] = Json.format[TimeInput]
 
 }

@@ -29,18 +29,17 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route as rt, *}
 import repositories.BCPassengersSessionRepository
-import services.{CalculatorService, PreviousDeclarationService, PurchasedProductService}
+import services.{CalculatorService, PurchasedProductService}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
-import java.time.{LocalDate, LocalTime}
 import scala.concurrent.Future
 
 class PreviousGoodsControllerSpec extends BaseSpec {
   val mockCache: Cache = mock(classOf[Cache])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mockCache))
@@ -74,8 +73,8 @@ class PreviousGoodsControllerSpec extends BaseSpec {
 
       when(
         injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ) `thenReturn` Future.successful(JourneyData())
-      when(injected[Cache].fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
+      ).thenReturn(Future.successful(JourneyData()))
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
       rt(app, req)
     }
   }
@@ -96,80 +95,6 @@ class PreviousGoodsControllerSpec extends BaseSpec {
       verify(controller.cache, times(1)).fetch(any())
     }
   }
-
-//  "redirect to pending payment page following successful retrieval and amendState equals pending-payment" in new LocalSetup {
-//    override def cachedJourneyData: Option[JourneyData]            = Some(
-//      JourneyData(
-//        prevDeclaration = Some(true),
-//        euCountryCheck = Some("greatBritain"),
-//        arrivingNICheck = Some(true),
-//        ageOver17 = Some(true),
-//        isUKResident = Some(false),
-//        privateCraft = Some(true),
-//        previousDeclarationRequest = Some(previousDeclarationRequest),
-//        declarationResponse = Some(declarationResponse),
-//        userInformation = Some(userInformation),
-//        amendState = Some("pending-payment")
-//      )
-//    )
-//    val mockPreviousDeclarationService: PreviousDeclarationService = mock(classOf[PreviousDeclarationService])
-//    val previousDeclarationRequest: PreviousDeclarationRequest     = PreviousDeclarationRequest("Potter", "someReference")
-//    val calculation: Calculation                                   = Calculation("160.45", "25012.50", "15134.59", "40307.54")
-//    val productPath: ProductPath                                   = ProductPath("other-goods/adult/adult-footwear")
-//    val country: Country                                           = Country("IN", "title.india", "IN", isEu = false, isCountry = true, List())
-//    val liabilityDetails: LiabilityDetails                         = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
-//    val userInformation: UserInformation                           = UserInformation(
-//      "Harry",
-//      "Smith",
-//      "passport",
-//      "SX12345",
-//      "abc@gmail.com",
-//      "Newcastle Airport",
-//      "",
-//      LocalDate.now(),
-//      LocalTime.now().minusHours(23)
-//    )
-//    val purchasedProductInstances: List[PurchasedProductInstance]  = List(
-//      PurchasedProductInstance(
-//        productPath,
-//        "UnOGll",
-//        None,
-//        None,
-//        Some(country),
-//        None,
-//        Some("GBP"),
-//        Some(500),
-//        Some(OtherGoodsSearchItem("label.other-goods.mans_shoes", ProductPath("other-goods/adult/adult-footwear"))),
-//        Some(false),
-//        Some(false),
-//        None,
-//        Some(false),
-//        None,
-//        Some(false)
-//      )
-//    )
-//    val declarationResponse: DeclarationResponse                   =
-//      DeclarationResponse(calculation, liabilityDetails, purchasedProductInstances)
-//
-//    when(mockCache.fetch(any())) `thenReturn` Future.successful(cachedJourneyData)
-//    when(mockPreviousDeclarationService.storePrevDeclarationDetails(any())(any())(any())).thenReturn(
-//      Future
-//        .successful(cachedJourneyData)
-//    )
-//
-//    val response: Future[Result] = route(
-//      app,
-//      enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/declaration-retrieval")
-//        .withFormUrlEncodedBody(
-//          "" +
-//            "lastName"      -> "Smith",
-//          "referenceNumber" -> "XXPR0123456789"
-//        )
-//    ).get
-//    status(response) shouldBe SEE_OTHER
-//    redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/pending-payment")
-//    verify(mockPreviousDeclarationService, times(1)).storePrevDeclarationDetails(any())(any())(any())
-//  }
 
   "respond with 200, display the page if all the travel details exist & display button's text for Amendment:Add goods " in new LocalSetup {
     lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
@@ -278,10 +203,12 @@ class PreviousGoodsControllerSpec extends BaseSpec {
         )
       )
     )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())) `thenReturn` Future
-      .successful(
-        Some(csr)
-      )
+    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
+      Future
+        .successful(
+          Some(csr)
+        )
+    )
     val result: Future[Result]        = route(
       app,
       enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-goods").withFormUrlEncodedBody(

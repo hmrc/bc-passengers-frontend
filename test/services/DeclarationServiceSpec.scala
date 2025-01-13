@@ -18,15 +18,15 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
-import models._
+import models.*
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.test.Helpers._
-import uk.gov.hmrc.http._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -37,7 +37,7 @@ import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
-  implicit val messages: MessagesApi = injected[MessagesApi]
+  given messages: MessagesApi = injected[MessagesApi]
 
   private val mockRequestBuilder: RequestBuilder           = mock(classOf[RequestBuilder])
   private val mockHttpClient: HttpClientV2                 = mock(classOf[HttpClientV2])

@@ -24,7 +24,7 @@ import forms.PendingPaymentForm
 import javax.inject.Inject
 import models.JourneyData
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import services.{CalculatorService, CalculatorServiceSuccessResponse, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 

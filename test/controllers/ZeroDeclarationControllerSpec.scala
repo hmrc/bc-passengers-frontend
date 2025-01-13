@@ -20,13 +20,13 @@ import config.AppConfig
 import connectors.Cache
 import models._
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
+import play.api.test.Helpers.{defaultAwaitTimeout, route, status, *}
 import repositories.BCPassengersSessionRepository
 import services.{DeclarationService, DeclarationServiceFailureResponse, DeclarationServiceSuccessResponse}
 import uk.gov.hmrc.mongo.MongoComponent
@@ -40,7 +40,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
   val mockCache: Cache         = mock(classOf[Cache])
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
@@ -204,8 +204,10 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
   "loadDeclarationPage" should {
 
     "load the page for declaration" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
-        DeclarationServiceSuccessResponse
+      when(injected[DeclarationService].updateDeclaration(any())(any())).thenReturn(
+        Future.successful(
+          DeclarationServiceSuccessResponse
+        )
       )
       when(mockCache.fetch(any())).thenReturn(
         Future.successful(
@@ -244,8 +246,10 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "load the page for amendments" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
-        DeclarationServiceSuccessResponse
+      when(injected[DeclarationService].updateDeclaration(any())(any())).thenReturn(
+        Future.successful(
+          DeclarationServiceSuccessResponse
+        )
       )
       when(mockCache.fetch(any())).thenReturn(
         Future.successful(
@@ -290,8 +294,10 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data from keyStore when place of arrival is selected" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
-        DeclarationServiceSuccessResponse
+      when(injected[DeclarationService].updateDeclaration(any())(any())).thenReturn(
+        Future.successful(
+          DeclarationServiceSuccessResponse
+        )
       )
       when(mockCache.fetch(any())).thenReturn(
         Future.successful(
@@ -325,8 +331,10 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "loading the page and populate data from keyStore when place of arrival is entered" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
-        DeclarationServiceSuccessResponse
+      when(injected[DeclarationService].updateDeclaration(any())(any())).thenReturn(
+        Future.successful(
+          DeclarationServiceSuccessResponse
+        )
       )
       val userInformationMock    = ui.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "Belfast Seaport")
       when(mockCache.fetch(any())).thenReturn(
@@ -369,8 +377,10 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
     }
 
     "return a INTERNAL_SERVER_ERROR for update if the declaration returns 500" in {
-      when(injected[DeclarationService].updateDeclaration(any())(any())) `thenReturn` Future.successful(
-        DeclarationServiceFailureResponse
+      when(injected[DeclarationService].updateDeclaration(any())(any())).thenReturn(
+        Future.successful(
+          DeclarationServiceFailureResponse
+        )
       )
 
       val userInformationMock      = ui.copy(selectPlaceOfArrival = "", enterPlaceOfArrival = "Belfast Seaport")

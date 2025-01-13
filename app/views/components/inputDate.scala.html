@@ -17,7 +17,7 @@
 @this(govukDateInput: GovukDateInput)
 
 @(
-  form: Form[_],
+  form: Form[?],
   legendContent: String,
   legendClasses: String = "govuk-fieldset__legend--xl",
   id: String = "date",
@@ -75,7 +75,7 @@
                 .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
                     err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ))
-    @hierarchyErrors(id: String, form: Form[_], appended: Seq[String]) = @{
+    @hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
         val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
 
         allFields.find(_.messages.find(_.contains("required"))) match {
