@@ -16,7 +16,7 @@
 
 package controllers
 
-import models._
+import models.*
 import play.api.data.Form
 import play.api.test.FakeRequest
 import util.BaseSpec
