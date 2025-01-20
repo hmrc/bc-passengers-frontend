@@ -536,7 +536,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  "Going back from user-information" should {
+  "Going back from user-information-name" should {
 
     "return user to declare-your-goods" in new LocalSetup {
 

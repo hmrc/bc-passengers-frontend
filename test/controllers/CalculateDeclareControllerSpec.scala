@@ -786,7 +786,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when there is no journey data" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-name when there is no journey data" should {
 
     def test(page: String, isAmendmentsEnabled: Boolean, locationRoute: String): Unit =
       s"redirect to the $page page" in new LocalSetup {
@@ -813,7 +813,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = route(
           app,
-          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")
         ).get
 
         status(response)           shouldBe SEE_OTHER
@@ -828,7 +828,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     input.foreach(args => (test _).tupled(args))
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when in amendment journey" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-name when in amendment journey" should {
 
     "Display the previous-declaration page" in new LocalSetup {
 
@@ -853,7 +853,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
@@ -883,7 +883,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
@@ -918,7 +918,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when tax amount is 0.00" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-name when tax amount is 0.00" should {
 
     "Display the previous-declaration page" in new LocalSetup {
 
@@ -940,7 +940,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
@@ -1172,9 +1172,9 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax greater than nine pounds and less than 90,000" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-name with tax greater than nine pounds and less than 90,000" should {
 
-    "Display the user-information page when at the lower end of the range" in new LocalSetup {
+    "Display the user-information-name page when at the lower end of the range" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
           JourneyData(
@@ -1193,7 +1193,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -1201,7 +1201,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "What is your name?"
     }
 
-    "Display the user-information page when at the higher end of the range" in new LocalSetup {
+    "Display the user-information-name page when at the higher end of the range" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
           JourneyData(
@@ -1220,7 +1220,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -1248,7 +1248,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -1256,7 +1256,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "What is your name?"
     }
 
-    "populate user-information page if user-information data is present in db" in new LocalSetup {
+    "populate user-information page if user-information-name data is present in db" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
           JourneyData(
@@ -1276,7 +1276,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -1286,7 +1286,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       doc.getElementById("lastName").`val`()  shouldBe "Potter"
     }
 
-    "populate user-information page if user-information data is present in db for GB NI journey" in new LocalSetup {
+    "populate user-information page if user-information-name data is present in db for GB NI journey" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
           JourneyData(
@@ -1306,7 +1306,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
@@ -1345,7 +1345,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
-  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information with tax greater £90,000" should {
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-name with tax greater £90,000" should {
 
     "Display the previous-declaration page" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
@@ -1366,14 +1366,14 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
 
       val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information")).get
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
 
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
   }
 
-  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/journey-details" should {
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-journey" should {
 
     "Return BAD REQUEST and display the user information form when invalid form input is sent" in new LocalSetup {
 
@@ -1397,7 +1397,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")
           .withFormUrlEncodedBody(
             "firstName" -> "",
             "lastName"  -> "Potter"
@@ -1429,7 +1429,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")
           .withFormUrlEncodedBody(
             "firstName" -> "123456789012345678901234567890123451234",
             "lastName"  -> "Potter"
@@ -1461,7 +1461,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")
           .withFormUrlEncodedBody(
             "firstName" -> "Harry",
             "lastName"  -> "123456789012345678901234567890123451234"
@@ -1494,7 +1494,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/type-of-identification/number")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
           .withFormUrlEncodedBody(
             "identificationNumber" -> "12345678901234567890123456789012345612345"
           )
@@ -1526,7 +1526,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/type-of-identification/number")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
           .withFormUrlEncodedBody(
             "identificationNumber" -> "abcdefgh"
           )
@@ -1557,7 +1557,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
             "placeOfArrival.selectPlaceOfArrival"     -> "",
             "placeOfArrival.enterPlaceOfArrival"      -> "123456789012345678901234567890123456123456",
@@ -1595,7 +1595,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/what-is-your-email")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
           .withFormUrlEncodedBody(
             "email"        -> "abc@gmail.com",
             "confirmEmail" -> ""
@@ -1627,7 +1627,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/what-is-your-email")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
           .withFormUrlEncodedBody(
             "email"        -> "abc@gmail.com",
             "confirmEmail" -> "xyz@gmail.com"
@@ -1660,7 +1660,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/type-of-identification/number")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
           .withFormUrlEncodedBody(
             "identificationNumber" -> "abcdefghi"
           )
@@ -1692,7 +1692,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
             "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
             "placeOfArrival.enterPlaceOfArrival"      -> "",
@@ -1730,7 +1730,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
             "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
             "placeOfArrival.enterPlaceOfArrival"      -> "",
@@ -1778,7 +1778,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
             "placeOfArrival.selectPlaceOfArrival"     -> "",
             "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
@@ -1819,7 +1819,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
             "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
             "placeOfArrival.enterPlaceOfArrival"      -> "",
@@ -1864,7 +1864,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = route(
           app,
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
             .withFormUrlEncodedBody(
               "placeOfArrival.selectPlaceOfArrival"     -> "",
               "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
@@ -1911,7 +1911,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = route(
           app,
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
             .withFormUrlEncodedBody(
               "placeOfArrival.selectPlaceOfArrival"     -> "",
               "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
@@ -2244,7 +2244,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       val response: Future[Result] = route(
         app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/journey-details")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
             "placeOfArrival.selectPlaceOfArrival"     -> "",
             "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",

@@ -131,20 +131,20 @@ GET        /tax-due                                                             
 
 GET        /declare-your-goods                                                         controllers.CalculateDeclareController.declareYourGoods
 
-GET        /user-information                                                           controllers.CalculateDeclareController.whatIsYourName
-POST       /user-information                                                           controllers.CalculateDeclareController.processWhatIsYourName
+GET        /user-information-name                                                      controllers.CalculateDeclareController.whatIsYourName
+POST       /user-information-name                                                      controllers.CalculateDeclareController.processWhatIsYourName
 
-GET        /type-of-identification                                                     controllers.CalculateDeclareController.typeOfIdentification
-POST       /type-of-identification                                                     controllers.CalculateDeclareController.processTypeOfIdentification
+GET        /user-information-id                                                        controllers.CalculateDeclareController.typeOfIdentification
+POST       /user-information-id                                                        controllers.CalculateDeclareController.processTypeOfIdentification
 
-GET        /type-of-identification/number                                              controllers.CalculateDeclareController.whatIsYourIdentificationNumber
-POST       /type-of-identification/number                                              controllers.CalculateDeclareController.processIdentificationNumber
+GET        /user-information-id-number                                              controllers.CalculateDeclareController.whatIsYourIdentificationNumber
+POST       /user-information-id-number                                              controllers.CalculateDeclareController.processIdentificationNumber
 
-GET        /what-is-your-email                                                         controllers.CalculateDeclareController.whatIsYourEmail
-POST       /what-is-your-email                                                         controllers.CalculateDeclareController.processWhatIsYourEmail
+GET        /user-information-email                                                         controllers.CalculateDeclareController.whatIsYourEmail
+POST       /user-information-email                                                         controllers.CalculateDeclareController.processWhatIsYourEmail
 
-GET        /journey-details                                                            controllers.CalculateDeclareController.whatAreYourJourneyDetails
-POST       /journey-details                                                            controllers.CalculateDeclareController.processJourneyDetails
+GET        /user-information-journey                                                            controllers.CalculateDeclareController.whatAreYourJourneyDetails
+POST       /user-information-journey                                                            controllers.CalculateDeclareController.processJourneyDetails
 
 GET        /process-amendment                                                          controllers.CalculateDeclareController.processAmendment
 
