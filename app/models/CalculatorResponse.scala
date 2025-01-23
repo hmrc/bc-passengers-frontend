@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,43 +19,43 @@ package models
 import play.api.libs.json.{Json, OFormat}
 
 object Calculation {
-  implicit val formats: OFormat[Calculation] = Json.format[Calculation]
+  given formats: OFormat[Calculation] = Json.format[Calculation]
 }
 
 object ExchangeRate {
-  implicit val formats: OFormat[ExchangeRate] = Json.format[ExchangeRate]
+  given formats: OFormat[ExchangeRate] = Json.format[ExchangeRate]
 }
 
 object Metadata {
-  implicit val formats: OFormat[Metadata] = Json.format[Metadata]
+  given formats: OFormat[Metadata] = Json.format[Metadata]
 }
 
 object Item {
-  implicit val formats: OFormat[Item] = Json.format[Item]
+  given formats: OFormat[Item] = Json.format[Item]
 }
 
 object Band {
-  implicit val formats: OFormat[Band] = Json.format[Band]
+  given formats: OFormat[Band] = Json.format[Band]
 }
 
 object Alcohol {
-  implicit val formats: OFormat[Alcohol] = Json.format[Alcohol]
+  given formats: OFormat[Alcohol] = Json.format[Alcohol]
 }
 
 object Tobacco {
-  implicit val formats: OFormat[Tobacco] = Json.format[Tobacco]
+  given formats: OFormat[Tobacco] = Json.format[Tobacco]
 }
 
 object OtherGoods {
-  implicit val formats: OFormat[OtherGoods] = Json.format[OtherGoods]
+  given formats: OFormat[OtherGoods] = Json.format[OtherGoods]
 }
 
 object CalculatorResponse {
-  implicit val formats: OFormat[CalculatorResponse] = Json.format[CalculatorResponse]
+  given formats: OFormat[CalculatorResponse] = Json.format[CalculatorResponse]
 }
 
 object DescriptionLabels {
-  implicit val formats: OFormat[DescriptionLabels] = Json.format[DescriptionLabels]
+  given formats: OFormat[DescriptionLabels] = Json.format[DescriptionLabels]
 }
 
 case class Calculation(excise: String, customs: String, vat: String, allTax: String)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package models
 
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.{Json, OWrites, Writes}
-import util._
+import util.*
 
 import scala.math.BigDecimal.RoundingMode
 
@@ -26,13 +26,13 @@ object CalculatorServiceRequest {
 
   implicit def writes(implicit messages: MessagesApi): OWrites[CalculatorServiceRequest] = {
 
-    implicit val piw: Writes[PurchasedItem] = (item: PurchasedItem) => {
-      implicit val defaultLanguage: Lang = Lang("en")
+    given piw: Writes[PurchasedItem] = (item: PurchasedItem) => {
+      given defaultLanguage: Lang = Lang("en")
 
       val descriptionLabels =
         item.productTreeLeaf.getDescriptionLabels(item.purchasedProductInstance, long = false) match {
           case Some((messageKey, args)) => DescriptionLabels(messageKey, args)
-          case _                        => DescriptionLabels(item.name, List.empty) //Should not happen
+          case _                        => DescriptionLabels(item.name, List.empty) // Should not happen
         }
 
       Json
@@ -48,7 +48,7 @@ object CalculatorServiceRequest {
           "metadata"       -> Json.obj(
             "description"       -> messages(
               descriptionLabels.description,
-              descriptionLabels.args.map(messages(_).toLowerCase): _*
+              descriptionLabels.args.map(messages(_).toLowerCase)*
             ),
             "descriptionLabels" -> descriptionLabels,
             "name"              -> item.name,
@@ -74,9 +74,9 @@ case class CalculatorServiceRequest(
 
 object LimitRequest {
 
-  implicit val writes: OWrites[LimitRequest] = {
+  given writes: OWrites[LimitRequest] = {
 
-    implicit val piw: Writes[SpeculativeItem] = (item: SpeculativeItem) =>
+    given piw: Writes[SpeculativeItem] = (item: SpeculativeItem) =>
       Json
         .obj(
           "purchaseCost"   -> item.gbpCost.setScale(2, RoundingMode.DOWN).toString,

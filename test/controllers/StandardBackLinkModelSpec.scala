@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package controllers
 
 import config.AppConfig
-import models._
-import org.mockito.Mockito._
+import models.*
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -30,7 +30,7 @@ import util.BaseSpec
 
 class StandardBackLinkModelSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
@@ -208,7 +208,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
     when(
       injected[AppConfig].declareGoodsUrl
-    ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
+    ).thenReturn("https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods")
     lazy val context: LocalContext = LocalContext(FakeRequest(call), "FAKESESSIONID", journeyData)
   }
 
@@ -217,7 +217,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
   "Going back to previous-declaration" should {
     "happen when on where-goods-bought inside amendments journey" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(true)
       override val isIrishBorderQuestionEnabled           = false
       override val prevDeclaration: Option[Boolean]       = None
       override val euCountryCheck: Option[String]         = None
@@ -235,7 +235,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
   "Going back to gov.uk start page" should {
     "happen when on where-goods-bought in normal journey" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(false)
       override val isIrishBorderQuestionEnabled           = false
       override val prevDeclaration: Option[Boolean]       = None
       override val euCountryCheck: Option[String]         = None
@@ -253,7 +253,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
   "Going back to gov.uk start page" should {
     "happen when on previous-declaration in amendments journey" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(true)
       override val isIrishBorderQuestionEnabled           = false
       override val prevDeclaration: Option[Boolean]       = None
       override val euCountryCheck: Option[String]         = None

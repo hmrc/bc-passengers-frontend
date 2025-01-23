@@ -3,19 +3,19 @@
 GET        /                                                                           controllers.TravelDetailsController.newSession
 
 GET        /previous-declaration                                                       controllers.PreviousDeclarationController.loadPreviousDeclarationPage
-POST       /previous-declaration                                                       controllers.PreviousDeclarationController.postPreviousDeclarationPage
+POST       /previous-declaration                                                       controllers.PreviousDeclarationController.postPreviousDeclarationPage()
 
 GET        /declaration-retrieval                                                      controllers.DeclarationRetrievalController.loadDeclarationRetrievalPage
-POST       /declaration-retrieval                                                      controllers.DeclarationRetrievalController.postDeclarationRetrievalPage
+POST       /declaration-retrieval                                                      controllers.DeclarationRetrievalController.postDeclarationRetrievalPage()
 
 GET        /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBought
 POST       /where-goods-bought                                                         controllers.TravelDetailsController.whereGoodsBoughtPost
 
 GET        /arriving-ni                                                                controllers.ArrivingNIController.loadArrivingNIPage
-POST       /arriving-ni                                                                controllers.ArrivingNIController.postArrivingNIPage
+POST       /arriving-ni                                                                controllers.ArrivingNIController.postArrivingNIPage()
 
 GET        /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.loadUKExcisePaidPage
-POST       /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.postUKExcisePaidPage
+POST       /gb-ni-vat-excise-check                                                     controllers.UKExcisePaidController.postUKExcisePaidPage()
 
 GET        /enter-goods/$path<.+>/:iid/gb-ni-vat-check                                  controllers.UKVatPaidController.loadItemUKVatPaidPage(path: ProductPath, iid: String)
 POST       /enter-goods/$path<.+>/:iid/gb-ni-vat-check                                  controllers.UKVatPaidController.postItemUKVatPaidPage(path: ProductPath, iid: String)
@@ -24,10 +24,10 @@ GET        /enter-goods/$path<.+>/:iid/gb-ni-excise-check                       
 POST       /enter-goods/$path<.+>/:iid/gb-ni-excise-check                              controllers.UKExcisePaidController.postUKExcisePaidItemPage(path: ProductPath, iid: String)
 
 GET        /gb-ni-excise-check                                                         controllers.UKExcisePaidController.loadUKExcisePaidPage
-POST       /gb-ni-excise-check                                                         controllers.UKExcisePaidController.postUKExcisePaidPage
+POST       /gb-ni-excise-check                                                         controllers.UKExcisePaidController.postUKExcisePaidPage()
 
 GET        /gb-ni-uk-resident-check                                                    controllers.UKResidentController.loadUKResidentPage
-POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage
+POST       /gb-ni-uk-resident-check                                                    controllers.UKResidentController.postUKResidentPage()
 
 GET        /enter-goods/$path<.+>/:iid/gb-ni-exemptions                                controllers.UccReliefController.loadUccReliefItemPage(path: ProductPath, iid: String)
 POST       /enter-goods/$path<.+>/:iid/gb-ni-exemptions                                controllers.UccReliefController.postUccReliefItemPage(path: ProductPath, iid: String)
@@ -94,8 +94,8 @@ GET        /goods/$path<.+>/upper-limits/:iid/edit/units-of-product             
 GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
-GET        /select-goods/next-step                                                     controllers.SelectProductController.nextStep
-GET        /select-goods/cancel                                                        controllers.SelectProductController.cancel
+GET        /select-goods/next-step                                                     controllers.SelectProductController.nextStep()
+GET        /select-goods/cancel                                                        controllers.SelectProductController.cancel()
 
 GET        /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.AlcoholInputController.displayAddForm(path: ProductPath)
 POST       /enter-goods/$path<alcohol/.+>/tell-us                                      controllers.AlcoholInputController.processAddForm(path: ProductPath)
@@ -135,7 +135,7 @@ GET        /user-information                                                    
 POST       /user-information                                                           controllers.CalculateDeclareController.processEnterYourDetails
 GET        /process-amendment                                                          controllers.CalculateDeclareController.processAmendment
 
-GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage
+GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage()
 
 GET        /ireland-to-northern-ireland                                                controllers.CalculateDeclareController.irishBorder
 POST       /ireland-to-northern-ireland                                                controllers.CalculateDeclareController.irishBorderPost

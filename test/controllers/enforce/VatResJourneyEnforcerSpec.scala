@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
             case t: TestFailedException =>
               throw t.modifyMessage(
                 _.map(_ + " - when using params: " + acc.map(t => s"${t._1} = ${t._2}"))
-              ) //Show failing params
+              ) // Show failing params
           }
         } else {
           val (paramName, paramVals) = p.head
@@ -70,7 +70,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling VatResJourneyEnforcer.enforcePrereqs for PreviousDeclarationStep (Q0) when amendments feature is on" should {
 
-    when(mockAppConfig.isAmendmentsEnabled) thenReturn true
+    when(mockAppConfig.isAmendmentsEnabled).thenReturn(true)
 
     "pass with no journey data set with" in new GridSetup {
 
@@ -85,7 +85,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling VatResJourneyEnforcer.enforcePrereqs for DeclarationRetrievalStep when amendments feature is on" should {
 
-    when(mockAppConfig.isAmendmentsEnabled) thenReturn true
+    when(mockAppConfig.isAmendmentsEnabled).thenReturn(true)
 
     "not pass with no journey data set" in new GridSetup {
 
@@ -120,8 +120,8 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling VatResJourneyEnforcer.enforcePrereqs for WhereGoodsBoughtAmendmentStep (Q1) when amendments feature is on" should {
 
-    when(mockAppConfig.isAmendmentsEnabled) thenReturn true
-    when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+    when(mockAppConfig.isAmendmentsEnabled).thenReturn(true)
+    when(mockAppConfig.isVatResJourneyEnabled).thenReturn(true)
 
     "pass if prevDeclaration  = true" in new GridSetup {
 
@@ -136,8 +136,8 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling VatResJourneyEnforcer.enforcePrereqs for WhereGoodsBoughtStep (Q1) when amendments feature is off" should {
 
-    when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
-    when(mockAppConfig.isAmendmentsEnabled) thenReturn false
+    when(mockAppConfig.isVatResJourneyEnabled).thenReturn(true)
+    when(mockAppConfig.isAmendmentsEnabled).thenReturn(false)
 
     "pass if prevDeclaration  = false" in new GridSetup {
 
@@ -461,7 +461,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q2
+                ) // Q2
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -491,7 +491,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3, NoNeed
+                ) // Q3, NoNeed
                 =>
               status(res) shouldBe OK
             case _ =>
@@ -566,7 +566,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6, NoNeed
+                ) // Q6, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -596,7 +596,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3, NoNeed
+                ) // Q3, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -626,7 +626,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3
+                ) // Q3
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -656,7 +656,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q2
+                ) // Q2
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -686,7 +686,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6
+                ) // Q6
                 =>
               status(res) shouldBe OK
             case _ =>
@@ -764,7 +764,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6, NoNeed
+                ) // Q6, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -794,7 +794,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3, NoNeed
+                ) // Q3, NoNeed
                 | JourneyData(
                   Some(false),
                   Some("nonEuOnly"),
@@ -824,7 +824,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q3
+                ) // Q3
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -854,7 +854,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q2
+                ) // Q2
                 | JourneyData(
                   Some(false),
                   Some("euOnly"),
@@ -884,7 +884,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _
-                ) //Q6
+                ) // Q6
                 =>
               status(res) shouldBe OK
             case _ =>
@@ -897,7 +897,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling VatResJourneyEnforcer.enforcePrereqs for noFurtherAmendmentStep when amendments feature is on" should {
 
-    when(mockAppConfig.isAmendmentsEnabled) thenReturn true
+    when(mockAppConfig.isAmendmentsEnabled).thenReturn(true)
 
     "not pass with no journey data set" in new GridSetup {
 
@@ -932,7 +932,7 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling VatResJourneyEnforcer.enforcePrereqs for pendingPaymentStep when amendments feature is on" should {
 
-    when(mockAppConfig.isAmendmentsEnabled) thenReturn true
+    when(mockAppConfig.isAmendmentsEnabled).thenReturn(true)
 
     "not pass with no journey data set" in new GridSetup {
 

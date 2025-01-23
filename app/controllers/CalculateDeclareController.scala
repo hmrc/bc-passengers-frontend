@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import config.AppConfig
 import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
 import controllers.ControllerHelpers
-import models._
+import models.*
 import java.time.LocalDateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -71,7 +71,7 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
-    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
+    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
         "greatBritain"
@@ -204,7 +204,7 @@ class CalculateDeclareController @Inject() (
                 ) {
                   declarationService.storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap {
                     _ =>
-                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
                   }
                 } else {
                   payApiService.requestPaymentUrl(
@@ -268,13 +268,13 @@ class CalculateDeclareController @Inject() (
     context: JourneyData,
     amountPaidPreviously: BigDecimal,
     amendState: String
-  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  )(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] = {
     val deltaAllTax = BigDecimal(context.deltaCalculation.get.allTax)
     if (
       deltaAllTax == 0 && context.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
     ) {
       declarationService.storeChargeReference(context, userInformation, cr.value) flatMap { _ =>
-        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
       }
     } else {
       payApiService.requestPaymentUrl(

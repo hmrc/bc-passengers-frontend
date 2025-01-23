@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@
 
 package services
 
-import models._
+import models.*
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsObject, JsValue, Json}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
@@ -346,8 +346,9 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
     when(mockServicesConfig.baseUrl("pay-api")).thenReturn("http://localhost:9057")
     when(mockConfiguration.getOptional[String]("feedback-frontend.host")).thenReturn(Some("http://localhost:9514"))
     when(mockConfiguration.getOptional[String]("bc-passengers-frontend.host")).thenReturn(Some("http://localhost:9008"))
-    when(mockRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilder)
-    when(mockRequestBuilder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(Future.successful(httpResponse))
+    when(mockRequestBuilder.withBody(any())(using any(), any(), any())).thenReturn(mockRequestBuilder)
+    when(mockRequestBuilder.execute(using any[HttpReads[HttpResponse]], any()))
+      .thenReturn(Future.successful(httpResponse))
     when(mockHttpClient.post(any())(any())).thenReturn(mockRequestBuilder)
 
     lazy val s: PayApiService = new PayApiService(
@@ -361,7 +362,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
 
   "Calling requestPaymentUrl" should {
 
-    implicit val messages: Messages = injected[MessagesApi].preferred(enhancedFakeRequest("POST", "/nowhere"))
+    given messages: Messages = injected[MessagesApi].preferred(enhancedFakeRequest("POST", "/nowhere"))
 
     "return PayApiServiceFailureResponse when client returns 400" in new Setup {
 
@@ -374,8 +375,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJson
@@ -392,8 +393,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJson
@@ -404,15 +405,15 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val r: PayApiServiceResponse                 =
+      val r: PayApiServiceResponse =
         s.requestPaymentUrl(exampleChargeRef, userInformation, calculatorResponse, 9700000, isAmendment = false, None)
           .futureValue
 
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJson
@@ -430,7 +431,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val r: PayApiServiceResponse                 =
+      val r: PayApiServiceResponse =
         s.requestPaymentUrl(
           exampleChargeRef,
           uiWithBstArrival,
@@ -443,8 +444,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe exampleJsonForBstArrival
@@ -462,7 +463,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val expectedJsonForAmendment: JsObject       = exampleJsonForBstArrival
+      val expectedJsonForAmendment: JsObject = exampleJsonForBstArrival
         .as[JsObject]
         .deepMerge(
           Json.obj(
@@ -485,8 +486,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe expectedJsonForAmendment
@@ -504,7 +505,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       override lazy val httpResponse: HttpResponse =
         HttpResponse(Status.CREATED, json = Json.obj("nextUrl" -> "https://example.com"), Map.empty)
 
-      val expectedJsonForAmendment: JsObject       = exampleJsonForBstArrival
+      val expectedJsonForAmendment: JsObject = exampleJsonForBstArrival
         .as[JsObject]
         .deepMerge(
           Json.obj(
@@ -528,8 +529,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe PayApiServiceSuccessResponse("https://example.com")
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$payUrl"
       bodyCapture.getValue shouldBe expectedJsonForAmendment

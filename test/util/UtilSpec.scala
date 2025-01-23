@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package util
 
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
-import play.api.data.validation._
+import play.api.data.validation.*
 
 import java.math.RoundingMode
 
@@ -93,7 +93,8 @@ class UtilSpec extends BaseSpec {
   "Formatting with decimalFormat5" when {
     "using the HALF_UP rounding mode" should {
       "preserve the correct value in 5 decimal places" in {
-        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) = (0.00, 0.99, 0.01)
+        val (start, end, step): (BigDecimal, BigDecimal, BigDecimal) =
+          (BigDecimal(0.00), BigDecimal(0.99), BigDecimal(0.01))
 
         start
           .to(end, step)

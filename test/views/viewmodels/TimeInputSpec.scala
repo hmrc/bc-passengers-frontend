@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package views.viewmodels
 
-import play.api.libs.json.Json
+import org.scalatest.matchers.must.Matchers.mustBe
+import play.api.libs.Comet.json
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import util.BaseSpec
 
 class TimeInputSpec extends BaseSpec with TimeInputConstants {
@@ -65,5 +67,31 @@ class TimeInputSpec extends BaseSpec with TimeInputConstants {
         }
       }
     }
+
+    "TimeInput" should {
+//      "serialize to JSON" when {
+//        "all fields are valid" in {
+//          Json.toJson(previousDeclarationRequest) shouldBe Json.obj(
+//            "lastName" -> "lastName",
+//            "referenceNumber" -> "referenceNumber"
+//          )
+//        }
+//      }
+
+      "deserialize from JSON" when {
+        "all fields are valid" in {
+          jsonMandatoryFields.validate[TimeInput] shouldBe JsSuccess(modelMandatoryFields)
+        }
+
+        "an empty JSON object" in {
+          val json = Json.obj()
+          json.validate[TimeInput] shouldBe JsSuccess(
+            TimeInput("", None, List(), List(), None, None, "", None, "", Map(), true)
+          )
+        }
+      }
+
+    }
+
   }
 }

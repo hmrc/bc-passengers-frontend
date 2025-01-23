@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
     limitExceededEditUtils:LimitExceededViewUtils
 )
 
-@(totalEnteredAmount: String, originalAmountEntered:String, userInput:String, token: String, productName: String, showGroupMessage: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(totalEnteredAmount: String, originalAmountEntered:String, userInput:String, token: String, productName: String, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @calculationSectionContent = {
     @limitExceededEditUtils.editViewContent(productName, token, totalEnteredAmount, originalAmountEntered, userInput, showGroupMessage)
@@ -55,7 +55,7 @@
 
     @p(Html(messages("limitExceeded.p5")))
 
-    @formHelper(action = routes.SelectProductController.nextStep) {
+    @formHelper(action = routes.SelectProductController.nextStep()) {
         @button(messages("label.continue"))
     }
 }

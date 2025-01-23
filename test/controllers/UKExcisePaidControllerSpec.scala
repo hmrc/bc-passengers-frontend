@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import config.AppConfig
 import connectors.Cache
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.mongo.MongoComponent
@@ -41,7 +41,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
   val mockCache: Cache                              = mock(classOf[Cache])
   val mockAppConfig: AppConfig                      = mock(classOf[AppConfig])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[TravelDetailsService].toInstance(mockTravelDetailService))
@@ -120,8 +120,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
           )
         )
 
-        when(mockCache.fetch(any())) thenReturn cachedJourneyData
-        when(mockTravelDetailService.storeUKExcisePaid(any())(any())(any())) thenReturn cachedJourneyData
+        when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+        when(mockTravelDetailService.storeUKExcisePaid(any())(any())(any())).thenReturn(cachedJourneyData)
 
         val response = route(
           app,
@@ -152,8 +152,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockTravelDetailService.storeUKExcisePaid(any())(any())(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockTravelDetailService.storeUKExcisePaid(any())(any())(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,
@@ -182,7 +182,7 @@ class UKExcisePaidControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
 
       val response = route(
         app,
@@ -302,8 +302,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
           purchasedProductInstances = List(ppi)
         )
         val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(jd))
-        when(mockCache.fetch(any())) thenReturn cachedJourneyData
-        when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+        when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+        when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
         val response                                       = route(
           app,
           enhancedFakeRequest(
@@ -333,8 +333,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
         purchasedProductInstances = List(ppi)
       )
       val cachedJourneyData = Future.successful(Some(jd))
-      when(mockCache.fetch(any())) thenReturn cachedJourneyData
-      when(mockCache.store(any())(any())) thenReturn Future.successful(jd)
+      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+      when(mockCache.store(any())(any())).thenReturn(Future.successful(jd))
       val response          = route(
         app,
         enhancedFakeRequest(

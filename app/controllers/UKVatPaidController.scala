@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import forms.UKVatPaidForm
 import javax.inject.Inject
 import models.{ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +42,7 @@ class UKVatPaidController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   def loadItemUKVatPaidPage(path: ProductPath, iid: String): Action[AnyContent] = uKVatPaidAction { implicit context =>
     Future.successful {
@@ -76,7 +76,7 @@ class UKVatPaidController @Inject() (
                 if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
                   Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
                 } else {
-                  Redirect(routes.SelectProductController.nextStep)
+                  Redirect(routes.SelectProductController.nextStep())
                 }
               } else {
                 Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))

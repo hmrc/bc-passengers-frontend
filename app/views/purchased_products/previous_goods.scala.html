@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: config.AppConfig)
+)(implicit request: Request[?], messages: Messages, lang: Lang, appConfig: config.AppConfig)
 
 
 @govukLayout(pageTitle = Some(messages("label.your_previously_declared_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {

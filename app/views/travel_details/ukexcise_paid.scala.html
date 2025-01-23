@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@
  h1: components.h1
 )
 
-@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @pageHeading = @{messages("heading.is_uk_vat_excise_paid")}
 
 @govukLayout(pageTitle = Some(title(form, pageHeading)), backLink = backLink) {
 
- @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidPage) {
+ @formHelper(action = routes.UKExcisePaidController.postUKExcisePaidPage()) {
 
   @errorSummary(form.errors, Some("value-yes"))
 

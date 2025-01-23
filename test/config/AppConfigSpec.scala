@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package config
 
-@(content: Html, classes: String = "govuk-body", id: Option[String] = None)
+import org.scalatest.matchers.should.Matchers
+import util.BaseSpec
 
-@if(id.isDefined){
-    <p class="@classes" id ="@id">@content</p>
-} else {
-    <p class="@classes">@content</p>
+class AppConfigSpec extends BaseSpec with Matchers {
+
+  "AppConfig" should {
+
+    "return the correct declareGoodsUrl" in {
+      val appConfig = injected[AppConfig]
+      appConfig.declareGoodsUrl shouldBe "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     }
+  }
+}

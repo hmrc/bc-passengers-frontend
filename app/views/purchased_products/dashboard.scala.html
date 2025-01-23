@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@
   isGbNi: Boolean,
   isEU: Boolean,
   isUkResident: Boolean
-)(implicit request: Request[_], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
+)(implicit request: Request[?], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
 
 @defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
 
