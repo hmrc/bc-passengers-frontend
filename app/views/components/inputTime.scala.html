@@ -49,7 +49,7 @@
                             form.errors.exists(_.message.startsWith(s"error.$id.hour")) ||
                             form.errors.exists(_.key.contains(s"hour")) ||
                             form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name =  s"$id.hour",
+            name =  messages("time.fields.hour"),
             label = Some(messages("time.fields.hour")),
             value = form(s"$id.hour").value,
             attributes = attributesHour
@@ -57,7 +57,7 @@
         InputItem(
             id = s"$id.minute",
             classes = s"govuk-input--width-2${if(form.errors.exists(_.message.startsWith(s"error.$id.all")) || form.errors.exists(_.message.startsWith(s"error.$id.minutes")) || form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name = s"$id.minute",
+            name = messages("time.fields.minute"),
             label = Some(messages("time.fields.minute")),
             value = form(s"$id.minute").value,
             attributes = attributesMinutes
@@ -65,7 +65,7 @@
         InputItem(
             id = s"$id.halfday",
             classes = s"govuk-input--width-2${if(form.errors.exists(_.message.startsWith(s"error.$id.all")) || form.errors.exists(_.message.startsWith(s"error.$id.halfday")) || form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name = s"$id.halfday",
+            name = messages("time.fields.am-pm"),
             label = Some(messages("time.fields.am-pm")),
             value = form(s"$id.halfday").value,
             attributes = attributesPeriod
