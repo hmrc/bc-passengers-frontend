@@ -28,7 +28,7 @@
     fieldset: components.fieldset
 )
 
-@(form: Form[IdentificationNumberDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[IdentificationNumberDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.what_is_your_passport_number")), backLink = backLink) {
 

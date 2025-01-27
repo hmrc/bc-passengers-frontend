@@ -45,7 +45,7 @@ class ZeroDeclarationController @Inject() (
 
   def loadDeclarationPage(): Action[AnyContent] = zeroDeclarationAction { implicit context =>
     val chargeReference = context.getJourneyData.chargeReference.getOrElse("")
-    declarationService.updateDeclaration(chargeReference) flatMap {
+    declarationService.updateDeclaration(chargeReference).flatMap {
       case DeclarationServiceFailureResponse =>
         Future.successful(InternalServerError(errorTemplate()))
       case DeclarationServiceSuccessResponse =>

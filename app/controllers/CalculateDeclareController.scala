@@ -81,7 +81,7 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
-    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean = {
+    def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
         "greatBritain"
@@ -154,7 +154,7 @@ class CalculateDeclareController @Inject() (
       whatIsYourNameDto => {
         val preUserInformation = PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto)
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, Option(preUserInformation)) flatMap {
+        preUserInformationService.storePreUserInformation(context.getJourneyData, Option(preUserInformation)).flatMap {
           _ =>
             Future.successful(Redirect(routes.CalculateDeclareController.typeOfIdentification))
         }
@@ -203,7 +203,7 @@ class CalculateDeclareController @Inject() (
           _.copy(identification = Some(IdentificationForm(identificationTypeDto.identificationType)))
         )
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation) flatMap {
+        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation).flatMap {
           _ =>
             Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
         }
@@ -287,7 +287,7 @@ class CalculateDeclareController @Inject() (
           preUserInfo.copy(identification = Option(IdentificationForm(idType, Option(identificationDto.number))))
         )
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation) flatMap {
+        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation).flatMap {
           _ =>
             Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourEmail))
         }
@@ -333,7 +333,7 @@ class CalculateDeclareController @Inject() (
         val updatedPreUserInformation =
           context.getJourneyData.preUserInformation.map(_.copy(emailAddress = Option(emailDto.email)))
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation) flatMap {
+        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation).flatMap {
           _ =>
             Future.successful(Redirect(routes.CalculateDeclareController.whatAreYourJourneyDetails))
         }
@@ -394,7 +394,7 @@ class CalculateDeclareController @Inject() (
       journeyDetailsDto => {
         val correlationId = UUID.randomUUID.toString
 
-        preUserInformationService.storeCompleteUserInformation(context.getJourneyData, journeyDetailsDto) flatMap {
+        preUserInformationService.storeCompleteUserInformation(context.getJourneyData, journeyDetailsDto).flatMap {
           journeyData =>
             val userInformation = getBasicUserInfo(journeyData.preUserInformation)
 
@@ -407,7 +407,7 @@ class CalculateDeclareController @Inject() (
                 receiptDateTime,
                 correlationId
               )
-              declarationResult flatMap {
+              declarationResult.flatMap {
                 case DeclarationServiceFailureResponse     =>
                   Future.successful(InternalServerError(errorTemplate()))
                 case DeclarationServiceSuccessResponse(cr) =>
@@ -416,21 +416,24 @@ class CalculateDeclareController @Inject() (
                       .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
                   ) {
                     declarationService
-                      .storeChargeReference(context.getJourneyData, userInformation, cr.value) flatMap { _ =>
-                      Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
-                    }
+                      .storeChargeReference(context.getJourneyData, userInformation, cr.value)
+                      .flatMap { _ =>
+                        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+                      }
                   } else {
-                    payApiService.requestPaymentUrl(
-                      cr,
-                      userInformation,
-                      calculatorResponse,
-                      (allTax * 100).toInt,
-                      isAmendment = false,
-                      None
-                    ) flatMap {
-                      case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
-                      case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
-                    }
+                    payApiService
+                      .requestPaymentUrl(
+                        cr,
+                        userInformation,
+                        calculatorResponse,
+                        (allTax * 100).toInt,
+                        isAmendment = false,
+                        None
+                      )
+                      .flatMap {
+                        case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
+                        case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
+                      }
                   }
               }
             }
@@ -452,25 +455,27 @@ class CalculateDeclareController @Inject() (
       } else {
         context.getJourneyData.declarationResponse.get.calculation.allTax
       }
-      declarationService.submitAmendment(
-        userInformation,
-        calculatorResponse,
-        context.getJourneyData,
-        receiptDateTime,
-        correlationId
-      ) flatMap {
-        case DeclarationServiceFailureResponse     =>
-          Future.successful(InternalServerError(errorTemplate()))
-        case DeclarationServiceSuccessResponse(cr) =>
-          handleAmendResult(
-            cr,
-            calculatorResponse,
-            userInformation,
-            context.getJourneyData,
-            amountPaidPreviously.toDouble,
-            amendState
-          )
-      }
+      declarationService
+        .submitAmendment(
+          userInformation,
+          calculatorResponse,
+          context.getJourneyData,
+          receiptDateTime,
+          correlationId
+        )
+        .flatMap {
+          case DeclarationServiceFailureResponse     =>
+            Future.successful(InternalServerError(errorTemplate()))
+          case DeclarationServiceSuccessResponse(cr) =>
+            handleAmendResult(
+              cr,
+              calculatorResponse,
+              userInformation,
+              context.getJourneyData,
+              amountPaidPreviously.toDouble,
+              amendState
+            )
+        }
     }
   }
 
@@ -481,13 +486,13 @@ class CalculateDeclareController @Inject() (
     context: JourneyData,
     amountPaidPreviously: BigDecimal,
     amendState: String
-  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  )(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] = {
     val deltaAllTax = BigDecimal(context.deltaCalculation.get.allTax)
     if (
       deltaAllTax == 0 && context.euCountryCheck.contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
     ) {
-      declarationService.storeChargeReference(context, userInformation, cr.value) flatMap { _ =>
-        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage))
+      declarationService.storeChargeReference(context, userInformation, cr.value).flatMap { _ =>
+        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
       }
     } else {
       payApiService.requestPaymentUrl(
@@ -520,7 +525,7 @@ class CalculateDeclareController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(irish_border(formWithErrors, backLinkModel.backLink))),
         irishBorderDto =>
-          travelDetailsService.storeIrishBorder(context.journeyData)(irishBorderDto.irishBorder) flatMap { _ =>
+          travelDetailsService.storeIrishBorder(context.journeyData)(irishBorderDto.irishBorder).flatMap { _ =>
             val updatedJourneyData = context.getJourneyData.copy(irishBorder = Some(irishBorderDto.irishBorder))
 
             doCalculateAction(updatedJourneyData)
@@ -537,7 +542,7 @@ class CalculateDeclareController @Inject() (
   }
 
   private def doCalculateAction(journeyData: JourneyData)(implicit context: LocalContext): Future[Result] =
-    calculatorService.calculate(journeyData) flatMap {
+    calculatorService.calculate(journeyData).flatMap {
       case CalculatorServiceSuccessResponse(calculatorResponse) =>
         val oldCalculation: Option[Calculation] = journeyData.declarationResponse.map(_.calculation)
         val currentCalculation: Calculation     = calculatorResponse.calculation

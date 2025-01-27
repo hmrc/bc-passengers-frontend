@@ -91,9 +91,9 @@ class SelectProductControllerSpec extends BaseSpec {
 
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
 
-      when(injected[SelectProductService].addSelectedProductsAsAliases(any(), any())(any())) thenReturn {
+      when(injected[SelectProductService].addSelectedProductsAsAliases(any(), any())(any())).thenReturn(
         Future.successful(addSelectedProductsAsAliasesResult())
-      }
+      )
 
       when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())).thenReturn(
         Future.successful(
@@ -401,12 +401,10 @@ class SelectProductControllerSpec extends BaseSpec {
 
         import play.api.test.Helpers.route
 
-        when(injected[Cache].fetch(any())) thenReturn {
-          Future.successful(Some(journeyData.copy(selectedAliases = selectedProducts)))
-        }
-        when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn {
-          Future.successful(JourneyData())
-        }
+        when(injected[Cache].fetch(any()))
+          .thenReturn(Future.successful(Some(journeyData.copy(selectedAliases = selectedProducts))))
+        when(injected[SelectProductService].removeSelectedAlias(any())(any()))
+          .thenReturn(Future.successful(JourneyData()))
 
         when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
@@ -468,12 +466,12 @@ class SelectProductControllerSpec extends BaseSpec {
       lazy val response: Future[Result] = {
         import play.api.test.Helpers.route
 
-        when(injected[Cache].fetch(any())) thenReturn {
+        when(injected[Cache].fetch(any())).thenReturn(
           Future.successful(Some(journeyData.copy(selectedAliases = selectedProducts)))
-        }
-        when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn {
+        )
+        when(injected[SelectProductService].removeSelectedAlias(any())(any())).thenReturn(
           Future.successful(JourneyData())
-        }
+        )
         when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get

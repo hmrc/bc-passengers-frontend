@@ -3,17 +3,12 @@ import uk.gov.hmrc.DefaultBuildSettings.itSettings
 val appName = "bc-passengers-frontend"
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "3.5.1"
-ThisBuild / excludeDependencies ++= Seq(
-  // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
-  // Specifically affects play-json-extensions dependency
-  ExclusionRule(organization = "com.typesafe.play")
-)
+ThisBuild / scalaVersion := "3.5.2"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-  .settings(CodeCoverageSettings.settings)
+  .settings(CodeCoverageSettings())
   .settings(
     libraryDependencies ++= AppDependencies(),
     pipelineStages := Seq(digest),

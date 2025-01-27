@@ -291,7 +291,7 @@ object WhatIsYourNameDto extends Validators {
       "lastName"  -> text
         .verifying(nonEmptyMaxLength(35, "last_name"))
         .verifying(validateFieldsRegex("last_name.valid", validInputText))
-    )(WhatIsYourNameDto.apply)(WhatIsYourNameDto.unapply)
+    )(WhatIsYourNameDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 }
 
@@ -301,7 +301,7 @@ object IdentificationTypeDto extends Validators {
     mapping(
       "identificationType" -> text
         .verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined)
-    )(IdentificationTypeDto.apply)(IdentificationTypeDto.unapply)
+    )(IdentificationTypeDto.apply)(o => Some(o.identificationType))
   )
 }
 
@@ -311,7 +311,7 @@ object IdentificationNumberDto extends Validators {
     mapping(
       "identificationNumber" -> text
         .verifying(verifyIdentificationNumberConstraint(40, identificationPattern, telephoneNumberPattern, idType))
-    )(IdentificationNumberDto.apply)(IdentificationNumberDto.unapply)
+    )(IdentificationNumberDto.apply)(o => Some(o.number))
   )
 }
 
@@ -333,7 +333,7 @@ object EmailAddressDto extends Validators {
     mapping(
       "email"        -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "email")),
       "confirmEmail" -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "confirm_email"))
-    )(EmailAddressDto.apply)(EmailAddressDto.unapply).verifying(emailAddressMatchingConstraint)
+    )(EmailAddressDto.apply)(o => Some(Tuple.fromProductTyped(o))).verifying(emailAddressMatchingConstraint)
   )
 }
 

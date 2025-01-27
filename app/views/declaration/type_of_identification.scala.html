@@ -29,7 +29,7 @@
     fieldset: components.fieldset
 )
 
-@(form: Form[IdentificationTypeDto], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[IdentificationTypeDto], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.which_identification_number")), backLink = backLink) {
 

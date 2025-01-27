@@ -28,7 +28,7 @@
     p: components.p,
 )
 
-@(form: Form[EmailAddressDto], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[EmailAddressDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.what_is_your_email")), customBackLink = false) {
 

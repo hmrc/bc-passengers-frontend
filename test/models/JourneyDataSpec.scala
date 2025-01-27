@@ -228,16 +228,26 @@ class JourneyDataSpec extends BaseSpec {
     }
   }
 
-  val userInformation: UserInformation = UserInformation(
-    firstName = "firstName",
-    lastName = "lastName",
-    identificationType = "identificationType",
-    identificationNumber = "identificationNumber",
-    emailAddress = "emailAddress",
-    selectPlaceOfArrival = "LHR",
-    enterPlaceOfArrival = "enterPlaceOfArrival",
-    dateOfArrival = parseLocalDate("2018-11-12"),
-    timeOfArrival = parseLocalTime("12:20 pm")
+  val testUserInfo: PreUserInformation = PreUserInformation(
+    nameForm = WhatIsYourNameForm(
+      firstName = "firstName",
+      lastName = "lastName"
+    ),
+    identification = Some(
+      IdentificationForm(
+        identificationType = "identificationType",
+        identificationNumber = Some("identificationNumber")
+      )
+    ),
+    emailAddress = Some("emailAddress"),
+    arrivalForm = Some(
+      ArrivalForm(
+        selectPlaceOfArrival = "LHR",
+        enterPlaceOfArrival = "enterPlaceOfArrival",
+        dateOfArrival = parseLocalDate("2018-11-12"),
+        timeOfArrival = parseLocalTime("12:20 pm")
+      )
+    )
   )
 
   val declarationResponse: DeclarationResponse = DeclarationResponse(
@@ -274,35 +284,41 @@ class JourneyDataSpec extends BaseSpec {
     referenceNumber = "referenceNumber"
   )
 
-  "UserInformation" should {
+  "PreUserInformation" should {
     "serialize to JSON" when {
       "all fields are valid" in {
-        Json.toJson(userInformation) shouldBe Json.obj(
-          "firstName"            -> "firstName",
-          "lastName"             -> "lastName",
-          "identificationType"   -> "identificationType",
-          "identificationNumber" -> "identificationNumber",
-          "emailAddress"         -> "emailAddress",
-          "selectPlaceOfArrival" -> "LHR",
-          "enterPlaceOfArrival"  -> "enterPlaceOfArrival",
-          "dateOfArrival"        -> parseLocalDate("2018-11-12"),
-          "timeOfArrival"        -> parseLocalTime("12:20 pm")
+        Json.toJson(testUserInfo) shouldBe Json.obj(
+          "nameForm"       -> Json.obj(
+            "firstName" -> "firstName",
+            "lastName"  -> "lastName"
+          ),
+          "identification" -> Json.obj(
+            "identificationType"   -> "identificationType",
+            "identificationNumber" -> "identificationNumber"
+          ),
+          "emailAddress"   -> "emailAddress",
+          "arrivalForm"    -> Json.obj(
+            "selectPlaceOfArrival" -> "LHR",
+            "enterPlaceOfArrival"  -> "enterPlaceOfArrival",
+            "dateOfArrival"        -> parseLocalDate("2018-11-12"),
+            "timeOfArrival"        -> parseLocalTime("12:20 pm")
+          )
         )
       }
 
       "an optional field is blank" in {
-        val userInformationWithNoPlaceOfArrival: UserInformation = userInformation.copy(enterPlaceOfArrival = "")
+        val userInformationWithNoPlaceOfArrival: PreUserInformation = testUserInfo.copy(arrivalForm = None)
 
         Json.toJson(userInformationWithNoPlaceOfArrival) shouldBe Json.obj(
-          "firstName"            -> "firstName",
-          "lastName"             -> "lastName",
-          "identificationType"   -> "identificationType",
-          "identificationNumber" -> "identificationNumber",
-          "emailAddress"         -> "emailAddress",
-          "selectPlaceOfArrival" -> "LHR",
-          "enterPlaceOfArrival"  -> "",
-          "dateOfArrival"        -> parseLocalDate("2018-11-12"),
-          "timeOfArrival"        -> parseLocalTime("12:20 pm")
+          "nameForm"       -> Json.obj(
+            "firstName" -> "firstName",
+            "lastName"  -> "lastName"
+          ),
+          "identification" -> Json.obj(
+            "identificationType"   -> "identificationType",
+            "identificationNumber" -> "identificationNumber"
+          ),
+          "emailAddress"   -> "emailAddress"
         )
       }
     }
@@ -310,17 +326,24 @@ class JourneyDataSpec extends BaseSpec {
     "deserialize from JSON" when {
       "all fields are valid" in {
         val json = Json.obj(
-          "firstName"            -> "firstName",
-          "lastName"             -> "lastName",
-          "identificationType"   -> "identificationType",
-          "identificationNumber" -> "identificationNumber",
-          "emailAddress"         -> "emailAddress",
-          "selectPlaceOfArrival" -> "LHR",
-          "enterPlaceOfArrival"  -> "enterPlaceOfArrival",
-          "dateOfArrival"        -> parseLocalDate("2018-11-12"),
-          "timeOfArrival"        -> parseLocalTime("12:20 pm")
+          "nameForm"       -> Json.obj(
+            "firstName" -> "firstName",
+            "lastName"  -> "lastName"
+          ),
+          "identification" -> Json.obj(
+            "identificationType"   -> "identificationType",
+            "identificationNumber" -> "identificationNumber"
+          ),
+          "emailAddress"   -> "emailAddress",
+          "arrivalForm"    -> Json.obj(
+            "selectPlaceOfArrival" -> "LHR",
+            "enterPlaceOfArrival"  -> "enterPlaceOfArrival",
+            "dateOfArrival"        -> parseLocalDate("2018-11-12"),
+            "timeOfArrival"        -> parseLocalTime("12:20 pm")
+          )
         )
-        json.validate[UserInformation] shouldBe JsSuccess(userInformation)
+
+        json.validate[PreUserInformation] shouldBe JsSuccess(testUserInfo)
       }
 
       "an empty JSON object" in {
@@ -520,7 +543,7 @@ class JourneyDataSpec extends BaseSpec {
         )
       ),
       workingInstance = Some(PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))),
-      userInformation = Some(userInformation),
+      preUserInformation = Some(testUserInfo),
       calculatorResponse = Some(calculatorResponse),
       chargeReference = Some("chargeReference"),
       defaultCountry = Some("FR"),
@@ -571,7 +594,7 @@ class JourneyDataSpec extends BaseSpec {
             )
           ),
           "workingInstance"            -> Some(PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))),
-          "userInformation"            -> Some(userInformation),
+          "preUserInformation"         -> Some(testUserInfo),
           "calculatorResponse"         -> Some(calculatorResponse),
           "chargeReference"            -> Some("chargeReference"),
           "defaultCountry"             -> Some("FR"),
@@ -683,7 +706,7 @@ class JourneyDataSpec extends BaseSpec {
             )
           ),
           "workingInstance"            -> Some(PurchasedProductInstance(iid = "iid", path = ProductPath("alcohol"))),
-          "userInformation"            -> Some(userInformation),
+          "preUserInformation"         -> Some(testUserInfo),
           "calculatorResponse"         -> Some(calculatorResponse),
           "chargeReference"            -> Some("chargeReference"),
           "defaultCountry"             -> Some("FR"),
