@@ -24,11 +24,7 @@
     legendClasses: String = "govuk-fieldset__legend--xl",
     id: String = "time",
     hintText: Option[String] = None,
-    legendAsPageHeading: Boolean = true,
-    attributesHour: Map[String, String] = Map.empty,
-    attributesMinutes: Map[String, String] = Map.empty,
-    attributesPeriod: Map[String, String] = Map.empty,
-    showSelectPeriod: Boolean = true)(implicit messages: Messages)
+    legendAsPageHeading: Boolean = true)(implicit messages: Messages)
 
 @govukTimeInput(TimeInput(
     fieldset = Some(Fieldset(
@@ -49,34 +45,19 @@
                             form.errors.exists(_.message.startsWith(s"error.$id.hour")) ||
                             form.errors.exists(_.key.contains(s"hour")) ||
                             form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name =  messages("time.fields.hour"),
+            name =  s"$id.hour",
             label = Some(messages("time.fields.hour")),
-            value = form(s"$id.hour").value,
-            attributes = attributesHour
+            value = form(s"$id.hour").value
         ),
         InputItem(
             id = s"$id.minute",
             classes = s"govuk-input--width-2${if(form.errors.exists(_.message.startsWith(s"error.$id.all")) || form.errors.exists(_.message.startsWith(s"error.$id.minutes")) || form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name = messages("time.fields.minute"),
+            name = s"$id.minute",
             label = Some(messages("time.fields.minute")),
-            value = form(s"$id.minute").value,
-            attributes = attributesMinutes
-        ),
-        InputItem(
-            id = s"$id.halfday",
-            classes = s"govuk-input--width-2${if(form.errors.exists(_.message.startsWith(s"error.$id.all")) || form.errors.exists(_.message.startsWith(s"error.$id.halfday")) || form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name = messages("time.fields.am-pm"),
-            label = Some(messages("time.fields.am-pm")),
-            value = form(s"$id.halfday").value,
-            attributes = attributesPeriod
+            value = form(s"$id.minute").value
         )
-    ),
-    periodSelectItems = Seq(
-        SelectItem(value = None, text = "", attributes = Map("label" -> " ")),
-        SelectItem(value = Some("am"), text = messages("time.period.am"), selected = form(s"$id.halfday").value.contains("am")),
-        SelectItem(value = Some("pm"), text = messages("time.period.pm"), selected = form(s"$id.halfday").value.contains("pm"))
     ),
     hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
     errorMessage = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
-    showSelectPeriod = showSelectPeriod
+    showSelectPeriod = false
 ))

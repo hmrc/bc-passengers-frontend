@@ -17,28 +17,28 @@
 package views.declaration
 
 import models.{PortsOfArrival, YourJourneyDetailsDto}
-import java.time.LocalDateTime
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
 import views.html.declaration.journey_details
 
+import java.time.LocalDateTime
+
 class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
-  private val declarationTime: LocalDateTime = LocalDateTime.parse("2023-05-06T21:15:00.000")
+  private val declarationTime: LocalDateTime = LocalDateTime.now().withHour(21).withMinute(15).withSecond(0).withNano(0)
 
   private val emptyForm: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> ""
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "",
+        "dateTimeOfArrival.timeOfArrival.minute" -> ""
       )
     )
 
@@ -46,14 +46,13 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     .form(declarationTime)
     .bind(
       Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "DD",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "AA",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "SS",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "DD",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "AA",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "SS",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
     )
 
@@ -61,14 +60,13 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     .form(declarationTime)
     .bind(
       Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "06",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "05",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2023",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "SS",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "ZZ",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "PP"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "06",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "05",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2023",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "SS",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "ZZ"
       )
     )
 
@@ -76,32 +74,32 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     .form(declarationTime)
     .bind(
       Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "06",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "05",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2023123",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "06",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "05",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2023123",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
     )
 
-  private val amountOfDaysInFuture                = 5
-  private val dateInFutureFiveDays: LocalDateTime = LocalDateTime.now().plusDays(amountOfDaysInFuture)
+  private val amountOfDaysInFuture        = 6
+  private val dateInFuture: LocalDateTime =
+    LocalDateTime.now().plusDays(amountOfDaysInFuture).withHour(9).withMinute(15)
+  private val today: LocalDateTime        = LocalDateTime.now().withHour(23).withMinute(1).withSecond(1)
 
   private val formWithInvalidDateInFuture: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> dateInFutureFiveDays.getDayOfMonth.toString,
-        "dateTimeOfArrival.dateOfArrival.month"   -> dateInFutureFiveDays.getMonthValue.toString,
-        "dateTimeOfArrival.dateOfArrival.year"    -> dateInFutureFiveDays.getYear.toString,
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> dateInFuture.getDayOfMonth.toString,
+        "dateTimeOfArrival.dateOfArrival.month"  -> dateInFuture.getMonthValue.toString,
+        "dateTimeOfArrival.dateOfArrival.year"   -> dateInFuture.getYear.toString,
+        "dateTimeOfArrival.timeOfArrival.hour"   -> dateInFuture.getHour.toString,
+        "dateTimeOfArrival.timeOfArrival.minute" -> dateInFuture.getMinute.toString
       )
     )
 
@@ -109,14 +107,13 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     .form(declarationTime)
     .bind(
       Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "06",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "05",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2023",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> today.getDayOfMonth.toString,
+        "dateTimeOfArrival.dateOfArrival.month"  -> today.getMonthValue.toString,
+        "dateTimeOfArrival.dateOfArrival.year"   -> today.getYear.toString,
+        "dateTimeOfArrival.timeOfArrival.hour"   -> today.getHour.toString,
+        "dateTimeOfArrival.timeOfArrival.minute" -> today.getMinute.toString
       )
     )
 

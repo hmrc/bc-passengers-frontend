@@ -15,6 +15,7 @@
  *@
 
 @import views.viewmodels.TimeInput
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 @this(govukErrorMessage: GovukErrorMessage, govukHint: GovukHint, govukFieldset: GovukFieldset, govukInput: GovukInput, govukSelect: GovukSelect)
 
@@ -105,7 +106,7 @@
                     label =
                         Label(
                             classes = "govuk-date-input__label",
-                            content = Text(item.name.nunjucksCapitalize)
+                            content = item.label.mapNonEmpty(Text).getOrElse(Text(item.name.nunjucksCapitalize))
                     ),
                 classes = s"govuk-date-input__input ${item.classes}",
                 autocomplete = item.autocomplete,
@@ -123,7 +124,7 @@
                     label =
                         Label(
                             classes = "govuk-date-input__label",
-                            content = Text(timePeriodItem.name.nunjucksCapitalize)
+                            content = timePeriodItem.label.mapNonEmpty(Text).getOrElse(Text(timePeriodItem.name.nunjucksCapitalize))
                     ),
                     classes = s"govuk-date-input__input ${timePeriodItem.classes}",
                     attributes = timePeriodItem.attributes

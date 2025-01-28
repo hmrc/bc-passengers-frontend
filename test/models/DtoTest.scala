@@ -265,14 +265,13 @@ class DtoTest extends BaseSpec {
 
     "allow the placeOfArrival.selectPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -284,14 +283,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the placeOfArrival.selectPlaceOfArrival is over 40 characters" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -305,14 +303,13 @@ class DtoTest extends BaseSpec {
 
     "allow the placeOfArrival.enterPlaceOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "London Airport",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "London Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -324,14 +321,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival is over 40 characters" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -345,14 +341,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival contains special characters" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "Heathrow&$",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Heathrow&$",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -366,14 +361,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the placeOfArrival.enterPlaceOfArrival and placeOfArrival.selectPlaceOfArrival is empty" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -387,14 +381,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the dateOfArrival is not a valid date" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "40",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "23",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "40",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "23",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -408,14 +401,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the dateOfArrival has more than 2 characters in day and month field" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "9876543210",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "9876543210",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "9876543210",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "9876543210",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -429,14 +421,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the dateOfArrival is using special characters in any field" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "s@",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "s@",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -450,14 +441,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if all the dateOfArrival contains an out of range date value" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "50",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "04",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "50",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "04",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -469,14 +459,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if all the dateOfArrival fields are blank" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -488,14 +477,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if any but not all of the dateOfArrival fields are blank" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "1",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "1",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -507,14 +495,13 @@ class DtoTest extends BaseSpec {
 
     "return an error if the year field is not 4 chars long" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "18",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "18",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -526,14 +513,13 @@ class DtoTest extends BaseSpec {
 
     "check for whole numbers before it checks for year length" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "x",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "18",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "x",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "18",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -545,14 +531,13 @@ class DtoTest extends BaseSpec {
 
     "allow the dateOfArrival if it is a valid date" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -564,14 +549,13 @@ class DtoTest extends BaseSpec {
 
     "allow the timeOfArrival to be any string that is 40 characters or under" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -583,14 +567,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the timeOfArrival is over 40 characters" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "Heathrowbutnotactuallyheathrowbecauseitsnowoverfourtycharacters",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -602,56 +585,15 @@ class DtoTest extends BaseSpec {
       form.error("placeOfArrival.selectPlaceOfArrival").get.message shouldBe "error.max-length.place_of_arrival"
     }
 
-    "allow the dateTimeOfArrival.timeOfArrival.halfday to be either 'am' or 'pm'" in {
-      val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors shouldBe false
-    }
-
-    "return a validation error if the dateTimeOfArrival.timeOfArrival.halfday is not 'am' or 'pm'" in {
-      val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "15",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "somethingelse"
-      )
-
-      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
-
-      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
-
-      form.hasErrors                                            shouldBe true
-      form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_real_time"
-    }
-
     "return a validation error if the dateTimeOfArrival.timeOfArrival has more than 2 characters" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "9876543210",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "9876543210",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "9876543210",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "9876543210"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -665,14 +607,13 @@ class DtoTest extends BaseSpec {
 
     "allow the timeOfArrival to be after the declaration time" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "30",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "30"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
@@ -684,14 +625,13 @@ class DtoTest extends BaseSpec {
 
     "allow the timeOfArrival to be after the declaration time (3 hours leeway)" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "06",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "21",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "06",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "21"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
@@ -703,14 +643,13 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the date/time of arrival is more than 5 days after the declaration date" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "28",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "21",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "28",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "21"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
@@ -725,14 +664,13 @@ class DtoTest extends BaseSpec {
 
     "Don't return any validation errors if the date/time of arrival is more than 5 days after the declaration date" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "28",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "19",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "28",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "19"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T09:20:00.000")
@@ -745,14 +683,13 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival is not specified" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> ""
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "",
+        "dateTimeOfArrival.timeOfArrival.minute" -> ""
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -766,14 +703,13 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival minute is a non-digit" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "28",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "09",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "m",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "28",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "m"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
@@ -787,14 +723,13 @@ class DtoTest extends BaseSpec {
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival hour and minute are incorrectly out of range" in {
       val formData = Map(
-        "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-        "placeOfArrival.enterPlaceOfArrival"      -> "",
-        "dateTimeOfArrival.dateOfArrival.day"     -> "28",
-        "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-        "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-        "dateTimeOfArrival.timeOfArrival.hour"    -> "13",
-        "dateTimeOfArrival.timeOfArrival.minute"  -> "60",
-        "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "28",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "13",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "60"
       )
 
       val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")

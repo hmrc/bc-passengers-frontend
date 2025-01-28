@@ -388,14 +388,14 @@ object YourJourneyDetailsDto extends Validators {
       )
 
   private val mandatoryTime: Mapping[String] =
-    tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
+    tuple("hour" -> optional(text), "minute" -> optional(text))
       .verifying(
         "error.enter_a_time",
-        maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty && maybeTimeString._3.nonEmpty
+        maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty
       )
-      .transform[(String, String, String)](
-        maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get, maybeTimeString._3.get),
-        timeString => (Some(timeString._1), Some(timeString._2), Some(timeString._3))
+      .transform[(String, String)](
+        maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get),
+        timeString => (Some(timeString._1), Some(timeString._2))
       )
       .verifying(
         "error.enter_a_real_time",
@@ -406,22 +406,17 @@ object YourJourneyDetailsDto extends Validators {
         timeString =>
           timeString._1.nonEmpty && timeString._1.length <= 2 && timeString._2.nonEmpty && timeString._2.length <= 2
       )
-      .transform[(Int, Int, String)](
-        timeString => (timeString._1.toInt, timeString._2.toInt, timeString._3),
-        time => (time._1.toString, time._2.toString, time._3)
+      .transform[(Int, Int)](
+        timeString => (timeString._1.toInt, timeString._2.toInt),
+        time => (time._1.toString, time._2.toString)
       )
-      .verifying("error.enter_a_real_time", time => time._1 >= 1 && time._1 <= 12 && time._2 >= 0 && time._2 <= 59)
-      .verifying("error.enter_a_real_time", time => time._3.toLowerCase == "am" || time._3.toLowerCase == "pm")
+      .verifying("error.enter_a_real_time", time => time._1 >= 0 && time._1 <= 23 && time._2 >= 0 && time._2 <= 59)
       .transform[String](
-        time => s"${time._1}:${time._2} ${time._3}",
+        time => s"${time._1}:${time._2}",
         localTime =>
           localTime.split(":") match {
-            case Array(hours, minutesAndAmPm) =>
-              val x = minutesAndAmPm.split(" ") match {
-                case Array(minutes, ampm) =>
-                  (minutes, ampm)
-              }
-              (hours.toInt, x._1.toInt, x._2)
+            case Array(hours, minutes) =>
+              (hours.toInt, minutes.toInt)
           }
       )
 

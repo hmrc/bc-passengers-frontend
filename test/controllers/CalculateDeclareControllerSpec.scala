@@ -1560,14 +1560,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "123456789012345678901234567890123456123456",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "placeOfArrival.selectPlaceOfArrival"    -> "",
+            "placeOfArrival.enterPlaceOfArrival"     -> "123456789012345678901234567890123456123456",
+            "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+            "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+            "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour"   -> "12",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00"
           )
       ).get
 
@@ -1695,14 +1694,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
-            "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "abc",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+            "placeOfArrival.enterPlaceOfArrival"     -> "",
+            "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+            "dateTimeOfArrival.dateOfArrival.month"  -> "abc",
+            "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour"   -> "12",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00"
           )
       ).get
 
@@ -1733,14 +1731,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
-            "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "2",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+            "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+            "placeOfArrival.enterPlaceOfArrival"     -> "",
+            "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+            "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+            "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour"   -> "2",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00"
           )
       ).get
 
@@ -1781,14 +1778,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "04",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "am"
+            "placeOfArrival.selectPlaceOfArrival"    -> "",
+            "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+            "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+            "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+            "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour"   -> "04",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00"
           )
       ).get
 
@@ -1822,14 +1818,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
-            "placeOfArrival.selectPlaceOfArrival"     -> "LHR",
-            "placeOfArrival.enterPlaceOfArrival"      -> "",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+            "placeOfArrival.enterPlaceOfArrival"     -> "",
+            "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+            "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+            "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour"   -> "12",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00"
           )
       ).get
 
@@ -1867,14 +1862,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
             .withFormUrlEncodedBody(
-              "placeOfArrival.selectPlaceOfArrival"     -> "",
-              "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-              "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-              "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-              "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-              "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-              "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-              "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+              "placeOfArrival.selectPlaceOfArrival"    -> "",
+              "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+              "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+              "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+              "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+              "dateTimeOfArrival.timeOfArrival.hour"   -> "12",
+              "dateTimeOfArrival.timeOfArrival.minute" -> "00"
             )
         ).get
 
@@ -1914,14 +1908,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
             .withFormUrlEncodedBody(
-              "placeOfArrival.selectPlaceOfArrival"     -> "",
-              "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-              "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-              "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-              "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-              "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-              "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-              "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+              "placeOfArrival.selectPlaceOfArrival"    -> "",
+              "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+              "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+              "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+              "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+              "dateTimeOfArrival.timeOfArrival.hour"   -> "12",
+              "dateTimeOfArrival.timeOfArrival.minute" -> "00"
             )
         ).get
 
@@ -2249,14 +2242,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
           .withFormUrlEncodedBody(
-            "placeOfArrival.selectPlaceOfArrival"     -> "",
-            "placeOfArrival.enterPlaceOfArrival"      -> "Newcastle Airport",
-            "dateTimeOfArrival.dateOfArrival.day"     -> "23",
-            "dateTimeOfArrival.dateOfArrival.month"   -> "11",
-            "dateTimeOfArrival.dateOfArrival.year"    -> "2018",
-            "dateTimeOfArrival.timeOfArrival.hour"    -> "12",
-            "dateTimeOfArrival.timeOfArrival.minute"  -> "00",
-            "dateTimeOfArrival.timeOfArrival.halfday" -> "pm"
+            "placeOfArrival.selectPlaceOfArrival"    -> "",
+            "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+            "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+            "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+            "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+            "dateTimeOfArrival.timeOfArrival.hour"   -> "12",
+            "dateTimeOfArrival.timeOfArrival.minute" -> "00"
           )
       ).get
 
