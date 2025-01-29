@@ -15,6 +15,7 @@
  *@
 
 @import views.viewmodels.TimeInput
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 @this(govukErrorMessage: GovukErrorMessage, govukHint: GovukHint, govukFieldset: GovukFieldset, govukInput: GovukInput, govukSelect: GovukSelect)
 
@@ -104,31 +105,31 @@
                     value = item.value,
                     label =
                         Label(
-                            classes = "govuk-date-input__label",
-                            content = Text(item.name.nunjucksCapitalize)
-                    ),
-                classes = s"govuk-date-input__input ${item.classes}",
-                autocomplete = item.autocomplete,
-                pattern = Option(item.pattern.getNonEmptyOrElse("[0-9]*")),
-                attributes = item.attributes
+                        classes = "govuk-date-input__label",
+                        content = item.label.mapNonEmpty(Text).getOrElse(Text(item.name.nunjucksCapitalize))
+                        ),
+                    classes = s"govuk-date-input__input ${item.classes}",
+                    autocomplete = item.autocomplete,
+                    pattern = Option(item.pattern.getNonEmptyOrElse("[0-9]*")),
+                    attributes = item.attributes
                 ))
             </div>
-        }
-        @if(showSelectPeriod){
-            <div class="govuk-date-input__item">
-                @govukSelect(Select(
-                    id = timePeriodItem.id.toOption.getNonEmptyOrElse(id + "-" + timePeriodItem.name),
-                    name = namePrefix.foldNonEmpty(timePeriodItem.name)(_ + "-" + timePeriodItem.name),
-                    items = timePeriodSelectItems,
-                    label =
+            }
+            @if(showSelectPeriod){
+                <div class="govuk-date-input__item">
+                    @govukSelect(Select(
+                        id = timePeriodItem.id.toOption.getNonEmptyOrElse(id + "-" + timePeriodItem.name),
+                        name = namePrefix.foldNonEmpty(timePeriodItem.name)(_ + "-" + timePeriodItem.name),
+                        items = timePeriodSelectItems,
+                        label =
                         Label(
-                            classes = "govuk-date-input__label",
-                            content = Text(timePeriodItem.name.nunjucksCapitalize)
-                    ),
-                    classes = s"govuk-date-input__input ${timePeriodItem.classes}",
-                    attributes = timePeriodItem.attributes
-                ))
-            </div>
+                        classes = "govuk-date-input__label",
+                        content = timePeriodItem.label.mapNonEmpty(Text).getOrElse(Text(timePeriodItem.name.nunjucksCapitalize))
+                        ),
+                        classes = s"govuk-date-input__input ${timePeriodItem.classes}",
+                        attributes = timePeriodItem.attributes
+                    ))
+                </div>
         } else {}
     </div>
 }
