@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package util
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.mvc.{CookieHeaderEncoding, RequestHeader, Result, SessionCookieBaker}
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter

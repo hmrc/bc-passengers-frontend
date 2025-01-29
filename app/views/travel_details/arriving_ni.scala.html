@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "heading.arriving-ni")), backLink = backLink) {
 
-    @formHelper(action = routes.ArrivingNIController.postArrivingNIPage) {
+    @formHelper(action = routes.ArrivingNIController.postArrivingNIPage()) {
 
         @errorSummary(form.errors, Some("value-yes"))
 

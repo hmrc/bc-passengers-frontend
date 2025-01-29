@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,9 @@ class PortsOfArrivalService {
     yield c.displayName
 
   def getCodeByDisplayName(displayName: String): Option[String] = for (
-    c <- ports.find(c => c.displayName == displayName)
-  ) yield c.code
+      c <- ports.find(c => c.displayName == displayName)
+    )
+    yield c.code
 
   def isInGB(code: String): Boolean = ports.exists(c => c.code == code && c.isGB)
 

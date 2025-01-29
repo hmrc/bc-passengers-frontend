@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@ import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, TravelDetailsService}
 import uk.gov.hmrc.mongo.MongoComponent
@@ -41,7 +41,7 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 
 class TravelDetailsControllerSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
@@ -56,7 +56,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     reset(injected[Cache])
     when(
       injected[AppConfig].declareGoodsUrl
-    ) thenReturn "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
+    ).thenReturn("https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods")
   }
 
   trait LocalSetup {
@@ -65,27 +65,41 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData()))
 
-    when(injected[Cache].fetch(any())) thenReturn cachedJourneyData
-    when(injected[TravelDetailsService].storeAgeOver17(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[Cache].fetch(any())).thenReturn(cachedJourneyData)
+    when(injected[TravelDetailsService].storeAgeOver17(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
-    when(injected[TravelDetailsService].storeBringingDutyFree(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[TravelDetailsService].storeBringingDutyFree(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
-    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
-    when(injected[TravelDetailsService].storeEuCountryCheck(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[TravelDetailsService].storeEuCountryCheck(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
-    when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[TravelDetailsService].storeIrishBorder(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
-    when(injected[TravelDetailsService].storePrivateCraft(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[TravelDetailsService].storePrivateCraft(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
-    when(injected[TravelDetailsService].storeVatResCheck(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[TravelDetailsService].storeVatResCheck(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
   }
 
@@ -148,7 +162,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "show the back link to previous declaration page when the amendments feature is on" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(true)
 
       val response: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
@@ -164,7 +178,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "show the back link to gov uk declare goods start page page when the amendments feature is off" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(false)
 
       val response: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/where-goods-bought")).get
@@ -969,7 +983,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to where-good-bought, changing session id, keep any session data for bcpaccess when amendments feature is off" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(false)
 
       val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
         enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
@@ -985,7 +999,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to previous-declaration, changing session id, keep any session data for bcpaccess when amendments feature is on" in new LocalSetup {
 
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(true)
 
       val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
         enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk").withSession("bcpaccess" -> "true")
@@ -1004,8 +1018,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
   "calling GET .../keepAlive" should {
     "return a response OK" in new LocalSetup {
-      when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
-        .successful(JsObject.empty)
+      when(injected[Cache].updateUpdatedAtTimestamp(any())).thenReturn(
+        Future
+          .successful(JsObject.empty)
+      )
       val response: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
       status(response) shouldBe OK
@@ -1013,8 +1029,10 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
 
     "return a response INTERNAL_SERVER_ERROR" in new LocalSetup {
-      when(injected[Cache].updateUpdatedAtTimestamp(any())) thenReturn Future
-        .failed(new Exception("failed updating timestamp"))
+      when(injected[Cache].updateUpdatedAtTimestamp(any())).thenReturn(
+        Future
+          .failed(new Exception("failed updating timestamp"))
+      )
       val response: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/keep-alive")).get
       status(response) shouldBe INTERNAL_SERVER_ERROR
@@ -1079,7 +1097,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
       ("duty free", false, "duty-free")
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 
   "Calling POST /check-tax-on-goods-you-bring-into-the-uk/duty-free" should {
@@ -1118,6 +1136,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
       ("duty free allowance question mix", true, "both", "duty-free-mix")
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 }

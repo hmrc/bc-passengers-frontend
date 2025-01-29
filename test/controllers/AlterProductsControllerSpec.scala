@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,14 @@ package controllers
 
 import connectors.Cache
 import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers.{route => rt, _}
+import play.api.test.Helpers.{route => rt, *}
 import repositories.BCPassengersSessionRepository
 import services.PurchasedProductService
 import uk.gov.hmrc.mongo.MongoComponent
@@ -59,8 +59,8 @@ class AlterProductsControllerSpec extends BaseSpec {
 
       when(
         injected[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ) thenReturn Future.successful(JourneyData())
-      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      ).thenReturn(Future.successful(JourneyData()))
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
 
       rt(app, req)
     }

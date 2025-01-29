@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import views.html.purchased_products.dashboard
 
 class DashboardViewSpec extends BaseViewSpec {
 
-  private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (50, 10)
+  private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (BigDecimal(50), 10)
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
 
   private val alcoholProductPath: ProductPath    = ProductPath(path = "alcohol/wine")
@@ -233,6 +233,6 @@ class DashboardViewSpec extends BaseViewSpec {
       ("greater to 50", fillValueForGreaterThanMaxGoods)
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 }

@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
     autoCompleteList: components.autocompleteList
 )
 
-@(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath, backLink: Option[String], customBackLink: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath, backLink: Option[String], customBackLink: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @customTitle = @{ otherItemMode match { case "create" =>  messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods") case "edit" => messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}") case _ => messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods")}}
 

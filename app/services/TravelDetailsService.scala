@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,7 +235,7 @@ class TravelDetailsService @Inject() (
     }
   def storeUKResident(
     journeyData: Option[JourneyData]
-  )(isUKResident: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]]      =
+  )(isUKResident: Boolean)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     journeyData match {
       case Some(journeyData) if !journeyData.isUKResident.contains(isUKResident) =>
         val resetJourneyData = JourneyData(

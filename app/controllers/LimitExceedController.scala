@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.LimitExceedAction
-import models._
+import models.*
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}

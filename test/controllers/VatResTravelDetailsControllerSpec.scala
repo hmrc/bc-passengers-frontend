@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import connectors.Cache
 import models.JourneyData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import services.TravelDetailsService
 import uk.gov.hmrc.mongo.MongoComponent
@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class VatResTravelDetailsControllerSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -55,9 +55,11 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     val controller: TravelDetailsController    = app.injector.instanceOf[TravelDetailsController]
     def cachedJourneyData: Option[JourneyData] = Some(JourneyData())
-    when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
-    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())) thenReturn Future.successful(
-      Some(JourneyData())
+    when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
+    when(injected[TravelDetailsService].storeBringingOverAllowance(any())(any())(any())).thenReturn(
+      Future.successful(
+        Some(JourneyData())
+      )
     )
 
   }
@@ -66,10 +68,14 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../did-you-claim-tax-back when user selects country in EU" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("euOnly"))(any())) thenReturn Future
-        .successful(Some(JourneyData()))
-      when(controller.cache.fetch(any())) thenReturn Future.successful(
-        Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("euOnly")))
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("euOnly"))(any())).thenReturn(
+        Future
+          .successful(Some(JourneyData()))
+      )
+      when(controller.cache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("euOnly")))
+        )
       )
 
       val response: Future[Result] = route(
@@ -86,10 +92,14 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../arrivals-from-outside-the-eu when user says they have only arrived from countries outside EU" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("nonEuOnly"))(any())) thenReturn Future
-        .successful(Some(JourneyData()))
-      when(controller.cache.fetch(any())) thenReturn Future.successful(
-        Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly")))
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("nonEuOnly"))(any())).thenReturn(
+        Future
+          .successful(Some(JourneyData()))
+      )
+      when(controller.cache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("nonEuOnly")))
+        )
       )
 
       val response: Future[Result] = route(
@@ -106,11 +116,16 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
 
     "redirect to .../did-you-claim-tax-back when user says they have arrived from both EU and ROW countries" in new LocalSetup {
 
-      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("both"))(any())) thenReturn Future.successful(
-        Some(JourneyData())
+      when(controller.travelDetailsService.storeEuCountryCheck(any())(meq("both"))(any())).thenReturn(
+        Future
+          .successful(
+            Some(JourneyData())
+          )
       )
-      when(controller.cache.fetch(any())) thenReturn Future.successful(
-        Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("both")))
+      when(controller.cache.fetch(any())).thenReturn(
+        Future.successful(
+          Some(JourneyData(prevDeclaration = Some(false), euCountryCheck = Some("both")))
+        )
       )
 
       val response: Future[Result] = route(
@@ -330,8 +345,10 @@ class VatResTravelDetailsControllerSpec extends BaseSpec {
         )
       )
 
-      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())) thenReturn Future
-        .successful(Some(JourneyData()))
+      when(controller.travelDetailsService.storeBringingDutyFree(any())(meq(false))(any())).thenReturn(
+        Future
+          .successful(Some(JourneyData()))
+      )
 
       val response: Future[Result] = route(
         app,

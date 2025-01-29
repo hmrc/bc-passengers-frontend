@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import controllers.enforce.{UKExcisePaidAction, UKExcisePaidItemAction}
 import forms.{UKExcisePaidForm, UKExcisePaidItemForm}
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class UKExcisePaidController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
-  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[_] = localContext.request
+  implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   val loadUKExcisePaidPage: Action[AnyContent] = uKExcisePaidAction { implicit context =>
     Future.successful {
@@ -139,7 +139,7 @@ class UKExcisePaidController @Inject() (
             }
             cache
               .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
-              .map(_ => Redirect(routes.SelectProductController.nextStep))
+              .map(_ => Redirect(routes.SelectProductController.nextStep()))
           }
         )
   }

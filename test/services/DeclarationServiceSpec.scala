@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
-import models._
+import models.*
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.test.Helpers._
-import uk.gov.hmrc.http._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -37,7 +37,7 @@ import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
-  implicit val messages: MessagesApi = injected[MessagesApi]
+  given messages: MessagesApi = injected[MessagesApi]
 
   private val mockRequestBuilder: RequestBuilder           = mock(classOf[RequestBuilder])
   private val mockHttpClient: HttpClientV2                 = mock(classOf[HttpClientV2])
@@ -66,8 +66,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     val headerCapture: ArgumentCaptor[(String, String)] = ArgumentCaptor.forClass(classOf[(String, String)])
 
     when(mockServicesConfig.baseUrl("bc-passengers-declarations")).thenReturn("http://localhost:9073")
-    when(mockRequestBuilder.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilder)
-    when(mockRequestBuilder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(Future.successful(httpResponse))
+    when(mockRequestBuilder.withBody(any())(using any(), any(), any())).thenReturn(mockRequestBuilder)
+    when(mockRequestBuilder.execute(using any[HttpReads[HttpResponse]], any()))
+      .thenReturn(Future.successful(httpResponse))
     when(mockHttpClient.post(any())(any())).thenReturn(mockRequestBuilder)
   }
 
@@ -436,13 +437,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
       verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
-      bodyCapture.getValue   shouldBe expectedTelephoneValueSendJson
+      urlCapture.getValue                                        shouldBe url"$url"
+      headerCapture.getValue.asInstanceOf[Seq[(String, String)]] shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue                                       shouldBe expectedTelephoneValueSendJson
     }
 
     "return a DeclarationServiceFailureResponse if the backend returns 500" in new Setup with EndpointSetup {
@@ -469,13 +470,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
       verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
-      bodyCapture.getValue   shouldBe expectedSendJson
+      urlCapture.getValue                                        shouldBe url"$url"
+      headerCapture.getValue.asInstanceOf[Seq[(String, String)]] shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue                                       shouldBe expectedSendJson
     }
 
     "return a DeclarationServiceSuccessResponse if the backend returns 202" in new Setup with EndpointSetup {
@@ -503,13 +504,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
       verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
-      bodyCapture.getValue   shouldBe expectedSendJson
+      urlCapture.getValue                                        shouldBe url"$url"
+      headerCapture.getValue.asInstanceOf[Seq[(String, String)]] shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue                                       shouldBe expectedSendJson
     }
   }
 
@@ -733,13 +734,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
       verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
-      bodyCapture.getValue   shouldBe expectedTelephoneValueSendJson
+      urlCapture.getValue                                        shouldBe url"$url"
+      headerCapture.getValue.asInstanceOf[Seq[(String, String)]] shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue                                       shouldBe expectedTelephoneValueSendJson
     }
 
     "return a DeclarationServiceFailureResponse if the backend returns 500" in new Setup with EndpointSetup {
@@ -766,13 +767,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
       verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
-      bodyCapture.getValue   shouldBe expectedJsObj
+      urlCapture.getValue                                        shouldBe url"$url"
+      headerCapture.getValue.asInstanceOf[Seq[(String, String)]] shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue                                       shouldBe expectedJsObj
     }
 
     "return a DeclarationServiceSuccessResponse if the backend returns 202" in new Setup with EndpointSetup {
@@ -800,13 +801,13 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
       verify(mockRequestBuilder, times(1)).setHeader(headerCapture.capture())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
       verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(meq(hc), any())
 
-      urlCapture.getValue    shouldBe url"$url"
-      headerCapture.getValue shouldBe Seq("X-Correlation-ID" -> cid)
-      bodyCapture.getValue   shouldBe expectedJsObj
+      urlCapture.getValue                                        shouldBe url"$url"
+      headerCapture.getValue.asInstanceOf[Seq[(String, String)]] shouldBe Seq("X-Correlation-ID" -> cid)
+      bodyCapture.getValue                                       shouldBe expectedJsObj
     }
   }
 
@@ -2818,8 +2819,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
@@ -2839,8 +2840,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
@@ -2860,8 +2861,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
@@ -2881,8 +2882,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceSuccessResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(PaymentNotification("Successful", "XJPR5768524625"))
@@ -2947,8 +2948,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
@@ -2967,8 +2968,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
@@ -2987,8 +2988,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceFailureResponse
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
@@ -3026,7 +3027,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           None,
           Some(false),
           None,
-          None
+          Some(true)
         )
       )
 
@@ -3049,8 +3050,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceRetrieveSuccessResponse(jd)
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
@@ -3089,7 +3090,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           None,
           Some(false),
           None,
-          None
+          Some(true)
         )
       )
 
@@ -3114,8 +3115,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       r shouldBe DeclarationServiceRetrieveSuccessResponse(jd)
 
       verify(mockHttpClient, times(1)).post(urlCapture.capture())(any())
-      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(any(), any(), any())
-      verify(mockRequestBuilder, times(1)).execute(any(), any())
+      verify(mockRequestBuilder, times(1)).withBody(bodyCapture.capture())(using any(), any(), any())
+      verify(mockRequestBuilder, times(1)).execute(using any(), any())
 
       urlCapture.getValue  shouldBe url"$url"
       bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)

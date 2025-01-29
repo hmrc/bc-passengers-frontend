@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import org.jsoup.Jsoup
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
@@ -31,7 +31,7 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 class PublicControllerSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -41,7 +41,7 @@ class PublicControllerSpec extends BaseSpec {
 
   "Calling /time-out" should {
     "return 200 and start button redirects to where-goods-bought page when amendment feature is off" in {
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn false
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(false)
       val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK
@@ -53,7 +53,7 @@ class PublicControllerSpec extends BaseSpec {
     }
 
     "return 200 and start button redirects to previous-declaration page when amendment feature is on" in {
-      when(injected[AppConfig].isAmendmentsEnabled) thenReturn true
+      when(injected[AppConfig].isAmendmentsEnabled).thenReturn(true)
       val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/time-out")).get
 
       status(result) shouldBe OK

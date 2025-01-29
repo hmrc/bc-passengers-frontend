@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package forms
 
 import models.{ProductPath, TobaccoDto}
 import play.api.data.Form
-import play.api.data.Forms._
-import services._
-import util._
+import play.api.data.Forms.*
+import services.*
+import util.*
 
 import javax.inject.Inject
 import scala.util.Try
@@ -44,7 +44,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def cigarAndCigarilloForm(path: ProductPath): Form[TobaccoDto] = Form(
@@ -85,7 +85,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def cigaretteAndHeatedTobaccoForm(path: ProductPath): Form[TobaccoDto] = Form(
@@ -112,7 +112,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def looseTobaccoWeightForm(path: ProductPath): Form[TobaccoDto] = Form(
@@ -144,7 +144,7 @@ class TobaccoInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(TobaccoDto.apply)(TobaccoDto.unapply)
+    )(TobaccoDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

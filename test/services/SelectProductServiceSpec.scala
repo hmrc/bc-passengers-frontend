@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package services
 
 import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath}
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq, *}
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import util.BaseSpec
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class SelectProductServiceSpec extends BaseSpec {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -48,8 +48,8 @@ class SelectProductServiceSpec extends BaseSpec {
     lazy val selectProductService: SelectProductService = {
       val service = app.injector.instanceOf[SelectProductService]
       val mock    = service.cache
-      when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
-      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(mock.fetch(any())).thenReturn(Future.successful(journeyDataInCache))
+      when(mock.store(any())(any())).thenReturn(Future.successful(JourneyData()))
       service
     }
 

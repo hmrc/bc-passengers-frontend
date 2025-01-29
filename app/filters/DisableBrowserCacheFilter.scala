@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package filters
 
 import org.apache.pekko.stream.Materializer
 import javax.inject.Inject
-import play.api.mvc._
+import play.api.mvc.*
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisableBrowserCacheFilter @Inject() (
-  implicit val mat: Materializer,
-  implicit val ec: ExecutionContext
+class DisableBrowserCacheFilter @Inject() (implicit
+  val mat: Materializer,
+  val ec: ExecutionContext
 ) extends Filter {
 
   override def apply(nextFilter: RequestHeader => Future[Result])(requestHeader: RequestHeader): Future[Result] =
