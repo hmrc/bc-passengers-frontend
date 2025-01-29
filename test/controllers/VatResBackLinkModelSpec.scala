@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import models.JourneyData
-import org.mockito.Mockito.*
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -30,7 +30,7 @@ import util.BaseSpec
 
 class VatResBackLinkModelSpec extends BaseSpec {
 
-  override given app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
@@ -68,8 +68,8 @@ class VatResBackLinkModelSpec extends BaseSpec {
 
     lazy val context: LocalContext = {
 
-      when(injected[AppConfig].isVatResJourneyEnabled).thenReturn(true)
-      when(injected[AppConfig].isIrishBorderQuestionEnabled).thenReturn(isIrishBorderQuestionEnabled)
+      when(injected[AppConfig].isVatResJourneyEnabled) thenReturn true
+      when(injected[AppConfig].isIrishBorderQuestionEnabled) thenReturn isIrishBorderQuestionEnabled
 
       LocalContext(FakeRequest(call), "FAKESESSIONIN", journeyData)
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,18 +33,16 @@ class LocalLanguageControllerSpec extends BaseSpec {
   "LocalLanguageController" when {
     ".languageMap" should {
       "return the correct mapped languages" in {
-        localLanguageController.languageMap.shouldBe(
-          Map(
-            "english" -> Lang("en"),
-            "cymraeg" -> Lang("cy")
-          )
+        localLanguageController.languageMap shouldBe Map(
+          "english" -> Lang("en"),
+          "cymraeg" -> Lang("cy")
         )
       }
     }
 
     ".fallbackURL" should {
       "return the show dashboard url as the fallback url" in {
-        localLanguageController.fallbackURL.shouldBe(controllers.routes.DashboardController.showDashboard.url)
+        localLanguageController.fallbackURL shouldBe controllers.routes.DashboardController.showDashboard.url
       }
     }
   }

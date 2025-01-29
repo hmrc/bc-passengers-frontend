@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,7 +125,9 @@ class ProductTreeNodeSpec extends BaseSpec {
           )
         }
 
-      Seq((1, "label.tobacco.cigarettes.single"), (2, "label.tobacco.cigarettes")).foreach(args => test.tupled(args))
+      Seq((1, "label.tobacco.cigarettes.single"), (2, "label.tobacco.cigarettes")).foreach(args =>
+        (test _).tupled(args)
+      )
     }
 
     "return the correct display description for cigars" which {
@@ -166,7 +168,7 @@ class ProductTreeNodeSpec extends BaseSpec {
           )
         }
 
-      Seq((1, "label.tobacco.cigars.single"), (2, "label.tobacco.cigars")).foreach(args => test.tupled(args))
+      Seq((1, "label.tobacco.cigars.single"), (2, "label.tobacco.cigars")).foreach(args => (test _).tupled(args))
     }
   }
 

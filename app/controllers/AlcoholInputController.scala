@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import controllers.enforce.DashboardAction
 import forms.AlcoholInputForm
 import models.{AlcoholDto, JourneyData, ProductPath}
 import play.api.i18n.I18nSupport
-import play.api.mvc.*
-import services.*
+import play.api.mvc._
+import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import util.*
+import util._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -63,7 +63,7 @@ class AlcoholInputController @Inject() (
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
       case _                                                                                     =>
-        Redirect(routes.SelectProductController.nextStep())
+        Redirect(routes.SelectProductController.nextStep)
     }
 
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
@@ -260,7 +260,7 @@ class AlcoholInputController @Inject() (
                         dto.currency,
                         dto.cost
                       )
-                    ) map { (_: JourneyData) =>
+                    ) map { _: JourneyData =>
                       navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
                     }
                   } else {

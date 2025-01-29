@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
 import models.{ConfirmRemoveDto, ProductPath}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.*
-import services.*
+import play.api.mvc._
+import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject

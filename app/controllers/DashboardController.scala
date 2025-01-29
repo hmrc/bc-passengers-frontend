@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-import models.{ProductTreeLeaf, *}
+import models.{ProductTreeLeaf, _}
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.*
+import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -48,12 +48,12 @@ class DashboardController @Inject() (
     with ControllerHelpers {
 
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
-    given lang: Lang = context.request.lang
+    implicit val lang: Lang = context.request.lang
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     } else {
       revertWorkingInstance {
-        cache.fetch flatMap { (journeyData: Option[JourneyData]) =>
+        cache.fetch flatMap { journeyData: Option[JourneyData] =>
           val isAmendment                  = context.getJourneyData.declarationResponse.isDefined
           val jd                           = journeyData.getOrElse(JourneyData())
           val allPurchasedProductInstances =

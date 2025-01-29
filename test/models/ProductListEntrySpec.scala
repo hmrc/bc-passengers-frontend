@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class ProductListEntrySpec extends BaseSpec {
 
   private val request: Request[AnyContentAsEmpty.type] = FakeRequest()
   private val messagesApi: MessagesApi                 = injected[MessagesApi]
-  given messages: Messages                             = messagesApi.preferred(request)
+  implicit val messages: Messages                      = messagesApi.preferred(request)
 
   private val json: JsValue = Json.parse(
     """

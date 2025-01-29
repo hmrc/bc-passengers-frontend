@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
             case t: TestFailedException =>
               throw t.modifyMessage(
                 _.map(_ + " - when using params: " + acc.map(t => s"${t._1} = ${t._2}"))
-              ) // Show failing params
+              ) //Show failing params
           }
         } else {
           val (paramName, paramVals) = p.head

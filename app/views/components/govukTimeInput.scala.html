@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@
                     label =
                         Label(
                             classes = "govuk-date-input__label",
-                            content = Text(item.name.nunjucksCapitalize)
+                            content = item.label.mapNonEmpty(Text).getOrElse(Text(item.name.nunjucksCapitalize))
                     ),
                 classes = s"govuk-date-input__input ${item.classes}",
                 autocomplete = item.autocomplete,
@@ -123,7 +123,7 @@
                     label =
                         Label(
                             classes = "govuk-date-input__label",
-                            content = Text(timePeriodItem.name.nunjucksCapitalize)
+                            content = timePeriodItem.label.mapNonEmpty(Text).getOrElse(Text(timePeriodItem.name.nunjucksCapitalize))
                     ),
                     classes = s"govuk-date-input__input ${timePeriodItem.classes}",
                     attributes = timePeriodItem.attributes

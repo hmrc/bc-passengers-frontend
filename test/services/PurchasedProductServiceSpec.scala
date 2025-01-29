@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package services
 
 import connectors.Cache
 import models.{Country, JourneyData, ProductPath, PurchasedProductInstance}
-import org.mockito.ArgumentMatchers.{eq => meq, *}
-import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class PurchasedProductServiceSpec extends BaseSpec {
 
-  override given app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -47,8 +47,8 @@ class PurchasedProductServiceSpec extends BaseSpec {
     lazy val s: PurchasedProductService = {
       val service = app.injector.instanceOf[PurchasedProductService]
       val mock    = service.cache
-      when(mock.fetch(any())).thenReturn(Future.successful(journeyDataInCache))
-      when(mock.store(any())(any())).thenReturn(Future.successful(JourneyData()))
+      when(mock.fetch(any())) thenReturn Future.successful(journeyDataInCache)
+      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
       service
     }
   }

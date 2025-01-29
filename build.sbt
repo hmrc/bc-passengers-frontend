@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings.itSettings
 val appName = "bc-passengers-frontend"
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "3.5.1"
+ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / excludeDependencies ++= Seq(
   // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
   // Specifically affects play-json-extensions dependency
@@ -29,11 +29,9 @@ lazy val microservice = Project(appName, file("."))
       "views.ViewUtils._",
       "controllers.routes._"
     ),
-    scalacOptions ++= List(
-      "-feature",
-      "-Wconf:msg=unused import&src=conf/.*:s",
-      "-Wconf:msg=unused import&src=views/.*:s",
-      "-Wconf:src=routes/.*:s"
+    scalacOptions ++= Seq(
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:cat=unused-imports&src=views/.*:s"
     )
   )
 

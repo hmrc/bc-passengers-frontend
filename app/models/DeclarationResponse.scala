@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package models
 import play.api.libs.json.{Json, OFormat}
 
 object DeclarationResponse {
-  given formats: OFormat[DeclarationResponse] = Json.format[DeclarationResponse]
+  implicit val formats: OFormat[DeclarationResponse] = Json.format[DeclarationResponse]
 }
 
 object LiabilityDetails {
-  given formats: OFormat[LiabilityDetails] = Json.format[LiabilityDetails]
+  implicit val formats: OFormat[LiabilityDetails] = Json.format[LiabilityDetails]
 }
 
 case class DeclarationResponse(

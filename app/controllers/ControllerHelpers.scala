@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import models.*
+import models._
 import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.*
-import services.*
+import play.api.mvc._
+import services._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import uk.gov.hmrc.play.bootstrap.controller.{Utf8MimeTypes, WithJsonBody}
@@ -42,8 +42,8 @@ trait ControllerHelpers
 
   def errorTemplate: views.html.errorTemplate
 
-  given appConfig: AppConfig
-  given ec: ExecutionContext
+  implicit def appConfig: AppConfig
+  implicit def ec: ExecutionContext
 
   private val logger = Logger(this.getClass)
 
@@ -74,7 +74,7 @@ trait ControllerHelpers
   def requireLimitUsage(journeyData: JourneyData)(
     block: Map[String, BigDecimal] => Future[Result]
   )(implicit context: LocalContext, hc: HeaderCarrier): Future[Result] =
-    calculatorService.limitUsage(journeyData) flatMap { (response: LimitUsageResponse) =>
+    calculatorService.limitUsage(journeyData) flatMap { response: LimitUsageResponse =>
       response match {
         case LimitUsageSuccessResponse(r) =>
           block(r.map(x => (x._1, BigDecimal(x._2))))

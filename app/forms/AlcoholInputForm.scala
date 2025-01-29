@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package forms
 
 import models.{AlcoholDto, ProductPath}
 import play.api.data.Form
-import play.api.data.Forms.*
-import services.*
-import util.*
+import play.api.data.Forms._
+import services._
+import util._
 
 import javax.inject.Inject
 import scala.util.Try
@@ -42,7 +42,7 @@ class AlcoholInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(AlcoholDto.apply)(o => Some(Tuple.fromProductTyped(o)))
+    )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
   def alcoholForm(path: ProductPath): Form[AlcoholDto] = Form(
@@ -67,7 +67,7 @@ class AlcoholInputForm @Inject() (
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
-    )(AlcoholDto.apply)(o => Some(Tuple.fromProductTyped(o)))
+    )(AlcoholDto.apply)(AlcoholDto.unapply)
   )
 
 }

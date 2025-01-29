@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package services
 
 import models.Country
-import play.api.libs.json.{JsError, JsSuccess, Json}
 import util.BaseSpec
 
 class CountriesServiceSpec extends BaseSpec {
@@ -683,7 +682,7 @@ class CountriesServiceSpec extends BaseSpec {
 
   "getAllCountriesAndEU" should {
 
-    val countriesService = app.injector.instanceOf[CountriesService] // CountriesService.getAllCountries
+    val countriesService = app.injector.instanceOf[CountriesService] //CountriesService.getAllCountries
 
     "return the expected countries" in {
       countriesService.getAllCountriesAndEu shouldEqual expectedCountriesAndEu
@@ -701,7 +700,7 @@ class CountriesServiceSpec extends BaseSpec {
 
   "getAllCountries" should {
 
-    val countriesService = app.injector.instanceOf[CountriesService] // CountriesService.getAllCountries
+    val countriesService = app.injector.instanceOf[CountriesService] //CountriesService.getAllCountries
 
     "return the expected countries" in {
       countriesService.getAllCountries shouldEqual expectedCountries
@@ -730,214 +729,6 @@ class CountriesServiceSpec extends BaseSpec {
       countriesService.getCountryByCode("ES0") shouldBe Some(
         Country("ES0", "title.spain", "ES", isEu = true, isCountry = true, Nil)
       )
-    }
-  }
-
-  "Country" should {
-    val validCountry = Country(
-      code = "GBR",
-      countryName = "United Kingdom",
-      alphaTwoCode = "GB",
-      isEu = false,
-      isCountry = true,
-      countrySynonyms = List("Britain", "England")
-    )
-
-    "serialize to JSON" when {
-      "all fields are valid" in {
-        Json.toJson(validCountry) shouldBe Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "isCountry"       -> true,
-          "countrySynonyms" -> Json.arr("Britain", "England")
-        )
-      }
-
-      "countrySynonyms is empty and ensure no nulls" in {
-        val countryWithEmptySynonyms = validCountry.copy(countrySynonyms = List.empty)
-
-        Json.toJson(countryWithEmptySynonyms) shouldBe Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "isCountry"       -> true,
-          "countrySynonyms" -> Json.arr()
-        )
-      }
-    }
-
-    "deserialize from JSON" when {
-      "all fields are valid" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "isCountry"       -> true,
-          "countrySynonyms" -> Json.arr("Britain", "England")
-        )
-
-        json.validate[Country] shouldBe JsSuccess(validCountry)
-      }
-
-      "countrySynonyms is empty" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "isCountry"       -> true,
-          "countrySynonyms" -> Json.arr()
-        )
-
-        json.validate[Country] shouldBe JsSuccess(
-          validCountry.copy(countrySynonyms = List.empty)
-        )
-      }
-
-      "countrySynonyms is missing" in {
-        val json = Json.obj(
-          "code"         -> "GBR",
-          "countryName"  -> "United Kingdom",
-          "alphaTwoCode" -> "GB",
-          "isEu"         -> false,
-          "isCountry"    -> true
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-
-      "countrySynonyms array is empty" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "countrySynonyms" -> Json.arr()
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-
-      "alphaTwoCode has special characters" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "G@",
-          "isEu"            -> false,
-          "countrySynonyms" -> Json.arr("Britain", "England")
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-
-      "special characters in countrySynonyms" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "countrySynonyms" -> Json.arr("Brit@in", "Eng1and", "#Country!")
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-    }
-
-    "fail deserialization" when {
-      "required fields are missing" in {
-        val json = Json.obj(
-          "code"        -> "GBR",
-          "countryName" -> "United Kingdom"
-          // Missing "alphaTwoCode", "isEu", and "countrySynonyms"
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-
-      "field types are invalid" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> 123,
-          "isEu"            -> "false",
-          "countrySynonyms" -> Json.arr("Britain", "England")
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-      "countrySynonyms is null" in {
-        val jsonNull = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "countrySynonyms" -> null
-        )
-        jsonNull.validate[Country] shouldBe a[JsError]
-      }
-      "countrySynonyms is a string instead of an array" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "countrySynonyms" -> "notAnArray"
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-
-      "isEu is null" in {
-        val json = Json.obj(
-          "code"            -> "GBR",
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> null,
-          "countrySynonyms" -> Json.arr("Britain", "England")
-        )
-
-        json.validate[Country] shouldBe a[JsError]
-      }
-      "code is empty or missing" in {
-        val jsonMissingCode = Json.obj(
-          "countryName"     -> "United Kingdom",
-          "alphaTwoCode"    -> "GB",
-          "isEu"            -> false,
-          "countrySynonyms" -> Json.arr("Britain", "England")
-        )
-
-        jsonMissingCode.validate[Country] shouldBe a[JsError]
-      }
-      "invalid JSON structure" in {
-        val json = Json.arr(
-          Json.obj("key" -> "value")
-        )
-        json.validate[Country] shouldBe a[JsError]
-      }
-      "an empty JSON object" in {
-        val json = Json.obj()
-        json.validate[Country] shouldBe a[JsError]
-      }
-
-    }
-
-    "support round-trip serialization/deserialization" in {
-      val json = Json.toJson(validCountry)
-      json.validate[Country] shouldBe JsSuccess(validCountry)
-    }
-    "support round-trip serialization/deserialization with edge cases" in {
-      val edgeCaseCountry = validCountry.copy(
-        alphaTwoCode = "X!",
-        countryName = "Very Special #Name",
-        countrySynonyms = List.empty
-      )
-
-      val json = Json.toJson(edgeCaseCountry)
-      json.validate[Country] shouldBe JsSuccess(edgeCaseCountry)
     }
   }
 }

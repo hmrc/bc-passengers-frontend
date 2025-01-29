@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 package services
 
 import connectors.Cache
-import models.*
-import org.mockito.ArgumentMatchers.{eq => meq, *}
-import org.mockito.Mockito.*
+import models._
+import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.*
+import play.api.test.Helpers._
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import util.BaseSpec
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class PreviousDeclarationServiceSpec extends BaseSpec {
 
-  override given app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[DeclarationService].toInstance(mock(classOf[DeclarationService])))
@@ -61,8 +61,8 @@ class PreviousDeclarationServiceSpec extends BaseSpec {
     lazy val previousDeclarationService: PreviousDeclarationService = {
       val service = app.injector.instanceOf[PreviousDeclarationService]
       val mock    = service.cache
-      when(mock.store(any())(any())).thenReturn(Future.successful(JourneyData()))
-      when(mock.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(JourneyData())))
+      when(mock.store(any())(any())) thenReturn Future.successful(JourneyData())
+      when(mock.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
       service
     }
 

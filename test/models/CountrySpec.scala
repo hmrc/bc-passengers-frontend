@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import play.api.libs.json.{JsValue, Json}
 import util.BaseSpec
 
 class CountrySpec extends BaseSpec {
-  given messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  given messages: Messages       = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages: Messages       = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
 
   private val json: JsValue  = Json.parse(
     """

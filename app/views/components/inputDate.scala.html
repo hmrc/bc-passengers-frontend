@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 @this(govukDateInput: GovukDateInput)
 
 @(
-  form: Form[?],
+  form: Form[_],
   legendContent: String,
   legendClasses: String = "govuk-fieldset__legend--xl",
   id: String = "date",
@@ -75,7 +75,7 @@
                 .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
                     err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ))
-    @hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
+    @hierarchyErrors(id: String, form: Form[_], appended: Seq[String]) = @{
         val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
 
         allFields.find(_.messages.find(_.contains("required"))) match {

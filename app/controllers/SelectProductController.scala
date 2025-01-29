@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import config.AppConfig
 import connectors.Cache
 import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
-import models.*
+import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.*
-import services.*
+import play.api.mvc._
+import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
@@ -51,7 +51,7 @@ class SelectProductController @Inject() (
 
   def cancel(): Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
-      Future.successful(Redirect(routes.SelectProductController.nextStep()))
+      Future.successful(Redirect(routes.SelectProductController.nextStep))
     }
   }
 
@@ -144,7 +144,7 @@ class SelectProductController @Inject() (
               selectProductsDto.tokens.map(path.addingComponent)
             ) flatMap { journeyData =>
               purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-                Redirect(routes.SelectProductController.nextStep())
+                Redirect(routes.SelectProductController.nextStep)
               }
             }
           }
@@ -178,7 +178,7 @@ class SelectProductController @Inject() (
 
               pathsOrdered match {
                 case x :: _ if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
-                  Future.successful(Redirect(routes.SelectProductController.nextStep()))
+                  Future.successful(Redirect(routes.SelectProductController.nextStep))
 
                 case _ =>
                   purchasedProductService.clearWorkingInstance(journeyData) map { _ =>

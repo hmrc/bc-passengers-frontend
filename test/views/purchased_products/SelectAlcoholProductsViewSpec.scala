@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,8 +87,8 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
 
       "have all info in error summary" in {
         val doc = document(buildView(form = emptyForm))
-        doc.title()                                                                should startWith(messages("label.error"))
-        messages("label.there_is_a_problem")                                     shouldBe getErrorTitle(doc)
+        doc.title()                            should startWith(messages("label.error"))
+        messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
         List("#tokens-label.alcohol.beer" -> messages("error.required.alcohol")) shouldBe getErrorsInSummary(doc)
       }
 

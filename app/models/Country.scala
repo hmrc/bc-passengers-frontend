@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json, OFormat}
 
 object Country {
-  given formats: OFormat[Country] = Json.format[Country]
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }
 case class Country(
   code: String,

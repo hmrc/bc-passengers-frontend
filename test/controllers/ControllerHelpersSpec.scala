@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import org.mockito.Mockito.*
+import org.mockito.Mockito._
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import services.{CalculatorService, ProductTreeService}
@@ -34,7 +34,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
   def calculatorService: CalculatorService   = mock(classOf[CalculatorService])
   def errorTemplate: errorTemplate           = mock(classOf[errorTemplate])
 
-  given appConfig: AppConfig                                       = mock(classOf[AppConfig])
+  implicit def appConfig: AppConfig                                = mock(classOf[AppConfig])
   protected def controllerComponents: MessagesControllerComponents = mock(classOf[MessagesControllerComponents])
 
   "ControllerHelpers" when {

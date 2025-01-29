@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package services
 
 import connectors.Cache
 import javax.inject.{Inject, Singleton}
-import models.*
+import models._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PurchasedProductService @Inject() (val cache: Cache) {
 
-  // TODO - move to NewPurchaseService
+  //TODO - move to NewPurchaseService
   def clearWorkingInstance(
     journeyData: JourneyData
   )(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
@@ -35,7 +35,7 @@ class PurchasedProductService @Inject() (val cache: Cache) {
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 
-  // TODO - move to NewPurchaseService
+  //TODO - move to NewPurchaseService
   def removePurchasedProductInstance(journeyData: JourneyData, iid: String)(implicit
     hc: HeaderCarrier,
     ex: ExecutionContext

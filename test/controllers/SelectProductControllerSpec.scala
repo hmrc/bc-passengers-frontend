@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,17 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, *}
-import org.mockito.Mockito.*
-import org.scalatest.Inspectors.*
+import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.Mockito._
+import org.scalatest.Inspectors._
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
-import play.api.test.Helpers.{route => rt, *}
+import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
-import services.*
+import services._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
@@ -52,7 +52,7 @@ class SelectProductControllerSpec extends BaseSpec {
     privateCraft = Some(false)
   )
 
-  override given app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
@@ -95,13 +95,11 @@ class SelectProductControllerSpec extends BaseSpec {
         Future.successful(addSelectedProductsAsAliasesResult())
       }
 
-      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())).thenReturn(
-        Future.successful(
-          cachedJourneyData.get
-        )
+      when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())) thenReturn Future.successful(
+        cachedJourneyData.get
       )
-      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
-      when(injected[Cache].storeJourneyData(any())(any())).thenReturn(Future.successful(cachedJourneyData))
+      when(injected[Cache].fetch(any())) thenReturn Future.successful(cachedJourneyData)
+      when(injected[Cache].storeJourneyData(any())(any())) thenReturn Future.successful(cachedJourneyData)
 
       rt(app, req)
     }
@@ -296,7 +294,7 @@ class SelectProductControllerSpec extends BaseSpec {
 
     "addSelectedProducts to keystore and then redirect to searchGoods when the value is a ProductTreeBranch" in new LocalSetup {
 
-      override def addSelectedProductsAsAliasesResult(): JourneyData = JourneyData(selectedAliases =
+      override lazy val addSelectedProductsAsAliasesResult: JourneyData = JourneyData(selectedAliases =
         List(
           ProductAlias("label.other-goods.carpets-fabric.fabrics", ProductPath("other-goods/carpets-fabric/fabrics"))
         )
@@ -408,7 +406,7 @@ class SelectProductControllerSpec extends BaseSpec {
           Future.successful(JourneyData())
         }
 
-        when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
+        when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")).get
       }
@@ -474,7 +472,7 @@ class SelectProductControllerSpec extends BaseSpec {
         when(injected[SelectProductService].removeSelectedAlias(any())(any())) thenReturn {
           Future.successful(JourneyData())
         }
-        when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
+        when(injected[Cache].store(any())(any())) thenReturn Future.successful(JourneyData())
 
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/cancel")).get
       }

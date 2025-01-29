@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package models
 
+import ai.x.play.json.Encoders.encoder
+import ai.x.play.json.Jsonx
 import play.api.libs.json.{Json, OFormat}
 import util.{parseLocalDate, parseLocalTime}
 
 import java.time.{LocalDate, LocalTime}
-
 object PurchasedProductInstance {
-  given formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
+  implicit val formats: OFormat[PurchasedProductInstance] = Json.format[PurchasedProductInstance]
 }
-
 case class PurchasedProductInstance(
   path: ProductPath,
   iid: String,
@@ -44,7 +44,7 @@ case class PurchasedProductInstance(
 )
 
 object UserInformation {
-  given formats: OFormat[UserInformation] = Json.format[UserInformation]
+  implicit val formats: OFormat[UserInformation] = Json.format[UserInformation]
 
   def build(dto: EnterYourDetailsDto): UserInformation =
     UserInformation(
@@ -59,7 +59,6 @@ object UserInformation {
       parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
 }
-
 case class UserInformation(
   firstName: String,
   lastName: String,
@@ -73,31 +72,30 @@ case class UserInformation(
 )
 
 object PreviousDeclarationRequest {
-  given formats: OFormat[PreviousDeclarationRequest] = Json.format[PreviousDeclarationRequest]
+  implicit val formats: OFormat[PreviousDeclarationRequest] = Json.format[PreviousDeclarationRequest]
 
   def build(dto: DeclarationRetrievalDto): PreviousDeclarationRequest =
     PreviousDeclarationRequest(dto.lastName, dto.referenceNumber.toUpperCase)
 }
-
 case class PreviousDeclarationRequest(
   lastName: String,
   referenceNumber: String
 )
 
 object ProductAlias {
-  given formats: OFormat[ProductAlias] = Json.format[ProductAlias]
+  implicit val formats: OFormat[ProductAlias] = Json.format[ProductAlias]
 }
 
 case class ProductAlias(term: String, productPath: ProductPath)
 
 object PaymentNotification {
-  given formats: OFormat[PaymentNotification] = Json.format[PaymentNotification]
+  implicit val formats: OFormat[PaymentNotification] = Json.format[PaymentNotification]
 }
 
 case class PaymentNotification(status: String, reference: String)
 
 object JourneyData {
-  given format: OFormat[JourneyData] = Json.format[JourneyData]
+  implicit val format: OFormat[JourneyData] = Jsonx.formatCaseClass
 }
 
 case class JourneyData(

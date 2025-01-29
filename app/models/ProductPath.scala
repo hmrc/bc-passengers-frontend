@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.*
+import play.api.libs.json._
 
 case class ProductPath(components: List[String]) {
   override def toString: String                       = components.mkString("/")
@@ -27,7 +27,7 @@ case class ProductPath(components: List[String]) {
 object ProductPath {
   def apply(path: String): ProductPath = ProductPath(path.split("/").toList)
 
-  given formats: Format[ProductPath] = new Format[ProductPath] {
+  implicit val formats: Format[ProductPath] = new Format[ProductPath] {
     override def writes(o: ProductPath): JsValue             = JsString(o.toString)
     override def reads(json: JsValue): JsResult[ProductPath] = json match {
       case JsString(value) => JsSuccess[ProductPath](ProductPath(value))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,29 +84,29 @@ case class ProductTreeLeaf(
     templateId match {
       case "cigarettes"  =>
         purchasedProductInstance.currency.isDefined &&
-        purchasedProductInstance.cost.isDefined &&
-        purchasedProductInstance.country.isDefined &&
-        purchasedProductInstance.noOfSticks.isDefined
+          purchasedProductInstance.cost.isDefined &&
+          purchasedProductInstance.country.isDefined &&
+          purchasedProductInstance.noOfSticks.isDefined
       case "cigars"      =>
         purchasedProductInstance.currency.isDefined &&
-        purchasedProductInstance.cost.isDefined &&
-        purchasedProductInstance.country.isDefined &&
-        purchasedProductInstance.weightOrVolume.isDefined &&
-        purchasedProductInstance.noOfSticks.isDefined
+          purchasedProductInstance.cost.isDefined &&
+          purchasedProductInstance.country.isDefined &&
+          purchasedProductInstance.weightOrVolume.isDefined &&
+          purchasedProductInstance.noOfSticks.isDefined
       case "tobacco"     =>
         purchasedProductInstance.currency.isDefined &&
-        purchasedProductInstance.cost.isDefined &&
-        purchasedProductInstance.country.isDefined &&
-        purchasedProductInstance.weightOrVolume.isDefined
+          purchasedProductInstance.cost.isDefined &&
+          purchasedProductInstance.country.isDefined &&
+          purchasedProductInstance.weightOrVolume.isDefined
       case "alcohol"     =>
         purchasedProductInstance.currency.isDefined &&
-        purchasedProductInstance.cost.isDefined &&
-        purchasedProductInstance.country.isDefined &&
-        purchasedProductInstance.weightOrVolume.isDefined
+          purchasedProductInstance.cost.isDefined &&
+          purchasedProductInstance.country.isDefined &&
+          purchasedProductInstance.weightOrVolume.isDefined
       case "other-goods" =>
         purchasedProductInstance.currency.isDefined &&
-        purchasedProductInstance.country.isDefined &&
-        purchasedProductInstance.cost.isDefined
+          purchasedProductInstance.country.isDefined &&
+          purchasedProductInstance.cost.isDefined
       case _             => false
     }
 

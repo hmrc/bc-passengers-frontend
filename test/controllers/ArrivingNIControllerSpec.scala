@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,9 +99,9 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val cachedJourneyData =
         Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockAppConfig.isVatResJourneyEnabled).thenReturn(true)
-      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())).thenReturn(cachedJourneyData)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(
         app,
@@ -123,9 +123,9 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val cachedJourneyData =
         Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(false))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockAppConfig.isVatResJourneyEnabled).thenReturn(true)
-      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())).thenReturn(cachedJourneyData)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(
         app,
@@ -147,9 +147,9 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val cachedJourneyData =
         Future.successful(Some(JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockAppConfig.isVatResJourneyEnabled).thenReturn(true)
-      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())).thenReturn(cachedJourneyData)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn true
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(
         app,
@@ -170,9 +170,9 @@ class ArrivingNIControllerSpec extends BaseSpec {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("euOnly"))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockAppConfig.isVatResJourneyEnabled).thenReturn(false)
-      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())).thenReturn(cachedJourneyData)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn false
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(
         app,
@@ -193,8 +193,8 @@ class ArrivingNIControllerSpec extends BaseSpec {
 
       val cachedJourneyData = Future.successful(Some(JourneyData(euCountryCheck = Some("None"))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockAppConfig.isVatResJourneyEnabled).thenReturn(false)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockAppConfig.isVatResJourneyEnabled) thenReturn false
 
       val response = route(
         app,
@@ -222,8 +222,8 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val cachedJourneyData =
         Future.successful(Some(JourneyData(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())).thenReturn(cachedJourneyData)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
 
       val response = route(
         app,
@@ -243,8 +243,8 @@ class ArrivingNIControllerSpec extends BaseSpec {
       val cachedJourneyData =
         Future.successful(Some(JourneyData(euCountryCheck = Some("invalid country"))))
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())).thenReturn(cachedJourneyData)
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockTravelDetailService.storeArrivingNI(any())(any())(any())) thenReturn cachedJourneyData
       val response = route(
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/arriving-ni").withFormUrlEncodedBody(

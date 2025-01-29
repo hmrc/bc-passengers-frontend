@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 @this(govukInput: GovukInput)
 
 @(
-        form: Form[?],
+        form: Form[_],
         id: String,
         name: String,
         label: String,
@@ -37,7 +37,7 @@
   name,
   classes = classes.fold("")(x => x),
   label = Label(
-    content = Text(messages(label, headingMessageArgs*)),
+    content = Text(messages(label, headingMessageArgs:_*)),
     isPageHeading = isPageHeading,
     classes = labelClasses.getOrElse("") + (if(isPageHeading) "govuk-label--xl" else "")
   ),
@@ -45,7 +45,7 @@
       content = HtmlContent(hintHtml),
   )),
   value = form(name).value,
-  errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
+  errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
   inputType = inputType,
   inputmode = if(isTelephone) Some("tel") else None,
   autocomplete = autocomplete

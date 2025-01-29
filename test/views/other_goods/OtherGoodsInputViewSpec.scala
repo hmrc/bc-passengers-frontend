@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -229,7 +229,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).title shouldBe title
           }
 
-        titleInput.foreach(args => test.tupled(args))
+        titleInput.foreach(args => (test _).tupled(args))
       }
 
       "display the correct heading" when {
@@ -240,7 +240,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).select("h1").text shouldBe heading
           }
 
-        headingInput.foreach(args => test.tupled(args))
+        headingInput.foreach(args => (test _).tupled(args))
       }
 
       "have all info in error summary" when {
@@ -249,10 +249,10 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             val doc: Document = document(viewViaApply(otherItemMode = otherItemMode, form = form))
             doc.title()                            should startWith(messages("label.error"))
             messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
-            List(id -> messages(errorKey))       shouldBe getErrorsInSummary(doc)
+            List(id -> messages(errorKey)) shouldBe getErrorsInSummary(doc)
           }
 
-        errorInputs.foreach(args => test.tupled(args))
+        errorInputs.foreach(args => (test _).tupled(args))
       }
 
     }
@@ -266,7 +266,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).title shouldBe title
           }
 
-        titleInput.foreach(args => test.tupled(args))
+        titleInput.foreach(args => (test _).tupled(args))
       }
 
       "display the correct heading" when {
@@ -277,7 +277,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).select("h1").text shouldBe heading
           }
 
-        headingInput.foreach(args => test.tupled(args))
+        headingInput.foreach(args => (test _).tupled(args))
       }
     }
 
@@ -290,7 +290,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).title shouldBe title
           }
 
-        titleInput.foreach(args => test.tupled(args))
+        titleInput.foreach(args => (test _).tupled(args))
       }
 
       "display the correct heading" when {
@@ -301,7 +301,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
             ).select("h1").text shouldBe heading
           }
 
-        headingInput.foreach(args => test.tupled(args))
+        headingInput.foreach(args => (test _).tupled(args))
       }
     }
   }

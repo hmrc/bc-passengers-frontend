@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
   panelIndent: components.panelIndent
 )
 
-@(previousDeclaration: Boolean, deltaCalc: Option[Calculation], oldAllTax: Option[String], userInformation: Option[UserInformation], calculatorResponse: CalculatorResponse, calculatorResponseDto: CalculatorResponseDto, chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(previousDeclaration: Boolean, deltaCalc: Option[Calculation], oldAllTax: Option[String], userInformation: Option[UserInformation], calculatorResponse: CalculatorResponse, calculatorResponseDto: CalculatorResponseDto, chargeReference: String, placeOfArrivalValue: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import util._
 

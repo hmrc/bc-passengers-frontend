@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,18 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
-import models.*
+import models._
 import play.api.Logger
-import play.api.http.Status.*
+import play.api.http.Status._
 import play.api.i18n.{Lang, MessagesApi}
-import play.api.libs.json.Reads.*
-import util.*
-import play.api.libs.json.*
-import uk.gov.hmrc.http.HttpReads.Implicits.*
-import uk.gov.hmrc.http.*
+import play.api.libs.json.Reads._
+import util._
+import play.api.libs.json._
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import play.api.libs.ws.writeableOf_JsValue
-import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
@@ -242,9 +241,9 @@ class DeclarationService @Inject() (
     rd: String
   )(implicit messages: MessagesApi): JsObject = {
 
-    given lang: Lang = Lang("en")
-    val ni           = "NI"
-    val gb           = "GB"
+    implicit val lang: Lang = Lang("en")
+    val ni                  = "NI"
+    val gb                  = "GB"
 
     def getBooleanValue(value: Option[Boolean]): Boolean =
       value match {
@@ -368,7 +367,8 @@ class DeclarationService @Inject() (
         Json.toJson(JsNull)
       }
 
-    val declarationTobacco =
+    val declarationTobacco = {
+
       calculatorResponse.tobacco match {
         case Some(tobacco) =>
           Json.obj(
@@ -406,8 +406,10 @@ class DeclarationService @Inject() (
           )
         case None          => JsNull
       }
+    }
 
-    val declarationAlcohol =
+    val declarationAlcohol = {
+
       calculatorResponse.alcohol match {
         case Some(alcohol) =>
           Json.obj(
@@ -444,8 +446,10 @@ class DeclarationService @Inject() (
           )
         case None          => JsNull
       }
+    }
 
-    val declarationOther =
+    val declarationOther = {
+
       calculatorResponse.otherGoods match {
         case Some(other) =>
           Json.obj(
@@ -482,6 +486,7 @@ class DeclarationService @Inject() (
           )
         case None        => JsNull
       }
+    }
 
     def getJourneyData = {
 

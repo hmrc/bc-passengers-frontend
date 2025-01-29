@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,19 @@
 package controllers
 
 import connectors.Cache
-import models.*
+import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, *}
-import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers.{route => rt, *}
+import play.api.test.Helpers.{route => rt, _}
 import repositories.BCPassengersSessionRepository
-import services.*
+import services._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
@@ -660,60 +660,50 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       when(
         app.injector.instanceOf[PurchasedProductService].removePurchasedProductInstance(any(), any())(any(), any())
-      ).thenReturn(Future.successful(JourneyData()))
+      ) thenReturn Future.successful(JourneyData())
       when(
         app.injector.instanceOf[UserInformationService].storeUserInformation(any(), any())(any(), any())
-      ).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
-      when(app.injector.instanceOf[Cache].fetch(any())).thenReturn(cachedJourneyData)
+      ) thenReturn Future
+        .successful(JourneyData())
+      when(app.injector.instanceOf[Cache].fetch(any())) thenReturn cachedJourneyData
       when(
         app.injector
           .instanceOf[PayApiService]
           .requestPaymentUrl(any(), any(), any(), any(), any(), any(), any())(any(), any())
-      ).thenReturn(Future.successful(payApiResponse))
-      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())).thenReturn(
-        Future
-          .successful(
-            Some(JourneyData())
-          )
-      )
+      ) thenReturn Future.successful(payApiResponse)
+      when(app.injector.instanceOf[TravelDetailsService].storeIrishBorder(any())(any())(any())) thenReturn Future
+        .successful(
+          Some(JourneyData())
+        )
       when(
         app.injector.instanceOf[DeclarationService].submitDeclaration(any(), any(), any(), any(), any())(any(), any())
-      ).thenReturn(Future.successful(declarationServiceResponse))
+      ) thenReturn Future.successful(declarationServiceResponse)
       when(
         app.injector.instanceOf[DeclarationService].submitAmendment(any(), any(), any(), any(), any())(any(), any())
-      ).thenReturn(Future.successful(declarationServiceResponse))
+      ) thenReturn Future.successful(declarationServiceResponse)
       when(
         app.injector.instanceOf[DeclarationService].storeChargeReference(any(), any(), any())(any())
-      ).thenReturn(
-        Future.successful(
-          JourneyData()
-        )
+      ) thenReturn Future.successful(
+        JourneyData()
       )
-      when(app.injector.instanceOf[DateTimeProviderService].now).thenReturn(dt)
-      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())).thenReturn(
-        Future.successful(
-          CalculatorServiceSuccessResponse(
-            CalculatorResponse(
-              None,
-              None,
-              None,
-              Calculation("0.00", "0.00", "0.00", "0.00"),
-              withinFreeAllowance = true,
-              Map.empty,
-              isAnyItemOverAllowance = false
-            )
+      when(app.injector.instanceOf[DateTimeProviderService].now) thenReturn dt
+      when(app.injector.instanceOf[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceSuccessResponse(
+          CalculatorResponse(
+            None,
+            None,
+            None,
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = true,
+            Map.empty,
+            isAnyItemOverAllowance = false
           )
         )
       )
       when(
         app.injector.instanceOf[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())
-      ).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
+      ) thenReturn Future
+        .successful(JourneyData())
 
       rt(app, req)
     }
@@ -760,7 +750,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ("previous declaration", true, "previous-declaration")
     )
 
-    input.foreach(args => test.tupled(args))
+    input.foreach(args => (test _).tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods when tax amount is 0.00" should {
@@ -830,7 +820,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       ("previous declaration", true, "previous-declaration")
     )
 
-    input.foreach(args => test.tupled(args))
+    input.foreach(args => (test _).tupled(args))
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information when in amendment journey" should {
@@ -2377,13 +2367,11 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           PayApiServiceSuccessResponse("http://example.com/payment-journey")
         override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse =
           DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-        when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())).thenReturn(
-          Calculation(
-            "0.00",
-            "0.00",
-            "0.00",
-            "0.00"
-          )
+        when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+          "0.00",
+          "0.00",
+          "0.00",
+          "0.00"
         )
 
         val response: Future[Result] =

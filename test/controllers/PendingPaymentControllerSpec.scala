@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ package controllers
 import connectors.Cache
 import models.{Calculation, CalculatorResponse, JourneyData}
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.*
-import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, route, status, *}
+import play.api.test.Helpers.{defaultAwaitTimeout, route, status, _}
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, CalculatorServiceCantBuildCalcReqResponse, CalculatorServiceSuccessResponse}
 import uk.gov.hmrc.mongo.MongoComponent
@@ -39,7 +39,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
   val calculatorService: CalculatorService = mock(classOf[CalculatorService])
   val mockCache: Cache                     = mock(classOf[Cache])
 
-  override given app: Application = GuiceApplicationBuilder()
+  override implicit lazy val app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[CalculatorService].toInstance(calculatorService))
@@ -66,32 +66,26 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].calculate(any())(any(), any())).thenReturn(
-        Future.successful(
-          CalculatorServiceSuccessResponse(
-            CalculatorResponse(
-              None,
-              None,
-              None,
-              Calculation("0.00", "0.00", "0.00", "0.00"),
-              withinFreeAllowance = true,
-              Map.empty,
-              isAnyItemOverAllowance = false
-            )
+      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceSuccessResponse(
+          CalculatorResponse(
+            None,
+            None,
+            None,
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = true,
+            Map.empty,
+            isAnyItemOverAllowance = false
           )
         )
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())).thenReturn(
-        Calculation(
-          "10.00",
-          "10.00",
-          "10.00",
-          "30.00"
-        )
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+        .successful(JourneyData())
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "10.00",
+        "10.00",
+        "10.00",
+        "30.00"
       )
 
       val result: Future[Result] =
@@ -116,32 +110,26 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].calculate(any())(any(), any())).thenReturn(
-        Future.successful(
-          CalculatorServiceSuccessResponse(
-            CalculatorResponse(
-              None,
-              None,
-              None,
-              Calculation("0.00", "0.00", "0.00", "0.00"),
-              withinFreeAllowance = true,
-              Map.empty,
-              isAnyItemOverAllowance = false
-            )
+      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceSuccessResponse(
+          CalculatorResponse(
+            None,
+            None,
+            None,
+            Calculation("0.00", "0.00", "0.00", "0.00"),
+            withinFreeAllowance = true,
+            Map.empty,
+            isAnyItemOverAllowance = false
           )
         )
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())).thenReturn(
-        Calculation(
-          "10.00",
-          "10.00",
-          "10.00",
-          "30.00"
-        )
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+        .successful(JourneyData())
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "10.00",
+        "10.00",
+        "10.00",
+        "30.00"
       )
 
       val result: Future[Result] =
@@ -167,22 +155,16 @@ class PendingPaymentControllerSpec extends BaseSpec {
           )
         )
       )
-      when(injected[CalculatorService].calculate(any())(any(), any())).thenReturn(
-        Future.successful(
-          CalculatorServiceCantBuildCalcReqResponse
-        )
+      when(injected[CalculatorService].calculate(any())(any(), any())) thenReturn Future.successful(
+        CalculatorServiceCantBuildCalcReqResponse
       )
-      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())).thenReturn(
-        Future
-          .successful(JourneyData())
-      )
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())).thenReturn(
-        Calculation(
-          "10.00",
-          "10.00",
-          "0.00",
-          "20.00"
-        )
+      when(injected[CalculatorService].storeCalculatorResponse(any(), any(), any())(any())) thenReturn Future
+        .successful(JourneyData())
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "10.00",
+        "10.00",
+        "0.00",
+        "20.00"
       )
 
       val result: Future[Result] =
@@ -215,8 +197,8 @@ class PendingPaymentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockCache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(JourneyData())))
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
 
       val response = route(
         app,
@@ -250,8 +232,8 @@ class PendingPaymentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockCache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(JourneyData())))
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
 
       val response = route(
         app,
@@ -286,15 +268,13 @@ class PendingPaymentControllerSpec extends BaseSpec {
         )
       )
 
-      when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
-      when(mockCache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(JourneyData())))
-      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())).thenReturn(
-        Calculation(
-          "0.00",
-          "0.00",
-          "0.00",
-          "0.00"
-        )
+      when(mockCache.fetch(any())) thenReturn cachedJourneyData
+      when(mockCache.storeJourneyData(any())(any())) thenReturn Future.successful(Some(JourneyData()))
+      when(injected[CalculatorService].getPreviousPaidCalculation(any(), any())) thenReturn Calculation(
+        "0.00",
+        "0.00",
+        "0.00",
+        "0.00"
       )
 
       val response = route(
