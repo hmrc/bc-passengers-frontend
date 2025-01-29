@@ -1,20 +1,21 @@
 @*
- * Copyright 2025 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *@
+* Copyright 2025 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
 
 @import views.viewmodels.TimeInput
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 @this(govukErrorMessage: GovukErrorMessage, govukHint: GovukHint, govukFieldset: GovukFieldset, govukInput: GovukInput, govukSelect: GovukSelect)
 
@@ -104,31 +105,31 @@
                     value = item.value,
                     label =
                         Label(
-                            classes = "govuk-date-input__label",
-                            content = Text(item.name.nunjucksCapitalize)
-                    ),
-                classes = s"govuk-date-input__input ${item.classes}",
-                autocomplete = item.autocomplete,
-                pattern = Option(item.pattern.getNonEmptyOrElse("[0-9]*")),
-                attributes = item.attributes
+                        classes = "govuk-date-input__label",
+                        content = item.label.mapNonEmpty(Text).getOrElse(Text(item.name.nunjucksCapitalize))
+                        ),
+                    classes = s"govuk-date-input__input ${item.classes}",
+                    autocomplete = item.autocomplete,
+                    pattern = Option(item.pattern.getNonEmptyOrElse("[0-9]*")),
+                    attributes = item.attributes
                 ))
             </div>
-        }
-        @if(showSelectPeriod){
-            <div class="govuk-date-input__item">
-                @govukSelect(Select(
-                    id = timePeriodItem.id.toOption.getNonEmptyOrElse(id + "-" + timePeriodItem.name),
-                    name = namePrefix.foldNonEmpty(timePeriodItem.name)(_ + "-" + timePeriodItem.name),
-                    items = timePeriodSelectItems,
-                    label =
+            }
+            @if(showSelectPeriod){
+                <div class="govuk-date-input__item">
+                    @govukSelect(Select(
+                        id = timePeriodItem.id.toOption.getNonEmptyOrElse(id + "-" + timePeriodItem.name),
+                        name = namePrefix.foldNonEmpty(timePeriodItem.name)(_ + "-" + timePeriodItem.name),
+                        items = timePeriodSelectItems,
+                        label =
                         Label(
-                            classes = "govuk-date-input__label",
-                            content = Text(timePeriodItem.name.nunjucksCapitalize)
-                    ),
-                    classes = s"govuk-date-input__input ${timePeriodItem.classes}",
-                    attributes = timePeriodItem.attributes
-                ))
-            </div>
+                        classes = "govuk-date-input__label",
+                        content = timePeriodItem.label.mapNonEmpty(Text).getOrElse(Text(timePeriodItem.name.nunjucksCapitalize))
+                        ),
+                        classes = s"govuk-date-input__input ${timePeriodItem.classes}",
+                        attributes = timePeriodItem.attributes
+                    ))
+                </div>
         } else {}
     </div>
 }
