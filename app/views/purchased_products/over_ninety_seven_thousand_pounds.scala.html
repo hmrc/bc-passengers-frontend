@@ -51,7 +51,7 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">
             @messages(item.metadata.descriptionLabels.description,
-            item.metadata.descriptionLabels.args.map(messages(_).toLowerCase): _*)
+            item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
           </td>
           <td class="govuk-table__cell">
             @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)

@@ -18,14 +18,14 @@ package controllers.enforce
 
 import config.AppConfig
 import controllers.LocalContext
-import controllers.enforce.vatres._
+import controllers.enforce.vatres.*
 import models.JourneyData
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.exceptions.TestFailedException
 import play.api.mvc.Result
-import play.api.mvc.Results._
-import play.api.test.Helpers._
-import play.api.test._
+import play.api.mvc.Results.*
+import play.api.test.*
+import play.api.test.Helpers.*
 import util.BaseSpec
 
 import scala.collection.immutable.ListMap
@@ -300,18 +300,21 @@ class VatResJourneyEnforcerSpec extends BaseSpec {
         "arrivingNICheck" -> List(Some(true), Some(false), None)
       )
 
-      forEachInGrid(params) { case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
-        val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
-        val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
-        val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
+      forEachInGrid(params) {
+        case List(prevDeclaration, euCountryCheck, arrivingNICheck) =>
+          val prevDeclared = prevDeclaration.asInstanceOf[Option[Boolean]]
+          val euCheck      = euCountryCheck.asInstanceOf[Option[String]]
+          val niCheck      = arrivingNICheck.asInstanceOf[Option[Boolean]]
 
-        implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
+          implicit val jd: JourneyData = JourneyData(prevDeclared, euCheck, niCheck)
 
-        if (jd == JourneyData(Some(false), Some("euOnly"), Some(true))) {
-          status(res) shouldBe OK
-        } else {
-          status(res) shouldBe SEE_OTHER
-        }
+          if (jd == JourneyData(Some(false), Some("euOnly"), Some(true))) {
+            status(res) shouldBe OK
+          } else {
+            status(res) shouldBe SEE_OTHER
+          }
+
+        case _ => throw new Error("Invalid JourneyData")
       }
     }
   }

@@ -146,7 +146,7 @@ case object PrivateCraftStep
     )
 
 case object ZeroDeclarationStep
-    extends JourneyStep(preceding = List(DashboardStep), predicate = _ => _.flatMap(_.userInformation).isDefined)
+    extends JourneyStep(preceding = List(DashboardStep), predicate = _ => _.flatMap(_.buildUserInformation).isDefined)
 
 case object PreviousDeclarationStep extends JourneyStep(Nil, _ => _ => true)
 

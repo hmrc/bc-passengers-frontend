@@ -39,16 +39,16 @@
     @if(isPageHeading) {
         <h1 class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--xl" for=@name>
-                @messages(label, headingMessageArgs: _*)
+                @messages(label, headingMessageArgs*)
             </label>
         </h1>
     } else if(labelClass) {
         <label class="govuk-label govuk-!-font-weight-bold" for=@id>
-            @messages(label, headingMessageArgs: _*)
+            @messages(label, headingMessageArgs*)
         </label>
     }else {
         <label class="govuk-label" for=@id>
-            @messages(label, headingMessageArgs: _*)
+            @messages(label, headingMessageArgs*)
         </label>
     }
     @if(isPageHint){<span id="@id-hint" class="govuk-hint">@hint</span>}

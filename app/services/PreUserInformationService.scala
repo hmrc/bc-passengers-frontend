@@ -17,22 +17,36 @@
 package services
 
 import connectors.Cache
+import controllers.LocalContext
+import models.YourJourneyDetailsDto.toArrivalForm
+
 import javax.inject.{Inject, Singleton}
-import models.{JourneyData, UserInformation}
+import models.{JourneyData, PreUserInformation, YourJourneyDetailsDto}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserInformationService @Inject() (val cache: Cache) {
+class PreUserInformationService @Inject() (val cache: Cache) {
 
-  def storeUserInformation(journeyData: JourneyData, userInformation: UserInformation)(implicit
+  def storePreUserInformation(journeyData: JourneyData, preUserInformation: Option[PreUserInformation])(implicit
     hc: HeaderCarrier,
     ex: ExecutionContext
   ): Future[JourneyData] = {
 
-    val updatedJourneyData = journeyData.copy(userInformation = Some(userInformation))
+    val updatedJourneyData = journeyData.copy(preUserInformation = preUserInformation)
 
+    cache.store(updatedJourneyData).map(_ => updatedJourneyData)
+  }
+
+  def storeCompleteUserInformation(journeyData: JourneyData, dto: YourJourneyDetailsDto)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext,
+    lc: LocalContext
+  ): Future[JourneyData] = {
+
+    val preUserInfo        = lc.getJourneyData.preUserInformation.map(_.copy(arrivalForm = Option(toArrivalForm(dto))))
+    val updatedJourneyData = journeyData.copy(preUserInformation = preUserInfo)
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 }

@@ -138,7 +138,7 @@ class TravelDetailsController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(eu_country_check(formWithErrors, backLinkModel.backLink))),
         euCountryCheckDto =>
-          travelDetailsService.storeEuCountryCheck(context.journeyData)(euCountryCheckDto.euCountryCheck) flatMap { _ =>
+          travelDetailsService.storeEuCountryCheck(context.journeyData)(euCountryCheckDto.euCountryCheck).flatMap { _ =>
             cache.fetch map { _ => Redirect(routes.ArrivingNIController.loadArrivingNIPage) }
           }
       )
@@ -258,27 +258,29 @@ class TravelDetailsController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(bringing_duty_free_question(formWithErrors, backLinkModel.backLink))),
         isBringingDutyFreeDto =>
-          travelDetailsService.storeBringingDutyFree(context.journeyData)(
-            isBringingDutyFreeDto.isBringingDutyFree
-          ) flatMap { _ =>
-            if (!isBringingDutyFreeDto.isBringingDutyFree) {
-              cache.fetch map {
-                case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
-                  Redirect(routes.TravelDetailsController.goodsBoughtInsideEu)
-                case Some(jd) if jd.euCountryCheck.contains("both")   =>
-                  Redirect(routes.TravelDetailsController.goodsBoughtIntoGB)
-                case _                                                =>
-                  Redirect(routes.TravelDetailsController.privateTravel)
-              }
-            } else {
-              cache.fetch map {
-                case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
-                  Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionEu)
-                case Some(jd) if jd.euCountryCheck.contains("both")   =>
-                  Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix)
+          travelDetailsService
+            .storeBringingDutyFree(context.journeyData)(
+              isBringingDutyFreeDto.isBringingDutyFree
+            )
+            .flatMap { _ =>
+              if (!isBringingDutyFreeDto.isBringingDutyFree) {
+                cache.fetch map {
+                  case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
+                    Redirect(routes.TravelDetailsController.goodsBoughtInsideEu)
+                  case Some(jd) if jd.euCountryCheck.contains("both")   =>
+                    Redirect(routes.TravelDetailsController.goodsBoughtIntoGB)
+                  case _                                                =>
+                    Redirect(routes.TravelDetailsController.privateTravel)
+                }
+              } else {
+                cache.fetch map {
+                  case Some(jd) if jd.euCountryCheck.contains("euOnly") =>
+                    Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionEu)
+                  case Some(jd) if jd.euCountryCheck.contains("both")   =>
+                    Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix)
+                }
               }
             }
-          }
       )
   }
 

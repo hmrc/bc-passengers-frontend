@@ -2156,7 +2156,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
               isEditable = Some(true)
             )
           ),
-          userInformation = None,
+          preUserInformation = None,
           calculatorResponse = None,
           chargeReference = None,
           defaultCountry = Some("FR"),

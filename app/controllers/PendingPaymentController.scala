@@ -48,7 +48,7 @@ class PendingPaymentController @Inject() (
     with ControllerHelpers {
 
   val loadPendingPaymentPage: Action[AnyContent] = pendingPaymentAction { implicit context =>
-    calculatorService.calculate(context.getJourneyData) flatMap {
+    calculatorService.calculate(context.getJourneyData).flatMap {
       case CalculatorServiceSuccessResponse(calculatorResponse) =>
         val previousPaidCalculation = calculatorService.getPreviousPaidCalculation(
           context.getJourneyData.deltaCalculation.get,

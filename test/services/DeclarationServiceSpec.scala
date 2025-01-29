@@ -18,6 +18,7 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
+import models.UserInformation.getPreUser
 import models.*
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => meq, *}
@@ -265,7 +266,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     )
 
     val expectedJsObj: JsObject = Json.obj(
-      "journeyData"              -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
+      "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate"              -> "2018-05-31T12:14:08Z",
@@ -557,7 +558,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     val jdTobeSent: JourneyData                  = JourneyData(
       euCountryCheck = Some("nonEuOnly"),
       arrivingNICheck = Some(false),
-      userInformation = Some(userInformation),
+      preUserInformation = Some(getPreUser(userInformation)),
       calculatorResponse = Some(calculatorResponse),
       purchasedProductInstances = cumulativePPIs,
       amendmentCount = Some(1)
@@ -883,7 +884,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
+        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -1219,7 +1220,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
+        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -1704,7 +1705,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
+        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -2186,7 +2187,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
+        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -2526,7 +2527,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(userInformation = Some(userInformation))),
+        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -2792,12 +2793,15 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       val r: JourneyData =
         declarationService.storeChargeReference(JourneyData(), userInformation, "XJPR5768524625").futureValue
 
-      r shouldBe JourneyData(chargeReference = Some("XJPR5768524625"), userInformation = Some(userInformation))
+      r shouldBe JourneyData(
+        chargeReference = Some("XJPR5768524625"),
+        preUserInformation = Some(getPreUser(userInformation))
+      )
 
       verify(mockCache, times(1)).store(bodyCapture.capture())(any())
 
       bodyCapture.getValue shouldBe JourneyData(
-        userInformation = Some(userInformation),
+        preUserInformation = Some(getPreUser(userInformation)),
         chargeReference = Some("XJPR5768524625")
       )
     }

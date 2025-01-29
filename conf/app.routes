@@ -131,8 +131,21 @@ GET        /tax-due                                                             
 
 GET        /declare-your-goods                                                         controllers.CalculateDeclareController.declareYourGoods
 
-GET        /user-information                                                           controllers.CalculateDeclareController.enterYourDetails
-POST       /user-information                                                           controllers.CalculateDeclareController.processEnterYourDetails
+GET        /user-information-name                                                      controllers.CalculateDeclareController.whatIsYourName
+POST       /user-information-name                                                      controllers.CalculateDeclareController.processWhatIsYourName
+
+GET        /user-information-id                                                        controllers.CalculateDeclareController.typeOfIdentification
+POST       /user-information-id                                                        controllers.CalculateDeclareController.processTypeOfIdentification
+
+GET        /user-information-id-number                                              controllers.CalculateDeclareController.whatIsYourIdentificationNumber
+POST       /user-information-id-number                                              controllers.CalculateDeclareController.processIdentificationNumber
+
+GET        /user-information-email                                                         controllers.CalculateDeclareController.whatIsYourEmail
+POST       /user-information-email                                                         controllers.CalculateDeclareController.processWhatIsYourEmail
+
+GET        /user-information-journey                                                            controllers.CalculateDeclareController.whatAreYourJourneyDetails
+POST       /user-information-journey                                                            controllers.CalculateDeclareController.processJourneyDetails
+
 GET        /process-amendment                                                          controllers.CalculateDeclareController.processAmendment
 
 GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage()

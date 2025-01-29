@@ -55,7 +55,7 @@ class PayApiService @Inject() (
 
   private lazy val backUrlDeclaration: String    = configuration
     .getOptional[String]("bc-passengers-frontend.host")
-    .getOrElse("") + routes.CalculateDeclareController.enterYourDetails
+    .getOrElse("") + routes.CalculateDeclareController.whatIsYourName
   private lazy val backUrlAmendment: String      = configuration
     .getOptional[String]("bc-passengers-frontend.host")
     .getOrElse("") + routes.CalculateDeclareController.declareYourGoods

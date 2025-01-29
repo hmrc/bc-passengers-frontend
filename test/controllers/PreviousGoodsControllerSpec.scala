@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.Cache
-import models.{Calculation, CalculatorServiceRequest, Country, Currency, DeclarationResponse, ExchangeRate, JourneyData, LiabilityDetails, OtherGoodsSearchItem, PreviousDeclarationRequest, ProductPath, ProductTreeLeaf, PurchasedItem, PurchasedProductInstance, UserInformation}
+import models.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any

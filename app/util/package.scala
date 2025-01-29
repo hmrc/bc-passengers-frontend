@@ -65,7 +65,7 @@ package object util extends ProductDetector {
           Some(
             (
               name,
-              JsArray(jsa.value flatMap {
+              JsArray(jsa.value.flatMap {
                 case JsNull      => None
                 case o: JsObject => Some(o.alterFields(customOperation))
                 case v: JsValue  => Some(v)
