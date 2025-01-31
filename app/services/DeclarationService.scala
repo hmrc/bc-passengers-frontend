@@ -20,6 +20,7 @@ import audit.AuditingTools
 import connectors.Cache
 import models.UserInformation.getPreUser
 import models.*
+import models.JourneyDataDownstream.*
 import play.api.Logger
 import play.api.http.Status.*
 import play.api.i18n.{Lang, MessagesApi}
@@ -58,7 +59,22 @@ class DeclarationService @Inject() (
     previousDeclarationDetails: PreviousDeclarationRequest
   )(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
 
-    def constructJourneyDataFromDeclarationResponse(declarationResponse: JsValue): JourneyData =
+    def constructJourneyDataFromDeclarationResponse(declarationResponse: JsValue): JourneyData = {
+      val userInformation = (declarationResponse \ "userInformation").as[UserInformation]
+      val preUserInfo     = PreUserInformation(
+        WhatIsYourNameForm(userInformation.firstName, userInformation.lastName),
+        Some(IdentificationForm(userInformation.identificationType, Some(userInformation.identificationNumber))),
+        Some(userInformation.emailAddress),
+        Some(
+          ArrivalForm(
+            userInformation.selectPlaceOfArrival,
+            userInformation.enterPlaceOfArrival,
+            userInformation.dateOfArrival,
+            userInformation.timeOfArrival
+          )
+        )
+      )
+
       JourneyData(
         prevDeclaration = Some(true),
         euCountryCheck = (declarationResponse \ "euCountryCheck").asOpt[String],
@@ -66,7 +82,7 @@ class DeclarationService @Inject() (
         ageOver17 = (declarationResponse \ "isOver17").asOpt[Boolean],
         isUKResident = (declarationResponse \ "isUKResident").asOpt[Boolean],
         privateCraft = (declarationResponse \ "isPrivateTravel").asOpt[Boolean],
-        preUserInformation = (declarationResponse \ "preUserInformation").asOpt[PreUserInformation],
+        preUserInformation = Some(preUserInfo),
         previousDeclarationRequest = Some(previousDeclarationDetails),
         declarationResponse = Some(
           DeclarationResponse(
@@ -82,6 +98,7 @@ class DeclarationService @Inject() (
             (declarationResponse \ "deltaCalculation").asOpt[Calculation]
           } else { None }
       )
+    }
 
     val url: String = s"$passengersDeclarationsBaseUrl/bc-passengers-declarations/retrieve-declaration"
 
@@ -96,7 +113,7 @@ class DeclarationService @Inject() (
           )
         case HttpResponse(BAD_REQUEST, _, _)          =>
           logger.error(
-            "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE BAD_REQUEST received from bc-passengers-declarations "
+            "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE BAD_REQUEST received from bc-passengers-declarations ",
           )
           DeclarationServiceFailureResponse
         case HttpResponse(NOT_FOUND, _, _)            =>
@@ -104,9 +121,9 @@ class DeclarationService @Inject() (
             "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE NOT_FOUND received from bc-passengers-declarations"
           )
           DeclarationServiceFailureResponse
-        case HttpResponse(status, _, _)               =>
+        case HttpResponse(status, body, _)               =>
           logger.error(
-            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed: ${body}"
           )
           DeclarationServiceFailureResponse
         case _                                        =>
@@ -494,7 +511,7 @@ class DeclarationService @Inject() (
       val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
         journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
 
-      journeyData.copy(
+      val finalJourneyData = journeyData.copy(
         prevDeclaration = None,
         previousDeclarationRequest = None,
         preUserInformation = Some(getPreUser(userInformation)),
@@ -503,6 +520,8 @@ class DeclarationService @Inject() (
         deltaCalculation = journeyData.deltaCalculation,
         amendmentCount = Some(amendmentCount)
       )
+
+      JourneyDataDownstream(finalJourneyData)
     }
 
     def getRequestCommon: JsValue = {
