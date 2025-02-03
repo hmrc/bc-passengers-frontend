@@ -119,7 +119,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                 shouldBe true
       form.errors.size                               shouldBe 1
-      form.error("identificationNumber").get.message shouldBe "error.max-length.identification_number"
+      form.error("identificationNumber").get.message shouldBe "error.max-length.passport_number"
     }
 
     "allow the identificationNumber to be correct if identificationType is telephone and in correct format" in {

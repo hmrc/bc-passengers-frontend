@@ -25,7 +25,7 @@ import views.html.declaration.phone_number
 class TypeOfIdentificationViewSpec extends BaseViewSpec {
 
   private val emptyForm: Form[IdentificationNumberDto] = IdentificationNumberDto
-    .form("telephone")
+    .form("euId")
     .bind(
       Map(
         "identificationNumber" -> ""
@@ -40,8 +40,8 @@ class TypeOfIdentificationViewSpec extends BaseViewSpec {
       )
     )
 
-  private val formWithInvalidPhoneMaxLength: Form[IdentificationNumberDto] = IdentificationNumberDto
-    .form("telephone")
+  private val formWithInvalidEuIdMaxLength: Form[IdentificationNumberDto] = IdentificationNumberDto
+    .form("euId")
     .bind(
       Map(
         "identificationNumber" -> "12345678901234567890123456789012345678901234567890"
@@ -89,21 +89,21 @@ class TypeOfIdentificationViewSpec extends BaseViewSpec {
     )
 
   val expectedEmptyFormErrors: Seq[(String, String)] = List(
-    "#identificationNumber" -> messages("error.required.identification_number")
+    "#identificationNumber" -> messages("error.required.euId")
   )
 
   val expectedInvalidTelephoneFormErrors: Seq[(String, String)] = List(
     "#identificationNumber" -> messages("error.telephone_number.format")
   )
 
-  val expectedInvalidPhoneMaxLengthFormErrors: Seq[(String, String)] = List(
-    "#identificationNumber" -> messages("error.max-length.identification_number")
+  val expectedInvalidEuIdMaxLengthFormErrors: Seq[(String, String)] = List(
+    "#identificationNumber" -> messages("error.max-length.euId")
   )
 
   val invalidTestCases: Seq[(String, Form[IdentificationNumberDto], Seq[(String, String)])] = Seq(
     Tuple3("Empty form", emptyForm, expectedEmptyFormErrors),
     Tuple3("Invalid telephone form", formWithInvalidTelephone, expectedInvalidTelephoneFormErrors),
-    Tuple3("Invalid telephone max length form", formWithInvalidPhoneMaxLength, expectedInvalidPhoneMaxLengthFormErrors)
+    Tuple3("Invalid euId max length form", formWithInvalidEuIdMaxLength, expectedInvalidEuIdMaxLengthFormErrors)
   )
 
   "TypeOfIdentificationView" when {

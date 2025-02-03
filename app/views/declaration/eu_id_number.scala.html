@@ -31,25 +31,23 @@
 
 @(form: Form[IdentificationNumberDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "label.your_eu_id")), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "label.what_is_your_eu_id")), backLink = backLink) {
 
     @formHelper(action = routes.CalculateDeclareController.processIdentificationNumber) {
 
     @errorSummary(form.errors)
 
-    @fieldset(s"label.your_eu_id") {
+    @fieldset(s"label.what_is_your_eu_id") {
 
         @p{@messages("label.euId_hint")}
 
         @p{<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">@messages("label.euId_hint_link")</a>}
 
-        @h2(messages("label.what_is_your_eu_id"))
-
         @inputText(
             form,
             id = "identificationNumber",
             name = "identificationNumber",
-            label = "",
+            label = "label.your_eu_id",
             hint = None,
             isPageHeading = false,
             classes = Some("govuk-input govuk-!-width-one-half"),

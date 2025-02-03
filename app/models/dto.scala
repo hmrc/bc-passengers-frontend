@@ -256,7 +256,7 @@ trait Validators {
       if (text.isEmpty || text.matches(pattern)) Valid else Invalid(ValidationError(s"error.$fieldName"))
     }
 
-  def maxLength(maxLength: Int, fieldName: String): Constraint[String] =
+  def maxLengthContraint(maxLength: Int, fieldName: String): Constraint[String] =
     Constraint("constraint.maxLength", maxLength) { text =>
       if (text.length <= maxLength) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", maxLength))
     }
@@ -269,14 +269,25 @@ trait Validators {
   ): Constraint[String] =
     Constraint { number =>
       (typeOfId, number) match {
-        case (_, y) if y.isEmpty || (y.length > maxLength)                     =>
-          nonEmptyMaxLength(maxLength, "identification_number").apply(y)
-        case (x, y) if !x.contains("telephone") && y.matches(idPattern)        => Valid
+        case (x, y) if x.contains("driving") && y.isEmpty                      =>
+          nonEmpty("driving_licence").apply(y)
+        case (x, y) if x.contains("driving") && (y.length > maxLength)         =>
+          maxLengthContraint(maxLength, "driving_licence").apply(y)
+        case (x, y) if x.contains("passport") && y.isEmpty                     =>
+          nonEmpty("passport_number").apply(y)
+        case (x, y) if x.contains("passport") && (y.length > maxLength)        =>
+          maxLengthContraint(maxLength, "passport_number").apply(y)
+        case (x, y) if x.contains("euId") && y.isEmpty                         =>
+          nonEmpty("euId").apply(y)
+        case (x, y) if x.contains("euId") && (y.length > maxLength)            =>
+          maxLengthContraint(maxLength, "euId").apply(y)
+        case (x, y) if x.contains("telephone") && y.isEmpty                    =>
+          nonEmpty("telephone").apply(y)
         case (x, y) if !x.contains("telephone") && !y.matches(idPattern)       =>
           Invalid(ValidationError(s"error.identification_number.format"))
-        case (x, y) if x.contains("telephone") && y.matches(telephonePattern)  => Valid
         case (x, y) if x.contains("telephone") && !y.matches(telephonePattern) =>
           Invalid(ValidationError(s"error.telephone_number.format"))
+        case (_, _)                                                            => Valid
       }
     }
 }
@@ -430,10 +441,10 @@ object YourJourneyDetailsDto extends Validators {
   def form(declarationTime: LocalDateTime): Form[YourJourneyDetailsDto] = Form(
     mapping(
       "placeOfArrival"    -> mapping(
-        "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
+        "selectPlaceOfArrival" -> optional(text.verifying(maxLengthContraint(40, "place_of_arrival"))),
         "enterPlaceOfArrival"  -> optional(
           text
-            .verifying(maxLength(40, "place_of_arrival"))
+            .verifying(maxLengthContraint(40, "place_of_arrival"))
             .verifying(validateFieldsRegex("place_of_arrival.valid", validInputText))
         )
       )(PlaceOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))

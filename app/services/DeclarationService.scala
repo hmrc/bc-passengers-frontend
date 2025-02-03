@@ -18,21 +18,20 @@ package services
 
 import audit.AuditingTools
 import connectors.Cache
-import models.UserInformation.getPreUser
 import models.*
-import models.JourneyDataDownstream.*
+import models.UserInformation.getPreUser
 import play.api.Logger
 import play.api.http.Status.*
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Reads.*
 import util.*
 import play.api.libs.json.*
-import uk.gov.hmrc.http.HttpReads.Implicits.*
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import play.api.libs.ws.writeableOf_JsValue
-import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
@@ -60,17 +59,19 @@ class DeclarationService @Inject() (
   )(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
 
     def constructJourneyDataFromDeclarationResponse(declarationResponse: JsValue): JourneyData = {
-      val userInformation = (declarationResponse \ "userInformation").as[UserInformation]
-      val preUserInfo     = PreUserInformation(
-        WhatIsYourNameForm(userInformation.firstName, userInformation.lastName),
-        Some(IdentificationForm(userInformation.identificationType, Some(userInformation.identificationNumber))),
-        Some(userInformation.emailAddress),
-        Some(
-          ArrivalForm(
-            userInformation.selectPlaceOfArrival,
-            userInformation.enterPlaceOfArrival,
-            userInformation.dateOfArrival,
-            userInformation.timeOfArrival
+      val userInformationOpt: Option[UserInformation] = (declarationResponse \ "userInformation").asOpt[UserInformation]
+      val preUserInfo: Option[PreUserInformation]     = userInformationOpt.map(userInformation =>
+        PreUserInformation(
+          WhatIsYourNameForm(userInformation.firstName, userInformation.lastName),
+          Some(IdentificationForm(userInformation.identificationType, Some(userInformation.identificationNumber))),
+          Some(userInformation.emailAddress),
+          Some(
+            ArrivalForm(
+              userInformation.selectPlaceOfArrival,
+              userInformation.enterPlaceOfArrival,
+              userInformation.dateOfArrival,
+              userInformation.timeOfArrival
+            )
           )
         )
       )
@@ -82,7 +83,7 @@ class DeclarationService @Inject() (
         ageOver17 = (declarationResponse \ "isOver17").asOpt[Boolean],
         isUKResident = (declarationResponse \ "isUKResident").asOpt[Boolean],
         privateCraft = (declarationResponse \ "isPrivateTravel").asOpt[Boolean],
-        preUserInformation = Some(preUserInfo),
+        preUserInformation = preUserInfo,
         previousDeclarationRequest = Some(previousDeclarationDetails),
         declarationResponse = Some(
           DeclarationResponse(
@@ -113,7 +114,7 @@ class DeclarationService @Inject() (
           )
         case HttpResponse(BAD_REQUEST, _, _)          =>
           logger.error(
-            "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE BAD_REQUEST received from bc-passengers-declarations ",
+            "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE BAD_REQUEST received from bc-passengers-declarations "
           )
           DeclarationServiceFailureResponse
         case HttpResponse(NOT_FOUND, _, _)            =>
@@ -121,9 +122,9 @@ class DeclarationService @Inject() (
             "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE NOT_FOUND received from bc-passengers-declarations"
           )
           DeclarationServiceFailureResponse
-        case HttpResponse(status, body, _)               =>
+        case HttpResponse(status, body, _)            =>
           logger.error(
-            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed: ${body}"
+            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed: $body"
           )
           DeclarationServiceFailureResponse
         case _                                        =>

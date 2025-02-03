@@ -266,7 +266,6 @@ case class JourneyData(
   def buildUserInformation: Option[UserInformation] = preUserInformation.flatMap(_.buildUserInfo)
 }
 
-
 object JourneyDataDownstream {
   given formats: OFormat[JourneyDataDownstream] = Json.format[JourneyDataDownstream]
 
@@ -305,32 +304,32 @@ object JourneyDataDownstream {
 }
 
 case class JourneyDataDownstream(
-                                  prevDeclaration: Option[Boolean] = None,
-                                  euCountryCheck: Option[String] = None,
-                                  arrivingNICheck: Option[Boolean] = None,
-                                  isUKVatPaid: Option[Boolean] = None,
-                                  isUKVatExcisePaid: Option[Boolean] = None,
-                                  isUKResident: Option[Boolean] = None,
-                                  isUccRelief: Option[Boolean] = None,
-                                  isVatResClaimed: Option[Boolean] = None,
-                                  isBringingDutyFree: Option[Boolean] = None,
-                                  bringingOverAllowance: Option[Boolean] = None,
-                                  privateCraft: Option[Boolean] = None,
-                                  ageOver17: Option[Boolean] = None,
-                                  irishBorder: Option[Boolean] = None,
-                                  selectedAliases: List[ProductAlias] = Nil,
-                                  purchasedProductInstances: List[PurchasedProductInstance] = Nil,
-                                  workingInstance: Option[PurchasedProductInstance] = None,
-                                  userInformation: Option[UserInformation] = None,
-                                  calculatorResponse: Option[CalculatorResponse] = None,
-                                  chargeReference: Option[String] = None,
-                                  defaultCountry: Option[String] = None,
-                                  defaultOriginCountry: Option[String] = None,
-                                  defaultCurrency: Option[String] = None,
-                                  previousDeclarationRequest: Option[PreviousDeclarationRequest] = None,
-                                  declarationResponse: Option[DeclarationResponse] = None,
-                                  deltaCalculation: Option[Calculation] = None,
-                                  amendmentCount: Option[Int] = None,
-                                  pendingPayment: Option[Boolean] = None,
-                                  amendState: Option[String] = None
-                                )
+  prevDeclaration: Option[Boolean] = None,
+  euCountryCheck: Option[String] = None,
+  arrivingNICheck: Option[Boolean] = None,
+  isUKVatPaid: Option[Boolean] = None,
+  isUKVatExcisePaid: Option[Boolean] = None,
+  isUKResident: Option[Boolean] = None,
+  isUccRelief: Option[Boolean] = None,
+  isVatResClaimed: Option[Boolean] = None,
+  isBringingDutyFree: Option[Boolean] = None,
+  bringingOverAllowance: Option[Boolean] = None,
+  privateCraft: Option[Boolean] = None,
+  ageOver17: Option[Boolean] = None,
+  irishBorder: Option[Boolean] = None,
+  selectedAliases: List[ProductAlias] = Nil,
+  purchasedProductInstances: List[PurchasedProductInstance] = Nil,
+  workingInstance: Option[PurchasedProductInstance] = None,
+  userInformation: Option[UserInformation] = None,
+  calculatorResponse: Option[CalculatorResponse] = None,
+  chargeReference: Option[String] = None,
+  defaultCountry: Option[String] = None,
+  defaultOriginCountry: Option[String] = None,
+  defaultCurrency: Option[String] = None,
+  previousDeclarationRequest: Option[PreviousDeclarationRequest] = None,
+  declarationResponse: Option[DeclarationResponse] = None,
+  deltaCalculation: Option[Calculation] = None,
+  amendmentCount: Option[Int] = None,
+  pendingPayment: Option[Boolean] = None,
+  amendState: Option[String] = None
+)

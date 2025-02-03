@@ -103,7 +103,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
     "LHR",
     "",
     parseLocalDate("2018-05-31"),
-    parseLocalTime("01:20 pm")
+    parseLocalTime("13:20")
   )
 
   val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -259,14 +259,16 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
   "Calling DeclarationService.submitDeclaration" should {
 
-    val jd: JourneyData = JourneyData(
+    val jd: JourneyData       = JourneyData(
       euCountryCheck = Some("nonEuOnly"),
       arrivingNICheck = Some(false),
       amendmentCount = Some(0)
     )
+    val jdWithPreUserInfo     = jd.copy(preUserInformation = Some(getPreUser(userInformation)))
+    val journeyDataDownstream = JourneyDataDownstream(jdWithPreUserInfo)
 
     val expectedJsObj: JsObject = Json.obj(
-      "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
+      "journeyData"              -> Json.toJsObject(journeyDataDownstream),
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate"              -> "2018-05-31T12:14:08Z",
@@ -563,9 +565,10 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       purchasedProductInstances = cumulativePPIs,
       amendmentCount = Some(1)
     )
+    val jdDownstream                             = JourneyDataDownstream(jdTobeSent)
 
     val expectedJsObj: JsObject = Json.obj(
-      "journeyData"              -> Json.toJsObject(jdTobeSent),
+      "journeyData"              -> Json.toJsObject(jdDownstream),
       "simpleDeclarationRequest" -> Json.obj(
         "requestCommon" -> Json.obj(
           "receiptDate"              -> "2018-05-31T12:14:08Z",
@@ -821,6 +824,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       val jd: JourneyData =
         JourneyData(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false), amendmentCount = Some(0))
 
+      val journeyDataDownstream = JourneyDataDownstream(jd)
+
       val userInformation: UserInformation = UserInformation(
         "Harry",
         "Potter",
@@ -830,7 +835,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         "LHR",
         "",
         parseLocalDate("2018-05-31"),
-        parseLocalTime("8:2 am")
+        parseLocalTime("8:2")
       )
 
       val calculatorResponse: CalculatorResponse = CalculatorResponse(
@@ -884,7 +889,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
+        "journeyData"              -> Json.toJsObject(journeyDataDownstream.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -946,6 +951,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
       val jd: JourneyData =
         JourneyData(euCountryCheck = Some("nonEuOnly"), arrivingNICheck = Some(true), amendmentCount = Some(0))
+
+      val journeyDataDownstream = JourneyDataDownstream(jd)
 
       val userInformation: UserInformation = UserInformation(
         "Harry",
@@ -1220,7 +1227,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
+        "journeyData"              -> Json.toJsObject(journeyDataDownstream.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -1432,6 +1439,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         amendmentCount = Some(0)
       )
 
+      val journeyDataDownstream = JourneyDataDownstream(jd)
+
       val userInformation: UserInformation = UserInformation(
         "Harry",
         "Potter",
@@ -1705,7 +1714,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
+        "journeyData"              -> Json.toJsObject(journeyDataDownstream.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -1913,6 +1922,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         isUKResident = Some(true),
         amendmentCount = Some(0)
       )
+
+      val journeyDataDownstream = JourneyDataDownstream(jd)
 
       val userInformation: UserInformation = UserInformation(
         "Harry",
@@ -2187,7 +2198,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
+        "journeyData"              -> Json.toJsObject(journeyDataDownstream.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",
@@ -2416,6 +2427,8 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         amendmentCount = Some(0)
       )
 
+      val journeyDataDownstream = JourneyDataDownstream(jd)
+
       val userInformation: UserInformation = UserInformation(
         "Harry",
         "Potter",
@@ -2527,7 +2540,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       )
 
       dm shouldEqual Json.obj(
-        "journeyData"              -> Json.toJsObject(jd.copy(preUserInformation = Some(getPreUser(userInformation)))),
+        "journeyData"              -> Json.toJsObject(journeyDataDownstream.copy(userInformation = Some(userInformation))),
         "simpleDeclarationRequest" -> Json.obj(
           "requestCommon" -> Json.obj(
             "receiptDate"       -> "2018-05-31T12:14:08Z",

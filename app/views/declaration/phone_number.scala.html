@@ -43,16 +43,12 @@
 
         @p{<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">@messages("label.euId_hint_link")</a>}
 
-        @h2(messages("label.what_is_your_phone_number"))
-
-        <span id="id-hint" class="govuk-hint">@messages("label.telephone_number_hint")</span>
-
         @inputText(
             form,
             id = "identificationNumber",
             name = "identificationNumber",
-            label = "",
-            hint = None,
+            label = "label.what_is_your_phone_number",
+            hint = Some(Html(messages("label.telephone_number_hint"))),
             isPageHeading = false,
             classes = Some("govuk-input govuk-!-width-one-half"),
             labelClasses = Some("govuk-!-font-weight-bold")
