@@ -52,7 +52,7 @@ class PreviousDeclarationService @Inject() (
   )(previousDeclarationRequest: PreviousDeclarationRequest)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] =
     journeyData match {
       case Some(_) =>
-        declarationService.retrieveDeclaration(previousDeclarationRequest) flatMap {
+        declarationService.retrieveDeclaration(previousDeclarationRequest).flatMap {
           case DeclarationServiceRetrieveSuccessResponse(retrievedJourneyData) =>
             cache.storeJourneyData(
               retrievedJourneyData.copy(

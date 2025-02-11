@@ -1,0 +1,105 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.mvc.Call
+@import views.ViewUtils._
+@import play.api.libs.json.{JsObject, Json}
+
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    inputRadio: components.inputRadio,
+    fieldset: components.fieldset
+)
+
+@(form: Form[IdentificationTypeDto], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@govukLayout(pageTitle = Some(title(form, "label.which_identification_number")), backLink = backLink) {
+
+    @formHelper(action = routes.CalculateDeclareController.processTypeOfIdentification) {
+
+    @errorSummary(form.errors)
+
+    @fieldset("label.which_identification_number") {
+
+        @if(journeyStart.contains("greatBritain")){
+            @inputRadio(
+                form = form,
+                legend = "",
+                legendAsHeading = false,
+                name = "identificationType",
+                hint = None,
+                items = Seq(
+                    RadioItem(
+                        id = Some("identificationType-passport"),
+                        value = Some("passport"),
+                        content = Text(messages("label.passport_number")),
+                        checked = form("identification.identificationType").value.contains("passport")
+                    ),
+                    RadioItem(
+                        id = Some("identificationType-euId"),
+                        value = Some("euId"),
+                        content = Text(messages("label.euId_number")),
+                        checked = form("identification.identificationType").value.contains("euId")
+                    ),
+                    RadioItem(
+                        id = Some("identificationType-driving"),
+                        value = Some("driving"),
+                        content = Text(messages("label.driving_licence_number")),
+                        checked = form("identification.identificationType").value.contains("driving")
+                    ),
+                    RadioItem(
+                        id = Some("identificationType-telephone"),
+                        value = Some("telephone"),
+                        content = Text(messages("label.telephone_number")),
+                        conditionalHtml =  Some(Html(s"${<p class="govuk-hint">{messages(s"label.telephone_number_hint")}</p>}")),
+                        checked = form("identification.identificationType").value.contains("telephone")
+                    )
+                )
+            )
+        } else {
+            @inputRadio(
+                form = form,
+                legend = "",
+                legendAsHeading = false,
+                name = "identificationType",
+                hint = None,
+                items = Seq(
+                    RadioItem(
+                        id = Some("identificationType-passport"),
+                        value = Some("passport"),
+                        content = Text(messages("label.passport_number")),
+                        checked = form("identification.identificationType").value.contains("passport")
+                    ),
+                    RadioItem(
+                        id = Some("identificationType-euId"),
+                        value = Some("euId"),
+                        content = Text(messages("label.euId_number")),
+                        checked = form("identification.identificationType").value.contains("euId")
+                    )
+                )
+            )
+        }
+    }
+
+    @button("label.continue")
+
+    }
+}

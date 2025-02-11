@@ -31,12 +31,13 @@
                 case key if key.contains("timeOfArrival") => ".hour"
                 case key if key.contains("dateTimeOfArrival") => ".dateOfArrival.day"
                 case key if key.contains("placeOfArrival") => ".selectPlaceOfArrival"
+                case key if key.contains("identificationType") => "-passport"
                 case _ => ""
             }
 
             ErrorLink(
                 href = Some(s"#$id" + errorSuffix),
-                content = Text(messages(error.message, error.args: _*))
+                content = Text(messages(error.message, error.args*))
             )
         }) { errorLinks =>
             @govukErrorSummary(ErrorSummary(

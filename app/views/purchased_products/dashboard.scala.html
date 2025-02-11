@@ -67,7 +67,7 @@
     <div class="govuk-summary-list">
         @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "alcohol", idx)
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "alcohol", idx)
           }
         }
     </div>
@@ -88,7 +88,7 @@
     <div class="govuk-summary-list">
         @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = true).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "tobacco", idx)
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "tobacco", idx)
           }
         }
     </div>
@@ -118,7 +118,7 @@
       <div class="govuk-summary-list">
           @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
             @purchasedItem.descriptionLabels(long = false).map { description =>
-              @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase): _*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+              @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "otherGoods", idx)
             }
           }
       </div>

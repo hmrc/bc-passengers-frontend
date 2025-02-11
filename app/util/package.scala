@@ -65,7 +65,7 @@ package object util extends ProductDetector {
           Some(
             (
               name,
-              JsArray(jsa.value flatMap {
+              JsArray(jsa.value.flatMap {
                 case JsNull      => None
                 case o: JsObject => Some(o.alterFields(customOperation))
                 case v: JsValue  => Some(v)
@@ -156,12 +156,17 @@ package object util extends ProductDetector {
       messages("label.no")
     }
 
-  private val localTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("h:m a", Locale.UK)
-
-  private val localDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-M-d", Locale.UK)
+  // TODO this should be removed in 30 days after it was released in prod 1 Feb 2025
+  private val oldLocalTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("h:m a", Locale.UK)
+  private val localTimeFormat: DateTimeFormatter    = DateTimeFormatter.ofPattern("H:m", Locale.UK)
+  private val localDateFormat: DateTimeFormatter    = DateTimeFormatter.ofPattern("yyyy-M-d", Locale.UK)
 
   def parseLocalTime(time: String): LocalTime =
-    LocalTime.parse(time, localTimeFormat)
+    if (time.toLowerCase.contains("am") || time.toLowerCase.contains("pm")) {
+      LocalTime.parse(time, oldLocalTimeFormat)
+    } else {
+      LocalTime.parse(time, localTimeFormat)
+    }
 
   def formatLocalTime(time: LocalTime): String =
     time.format(localTimeFormat)

@@ -19,18 +19,19 @@ package services
 import audit.AuditingTools
 import connectors.Cache
 import models.*
+import models.UserInformation.getPreUser
 import play.api.Logger
 import play.api.http.Status.*
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Reads.*
 import util.*
 import play.api.libs.json.*
-import uk.gov.hmrc.http.HttpReads.Implicits.*
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import play.api.libs.ws.writeableOf_JsValue
-import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
@@ -57,7 +58,24 @@ class DeclarationService @Inject() (
     previousDeclarationDetails: PreviousDeclarationRequest
   )(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
 
-    def constructJourneyDataFromDeclarationResponse(declarationResponse: JsValue): JourneyData =
+    def constructJourneyDataFromDeclarationResponse(declarationResponse: JsValue): JourneyData = {
+      val userInformationOpt: Option[UserInformation] = (declarationResponse \ "userInformation").asOpt[UserInformation]
+      val preUserInfo: Option[PreUserInformation]     = userInformationOpt.map(userInformation =>
+        PreUserInformation(
+          WhatIsYourNameForm(userInformation.firstName, userInformation.lastName),
+          Some(IdentificationForm(userInformation.identificationType, Some(userInformation.identificationNumber))),
+          Some(userInformation.emailAddress),
+          Some(
+            ArrivalForm(
+              userInformation.selectPlaceOfArrival,
+              userInformation.enterPlaceOfArrival,
+              userInformation.dateOfArrival,
+              userInformation.timeOfArrival
+            )
+          )
+        )
+      )
+
       JourneyData(
         prevDeclaration = Some(true),
         euCountryCheck = (declarationResponse \ "euCountryCheck").asOpt[String],
@@ -65,7 +83,7 @@ class DeclarationService @Inject() (
         ageOver17 = (declarationResponse \ "isOver17").asOpt[Boolean],
         isUKResident = (declarationResponse \ "isUKResident").asOpt[Boolean],
         privateCraft = (declarationResponse \ "isPrivateTravel").asOpt[Boolean],
-        userInformation = (declarationResponse \ "userInformation").asOpt[UserInformation],
+        preUserInformation = preUserInfo,
         previousDeclarationRequest = Some(previousDeclarationDetails),
         declarationResponse = Some(
           DeclarationResponse(
@@ -81,6 +99,7 @@ class DeclarationService @Inject() (
             (declarationResponse \ "deltaCalculation").asOpt[Calculation]
           } else { None }
       )
+    }
 
     val url: String = s"$passengersDeclarationsBaseUrl/bc-passengers-declarations/retrieve-declaration"
 
@@ -103,9 +122,9 @@ class DeclarationService @Inject() (
             "[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE NOT_FOUND received from bc-passengers-declarations"
           )
           DeclarationServiceFailureResponse
-        case HttpResponse(status, _, _)               =>
+        case HttpResponse(status, body, _)            =>
           logger.error(
-            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed"
+            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE Unexpected status of $status received from bc-passengers-declarations, unable to proceed: $body"
           )
           DeclarationServiceFailureResponse
         case _                                        =>
@@ -493,15 +512,17 @@ class DeclarationService @Inject() (
       val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
         journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
 
-      journeyData.copy(
+      val finalJourneyData = journeyData.copy(
         prevDeclaration = None,
         previousDeclarationRequest = None,
-        userInformation = Some(userInformation),
+        preUserInformation = Some(getPreUser(userInformation)),
         purchasedProductInstances = cumulativePurchasedProductInstances,
         declarationResponse = None,
         deltaCalculation = journeyData.deltaCalculation,
         amendmentCount = Some(amendmentCount)
       )
+
+      JourneyDataDownstream(finalJourneyData)
     }
 
     def getRequestCommon: JsValue = {
@@ -548,7 +569,7 @@ class DeclarationService @Inject() (
   ): Future[JourneyData] = {
 
     val updatedJourneyData =
-      journeyData.copy(chargeReference = Some(chargeReference), userInformation = Some(userInformation))
+      journeyData.copy(chargeReference = Some(chargeReference), preUserInformation = Some(getPreUser(userInformation)))
 
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }

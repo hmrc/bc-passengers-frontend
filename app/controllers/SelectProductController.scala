@@ -62,7 +62,7 @@ class SelectProductController @Inject() (
         Future.successful(Redirect(routes.DashboardController.showDashboard))
 
       case Some(ProductAlias(_, productPath)) =>
-        selectProductService.removeSelectedAlias(context.getJourneyData) flatMap { _ =>
+        selectProductService.removeSelectedAlias(context.getJourneyData).flatMap { _ =>
           requireProductOrCategory(productPath) {
 
             case ProductTreeBranch(_, _, _) =>
@@ -139,14 +139,16 @@ class SelectProductController @Inject() (
 
             val updatedJourneyData = context.getJourneyData
 
-            selectProductService.addSelectedProductsAsAliases(
-              updatedJourneyData,
-              selectProductsDto.tokens.map(path.addingComponent)
-            ) flatMap { journeyData =>
-              purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-                Redirect(routes.SelectProductController.nextStep())
+            selectProductService
+              .addSelectedProductsAsAliases(
+                updatedJourneyData,
+                selectProductsDto.tokens.map(path.addingComponent)
+              )
+              .flatMap { journeyData =>
+                purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
+                  Redirect(routes.SelectProductController.nextStep())
+                }
               }
-            }
           }
         )
     }
@@ -173,7 +175,7 @@ class SelectProductController @Inject() (
             val updatedJourneyData       = context.getJourneyData
             val paths: List[ProductPath] = selectProductsDto.tokens.map(path.addingComponent)
 
-            selectProductService.addSelectedProductsAsAliases(updatedJourneyData, paths) flatMap { journeyData =>
+            selectProductService.addSelectedProductsAsAliases(updatedJourneyData, paths).flatMap { journeyData =>
               val pathsOrdered = journeyData.selectedAliases.map(_.productPath)
 
               pathsOrdered match {

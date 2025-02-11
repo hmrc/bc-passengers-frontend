@@ -79,8 +79,8 @@ class DeclarationRetrievalController @Inject() (
             )
             .map(journeyData =>
               if (journeyData.get.declarationResponse.isDefined) {
-                val date       = journeyData.get.userInformation.get.dateOfArrival
-                val time       = journeyData.get.userInformation.get.timeOfArrival
+                val date       = journeyData.get.buildUserInformation.get.dateOfArrival
+                val time       = journeyData.get.buildUserInformation.get.timeOfArrival
                 val dateTime   = LocalDateTime.of(
                   date.getYear,
                   date.getMonth,

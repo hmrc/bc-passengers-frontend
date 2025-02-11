@@ -536,7 +536,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
     }
   }
 
-  "Going back from user-information" should {
+  "Going back from user-information-name" should {
 
     "return user to declare-your-goods" in new LocalSetup {
 
@@ -545,7 +545,7 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override val isArrivingNi: Option[Boolean]                  = Some(true)
       override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
 
-      override def call: Call = CalculateDeclareController.enterYourDetails
+      override def call: Call = CalculateDeclareController.whatIsYourName
 
       m.backLink(context) shouldBe Some(CalculateDeclareController.declareYourGoods.url)
     }

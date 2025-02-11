@@ -69,7 +69,7 @@ class PublicAction @Inject() (cache: Cache, actionBuilder: DefaultActionBuilder,
         request.session.get(SessionKeys.sessionId) match {
           case Some(s) =>
             val headerCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-            cache.fetch(headerCarrier) flatMap { journeyData =>
+            cache.fetch(headerCarrier).flatMap { journeyData =>
               block(LocalContext(request, s, journeyData))
             }
           case None    =>

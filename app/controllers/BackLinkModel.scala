@@ -132,8 +132,16 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
         Some(DashboardController.showDashboard)
       case "declare-your-goods"                                                           =>
         Some(CalculateDeclareController.showCalculation)
-      case "user-information"                                                             =>
+      case "user-information-name"                                                        =>
         Some(CalculateDeclareController.declareYourGoods)
+      case "user-information-id-number"                                                   =>
+        Some(CalculateDeclareController.typeOfIdentification)
+      case "user-information-id"                                                          =>
+        Some(CalculateDeclareController.whatIsYourName)
+      case "user-information-email"                                                       =>
+        Some(CalculateDeclareController.whatIsYourIdentificationNumber)
+      case "user-information-journey"                                                     =>
+        Some(CalculateDeclareController.whatIsYourEmail)
       case "previous-declaration"                                                         =>
         Some(appConfig.declareGoodsUrl)
       case "previous-goods"                                                               =>

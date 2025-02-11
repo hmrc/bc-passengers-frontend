@@ -1,0 +1,137 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.mvc.Call
+@import views.ViewUtils._
+@import play.api.libs.json.{JsObject, Json}
+
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    fieldset: components.fieldset,
+    inputDate: components.inputDate,
+    inputTime: components.inputTime,
+    autoCompleteList: components.autocompleteList
+)
+
+@(form: Form[YourJourneyDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@govukLayout(pageTitle = Some(title(form, "label.what_are_your_journey_details")), backLink = backLink) {
+
+    @formHelper(action = routes.CalculateDeclareController.processJourneyDetails) {
+
+    @errorSummary(form.errors)
+
+    @fieldset(s"label.what_are_your_journey_details") {
+
+        <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
+
+            @form.errors.filter(_.key == "placeOfArrival").map { error =>
+                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span>
+                    @messages(error.message)
+                </span>
+            }
+            @if(journeyStart.contains("greatBritain")){
+                @autoCompleteList(form,
+                    id = "placeOfArrival.selectPlaceOfArrival",
+                    name = "placeOfArrival.selectPlaceOfArrival",
+                    isPageHint = true,
+                    hint = messages("label.for_example_belfast_international_airport"),
+                    isPageHeading = false,
+                    label = messages(s"label.place_of_arrival_ni"),
+                    hintText = messages("label.select_a_country"),
+                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
+                    labelClass = true
+                )
+            } else {
+                @autoCompleteList(form,
+                    id = "placeOfArrival.selectPlaceOfArrival",
+                    name = "placeOfArrival.selectPlaceOfArrival",
+                    isPageHint = true,
+                    hint = messages("label.for_example_heathrow_airport_or_dover"),
+                    isPageHeading = false,
+                    label = messages(s"label.place_of_arrival_uk"),
+                    hintText = messages("label.enter_place_of_arrival"),
+                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
+                    labelClass = true
+                )
+            }
+            <details class="govuk-details govuk-!-margin-bottom-6">
+
+                <summary class="govuk-details__summary" aria-controls="details-content-0" aria-expanded="false">
+                    <span class="govuk-details__summary-text">@messages("label.place_of_arrival_not_listed")</span>
+                </summary>
+
+                <div class="govuk-details__text" id="details-content-0" aria-hidden="false">
+                        @inputText(
+                            form,
+                            id = "placeOfArrival.enterPlaceOfArrival",
+                            name = "placeOfArrival.enterPlaceOfArrival",
+                            label = "label.enter_place_of_arrival",
+                            isPageHeading = false,
+                            classes = Some("govuk-input govuk-!-width-one-half"),
+                            labelClasses = Some("govuk-!-font-weight-bold")
+                        )
+                </div>
+            </details>
+        </div>
+
+        @if(form("dateTimeOfArrival").hasErrors){
+            <div class="govuk-form-group govuk-form-group--error" id="dateOfArrival.date">
+            @form.errors.filter(_.key == "dateTimeOfArrival").map { error =>
+                <span class="govuk-error-message" id="dateTimeOfArrival-error">
+                    <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message)
+                </span>
+            }
+        }
+            <div class="govuk-form-group @{if(form("dateTimeOfArrival.dateOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival.date">
+                @inputDate(
+                    form,
+                    id = "dateTimeOfArrival.dateOfArrival",
+                    legendContent = messages(s"label.date_of_arrival"),
+                    legendClasses = "govuk-label govuk-!-margin-bottom-4 govuk-!-font-weight-bold",
+                    hintMessage= Some((messages(s"label.for_example_31_10_2021"))),
+                    hintHtml = None,
+                    legendAsPageHeading = false
+                )
+            </div>
+
+            <div class="govuk-form-group @{if(form("dateTimeOfArrival.timeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival.time">
+                @inputTime(
+                    form,
+                    id = "dateTimeOfArrival.timeOfArrival",
+                    legendContent = messages("label.scheduled_time_of_arrival"),
+                    legendClasses = "govuk-!-font-weight-bold",
+                    legendAsPageHeading = false,
+                    hintText = Some(messages("label.for_example_930"))
+                )
+            </div>
+
+        @if(form("dateTimeOfArrival").hasErrors){
+            </div>
+        }
+    }
+
+    @button("label.continue")
+
+    }
+}

@@ -17,6 +17,7 @@
 package services
 
 import connectors.Cache
+import models.UserInformation.getPreUser
 import models.{JourneyData, UserInformation}
 import org.mockito.ArgumentMatchers.{eq => meq, *}
 import org.mockito.Mockito.*
@@ -29,7 +30,7 @@ import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
 import scala.concurrent.Future
 
-class UserInformationServiceSpec extends BaseSpec {
+class PreUserInformationServiceSpec extends BaseSpec {
 
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
@@ -43,8 +44,8 @@ class UserInformationServiceSpec extends BaseSpec {
 
     def journeyDataInCache: Option[JourneyData]
 
-    lazy val s: UserInformationService = {
-      val service = app.injector.instanceOf[UserInformationService]
+    lazy val s: PreUserInformationService = {
+      val service = app.injector.instanceOf[PreUserInformationService]
       val mock    = service.cache
       when(mock.fetch(any())).thenReturn(Future.successful(journeyDataInCache))
       when(mock.store(any())(any())).thenReturn(Future.successful(JourneyData()))
@@ -52,33 +53,17 @@ class UserInformationServiceSpec extends BaseSpec {
     }
   }
 
-  "Calling UserInformationService.storeUserInformation" should {
+  "Calling PreUserInformationService.storeUserInformation" should {
 
     "store a new user information" in new LocalSetup {
 
       override def journeyDataInCache: Option[JourneyData] = None
 
       await(
-        s.storeUserInformation(
+        s.storePreUserInformation(
           JourneyData(),
-          UserInformation(
-            "Harry",
-            "Potter",
-            "passport",
-            "SX12345",
-            "abc@gmail.com",
-            "Newcastle Airport",
-            "",
-            parseLocalDate("2018-08-31"),
-            parseLocalTime("12:20 pm")
-          )
-        )
-      )
-
-      verify(s.cache, times(1)).store(
-        meq(
-          JourneyData(userInformation =
-            Some(
+          Option(
+            getPreUser(
               UserInformation(
                 "Harry",
                 "Potter",
@@ -89,6 +74,28 @@ class UserInformationServiceSpec extends BaseSpec {
                 "",
                 parseLocalDate("2018-08-31"),
                 parseLocalTime("12:20 pm")
+              )
+            )
+          )
+        )
+      )
+
+      verify(s.cache, times(1)).store(
+        meq(
+          JourneyData(preUserInformation =
+            Some(
+              getPreUser(
+                UserInformation(
+                  "Harry",
+                  "Potter",
+                  "passport",
+                  "SX12345",
+                  "abc@gmail.com",
+                  "Newcastle Airport",
+                  "",
+                  parseLocalDate("2018-08-31"),
+                  parseLocalTime("12:20 pm")
+                )
               )
             )
           )

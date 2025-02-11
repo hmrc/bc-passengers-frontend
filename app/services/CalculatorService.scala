@@ -89,7 +89,7 @@ class CalculatorService @Inject() (
       .map(_.oldPurchaseProductInstances)
       .getOrElse(Nil) ++ journeyData.purchasedProductInstances
 
-    journeyDataToCalculatorRequest(journeyData, allPurchasedProductInstances) flatMap {
+    journeyDataToCalculatorRequest(journeyData, allPurchasedProductInstances).flatMap {
 
       case Some(calculatorRequest) =>
         val url: String = s"$passengersDutyCalculatorBaseUrl/passengers-duty-calculator/calculate"

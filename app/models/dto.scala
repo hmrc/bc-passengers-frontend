@@ -19,7 +19,7 @@ package models
 import play.api.data.Forms.*
 import play.api.data.validation.*
 import play.api.data.{Form, Mapping}
-import util.{formatLocalDate, formatLocalTime, parseLocalDate, parseLocalTime}
+import util.{parseLocalDate, parseLocalTime}
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 import scala.util.Try
@@ -226,7 +226,11 @@ case class SelectProductsDto(tokens: List[String])
 case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 
 trait Validators {
-  val validInputText                                                           = "^[a-zA-Z- ']+$"
+  val validInputText         = "^[a-zA-Z- ']+$"
+  val identificationPattern  = "^[a-zA-Z0-9- '+]+$"
+  val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
+  val emailAddressPattern    = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
+
   def nonEmptyMaxLength(maxLength: Int, fieldName: String): Constraint[String] = Constraint("constraint.required") {
     text =>
       if (text.isEmpty) { Invalid(ValidationError(s"error.required.$fieldName")) }
@@ -234,26 +238,117 @@ trait Validators {
       else { Valid }
   }
 
+  def nonEmptyMaxLengthEmailFormat(maxLength: Int, fieldName: String): Constraint[String] =
+    Constraint("constraint.required") { text =>
+      if (text.isEmpty) { Invalid(ValidationError(s"error.required.$fieldName")) }
+      else if (text.length > maxLength) { Invalid(ValidationError(s"error.max-length.$fieldName")) }
+      else if (!text.matches(emailAddressPattern)) { Invalid(ValidationError(s"error.format.$fieldName")) }
+      else { Valid }
+    }
+
   def nonEmpty(fieldName: String): Constraint[String] = Constraint("constraint.required") { text =>
     if (text.isEmpty) { Invalid(ValidationError(s"error.required.$fieldName")) }
     else { Valid }
   }
 
-  def validateFieldsRegex(errorKey: String, pattern: String): Constraint[String] =
+  def validateFieldsRegex(fieldName: String, pattern: String): Constraint[String] =
     Constraint { text =>
-      if (text.isEmpty || text.matches(pattern)) Valid else Invalid(errorKey)
+      if (text.isEmpty || text.matches(pattern)) Valid else Invalid(ValidationError(s"error.$fieldName"))
+    }
+
+  def maxLengthContraint(maxLength: Int, fieldName: String): Constraint[String] =
+    Constraint("constraint.maxLength", maxLength) { text =>
+      if (text.length <= maxLength) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", maxLength))
+    }
+
+  def verifyIdentificationNumberConstraint(
+    maxLength: Int,
+    idPattern: String,
+    telephonePattern: String,
+    typeOfId: String
+  ): Constraint[String] =
+    Constraint { number =>
+      (typeOfId, number) match {
+        case (x, y) if x.contains("driving") && y.isEmpty                      =>
+          nonEmpty("driving_licence").apply(y)
+        case (x, y) if x.contains("driving") && (y.length > maxLength)         =>
+          maxLengthContraint(maxLength, "driving_licence").apply(y)
+        case (x, y) if x.contains("passport") && y.isEmpty                     =>
+          nonEmpty("passport_number").apply(y)
+        case (x, y) if x.contains("passport") && (y.length > maxLength)        =>
+          maxLengthContraint(maxLength, "passport_number").apply(y)
+        case (x, y) if x.contains("euId") && y.isEmpty                         =>
+          nonEmpty("euId").apply(y)
+        case (x, y) if x.contains("euId") && (y.length > maxLength)            =>
+          maxLengthContraint(maxLength, "euId").apply(y)
+        case (x, y) if x.contains("telephone") && y.isEmpty                    =>
+          nonEmpty("telephone").apply(y)
+        case (x, y) if !x.contains("telephone") && !y.matches(idPattern)       =>
+          Invalid(ValidationError(s"error.identification_number.format"))
+        case (x, y) if x.contains("telephone") && !y.matches(telephonePattern) =>
+          Invalid(ValidationError(s"error.telephone_number.format"))
+        case (_, _)                                                            => Valid
+      }
     }
 }
 
-object EnterYourDetailsDto extends Validators {
-  private val identificationPattern  = "^[a-zA-Z0-9- '+]+$"
-  private val telephoneNumberPattern = """^\+?(?:\s*\d){10,13}$"""
-  private val emailAddressPattern    = """^(?i)[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"""
+object WhatIsYourNameDto extends Validators {
 
-  private def maxLength(length: Int, fieldName: String): Constraint[String] =
-    Constraint("constraint.maxLength", length) { text =>
-      if (text.length <= length) Valid else Invalid(ValidationError(s"error.max-length.$fieldName", length))
+  def form: Form[WhatIsYourNameDto] = Form(
+    mapping(
+      "firstName" -> text
+        .verifying(nonEmptyMaxLength(35, "first_name"))
+        .verifying(validateFieldsRegex("first_name.valid", validInputText)),
+      "lastName"  -> text
+        .verifying(nonEmptyMaxLength(35, "last_name"))
+        .verifying(validateFieldsRegex("last_name.valid", validInputText))
+    )(WhatIsYourNameDto.apply)(o => Some(Tuple.fromProductTyped(o)))
+  )
+}
+
+object IdentificationTypeDto extends Validators {
+
+  def form: Form[IdentificationTypeDto] = Form(
+    mapping(
+      "identificationType" -> text
+        .verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined)
+    )(IdentificationTypeDto.apply)(o => Some(o.identificationType))
+  )
+}
+
+object IdentificationNumberDto extends Validators {
+
+  def form(idType: String): Form[IdentificationNumberDto] = Form(
+    mapping(
+      "identificationNumber" -> text
+        .verifying(verifyIdentificationNumberConstraint(40, identificationPattern, telephoneNumberPattern, idType))
+    )(IdentificationNumberDto.apply)(o => Some(o.number))
+  )
+}
+
+object EmailAddressDto extends Validators {
+
+  private def emailAddressMatchingConstraint: Constraint[EmailAddressDto] =
+    Constraint { model =>
+      (model.email, model.confirmEmail) match {
+        case (x, y) if x.isEmpty && y.isEmpty                                                 => Valid
+        case (x, y) if (!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern)) =>
+          Invalid(ValidationError(s"error.format.emailAddress", emailAddressPattern))
+        case (x, y) if x != y                                                                 =>
+          Invalid(ValidationError(s"error.required.emailAddress.no_match"))
+        case _                                                                                => Valid
+      }
     }
+
+  def form: Form[EmailAddressDto] = Form(
+    mapping(
+      "email"        -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "email")),
+      "confirmEmail" -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "confirm_email"))
+    )(EmailAddressDto.apply)(o => Some(Tuple.fromProductTyped(o))).verifying(emailAddressMatchingConstraint)
+  )
+}
+
+object YourJourneyDetailsDto extends Validators {
 
   private val mandatoryDate: Mapping[String] =
     tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
@@ -304,14 +399,14 @@ object EnterYourDetailsDto extends Validators {
       )
 
   private val mandatoryTime: Mapping[String] =
-    tuple("hour" -> optional(text), "minute" -> optional(text), "halfday" -> optional(text))
+    tuple("hour" -> optional(text), "minute" -> optional(text))
       .verifying(
         "error.enter_a_time",
-        maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty && maybeTimeString._3.nonEmpty
+        maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty
       )
-      .transform[(String, String, String)](
-        maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get, maybeTimeString._3.get),
-        timeString => (Some(timeString._1), Some(timeString._2), Some(timeString._3))
+      .transform[(String, String)](
+        maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get),
+        timeString => (Some(timeString._1), Some(timeString._2))
       )
       .verifying(
         "error.enter_a_real_time",
@@ -322,22 +417,17 @@ object EnterYourDetailsDto extends Validators {
         timeString =>
           timeString._1.nonEmpty && timeString._1.length <= 2 && timeString._2.nonEmpty && timeString._2.length <= 2
       )
-      .transform[(Int, Int, String)](
-        timeString => (timeString._1.toInt, timeString._2.toInt, timeString._3),
-        time => (time._1.toString, time._2.toString, time._3)
+      .transform[(Int, Int)](
+        timeString => (timeString._1.toInt, timeString._2.toInt),
+        time => (time._1.toString, time._2.toString)
       )
-      .verifying("error.enter_a_real_time", time => time._1 >= 1 && time._1 <= 12 && time._2 >= 0 && time._2 <= 59)
-      .verifying("error.enter_a_real_time", time => time._3.toLowerCase == "am" || time._3.toLowerCase == "pm")
+      .verifying("error.enter_a_real_time", time => time._1 >= 0 && time._1 <= 23 && time._2 >= 0 && time._2 <= 59)
       .transform[String](
-        time => s"${time._1}:${time._2} ${time._3}",
+        time => s"${time._1}:${time._2}",
         localTime =>
           localTime.split(":") match {
-            case Array(hours, minutesAndAmPm) =>
-              val x = minutesAndAmPm.split(" ") match {
-                case Array(minutes, ampm) =>
-                  (minutes, ampm)
-              }
-              (hours.toInt, x._1.toInt, x._2)
+            case Array(hours, minutes) =>
+              (hours.toInt, minutes.toInt)
           }
       )
 
@@ -348,60 +438,14 @@ object EnterYourDetailsDto extends Validators {
     }
   }
 
-  private def verifyIdentificationNumberConstraint(
-    idPattern: String,
-    telephonePattern: String
-  ): Constraint[Identification] =
-    Constraint { model =>
-      (model.identificationType, model.identificationNumber) match {
-        case (x, y) if !x.contains("telephone") && y.matches(idPattern)        => Valid
-        case (x, y) if !x.contains("telephone") && !y.matches(idPattern)       =>
-          Invalid(ValidationError(s"error.identification_number.format"))
-        case (x, y) if x.contains("telephone") && y.matches(telephonePattern)  => Valid
-        case (x, y) if x.contains("telephone") && !y.matches(telephonePattern) =>
-          Invalid(ValidationError(s"error.telephone_number.format"))
-      }
-    }
-
-  private def emailAddressMatchConstraint(): Constraint[EmailAddress] =
-    Constraint { model =>
-      (model.email, model.confirmEmail) match {
-        case (x, y) if x.isEmpty && y.isEmpty                                                 => Valid
-        case (x, y) if x.nonEmpty && y.isEmpty                                                => Invalid(ValidationError(s"error.required.emailAddress.confirmEmail"))
-        case (x, y) if x.isEmpty && y.nonEmpty                                                => Invalid(ValidationError(s"error.required.emailAddress.email"))
-        case (x, y) if (!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern)) =>
-          Invalid(s"error.format.emailAddress", emailAddressPattern)
-        case (x, y) if x != y                                                                 =>
-          Invalid(ValidationError(s"error.required.emailAddress.no_match"))
-        case _                                                                                => Valid
-      }
-    }
-
-  def form(declarationTime: LocalDateTime): Form[EnterYourDetailsDto] = Form(
+  def form(declarationTime: LocalDateTime): Form[YourJourneyDetailsDto] = Form(
     mapping(
-      "firstName"         -> text
-        .verifying(nonEmptyMaxLength(35, "first_name"))
-        .verifying(validateFieldsRegex("error.first_name.valid", validInputText)),
-      "lastName"          -> text
-        .verifying(nonEmptyMaxLength(35, "last_name"))
-        .verifying(validateFieldsRegex("error.last_name.valid", validInputText)),
-      "identification"    -> mapping(
-        "identificationType"   -> optional(text)
-          .verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined),
-        "identificationNumber" -> text.verifying(nonEmptyMaxLength(40, "identification_number"))
-      )(Identification.apply)(o => Some(Tuple.fromProductTyped(o)))
-        .verifying(verifyIdentificationNumberConstraint(identificationPattern, telephoneNumberPattern)),
-      "emailAddress"      -> mapping(
-        "email"        -> text.verifying(maxLength(132, "email")),
-        "confirmEmail" -> text.verifying(maxLength(132, "email"))
-      )(EmailAddress.apply)(o => Some(Tuple.fromProductTyped(o)))
-        .verifying(emailAddressMatchConstraint()),
       "placeOfArrival"    -> mapping(
-        "selectPlaceOfArrival" -> optional(text.verifying(maxLength(40, "place_of_arrival"))),
+        "selectPlaceOfArrival" -> optional(text.verifying(maxLengthContraint(40, "place_of_arrival"))),
         "enterPlaceOfArrival"  -> optional(
           text
-            .verifying(maxLength(40, "place_of_arrival"))
-            .verifying(validateFieldsRegex("error.place_of_arrival.valid", validInputText))
+            .verifying(maxLengthContraint(40, "place_of_arrival"))
+            .verifying(validateFieldsRegex("place_of_arrival.valid", validInputText))
         )
       )(PlaceOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
         .verifying()
@@ -432,22 +476,16 @@ object EnterYourDetailsDto extends Validators {
               .atZone(ZoneOffset.UTC)
               .isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L))
         )
-    )(EnterYourDetailsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
+    )(YourJourneyDetailsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
-  def fromUserInformation(userInformation: UserInformation): EnterYourDetailsDto =
-    EnterYourDetailsDto(
-      userInformation.firstName,
-      userInformation.lastName,
-      Identification(Some(userInformation.identificationType), userInformation.identificationNumber),
-      EmailAddress(userInformation.emailAddress, userInformation.emailAddress),
-      PlaceOfArrival(Some(userInformation.selectPlaceOfArrival), Some(userInformation.enterPlaceOfArrival)),
-      DateTimeOfArrival(
-        formatLocalDate(userInformation.dateOfArrival, "dd-MM-yyyy"),
-        formatLocalTime(userInformation.timeOfArrival).toLowerCase
-      )
+  def toArrivalForm(dto: YourJourneyDetailsDto): ArrivalForm =
+    ArrivalForm(
+      selectPlaceOfArrival = dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
+      enterPlaceOfArrival = dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
+      dateOfArrival = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
+      timeOfArrival = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
-
 }
 
 object DeclarationRetrievalDto extends Validators {
@@ -459,9 +497,9 @@ object DeclarationRetrievalDto extends Validators {
     mapping(
       "lastName"        -> text
         .verifying(nonEmptyMaxLength(35, "last_name"))
-        .verifying(validateFieldsRegex("error.last_name.valid", validInputText)),
+        .verifying(validateFieldsRegex("last_name.valid", validInputText)),
       "referenceNumber" -> text
-        .verifying(validateFieldsRegex("error.referenceNumber.invalid", chargeReferencePattern))
+        .verifying(validateFieldsRegex("referenceNumber.invalid", chargeReferencePattern))
         .verifying(nonEmpty("referenceNumber"))
     )(DeclarationRetrievalDto.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
@@ -469,13 +507,11 @@ object DeclarationRetrievalDto extends Validators {
 
 case class DateTimeOfArrival(dateOfArrival: String, timeOfArrival: String)
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
-case class Identification(identificationType: Option[String], identificationNumber: String)
-case class EmailAddress(email: String, confirmEmail: String)
-case class EnterYourDetailsDto(
-  firstName: String,
-  lastName: String,
-  identification: Identification,
-  emailAddress: EmailAddress,
+case class EmailAddressDto(email: String, confirmEmail: String)
+case class WhatIsYourNameDto(firstName: String, lastName: String)
+case class IdentificationTypeDto(identificationType: String)
+case class IdentificationNumberDto(number: String)
+case class YourJourneyDetailsDto(
   placeOfArrival: PlaceOfArrival,
   dateTimeOfArrival: DateTimeOfArrival
 )
