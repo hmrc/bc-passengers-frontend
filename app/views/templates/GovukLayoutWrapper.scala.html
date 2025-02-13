@@ -21,6 +21,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
 
 @this(
     govukLayout: GovukLayout,
@@ -32,7 +34,9 @@
     hmrcHead: HmrcHead,
     hmrcScripts: HmrcScripts,
     footer: HmrcStandardFooter,
-    hmrcTimeoutDialog: HmrcTimeoutDialog
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    autocompleteCss: HmrcAccessibleAutocompleteCss,
+    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
 @(
@@ -46,6 +50,7 @@
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: config.AppConfig)
 
 @head = {
+    @autocompleteCss()
     @inlineLinkElem
     <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"><!--<![endif]-->
 
@@ -64,7 +69,7 @@
 }
 
 @scriptsBlock = {
-    <script @CSPNonce.attr src='@routes.Assets.versioned("javascripts/application.js")'></script>
+    @autocompleteJavascript()
     @inlineScript
 }
 
