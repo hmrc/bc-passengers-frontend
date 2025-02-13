@@ -310,8 +310,9 @@ object IdentificationTypeDto extends Validators {
 
   def form: Form[IdentificationTypeDto] = Form(
     mapping(
-      "identificationType" -> text
-        .verifying("error.identification_type", y => y.nonEmpty && Try(y).toOption.isDefined)
+      "identificationType" -> optional(text)
+        .verifying("error.identification_type", y => y.isDefined)
+        .transform(o => o.getOrElse(""), o => Some(o))
     )(IdentificationTypeDto.apply)(o => Some(o.identificationType))
   )
 }
@@ -331,12 +332,8 @@ object EmailAddressDto extends Validators {
   private def emailAddressMatchingConstraint: Constraint[EmailAddressDto] =
     Constraint { model =>
       (model.email, model.confirmEmail) match {
-        case (x, y) if x.isEmpty && y.isEmpty                                                 => Valid
-        case (x, y) if (!x.matches(emailAddressPattern)) || (!y.matches(emailAddressPattern)) =>
-          Invalid(ValidationError(s"error.format.emailAddress", emailAddressPattern))
-        case (x, y) if x != y                                                                 =>
-          Invalid(ValidationError(s"error.required.emailAddress.no_match"))
-        case _                                                                                => Valid
+        case (x, y) if x != y => Invalid("error.required.emailAddress.no_match")
+        case _                => Valid
       }
     }
 
