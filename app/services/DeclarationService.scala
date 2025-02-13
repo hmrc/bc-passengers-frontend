@@ -620,7 +620,7 @@ class DeclarationService @Inject() (
     (localPath.json
       .copyFrom((localPath \ Symbol("requestDetail")).json.pick) andThen
       (localPath \ Symbol("requestCommon")).json.prune andThen
-      (localPath \ Symbol("'requestDetail")).json.prune) andThen
+      (localPath \ Symbol("requestDetail")).json.prune) andThen
       (localPath \ Symbol("customerReference") \ Symbol("idType")).json.prune andThen
       (localPath \ Symbol("customerReference") \ Symbol("idValue")).json.prune andThen
       localPath.json

@@ -399,7 +399,7 @@ class CalculateDeclareController @Inject() (
             val userInformation = getBasicUserInfo(journeyData.preUserInformation)
 
             requireCalculatorResponse { calculatorResponse =>
-              val allTax            = BigDecimal(calculatorResponse.calculation.allTax)
+              val allTax = BigDecimal(calculatorResponse.calculation.allTax)
               val declarationResult = declarationService.submitDeclaration(
                 userInformation,
                 calculatorResponse,
@@ -408,33 +408,33 @@ class CalculateDeclareController @Inject() (
                 correlationId
               )
               declarationResult.flatMap {
-                case DeclarationServiceFailureResponse     =>
+                case DeclarationServiceFailureResponse =>
                   Future.successful(InternalServerError(errorTemplate()))
                 case DeclarationServiceSuccessResponse(cr) =>
-                  if (
-                    allTax == 0 && context.getJourneyData.euCountryCheck
-                      .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
-                  ) {
-                    declarationService
-                      .storeChargeReference(context.getJourneyData, userInformation, cr.value)
-                      .flatMap { _ =>
+                  declarationService
+                    .storeChargeReference(journeyData, userInformation, cr.value)
+                    .flatMap { _ =>
+                      if (
+                        allTax == 0 && context.getJourneyData.euCountryCheck
+                          .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
+                      ) {
                         Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+                      } else {
+                        payApiService
+                          .requestPaymentUrl(
+                            cr,
+                            userInformation,
+                            calculatorResponse,
+                            (allTax * 100).toInt,
+                            isAmendment = false,
+                            None
+                          )
+                          .flatMap {
+                            case PayApiServiceFailureResponse => Future.successful(InternalServerError(errorTemplate()))
+                            case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
+                          }
                       }
-                  } else {
-                    payApiService
-                      .requestPaymentUrl(
-                        cr,
-                        userInformation,
-                        calculatorResponse,
-                        (allTax * 100).toInt,
-                        isAmendment = false,
-                        None
-                      )
-                      .flatMap {
-                        case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
-                        case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
-                      }
-                  }
+                    }
               }
             }
         }
