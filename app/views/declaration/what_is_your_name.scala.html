@@ -24,18 +24,18 @@
     errorSummary: components.errorSummary,
     inputText: components.inputText,
     button: components.button,
-    fieldset: components.fieldset,
+    h1: components.h1
 )
 
 @(form: Form[WhatIsYourNameDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.what_is_your_name")), backLink = backLink) {
 
-    @formHelper(action = routes.CalculateDeclareController.processWhatIsYourName) {
-
     @errorSummary(form.errors)
 
-    @fieldset(s"label.what_is_your_name") {
+    @h1("label.what_is_your_name")
+
+    @formHelper(action = routes.CalculateDeclareController.processWhatIsYourName) {
 
         @inputText(
             form,
@@ -45,7 +45,7 @@
             isPageHeading = false,
             autocomplete = Some("given-name"),
             classes = Some("govuk-input govuk-!-width-one-half"),
-            labelClasses = Some("govuk-!-font-weight-bold")
+            labelClasses = None
         )
 
         @inputText(
@@ -56,9 +56,8 @@
             isPageHeading = false,
             autocomplete = Some("family-name"),
             classes = Some("govuk-input govuk-!-width-one-half"),
-            labelClasses = Some("govuk-!-font-weight-bold")
+            labelClasses = None
         )
-    }
 
     @button("label.continue")
 
