@@ -38,10 +38,6 @@
 
     @formHelper(action = routes.CalculateDeclareController.processIdentificationNumber) {
 
-        @p{@messages("label.passport_hint")}
-
-        @p{<a target="_blank" href="https://www.gov.uk/guidance/visiting-the-uk-as-an-eu-eea-or-swiss-citizen#what-you-need-to-enter-the-uk">@messages("label.need_to_enter_uk_hint_link")</a>}
-
         @inputText(
             form,
             id = "identificationNumber",

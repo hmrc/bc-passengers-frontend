@@ -554,7 +554,6 @@ label.driving_licence_number = Driving licence number
 label.telephone_number = Telephone number
 label.telephone_number_hint = For international numbers this will need to include the country code, for example +33 for France.
 label.euId_hint = You can use this number as identification for your declaration, but you may not be able to use an EU ID card to enter the UK.
-label.passport_hint = You can use this number for your declaration but you may not be able to use a passport number to enter the UK.
 label.need_to_enter_uk_hint_link = Check the latest rules prior to your arrival in the UK (opens in a new tab).
 label.enter_identification_number = Enter your selected identification number
 label.error.passport_number = Enter your passport number
