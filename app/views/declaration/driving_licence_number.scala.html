@@ -30,13 +30,13 @@
 
 @(form: Form[IdentificationNumberDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "label.what_is_your_driving_licence")), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "label.your_driving_licence")), backLink = backLink) {
 
     @formHelper(action = routes.CalculateDeclareController.processIdentificationNumber) {
 
     @errorSummary(form.errors)
 
-    @h1(s"label.what_is_your_driving_licence")
+    @h1(s"label.your_driving_licence")
 
         @p{@messages("label.driving_licence_hint")}
 
@@ -46,7 +46,7 @@
             form,
             id = "identificationNumber",
             name = "identificationNumber",
-            label = "label.enter_your_driving_licence",
+            label = "label.what_is_your_driving_licence",
             hint = None,
             isPageHeading = false,
             classes = Some("govuk-input govuk-!-width-one-half"),
