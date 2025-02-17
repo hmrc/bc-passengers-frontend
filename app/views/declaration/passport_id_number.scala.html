@@ -25,18 +25,18 @@
     inputText: components.inputText,
     button: components.button,
     p: components.p,
-    fieldset: components.fieldset
+    h1: components.h1
 )
 
 @(form: Form[IdentificationNumberDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.what_is_your_passport_number")), backLink = backLink) {
 
-    @formHelper(action = routes.CalculateDeclareController.processIdentificationNumber) {
-
     @errorSummary(form.errors)
 
-    @fieldset(s"label.what_is_your_passport_number") {
+    @h1(s"label.what_is_your_passport_number")
+
+    @formHelper(action = routes.CalculateDeclareController.processIdentificationNumber) {
 
         @inputText(
             form,
@@ -48,7 +48,6 @@
             classes = Some("govuk-input govuk-!-width-one-half"),
             labelClasses = Some("govuk-!-font-weight-bold")
         )
-    }
 
     @button("label.continue")
 
