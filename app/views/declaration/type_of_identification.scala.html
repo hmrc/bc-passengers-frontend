@@ -25,25 +25,22 @@
     inputText: components.inputText,
     button: components.button,
     p: components.p,
-    inputRadio: components.inputRadio,
-    h1: components.h1
+    inputRadio: components.inputRadio
 )
 
 @(form: Form[IdentificationTypeDto], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.which_identification_number")), backLink = backLink) {
 
-    @errorSummary(form.errors)
-
-    @h1("label.which_identification_number")
-
     @formHelper(action = routes.CalculateDeclareController.processTypeOfIdentification) {
+
+    @errorSummary(form.errors)
 
         @if(journeyStart.contains("greatBritain")){
             @inputRadio(
                 form = form,
-                legend = "",
-                legendAsHeading = false,
+                legend = messages("label.which_identification_number"),
+                legendAsHeading = true,
                 name = "identificationType",
                 hint = None,
                 items = Seq(
@@ -77,8 +74,8 @@
         } else {
             @inputRadio(
                 form = form,
-                legend = "",
-                legendAsHeading = false,
+                legend = messages("label.which_identification_number"),
+                legendAsHeading = true,
                 name = "identificationType",
                 hint = None,
                 items = Seq(
