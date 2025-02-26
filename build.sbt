@@ -37,16 +37,4 @@ lazy val it = project
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
   .settings(itSettings())
 
-Concat.groups := Seq(
-  "javascripts/application.js" ->
-    group(
-      Seq(
-        "javascripts/jquery.min.js",
-        "javascripts/autocomplete.js"
-      )
-    )
-)
-
-Assets / pipelineStages := Seq(concat)
-
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt")
