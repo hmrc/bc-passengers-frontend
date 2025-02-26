@@ -58,7 +58,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
        |    "returnUrl": "http://localhost:9514/feedback/passengers",
        |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
        |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
-       |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information-name",
+       |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information-journey",
        |    "items": [
        |        {
        |            "name": "5 litres cider",
@@ -117,7 +117,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
        |    "returnUrl": "http://localhost:9514/feedback/passengers",
        |    "returnUrlFailed": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
        |    "returnUrlCancelled": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/tax-due",
-       |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information-name",
+       |    "backUrl": "http://localhost:9008/check-tax-on-goods-you-bring-into-the-uk/user-information-journey",
        |    "items": [
        |        {
        |            "name": "5 litres cider",

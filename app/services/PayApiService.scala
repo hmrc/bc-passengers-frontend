@@ -55,7 +55,7 @@ class PayApiService @Inject() (
 
   private lazy val backUrlDeclaration: String    = configuration
     .getOptional[String]("bc-passengers-frontend.host")
-    .getOrElse("") + routes.CalculateDeclareController.whatIsYourName
+    .getOrElse("") + routes.CalculateDeclareController.whatAreYourJourneyDetails
   private lazy val backUrlAmendment: String      = configuration
     .getOptional[String]("bc-passengers-frontend.host")
     .getOrElse("") + routes.CalculateDeclareController.declareYourGoods
@@ -87,7 +87,7 @@ class PayApiService @Inject() (
         messages("label.not_required")
       }
 
-    def geBackURL(isAmendment: Boolean, amendState: String): String =
+    def getBackURL(isAmendment: Boolean, amendState: String): String =
       if (amendState.equals("pending-payment")) { backUrlPendingPayment }
       else if (isAmendment) { backUrlAmendment }
       else { backUrlDeclaration }
@@ -107,7 +107,7 @@ class PayApiService @Inject() (
       "returnUrl"          -> returnUrl,
       "returnUrlFailed"    -> returnUrlFailed,
       "returnUrlCancelled" -> returnUrlCancelled,
-      "backUrl"            -> geBackURL(isAmendment, amendState.getOrElse("")),
+      "backUrl"            -> getBackURL(isAmendment, amendState.getOrElse("")),
       "items"              -> JsArray(calculatorResponse.getItemsWithTaxToPay.map { item =>
         Json.obj(
           "name"             -> item.metadata.description,
