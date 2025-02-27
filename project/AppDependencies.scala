@@ -10,7 +10,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "play-frontend-hmrc-play-30" % "11.11.0",
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
     "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.18.2",
-    "org.webjars.npm"               % "accessible-autocomplete"    % "3.0.0"
+    "org.webjars.npm"               % "accessible-autocomplete"    % "3.0.1"
   )
 
   private val test: Seq[ModuleID] = Seq(
