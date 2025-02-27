@@ -352,7 +352,10 @@ class CalculateDeclareController @Inject() (
                 .fill(
                   YourJourneyDetailsDto(
                     PlaceOfArrival(Some(arrival.selectPlaceOfArrival), Some(arrival.enterPlaceOfArrival)),
-                    DateTimeOfArrival(arrival.dateOfArrival.toString, arrival.timeOfArrival.toString)
+                    DateTimeOfArrival(
+                      s"${arrival.dateOfArrival.getDayOfMonth}-${arrival.dateOfArrival.getMonthValue}-${arrival.dateOfArrival.getYear}",
+                      arrival.timeOfArrival.toString
+                    )
                   )
                 ),
               portsOfArrivalService.getAllPorts,
@@ -399,7 +402,7 @@ class CalculateDeclareController @Inject() (
             val userInformation = getBasicUserInfo(journeyData.preUserInformation)
 
             requireCalculatorResponse { calculatorResponse =>
-              val allTax = BigDecimal(calculatorResponse.calculation.allTax)
+              val allTax            = BigDecimal(calculatorResponse.calculation.allTax)
               val declarationResult = declarationService.submitDeclaration(
                 userInformation,
                 calculatorResponse,
@@ -408,7 +411,7 @@ class CalculateDeclareController @Inject() (
                 correlationId
               )
               declarationResult.flatMap {
-                case DeclarationServiceFailureResponse =>
+                case DeclarationServiceFailureResponse     =>
                   Future.successful(InternalServerError(errorTemplate()))
                 case DeclarationServiceSuccessResponse(cr) =>
                   declarationService
@@ -430,7 +433,7 @@ class CalculateDeclareController @Inject() (
                             None
                           )
                           .flatMap {
-                            case PayApiServiceFailureResponse => Future.successful(InternalServerError(errorTemplate()))
+                            case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
                             case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
                           }
                       }

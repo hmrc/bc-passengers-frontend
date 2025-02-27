@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2020 HM Revenue & Customs
- *
- */
 package controllers
 
 import config.AppConfig
