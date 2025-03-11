@@ -18,8 +18,9 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{toClasses => govukToClasses}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 @import views.html.helper.CSPNonce
-@this(select: GovukSelect)
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 
+@this(select: GovukSelect)
 
 @(form: Form[?],
   id: String,
@@ -58,68 +59,13 @@
         describedBy = if(hint) {Some(id + s"-hint")} else {None},
         errorMessage = form(id).error.map(fe => ErrorMessage(content = HtmlContent(messages(fe.message)))),
         items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
-        case (k,v) => SelectItem(
-            value = Some(k),
-            text = v,
-            selected = k == form(id).value.getOrElse(""),
-            attributes = Map("id" -> (id + s"-$k")))
+            case (k,v) => SelectItem(
+                value = Some(k),
+                text = v,
+                selected = k == form(id).value.getOrElse(""),
+                attributes = Map("id" -> (id + s"-$k"))
+            )
         },
         formGroup = FormGroup(classes = Some("form-field-group"))
-    ))
+    ).asAccessibleAutocomplete())
 </div>
-
-<script @CSPNonce.attr src='@controllers.routes.Assets.versioned("javascripts/autocomplete.js")' ></script>
-<script @CSPNonce.attr>
-    accessibleAutocomplete.enhanceSelectElement({
-        selectElement: document.getElementById('@id'),
-        displayMenu: 'inline',
-        minLength: 2,
-        defaultValue: '',
-        source: customSuggest,
-        confirmOnBlur: true,
-        onConfirm: function(confirmed) {
-          let newId = "@id".replace( /(:|\.|\[|\]|,|=)/g, "\\$1" )
-
-          //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
-          let foundInData = Array.from(document.querySelectorAll("#" + newId+ "-select > option"))
-            .find(e => e.text === document.getElementById('@id').value)
-            let element = !!confirmed ? confirmed : foundInData
-
-            if(!!element) {
-              $('select[name="@id"]').val(element.code || element.value);
-            }
-            else {
-              $('select[name="@id"]').val('')
-            }
-
-        },
-        templates: {
-          inputValue: function(result) {
-            return (!!result && result.displayName ? result.displayName : '');
-          },
-          suggestion: function(result) {
-            return !!result.displayName ? result.displayName : result;
-          }
-        }
-    })
-
-    function customSuggest (query, syncResults) {
-        var results = @Html(jsonData)
-        syncResults(query ? results.filter(function (result) {
-          return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
-        }) : [])
-    }
-
-    if (document.getElementById('@id')) {
-        var selectDescribedByValues = document.getElementById("@id-select").getAttribute('aria-describedby');
-        var selectLabeledByValues = document.getElementById("@id-select").getAttribute('aria-labelledby');
-        if(selectDescribedByValues != undefined) {
-            document.getElementById("@id").setAttribute('aria-describedby', selectDescribedByValues);
-        }
-        if(selectLabeledByValues != undefined) {
-            document.getElementById("@id").setAttribute('aria-labelledby', selectLabeledByValues);
-        }
-    }
-</script>
-
-
