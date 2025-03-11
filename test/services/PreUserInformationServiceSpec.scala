@@ -210,6 +210,7 @@ class PreUserInformationServiceSpec extends BaseSpec {
         )
       )(any())
     }
+
   }
 
 }
