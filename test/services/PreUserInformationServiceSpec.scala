@@ -17,17 +17,21 @@
 package services
 
 import connectors.Cache
+import controllers.LocalContext
 import models.UserInformation.getPreUser
-import models.{JourneyData, UserInformation}
-import org.mockito.ArgumentMatchers.{eq => meq, *}
+import models.YourJourneyDetailsDto.toArrivalForm
+import models.{ArrivalForm, DateTimeOfArrival, IdentificationForm, JourneyData, PlaceOfArrival, PreUserInformation, UserInformation, WhatIsYourNameForm, YourJourneyDetailsDto}
+import org.mockito.ArgumentMatchers.{eq as meq, *}
 import org.mockito.Mockito.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.MongoComponent
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import scala.concurrent.Future
 
 class PreUserInformationServiceSpec extends BaseSpec {
@@ -104,6 +108,108 @@ class PreUserInformationServiceSpec extends BaseSpec {
 
     }
 
+  }
+
+  "Calling PreUserInformationService.storeCompleteUserInformation" should {
+
+    "store complete new user information" in new LocalSetup {
+
+      val travelDetailsJourneyData: JourneyData = JourneyData(
+        prevDeclaration = Some(false),
+        euCountryCheck = Some("nonEuOnly"),
+        arrivingNICheck = Some(true),
+        isVatResClaimed = None,
+        isBringingDutyFree = None,
+        bringingOverAllowance = Some(true),
+        ageOver17 = Some(true),
+        privateCraft = Some(false)
+      )
+
+      implicit val localContext: LocalContext = LocalContext(
+        request = FakeRequest(),
+        sessionId = "sessionId",
+        journeyData = Some(
+          JourneyData(
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            List(),
+            List(),
+            None,
+            Some(
+              PreUserInformation(
+                WhatIsYourNameForm("Harry", "Potter"),
+                Some(IdentificationForm("passport", Some("SX12345"))),
+                Some("abc@gmail.com"),
+                Some(
+                  ArrivalForm(
+                    "Newcastle Airport",
+                    "",
+                    parseLocalDate("2018-08-31"),
+                    parseLocalTime("12:20 pm")
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+
+      override def journeyDataInCache: Option[JourneyData] = None
+
+      private val declarationTime: LocalTime =
+        parseLocalTime("09:15 pm")
+
+      private val declarationDate: LocalDate =
+        parseLocalDate("2019-05-13")
+
+      val dto: YourJourneyDetailsDto = YourJourneyDetailsDto(
+        PlaceOfArrival(Some("UK"), Some("London")),
+        DateTimeOfArrival(s"$declarationDate", s"$declarationTime")
+      )
+
+      val updatedPreUserInformation: Option[PreUserInformation] =
+        travelDetailsJourneyData.preUserInformation.map(_.copy(arrivalForm = Option(toArrivalForm(dto))))
+
+      await(
+        s.storeCompleteUserInformation(
+          JourneyData(),
+          dto
+        )
+      )
+
+      verify(s.cache, times(1)).store(
+        meq(
+          JourneyData(preUserInformation =
+            Some(
+              getPreUser(
+                UserInformation(
+                  "Harry",
+                  "Potter",
+                  "passport",
+                  "SX12345",
+                  "abc@gmail.com",
+                  "UK",
+                  "London",
+                  parseLocalDate("2019-05-13"),
+                  parseLocalTime("09:15 pm")
+                )
+              )
+            )
+          )
+        )
+      )(any())
+    }
   }
 
 }
