@@ -7,7 +7,7 @@ object CodeCoverageSettings {
     "<empty>",
     ".*Routes.*",
     ".*views.html.*",
-    ".*\\$anonfun\\$.*",
+    ".*\\$anon\\$.*",
     ".*\\$.*\\$\\$.*"
   )
 

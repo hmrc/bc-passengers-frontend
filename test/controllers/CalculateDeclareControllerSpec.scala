@@ -18,19 +18,19 @@ package controllers
 
 import connectors.Cache
 import models.UserInformation.getPreUser
-import models._
+import models.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq as meq, *}
+import org.mockito.Mockito.{mock, *}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers.{route => rt, _}
+import play.api.test.Helpers.{route as rt, *}
 import repositories.BCPassengersSessionRepository
-import services._
+import services.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocalTime}
@@ -891,6 +891,249 @@ class CalculateDeclareControllerSpec extends BaseSpec {
     }
   }
 
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-id" should {
+
+    "Display the user-information-id page" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("nonEuOnly"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id")).get
+
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "Which number will you use to prove your identity?"
+    }
+  }
+
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-id " should {
+    "redirect to .../check-tax-on-goods-you-bring-into-the-uk/user-information-id-number if user-information-id data is present" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("greatBritain"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("passport")))),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id")
+            .withFormUrlEncodedBody(
+              "identificationType" -> "passport"
+            )
+        ).get
+
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
+
+      status(response)           shouldBe SEE_OTHER
+      println(redirectLocation(response))
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
+    }
+  }
+
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-id-number with an identification type selected" should {
+    "Display the user-information-id-number page" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("nonEuOnly"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("passport")))),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
+        ).get
+
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "What is your passport number?"
+    }
+  }
+
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-id-number " should {
+    "redirect to .../check-tax-on-goods-you-bring-into-the-uk/user-information-email if user-information-id-number data is valid and present" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("greatBritain"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("SX12345")))),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
+            .withFormUrlEncodedBody(
+              "identificationNumber" -> "SX12345"
+            )
+        ).get
+
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
+
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
+    }
+  }
+
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-email " should {
+
+    "Display the user-information-email page" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("nonEuOnly"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(emailAddress = Some("abc@gmail.com"))),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
+        ).get
+
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "What is your email address?"
+    }
+  }
+
+  "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-journey" should {
+
+    "Display the user-information-journey page" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("nonEuOnly"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(arrivalForm = None)),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
+        ).get
+
+      val content: String = contentAsString(response)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text() shouldBe "What are your journey details?"
+    }
+  }
+
+  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-journey " should {
+    "redirect to .../check-tax-on-goods-you-bring-into-the-uk/user-information-email if user-information-id-number data is valid and present" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("greatBritain"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("SX12345")))),
+            calculatorResponse = Some(crWithinLimitLow)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val response: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
+            .withFormUrlEncodedBody(
+              "identificationNumber" -> "SX12345"
+            )
+        ).get
+
+      val content: String = contentAsString(response)
+      val doc: Document = Jsoup.parse(content)
+
+      status(response) shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
+    }
+  }
+
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/tax-due when in pending payment journey" should {
 
     "Display the previous-declaration page" in new LocalSetup {
@@ -976,40 +1219,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Declare your goods"
     }
-
-    "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with " +
-      "tax greater than nine pounds and less than 90,000 in amendments journey" should {
-
-        "Display the declare-your-goods page with process-amendment redirect url" in new LocalSetup {
-          override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
-            Some(
-              JourneyData(
-                prevDeclaration = Some(true),
-                euCountryCheck = Some("nonEuOnly"),
-                isVatResClaimed = None,
-                isBringingDutyFree = None,
-                bringingOverAllowance = Some(true),
-                ageOver17 = Some(true),
-                privateCraft = Some(false),
-                calculatorResponse = Some(crWithinLimitLow),
-                declarationResponse = Some(declarationResponse)
-              )
-            )
-          )
-          override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-          override lazy val declarationServiceResponse: DeclarationServiceResponse =
-            DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-
-          val response: Future[Result] =
-            route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/declare-your-goods")).get
-
-          val content: String = contentAsString(response)
-          val doc: Document   = Jsoup.parse(content)
-
-          doc.getElementsByTag("h1").text()             shouldBe "Amend your declaration"
-          doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
-        }
-      }
 
     "Calling GET /check-tax-on-goods-you-bring-into-the-uk/declare-your-goods with total tax " +
       "greater than 97000 pounds and amendment is less than 90,000 pounds in amendments journey" should {

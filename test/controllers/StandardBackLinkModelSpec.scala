@@ -551,6 +551,21 @@ class StandardBackLinkModelSpec extends BaseSpec {
     }
   }
 
+  "Going back from user-information-id" should {
+
+    "return user to user-information-name" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled                   = false
+      override val euCountryCheck: Option[String]                 = Some("greatBritain")
+      override val isArrivingNi: Option[Boolean]                  = Some(true)
+      override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
+
+      override def call: Call = CalculateDeclareController.processTypeOfIdentification
+
+      m.backLink(context) shouldBe Some(CalculateDeclareController.whatIsYourName.url)
+    }
+  }
+
   "Going back from declare-your-goods" should {
 
     "return user to tax-due" in new LocalSetup {
@@ -676,5 +691,4 @@ class StandardBackLinkModelSpec extends BaseSpec {
       m.backLink(context) shouldBe Some(routes.PendingPaymentController.loadPendingPaymentPage.url)
     }
   }
-
 }

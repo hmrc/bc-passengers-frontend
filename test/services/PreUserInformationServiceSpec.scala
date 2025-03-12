@@ -31,7 +31,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.MongoComponent
 import util.{BaseSpec, parseLocalDate, parseLocalTime}
 
-import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.time.{LocalDate, LocalTime}
 import scala.concurrent.Future
 
 class PreUserInformationServiceSpec extends BaseSpec {
