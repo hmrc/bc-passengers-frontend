@@ -18,7 +18,7 @@ package models
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 
 class DeclarationResponseSpec extends AnyWordSpec with Matchers {
 
@@ -76,6 +76,21 @@ class DeclarationResponseSpec extends AnyWordSpec with Matchers {
         )
         json.validate[DeclarationResponse] shouldBe JsSuccess(declarationResponse)
       }
+
+      "fields are empty" in {
+        val json = Json.obj()
+        json.validate[DeclarationResponse] shouldBe a[JsError]
+      }
+
+      "invalid field types" in {
+        val json = Json.obj(
+          "totalExciseGBP"  -> "0.00",
+          "totalCustomsGBP" -> "0.00",
+          "totalVATGBP"     -> "0.00",
+          "grandTotalGBP"   -> 0
+        )
+        json.validate[DeclarationResponse] shouldBe a[JsError]
+      }
     }
   }
 
@@ -108,6 +123,21 @@ class DeclarationResponseSpec extends AnyWordSpec with Matchers {
           "grandTotalGBP"   -> "0.00"
         )
         json.validate[LiabilityDetails] shouldBe JsSuccess(liabilityDetails)
+      }
+
+      "fields are empty" in {
+        val json = Json.obj()
+        json.validate[LiabilityDetails] shouldBe a[JsError]
+      }
+
+      "invalid field types" in {
+        val json = Json.obj(
+          "totalExciseGBP"  -> "0.00",
+          "totalCustomsGBP" -> "0.00",
+          "totalVATGBP"     -> "0.00",
+          "grandTotalGBP"   -> 0
+        )
+        json.validate[LiabilityDetails] shouldBe a[JsError]
       }
     }
   }

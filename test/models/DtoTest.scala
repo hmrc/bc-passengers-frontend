@@ -98,6 +98,31 @@ class DtoTest extends BaseSpec {
     }
   }
 
+  "Validating the IdentificationTypeDto form" should {
+
+    "allow the identificationType to be a defined type" in {
+      val formData = Map(
+        "identificationType" -> "passport"
+      )
+
+      val form = IdentificationTypeDto.form.bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if the identificationType is not defined" in {
+      val formData = Map(
+        "identificationType" -> ""
+      )
+
+      val form = IdentificationTypeDto.form.bind(formData)
+
+      form.hasErrors                               shouldBe true
+      form.errors.size                             shouldBe 1
+      form.error("identificationType").get.message shouldBe "error.identification_type"
+    }
+  }
+
   "Validating the IdentificationNumberDto form" should {
 
     "allow the identificationNumber to be any string that is 40 characters or under" in {

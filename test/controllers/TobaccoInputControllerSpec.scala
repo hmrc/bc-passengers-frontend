@@ -1631,7 +1631,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
     }
   }
 
-  "Getting displayNoOfSticksEditForm" should {
+  "Getting displayEditForm" should {
 
     "return a 404 when given an invalid iid" in new LocalSetup {
 

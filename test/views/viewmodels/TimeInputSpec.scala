@@ -69,18 +69,23 @@ class TimeInputSpec extends BaseSpec with TimeInputConstants {
     }
 
     "TimeInput" should {
-//      "serialize to JSON" when {
-//        "all fields are valid" in {
-//          Json.toJson(previousDeclarationRequest) shouldBe Json.obj(
-//            "lastName" -> "lastName",
-//            "referenceNumber" -> "referenceNumber"
-//          )
-//        }
-//      }
+      "serialize to JSON" when {
+        "all fields are valid" in {
+          Json.toJson(modelMandatoryFields) shouldBe jsonMandatoryFields
+        }
+
+        "fields are empty" in {
+          Json.toJson(modelEmptyFields) shouldBe jsonEmptyFields
+        }
+      }
 
       "deserialize from JSON" when {
         "all fields are valid" in {
           jsonMandatoryFields.validate[TimeInput] shouldBe JsSuccess(modelMandatoryFields)
+        }
+
+        "fields are empty" in {
+          jsonEmptyFields.validate[TimeInput] shouldBe JsSuccess(modelEmptyFields)
         }
 
         "an empty JSON object" in {

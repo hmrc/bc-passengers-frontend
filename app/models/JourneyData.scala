@@ -136,7 +136,7 @@ case class PreUserInformation(
 object PreUserInformation {
   implicit val formats: OFormat[PreUserInformation] = Json.format[PreUserInformation]
 
-  def fromWhatIsYourNameDto(whatIsYourNameDto: WhatIsYourNameDto) =
+  def fromWhatIsYourNameDto(whatIsYourNameDto: WhatIsYourNameDto): PreUserInformation =
     PreUserInformation(
       nameForm = WhatIsYourNameForm(
         whatIsYourNameDto.firstName,
