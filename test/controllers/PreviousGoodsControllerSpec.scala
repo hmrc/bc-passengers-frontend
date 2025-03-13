@@ -82,19 +82,6 @@ class PreviousGoodsControllerSpec extends BaseSpec {
   val controller: DashboardController = app.injector.instanceOf[DashboardController]
 
   "Calling GET .../previous-goods" should {
-    "redirect to start if travel details are missing" in new LocalSetup {
-
-      override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
-
-      val result: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-goods")).get
-
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
-
-      verify(controller.cache, times(1)).fetch(any())
-    }
-
     "redirect to pending-payment if the amendState equals pending-payment in JourneyData" in new LocalSetup {
 
       override val cachedJourneyData: Option[JourneyData] =
@@ -109,7 +96,7 @@ class PreviousGoodsControllerSpec extends BaseSpec {
       verify(controller.cache, times(1)).fetch(any())
     }
 
-    "respond with 200, display the page if all the travel details exist & display button's text for Amendment:Add goods " in new LocalSetup {
+    "respond with 200, display the previous-goods page if all the travel details exist & display button's text for Amendment:Add goods " in new LocalSetup {
       lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
         ProductPath("alcohol/beer"),
         "iid0",

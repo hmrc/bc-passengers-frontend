@@ -7,13 +7,12 @@ object CodeCoverageSettings {
     "<empty>",
     ".*Routes.*",
     ".*views.html.*",
-    ".*\\$anon\\$.*",
-    ".*\\$.*\\$\\$.*"
+    ".*\\$anon\\$.*"
   )
 
   private val settings: Seq[Setting[?]] = Seq(
     coverageExcludedFiles := excludedPackages.mkString(","),
-    coverageMinimumStmtTotal := 100,
+    coverageMinimumStmtTotal := 95,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )

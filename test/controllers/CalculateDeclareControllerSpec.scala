@@ -903,6 +903,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
+            preUserInformation = Some(PreUserInformation(nameForm = WhatIsYourNameForm("Harry", "Potter"))),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -922,6 +923,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   }
 
   "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-id " should {
+
     "redirect to .../check-tax-on-goods-you-bring-into-the-uk/user-information-id-number if user-information-id data is present" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -932,7 +934,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
-            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("passport")))),
+            preUserInformation = Some(
+              PreUserInformation(
+                nameForm = WhatIsYourNameForm("Harry", "Potter"),
+                identification = Option(IdentificationForm("passport"))
+              )
+            ),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -954,12 +961,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       status(response)           shouldBe SEE_OTHER
-      println(redirectLocation(response))
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
     }
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-id-number with an identification type selected" should {
+
     "Display the user-information-id-number page" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -970,7 +977,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
-            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("passport")))),
+            preUserInformation = Some(
+              PreUserInformation(
+                nameForm = WhatIsYourNameForm("Harry", "Potter"),
+                identification = Option(IdentificationForm("passport"))
+              )
+            ),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -993,6 +1005,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
   }
 
   "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-id-number " should {
+
     "redirect to .../check-tax-on-goods-you-bring-into-the-uk/user-information-email if user-information-id-number data is valid and present" in new LocalSetup {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1003,7 +1016,12 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
-            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("SX12345")))),
+            preUserInformation = Some(
+              PreUserInformation(
+                nameForm = WhatIsYourNameForm("Harry", "Potter"),
+                identification = Option(IdentificationForm("passport", Some("SX12345")))
+              )
+            ),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -1041,7 +1059,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
             bringingOverAllowance = Some(true),
             ageOver17 = Some(true),
             privateCraft = Some(false),
-            preUserInformation = Option(getPreUser(ui).copy(emailAddress = Some("abc@gmail.com"))),
+            preUserInformation = Option(getPreUser(ui).copy(emailAddress = None)),
             calculatorResponse = Some(crWithinLimitLow)
           )
         )
@@ -1094,43 +1112,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "What are your journey details?"
-    }
-  }
-
-  "Calling POST /check-tax-on-goods-you-bring-into-the-uk/user-information-journey " should {
-    "redirect to .../check-tax-on-goods-you-bring-into-the-uk/user-information-email if user-information-id-number data is valid and present" in new LocalSetup {
-      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(
-        Some(
-          JourneyData(
-            euCountryCheck = Some("greatBritain"),
-            isVatResClaimed = None,
-            isBringingDutyFree = None,
-            bringingOverAllowance = Some(true),
-            ageOver17 = Some(true),
-            privateCraft = Some(false),
-            preUserInformation = Option(getPreUser(ui).copy(identification = Option(IdentificationForm("SX12345")))),
-            calculatorResponse = Some(crWithinLimitLow)
-          )
-        )
-      )
-      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse: DeclarationServiceResponse =
-        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-
-      val response: Future[Result] =
-        route(
-          app,
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-id-number")
-            .withFormUrlEncodedBody(
-              "identificationNumber" -> "SX12345"
-            )
-        ).get
-
-      val content: String = contentAsString(response)
-      val doc: Document = Jsoup.parse(content)
-
-      status(response) shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
     }
   }
 

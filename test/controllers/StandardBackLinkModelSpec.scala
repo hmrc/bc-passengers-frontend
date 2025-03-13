@@ -534,6 +534,20 @@ class StandardBackLinkModelSpec extends BaseSpec {
 
       m.backLink(context) shouldBe Some(PreviousGoodsController.showPreviousGoods.url)
     }
+
+    "return user to confirm-age for previous declaration journey " in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled           = false
+      override val euCountryCheck: Option[String]         = None
+      override val isVatResClaimed: Option[Boolean]       = None
+      override val isBringingDutyFree: Option[Boolean]    = None
+      override val bringingOverAllowance: Option[Boolean] = None
+      override val prevDeclaration: Option[Boolean]       = Some(true)
+
+      override def call: Call = routes.DashboardController.showDashboard
+
+      m.backLink(context) shouldBe Some(PreviousGoodsController.showPreviousGoods.url)
+    }
   }
 
   "Going back from user-information-name" should {
@@ -563,6 +577,36 @@ class StandardBackLinkModelSpec extends BaseSpec {
       override def call: Call = CalculateDeclareController.processTypeOfIdentification
 
       m.backLink(context) shouldBe Some(CalculateDeclareController.whatIsYourName.url)
+    }
+  }
+
+  "Going back from user-information-id-number" should {
+
+    "return user to user-information-id" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled                   = false
+      override val euCountryCheck: Option[String]                 = Some("greatBritain")
+      override val isArrivingNi: Option[Boolean]                  = Some(true)
+      override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
+
+      override def call: Call = CalculateDeclareController.processIdentificationNumber
+
+      m.backLink(context) shouldBe Some(CalculateDeclareController.typeOfIdentification.url)
+    }
+  }
+
+  "Going back from user-information-email" should {
+
+    "return user to user-information-id-number" in new LocalSetup {
+
+      override val isIrishBorderQuestionEnabled                   = false
+      override val euCountryCheck: Option[String]                 = Some("greatBritain")
+      override val isArrivingNi: Option[Boolean]                  = Some(true)
+      override val calculatorResponse: Option[CalculatorResponse] = Some(crWithinLimitLow)
+
+      override def call: Call = CalculateDeclareController.processWhatIsYourEmail
+
+      m.backLink(context) shouldBe Some(CalculateDeclareController.whatIsYourIdentificationNumber.url)
     }
   }
 
