@@ -17,7 +17,7 @@
 package binders
 
 import models.ProductPath
-import play.api.mvc.PathBindable
+import play.api.mvc.{JavascriptLiteral, PathBindable}
 import util.BaseSpec
 
 class BindersSpec extends BaseSpec {
@@ -40,6 +40,14 @@ class BindersSpec extends BaseSpec {
 
       "unbind ProductPath" in {
         binder.unbind("hello", ProductPath(List("there"))) shouldBe "there"
+      }
+    }
+
+    "productPathJSLBinder" should {
+      "get the correct string" in {
+        val javascriptLiteral: JavascriptLiteral[ProductPath] = Binders.productPathJSLBinder
+        val productPath                                       = ProductPath(List("there"))
+        javascriptLiteral.to(value = productPath) shouldBe "'there'"
       }
     }
   }

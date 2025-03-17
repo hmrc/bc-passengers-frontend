@@ -125,7 +125,7 @@ class PreUserInformationServiceSpec extends BaseSpec {
         privateCraft = Some(false)
       )
 
-      implicit val localContext: LocalContext = LocalContext(
+      given localContext: LocalContext = LocalContext(
         request = FakeRequest(),
         sessionId = "sessionId",
         journeyData = Some(

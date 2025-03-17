@@ -443,6 +443,23 @@ class SelectProductControllerSpec extends BaseSpec {
       verify(injected[SelectProductService], times(1)).removeSelectedAlias(any())(any())
     }
 
+    Seq(
+      ("alcohol/beer", "alcohol"),
+      ("tobacco/cigarettes", "cigarettes"),
+      ("tobacco/cigars", "cigars"),
+      ("tobacco/rolling-tobacco", "tobacco")
+    ).foreach { case (path, token) =>
+      s"go to purchase input form when journeyData.selectedProducts contains a leaf $token" in new NextStepSetup {
+
+        override val selectedProducts: List[ProductAlias] =
+          List(ProductAlias(token, ProductPath(path)))
+
+        redirectLocation(response) shouldBe Some(s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$path/tell-us")
+        verify(injected[Cache], times(1)).fetch(any())
+        verify(injected[SelectProductService], times(1)).removeSelectedAlias(any())(any())
+      }
+    }
+
     "redirect to selectProducts when journeyData.selectedProducts contains a branch" in new NextStepSetup {
 
       override val selectedProducts: List[ProductAlias] = List(ProductAlias("alcohol", ProductPath("alcohol")))

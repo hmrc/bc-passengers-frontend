@@ -3139,8 +3139,4 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
       bodyCapture.getValue shouldBe Json.toJson(previousDeclarationRequest)
     }
   }
-//
-//  "return a DeclarationServiceFailureResponse if the backend returns anything else" in new Setup with EndpointSetup {
-//
-//  }
 }

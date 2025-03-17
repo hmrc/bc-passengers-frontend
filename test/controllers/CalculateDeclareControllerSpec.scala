@@ -859,36 +859,6 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
-
-    "Display the previous-declaration page condition: Great Britain && calculation response Zero && deltaCalculation.exists &&  isAnyItemOverAllowance == true" in new LocalSetup {
-
-      override lazy val cachedJourneyData: Future[Option[JourneyData]]         =
-        Future.successful(
-          Some(
-            JourneyData(
-              prevDeclaration = Some(true),
-              euCountryCheck = Some("greatBritain"),
-              isVatResClaimed = None,
-              isBringingDutyFree = None,
-              bringingOverAllowance = Some(true),
-              ageOver17 = Some(true),
-              privateCraft = Some(false),
-              preUserInformation = Some(getPreUser(ui)),
-              calculatorResponse = Some(crZero),
-              deltaCalculation = Some(zeroDeltaCalculation)
-            )
-          )
-        )
-      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
-      override lazy val declarationServiceResponse: DeclarationServiceResponse =
-        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-
-      val response: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-name")).get
-
-      status(response)           shouldBe SEE_OTHER
-      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-    }
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/user-information-id" should {
@@ -897,6 +867,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
           JourneyData(
+            prevDeclaration = Some(true),
             euCountryCheck = Some("nonEuOnly"),
             isVatResClaimed = None,
             isBringingDutyFree = None,

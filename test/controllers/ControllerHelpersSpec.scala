@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import models.JourneyData
 import org.mockito.Mockito.*
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
@@ -51,7 +52,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
 
     ".requireJourneyData" should {
       "redirect to the correct location" in {
-        implicit val localContext: LocalContext = LocalContext(
+        given localContext: LocalContext = LocalContext(
           request = FakeRequest(),
           sessionId = "sessionId"
         )
@@ -59,6 +60,20 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
         val result: Future[Result] = requireJourneyData(_ => Future.successful(Ok))
 
         result.map(_ shouldBe routes.TravelDetailsController.newSession)
+      }
+    }
+
+    ".requireCalculatorResponse" should {
+      "redirect to the correct location" in {
+        given localContext: LocalContext = LocalContext(
+          request = FakeRequest(),
+          sessionId = "sessionId",
+          journeyData = Some(JourneyData())
+        )
+
+        val result: Future[Result] = requireCalculatorResponse(_ => Future.successful(Ok))
+
+        result.map(_ shouldBe routes.DashboardController.showDashboard)
       }
     }
   }
