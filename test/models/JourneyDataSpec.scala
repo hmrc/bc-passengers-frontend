@@ -334,59 +334,75 @@ class JourneyDataSpec extends BaseSpec {
         json.validate[PurchasedProductInstance] shouldBe JsSuccess(purchasedProductInstance)
       }
 
+      "when optional fields are missing" in {
+        val incorrectJson = Json.obj(
+          "path" -> ProductPath("alcohol/beer"),
+          "iid"  -> "iid0"
+        )
+
+        incorrectJson.validate[PurchasedProductInstance] shouldBe JsSuccess(
+          PurchasedProductInstance(
+            ProductPath("alcohol/beer"),
+            "iid0",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some(true)
+          )
+        )
+      }
+
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[PurchasedProductInstance] shouldBe a[JsError]
       }
-    }
 
-    "when optional fields are missing" in {
-      val incorrectJson = Json.obj(
-        "path" -> ProductPath("alcohol/beer"),
-        "iid"  -> "iid0"
-      )
-
-      incorrectJson.validate[PurchasedProductInstance] shouldBe JsSuccess(
-        PurchasedProductInstance(
-          ProductPath("alcohol/beer"),
-          "iid0",
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          Some(true)
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "firstName" -> true,
+          "lastName"  -> false
         )
-      )
+        json.validate[PurchasedProductInstance] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[PurchasedProductInstance] shouldBe a[JsError]
+      }
     }
   }
 
   "UserInformation" should {
-    "return the PreUserInformation as UserInformation when calling .build" in {
-      val userInformation = UserInformation(
-        testUserInfo.nameForm.firstName,
-        testUserInfo.nameForm.lastName,
-        testUserInfo.identification.map(_.identificationType).getOrElse(""),
-        testUserInfo.identification.flatMap(_.identificationNumber).getOrElse(""),
-        testUserInfo.emailAddress.getOrElse(""),
-        testUserInfo.arrivalForm.map(_.selectPlaceOfArrival).getOrElse(""),
-        testUserInfo.arrivalForm.map(_.enterPlaceOfArrival).getOrElse(""),
-        testUserInfo.arrivalForm
-          .map(arrival => parseLocalDate(arrival.dateOfArrival.toString))
-          .getOrElse(LocalDate.now()),
-        testUserInfo.arrivalForm
-          .map(arrival => parseLocalTime(arrival.timeOfArrival.toString))
-          .getOrElse(LocalTime.now())
-      )
+    val userInformation = UserInformation(
+      testUserInfo.nameForm.firstName,
+      testUserInfo.nameForm.lastName,
+      testUserInfo.identification.map(_.identificationType).getOrElse(""),
+      testUserInfo.identification.flatMap(_.identificationNumber).getOrElse(""),
+      testUserInfo.emailAddress.getOrElse(""),
+      testUserInfo.arrivalForm.map(_.selectPlaceOfArrival).getOrElse(""),
+      testUserInfo.arrivalForm.map(_.enterPlaceOfArrival).getOrElse(""),
+      testUserInfo.arrivalForm
+        .map(arrival => parseLocalDate(arrival.dateOfArrival.toString))
+        .getOrElse(LocalDate.now()),
+      testUserInfo.arrivalForm
+        .map(arrival => parseLocalTime(arrival.timeOfArrival.toString))
+        .getOrElse(LocalTime.now())
+    )
 
+    "return the PreUserInformation as UserInformation when calling .build" in {
       UserInformation.build(testUserInfo) shouldEqual userInformation
+    }
+
+    "return the UserInformation as PreUserInformation when calling .getPreUser" in {
+      UserInformation.getPreUser(userInformation) shouldEqual testUserInfo
     }
   }
 
@@ -431,11 +447,18 @@ class JourneyDataSpec extends BaseSpec {
         val json = Json.obj()
         json.validate[UserInformation] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[UserInformation].isError mustBe true
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "firstName" -> true,
+          "lastName"  -> false
+        )
+        json.validate[UserInformation] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[UserInformation] shouldBe a[JsError]
+      }
     }
   }
 
@@ -503,13 +526,20 @@ class JourneyDataSpec extends BaseSpec {
 
       "an empty JSON object" in {
         val json = Json.obj()
-        json.validate[PreviousDeclarationRequest] shouldBe a[JsError]
+        json.validate[PreUserInformation] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[PreviousDeclarationRequest].isError mustBe true
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "firstName" -> true,
+          "lastName"  -> true
+        )
+        json.validate[PreUserInformation] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[PreUserInformation] shouldBe a[JsError]
+      }
     }
 
     "return the PreUserInformation from WhatIsYourNameDto when calling .fromWhatIsYourNameDto" in {
@@ -566,12 +596,20 @@ class JourneyDataSpec extends BaseSpec {
         val json = Json.obj()
         json.validate[PreviousDeclarationRequest] shouldBe a[JsError]
       }
+
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "lastName"        -> true,
+          "referenceNumber" -> 1257
+        )
+        json.validate[PreviousDeclarationRequest] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[PreviousDeclarationRequest] shouldBe a[JsError]
+      }
     }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[PreviousDeclarationRequest].isError mustBe true
-    }
   }
 
   "ProductAlias" should {
@@ -603,11 +641,18 @@ class JourneyDataSpec extends BaseSpec {
         val json = Json.obj()
         json.validate[ProductAlias] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[ProductAlias].isError mustBe true
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "term"        -> false,
+          "productPath" -> "product/path"
+        )
+        json.validate[ProductAlias] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[ProductAlias] shouldBe a[JsError]
+      }
     }
   }
 
@@ -640,11 +685,18 @@ class JourneyDataSpec extends BaseSpec {
         val json = Json.obj()
         json.validate[WhatIsYourNameForm] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[WhatIsYourNameForm].isError mustBe true
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "firstName" -> false,
+          "lastName"  -> true
+        )
+        json.validate[WhatIsYourNameForm] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[WhatIsYourNameForm] shouldBe a[JsError]
+      }
     }
   }
 
@@ -684,7 +736,7 @@ class JourneyDataSpec extends BaseSpec {
         json.validate[ArrivalForm] shouldBe a[JsError]
       }
 
-      "invalid valid types" in {
+      "there is type mismatch" in {
         val json = Json.obj(
           "selectPlaceOfArrival" -> 0,
           "enterPlaceOfArrival"  -> "enterPlaceOfArrival",
@@ -693,11 +745,10 @@ class JourneyDataSpec extends BaseSpec {
         )
         json.validate[ArrivalForm] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[ArrivalForm].isError mustBe true
+      "error when JSON is invalid" in {
+        Json.arr().validate[ArrivalForm] shouldBe a[JsError]
+      }
     }
   }
 
@@ -730,11 +781,18 @@ class JourneyDataSpec extends BaseSpec {
         val json = Json.obj()
         json.validate[IdentificationForm] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[IdentificationForm].isError mustBe true
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "identificationType"   -> false,
+          "identificationNumber" -> 1000000
+        )
+        json.validate[IdentificationForm] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[IdentificationForm] shouldBe a[JsError]
+      }
     }
   }
 
@@ -767,11 +825,18 @@ class JourneyDataSpec extends BaseSpec {
         val json = Json.obj()
         json.validate[PaymentNotification] shouldBe a[JsError]
       }
-    }
 
-    "must fail to deserialize invalid JSON" in {
-      val invalidJson = Json.obj("invalid" -> "data")
-      invalidJson.validate[PaymentNotification].isError mustBe true
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "status"    -> true,
+          "reference" -> true
+        )
+        json.validate[PaymentNotification] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[PaymentNotification] shouldBe a[JsError]
+      }
     }
   }
 
@@ -1068,6 +1133,10 @@ class JourneyDataSpec extends BaseSpec {
             None
           )
         )
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[JourneyData] shouldBe a[JsError]
       }
     }
   }
