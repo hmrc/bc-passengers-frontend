@@ -368,7 +368,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
               None,
               None,
               Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None
+              Some("EUR"),
+              Some(BigDecimal(12.99))
             )
           )
         )

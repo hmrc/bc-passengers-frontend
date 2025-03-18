@@ -79,7 +79,7 @@ class PreviousGoodsControllerSpec extends BaseSpec {
     }
   }
 
-  val controller: DashboardController = app.injector.instanceOf[DashboardController]
+  val controller: PreviousGoodsController = app.injector.instanceOf[PreviousGoodsController]
 
   "Calling GET .../previous-goods" should {
     "redirect to pending-payment if the amendState equals pending-payment in JourneyData" in new LocalSetup {
