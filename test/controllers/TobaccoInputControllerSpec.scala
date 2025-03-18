@@ -1791,7 +1791,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
               ProductPath("tobacco/cigarettes"),
               "iid0",
               None,
-              Some(400),
+              noOfSticks,
               Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
               None,
               Some("EUR"),
@@ -1813,7 +1813,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
       override def productPath: ProductPath           = ProductPath("tobacco/heated-tobacco")
-      override def weightOrVolume: Option[BigDecimal] = None
+      override def weightOrVolume: Option[BigDecimal] = Some(2.487)
       override def noOfSticks: Option[Int]            = Some(400)
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
@@ -1830,10 +1830,52 @@ class TobaccoInputControllerSpec extends BaseSpec {
             PurchasedProductInstance(
               ProductPath("tobacco/heated-tobacco"),
               "iid0",
+              weightOrVolume,
               None,
-              Some(400),
               Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
               None,
+              Some("EUR"),
+              Some(BigDecimal(92.50))
+            )
+          )
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      ).get
+      status(result) shouldBe OK
+    }
+
+    "return a 200 when all is ok for other forms of tobacco" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath = ProductPath("tobacco/cigars")
+
+      override def weightOrVolume: Option[BigDecimal] = Some(10.487)
+
+      override def noOfSticks: Option[Int] = Some(10)
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("tobacco/heated-tobacco"),
+              "iid0",
+              weightOrVolume,
+              noOfSticks,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
               Some("EUR"),
               Some(BigDecimal(92.50))
             )

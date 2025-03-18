@@ -82,7 +82,7 @@ class DashboardControllerSpec extends BaseSpec {
   "Calling GET .../tell-us" should {
     "redirect to start if travel details are missing" in new LocalSetup {
 
-      override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData.copy(privateCraft = None))
+      override val cachedJourneyData: Option[JourneyData] = None
 
       val result: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
@@ -92,276 +92,276 @@ class DashboardControllerSpec extends BaseSpec {
 
       verify(controller.cache, times(1)).fetch(any())
     }
-  }
 
-  "respond with 200, display the page if all travel details exist & display button's text for declaration:Calculate taxes and duties" in new LocalSetup {
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(
-      ProductPath("alcohol/beer"),
-      "iid0",
-      Some(1.54332),
-      None,
-      Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      Some("AUD"),
-      Some(BigDecimal(10.234)),
-      None,
-      Some(true),
-      None,
-      Some(true),
-      None
-    )
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(
-      ProductPath("tobacco/cigarettes"),
-      "iid0",
-      Some(1.54332),
-      None,
-      Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      Some("AUD"),
-      Some(BigDecimal(10.234)),
-      None,
-      Some(true),
-      None,
-      Some(true),
-      None
-    )
-    val other: PurchasedProductInstance   = PurchasedProductInstance(
-      ProductPath("other-goods/antiques"),
-      "iid1",
-      None,
-      None,
-      Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      Some("AUD"),
-      Some(5432),
-      Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))),
-      Some(true),
-      None,
-      None,
-      Some(true)
-    )
-
-    override val cachedJourneyData: Option[JourneyData] = Some(
-      travelDetailsJourneyData.copy(
-        euCountryCheck = Some("euOnly"),
-        arrivingNICheck = Some(false),
-        purchasedProductInstances = List(alcohol, tobacco, other)
+    "respond with 200, display the page if all travel details exist & display button's text for declaration:Calculate taxes and duties" in new LocalSetup {
+      val alcohol: PurchasedProductInstance = PurchasedProductInstance(
+        ProductPath("alcohol/beer"),
+        "iid0",
+        Some(1.54332),
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        Some("AUD"),
+        Some(BigDecimal(10.234)),
+        None,
+        Some(true),
+        None,
+        Some(true),
+        None
       )
-    )
+      val tobacco: PurchasedProductInstance = PurchasedProductInstance(
+        ProductPath("tobacco/cigarettes"),
+        "iid0",
+        Some(1.54332),
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        Some("AUD"),
+        Some(BigDecimal(10.234)),
+        None,
+        Some(true),
+        None,
+        Some(true),
+        None
+      )
+      val other: PurchasedProductInstance   = PurchasedProductInstance(
+        ProductPath("other-goods/antiques"),
+        "iid1",
+        None,
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        Some("AUD"),
+        Some(5432),
+        Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))),
+        Some(true),
+        None,
+        None,
+        Some(true)
+      )
 
-    val csr: CalculatorServiceRequest = CalculatorServiceRequest(
-      isPrivateCraft = false,
-      isAgeOver17 = false,
-      isArrivingNI = false,
-      List(
-        PurchasedItem(
-          purchasedProductInstance = alcohol,
-          productTreeLeaf = ProductTreeLeaf("", "", "", "alcohol", List.empty),
-          exchangeRate = ExchangeRate("", ""),
-          currency = Currency("", "", None, List.empty),
-          gbpCost = BigDecimal(10)
-        ),
-        PurchasedItem(
-          purchasedProductInstance = tobacco,
-          productTreeLeaf = ProductTreeLeaf("", "", "", "tobacco", List.empty),
-          exchangeRate = ExchangeRate("", ""),
-          currency = Currency("", "", None, List.empty),
-          gbpCost = BigDecimal(10)
-        ),
-        PurchasedItem(
-          purchasedProductInstance = other,
-          productTreeLeaf = ProductTreeLeaf("", "", "", "other-goods", List.empty),
-          exchangeRate = ExchangeRate("", ""),
-          currency = Currency("", "", None, List.empty),
-          gbpCost = BigDecimal(10)
+      override val cachedJourneyData: Option[JourneyData] = Some(
+        travelDetailsJourneyData.copy(
+          euCountryCheck = Some("euOnly"),
+          arrivingNICheck = Some(false),
+          purchasedProductInstances = List(alcohol, tobacco, other)
         )
       )
-    )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
-      Future
-        .successful(
-          Some(csr)
-        )
-    )
-    val result: Future[Result]        = route(
-      app,
-      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
-        "firstName"      -> "Harry",
-        "lastName"       -> "Potter",
-        "passportNumber" -> "801375812",
-        "placeOfArrival" -> "Newcastle airport"
-      )
-    ).get
 
-    status(result) shouldBe OK
-
-    val content: String = contentAsString(result)
-    val doc: Document   = Jsoup.parse(content)
-
-    doc.getElementsByTag("h1").text()             shouldBe "Tell us about your goods"
-    doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
-  }
-
-  "respond with 200, display the page if all travel details exist & display button's text for Amendment:Calculate taxes and duties" in new LocalSetup {
-    lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
-      ProductPath("alcohol/beer"),
-      "iid0",
-      Some(1.54332),
-      None,
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      None,
-      Some("AUD"),
-      Some(BigDecimal(10.234)),
-      None,
-      None,
-      None,
-      isEditable = Some(false)
-    )
-    lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
-    lazy val calculation: Calculation                                     = Calculation("1.00", "1.00", "1.00", "3.00")
-    lazy val liabilityDetails: LiabilityDetails                           = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
-    lazy val declarationResponse: DeclarationResponse                     = DeclarationResponse(
-      calculation = calculation,
-      oldPurchaseProductInstances = oldPurchasedProductInstances,
-      liabilityDetails = liabilityDetails
-    )
-
-    val alcohol: PurchasedProductInstance = PurchasedProductInstance(
-      ProductPath("alcohol/beer"),
-      "iid0",
-      Some(1.54332),
-      None,
-      Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      Some("AUD"),
-      Some(BigDecimal(10.234)),
-      None,
-      Some(true),
-      None,
-      Some(true),
-      None
-    )
-    val tobacco: PurchasedProductInstance = PurchasedProductInstance(
-      ProductPath("tobacco/cigarettes"),
-      "iid0",
-      Some(1.54332),
-      None,
-      Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      Some("AUD"),
-      Some(BigDecimal(10.234)),
-      None,
-      Some(true),
-      None,
-      Some(true),
-      None
-    )
-    val other: PurchasedProductInstance   = PurchasedProductInstance(
-      ProductPath("other-goods/antiques"),
-      "iid1",
-      None,
-      None,
-      Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-      Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
-      Some("AUD"),
-      Some(5432),
-      Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))),
-      Some(true),
-      None,
-      None,
-      Some(true)
-    )
-
-    override val cachedJourneyData: Option[JourneyData] = Some(
-      travelDetailsJourneyData.copy(
-        euCountryCheck = Some("euOnly"),
-        arrivingNICheck = Some(false),
-        purchasedProductInstances = List(alcohol, tobacco, other),
-        declarationResponse = Some(declarationResponse)
-      )
-    )
-
-    val csr: CalculatorServiceRequest = CalculatorServiceRequest(
-      isPrivateCraft = false,
-      isAgeOver17 = false,
-      isArrivingNI = false,
-      List(
-        PurchasedItem(
-          purchasedProductInstance = alcohol,
-          productTreeLeaf = ProductTreeLeaf("", "", "", "alcohol", List.empty),
-          exchangeRate = ExchangeRate("", ""),
-          currency = Currency("", "", None, List.empty),
-          gbpCost = BigDecimal(10)
-        ),
-        PurchasedItem(
-          purchasedProductInstance = tobacco,
-          productTreeLeaf = ProductTreeLeaf("", "", "", "tobacco", List.empty),
-          exchangeRate = ExchangeRate("", ""),
-          currency = Currency("", "", None, List.empty),
-          gbpCost = BigDecimal(10)
-        ),
-        PurchasedItem(
-          purchasedProductInstance = other,
-          productTreeLeaf = ProductTreeLeaf("", "", "", "other-goods", List.empty),
-          exchangeRate = ExchangeRate("", ""),
-          currency = Currency("", "", None, List.empty),
-          gbpCost = BigDecimal(10)
+      val csr: CalculatorServiceRequest = CalculatorServiceRequest(
+        isPrivateCraft = false,
+        isAgeOver17 = false,
+        isArrivingNI = false,
+        List(
+          PurchasedItem(
+            purchasedProductInstance = alcohol,
+            productTreeLeaf = ProductTreeLeaf("", "", "", "alcohol", List.empty),
+            exchangeRate = ExchangeRate("", ""),
+            currency = Currency("", "", None, List.empty),
+            gbpCost = BigDecimal(10)
+          ),
+          PurchasedItem(
+            purchasedProductInstance = tobacco,
+            productTreeLeaf = ProductTreeLeaf("", "", "", "tobacco", List.empty),
+            exchangeRate = ExchangeRate("", ""),
+            currency = Currency("", "", None, List.empty),
+            gbpCost = BigDecimal(10)
+          ),
+          PurchasedItem(
+            purchasedProductInstance = other,
+            productTreeLeaf = ProductTreeLeaf("", "", "", "other-goods", List.empty),
+            exchangeRate = ExchangeRate("", ""),
+            currency = Currency("", "", None, List.empty),
+            gbpCost = BigDecimal(10)
+          )
         )
       )
-    )
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
-      Future
-        .successful(
-          Some(csr)
-        )
-    )
-    val result: Future[Result]        = route(
-      app,
-      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
-        "firstName"      -> "Harry",
-        "lastName"       -> "Potter",
-        "passportNumber" -> "801375812",
-        "placeOfArrival" -> "Newcastle airport"
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
+        Future
+          .successful(
+            Some(csr)
+          )
       )
-    ).get
-
-    status(result) shouldBe OK
-
-    val content: String = contentAsString(result)
-    val doc: Document   = Jsoup.parse(content)
-
-    doc.getElementsByTag("h1").text()             shouldBe "Tell us about your additional goods"
-    doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
-  }
-
-  "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {
-
-    override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
-    when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
-      Future
-        .successful(
-          None
+      val result: Future[Result]        = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
+          "firstName"      -> "Harry",
+          "lastName"       -> "Potter",
+          "passportNumber" -> "801375812",
+          "placeOfArrival" -> "Newcastle airport"
         )
-    )
-    val result: Future[Result]                          = route(
-      app,
-      enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
-        "firstName"      -> "Harry",
-        "lastName"       -> "Potter",
-        "passportNumber" -> "801375812",
-        "placeOfArrival" -> "Newcastle airport"
+      ).get
+
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text()             shouldBe "Tell us about your goods"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
+    }
+
+    "respond with 200, display the page if all travel details exist & display button's text for Amendment:Calculate taxes and duties" in new LocalSetup {
+      lazy val oldAlcohol: PurchasedProductInstance                         = PurchasedProductInstance(
+        ProductPath("alcohol/beer"),
+        "iid0",
+        Some(1.54332),
+        None,
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        None,
+        Some("AUD"),
+        Some(BigDecimal(10.234)),
+        None,
+        None,
+        None,
+        isEditable = Some(false)
       )
-    ).get
+      lazy val oldPurchasedProductInstances: List[PurchasedProductInstance] = List(oldAlcohol)
+      lazy val calculation: Calculation                                     = Calculation("1.00", "1.00", "1.00", "3.00")
+      lazy val liabilityDetails: LiabilityDetails                           = LiabilityDetails("32.0", "0.0", "126.4", "158.40")
+      lazy val declarationResponse: DeclarationResponse                     = DeclarationResponse(
+        calculation = calculation,
+        oldPurchaseProductInstances = oldPurchasedProductInstances,
+        liabilityDetails = liabilityDetails
+      )
 
-    status(result) shouldBe OK
+      val alcohol: PurchasedProductInstance = PurchasedProductInstance(
+        ProductPath("alcohol/beer"),
+        "iid0",
+        Some(1.54332),
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        Some("AUD"),
+        Some(BigDecimal(10.234)),
+        None,
+        Some(true),
+        None,
+        Some(true),
+        None
+      )
+      val tobacco: PurchasedProductInstance = PurchasedProductInstance(
+        ProductPath("tobacco/cigarettes"),
+        "iid0",
+        Some(1.54332),
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        Some("AUD"),
+        Some(BigDecimal(10.234)),
+        None,
+        Some(true),
+        None,
+        Some(true),
+        None
+      )
+      val other: PurchasedProductInstance   = PurchasedProductInstance(
+        ProductPath("other-goods/antiques"),
+        "iid1",
+        None,
+        None,
+        Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+        Some(Country("EG", "title.egypt", "EG", isEu = false, isCountry = true, Nil)),
+        Some("AUD"),
+        Some(5432),
+        Some(OtherGoodsSearchItem("label.other-goods.antiques", ProductPath("other-goods/antiques"))),
+        Some(true),
+        None,
+        None,
+        Some(true)
+      )
 
-    val content: String = contentAsString(result)
-    val doc: Document   = Jsoup.parse(content)
+      override val cachedJourneyData: Option[JourneyData] = Some(
+        travelDetailsJourneyData.copy(
+          euCountryCheck = Some("euOnly"),
+          arrivingNICheck = Some(false),
+          purchasedProductInstances = List(alcohol, tobacco, other),
+          declarationResponse = Some(declarationResponse)
+        )
+      )
 
-    doc
-      .getElementById("foreign-currency")
-      .text() shouldBe "Our online calculator accepts most foreign currencies and will work out the tax due in British pounds."
+      val csr: CalculatorServiceRequest = CalculatorServiceRequest(
+        isPrivateCraft = false,
+        isAgeOver17 = false,
+        isArrivingNI = false,
+        List(
+          PurchasedItem(
+            purchasedProductInstance = alcohol,
+            productTreeLeaf = ProductTreeLeaf("", "", "", "alcohol", List.empty),
+            exchangeRate = ExchangeRate("", ""),
+            currency = Currency("", "", None, List.empty),
+            gbpCost = BigDecimal(10)
+          ),
+          PurchasedItem(
+            purchasedProductInstance = tobacco,
+            productTreeLeaf = ProductTreeLeaf("", "", "", "tobacco", List.empty),
+            exchangeRate = ExchangeRate("", ""),
+            currency = Currency("", "", None, List.empty),
+            gbpCost = BigDecimal(10)
+          ),
+          PurchasedItem(
+            purchasedProductInstance = other,
+            productTreeLeaf = ProductTreeLeaf("", "", "", "other-goods", List.empty),
+            exchangeRate = ExchangeRate("", ""),
+            currency = Currency("", "", None, List.empty),
+            gbpCost = BigDecimal(10)
+          )
+        )
+      )
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
+        Future
+          .successful(
+            Some(csr)
+          )
+      )
+      val result: Future[Result]        = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
+          "firstName"      -> "Harry",
+          "lastName"       -> "Potter",
+          "passportNumber" -> "801375812",
+          "placeOfArrival" -> "Newcastle airport"
+        )
+      ).get
 
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc.getElementsByTag("h1").text()             shouldBe "Tell us about your additional goods"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
+    }
+
+    "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {
+
+      override val cachedJourneyData: Option[JourneyData] = Some(travelDetailsJourneyData)
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any())).thenReturn(
+        Future
+          .successful(
+            None
+          )
+      )
+      val result: Future[Result]                          = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us").withFormUrlEncodedBody(
+          "firstName"      -> "Harry",
+          "lastName"       -> "Potter",
+          "passportNumber" -> "801375812",
+          "placeOfArrival" -> "Newcastle airport"
+        )
+      ).get
+
+      status(result) shouldBe OK
+
+      val content: String = contentAsString(result)
+      val doc: Document   = Jsoup.parse(content)
+
+      doc
+        .getElementById("foreign-currency")
+        .text() shouldBe "Our online calculator accepts most foreign currencies and will work out the tax due in British pounds."
+
+    }
   }
 
   "Calling GET .../tax-due" should {
@@ -1296,7 +1296,6 @@ class DashboardControllerSpec extends BaseSpec {
         .getElementsByClass("govuk-table__header")
         .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
     }
-
   }
 
   "Calling GET .../tax-due" should {
