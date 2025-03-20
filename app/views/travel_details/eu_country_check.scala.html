@@ -21,8 +21,7 @@
   errorSummary: components.errorSummary,
   inputRadioPanel: components.inputRadioPanel,
   button: components.button,
-  formHelper: FormWithCSRF,
-  h1: components.h1
+  formHelper: FormWithCSRF
 )
 
 @(form: Form[EuCountryCheckDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
