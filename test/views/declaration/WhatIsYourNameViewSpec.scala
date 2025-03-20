@@ -73,7 +73,7 @@ class WhatIsYourNameViewSpec extends BaseViewSpec {
     appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[what_is_your_name].f(
+  val viewViaF: HtmlFormat.Appendable = injected[what_is_your_name].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

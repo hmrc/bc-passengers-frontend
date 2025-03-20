@@ -111,7 +111,7 @@ class NoOfSticksInputViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_input].f(
+  val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_input].ref.f(
     validForm,
     None,
     false,

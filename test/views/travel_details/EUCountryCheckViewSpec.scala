@@ -44,7 +44,7 @@ class EUCountryCheckViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[eu_country_check].f(
+  val viewViaF: HtmlFormat.Appendable = injected[eu_country_check].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

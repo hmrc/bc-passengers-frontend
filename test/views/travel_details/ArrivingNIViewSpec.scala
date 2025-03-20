@@ -43,7 +43,7 @@ class ArrivingNIViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[arriving_ni].f(
+  val viewViaF: HtmlFormat.Appendable = injected[arriving_ni].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

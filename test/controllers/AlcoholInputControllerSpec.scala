@@ -364,10 +364,10 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             PurchasedProductInstance(
               ProductPath("alcohol/beer"),
               "iid0",
+              Some(20.0),
               None,
               None,
               Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None,
               Some("EUR"),
               Some(BigDecimal(12.99))
             )

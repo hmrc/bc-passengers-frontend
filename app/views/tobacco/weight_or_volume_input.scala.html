@@ -16,7 +16,7 @@
 
 @import views.ViewUtils._
 
-@this(tobacco_input: views.html.tobacco.tobacco_input, formHelper: FormWithCSRF, inputText: components.inputText)
+@this(tobacco_input: views.html.tobacco.tobacco_input, inputText: components.inputText)
 @(form: Form[TobaccoDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @tobacco_input(form, backLink, customBackLink, product, path, iid, countries, countriesEU, currencies, journeyStart) {

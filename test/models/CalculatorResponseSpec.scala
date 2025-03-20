@@ -848,18 +848,23 @@ class CalculatorResponseSpec extends BaseSpec {
     }
 
     "deserialise from JSON" when {
+
       "all fields are valid" in {
         json.as[Calculation] shouldBe calculation
+      }
+
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "rate" -> true,
+          "date" -> true
+        )
+        json.validate[ExchangeRate] shouldBe a[JsError]
       }
 
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[Calculation] shouldBe a[JsError]
       }
-    }
-
-    "error when JSON is invalid" in {
-      JsObject.empty.validate[Calculation] shouldBe a[JsError]
     }
   }
 
@@ -906,9 +911,20 @@ class CalculatorResponseSpec extends BaseSpec {
         json.validate[ExchangeRate] shouldBe JsSuccess(exchangeRate)
       }
 
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "rate" -> true,
+          "date" -> true
+        )
+        json.validate[ExchangeRate] shouldBe a[JsError]
+      }
+
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[ExchangeRate] shouldBe a[JsError]
+      }
+      "error when JSON is invalid" in {
+        Json.arr().validate[ExchangeRate] shouldBe a[JsError]
       }
     }
   }
@@ -958,6 +974,10 @@ class CalculatorResponseSpec extends BaseSpec {
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[Metadata] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[Metadata] shouldBe a[JsError]
       }
     }
   }
@@ -1031,6 +1051,10 @@ class CalculatorResponseSpec extends BaseSpec {
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[Item] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[Item] shouldBe a[JsError]
       }
     }
   }
@@ -1132,6 +1156,10 @@ class CalculatorResponseSpec extends BaseSpec {
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[Band] shouldBe a[JsError]
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[Band] shouldBe a[JsError]
       }
     }
   }
@@ -1243,6 +1271,10 @@ class CalculatorResponseSpec extends BaseSpec {
           "calculation" -> Calculation("0.00", "0.00", "0.00", "0.00")
         )
         json.validate[Alcohol] shouldBe JsSuccess(alcohol)
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[Alcohol] shouldBe a[JsError]
       }
 
       "an empty JSON object" in {
@@ -1362,6 +1394,10 @@ class CalculatorResponseSpec extends BaseSpec {
         json.validate[Tobacco] shouldBe JsSuccess(tobacco)
       }
 
+      "error when JSON is invalid" in {
+        Json.arr().validate[Tobacco] shouldBe a[JsError]
+      }
+
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[Tobacco] shouldBe a[JsError]
@@ -1477,6 +1513,10 @@ class CalculatorResponseSpec extends BaseSpec {
         )
 
         json.validate[OtherGoods] shouldBe JsSuccess(otherGoods)
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[OtherGoods] shouldBe a[JsError]
       }
 
       "an empty JSON object" in {
@@ -1824,41 +1864,65 @@ class CalculatorResponseSpec extends BaseSpec {
         json.validate[CalculatorResponse] shouldBe JsSuccess(calculatorResponse)
       }
 
+      "error when JSON is invalid" in {
+        Json.arr().validate[CalculatorResponse] shouldBe a[JsError]
+      }
+
+      "there is type mismatch" in {
+        val json = Json.obj(
+          "description" -> true,
+          "args"        -> true
+        )
+        json.validate[CalculatorResponse] shouldBe a[JsError]
+      }
+
       "an empty JSON object" in {
         val json = Json.obj()
         json.validate[CalculatorResponse] shouldBe a[JsError]
       }
     }
-  }
 
-  "Description Labels" should {
+    "Description Labels" should {
 
-    val descriptionLabels = DescriptionLabels(
-      description = "label.Xg_of_X",
-      args = List("200", "label.tobacco.rolling-tobacco")
-    )
+      val descriptionLabels = DescriptionLabels(
+        description = "label.Xg_of_X",
+        args = List("200", "label.tobacco.rolling-tobacco")
+      )
 
-    "serialize to JSON" when {
-      "all fields are valid" in {
-        Json.toJson(descriptionLabels) shouldBe Json.obj(
-          "description" -> "label.Xg_of_X",
-          "args"        -> List("200", "label.tobacco.rolling-tobacco")
-        )
-      }
-    }
-
-    "deserialize from JSON" when {
-      "all fields are valid" in {
-        val json = Json.obj(
-          "description" -> "label.Xg_of_X",
-          "args"        -> List("200", "label.tobacco.rolling-tobacco")
-        )
-        json.validate[DescriptionLabels] shouldBe JsSuccess(descriptionLabels)
+      "serialize to JSON" when {
+        "all fields are valid" in {
+          Json.toJson(descriptionLabels) shouldBe Json.obj(
+            "description" -> "label.Xg_of_X",
+            "args"        -> List("200", "label.tobacco.rolling-tobacco")
+          )
+        }
       }
 
-      "an empty JSON object" in {
-        val json = Json.obj()
-        json.validate[DescriptionLabels] shouldBe a[JsError]
+      "deserialize from JSON" when {
+        "all fields are valid" in {
+          val json = Json.obj(
+            "description" -> "label.Xg_of_X",
+            "args"        -> List("200", "label.tobacco.rolling-tobacco")
+          )
+          json.validate[DescriptionLabels] shouldBe JsSuccess(descriptionLabels)
+        }
+
+        "error when JSON is invalid" in {
+          Json.arr().validate[DescriptionLabels] shouldBe a[JsError]
+        }
+
+        "there is type mismatch" in {
+          val json = Json.obj(
+            "description" -> true,
+            "args"        -> true
+          )
+          json.validate[DescriptionLabels] shouldBe a[JsError]
+        }
+
+        "an empty JSON object" in {
+          val json = Json.obj()
+          json.validate[DescriptionLabels] shouldBe a[JsError]
+        }
       }
     }
   }

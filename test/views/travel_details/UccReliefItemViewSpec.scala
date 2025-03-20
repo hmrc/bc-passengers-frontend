@@ -50,7 +50,7 @@ class UccReliefItemViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[ucc_relief_item].f(
+  val viewViaF: HtmlFormat.Appendable = injected[ucc_relief_item].ref.f(
     validForm,
     None,
     productPath,

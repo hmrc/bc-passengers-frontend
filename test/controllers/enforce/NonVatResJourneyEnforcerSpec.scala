@@ -230,7 +230,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
 
   "Calling NonVatResJourneyEnforcer.enforcePrereqs for PrivateCraftStep (Q4)" should {
 
-    "pass if user is coming from a valid previous step" in new GridSetup {
+    "pass if user is coming from a valid previous step and bringingOverAllowance == true" in new GridSetup {
 
       override lazy val journeyStep: JourneyStep = PrivateCraftStep
 
@@ -257,7 +257,7 @@ class NonVatResJourneyEnforcerSpec extends BaseSpec {
                   _,
                   _,
                   _,
-                  Some(_),
+                  Some(true),
                   _,
                   _,
                   _,

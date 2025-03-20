@@ -16,9 +16,7 @@
 
 package views.viewmodels
 
-import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.libs.Comet.json
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import util.BaseSpec
 
 class TimeInputSpec extends BaseSpec with TimeInputConstants {
@@ -46,6 +44,35 @@ class TimeInputSpec extends BaseSpec with TimeInputConstants {
 
           jsonEmptyFields.as[TimeInput] shouldBe modelEmptyFields
         }
+
+        "an empty json" in {
+          Json.obj().as[TimeInput] shouldBe modelEmptyFields
+        }
+      }
+
+      "fail" when {
+
+        "there is type mismatch" in {
+          val mismatched: JsValue = Json.parse(
+            """
+              |{
+              |    "id": true,
+              |    "items": true,
+              |    "periodSelectItems": true,
+              |    "formGroupClasses": true,
+              |    "classes": true,
+              |    "attributes": true,
+              |    "showSelectPeriod": "true"
+              |}
+            """.stripMargin
+          )
+          mismatched.validate[TimeInput] shouldBe a[JsError]
+
+        }
+
+        "it's not a json object" in {
+          Json.arr().validate[TimeInput] shouldBe a[JsError]
+        }
       }
     }
 
@@ -67,31 +94,5 @@ class TimeInputSpec extends BaseSpec with TimeInputConstants {
         }
       }
     }
-
-    "TimeInput" should {
-//      "serialize to JSON" when {
-//        "all fields are valid" in {
-//          Json.toJson(previousDeclarationRequest) shouldBe Json.obj(
-//            "lastName" -> "lastName",
-//            "referenceNumber" -> "referenceNumber"
-//          )
-//        }
-//      }
-
-      "deserialize from JSON" when {
-        "all fields are valid" in {
-          jsonMandatoryFields.validate[TimeInput] shouldBe JsSuccess(modelMandatoryFields)
-        }
-
-        "an empty JSON object" in {
-          val json = Json.obj()
-          json.validate[TimeInput] shouldBe JsSuccess(
-            TimeInput("", None, List(), List(), None, None, "", None, "", Map(), true)
-          )
-        }
-      }
-
-    }
-
   }
 }

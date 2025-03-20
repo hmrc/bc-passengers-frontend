@@ -49,7 +49,7 @@ class GovukLayoutWrapperViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[GovukLayoutWrapper].f(
+  val viewViaF: HtmlFormat.Appendable = injected[GovukLayoutWrapper].ref.f(
     Some("page title"),
     true,
     None,

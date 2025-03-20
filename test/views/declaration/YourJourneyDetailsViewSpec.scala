@@ -147,12 +147,23 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[journey_details].f(
+  val viewViaF: HtmlFormat.Appendable = injected[journey_details].ref.f(
     validForm,
     portsOfArrival,
     None,
     None
   )(request, messages, appConfig)
+
+  val greatBritainView: HtmlFormat.Appendable = injected[journey_details].apply(
+    form = validForm,
+    portsOfArrival = portsOfArrival,
+    journeyStart = Some("greatBritain"),
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
   private def buildView(form: Form[YourJourneyDetailsDto]): HtmlFormat.Appendable =
     injected[journey_details].apply(

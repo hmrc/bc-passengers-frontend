@@ -190,20 +190,6 @@ class LimitExceedControllerSpec extends BaseSpec {
             )
           }
         }
-
-        "not load limit exceed page if the path is incorrect" in {
-          when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData())))
-
-          val result: Future[Result] = route(
-            app,
-            FakeRequest(
-              "GET",
-              "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/zzz/yyy/upper-limits/volume"
-            )
-          ).get
-
-          status(result) shouldBe NOT_FOUND
-        }
       }
 
       "making an amendment to a previous declaration" should {
@@ -333,6 +319,26 @@ class LimitExceedControllerSpec extends BaseSpec {
               "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                 "They will calculate and take payment of the taxes and duties due."
             )
+          }
+        }
+      }
+
+      "there is no journey data" should {
+        when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData())))
+
+        Seq(("", "")).foreach { case (productToken, userInput) =>
+          s"load limit exceed page and display the content specifically for $productToken" in {
+            when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData())))
+
+            val result: Future[Result] = route(
+              app,
+              FakeRequest(
+                "GET",
+                s"/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/$productToken/upper-limits/volume"
+              ).withSession(s"user-amount-input-$productToken" -> userInput)
+            ).get
+
+            status(result) shouldBe NOT_FOUND
           }
         }
       }

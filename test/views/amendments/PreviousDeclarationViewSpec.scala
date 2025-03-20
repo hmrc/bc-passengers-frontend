@@ -43,7 +43,7 @@ class PreviousDeclarationViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[previous_declaration].f(
+  val viewViaF: HtmlFormat.Appendable = injected[previous_declaration].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

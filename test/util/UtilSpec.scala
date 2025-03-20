@@ -79,6 +79,10 @@ class UtilSpec extends BaseSpec {
       ) shouldBe true
     }
 
+    "return true on default values" in {
+      calculatorLimitConstraint() shouldBe true
+    }
+
     "return false when there are errors" in {
       calculatorLimitConstraint(
         limits = Map(

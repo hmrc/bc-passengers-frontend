@@ -129,7 +129,7 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
       )
 
     def viewViaF(otherItemMode: String, form: Form[OtherGoodsDto] = validForm): HtmlFormat.Appendable =
-      injected[other_goods_input].f(
+      injected[other_goods_input].ref.f(
         form,
         Some("iid0"),
         nonEuropeanCountries,
@@ -141,6 +141,21 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
         productPath,
         None,
         false
+      )(request, messages, appConfig)
+
+    def euOnlyView(otherItemMode: String, form: Form[OtherGoodsDto] = validForm): HtmlFormat.Appendable =
+      injected[other_goods_input].apply(
+        form = form,
+        iid = Some("iid0"),
+        countries = nonEuropeanCountries,
+        countriesEU = europeanCountries,
+        currencies = currencies,
+        journeyStart = Some("euOnly"),
+        otherGoodsSearchItems = otherGoodsSearchItems,
+        otherItemMode = otherItemMode,
+        path = productPath,
+        backLink = None,
+        customBackLink = false
       )(request, messages, appConfig)
   }
 
@@ -237,6 +252,17 @@ class OtherGoodsInputViewSpec extends BaseSpec with ViewSpec {
           s"otherItemMode is $otherItemMode" in new ViewFixture {
             document(
               viewViaApply(otherItemMode = otherItemMode)
+            ).select("h1").text shouldBe heading
+          }
+
+        headingInput.foreach(args => test.tupled(args))
+      }
+
+      "display the correct information when journeyStart is euOnly" when {
+        def test(otherItemMode: String, heading: String): Unit =
+          s"otherItemMode is $otherItemMode" in new ViewFixture {
+            document(
+              euOnlyView(otherItemMode = otherItemMode)
             ).select("h1").text shouldBe heading
           }
 

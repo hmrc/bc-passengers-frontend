@@ -39,7 +39,7 @@ class DeclareYourGoodsViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[declare_your_goods].f(
+  val viewViaF: HtmlFormat.Appendable = injected[declare_your_goods].ref.f(
     true,
     None
   )(request, messages, appConfig)

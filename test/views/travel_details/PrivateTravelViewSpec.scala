@@ -44,7 +44,7 @@ class PrivateTravelViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[private_travel].f(
+  val viewViaF: HtmlFormat.Appendable = injected[private_travel].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

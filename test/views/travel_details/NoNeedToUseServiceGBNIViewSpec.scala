@@ -35,7 +35,7 @@ class NoNeedToUseServiceGBNIViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[no_need_to_use_service_gbni].f(None)(request, messages, appConfig)
+  val viewViaF: HtmlFormat.Appendable = injected[no_need_to_use_service_gbni].ref.f(None)(request, messages, appConfig)
 
   "NoNeedToUseServiceGBNIView" when {
     renderViewTest(

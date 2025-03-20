@@ -98,6 +98,31 @@ class DtoTest extends BaseSpec {
     }
   }
 
+  "Validating the IdentificationTypeDto form" should {
+
+    "allow the identificationType to be a defined type" in {
+      val formData = Map(
+        "identificationType" -> "passport"
+      )
+
+      val form = IdentificationTypeDto.form.bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if the identificationType is not defined" in {
+      val formData = Map(
+        "identificationType" -> ""
+      )
+
+      val form = IdentificationTypeDto.form.bind(formData)
+
+      form.hasErrors                               shouldBe true
+      form.errors.size                             shouldBe 1
+      form.error("identificationType").get.message shouldBe "error.identification_type"
+    }
+  }
+
   "Validating the IdentificationNumberDto form" should {
 
     "allow the identificationNumber to be any string that is 40 characters or under" in {
@@ -120,6 +145,18 @@ class DtoTest extends BaseSpec {
       form.hasErrors                                 shouldBe true
       form.errors.size                               shouldBe 1
       form.error("identificationNumber").get.message shouldBe "error.max-length.passport_number"
+    }
+
+    "return validation errors if the identificationNumber is empty" in {
+      val formData = Map(
+        "identificationNumber" -> ""
+      )
+
+      val form = IdentificationNumberDto.form("passport").bind(formData)
+
+      form.hasErrors                                 shouldBe true
+      form.errors.size                               shouldBe 1
+      form.error("identificationNumber").get.message shouldBe "error.required.passport_number"
     }
 
     "allow the identificationNumber to be correct if identificationType is telephone and in correct format" in {
@@ -164,6 +201,18 @@ class DtoTest extends BaseSpec {
       form.hasErrors                                 shouldBe true
       form.errors.size                               shouldBe 1
       form.error("identificationNumber").get.message shouldBe "error.identification_number.format"
+    }
+
+    "return validation errors if identificationType is other than telephone and identificationNumber is empty" in {
+      val formData = Map(
+        "identificationNumber" -> ""
+      )
+
+      val form = IdentificationNumberDto.form("driving").bind(formData)
+
+      form.hasErrors                                 shouldBe true
+      form.errors.size                               shouldBe 1
+      form.error("identificationNumber").get.message shouldBe "error.required.driving_licence"
     }
   }
 

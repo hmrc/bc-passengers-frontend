@@ -115,7 +115,7 @@ class DoneViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[done].f(
+  val viewViaF: HtmlFormat.Appendable = injected[done].ref.f(
     true,
     calculatorResponseDto,
     Some(calculation),

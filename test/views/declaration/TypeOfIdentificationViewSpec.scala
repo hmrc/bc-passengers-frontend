@@ -16,13 +16,20 @@
 
 package views.declaration
 
-import models.IdentificationNumberDto
+import models.{IdentificationNumberDto, IdentificationTypeDto}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.BaseViewSpec
-import views.html.declaration.phone_number
+import views.html.declaration.{driving_licence_number, eu_id_number, passport_id_number, phone_number, type_of_identification}
 
 class TypeOfIdentificationViewSpec extends BaseViewSpec {
+
+  private val identificationForm: Form[IdentificationTypeDto] = IdentificationTypeDto.form
+    .bind(
+      Map(
+        "identificationType" -> ""
+      )
+    )
 
   private val emptyForm: Form[IdentificationNumberDto] = IdentificationNumberDto
     .form("euId")
@@ -65,6 +72,33 @@ class TypeOfIdentificationViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
+  val viewViaApplyPassport: HtmlFormat.Appendable = injected[passport_id_number].apply(
+    form = validForm,
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
+
+  val viewViaApplyDriving: HtmlFormat.Appendable = injected[driving_licence_number].apply(
+    form = validForm,
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
+
+  val viewViaApplyEuId: HtmlFormat.Appendable = injected[eu_id_number].apply(
+    form = validForm,
+    backLink = None
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
+
   val viewViaRender: HtmlFormat.Appendable = injected[phone_number].render(
     validForm,
     None,
@@ -73,10 +107,20 @@ class TypeOfIdentificationViewSpec extends BaseViewSpec {
     appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[phone_number].f(
+  val viewViaF: HtmlFormat.Appendable = injected[phone_number].ref.f(
     validForm,
     None
   )(request, messages, appConfig)
+
+  val greatBritainView: HtmlFormat.Appendable = injected[type_of_identification].apply(
+    form = identificationForm,
+    backLink = None,
+    journeyStart = Some("greatBritain")
+  )(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
 
   private def buildView(form: Form[IdentificationNumberDto]): HtmlFormat.Appendable =
     injected[phone_number].apply(

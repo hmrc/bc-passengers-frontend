@@ -18,7 +18,7 @@ package models
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 
 class DeclarationResponseSpec extends AnyWordSpec with Matchers {
 
@@ -76,6 +76,15 @@ class DeclarationResponseSpec extends AnyWordSpec with Matchers {
         )
         json.validate[DeclarationResponse] shouldBe JsSuccess(declarationResponse)
       }
+
+      "fail to read from json" when {
+        "there is type mismatch" in {
+          Json.arr("a" -> "b").validate[DeclarationResponse] shouldBe a[JsError]
+        }
+        "empty json" in {
+          Json.obj().validate[DeclarationResponse] shouldBe a[JsError]
+        }
+      }
     }
   }
 
@@ -100,6 +109,7 @@ class DeclarationResponseSpec extends AnyWordSpec with Matchers {
     }
 
     "deserialize from JSON" when {
+
       "all fields are valid" in {
         val json = Json.obj(
           "totalExciseGBP"  -> "0.00",
@@ -108,6 +118,16 @@ class DeclarationResponseSpec extends AnyWordSpec with Matchers {
           "grandTotalGBP"   -> "0.00"
         )
         json.validate[LiabilityDetails] shouldBe JsSuccess(liabilityDetails)
+      }
+
+      "fail to read from json" when {
+        "there is type mismatch" in {
+          Json.arr("a" -> "b").validate[LiabilityDetails] shouldBe a[JsError]
+        }
+
+        "empty json" in {
+          Json.obj().validate[LiabilityDetails] shouldBe a[JsError]
+        }
       }
     }
   }

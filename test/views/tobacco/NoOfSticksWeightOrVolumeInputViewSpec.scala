@@ -112,7 +112,7 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].f(
+  val viewViaF: HtmlFormat.Appendable = injected[no_of_sticks_weight_or_volume_input].ref.f(
     validForm,
     None,
     false,

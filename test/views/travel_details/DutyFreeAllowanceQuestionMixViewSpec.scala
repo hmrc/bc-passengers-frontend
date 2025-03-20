@@ -46,7 +46,7 @@ class DutyFreeAllowanceQuestionMixViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[duty_free_allowance_question_mix].f(
+  val viewViaF: HtmlFormat.Appendable = injected[duty_free_allowance_question_mix].ref.f(
     validForm,
     true,
     None

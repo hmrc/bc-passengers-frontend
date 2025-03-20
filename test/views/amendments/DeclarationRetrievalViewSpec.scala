@@ -49,7 +49,7 @@ class DeclarationRetrievalViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[declaration_retrieval].f(
+  val viewViaF: HtmlFormat.Appendable = injected[declaration_retrieval].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

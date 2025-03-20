@@ -44,7 +44,7 @@ class BringingDutyFreeQuestionViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[bringing_duty_free_question].f(
+  val viewViaF: HtmlFormat.Appendable = injected[bringing_duty_free_question].ref.f(
     validForm,
     None
   )(request, messages, appConfig)
