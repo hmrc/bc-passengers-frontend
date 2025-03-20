@@ -111,7 +111,7 @@ class ZeroToDeclareYourGoodsViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[zero_to_declare_your_goods].f(
+  val viewViaF: HtmlFormat.Appendable = injected[zero_to_declare_your_goods].ref.f(
     calculatorResponseDto,
     true,
     true,

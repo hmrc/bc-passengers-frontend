@@ -175,7 +175,7 @@ class DashboardViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[dashboard].f(
+  val viewViaF: HtmlFormat.Appendable = injected[dashboard].ref.f(
     JourneyData(),
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,

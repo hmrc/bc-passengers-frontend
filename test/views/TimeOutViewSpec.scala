@@ -33,7 +33,7 @@ class TimeOutViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[timeOut].f()(request, messages, appConfig)
+  val viewViaF: HtmlFormat.Appendable = injected[timeOut].ref.f()(request, messages, appConfig)
 
   "TimeOutView" when {
     renderViewTest(

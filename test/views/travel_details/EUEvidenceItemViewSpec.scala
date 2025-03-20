@@ -52,7 +52,7 @@ class EUEvidenceItemViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[eu_evidence_item].f(
+  val viewViaF: HtmlFormat.Appendable = injected[eu_evidence_item].ref.f(
     validForm,
     None,
     productPath,

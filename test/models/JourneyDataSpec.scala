@@ -16,7 +16,6 @@
 
 package models
 
-import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.libs.json
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import util.{BaseSpec, parseLocalDate, parseLocalTime}

@@ -119,7 +119,7 @@ class PendingPaymentViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[pending_payment].f(
+  val viewViaF: HtmlFormat.Appendable = injected[pending_payment].ref.f(
     validForm,
     calculatorResponseDto,
     Some(calculation),

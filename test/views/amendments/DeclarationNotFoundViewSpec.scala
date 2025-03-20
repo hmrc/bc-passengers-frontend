@@ -35,7 +35,7 @@ class DeclarationNotFoundViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[declaration_not_found].f(None)(request, messages, appConfig)
+  val viewViaF: HtmlFormat.Appendable = injected[declaration_not_found].ref.f(None)(request, messages, appConfig)
 
   "DeclarationNotFoundView" when {
     renderViewTest(

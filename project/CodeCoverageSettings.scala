@@ -6,8 +6,8 @@ object CodeCoverageSettings {
   private val excludedPackages: Seq[String] = Seq(
     "<empty>",
     ".*Routes.*",
-    ".*views.html.*",
-    ".*\\$anon\\$.*"
+    ".*\\$anon\\$.*",
+    ".*\\$.*\\$\\$.*"
   )
 
   private val settings: Seq[Setting[?]] = Seq(

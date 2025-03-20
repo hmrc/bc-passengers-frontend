@@ -97,7 +97,7 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
     appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[what_is_your_email].f(
+  val viewViaF: HtmlFormat.Appendable = injected[what_is_your_email].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

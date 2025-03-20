@@ -115,7 +115,7 @@ class OverNinetySevenThousandPoundsViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[over_ninety_seven_thousand_pounds].f(
+  val viewViaF: HtmlFormat.Appendable = injected[over_ninety_seven_thousand_pounds].ref.f(
     true,
     calculatorResponseDto,
     Some(calculation),

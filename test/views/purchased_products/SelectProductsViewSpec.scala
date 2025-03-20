@@ -52,7 +52,7 @@ class SelectProductsViewSpec extends BaseViewSpec {
     backLink = None
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[select_products].f(
+  val viewViaF: HtmlFormat.Appendable = injected[select_products].ref.f(
     validForm,
     List(("televisions", "label.other-goods.electronic-devices.televisions")),
     productPath,

@@ -111,7 +111,7 @@ class WeightOrVolumeInputViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[weight_or_volume_input].f(
+  val viewViaF: HtmlFormat.Appendable = injected[weight_or_volume_input].ref.f(
     validForm,
     None,
     false,

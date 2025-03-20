@@ -48,7 +48,7 @@ class RemoveViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[remove].f(
+  val viewViaF: HtmlFormat.Appendable = injected[remove].ref.f(
     validForm,
     productPath,
     "iid0"

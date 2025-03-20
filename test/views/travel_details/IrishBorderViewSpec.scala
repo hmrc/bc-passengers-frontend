@@ -44,7 +44,7 @@ class IrishBorderViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[irish_border].f(
+  val viewViaF: HtmlFormat.Appendable = injected[irish_border].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

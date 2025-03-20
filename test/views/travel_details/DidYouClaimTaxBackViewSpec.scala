@@ -44,7 +44,7 @@ class DidYouClaimTaxBackViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[did_you_claim_tax_back].f(
+  val viewViaF: HtmlFormat.Appendable = injected[did_you_claim_tax_back].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

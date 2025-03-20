@@ -43,7 +43,7 @@ class UKResidentViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[uk_resident].f(
+  val viewViaF: HtmlFormat.Appendable = injected[uk_resident].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

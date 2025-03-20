@@ -16,8 +16,6 @@
 
 package views.viewmodels
 
-import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.libs.Comet.json
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import util.BaseSpec
 

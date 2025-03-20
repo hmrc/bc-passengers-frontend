@@ -44,7 +44,7 @@ class GoodsBoughtOutsideEUViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[goods_bought_outside_eu].f(
+  val viewViaF: HtmlFormat.Appendable = injected[goods_bought_outside_eu].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

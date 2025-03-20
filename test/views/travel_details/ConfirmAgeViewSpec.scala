@@ -44,7 +44,7 @@ class ConfirmAgeViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[confirm_age].f(
+  val viewViaF: HtmlFormat.Appendable = injected[confirm_age].ref.f(
     validForm,
     None
   )(request, messages, appConfig)

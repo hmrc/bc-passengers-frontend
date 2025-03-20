@@ -35,7 +35,7 @@ class NoFurtherAmendmentViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[no_further_amendment].f(None)(request, messages, appConfig)
+  val viewViaF: HtmlFormat.Appendable = injected[no_further_amendment].ref.f(None)(request, messages, appConfig)
 
   "NoFurtherAmendmentView" when {
     renderViewTest(

@@ -21,7 +21,7 @@ import org.scalatest.matchers.must.Matchers.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{BaseScalaTemplate, Format, HtmlFormat}
 import services.ProductTreeService
 import util.BaseSpec
 

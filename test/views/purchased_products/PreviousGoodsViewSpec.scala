@@ -168,7 +168,7 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[previous_goods].f(
+  val viewViaF: HtmlFormat.Appendable = injected[previous_goods].ref.f(
     JourneyData(),
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,

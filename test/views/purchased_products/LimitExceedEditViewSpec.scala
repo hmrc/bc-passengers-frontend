@@ -49,7 +49,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
     )
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[limit_exceed_edit]
+    injected[limit_exceed_edit].ref
       .f("110.2", "0", "0", "cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors

@@ -33,7 +33,7 @@ class ErrorTemplateViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[errorTemplate].f()(request, messages, appConfig)
+  val viewViaF: HtmlFormat.Appendable = injected[errorTemplate].ref.f()(request, messages, appConfig)
 
   "ErrorTemplateView" when {
     renderViewTest(

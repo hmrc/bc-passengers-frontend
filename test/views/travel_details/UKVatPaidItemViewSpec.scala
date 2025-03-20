@@ -50,7 +50,7 @@ class UKVatPaidItemViewSpec extends BaseViewSpec {
     appConfig = appConfig
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[ukvat_paid_item].f(
+  val viewViaF: HtmlFormat.Appendable = injected[ukvat_paid_item].ref.f(
     validForm,
     None,
     productPath,
