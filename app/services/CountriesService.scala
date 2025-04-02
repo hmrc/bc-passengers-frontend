@@ -298,7 +298,7 @@ class CountriesService {
     Country("SE", "title.sweden", "SE", isEu = true, isCountry = true, Nil),
     Country("CH", "title.switzerland", "CH", isEu = false, isCountry = true, List("Swiss")),
     Country("SY", "title.syria", "SY", isEu = false, isCountry = true, Nil),
-    Country("TW", "title.taiwan_province_of_china", "TW", isEu = false, isCountry = true, Nil),
+    Country("TW", "title.taiwan", "TW", isEu = false, isCountry = true, Nil),
     Country("TJ", "title.tajikistan", "TJ", isEu = false, isCountry = true, Nil),
     Country("TZ", "title.tanzania", "TZ", isEu = false, isCountry = true, Nil),
     Country("ES1", "title.tenerife", "ES", isEu = false, isCountry = true, List("Tennerife")),
