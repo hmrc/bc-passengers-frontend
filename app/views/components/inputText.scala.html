@@ -21,6 +21,8 @@
         id: String,
         name: String,
         label: String,
+        spellcheck : Option[Boolean] = None,
+        inputmode : Option[String] = None,
         isPageHeading: Boolean,
         headingMessageArgs: Seq[String] = Seq(),
         hint: Option[Html] = None,
@@ -47,8 +49,10 @@
   value = form(name).value,
   errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
   inputType = inputType,
-  inputmode = if(isTelephone) Some("tel") else None,
-  autocomplete = autocomplete
-
+  inputmode = if(inputmode.isEmpty){
+        if(isTelephone) Some("tel") else None
+    } else inputmode,
+  autocomplete = autocomplete,
+  spellcheck = spellcheck
 ))
 
