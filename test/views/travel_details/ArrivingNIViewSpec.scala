@@ -48,10 +48,9 @@ class ArrivingNIViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "ArrivingNIView" when {
+  "ArrivingNIView" when
     renderViewTest(
       title = "Is your final destination Northern Ireland? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Is your final destination Northern Ireland?"
     )
-  }
 }

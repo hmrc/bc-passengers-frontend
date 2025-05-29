@@ -124,10 +124,9 @@ class WeightOrVolumeInputViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "WeightOrVolumeInputView" when {
+  "WeightOrVolumeInputView" when
     renderViewTest(
       title = "Tell us about the rolling tobacco - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Tell us about the Rolling tobacco"
     )
-  }
 }

@@ -161,8 +161,7 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
       heading = "What is your email address?"
     )
 
-    "formWithErrors" should {
-
+    "formWithErrors" should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
@@ -187,6 +186,5 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
           )
         }
       }
-    }
   }
 }

@@ -41,5 +41,5 @@
         classes = "govuk-inset-text"
     )},
     items = items,
-    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*))))
+    errorMessage = form(name).error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*))))
 ))

@@ -156,8 +156,7 @@ class TypeOfIdentificationViewSpec extends BaseViewSpec {
       heading = "Your phone number"
     )
 
-    "formWithErrors" should {
-
+    "formWithErrors" should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
@@ -182,6 +181,5 @@ class TypeOfIdentificationViewSpec extends BaseViewSpec {
           )
         }
       }
-    }
   }
 }

@@ -57,10 +57,9 @@ class UccReliefItemViewSpec extends BaseViewSpec {
     "iid0"
   )(request, messages, appConfig)
 
-  "UccReliefItemView" when {
+  "UccReliefItemView" when
     renderViewTest(
       title = "Tax and duty exemptions for non-UK residents - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Tax and duty exemptions for non-UK residents"
     )
-  }
 }

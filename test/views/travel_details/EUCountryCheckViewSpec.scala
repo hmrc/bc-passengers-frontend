@@ -49,10 +49,9 @@ class EUCountryCheckViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "EUCountryCheckView" when {
+  "EUCountryCheckView" when
     renderViewTest(
       title = "Where are you bringing in goods from? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Where are you bringing in goods from?"
     )
-  }
 }

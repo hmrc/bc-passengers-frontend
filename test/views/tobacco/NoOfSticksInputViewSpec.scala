@@ -124,10 +124,9 @@ class NoOfSticksInputViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "NoOfSticksInputView" when {
+  "NoOfSticksInputView" when
     renderViewTest(
       title = "Tell us about the cigarettes - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Tell us about the Cigarettes"
     )
-  }
 }

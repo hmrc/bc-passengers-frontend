@@ -59,10 +59,9 @@ class SelectProductsViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "SelectProductsView" when {
+  "SelectProductsView" when
     renderViewTest(
       title = "What electronic devices do you want to add? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "What electronic devices do you want to add?"
     )
-  }
 }

@@ -54,10 +54,9 @@ class RemoveViewSpec extends BaseViewSpec {
     "iid0"
   )(request, messages, appConfig)
 
-  "RemoveView" when {
+  "RemoveView" when
     renderViewTest(
       title = "Do you want to remove these cigars? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Do you want to remove these cigars?"
     )
-  }
 }

@@ -32,9 +32,8 @@ class ProductPathSpec extends BaseSpec {
     }
 
     "read from invalid JSON" should {
-      "produce a JsError" in {
+      "produce a JsError" in
         JsNull.validate[ProductPath].map(_ shouldBe JsError("Invalid ProductPath json"))
-      }
     }
 
     "written to JSON" should {
