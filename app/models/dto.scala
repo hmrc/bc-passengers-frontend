@@ -348,19 +348,15 @@ object EmailAddressDto extends Validators {
 object YourJourneyDetailsDto extends Validators {
 
   private val mandatoryDate: Mapping[String] =
-    tuple("day" -> optional(text), "month" -> optional(text), "year" -> optional(text))
+    tuple("day" -> optional(text).verifying("error.date.day_blank", _.isDefined),
+      "month" -> optional(text).verifying("error.date.month_blank", _.isDefined),
+      "year" -> optional(text).verifying("error.date.year_blank", _.isDefined)
+    )
       .verifying(
         "error.enter_a_date",
         dateParts => {
           val definedParts: Int = dateParts.productIterator.collect { case o @ Some(_) => o }.size
           definedParts > 0
-        }
-      )
-      .verifying(
-        "error.include_day_month_and_year",
-        dateParts => {
-          val definedParts: Int = dateParts.productIterator.collect { case o @ Some(_) => o }.size
-          definedParts < 1 || definedParts > 2
         }
       )
       .transform[(String, String, String)](
@@ -396,10 +392,12 @@ object YourJourneyDetailsDto extends Validators {
       )
 
   private val mandatoryTime: Mapping[String] =
-    tuple("hour" -> optional(text), "minute" -> optional(text))
+    tuple("hour" -> optional(text).verifying("error.time.hour_blank", _.isDefined),
+      "minute" -> optional(text).verifying("error.time.minute_blank", _.isDefined)
+    )
       .verifying(
         "error.enter_a_time",
-        maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty
+         maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty
       )
       .transform[(String, String)](
         maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get),
