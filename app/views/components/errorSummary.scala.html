@@ -19,17 +19,10 @@
 @(errors: Seq[FormError], errorFieldSuffix: Option[String] = None, errorId: Option[String] = None)(implicit messages: Messages)
 
     @if(errors.nonEmpty) {
-        @defining(errors.map { error =>
-            val id = if(error.key == "") {
-                errorId.getOrElse("")
-            } else {
-                error.key + errorFieldSuffix.fold("")(suffix => s"-$suffix")
-            }
+        @defining(
+            errors.map { error =>
 
             val errorSuffix = error.key match {
-                case key if key.contains("dateOfArrival") => ".day"
-                case key if key.contains("timeOfArrival") => ".hour"
-                case key if key.contains("dateTimeOfArrival") => ".dateOfArrival.day"
                 case key if key.contains("placeOfArrival") => ".selectPlaceOfArrival"
                 case key if key.contains("identificationType") => "-passport"
                 case key if key.isEmpty && error.message.contains("emailAddress.no_match") => "confirmEmail"
@@ -37,9 +30,11 @@
             }
 
             ErrorLink(
-                href = Some(s"#$id" + errorSuffix),
+                href = Some(s"#${errorFieldSuffix.getOrElse(error.key)}" + errorSuffix),
                 content = Text(messages(error.message, error.args*))
             )
+
+
         }) { errorLinks =>
             @govukErrorSummary(ErrorSummary(
                 errorList = errorLinks,
