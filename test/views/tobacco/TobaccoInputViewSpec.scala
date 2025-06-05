@@ -249,7 +249,7 @@ class TobaccoInputViewSpec extends BaseViewSpec {
       heading = "Tell us about the Cigars"
     )
 
-    "formWithErrors" should {
+    "formWithErrors" should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
@@ -264,6 +264,5 @@ class TobaccoInputViewSpec extends BaseViewSpec {
           testCase._3 shouldBe getErrorsInSummary(doc)
         }
       }
-    }
   }
 }

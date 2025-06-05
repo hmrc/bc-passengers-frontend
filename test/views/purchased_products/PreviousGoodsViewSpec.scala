@@ -180,10 +180,9 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     true
   )(request, messages, Lang("en"), appConfig)
 
-  "PreviousGoodsView" when {
+  "PreviousGoodsView" when
     renderViewTest(
       title = "Your previously declared goods - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Your previously declared goods"
     )
-  }
 }

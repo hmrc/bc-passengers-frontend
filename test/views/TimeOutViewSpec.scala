@@ -35,10 +35,9 @@ class TimeOutViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[timeOut].ref.f()(request, messages, appConfig)
 
-  "TimeOutView" when {
+  "TimeOutView" when
     renderViewTest(
       title = "For your security, we deleted your answers - Check tax on goods you bring into the UK - GOV.UK",
       heading = "For your security, we deleted your answers"
     )
-  }
 }

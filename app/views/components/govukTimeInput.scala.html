@@ -106,7 +106,7 @@
                     label =
                         Label(
                         classes = "govuk-date-input__label",
-                        content = item.label.mapNonEmpty(Text).getOrElse(Text(item.name.nunjucksCapitalize))
+                        content = item.label.mapNonEmpty(Text(_)).getOrElse(Text(item.name.nunjucksCapitalize))
                         ),
                     classes = s"govuk-date-input__input ${item.classes}",
                     autocomplete = item.autocomplete,
@@ -124,7 +124,7 @@
                         label =
                         Label(
                         classes = "govuk-date-input__label",
-                        content = timePeriodItem.label.mapNonEmpty(Text).getOrElse(Text(timePeriodItem.name.nunjucksCapitalize))
+                        content = timePeriodItem.label.mapNonEmpty(Text(_)).getOrElse(Text(timePeriodItem.name.nunjucksCapitalize))
                         ),
                         classes = s"govuk-date-input__input ${timePeriodItem.classes}",
                         attributes = timePeriodItem.attributes

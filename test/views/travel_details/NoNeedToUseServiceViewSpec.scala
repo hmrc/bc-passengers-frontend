@@ -37,10 +37,9 @@ class NoNeedToUseServiceViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[no_need_to_use_service].ref.f(None)(request, messages, appConfig)
 
-  "NoNeedToUseServiceView" when {
+  "NoNeedToUseServiceView" when
     renderViewTest(
       title = "You do not need to use this service - Check tax on goods you bring into the UK - GOV.UK",
       heading = "You do not need to use this service"
     )
-  }
 }

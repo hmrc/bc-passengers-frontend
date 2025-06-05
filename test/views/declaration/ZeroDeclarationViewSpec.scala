@@ -168,10 +168,9 @@ class ZeroDeclarationViewSpec extends BaseViewSpec {
     "Newcastle Airport"
   )(request, messages, appConfig)
 
-  "ZeroDeclarationView" when {
+  "ZeroDeclarationView" when
     renderViewTest(
       title = "Declaration complete - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Declaration complete"
     )
-  }
 }

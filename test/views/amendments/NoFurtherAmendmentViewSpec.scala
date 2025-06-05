@@ -37,11 +37,10 @@ class NoFurtherAmendmentViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[no_further_amendment].ref.f(None)(request, messages, appConfig)
 
-  "NoFurtherAmendmentView" when {
+  "NoFurtherAmendmentView" when
     renderViewTest(
       title =
         "You can no longer use this service to add goods to your declaration - Check tax on goods you bring into the UK - GOV.UK",
       heading = "You can no longer use this service to add goods to your declaration"
     )
-  }
 }

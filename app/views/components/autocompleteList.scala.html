@@ -57,7 +57,7 @@
         id = id,
         name = name,
         describedBy = if(hint) {Some(id + s"-hint")} else {None},
-        errorMessage = form(id).error.map(fe => ErrorMessage(content = HtmlContent(messages(fe.message)))),
+        errorMessage = form(id).error.map(fe => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(messages(fe.message)))),
         items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
             case (k,v) => SelectItem(
                 value = Some(k),

@@ -36,10 +36,9 @@ class PurchasePriceOutOfBoundsViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[purchase_price_out_of_bounds].ref.f()(request, messages, appConfig)
 
-  "PurchasePriceOutOfBoundsView" when {
+  "PurchasePriceOutOfBoundsView" when
     renderViewTest(
       title = "You cannot use this service - Check tax on goods you bring into the UK - GOV.UK",
       heading = "You cannot use this service"
     )
-  }
 }

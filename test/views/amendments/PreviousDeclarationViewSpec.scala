@@ -48,10 +48,9 @@ class PreviousDeclarationViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "PreviousDeclarationView" when {
+  "PreviousDeclarationView" when
     renderViewTest(
       title = "What do you want to do? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "What do you want to do?"
     )
-  }
 }

@@ -88,8 +88,5 @@ class PreviousDeclarationService @Inject() (
             previousDeclarationRequest = Some(previousDeclarationRequest)
           )
         )
-
-      case _ =>
-        Future.successful(journeyData)
     }
 }

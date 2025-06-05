@@ -70,41 +70,40 @@ class TobaccoInputController @Inject() (
         Redirect(routes.SelectProductController.nextStep())
     }
 
-  def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction {
-    implicit context =>
-      if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
-        Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
-      } else {
-        requireProduct(path) { product =>
-          withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-            Future.successful(
-              Ok(
-                no_of_sticks_input(
-                  tobaccoInputForm
-                    .cigaretteAndHeatedTobaccoForm(path)
-                    .bind(
-                      Map(
-                        "country"       -> defaultCountry.getOrElse(""),
-                        "originCountry" -> defaultOriginCountry.getOrElse(""),
-                        "currency"      -> defaultCurrency.getOrElse("")
-                      )
+  def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
+    if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    } else {
+      requireProduct(path) { product =>
+        withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          Future.successful(
+            Ok(
+              no_of_sticks_input(
+                tobaccoInputForm
+                  .cigaretteAndHeatedTobaccoForm(path)
+                  .bind(
+                    Map(
+                      "country"       -> defaultCountry.getOrElse(""),
+                      "originCountry" -> defaultOriginCountry.getOrElse(""),
+                      "currency"      -> defaultCurrency.getOrElse("")
                     )
-                    .discardingErrors,
-                  backLinkModel.backLink,
-                  customBackLink = false,
-                  product,
-                  path,
-                  None,
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck
-                )
+                  )
+                  .discardingErrors,
+                backLinkModel.backLink,
+                customBackLink = false,
+                product,
+                path,
+                None,
+                countriesService.getAllCountries,
+                countriesService.getAllCountriesAndEu,
+                currencyService.getAllCurrencies,
+                context.getJourneyData.euCountryCheck
               )
             )
-          }
+          )
         }
       }
+    }
   }
 
   def displayLooseTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>

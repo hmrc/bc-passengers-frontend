@@ -586,7 +586,7 @@ class LimitExceedControllerSpec extends BaseSpec {
         }
       }
 
-      "making an amendment to a previous declaration" should {
+      "making an amendment to a previous declaration" should
         Seq(
           ("cigars", "cigars", 200, 201),
           ("cigarillos", "cigarillos", 400, 401),
@@ -636,7 +636,6 @@ class LimitExceedControllerSpec extends BaseSpec {
             )
           }
         }
-      }
     }
 
     ".onPageLoadEditAlcoholVolume" when {
@@ -1154,7 +1153,7 @@ class LimitExceedControllerSpec extends BaseSpec {
     }
 
     ".onPageLoadEditNoOfSticks" when {
-      "making a first declaration" should {
+      "making a first declaration" should
         Seq(
           ("cigars", "cigars"),
           ("cigarillos", "cigarillos"),
@@ -1215,9 +1214,8 @@ class LimitExceedControllerSpec extends BaseSpec {
             )
           }
         }
-      }
 
-      "making an amendment to a previous declaration" should {
+      "making an amendment to a previous declaration" should
         Seq(
           ("cigars", "cigars"),
           ("cigarillos", "cigarillos"),
@@ -1288,7 +1286,6 @@ class LimitExceedControllerSpec extends BaseSpec {
             )
           }
         }
-      }
     }
   }
 }

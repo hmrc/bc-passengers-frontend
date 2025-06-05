@@ -52,10 +52,9 @@ class DutyFreeAllowanceQuestionEUViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "DutyFreeAllowanceQuestionEUView" when {
+  "DutyFreeAllowanceQuestionEUView" when
     renderViewTest(
       title = "You may need to declare goods brought in from EU countries",
       heading = "Are you bringing in goods over your allowances?"
     )
-  }
 }

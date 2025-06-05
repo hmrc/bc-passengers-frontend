@@ -54,10 +54,9 @@ class DeclarationRetrievalViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "DeclarationRetrievalView" when {
+  "DeclarationRetrievalView" when
     renderViewTest(
       title = "Add goods to your previous declaration - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Add goods to your previous declaration"
     )
-  }
 }

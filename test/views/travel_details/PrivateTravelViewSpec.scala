@@ -49,11 +49,10 @@ class PrivateTravelViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "PrivateTravelView" when {
+  "PrivateTravelView" when
     renderViewTest(
       title =
         "Are you arriving in the UK by private aircraft or private boat? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Are you arriving in the UK by private aircraft or private boat?"
     )
-  }
 }

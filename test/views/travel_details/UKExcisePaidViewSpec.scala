@@ -48,11 +48,10 @@ class UKExcisePaidViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "UKExcisePaidView" when {
+  "UKExcisePaidView" when
     renderViewTest(
       title =
         "Did you pay both UK VAT and excise duty when buying all of your goods? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Did you pay both UK VAT and excise duty when buying all of your goods?"
     )
-  }
 }

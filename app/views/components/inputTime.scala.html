@@ -58,6 +58,6 @@
         )
     ),
     hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
-    errorMessage = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
+    errorMessage = form(id).error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*)))),
     showSelectPeriod = false
 ))
