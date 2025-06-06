@@ -348,10 +348,10 @@ object EmailAddressDto extends Validators {
 object YourJourneyDetailsDto extends Validators {
 
   private val mandatoryDate: Mapping[DateOfArrival] =
-    tuple("day" -> optional(text).verifying("error.date.day_blank", _.isDefined),
+    mapping("day" -> optional(text).verifying("error.date.day_blank", _.isDefined),
       "month" -> optional(text).verifying("error.date.month_blank", _.isDefined),
       "year" -> optional(text).verifying("error.date.year_blank", _.isDefined)
-    )
+    )(DateOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
       .verifying(
         "error.enter_a_date",
         dateParts => {
@@ -359,56 +359,41 @@ object YourJourneyDetailsDto extends Validators {
           definedParts > 0
         }
       )
-      .transform[(String, String, String)](
-        maybeDateString => (maybeDateString._1.get, maybeDateString._2.get, maybeDateString._3.get),
-        dateString => (Some(dateString._1), Some(dateString._2), Some(dateString._3))
-      )
       .verifying(
         "error.enter_a_real_date",
         dateString =>
-          dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit)
+          dateString._1.getOrElse("").forall(_.isDigit) && dateString._2.getOrElse("").forall(_.isDigit) && dateString._3.getOrElse("").forall(_.isDigit)
       )
-      .verifying("error.year_length", dateString => dateString._3.length == 4)
+      .verifying("error.year_length", dateString => dateString._3.getOrElse("").length == 4)
       .verifying(
         "error.enter_a_real_date",
         dateString =>
-          dateString._2.nonEmpty && dateString._2.length <= 2 && dateString._1.nonEmpty && dateString._1.length <= 2
+          dateString._2.nonEmpty && dateString._2.getOrElse("").length <= 2 && dateString._1.nonEmpty && dateString._1.getOrElse("").length <= 2
       )
       .verifying(
         "error.enter_a_real_date",
-        dateInt => Try(LocalDate.of(dateInt._3.toInt, dateInt._2.toInt, dateInt._1.toInt)).isSuccess
+        dateInt => Try(LocalDate.of(dateInt._3.getOrElse("").toInt, dateInt._2.getOrElse("").toInt, dateInt._1.getOrElse("").toInt)).isSuccess
       )
-       .transform[DateOfArrival](
-          dateString => DateOfArrival(dateString._1, dateString._2, dateString._3),
-          dateInt => (dateInt._1, dateInt._2, dateInt._3)
-        )
 
   private val mandatoryTime: Mapping[TimeOfArrival] =
-    tuple("hour" -> optional(text).verifying("error.time.hour_blank", _.isDefined),
+    mapping("hour" -> optional(text).verifying("error.time.hour_blank", _.isDefined),
       "minute" -> optional(text).verifying("error.time.minute_blank", _.isDefined)
-    )
+    )(TimeOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
       .verifying(
         "error.enter_a_time",
          maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty
       )
-      .transform[(String, String)](
-        maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get),
-        timeString => (Some(timeString._1), Some(timeString._2))
-      )
       .verifying(
         "error.enter_a_real_time",
-        timeString => timeString._1.forall(_.isDigit) && timeString._2.forall(_.isDigit)
+        timeString => timeString._1.getOrElse("").forall(_.isDigit) && timeString._2.getOrElse("").forall(_.isDigit)
       )
       .verifying(
         "error.enter_a_real_time",
         timeString =>
-          timeString._1.nonEmpty && timeString._1.length <= 2 && timeString._2.nonEmpty && timeString._2.length <= 2
+          timeString._1.nonEmpty && timeString._1.getOrElse("").length <= 2 && timeString._2.nonEmpty && timeString._2.getOrElse("").length <= 2
       )
-      .verifying("error.enter_a_real_time", time => time._1.toInt >= 0 && time._1.toInt <= 23 && time._2.toInt >= 0 && time._2.toInt <= 59)
-      .transform[TimeOfArrival](
-        timeString => TimeOfArrival(timeString._1, timeString._2),
-        time => (time._1.toString, time._2.toString)
-      )
+      .verifying("error.enter_a_real_time", time => time._1.getOrElse("").toInt >= 0 && time._1.getOrElse("").toInt <= 23 && time._2.getOrElse("").toInt >= 0 && time._2.getOrElse("").toInt <= 59)
+  
       
 
   private def placeOfArrivalConstraint: Constraint[PlaceOfArrival] = Constraint { model =>
@@ -416,6 +401,15 @@ object YourJourneyDetailsDto extends Validators {
       case (x, y) if x.isEmpty && y.isEmpty => Invalid("error.required.place_of_arrival", "selectPlaceOfArrival")
       case _                                => Valid
     }
+  }
+  
+  private def dateTimeOfArrivalConstraint(declarationTime: LocalDateTime): Constraint[DateTimeOfArrival] = Constraint { model =>
+    (model.dateOfArrival, model.timeOfArrival) match {
+      case (x,y) if  LocalDateTime.of(parseLocalDate(s"${x}"), parseLocalTime(s"${y}")).atZone(ZoneOffset.UTC).isAfter(declarationTime.atZone(ZoneOffset.UTC).minusHours(3L)) => Invalid("error.5_days")
+      case (x,y) if  LocalDateTime.of(parseLocalDate(s"${x}"), parseLocalTime(s"${y}")).atZone(ZoneOffset.UTC).isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L)) => Invalid("error.5_days")
+      case _ => Valid
+    }
+    
   }
 
   def form(declarationTime: LocalDateTime): Form[YourJourneyDetailsDto] = Form(
@@ -430,25 +424,15 @@ object YourJourneyDetailsDto extends Validators {
       )(PlaceOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
         .verifying()
         .verifying(placeOfArrivalConstraint),
-      "dateOfArrival" -> mandatoryDate,
-      "timeOfArrival" -> mandatoryTime,
-        "dateTimeOfArrival" -> mapping(
+        "dateOfArrival" -> mandatoryDate,
+        "timeOfArrival" -> mandatoryTime,
+        "dateTimeOfArrival" ->  mapping(
           "dateOfArrival" -> mandatoryDate,
           "timeOfArrival" -> mandatoryTime
-        )(DateTimeOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
-        .verifying(
-          "error.5_days",
-          dto => {
-            val dateTime = LocalDateTime
-              .of(
-                parseLocalDate(s"${dto.dateOfArrival}"),
-                parseLocalTime(s"${dto.timeOfArrival}")
-              )
-              .atZone(ZoneOffset.UTC)
-            
-            dateTime.isAfter(declarationTime.atZone(ZoneOffset.UTC).minusHours(3L)) && dateTime.isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L))
-          }
-    )
+        )
+        (DateTimeOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
+          .verifying()
+          .verifying(dateTimeOfArrivalConstraint(declarationTime))
     (YourJourneyDetailsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
    )
   )
@@ -479,9 +463,9 @@ object DeclarationRetrievalDto extends Validators {
   )
 }
 
-case class DateTimeOfArrival(dateOfArrival: DateOfArrival, timeOfArrival: TimeOfArrival)
-case class DateOfArrival(day: String, month: String, year: String)
-case class TimeOfArrival(hour: String, minute: String)
+case class DateTimeOfArrival(dateOfArrival: Option[DateOfArrival], timeOfArrival: Option[TimeOfArrival])
+case class DateOfArrival(day: Option[String], month: Option[String], year: Option[String])
+case class TimeOfArrival(hour: Option[String], minute: Option[String])
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
 case class EmailAddressDto(email: String, confirmEmail: String)
 case class WhatIsYourNameDto(firstName: String, lastName: String)
