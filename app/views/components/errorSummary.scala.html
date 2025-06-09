@@ -23,6 +23,9 @@
             errors.map { error =>
 
             val errorSuffix = error.key match {
+                case key if key.equals("dateTimeOfArrival.dateOfArrival") => ".day"
+                case key if key.equals("dateTimeOfArrival.timeOfArrival") => ".hour"
+                case key if key.equals("dateTimeOfArrival") => ".dateOfArrival.day"
                 case key if key.contains("placeOfArrival") => ".selectPlaceOfArrival"
                 case key if key.contains("identificationType") => "-passport"
                 case key if key.isEmpty && error.message.contains("emailAddress.no_match") => "confirmEmail"

@@ -21,13 +21,13 @@ import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
 import controllers.ControllerHelpers
 import models.PreUserInformation.getBasicUserInfo
-import models._
-import play.api.data.Form
+import models.*
+import play.api.data.{Form, FormError}
 
 import java.time.LocalDateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -386,14 +386,16 @@ class CalculateDeclareController @Inject() (
 
     boundForm.fold(
       formWithErrors => {
-        val groupedErrors = formWithErrors.errors.groupBy {
-          error =>
-            if (error.key.contains("dateOfArrival")) "dateOfArrival"
-            else if (error.key.contains("timeOfArrival")) "timeOfArrival"
-            else error.key
-        }.map{ case (k, v) => k -> v.head}.values.toSeq
+        val groupedErrors = formWithErrors.errors.foldLeft((Set.empty[String], Seq.empty[FormError])){
+          case ((err, acc), error) =>
+            val groupKey = error.key.slice(0, 31)
+            if(err.contains(groupKey)){
+              (err, acc)
+            } else {
+              (err  + groupKey, acc :+ error)
+            }
+        }._2
 
-        println(groupedErrors)
         val ports = context.getJourneyData.euCountryCheck match {
           case Some("greatBritain") => portsOfArrivalService.getAllPortsNI
           case _                    => portsOfArrivalService.getAllPorts
