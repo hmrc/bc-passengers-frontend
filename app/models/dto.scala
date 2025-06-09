@@ -372,7 +372,8 @@ object YourJourneyDetailsDto extends Validators {
       )
       .verifying(
         "error.enter_a_real_date",
-        dateInt => Try(LocalDate.of(dateInt._3.getOrElse("").toInt, dateInt._2.getOrElse("").toInt, dateInt._1.getOrElse("").toInt)).isSuccess
+        dateInt => 
+          Try(LocalDate.of(dateInt._3.getOrElse("").toInt, dateInt._2.getOrElse("").toInt, dateInt._1.getOrElse("").toInt)).isSuccess
       )
 
   private val mandatoryTime: Mapping[TimeOfArrival] =
@@ -392,7 +393,9 @@ object YourJourneyDetailsDto extends Validators {
         timeString =>
           timeString._1.nonEmpty && timeString._1.getOrElse("").length <= 2 && timeString._2.nonEmpty && timeString._2.getOrElse("").length <= 2
       )
-      .verifying("error.enter_a_real_time", time => time._1.getOrElse("").toInt >= 0 && time._1.getOrElse("").toInt <= 23 && time._2.getOrElse("").toInt >= 0 && time._2.getOrElse("").toInt <= 59)
+      .verifying("error.enter_a_real_time", 
+        time =>
+          time._1.getOrElse("").toInt >= 0 && time._1.getOrElse("").toInt <= 23 && time._2.getOrElse("").toInt >= 0 && time._2.getOrElse("").toInt <= 59)
   
       
 
@@ -405,11 +408,12 @@ object YourJourneyDetailsDto extends Validators {
   
   private def dateTimeOfArrivalConstraint(declarationTime: LocalDateTime): Constraint[DateTimeOfArrival] = Constraint { model =>
     (model.dateOfArrival, model.timeOfArrival) match {
-      case (x,y) if  LocalDateTime.of(parseLocalDate(s"${x}"), parseLocalTime(s"${y}")).atZone(ZoneOffset.UTC).isAfter(declarationTime.atZone(ZoneOffset.UTC).minusHours(3L)) => Invalid("error.5_days")
-      case (x,y) if  LocalDateTime.of(parseLocalDate(s"${x}"), parseLocalTime(s"${y}")).atZone(ZoneOffset.UTC).isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L)) => Invalid("error.5_days")
+      case (x,y) if  LocalDateTime.of(parseLocalDate(s"${x}"), parseLocalTime(s"${y}")).atZone(ZoneOffset.UTC).isAfter(declarationTime.atZone(ZoneOffset.UTC).minusHours(3L)) => 
+        Invalid("error.5_days")
+      case (x,y) if  LocalDateTime.of(parseLocalDate(s"${x}"), parseLocalTime(s"${y}")).atZone(ZoneOffset.UTC).isBefore(declarationTime.atZone(ZoneOffset.UTC).plusDays(5L)) => 
+        Invalid("error.5_days")
       case _ => Valid
     }
-    
   }
 
   def form(declarationTime: LocalDateTime): Form[YourJourneyDetailsDto] = Form(
@@ -422,16 +426,13 @@ object YourJourneyDetailsDto extends Validators {
             .verifying(validateFieldsRegex("place_of_arrival.valid", validInputText))
         )
       )(PlaceOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
-        .verifying()
         .verifying(placeOfArrivalConstraint),
         "dateOfArrival" -> mandatoryDate,
         "timeOfArrival" -> mandatoryTime,
         "dateTimeOfArrival" ->  mapping(
           "dateOfArrival" -> mandatoryDate,
           "timeOfArrival" -> mandatoryTime
-        )
-        (DateTimeOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
-          .verifying()
+        )(DateTimeOfArrival.apply)(o => Some(Tuple.fromProductTyped(o)))
           .verifying(dateTimeOfArrivalConstraint(declarationTime))
     (YourJourneyDetailsDto.apply)(o => Some(Tuple.fromProductTyped(o)))
    )
@@ -463,7 +464,7 @@ object DeclarationRetrievalDto extends Validators {
   )
 }
 
-case class DateTimeOfArrival(dateOfArrival: Option[DateOfArrival], timeOfArrival: Option[TimeOfArrival])
+case class DateTimeOfArrival(dateOfArrival: DateOfArrival, timeOfArrival: TimeOfArrival)
 case class DateOfArrival(day: Option[String], month: Option[String], year: Option[String])
 case class TimeOfArrival(hour: Option[String], minute: Option[String])
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
