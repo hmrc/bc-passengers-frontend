@@ -30,13 +30,13 @@
     autoCompleteList: components.autocompleteList
 )
 
-@(form: Form[YourJourneyDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[YourJourneyDetailsDto], errors: Option[Seq[FormError]], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.what_are_your_journey_details")), backLink = backLink) {
 
     @formHelper(action = routes.CalculateDeclareController.processJourneyDetails) {
 
-    @errorSummary(form.errors)
+    @errorSummary(errors.getOrElse(Seq.empty))
 
     @fieldset(s"label.what_are_your_journey_details") {
 
