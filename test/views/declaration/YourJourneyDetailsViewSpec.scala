@@ -128,6 +128,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
+    errors = None,
     portsOfArrival = portsOfArrival,
     journeyStart = None,
     backLink = None
@@ -139,6 +140,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val viewViaRender: HtmlFormat.Appendable = injected[journey_details].render(
     validForm,
+    None,
     portsOfArrival,
     None,
     None,
@@ -149,6 +151,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[journey_details].ref.f(
     validForm,
+    None,
     portsOfArrival,
     None,
     None
@@ -156,6 +159,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val greatBritainView: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
+    errors = None,
     portsOfArrival = portsOfArrival,
     journeyStart = Some("greatBritain"),
     backLink = None
@@ -168,6 +172,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   private def buildView(form: Form[YourJourneyDetailsDto]): HtmlFormat.Appendable =
     injected[journey_details].apply(
       form = form,
+      errors = None,
       portsOfArrival = portsOfArrival,
       journeyStart = None,
       backLink = None
