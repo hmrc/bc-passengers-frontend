@@ -521,7 +521,8 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.enter_a_date")
+      form.errors
+        .map(_.message) shouldBe List("error.date.day_blank", "error.date.month_blank", "error.date.year_blank")
     }
 
     "return validation errors if any but not all of the dateOfArrival fields are blank" in {
@@ -539,7 +540,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.include_day_month_and_year")
+      form.errors.map(_.message) shouldBe List("error.date.month_blank", "error.date.year_blank")
     }
 
     "return an error if the year field is not 4 chars long" in {
@@ -745,9 +746,10 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.hasErrors                                            shouldBe true
-      form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_time"
+      form.hasErrors    shouldBe true
+      form.errors.size  shouldBe 2
+      form.errors
+        .map(_.message) shouldBe List("error.time.hour_blank", "error.time.minute_blank")
     }
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival minute is a non-digit" in {

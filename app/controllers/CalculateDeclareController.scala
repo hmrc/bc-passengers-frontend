@@ -358,7 +358,6 @@ class CalculateDeclareController @Inject() (
                     )
                   )
                 ),
-              None,
               portsOfArrivalService.getAllPorts,
               context.getJourneyData.euCountryCheck,
               backLinkModel.backLink
@@ -370,7 +369,6 @@ class CalculateDeclareController @Inject() (
           Ok(
             journey_details(
               YourJourneyDetailsDto.form(receiptDateTime),
-              None,
               portsOfArrivalService.getAllPorts,
               context.getJourneyData.euCountryCheck,
               backLinkModel.backLink
@@ -386,23 +384,18 @@ class CalculateDeclareController @Inject() (
 
     boundForm.fold(
       formWithErrors => {
-        val groupedErrors = formWithErrors.errors.foldLeft((Set.empty[String], Seq.empty[FormError])){
-          case ((err, acc), error) =>
-            val groupKey = error.key.slice(0, 31)
-            if(err.contains(groupKey)){
-              (err, acc)
-            } else {
-              (err  + groupKey, acc :+ error)
-            }
-        }._2
-
         val ports = context.getJourneyData.euCountryCheck match {
           case Some("greatBritain") => portsOfArrivalService.getAllPortsNI
           case _                    => portsOfArrivalService.getAllPorts
         }
         Future.successful(
           BadRequest(
-            journey_details(formWithErrors, Some(groupedErrors), ports, context.getJourneyData.euCountryCheck, backLinkModel.backLink)
+            journey_details(
+              formWithErrors,
+              ports,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
           )
         )
       },

@@ -171,7 +171,6 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
 
         s"have all info in error summary for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
-
           doc.title()                            should startWith(messages("label.error"))
           messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
 

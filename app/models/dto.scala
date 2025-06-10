@@ -45,16 +45,16 @@ object OtherGoodsDto {
 }
 
 case class OtherGoodsDto(
-                          searchTerm: Option[OtherGoodsSearchItem],
-                          country: String,
-                          originCountry: Option[String],
-                          currency: String,
-                          cost: BigDecimal,
-                          isVatPaid: Option[Boolean],
-                          isUccRelief: Option[Boolean],
-                          isCustomPaid: Option[Boolean],
-                          hasEvidence: Option[Boolean]
-                        )
+  searchTerm: Option[OtherGoodsSearchItem],
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isUccRelief: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
 
 object AlcoholDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[AlcoholDto] = for {
@@ -76,16 +76,16 @@ object AlcoholDto {
 }
 
 case class AlcoholDto(
-                       weightOrVolume: BigDecimal,
-                       country: String,
-                       originCountry: Option[String],
-                       currency: String,
-                       cost: BigDecimal,
-                       isVatPaid: Option[Boolean],
-                       isExcisePaid: Option[Boolean],
-                       isCustomPaid: Option[Boolean],
-                       hasEvidence: Option[Boolean]
-                     )
+  weightOrVolume: BigDecimal,
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
 
 object TobaccoDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[TobaccoDto] = for {
@@ -109,17 +109,17 @@ object TobaccoDto {
 }
 
 case class TobaccoDto(
-                       noOfSticks: Option[Int],
-                       weightOrVolume: Option[BigDecimal],
-                       country: String,
-                       originCountry: Option[String],
-                       currency: String,
-                       cost: BigDecimal,
-                       isVatPaid: Option[Boolean],
-                       isExcisePaid: Option[Boolean],
-                       isCustomPaid: Option[Boolean],
-                       hasEvidence: Option[Boolean]
-                     )
+  noOfSticks: Option[Int],
+  weightOrVolume: Option[BigDecimal],
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
 
 object EuCountryCheckDto {
   val form: Form[EuCountryCheckDto] = Form(
@@ -262,11 +262,11 @@ trait Validators {
     }
 
   def verifyIdentificationNumberConstraint(
-                                            maxLength: Int,
-                                            idPattern: String,
-                                            telephonePattern: String,
-                                            typeOfId: String
-                                          ): Constraint[String] =
+    maxLength: Int,
+    idPattern: String,
+    telephonePattern: String,
+    typeOfId: String
+  ): Constraint[String] =
     Constraint { number =>
       (typeOfId, number) match {
         case (x, y) if x.contains("driving") && y.isEmpty                      =>
@@ -348,9 +348,10 @@ object EmailAddressDto extends Validators {
 object YourJourneyDetailsDto extends Validators {
 
   private val mandatoryDate: Mapping[String] =
-    tuple("day" -> optional(text).verifying("error.date.day_blank", _.isDefined),
+    tuple(
+      "day"   -> optional(text).verifying("error.date.day_blank", _.isDefined),
       "month" -> optional(text).verifying("error.date.month_blank", _.isDefined),
-      "year" -> optional(text).verifying("error.date.year_blank", _.isDefined)
+      "year"  -> optional(text).verifying("error.date.year_blank", _.isDefined)
     )
       .verifying(
         "error.enter_a_date",
@@ -360,7 +361,8 @@ object YourJourneyDetailsDto extends Validators {
         }
       )
       .transform[(String, String, String)](
-        maybeDateString => (maybeDateString._1.getOrElse(""), maybeDateString._2.getOrElse(""), maybeDateString._3.getOrElse("")),
+        maybeDateString =>
+          (maybeDateString._1.getOrElse(""), maybeDateString._2.getOrElse(""), maybeDateString._3.getOrElse("")),
         dateString => (Some(dateString._1), Some(dateString._2), Some(dateString._3))
       )
       .verifying(
@@ -392,7 +394,8 @@ object YourJourneyDetailsDto extends Validators {
       )
 
   private val mandatoryTime: Mapping[String] =
-    tuple("hour" -> optional(text).verifying("error.time.hour_blank", _.isDefined),
+    tuple(
+      "hour"   -> optional(text).verifying("error.time.hour_blank", _.isDefined),
       "minute" -> optional(text).verifying("error.time.minute_blank", _.isDefined)
     )
       .verifying(
@@ -507,7 +510,7 @@ case class WhatIsYourNameDto(firstName: String, lastName: String)
 case class IdentificationTypeDto(identificationType: String)
 case class IdentificationNumberDto(number: String)
 case class YourJourneyDetailsDto(
-                                  placeOfArrival: PlaceOfArrival,
-                                  dateTimeOfArrival: DateTimeOfArrival
-                                )
+  placeOfArrival: PlaceOfArrival,
+  dateTimeOfArrival: DateTimeOfArrival
+)
 case class DeclarationRetrievalDto(lastName: String, referenceNumber: String)

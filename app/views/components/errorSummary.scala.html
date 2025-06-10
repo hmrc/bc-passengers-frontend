@@ -22,6 +22,12 @@
         @defining(
             errors.map { error =>
 
+            val id = if(error.key == "") {
+             errorId.getOrElse("")
+            } else {
+             error.key + errorFieldSuffix.fold("")(suffix => s"-$suffix")
+            }
+
             val errorSuffix = error.key match {
                 case key if key.equals("dateTimeOfArrival.dateOfArrival") => ".day"
                 case key if key.equals("dateTimeOfArrival.timeOfArrival") => ".hour"
@@ -33,7 +39,7 @@
             }
 
             ErrorLink(
-                href = Some(s"#${errorFieldSuffix.getOrElse(error.key)}" + errorSuffix),
+                href = Some(s"#${id}" + errorSuffix),
                 content = Text(messages(error.message, error.args*))
             )
 
