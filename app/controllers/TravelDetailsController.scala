@@ -278,6 +278,14 @@ class TravelDetailsController @Inject() (
                     Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionEu)
                   case Some(jd) if jd.euCountryCheck.contains("both")   =>
                     Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix)
+                  case Some(_)                                          =>
+                    throw new RuntimeException(
+                      "[TravelDetailsController][dutyFreePost] Unable to determine the next step based on the euCountryCheck value"
+                    )
+                  case _                                                =>
+                    throw new RuntimeException(
+                      "[TravelDetailsController][dutyFreePost] No user answers found in the cache to determine the next step"
+                    )
                 }
               }
             }

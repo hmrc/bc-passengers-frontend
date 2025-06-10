@@ -1,11 +1,9 @@
 import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
-val appName = "bc-passengers-frontend"
-
 ThisBuild / majorVersion := 1
 ThisBuild / scalaVersion := "3.5.2"
 
-lazy val microservice = Project(appName, file("."))
+lazy val microservice = Project("bc-passengers-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtWeb)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .settings(CodeCoverageSettings())

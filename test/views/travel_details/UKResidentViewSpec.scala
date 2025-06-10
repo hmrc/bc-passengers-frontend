@@ -48,10 +48,9 @@ class UKResidentViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "UKResidentView" when {
+  "UKResidentView" when
     renderViewTest(
       title = "Are you a UK resident? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Are you a UK resident?"
     )
-  }
 }

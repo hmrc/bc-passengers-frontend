@@ -52,10 +52,9 @@ class DutyFreeAllowanceQuestionMixViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "DutyFreeAllowanceQuestionMixView" when {
+  "DutyFreeAllowanceQuestionMixView" when
     renderViewTest(
       title = "You may need to declare all your goods",
       heading = "Are you bringing in goods over your allowances?"
     )
-  }
 }

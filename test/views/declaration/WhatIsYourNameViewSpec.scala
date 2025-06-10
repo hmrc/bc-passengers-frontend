@@ -113,8 +113,7 @@ class WhatIsYourNameViewSpec extends BaseViewSpec {
       heading = "What is your name?"
     )
 
-    "formWithErrors" should {
-
+    "formWithErrors" should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
@@ -139,6 +138,5 @@ class WhatIsYourNameViewSpec extends BaseViewSpec {
           )
         }
       }
-    }
   }
 }

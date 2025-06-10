@@ -213,8 +213,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
       heading = "What are your journey details?"
     )
 
-    "formWithErrors" should {
-
+    "formWithErrors" should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
@@ -238,6 +237,5 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
           )
         }
       }
-    }
   }
 }

@@ -127,10 +127,9 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "NothingToDeclareView" when {
+  "NothingToDeclareView" when
     renderViewTest(
       title = "Additional tax due on these goods - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Additional tax due on these goods £0.00"
     )
-  }
 }

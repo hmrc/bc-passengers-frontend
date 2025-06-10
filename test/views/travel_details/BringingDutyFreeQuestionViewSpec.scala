@@ -49,10 +49,9 @@ class BringingDutyFreeQuestionViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "BringingDutyFreeQuestionView" when {
+  "BringingDutyFreeQuestionView" when
     renderViewTest(
       title = "Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?",
       heading = "Are you bringing in duty-free alcohol or tobacco bought in UK or EU shops?"
     )
-  }
 }

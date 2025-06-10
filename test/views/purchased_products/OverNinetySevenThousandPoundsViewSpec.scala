@@ -124,10 +124,9 @@ class OverNinetySevenThousandPoundsViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "OverNinetySevenThousandPoundsView" when {
+  "OverNinetySevenThousandPoundsView" when
     renderViewTest(
       title = "Additional tax due on these goods - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Additional tax due on these goods £0.00"
     )
-  }
 }

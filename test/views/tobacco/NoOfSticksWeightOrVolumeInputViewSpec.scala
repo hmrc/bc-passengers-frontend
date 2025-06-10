@@ -125,10 +125,9 @@ class NoOfSticksWeightOrVolumeInputViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "NoOfSticksWeightOrVolumeInputView" when {
+  "NoOfSticksWeightOrVolumeInputView" when
     renderViewTest(
       title = "Tell us about the cigars - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Tell us about the Cigars"
     )
-  }
 }

@@ -49,10 +49,9 @@ class DidYouClaimTaxBackViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "DidYouClaimTaxBackView" when {
+  "DidYouClaimTaxBackView" when
     renderViewTest(
       title = "Did you claim tax back on any goods you bought in the EU?",
       heading = "Did you claim tax back on any goods you bought in the EU?"
     )
-  }
 }

@@ -49,10 +49,9 @@ class ConfirmAgeViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "ConfirmAgeView" when {
+  "ConfirmAgeView" when
     renderViewTest(
       title = "Are you aged 17 or over? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Are you aged 17 or over?"
     )
-  }
 }

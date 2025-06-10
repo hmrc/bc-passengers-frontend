@@ -57,10 +57,9 @@ class UKVatPaidItemViewSpec extends BaseViewSpec {
     "iid0"
   )(request, messages, appConfig)
 
-  "UKVatPaidItemView" when {
+  "UKVatPaidItemView" when
     renderViewTest(
       title = "Did you pay UK VAT when buying this item? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Did you pay UK VAT when buying this item?"
     )
-  }
 }

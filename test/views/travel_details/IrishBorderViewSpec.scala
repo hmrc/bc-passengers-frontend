@@ -49,10 +49,9 @@ class IrishBorderViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "IrishBorderView" when {
+  "IrishBorderView" when
     renderViewTest(
       title = "Are you entering Northern Ireland from Ireland?",
       heading = "Are you entering Northern Ireland from Ireland?"
     )
-  }
 }

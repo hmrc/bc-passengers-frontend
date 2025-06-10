@@ -562,9 +562,8 @@ class CalculateDeclareController @Inject() (
             calculatorService.storeCalculatorResponse(journeyData, calculatorResponse) map (_ => redirect)
           case Some(calc) =>
             val deltaCalculation = calculatorService.getDeltaCalculation(calc, currentCalculation)
-            calculatorService.storeCalculatorResponse(journeyData, calculatorResponse, Some(deltaCalculation)) map (_ =>
-              redirect
-            )
+            calculatorService
+              .storeCalculatorResponse(journeyData, calculatorResponse, Some(deltaCalculation)) map (_ => redirect)
         }
 
       case CalculatorServicePurchasePriceOutOfBoundsFailureResponse =>

@@ -49,10 +49,9 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "GoodsBoughtInsideAndOutsideEUView" when {
+  "GoodsBoughtInsideAndOutsideEUView" when
     renderViewTest(
       title = "Goods brought into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Goods brought into Great Britain or the Isle of Man"
     )
-  }
 }
