@@ -174,7 +174,7 @@ object PreviousDeclarationRequest {
   given formats: OFormat[PreviousDeclarationRequest] = Json.format[PreviousDeclarationRequest]
 
   def build(dto: DeclarationRetrievalDto): PreviousDeclarationRequest =
-    PreviousDeclarationRequest(dto.lastName, dto.referenceNumber.toUpperCase)
+    PreviousDeclarationRequest(dto.lastName, dto.referenceNumber.toUpperCase.filterNot(_.isWhitespace))
 }
 
 case class PreviousDeclarationRequest(
