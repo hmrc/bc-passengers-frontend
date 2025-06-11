@@ -26,6 +26,19 @@
     hintText: Option[String] = None,
     legendAsPageHeading: Boolean = true)(implicit messages: Messages)
 
+@hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
+    val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
+
+    allFields.find(_.messages.find(_.contains("required"))) match {
+    case foundError if foundError.isDefined => foundError
+    case _ =>
+    allFields.find(_.messages.find(_.contains("invalid"))) match {
+    case foundError if foundError.isDefined => foundError
+    case _ => allFields.headOption
+    }
+    }
+}
+
 @govukTimeInput(TimeInput(
     fieldset = Some(Fieldset(
         legend = Some(
@@ -51,13 +64,19 @@
         ),
         InputItem(
             id = s"$id.minute",
-            classes = s"govuk-input--width-2${if(form.errors.exists(_.message.startsWith(s"error.$id.all")) || form.errors.exists(_.message.startsWith(s"error.$id.minutes")) || form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
+            classes = s"govuk-input--width-2${if(
+                        form.errors.exists(_.message.startsWith(s"error.$id.all")) ||
+                        form.errors.exists(_.message.startsWith(s"error.$id.minute")) ||
+                        form.errors.exists(_.key.contains(s"minute")) ||
+                        form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
             name = s"$id.minute",
             label = Some(messages("time.fields.minute")),
             value = form(s"$id.minute").value
         )
     ),
     hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
-    errorMessage = form(id).error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*)))),
+    errorMessage = hierarchyErrors(id, form, Seq(".hour", ".minute", ""))
+        .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
+    err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
     showSelectPeriod = false
 ))

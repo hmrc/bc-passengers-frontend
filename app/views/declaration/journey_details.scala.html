@@ -30,13 +30,22 @@
     autoCompleteList: components.autocompleteList
 )
 
-@(form: Form[YourJourneyDetailsDto], portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[YourJourneyDetailsDto],  portsOfArrival: List[PortsOfArrival], journeyStart: Option[String], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, "label.what_are_your_journey_details")), backLink = backLink) {
 
     @formHelper(action = routes.CalculateDeclareController.processJourneyDetails) {
 
-    @errorSummary(form.errors)
+    @errorSummary(form.errors
+            .foldLeft((Set.empty[String], Seq.empty[FormError])) { case ((err, acc), error) =>
+                val groupKey = error.key.slice(0, 31)
+                    if (err.contains(groupKey)) {
+                        (err, acc)
+                    } else {
+                        (err + groupKey, acc :+ error)
+                    }
+                 }
+            ._2)
 
     @fieldset(s"label.what_are_your_journey_details") {
 

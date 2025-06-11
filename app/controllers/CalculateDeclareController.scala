@@ -21,13 +21,13 @@ import connectors.Cache
 import controllers.enforce.{DashboardAction, DeclareAction, PublicAction, UserInfoAction}
 import controllers.ControllerHelpers
 import models.PreUserInformation.getBasicUserInfo
-import models._
-import play.api.data.Form
+import models.*
+import play.api.data.{Form, FormError}
 
 import java.time.LocalDateTime
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -390,7 +390,12 @@ class CalculateDeclareController @Inject() (
         }
         Future.successful(
           BadRequest(
-            journey_details(formWithErrors, ports, context.getJourneyData.euCountryCheck, backLinkModel.backLink)
+            journey_details(
+              formWithErrors,
+              ports,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
           )
         )
       },

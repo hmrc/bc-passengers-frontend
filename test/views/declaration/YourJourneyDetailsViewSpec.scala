@@ -179,8 +179,8 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val expectedEmptyFormErrors: Seq[(String, String)] = List(
     "#placeOfArrival.selectPlaceOfArrival"  -> messages("error.required.place_of_arrival"),
-    "#dateTimeOfArrival.dateOfArrival.day"  -> messages("error.enter_a_date"),
-    "#dateTimeOfArrival.timeOfArrival.hour" -> messages("error.enter_a_time")
+    "#dateTimeOfArrival.dateOfArrival.day"  -> messages("error.date.day_blank"),
+    "#dateTimeOfArrival.timeOfArrival.hour" -> messages("error.time.hour_blank")
   )
 
   val expectedInvalidDateFormErrors: Seq[(String, String)] = List(
@@ -222,7 +222,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
         s"have all info in error summary for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
-
           doc.title()                            should startWith(messages("label.error"))
           messages("label.there_is_a_problem") shouldBe getErrorTitle(doc)
 
