@@ -21,7 +21,7 @@ import play.api.data.validation.*
 import play.api.data.{Form, Mapping}
 import util.{parseLocalDate, parseLocalTime}
 
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 import scala.util.Try
 
 object OtherGoodsDto {
@@ -347,87 +347,80 @@ object EmailAddressDto extends Validators {
 
 object YourJourneyDetailsDto extends Validators {
 
+  private def dateOfArrivalConstraint: Constraint[(Option[String],Option[String], Option[String])] = Constraint { model =>
+    val (day, month, year) = model
+
+    val dayMissing = day.forall(_.trim.isEmpty) && month.forall(_.trim.nonEmpty) && year.forall(_.trim.nonEmpty)
+    val monthMissing = day.forall(_.trim.nonEmpty) && month.forall(_.trim.isEmpty) && year.forall(_.trim.nonEmpty)
+    val yearMissing = day.forall(_.trim.nonEmpty) && month.forall(_.trim.nonEmpty) && year.forall(_.trim.isEmpty)
+    val completed = Seq(day, month, year).exists(_.exists((_.nonEmpty)))
+    val numberDate =  day.getOrElse("").forall(_.isDigit) && month.getOrElse("").forall(_.isDigit) && year.getOrElse("").forall(_.isDigit)
+    val realDayAndMonth = day.getOrElse("").nonEmpty && day.getOrElse("").length <= 2 && month.getOrElse("").nonEmpty && month.getOrElse("").length <= 2
+    val validFullDate = Try(LocalDate.of(year.getOrElse("").toInt, month.getOrElse("").toInt, day.getOrElse("").toInt)).isSuccess
+    val validYear = year.getOrElse("").length == 4
+
+    if (!completed) Invalid("error.date.enter_a_date")
+    else if (dayMissing) Invalid("error.date.day_blank")
+    else if (monthMissing) Invalid("error.date.month_blank")
+    else if (yearMissing) Invalid("error.date.year_blank")
+    else if(!validYear) Invalid("error.date.year_length")
+    else if (!numberDate) Invalid("error.date.enter_a_real_date")
+    else if (!realDayAndMonth) Invalid("error.date.enter_a_real_date")
+    else if (!validFullDate) Invalid("error.date.enter_a_real_date")
+    else Valid
+  }
+
+  private def timeOfArrivalConstraint: Constraint[(Option[String], Option[String])] = Constraint { model =>
+    val (hourOption, minuteOption) = model
+
+    val hour = hourOption.getOrElse("").trim
+    val minute = minuteOption.getOrElse("").trim
+
+    val isCompleted = Seq(hour, minute).exists(_.nonEmpty)
+    val isHourMissing = hour.isEmpty && minute.nonEmpty
+    val isMinuteMissing = hour.nonEmpty && minute.isEmpty
+    def isNumeric(s: String): Boolean = s.forall(_.isDigit)
+
+    val isNumericTime = isNumeric(hour) && isNumeric(minute)
+    val validTime = hour.nonEmpty && hour.length <= 2 && minute.nonEmpty && minute.length <= 2
+    val validFullTime = Try(LocalTime.of(hour.toInt, minute.toInt)).isSuccess
+
+    if (!isCompleted) Invalid("error.time.enter_a_time")
+    else if (isHourMissing) Invalid("error.time.hour_blank")
+    else if (isMinuteMissing) Invalid("error.time.minute_blank")
+    else if (isNumericTime || !validTime || !validFullTime) Invalid("error.time.enter_a_real_time")
+    else Valid
+  }
+
   private val mandatoryDate: Mapping[String] =
     tuple(
-      "day"   -> optional(text).verifying("error.date.day_blank", _.isDefined),
-      "month" -> optional(text).verifying("error.date.month_blank", _.isDefined),
-      "year"  -> optional(text).verifying("error.date.year_blank", _.isDefined)
+      "day"   -> optional(text),
+      "month" -> optional(text),
+      "year"  -> optional(text)
     )
-      .verifying(
-        "error.enter_a_date",
-        dateParts => {
-          val definedParts: Int = dateParts.productIterator.collect { case o @ Some(_) => o }.size
-          definedParts > 0
-        }
-      )
-      .transform[(String, String, String)](
-        maybeDateString =>
-          (maybeDateString._1.getOrElse(""), maybeDateString._2.getOrElse(""), maybeDateString._3.getOrElse("")),
-        dateString => (Some(dateString._1), Some(dateString._2), Some(dateString._3))
-      )
-      .verifying(
-        "error.enter_a_real_date",
-        dateString =>
-          dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit)
-      )
-      .transform[(String, String, String)](identity, identity)
-      .verifying("error.year_length", dateString => dateString._3.length == 4)
-      .verifying(
-        "error.enter_a_real_date",
-        dateString =>
-          dateString._2.nonEmpty && dateString._2.length <= 2 && dateString._1.nonEmpty && dateString._1.length <= 2
-      )
-      .transform[(Int, Int, Int)](
-        dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt),
-        dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString)
-      )
-      .verifying(
-        "error.enter_a_real_date",
-        dateInt => Try(LocalDate.of(dateInt._3, dateInt._2, dateInt._1)).isSuccess
-      )
+      .verifying(dateOfArrivalConstraint)
       .transform[String](
-        dateInt => s"${dateInt._3.toString}-${dateInt._2.toString}-${dateInt._1.toString}",
-        dateString =>
-          dateString.split("-") match {
-            case Array(dd, mm, yyyy) => (dd.toInt, mm.toInt, yyyy.toInt)
-          }
-      )
+          dateInt => s"${dateInt._3.getOrElse("").toInt}-${dateInt._2.getOrElse("").toInt}-${dateInt._1.getOrElse("").toInt}",
+          dateString =>
+            dateString.split("-") match {
+              case Array(dd, mm, yyyy) => (Some(dd), Some(mm), Some(yyyy))
+            }
+        )
 
   private val mandatoryTime: Mapping[String] =
     tuple(
-      "hour"   -> optional(text).verifying("error.time.hour_blank", _.isDefined),
-      "minute" -> optional(text).verifying("error.time.minute_blank", _.isDefined)
+      "hour"   -> optional(text),
+      "minute" -> optional(text)
     )
-      .verifying(
-        "error.enter_a_time",
-        maybeTimeString => maybeTimeString._1.nonEmpty && maybeTimeString._2.nonEmpty
-      )
-      .transform[(String, String)](
-        maybeTimeString => (maybeTimeString._1.get, maybeTimeString._2.get),
-        timeString => (Some(timeString._1), Some(timeString._2))
-      )
-      .verifying(
-        "error.enter_a_real_time",
-        timeString => timeString._1.forall(_.isDigit) && timeString._2.forall(_.isDigit)
-      )
-      .verifying(
-        "error.enter_a_real_time",
-        timeString =>
-          timeString._1.nonEmpty && timeString._1.length <= 2 && timeString._2.nonEmpty && timeString._2.length <= 2
-      )
-      .transform[(Int, Int)](
-        timeString => (timeString._1.toInt, timeString._2.toInt),
-        time => (time._1.toString, time._2.toString)
-      )
-      .verifying("error.enter_a_real_time", time => time._1 >= 0 && time._1 <= 23 && time._2 >= 0 && time._2 <= 59)
+      .verifying(timeOfArrivalConstraint)
       .transform[String](
-        time => s"${time._1}:${time._2}",
-        localTime =>
-          localTime.split(":") match {
-            case Array(hours, minutes) =>
-              (hours.toInt, minutes.toInt)
-          }
-      )
+              time => s"${time._1.getOrElse("")}:${time._2.getOrElse("")}",
+              localTime =>
+                localTime.split(":") match {
+                  case Array(hours, minutes) =>
+                    (Some(hours), Some(minutes))
+                }
+            )
 
   private def placeOfArrivalConstraint: Constraint[PlaceOfArrival] = Constraint { model =>
     (model.selectPlaceOfArrival, model.enterPlaceOfArrival) match {
@@ -504,6 +497,7 @@ object DeclarationRetrievalDto extends Validators {
 }
 
 case class DateTimeOfArrival(dateOfArrival: String, timeOfArrival: String)
+case class DateOfArrival(day: Option[String], month: Option[String], year: Option[String])
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
 case class EmailAddressDto(email: String, confirmEmail: String)
 case class WhatIsYourNameDto(firstName: String, lastName: String)
