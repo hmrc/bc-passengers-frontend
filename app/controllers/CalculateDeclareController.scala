@@ -384,6 +384,9 @@ class CalculateDeclareController @Inject() (
 
     boundForm.fold(
       formWithErrors => {
+//        println(formWithErrors.data.filter {
+//          case (key, _) => key.contains("year")
+//        }.values.exists(_.isEmpty))
         val ports = context.getJourneyData.euCountryCheck match {
           case Some("greatBritain") => portsOfArrivalService.getAllPortsNI
           case _                    => portsOfArrivalService.getAllPorts

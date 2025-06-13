@@ -40,8 +40,9 @@
         InputItem(
             id = s"$id.day",
             classes = s"govuk-input--width-2${if(
-                form(s"$id.day").hasErrors
-                    || form.errors.exists(_.key.isEmpty)
+            form(s"$id.day").hasErrors
+                    || form(s"$id.day").value.exists(_.trim.isEmpty)
+                    || form(s"$id").errors.exists(_.message.contains("real"))
                     || form.errors.exists(_.args.contains("day")))" govuk-input--error" else ""}",
             name = s"$id.day",
             label = Some(messages("date.day")),
@@ -50,8 +51,9 @@
         InputItem(
             id = s"$id.month",
             classes = s"govuk-input--width-2${if(
-                form(s"$id.month").hasErrors
-                    || form.errors.exists(_.key.isEmpty)
+            form(s"$id.month").hasErrors
+                    || form(s"$id.month").value.exists(_.trim.isEmpty)
+                    || form(s"$id").errors.exists(_.message.contains("real"))
                     || form.errors.exists(_.args.contains("month"))) " govuk-input--error" else ""}",
             name = s"$id.month",
             label = Some(messages("date.month")),
@@ -60,8 +62,10 @@
         InputItem(
             id = s"$id.year",
             classes = s"govuk-input--width-4${if(
-                form(s"$id.year").hasErrors
-                    || form.errors.exists(_.key.isEmpty)
+            form(s"$id.year").hasErrors
+                    || form(s"$id").errors.exists(_.message.startsWith("error.date.year"))
+                    || form(s"$id.year").value.exists(_.trim.isEmpty)
+                    || form(s"$id").errors.exists(_.message.contains("real"))
                     || form.errors.exists(_.args.contains("year"))) " govuk-input--error" else ""}",
             name = s"$id.year",
             label = Some(messages("date.year")),
@@ -73,8 +77,8 @@
         ),
         errorMessage = hierarchyErrors(id, form, Seq(".day", ".month", ".year", ""))
                 .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
-                    err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*))))
-))
+                    err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*))))))
+
     @hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
         val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
 
