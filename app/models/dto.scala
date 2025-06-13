@@ -490,7 +490,7 @@ object DeclarationRetrievalDto extends Validators {
 
   def fromPreviousDeclarationDetails(previousDeclarationDetails: PreviousDeclarationRequest): DeclarationRetrievalDto =
     DeclarationRetrievalDto(previousDeclarationDetails.lastName, previousDeclarationDetails.referenceNumber)
-  private val chargeReferencePattern                                                                                  = """^[Xx]([A-Za-z])[Pp][Rr](\d{10})$"""
+  private val chargeReferencePattern                                                                                  = """^[Xx]\s*([A-Za-z])\s*[Pp]\s*[Rr]\s*(\d\s*){10}$"""
   def form(): Form[DeclarationRetrievalDto]                                                                           = Form(
     mapping(
       "lastName"        -> text
