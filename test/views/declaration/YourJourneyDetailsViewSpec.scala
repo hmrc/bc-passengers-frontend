@@ -128,7 +128,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
-    errors = None,
     portsOfArrival = portsOfArrival,
     journeyStart = None,
     backLink = None
@@ -140,7 +139,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val viewViaRender: HtmlFormat.Appendable = injected[journey_details].render(
     validForm,
-    None,
     portsOfArrival,
     None,
     None,
@@ -151,7 +149,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable = injected[journey_details].ref.f(
     validForm,
-    None,
     portsOfArrival,
     None,
     None
@@ -159,7 +156,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val greatBritainView: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
-    errors = None,
     portsOfArrival = portsOfArrival,
     journeyStart = Some("greatBritain"),
     backLink = None
@@ -172,7 +168,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   private def buildView(form: Form[YourJourneyDetailsDto]): HtmlFormat.Appendable =
     injected[journey_details].apply(
       form = form,
-      errors = None,
       portsOfArrival = portsOfArrival,
       journeyStart = None,
       backLink = None
@@ -184,16 +179,16 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
 
   val expectedEmptyFormErrors: Seq[(String, String)] = List(
     "#placeOfArrival.selectPlaceOfArrival"  -> messages("error.required.place_of_arrival"),
-    "#dateTimeOfArrival.dateOfArrival.day"  -> messages("error.date.day_blank"),
-    "#dateTimeOfArrival.timeOfArrival.hour" -> messages("error.time.hour_blank")
+    "#dateTimeOfArrival.dateOfArrival.day"  -> messages("error.date.enter_a_date"),
+    "#dateTimeOfArrival.timeOfArrival.hour" -> messages("error.time.enter_a_time")
   )
 
   val expectedInvalidDateFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.enter_a_real_date")
+    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.enter_a_real_date")
   )
 
   val expectedInvalidTimeFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.timeOfArrival.hour" -> messages("error.enter_a_real_time")
+    "#dateTimeOfArrival.timeOfArrival.hour" -> messages("error.time.enter_a_real_time")
   )
 
   val expectedInvalidFutureDateFormErrors: Seq[(String, String)] = List(
@@ -201,7 +196,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   )
 
   val expectedInvalidYearLengthFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.year_length")
+    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.year_length")
   )
 
   val invalidTestCases: Seq[(String, Form[YourJourneyDetailsDto], Seq[(String, String)])] = Seq(

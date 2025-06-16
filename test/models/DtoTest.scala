@@ -445,7 +445,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.date.enter_a_real_date"
     }
 
     "return validation errors if the dateOfArrival has more than 2 characters in day and month field" in {
@@ -465,7 +465,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.date.enter_a_real_date"
     }
 
     "return validation errors if the dateOfArrival is using special characters in any field" in {
@@ -485,7 +485,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.date.enter_a_real_date"
     }
 
     "return validation errors if all the dateOfArrival contains an out of range date value" in {
@@ -503,7 +503,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
+      form.errors.map(_.message) shouldBe List("error.date.enter_a_real_date")
     }
 
     "return validation errors if all the dateOfArrival fields are blank" in {
@@ -521,8 +521,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors
-        .map(_.message) shouldBe List("error.date.day_blank", "error.date.month_blank", "error.date.year_blank")
+      form.errors.map(_.message) shouldBe List("error.date.enter_a_date")
     }
 
     "return validation errors if any but not all of the dateOfArrival fields are blank" in {
@@ -540,7 +539,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.date.month_blank", "error.date.year_blank")
+      form.errors.map(_.message) shouldBe List("error.date.month_blank")
     }
 
     "return an error if the year field is not 4 chars long" in {
@@ -558,7 +557,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.year_length")
+      form.errors.map(_.message) shouldBe List("error.date.year_length")
     }
 
     "check for whole numbers before it checks for year length" in {
@@ -576,7 +575,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
+      form.errors.map(_.message) shouldBe List("error.date.enter_a_real_date")
     }
 
     "allow the dateOfArrival if it is a valid date" in {
@@ -652,7 +651,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_real_time"
+      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.time.enter_a_real_time"
     }
 
     "allow the timeOfArrival to be after the declaration time" in {
@@ -747,9 +746,9 @@ class DtoTest extends BaseSpec {
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors    shouldBe true
-      form.errors.size  shouldBe 2
+      form.errors.size  shouldBe 1
       form.errors
-        .map(_.message) shouldBe List("error.time.hour_blank", "error.time.minute_blank")
+        .map(_.message) shouldBe List("error.time.enter_a_time")
     }
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival minute is a non-digit" in {
@@ -769,7 +768,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_real_time"
+      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.time.enter_a_real_time"
     }
 
     "return a validation error if the dateTimeOfArrival.timeOfArrival hour and minute are incorrectly out of range" in {
@@ -789,7 +788,7 @@ class DtoTest extends BaseSpec {
 
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
-      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.enter_a_real_time"
+      form.error("dateTimeOfArrival.timeOfArrival").get.message shouldBe "error.time.enter_a_real_time"
     }
   }
 
