@@ -346,6 +346,69 @@ object EmailAddressDto extends Validators {
 }
 
 object YourJourneyDetailsDto extends Validators {
+  val monthMap: Map[String, Int] = Map(
+    // English full
+    "january"    -> 1,
+    "february"   -> 2,
+    "march"      -> 3,
+    "april"      -> 4,
+    "may"        -> 5,
+    "june"       -> 6,
+    "july"       -> 7,
+    "august"     -> 8,
+    "september"  -> 9,
+    "october"    -> 10,
+    "november"   -> 11,
+    "december"   -> 12,
+    // English short
+    "jan"        -> 1,
+    "feb"        -> 2,
+    "mar"        -> 3,
+    "apr"        -> 4,
+    "may"        -> 5,
+    "jun"        -> 6,
+    "jul"        -> 7,
+    "aug"        -> 8,
+    "sep"        -> 9,
+    "oct"        -> 10,
+    "nov"        -> 11,
+    "dec"        -> 12,
+    // Welsh full
+    "ionawr"     -> 1,
+    "chwefror"   -> 2,
+    "mawrth"     -> 3,
+    "ebrill"     -> 4,
+    "mai"        -> 5,
+    "mehefin"    -> 6,
+    "gorffennaf" -> 7,
+    "awst"       -> 8,
+    "medi"       -> 9,
+    "hydref"     -> 10,
+    "tachwedd"   -> 11,
+    "rhagfyr"    -> 12,
+    // Welsh short
+    "ion"        -> 1,
+    "chwe"       -> 2,
+    "maw"        -> 3,
+    "ebr"        -> 4,
+    "meh"        -> 6,
+    "gorff"      -> 7,
+    "aws"        -> 8,
+    "med"        -> 9,
+    "hyd"        -> 10,
+    "tach"       -> 11,
+    "rhag"       -> 12
+  )
+
+  private def parseMonth(input: String): Option[Int] = {
+    val inputData = input.trim.toLowerCase
+    if (inputData.matches("\\d{1,2}")) {
+      val monthNum = inputData.toInt
+      if (monthNum >= 1 && monthNum <= 12) Some(monthNum) else None
+    } else {
+      monthMap.get(inputData)
+    }
+  }
 
   private val mandatoryDate: Mapping[String] =
     tuple(
@@ -367,18 +430,16 @@ object YourJourneyDetailsDto extends Validators {
       )
       .verifying(
         "error.enter_a_real_date",
-        dateString =>
-          dateString._1.forall(_.isDigit) && dateString._2.forall(_.isDigit) && dateString._3.forall(_.isDigit)
+        dateString => dateString._1.forall(_.isDigit) && dateString._3.forall(_.isDigit)
       )
       .transform[(String, String, String)](identity, identity)
       .verifying("error.year_length", dateString => dateString._3.length == 4)
       .verifying(
         "error.enter_a_real_date",
-        dateString =>
-          dateString._2.nonEmpty && dateString._2.length <= 2 && dateString._1.nonEmpty && dateString._1.length <= 2
+        dateString => dateString._2.nonEmpty && dateString._1.nonEmpty && dateString._1.length <= 2
       )
       .transform[(Int, Int, Int)](
-        dateString => (dateString._1.toInt, dateString._2.toInt, dateString._3.toInt),
+        dateString => (dateString._1.toInt, parseMonth(dateString._2).getOrElse(0), dateString._3.toInt),
         dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString)
       )
       .verifying(

@@ -49,7 +49,7 @@
         ),
         InputItem(
             id = s"$id.month",
-            classes = s"govuk-input--width-2${if(
+            classes = s"govuk-input--width-4${if(
                 form(s"$id.month").hasErrors
                     || form.errors.exists(_.key.isEmpty)
                     || form.errors.exists(_.args.contains("month"))) " govuk-input--error" else ""}",

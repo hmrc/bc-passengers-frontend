@@ -576,7 +576,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.enter_a_real_date")
+      form.errors.map(_.message) shouldBe List("error.year_length")
     }
 
     "allow the dateOfArrival if it is a valid date" in {
