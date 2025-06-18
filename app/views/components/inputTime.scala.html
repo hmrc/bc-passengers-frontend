@@ -54,9 +54,9 @@
         InputItem(
             id = s"$id.hour",
             classes = s"govuk-input--width-2${if(
-                            form.errors.exists(_.message.startsWith(s"error.$id.all"))  ||
-                            form.errors.exists(_.message.startsWith(s"error.$id.hour")) ||
-                            form.errors.exists(_.key.contains(s"hour")) ||
+                            form(s"$id").errors.exists(_.message.equals("error.time.enter_a_time"))  ||
+                            form(s"$id").errors.exists(_.message.equals("error.time.hour_blank")) ||
+                            form(s"$id").errors.exists(_.message.equals("error.time.enter_a_real_time")) ||
                             form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
             name =  s"$id.hour",
             label = Some(messages("time.fields.hour")),
@@ -65,9 +65,9 @@
         InputItem(
             id = s"$id.minute",
             classes = s"govuk-input--width-2${if(
-                        form.errors.exists(_.message.startsWith(s"error.$id.all")) ||
-                        form.errors.exists(_.message.startsWith(s"error.$id.minute")) ||
-                        form.errors.exists(_.key.contains(s"minute")) ||
+                        form(s"$id").errors.exists(_.message.equals("error.time.enter_a_time")) ||
+                        form(s"$id").errors.exists(_.message.equals("error.time.minute_blank")) ||
+                        form(s"$id").errors.exists(_.message.equals("error.time.enter_a_real_time")) ||
                         form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
             name = s"$id.minute",
             label = Some(messages("time.fields.minute")),
