@@ -347,23 +347,27 @@ object EmailAddressDto extends Validators {
 
 object YourJourneyDetailsDto extends Validators {
 
+  private def getOption(opt: Option[String]) = opt.getOrElse("")
+
+  private def optIsEmpty(opt: Option[String]) = opt.forall(_.trim.isEmpty)
+
+  private def optIsNonEmpty(opt: Option[String]) = opt.exists(_.trim.nonEmpty)
+
+  private def optIsDigits(opt: Option[String]) = getOption(opt).forall(_.isDigit)
+
   private def dateOfArrivalConstraint: Constraint[(Option[String], Option[String], Option[String])] = Constraint {
     model =>
       val (day, month, year) = model
 
-      val dayMissing      = day.forall(_.trim.isEmpty) && month.forall(_.trim.nonEmpty) && year.forall(_.trim.nonEmpty)
-      val monthMissing    = day.forall(_.trim.nonEmpty) && month.forall(_.trim.isEmpty) && year.forall(_.trim.nonEmpty)
-      val yearMissing     = day.forall(_.trim.nonEmpty) && month.forall(_.trim.nonEmpty) && year.forall(_.trim.isEmpty)
-      val completed       = Seq(day, month, year).exists(_.exists(_.nonEmpty))
-      val numberDate      = day.getOrElse("").forall(_.isDigit) && month.getOrElse("").forall(_.isDigit) && year
-        .getOrElse("")
-        .forall(_.isDigit)
-      val realDayAndMonth = day.getOrElse("").nonEmpty && day.getOrElse("").length <= 2 && month
-        .getOrElse("")
-        .nonEmpty && month.getOrElse("").length <= 2
+      val completed = Seq(day, month, year).exists(_.exists(_.nonEmpty))
+      val dayMissing      = optIsEmpty(day)
+      val monthMissing    = optIsEmpty(month)
+      val yearMissing     = optIsEmpty(year)
+      val numberDate      = optIsDigits(day) && optIsDigits(month) && optIsDigits(year)
+      val realDayAndMonth = optIsNonEmpty(day) && getOption(day).length <= 2 && optIsNonEmpty(month) && getOption(month).length <= 2
       val validFullDate   =
-        Try(LocalDate.of(year.getOrElse("").toInt, month.getOrElse("").toInt, day.getOrElse("").toInt)).isSuccess
-      val validYear       = year.getOrElse("").length == 4
+        Try(LocalDate.of(getOption(year).toInt, getOption(month).toInt, getOption(day).toInt)).isSuccess
+      val validYear       = getOption(year).length == 4
 
       if (!completed) Invalid("error.date.enter_a_date")
       else if (dayMissing) Invalid("error.date.day_blank")
@@ -375,19 +379,15 @@ object YourJourneyDetailsDto extends Validators {
   }
 
   private def timeOfArrivalConstraint: Constraint[(Option[String], Option[String])] = Constraint { model =>
-    val (hourOption, minuteOption) = model
-
-    val hour   = hourOption.getOrElse("").trim
-    val minute = minuteOption.getOrElse("").trim
+    val (hour, minute) = model
 
     val isCompleted                   = Seq(hour, minute).exists(_.nonEmpty)
-    val isHourMissing                 = hour.isEmpty && minute.nonEmpty
-    val isMinuteMissing               = hour.nonEmpty && minute.isEmpty
-    def isNumeric(s: String): Boolean = s.forall(_.isDigit)
+    val isHourMissing                 = optIsEmpty(hour) && optIsNonEmpty(minute)
+    val isMinuteMissing               = optIsNonEmpty(hour) && optIsEmpty(minute)
 
-    val isNumericTime = isNumeric(hour) && isNumeric(minute)
-    val validTime     = hour.nonEmpty && hour.length <= 2 && minute.nonEmpty && minute.length <= 2
-    val validFullTime = Try(LocalTime.of(hour.toInt, minute.toInt)).isSuccess
+    val isNumericTime = optIsDigits(hour) && optIsDigits(minute)
+    val validTime     = optIsNonEmpty(hour) && getOption(hour).length <= 2 && optIsNonEmpty(minute) && getOption(minute).length <= 2
+    val validFullTime = Try(LocalTime.of(getOption(hour).toInt, getOption(minute).toInt)).isSuccess
 
     if (!isCompleted) Invalid("error.time.enter_a_time")
     else if (isHourMissing) Invalid("error.time.hour_blank")
@@ -405,7 +405,7 @@ object YourJourneyDetailsDto extends Validators {
       .verifying(dateOfArrivalConstraint)
       .transform[String](
         dateInt =>
-          s"${dateInt._3.getOrElse("").toInt}-${dateInt._2.getOrElse("").toInt}-${dateInt._1.getOrElse("").toInt}",
+          s"${getOption(dateInt._3).toInt}-${getOption(dateInt._2).toInt}-${getOption(dateInt._1).toInt}",
         dateString =>
           dateString.split("-") match {
             case Array(dd, mm, yyyy) => (Some(dd), Some(mm), Some(yyyy))
@@ -419,7 +419,7 @@ object YourJourneyDetailsDto extends Validators {
     )
       .verifying(timeOfArrivalConstraint)
       .transform[String](
-        time => s"${time._1.getOrElse("")}:${time._2.getOrElse("")}",
+        time => s"${getOption(time._1)}:${getOption(time._2)}",
         localTime =>
           localTime.split(":") match {
             case Array(hours, minutes) =>
