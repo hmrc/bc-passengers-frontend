@@ -433,7 +433,7 @@ class DtoTest extends BaseSpec {
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
         "dateTimeOfArrival.dateOfArrival.day"    -> "40",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -446,6 +446,44 @@ class DtoTest extends BaseSpec {
       form.hasErrors                                            shouldBe true
       form.errors.size                                          shouldBe 1
       form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
+    }
+
+    "return validation errors if the dateOfArrival is not a valid month" in {
+      val formData = Map(
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "NOVV",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
+      )
+
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors                                            shouldBe true
+      form.errors.size                                          shouldBe 1
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.invalid_month"
+    }
+
+    "allow the placeOfArrival.month to be any string that matches a valid month" in {
+      val formData = Map(
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "NOV",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
+      )
+
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
     }
 
     "return validation errors if the dateOfArrival has more than 2 characters in day and month field" in {
@@ -464,7 +502,7 @@ class DtoTest extends BaseSpec {
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
       form.hasErrors                                            shouldBe true
-      form.errors.size                                          shouldBe 1
+      form.errors.size                                          shouldBe 2
       form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.enter_a_real_date"
     }
 
@@ -472,8 +510,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
-        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "s@",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "s@",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -566,7 +604,7 @@ class DtoTest extends BaseSpec {
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
         "dateTimeOfArrival.dateOfArrival.day"    -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "x",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "18",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"

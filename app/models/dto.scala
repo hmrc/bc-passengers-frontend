@@ -388,13 +388,13 @@ object YourJourneyDetailsDto extends Validators {
     "rhagfyr"    -> 12,
     // Welsh short
     "ion"        -> 1,
-    "chwe"       -> 2,
+    "chwef"      -> 2,
     "maw"        -> 3,
     "ebr"        -> 4,
     "meh"        -> 6,
     "gorff"      -> 7,
-    "aws"        -> 8,
-    "med"        -> 9,
+    "awst"       -> 8,
+    "medi"       -> 9,
     "hyd"        -> 10,
     "tach"       -> 11,
     "rhag"       -> 12
@@ -432,12 +432,12 @@ object YourJourneyDetailsDto extends Validators {
         "error.enter_a_real_date",
         dateString => dateString._1.forall(_.isDigit) && dateString._3.forall(_.isDigit)
       )
-      .transform[(String, String, String)](identity, identity)
       .verifying("error.year_length", dateString => dateString._3.length == 4)
       .verifying(
         "error.enter_a_real_date",
-        dateString => dateString._2.nonEmpty && dateString._1.nonEmpty && dateString._1.length <= 2
+        dateString => dateString._1.nonEmpty && dateString._1.length <= 2
       )
+      .verifying("error.invalid_month", dateString => parseMonth(dateString._2).isDefined)
       .transform[(Int, Int, Int)](
         dateString => (dateString._1.toInt, parseMonth(dateString._2).getOrElse(0), dateString._3.toInt),
         dateInt => (dateInt._1.toString, dateInt._2.toString, dateInt._3.toString)
