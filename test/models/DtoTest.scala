@@ -433,7 +433,7 @@ class DtoTest extends BaseSpec {
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
         "dateTimeOfArrival.dateOfArrival.day"    -> "40",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "12",
         "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -448,12 +448,12 @@ class DtoTest extends BaseSpec {
       form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.date.enter_a_real_date"
     }
 
-    "return validation errors if the dateOfArrival has more than 2 characters in day and month field" in {
+    "return validation errors if the dateOfArrival has more than 2 characters in day field" in {
       val formData = Map(
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
         "dateTimeOfArrival.dateOfArrival.day"    -> "9876543210",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "9876543210",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -472,8 +472,8 @@ class DtoTest extends BaseSpec {
       val formData = Map(
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
-        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "s@",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "s@",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -565,7 +565,7 @@ class DtoTest extends BaseSpec {
         "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
         "placeOfArrival.enterPlaceOfArrival"     -> "",
         "dateTimeOfArrival.dateOfArrival.day"    -> "23",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "x",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "18",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -575,7 +575,7 @@ class DtoTest extends BaseSpec {
 
       val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
 
-      form.errors.map(_.message) shouldBe List("error.date.enter_a_real_date")
+      form.errors.map(_.message) shouldBe List("error.date.year_length")
     }
 
     "allow the dateOfArrival if it is a valid date" in {
@@ -584,6 +584,44 @@ class DtoTest extends BaseSpec {
         "placeOfArrival.enterPlaceOfArrival"     -> "",
         "dateTimeOfArrival.dateOfArrival.day"    -> "23",
         "dateTimeOfArrival.dateOfArrival.month"  -> "11",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
+      )
+
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors shouldBe false
+    }
+
+    "return validation errors if the dateOfArrival is not a valid month" in {
+      val formData = Map(
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "NOVV",
+        "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
+        "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
+        "dateTimeOfArrival.timeOfArrival.minute" -> "15"
+      )
+
+      val declarationTime = LocalDateTime.parse("2018-11-23T12:20:00.000")
+
+      val form = YourJourneyDetailsDto.form(declarationTime).bind(formData)
+
+      form.hasErrors                                            shouldBe true
+      form.errors.size                                          shouldBe 1
+      form.error("dateTimeOfArrival.dateOfArrival").get.message shouldBe "error.date.invalid_month"
+    }
+
+    "allow the dateOfArrival.month to be any string that matches a valid month" in {
+      val formData = Map(
+        "placeOfArrival.selectPlaceOfArrival"    -> "LHR",
+        "placeOfArrival.enterPlaceOfArrival"     -> "",
+        "dateTimeOfArrival.dateOfArrival.day"    -> "23",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "NOV",
         "dateTimeOfArrival.dateOfArrival.year"   -> "2018",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "21",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"

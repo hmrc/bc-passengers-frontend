@@ -610,6 +610,7 @@ error.5_days=Mae’n rhaid i’r dyddiad a’r amser cyrraedd disgwyliedig fod y
 error.include_day_month_and_year=Nodwch eich dyddiad cyrraedd, gan nodi diwrnod, mis a blwyddyn
 error.only_whole_numbers=Mae’n rhaid i’r dyddiad cyrraedd gynnwys rhifau cyfan yn unig, fel 2 neu 11
 error.date.year_length=Mae’n rhaid i’r flwyddyn fod yn 4 rhif yn union o hyd
+error.date.invalid_month=Nodwch fis dilys
 error.date.enter_a_real_date=Nodwch ddyddiad cyrraedd go iawn
 error.time.enter_a_real_time=Nodwch amser cyrraedd go iawn
 error.format.emailAddress = Nodwch eich cyfeiriad e-bost yn y fformat cywir, megis@enw@enghraifft.com

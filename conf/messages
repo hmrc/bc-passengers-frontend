@@ -603,6 +603,7 @@ error.time.enter_a_time = Enter your scheduled time of arrival
 error.5_days = Scheduled date and time of arrival must be less than 5 days in the future
 error.only_whole_numbers = Date of arrival must only include whole numbers, such as 2 or 11
 error.date.year_length =Year must be exactly four numbers long
+error.date.invalid_month=Enter a valid month
 error.date.enter_a_real_date = Enter a real date of arrival
 error.time.enter_a_real_time = Enter a real time of arrival
 error.format.emailAddress = Enter your email address in the correct format, like name@example.com
