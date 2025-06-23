@@ -355,25 +355,93 @@ object YourJourneyDetailsDto extends Validators {
 
   private def optIsDigits(opt: Option[String]) = getOption(opt).forall(_.isDigit)
 
+  private val monthMap: Map[String, Int] = Map(
+    // English full
+    "january"    -> 1,
+    "february"   -> 2,
+    "march"      -> 3,
+    "april"      -> 4,
+    "may"        -> 5,
+    "june"       -> 6,
+    "july"       -> 7,
+    "august"     -> 8,
+    "september"  -> 9,
+    "october"    -> 10,
+    "november"   -> 11,
+    "december"   -> 12,
+    // English short
+    "jan"        -> 1,
+    "feb"        -> 2,
+    "mar"        -> 3,
+    "apr"        -> 4,
+    "may"        -> 5,
+    "jun"        -> 6,
+    "jul"        -> 7,
+    "aug"        -> 8,
+    "sep"        -> 9,
+    "oct"        -> 10,
+    "nov"        -> 11,
+    "dec"        -> 12,
+    // Welsh full
+    "ionawr"     -> 1,
+    "chwefror"   -> 2,
+    "mawrth"     -> 3,
+    "ebrill"     -> 4,
+    "mai"        -> 5,
+    "mehefin"    -> 6,
+    "gorffennaf" -> 7,
+    "awst"       -> 8,
+    "medi"       -> 9,
+    "hydref"     -> 10,
+    "tachwedd"   -> 11,
+    "rhagfyr"    -> 12,
+    // Welsh short
+    "ion"        -> 1,
+    "chwef"      -> 2,
+    "maw"        -> 3,
+    "ebr"        -> 4,
+    "meh"        -> 6,
+    "gorff"      -> 7,
+    "awst"       -> 8,
+    "medi"       -> 9,
+    "hyd"        -> 10,
+    "tach"       -> 11,
+    "rhag"       -> 12
+  )
+
   private def dateOfArrivalConstraint: Constraint[(Option[String], Option[String], Option[String])] = Constraint {
     model =>
       val (day, month, year) = model
 
-      val completed = Seq(day, month, year).exists(_.exists(_.nonEmpty))
-      val dayMissing      = optIsEmpty(day)
-      val monthMissing    = optIsEmpty(month)
-      val yearMissing     = optIsEmpty(year)
-      val numberDate      = optIsDigits(day) && optIsDigits(month) && optIsDigits(year)
-      val realDayAndMonth = optIsNonEmpty(day) && getOption(day).length <= 2 && optIsNonEmpty(month) && getOption(month).length <= 2
-      val validFullDate   =
-        Try(LocalDate.of(getOption(year).toInt, getOption(month).toInt, getOption(day).toInt)).isSuccess
-      val validYear       = getOption(year).length == 4
+      val completed                   = Seq(day, month, year).exists(_.exists(_.nonEmpty))
+      val dayMissing                  = optIsEmpty(day)
+      val monthMissing                = optIsEmpty(month)
+      val yearMissing                 = optIsEmpty(year)
+      val numberDate                  = optIsDigits(day) && optIsDigits(year)
+      val realDayAndMonth             =
+        optIsNonEmpty(day) && getOption(day).length <= 2 &&
+          optIsNonEmpty(month) && getOption(month).length <= 20
+      val parsedMonthOpt: Option[Int] = {
+        val m = getOption(month).trim.toLowerCase
+        if (m.forall(_.isDigit)) Try(m.toInt).toOption.filter(n => n >= 1 && n <= 12)
+        else monthMap.get(m)
+      }
+      val monthValidFormat            = parsedMonthOpt.nonEmpty
+      val validYear                   = getOption(year).length == 4
+      val validFullDate               = if (monthValidFormat) {
+        for {
+          y <- Try(getOption(year).trim.toInt).toOption
+          m <- parsedMonthOpt
+          d <- Try(getOption(day).trim.toInt).toOption
+        } yield Try(LocalDate.of(y, m, d)).isSuccess
+      } else Some(false)
 
       if (!completed) Invalid("error.date.enter_a_date")
       else if (dayMissing) Invalid("error.date.day_blank")
       else if (monthMissing) Invalid("error.date.month_blank")
       else if (yearMissing) Invalid("error.date.year_blank")
-      else if (!numberDate || !realDayAndMonth || !validFullDate) Invalid("error.date.enter_a_real_date")
+      else if (!monthValidFormat) Invalid("error.date.invalid_month")
+      else if (!numberDate || !realDayAndMonth || !validFullDate.contains(true)) Invalid("error.date.enter_a_real_date")
       else if (!validYear) Invalid("error.date.year_length")
       else Valid
   }
@@ -381,12 +449,13 @@ object YourJourneyDetailsDto extends Validators {
   private def timeOfArrivalConstraint: Constraint[(Option[String], Option[String])] = Constraint { model =>
     val (hour, minute) = model
 
-    val isCompleted                   = Seq(hour, minute).exists(_.nonEmpty)
-    val isHourMissing                 = optIsEmpty(hour) && optIsNonEmpty(minute)
-    val isMinuteMissing               = optIsNonEmpty(hour) && optIsEmpty(minute)
+    val isCompleted     = Seq(hour, minute).exists(_.nonEmpty)
+    val isHourMissing   = optIsEmpty(hour) && optIsNonEmpty(minute)
+    val isMinuteMissing = optIsNonEmpty(hour) && optIsEmpty(minute)
 
     val isNumericTime = optIsDigits(hour) && optIsDigits(minute)
-    val validTime     = optIsNonEmpty(hour) && getOption(hour).length <= 2 && optIsNonEmpty(minute) && getOption(minute).length <= 2
+    val validTime     =
+      optIsNonEmpty(hour) && getOption(hour).length <= 2 && optIsNonEmpty(minute) && getOption(minute).length <= 2
     val validFullTime = Try(LocalTime.of(getOption(hour).toInt, getOption(minute).toInt)).isSuccess
 
     if (!isCompleted) Invalid("error.time.enter_a_time")
@@ -404,8 +473,15 @@ object YourJourneyDetailsDto extends Validators {
     )
       .verifying(dateOfArrivalConstraint)
       .transform[String](
-        dateInt =>
-          s"${getOption(dateInt._3).toInt}-${getOption(dateInt._2).toInt}-${getOption(dateInt._1).toInt}",
+        dateItems => {
+          val day         = getOption(dateItems._1)
+          val monthStr    = getOption(dateItems._2).toLowerCase.trim
+          val year        = getOption(dateItems._3)
+          val monthNumber =
+            if (monthStr.forall(_.isDigit)) monthStr
+            else monthMap.getOrElse(monthStr, 0).toString
+          s"$year-$monthNumber-$day"
+        },
         dateString =>
           dateString.split("-") match {
             case Array(dd, mm, yyyy) => (Some(dd), Some(mm), Some(yyyy))

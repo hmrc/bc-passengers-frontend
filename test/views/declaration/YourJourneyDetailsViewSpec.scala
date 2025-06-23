@@ -49,7 +49,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
         "placeOfArrival.selectPlaceOfArrival"    -> "",
         "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day"    -> "DD",
-        "dateTimeOfArrival.dateOfArrival.month"  -> "AA",
+        "dateTimeOfArrival.dateOfArrival.month"  -> "11",
         "dateTimeOfArrival.dateOfArrival.year"   -> "SS",
         "dateTimeOfArrival.timeOfArrival.hour"   -> "09",
         "dateTimeOfArrival.timeOfArrival.minute" -> "15"
@@ -89,7 +89,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     LocalDateTime.now().plusDays(amountOfDaysInFuture).withHour(9).withMinute(15)
   private val today: LocalDateTime        = LocalDateTime.now().withHour(23).withMinute(1).withSecond(1)
 
-  private val formWithInvalidDateInFuture: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
+  private val formWithInvalidDateInFuture: Form[YourJourneyDetailsDto]  = YourJourneyDetailsDto
     .form(declarationTime)
     .bind(
       Map(
@@ -97,6 +97,19 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
         "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
         "dateTimeOfArrival.dateOfArrival.day"    -> dateInFuture.getDayOfMonth.toString,
         "dateTimeOfArrival.dateOfArrival.month"  -> dateInFuture.getMonthValue.toString,
+        "dateTimeOfArrival.dateOfArrival.year"   -> dateInFuture.getYear.toString,
+        "dateTimeOfArrival.timeOfArrival.hour"   -> dateInFuture.getHour.toString,
+        "dateTimeOfArrival.timeOfArrival.minute" -> dateInFuture.getMinute.toString
+      )
+    )
+  private val formWithInvalidMonthInFuture: Form[YourJourneyDetailsDto] = YourJourneyDetailsDto
+    .form(declarationTime)
+    .bind(
+      Map(
+        "placeOfArrival.selectPlaceOfArrival"    -> "",
+        "placeOfArrival.enterPlaceOfArrival"     -> "Newcastle Airport",
+        "dateTimeOfArrival.dateOfArrival.day"    -> dateInFuture.getDayOfMonth.toString,
+        "dateTimeOfArrival.dateOfArrival.month"  -> "AA",
         "dateTimeOfArrival.dateOfArrival.year"   -> dateInFuture.getYear.toString,
         "dateTimeOfArrival.timeOfArrival.hour"   -> dateInFuture.getHour.toString,
         "dateTimeOfArrival.timeOfArrival.minute" -> dateInFuture.getMinute.toString
@@ -199,12 +212,17 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.year_length")
   )
 
+  val expectedInvalidMonthFormErrors: Seq[(String, String)] = List(
+    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.invalid_month")
+  )
+
   val invalidTestCases: Seq[(String, Form[YourJourneyDetailsDto], Seq[(String, String)])] = Seq(
     Tuple3("Empty form", emptyForm, expectedEmptyFormErrors),
     Tuple3("Invalid date form", formWithInvalidDate, expectedInvalidDateFormErrors),
     Tuple3("Invalid time form", formWithInvalidTime, expectedInvalidTimeFormErrors),
     Tuple3("Invalid date in future form", formWithInvalidDateInFuture, expectedInvalidFutureDateFormErrors),
-    Tuple3("Invalid year length form", formWithInvalidYearLength, expectedInvalidYearLengthFormErrors)
+    Tuple3("Invalid year length form", formWithInvalidYearLength, expectedInvalidYearLengthFormErrors),
+    Tuple3("Invalid month form", formWithInvalidMonthInFuture, expectedInvalidMonthFormErrors)
   )
 
   "YourJourneyDetailsView" when {
