@@ -23,7 +23,8 @@
   id: String = "date",
   hintMessage: Option[String],
   hintHtml: Option[Html] = None,
-  legendAsPageHeading: Boolean = true)(implicit messages: Messages)
+  legendAsPageHeading: Boolean = true,
+  describedBy: Option[String] = None)(implicit messages: Messages)
 
 @govukDateInput(DateInput(
     fieldset = Some(Fieldset(
@@ -46,7 +47,8 @@
                     || form.errors.exists(_.args.contains("day")))" govuk-input--error" else ""}",
             name = s"$id.day",
             label = Some(messages("date.day")),
-            value = form(s"$id.day").value
+            value = form(s"$id.day").value,
+            attributes = describedBy.map(v => Map("aria-describedby" -> v)).getOrElse(Map.empty)
         ),
         InputItem(
             id = s"$id.month",
@@ -57,7 +59,8 @@
                     || form.errors.exists(_.args.contains("month"))) " govuk-input--error" else ""}",
             name = s"$id.month",
             label = Some(messages("date.month")),
-            value = form(s"$id.month").value
+            value = form(s"$id.month").value,
+            attributes = describedBy.map(v => Map("aria-describedby" -> v)).getOrElse(Map.empty)
         ),
         InputItem(
             id = s"$id.year",
@@ -69,7 +72,8 @@
                     || form.errors.exists(_.args.contains("year"))) " govuk-input--error" else ""}",
             name = s"$id.year",
             label = Some(messages("date.year")),
-            value = form(s"$id.year").value
+            value = form(s"$id.year").value,
+            attributes = describedBy.map(v => Map("aria-describedby" -> v)).getOrElse(Map.empty)
         )
     ),
         hint = hintHtml.fold(hintMessage.map(text => Hint(content = HtmlContent(Html(messages(text))))))(
