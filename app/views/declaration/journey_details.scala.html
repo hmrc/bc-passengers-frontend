@@ -25,6 +25,7 @@
     inputText: components.inputText,
     button: components.button,
     fieldset: components.fieldset,
+    h1: components.h1,
     inputDate: components.inputDate,
     inputTime: components.inputTime,
     autoCompleteList: components.autocompleteList
@@ -92,9 +93,8 @@
 }
 
 
-
-    @fieldset(s"label.what_are_your_journey_details") {
-
+        @h1("label.what_are_your_journey_details")     
+   
         <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
             @form.errors.filter(_.key == "placeOfArrival").map { error =>
@@ -184,9 +184,8 @@
         @if(form("dateTimeOfArrival").hasErrors){
             </div>
         }
-    }
-
-    @button("label.continue")
+    
+        @button("label.continue")
 
     }
 }
