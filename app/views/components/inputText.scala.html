@@ -31,7 +31,8 @@
         inputType: String = "text",
         isTelephone: Boolean = false,
         autocomplete: Option[String] = None,
-        labelClasses: Option[String] = None
+        labelClasses: Option[String] = None,
+        describedBy: Option[String] = None
 )(implicit messages: Messages)
 
 @govukInput(Input(
@@ -53,6 +54,7 @@
         if(isTelephone) Some("tel") else None
     } else inputmode,
   autocomplete = autocomplete,
-  spellcheck = spellcheck
+  spellcheck = spellcheck,
+  describedBy = describedBy
 ))
 

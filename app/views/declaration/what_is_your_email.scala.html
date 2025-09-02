@@ -38,15 +38,18 @@
 
     @fieldset(s"label.what_is_your_email") {
 
-        @p{@messages("label.email_address_hint")}
+         <div class="govuk-hint" id="emailAddress-hint">
+            @messages("label.email_address_hint")
+        </div>
 
         <div class="govuk-form-group @{if(form("").hasErrors) "govuk-form-group--error" else "" }" id="emailAddress">
 
             @form.errors.filter(_.key == "").map { error =>
-                <span class="govuk-error-message" id="emailAddress-error"> <span class="govuk-visually-hidden">@messages("label.error") </span>
-                    @messages(error.message)
-                </span>
-            }
+             <p class="govuk-error-message" id="emailAddress-error">
+                <span class="govuk-visually-hidden">@messages("label.error") </span>
+                @messages(error.message)
+             </p>
+           }
 
             @inputText(
                 form,
@@ -58,7 +61,10 @@
                 isPageHeading = false,
                 autocomplete = Some("email"),
                 classes = Some("govuk-input govuk-!-width-one-half"),
-                labelClasses = None
+                labelClasses = None,
+                describedBy = Some(
+                    if (form("").hasErrors) "emailAddress-hint emailAddress-error" else "emailAddress-hint"
+              )
             )
 
             @inputText(
@@ -71,7 +77,10 @@
                 isPageHeading = false,
                 autocomplete = Some("email"),
                 classes = Some("govuk-input govuk-!-width-one-half"),
-                labelClasses = None
+                labelClasses = None,
+              describedBy = Some(
+               if (form("").hasErrors) "emailAddress-hint emailAddress-error" else "emailAddress-hint"
+             )
             )
         </div>
     }

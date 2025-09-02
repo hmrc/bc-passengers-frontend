@@ -107,9 +107,9 @@
         @if(form("dateTimeOfArrival").hasErrors){
             <div class="govuk-form-group govuk-form-group--error" id="dateOfArrival.date">
             @form.errors.filter(_.key == "dateTimeOfArrival").map { error =>
-                <span class="govuk-error-message" id="dateTimeOfArrival-error">
+                <p class="govuk-error-message" id="dateTimeOfArrival-error">
                     <span class="govuk-visually-hidden">@messages("label.error") </span> @messages(error.message)
-                </span>
+                </p>
             }
         }
             <div class="govuk-form-group @{if(form("dateTimeOfArrival.dateOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="dateTimeOfArrival.date">
@@ -120,7 +120,8 @@
                     legendClasses = "govuk-label govuk-!-margin-bottom-4 govuk-!-font-weight-bold",
                     hintMessage= Some((messages(s"label.for_example_31_10_2021"))),
                     hintHtml = None,
-                    legendAsPageHeading = false
+                    legendAsPageHeading = false,
+                    describedBy = Some("dateTimeOfArrival-error")
                 )
             </div>
 
