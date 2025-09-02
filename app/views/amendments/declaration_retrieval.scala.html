@@ -34,9 +34,7 @@
 
     @errorSummary(form.errors)
 
-    @fieldset("heading.declaration_retrieval",
-        describedBy = Some("declarationRetrieval-hint") 
-        ) {
+    @fieldset("heading.declaration_retrieval") {
          <div class="govuk-hint" id="declarationRetrieval-hint">
            @messages("text.declaration_retrieval")
          </div>
@@ -48,7 +46,8 @@
             label = "label.last_name",
             isPageHeading = false,
             classes = Some("govuk-input govuk-!-width-one-half"),
-            labelClasses = Some("govuk-!-font-weight-bold")
+            labelClasses = Some("govuk-!-font-weight-bold"),
+            describedBy = Some("declarationRetrieval-hint")
         )
 
         @inputText(
@@ -59,7 +58,8 @@
             isPageHeading = false,
             hint = Some(Html(messages("label.reference_number_hint"))),
             classes = Some("govuk-input govuk-!-width-one-half"),
-            labelClasses = Some("govuk-!-font-weight-bold")
+            labelClasses = Some("govuk-!-font-weight-bold"),
+            describedBy = Some("declarationRetrieval-hint")
         )
     }
 
