@@ -36,7 +36,11 @@
 
     @errorSummary(form.errors)
 
-    @fieldset(s"label.what_is_your_email") {
+    @fieldset("label.what_is_your_email",
+    describedBy = Some(
+        if (form("").hasErrors) "emailAddress-hint emailAddress-error" else "emailAddress-hint"
+    )
+    ) {
 
          <div class="govuk-hint" id="emailAddress-hint">
             @messages("label.email_address_hint")
@@ -61,10 +65,7 @@
                 isPageHeading = false,
                 autocomplete = Some("email"),
                 classes = Some("govuk-input govuk-!-width-one-half"),
-                labelClasses = None,
-                describedBy = Some(
-                    if (form("").hasErrors) "emailAddress-hint emailAddress-error" else "emailAddress-hint"
-              )
+                labelClasses = None
             )
 
             @inputText(
@@ -77,10 +78,7 @@
                 isPageHeading = false,
                 autocomplete = Some("email"),
                 classes = Some("govuk-input govuk-!-width-one-half"),
-                labelClasses = None,
-              describedBy = Some(
-               if (form("").hasErrors) "emailAddress-hint emailAddress-error" else "emailAddress-hint"
-             )
+                labelClasses = None
             )
         </div>
     }
