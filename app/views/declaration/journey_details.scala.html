@@ -121,7 +121,7 @@
                     hintMessage= Some((messages(s"label.for_example_31_10_2021"))),
                     hintHtml = None,
                     legendAsPageHeading = false,
-                    describedBy = Some("dateTimeOfArrival-error")
+                     describedBy = if (form("dateTimeOfArrival").hasErrors) Some("dateTimeOfArrival-error") else None
                 )
             </div>
 
