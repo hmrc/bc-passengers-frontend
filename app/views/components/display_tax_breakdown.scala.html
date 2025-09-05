@@ -45,10 +45,10 @@
     <tbody>
     @calculatorResponseDto.items.map { item =>
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell">
+        <th class="govuk-table__header" scope="row">
           @messages(item.metadata.descriptionLabels.description,
           item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
-        </td>
+        </th>
         <td class="govuk-table__cell govuk-table__cell--numeric">
           &pound;@formatMonetaryValue(item.calculation.customs)
         </td>
