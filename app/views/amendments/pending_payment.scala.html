@@ -64,7 +64,7 @@
             </tr>
             }
             <tr class="govuk-table__row">
-             <td class="govuk-table__cell govuk-!-font-weight-bold" colspan="3">@messages("label.total")</td>
+             <th class="govuk-table__header" scope="row" colspan="3">@messages("label.total")</th>
              <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
             </tr>
             </tbody>
@@ -81,7 +81,7 @@
           </tr>
 
           <tr class="govuk-table__row">
-            <td class="govuk-table___cell govuk-!-font-weight-bold">@messages("label.total_due_now")</td>
+            <th class="govuk-table__header" scope="row">@messages("label.total_due_now")</th>
             <td class="govuk-table___cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
           </tr>
           </tbody>
