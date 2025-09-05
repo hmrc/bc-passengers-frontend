@@ -81,7 +81,7 @@
         </tr>
 
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell total table-foot">@messages("label.total_due_now")</td>
+          <th class="govuk-table__header" scope="row">@messages("label.total_due_now")</th>
           <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
         </tr>
       </tbody>
