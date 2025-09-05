@@ -77,6 +77,6 @@
     hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
     errorMessage = hierarchyErrors(id, form, Seq(".hour", ".minute", ""))
         .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
-    err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
+    err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*)))),
     showSelectPeriod = false
 ))

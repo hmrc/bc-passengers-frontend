@@ -29,7 +29,7 @@
  classes = s"${if(inline){"govuk-radios--inline"}else{""}}",
  name = name,
  errorMessage = field.error match {
-  case Some(e) => Some(ErrorMessage(content = Text(messages(s"${e.message}.${path.get.toMessageKey}"))))
+  case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(s"${e.message}.${path.get.toMessageKey}"))))
   case None => None
  },
  fieldset = Some(Fieldset(
