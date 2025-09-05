@@ -23,7 +23,8 @@
   id: String = "date",
   hintMessage: Option[String],
   hintHtml: Option[Html] = None,
-  legendAsPageHeading: Boolean = true)(implicit messages: Messages)
+  legendAsPageHeading: Boolean = true,
+  describedBy: Option[String] = None)(implicit messages: Messages)
 
 @govukDateInput(DateInput(
     fieldset = Some(Fieldset(
@@ -33,7 +34,8 @@
                 isPageHeading = legendAsPageHeading,
                 classes = legendClasses
             )
-        )
+        ),
+        describedBy = describedBy
     )),
     id = id,
     items = Seq(
