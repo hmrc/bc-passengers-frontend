@@ -255,5 +255,22 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
           )
         }
       }
+          "autofocus behaviour" should {
+      "focus on day field when date is completely empty" in {
+        val doc  = document(buildView(emptyForm))
+        val day  = doc.getElementById("dateTimeOfArrival.dateOfArrival.day")
+
+        day.hasAttr("autofocus") shouldBe true
+        day.className should include("govuk-input--error")
+      }
+
+      "focus on hour when time is invalid" in {
+        val doc  = document(buildView(formWithInvalidTime))
+        val hour = doc.getElementById("dateTimeOfArrival.timeOfArrival.hour")
+
+        hour.hasAttr("autofocus") shouldBe true
+        hour.className should include("govuk-input--error")
+      }
+    }
   }
 }

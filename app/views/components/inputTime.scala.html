@@ -39,44 +39,62 @@
     }
 }
 
-@govukTimeInput(TimeInput(
-    fieldset = Some(Fieldset(
-        legend = Some(
-            Legend(
-            content = Text(messages(legendContent)),
-            isPageHeading = legendAsPageHeading,
-            classes = legendClasses
-            )
-        )
-    )),
-    id = id,
-    items = Seq(
-        InputItem(
-            id = s"$id.hour",
-            classes = s"govuk-input--width-2${if(
-                            form(s"$id").errors.exists(_.message.equals("error.time.enter_a_time"))  ||
-                            form(s"$id").errors.exists(_.message.equals("error.time.hour_blank")) ||
-                            form(s"$id").errors.exists(_.message.equals("error.time.enter_a_real_time")) ||
-                            form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name =  s"$id.hour",
-            label = Some(messages("time.fields.hour")),
-            value = form(s"$id.hour").value
-        ),
-        InputItem(
-            id = s"$id.minute",
-            classes = s"govuk-input--width-2${if(
-                        form(s"$id").errors.exists(_.message.equals("error.time.enter_a_time")) ||
-                        form(s"$id").errors.exists(_.message.equals("error.time.minute_blank")) ||
-                        form(s"$id").errors.exists(_.message.equals("error.time.enter_a_real_time")) ||
-                        form.errors.exists(_.key.isEmpty)) " govuk-input--error" else ""}",
-            name = s"$id.minute",
-            label = Some(messages("time.fields.minute")),
-            value = form(s"$id.minute").value
-        )
-    ),
-    hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
-    errorMessage = hierarchyErrors(id, form, Seq(".hour", ".minute", ""))
-        .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
-    err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
-    showSelectPeriod = false
-))
+@defining((
+  ( form(s"$id").errors.exists(_.message.equals("error.time.enter_a_time")) ||
+    form(s"$id").errors.exists(_.message.equals("error.time.hour_blank")) ||
+    form(s"$id").errors.exists(_.message.equals("error.time.enter_a_real_time")) ||
+    form.errors.exists(_.key.isEmpty) ),
+
+  ( form(s"$id").errors.exists(_.message.equals("error.time.enter_a_time")) ||
+    form(s"$id").errors.exists(_.message.equals("error.time.minute_blank")) ||
+    form(s"$id").errors.exists(_.message.equals("error.time.enter_a_real_time")) ||
+    form.errors.exists(_.key.isEmpty) )
+)) { case (hourErr, minuteErr) =>
+
+  @defining(
+    if (hourErr) Some(s"$id.hour")
+    else if (minuteErr) Some(s"$id.minute")
+    else None
+  ) { firstInvalid =>
+
+        @defining((target: String) => if (firstInvalid.contains(target)) Map("autofocus" -> "autofocus") else Map.empty) { maybeAutofocus =>
+
+            @govukTimeInput(TimeInput(
+                fieldset = Some(Fieldset(
+                    legend = Some(
+                        Legend(
+                        content = Text(messages(legendContent)),
+                        isPageHeading = legendAsPageHeading,
+                        classes = legendClasses
+                        )
+                    )
+                )),
+                id = id,
+                items = Seq(
+                    InputItem(
+                        id = s"$id.hour",
+                        classes = s"govuk-input--width-2${if(hourErr) " govuk-input--error" else ""}",
+                        name =  s"$id.hour",
+                        label = Some(messages("time.fields.hour")),
+                        value = form(s"$id.hour").value,
+                        attributes = maybeAutofocus(s"$id.hour")
+                    ),
+                    InputItem(
+                        id = s"$id.minute",
+                        classes = s"govuk-input--width-2${if(minuteErr) " govuk-input--error" else ""}",
+                        name = s"$id.minute",
+                        label = Some(messages("time.fields.minute")),
+                        value = form(s"$id.minute").value,
+                        attributes = maybeAutofocus(s"$id.minute")
+
+                    )
+                ),
+                hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
+                errorMessage = hierarchyErrors(id, form, Seq(".hour", ".minute", ""))
+                    .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
+                err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
+                showSelectPeriod = false
+            ))
+        }
+    }
+}
