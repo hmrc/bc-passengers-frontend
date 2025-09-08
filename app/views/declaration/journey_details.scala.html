@@ -36,16 +36,36 @@
 
     @formHelper(action = routes.CalculateDeclareController.processJourneyDetails) {
 
-    @errorSummary(form.errors
-            .foldLeft((Set.empty[String], Seq.empty[FormError])) { case ((err, acc), error) =>
-                val groupKey = error.key.slice(0, 31)
-                    if (err.contains(groupKey)) {
-                        (err, acc)
-                    } else {
-                        (err + groupKey, acc :+ error)
-                    }
-                 }
-            ._2)
+    @defining({
+        val baseDate = "dateTimeOfArrival.dateOfArrival"
+        val baseTime = "dateTimeOfArrival.timeOfArrival"
+
+        def emptyOrError(path: String): Boolean =
+            form(path).hasErrors || form(path).value.forall(_.trim.isEmpty)
+
+        def firstInvalidDate: String =
+            if (emptyOrError(s"$baseDate.day")) s"$baseDate.day"
+            else if (emptyOrError(s"$baseDate.month")) s"$baseDate.month"
+            else if (emptyOrError(s"$baseDate.year")) s"$baseDate.year"
+            else s"$baseDate.day"
+
+        def firstInvalidTime: String =
+            if (emptyOrError(s"$baseTime.hour")) s"$baseTime.hour"
+            else if (emptyOrError(s"$baseTime.minute")) s"$baseTime.minute"
+            else s"$baseTime.hour"
+
+        val remapped = form.errors.map { e =>
+            if (e.key == "dateTimeOfArrival" || e.key.startsWith(baseDate)) e.copy(key = firstInvalidDate)
+            else if (e.key.startsWith(baseTime)) e.copy(key = firstInvalidTime)
+            else e
+        }
+        remapped
+    }) { errorsForSummary =>
+        @if(form.hasErrors || form.globalErrors.nonEmpty) {
+            @errorSummary(errorsForSummary)
+        }
+    }
+
 
 
     @fieldset(s"label.what_are_your_journey_details") {
