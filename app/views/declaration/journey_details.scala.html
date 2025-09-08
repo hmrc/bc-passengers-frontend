@@ -37,64 +37,40 @@
 
     @formHelper(action = routes.CalculateDeclareController.processJourneyDetails) {
 
-     @defining({
+    @defining({
+        val baseDate = "dateTimeOfArrival.dateOfArrival"
+        val baseTime = "dateTimeOfArrival.timeOfArrival"
 
-  val baseDate = "dateTimeOfArrival.dateOfArrival"
-  val baseTime = "dateTimeOfArrival.timeOfArrival"
+        def emptyOrError(path: String): Boolean =
+            form(path).hasErrors || form(path).value.forall(_.trim.isEmpty)
 
-  def mentionsPart(errors: Seq[FormError], part: String): Boolean =
-    errors.exists(e =>
-      e.args.exists(_.toString.equalsIgnoreCase(part)) ||
-      e.message.toLowerCase.contains(part.toLowerCase)
-    )
+        def firstInvalidDate: String =
+            if (emptyOrError(s"$baseDate.day")) s"$baseDate.day"
+            else if (emptyOrError(s"$baseDate.month")) s"$baseDate.month"
+            else if (emptyOrError(s"$baseDate.year")) s"$baseDate.year"
+            else s"$baseDate.day"
 
-  val globalErrors     = form.errors.filter(_.key.isEmpty)
-  val dateParentErrors = globalErrors ++ form("dateTimeOfArrival").errors ++ form(baseDate).errors
-  val timeParentErrors = globalErrors ++ form("dateTimeOfArrival").errors ++ form(baseTime).errors
+        def firstInvalidTime: String =
+            if (emptyOrError(s"$baseTime.hour")) s"$baseTime.hour"
+            else if (emptyOrError(s"$baseTime.minute")) s"$baseTime.minute"
+            else s"$baseTime.hour"
 
-  def datePartInvalid(part: String): Boolean =
-    form(s"$baseDate.$part").hasErrors ||
-    mentionsPart(dateParentErrors, part) ||
-    form(s"$baseDate.$part").value.forall(_.trim.isEmpty)
-
-  def timePartInvalid(part: String): Boolean =
-    form(s"$baseTime.$part").hasErrors ||
-    mentionsPart(timeParentErrors, part) ||
-    form(s"$baseTime.$part").value.forall(_.trim.isEmpty)
-
-  def firstInvalidDate: String =
-    if (mentionsPart(dateParentErrors, "day"))   s"$baseDate.day"
-    else if (mentionsPart(dateParentErrors, "month")) s"$baseDate.month"
-    else if (mentionsPart(dateParentErrors, "year"))  s"$baseDate.year"
-    else if (datePartInvalid("day"))   s"$baseDate.day"
-    else if (datePartInvalid("month")) s"$baseDate.month"
-    else if (datePartInvalid("year"))  s"$baseDate.year"
-    else s"$baseDate.day"
-
-  def firstInvalidTime: String =
-    if (mentionsPart(timeParentErrors, "hour"))   s"$baseTime.hour"
-    else if (mentionsPart(timeParentErrors, "minute")) s"$baseTime.minute"
-    else if (timePartInvalid("hour"))   s"$baseTime.hour"
-    else if (timePartInvalid("minute")) s"$baseTime.minute"
-    else s"$baseTime.hour"
-
-  val remapped = form.errors.map { e =>
-    val isDateGroup = e.key.isEmpty || e.key == "dateTimeOfArrival" || e.key.startsWith(baseDate)
-    val isTimeGroup = e.key.isEmpty || e.key.startsWith(baseTime)
-    if (isDateGroup) e.copy(key = firstInvalidDate)
-    else if (isTimeGroup) e.copy(key = firstInvalidTime)
-    else e
-  }
-  remapped
-}) { errorsForSummary =>
-  @if(form.hasErrors || form.globalErrors.nonEmpty) {
-    @errorSummary(errorsForSummary)
-  }
-}
+        val remapped = form.errors.map { e =>
+            if (e.key == "dateTimeOfArrival" || e.key.startsWith(baseDate)) e.copy(key = firstInvalidDate)
+            else if (e.key.startsWith(baseTime)) e.copy(key = firstInvalidTime)
+            else e
+        }
+        remapped
+    }) { errorsForSummary =>
+        @if(form.hasErrors || form.globalErrors.nonEmpty) {
+            @errorSummary(errorsForSummary)
+        }
+    }
 
 
-        @h1("label.what_are_your_journey_details")     
-   
+
+    @fieldset(s"label.what_are_your_journey_details") {
+
         <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
             @form.errors.filter(_.key == "placeOfArrival").map { error =>
