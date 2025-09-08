@@ -209,11 +209,11 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   )
 
   val expectedInvalidYearLengthFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.year_length")
+    "#dateTimeOfArrival.dateOfArrival.year" -> messages("error.date.year_length")
   )
 
   val expectedInvalidMonthFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.invalid_month")
+    "#dateTimeOfArrival.dateOfArrival.month" -> messages("error.date.invalid_month")
   )
 
   val invalidTestCases: Seq[(String, Form[YourJourneyDetailsDto], Seq[(String, String)])] = Seq(
