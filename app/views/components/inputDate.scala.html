@@ -53,7 +53,7 @@
       form(s"$id").errors.exists(e =>
         e.args.exists(_.toString.equalsIgnoreCase("year")) ||
         e.message.toLowerCase.contains("year") ||
-        e.message.startsWith("error.date.year") // keep your existing special-case
+        e.message.startsWith("error.date.year")
       )
     )
   )) { case (dayErr, monthErr, yearErr) =>
