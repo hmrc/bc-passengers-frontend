@@ -19,7 +19,8 @@
 @(
   legend: String,
   asHeading: Boolean = true,
-  headingMessageArgs: Seq[String] = Seq()
+  headingMessageArgs: Seq[String] = Seq(),
+  describedBy: Option[String] = None
 )(content: Html)(implicit messages: Messages)
 
 @govukFieldset(
@@ -29,6 +30,7 @@
             classes = if(asHeading) "govuk-fieldset__legend--xl" else "",
             isPageHeading = asHeading
             )),
+        describedBy = describedBy,
         html = content
     )
 )
