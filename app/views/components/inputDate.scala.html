@@ -23,7 +23,7 @@
   id: String = "date",
   hintMessage: Option[String],
   hintHtml: Option[Html] = None,
-  legendAsPageHeading: Boolean = true,
+  legendAsPageHeading: Boolean = true, 
   describedBy: Option[String] = None)(implicit messages: Messages)
 
 @defining(form.hasErrors || form.globalErrors.nonEmpty) { isSubmitted =>
