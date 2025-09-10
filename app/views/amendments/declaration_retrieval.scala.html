@@ -34,8 +34,12 @@
 
     @errorSummary(form.errors)
 
-    @fieldset("heading.declaration_retrieval") {
-        @p{@messages("text.declaration_retrieval")}
+    @fieldset("heading.declaration_retrieval",
+        describedBy = Some("declarationRetrieval-hint") 
+        ) {
+         <div class="govuk-hint" id="declarationRetrieval-hint">
+           @messages("text.declaration_retrieval")
+         </div>
 
         @inputText(
             form,

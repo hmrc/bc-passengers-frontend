@@ -23,61 +23,99 @@
   id: String = "date",
   hintMessage: Option[String],
   hintHtml: Option[Html] = None,
-  legendAsPageHeading: Boolean = true)(implicit messages: Messages)
+  legendAsPageHeading: Boolean = true, 
+  describedBy: Option[String] = None)(implicit messages: Messages)
 
-@govukDateInput(DateInput(
-    fieldset = Some(Fieldset(
-        legend = Some(
-            Legend(
-                content = Text(messages(legendContent)),
-                isPageHeading = legendAsPageHeading,
-                classes = legendClasses
-            )
-        )
-    )),
-    id = id,
-    items = Seq(
-        InputItem(
-            id = s"$id.day",
-            classes = s"govuk-input--width-2${if(
-            form(s"$id.day").hasErrors
-                    || form(s"$id.day").value.exists(_.trim.isEmpty)
-                    || form(s"$id").errors.exists(_.message.contains("real"))
-                    || form.errors.exists(_.args.contains("day")))" govuk-input--error" else ""}",
-            name = s"$id.day",
-            label = Some(messages("date.day")),
-            value = form(s"$id.day").value
-        ),
-        InputItem(
-            id = s"$id.month",
-            classes = s"govuk-input--width-2${if(
-            form(s"$id.month").hasErrors
-                    || form(s"$id.month").value.exists(_.trim.isEmpty)
-                    || form(s"$id").errors.exists(_.message.contains("real"))
-                    || form.errors.exists(_.args.contains("month"))) " govuk-input--error" else ""}",
-            name = s"$id.month",
-            label = Some(messages("date.month")),
-            value = form(s"$id.month").value
-        ),
-        InputItem(
-            id = s"$id.year",
-            classes = s"govuk-input--width-4${if(
-            form(s"$id.year").hasErrors
-                    || form(s"$id").errors.exists(_.message.startsWith("error.date.year"))
-                    || form(s"$id.year").value.exists(_.trim.isEmpty)
-                    || form(s"$id").errors.exists(_.message.contains("real"))
-                    || form.errors.exists(_.args.contains("year"))) " govuk-input--error" else ""}",
-            name = s"$id.year",
-            label = Some(messages("date.year")),
-            value = form(s"$id.year").value
-        )
+@defining(form.hasErrors || form.globalErrors.nonEmpty) { isSubmitted =>
+
+      @defining((
+    (
+      form(s"$id.day").hasErrors ||
+      (isSubmitted && form(s"$id.day").value.forall(_.trim.isEmpty)) ||
+      form(s"$id").errors.exists(e =>
+        e.args.exists(_.toString.equalsIgnoreCase("day")) ||
+        e.message.toLowerCase.contains("day")
+      )
     ),
-        hint = hintHtml.fold(hintMessage.map(text => Hint(content = HtmlContent(Html(messages(text))))))(
-                hint => Some(Hint(content = HtmlContent(hint)))
-        ),
-        errorMessage = hierarchyErrors(id, form, Seq(".day", ".month", ".year", ""))
-                .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
-                    err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*))))))
+
+    (
+      form(s"$id.month").hasErrors ||
+      (isSubmitted && form(s"$id.month").value.forall(_.trim.isEmpty)) ||
+      form(s"$id").errors.exists(e =>
+        e.args.exists(_.toString.equalsIgnoreCase("month")) ||
+        e.message.toLowerCase.contains("month")
+      )
+    ),
+
+    (
+      form(s"$id.year").hasErrors ||
+      (isSubmitted && form(s"$id.year").value.forall(_.trim.isEmpty)) ||
+      form(s"$id").errors.exists(e =>
+        e.args.exists(_.toString.equalsIgnoreCase("year")) ||
+        e.message.toLowerCase.contains("year") ||
+        e.message.startsWith("error.date.year")
+      )
+    )
+  )) { case (dayErr, monthErr, yearErr) =>
+
+        @defining(
+        if (dayErr) Some(s"$id.day")
+        else if (monthErr) Some(s"$id.month")
+        else if (yearErr) Some(s"$id.year")
+        else None
+        ) { firstInvalid =>
+
+    @defining((target: String) => if (firstInvalid.contains(target)) Map("autofocus" -> "autofocus") else Map.empty) { maybeAutofocus =>
+
+
+        @govukDateInput(DateInput(
+            fieldset = Some(Fieldset(
+                legend = Some(
+                    Legend(
+                        content = Text(messages(legendContent)),
+                        isPageHeading = legendAsPageHeading,
+                        classes = legendClasses
+                    )
+                ), 
+                describedBy = describedBy
+            )),
+            id = id,
+            items = Seq(
+                InputItem(
+                    id = s"$id.day",
+                    classes = s"govuk-input--width-2${if(dayErr) " govuk-input--error" else ""}",
+                    name = s"$id.day",
+                    label = Some(messages("date.day")),
+                    value = form(s"$id.day").value,
+                    attributes = maybeAutofocus(s"$id.day")
+                ),
+                InputItem(
+                    id = s"$id.month",
+                    classes = s"govuk-input--width-2${if(monthErr) " govuk-input--error" else ""}",
+                    name = s"$id.month",
+                    label = Some(messages("date.month")),
+                    value = form(s"$id.month").value,
+                    attributes = maybeAutofocus(s"$id.month")
+                ),
+                InputItem(
+                    id = s"$id.year",
+                    classes = s"govuk-input--width-4${if(yearErr) " govuk-input--error" else ""}",
+                    name = s"$id.year",
+                    label = Some(messages("date.year")),
+                    value = form(s"$id.year").value,
+                    attributes = maybeAutofocus(s"$id.year")
+                )
+            ),
+                hint = hintHtml.fold(hintMessage.map(text => Hint(content = HtmlContent(Html(messages(text))))))(
+                        hint => Some(Hint(content = HtmlContent(hint)))
+                ),
+                errorMessage = hierarchyErrors(id, form, Seq(".day", ".month", ".year", ""))
+                        .fold(form.errors.find(_.key.isEmpty))(err => Some(err)).map(
+                            err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args*))))))
+                }
+            }
+        }
+    }
 
     @hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
         val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
