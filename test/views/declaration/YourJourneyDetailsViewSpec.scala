@@ -209,11 +209,11 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   )
 
   val expectedInvalidYearLengthFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.year_length")
+    "#dateTimeOfArrival.dateOfArrival.year" -> messages("error.date.year_length")
   )
 
   val expectedInvalidMonthFormErrors: Seq[(String, String)] = List(
-    "#dateTimeOfArrival.dateOfArrival.day" -> messages("error.date.invalid_month")
+    "#dateTimeOfArrival.dateOfArrival.month" -> messages("error.date.invalid_month")
   )
 
   val invalidTestCases: Seq[(String, Form[YourJourneyDetailsDto], Seq[(String, String)])] = Seq(
@@ -255,5 +255,22 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
           )
         }
       }
+          "autofocus behaviour" should {
+      "focus on day field when date is completely empty" in {
+        val doc  = document(buildView(emptyForm))
+        val day  = doc.getElementById("dateTimeOfArrival.dateOfArrival.day")
+
+        day.hasAttr("autofocus") shouldBe true
+        day.className should include("govuk-input--error")
+      }
+
+      "focus on hour when time is invalid" in {
+        val doc  = document(buildView(formWithInvalidTime))
+        val hour = doc.getElementById("dateTimeOfArrival.timeOfArrival.hour")
+
+        hour.hasAttr("autofocus") shouldBe true
+        hour.className should include("govuk-input--error")
+      }
+    }
   }
 }
