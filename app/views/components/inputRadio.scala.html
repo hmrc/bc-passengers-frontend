@@ -29,6 +29,7 @@
 @govukRadios(Radios(
     classes = s"${if(inline){"govuk-radios--inline"}else{""}}",
     name = name,
+    value = form(name).value,
     fieldset = Some(Fieldset(
         legend = Some(Legend(
             content = Text(messages(legend)),
