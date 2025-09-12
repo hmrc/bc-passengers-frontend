@@ -37,6 +37,8 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends BaseSpec {
+    private def columnHeaderText(doc: org.jsoup.nodes.Document): String =
+    doc.select("table thead .govuk-table__header").text()
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
@@ -426,9 +428,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Tax due on these goods £3.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
     }
   }
 
@@ -494,9 +494,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Tax due on these goods £98,000.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content                                            should include("You cannot make payments for tax and duty above £97,000 using this service.")
       content                                            should include(
         "When you arrive in the UK, go to the red 'goods to declare' channel or the red point phone, or speak to Border Force to declare these goods."
@@ -591,9 +589,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Additional tax due on these goods £98,000.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due Declaring these goods"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content                                            should include("You cannot make payments for tax and duty above £97,000 using this service.")
       content                                            should include(
         "When you arrive in the UK, go to the red 'goods to declare' channel or the red point phone, or speak to Border Force to declare these additional goods."
@@ -884,9 +880,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content                                            should include(
         "You still need to declare your additional goods. You will not be charged anything when you amend your declaration."
       )
@@ -989,9 +983,7 @@ class DashboardControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text                  shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("govuk-button").text()    shouldBe "Amend your declaration"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content                                            should include(
         "You still need to declare your additional goods. You will not be charged anything when you amend your declaration."
       )
@@ -1091,9 +1083,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Additional tax due on these goods £300.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content                                            should include(
         "You can amend your declaration from 5 days before your scheduled time of arrival in the UK."
       )
@@ -1193,9 +1183,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due What you need to do next"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
       content                                            should include("All the items you added are included within your personal allowances")
     }
 
@@ -1292,9 +1280,7 @@ class DashboardControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text                  shouldBe "Additional tax due on these goods £0.00"
       doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
-      doc
-        .getElementsByClass("govuk-table__header")
-        .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+      columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
     }
   }
 
@@ -1487,9 +1473,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     doc.getElementsByTag("h1").text                  shouldBe "Tax due on these goods £0.00"
     doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due What you need to do next"
-    doc
-      .getElementsByClass("govuk-table__header")
-      .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+    columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
   }
 
   "redirect to declare your goods page if the total tax to pay is 0 and items were over free allowance in GB-NI journey and has zero tax liability" in new LocalSetup {
@@ -1555,9 +1539,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     doc.getElementsByTag("h1").text                  shouldBe "Tax due on these goods £0.00"
     doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due"
-    doc
-      .getElementsByClass("govuk-table__header")
-      .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+    columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
   }
 
   "redirect to the under nine pound page if the total tax to pay was 0 but items were not within the free allowance (0 rated)" in new LocalSetup {
@@ -1621,9 +1603,7 @@ class DashboardControllerSpec extends BaseSpec {
 
     doc.getElementsByTag("h1").text                  shouldBe "Tax due on these goods £0.00"
     doc.getElementsByClass("govuk-heading-m").text() shouldBe "Breakdown of tax and duty due What you need to do next"
-    doc
-      .getElementsByClass("govuk-table__header")
-      .text()                                        shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
+    columnHeaderText(doc)                            shouldBe "Item Price Purchased in Tax due Item Customs Excise VAT"
   }
 
   "redirect to the done page with a response containing a mixture of 0 rated and non-0 rated items" in new LocalSetup {

@@ -135,7 +135,7 @@
       </tr>
       }
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-!-font-weight-bold" colspan="3">@messages("label.total")</td>
+        <th class="govuk-table__header" scope="row" colspan="3">@messages("label.total")</th>
         <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
       </tr>
       </tbody>
@@ -154,7 +154,7 @@
         </tr>
 
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell govuk-!-font-weight-bold" id="total">@messages("label.total_paid_now")</td>
+          <th class="govuk-table__header" scope="row" id="total">@messages("label.total_paid_now")</th>
           <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold" id="allTax">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
         </tr>
         </tbody>
@@ -190,7 +190,7 @@
         <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponse.calculation.vat)</td>
       </tr>
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-!-font-weight-bold">@messages("label.total")</td>
+        <th class="govuk-table__header" scope="row">@messages("label.total")</th>
         <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(calculatorResponse.calculation.allTax)</td>
       </tr>
       </tbody>
