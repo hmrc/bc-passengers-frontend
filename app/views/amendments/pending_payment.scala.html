@@ -49,9 +49,9 @@
           <tbody class="govuk-table__body">
             @calculatorResponseDto.items.map { item =>
             <tr class="govuk-table__row">
-              <th class="govuk-table__header" scope="row">
+              <td class="govuk-table__cell">
                   @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
-              </th>
+              </td>
               <td class="govuk-table__cell">
                   @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
               </td>
@@ -64,7 +64,7 @@
             </tr>
             }
             <tr class="govuk-table__row">
-             <th class="govuk-table__header" scope="row" colspan="3">@messages("label.total")</th>
+             <td class="govuk-table__cell govuk-!-font-weight-bold" colspan="3">@messages("label.total")</td>
              <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
             </tr>
             </tbody>
@@ -81,7 +81,7 @@
           </tr>
 
           <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="row">@messages("label.total_due_now")</th>
+            <td class="govuk-table___cell govuk-!-font-weight-bold">@messages("label.total_due_now")</td>
             <td class="govuk-table___cell govuk-table__cell--numeric govuk-!-font-weight-bold">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
           </tr>
           </tbody>
