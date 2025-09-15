@@ -152,12 +152,17 @@ class CalculateDeclareController @Inject() (
           )
         ),
       whatIsYourNameDto => {
-        val preUserInformation = PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto)
+        val newNameOnly = PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto).nameForm
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, Option(preUserInformation)).flatMap {
-          _ =>
-            Future.successful(Redirect(routes.CalculateDeclareController.typeOfIdentification))
-        }
+        val updatedPreUserInformation =
+          context.getJourneyData.preUserInformation match {
+            case Some(existing) => Some(existing.copy(nameForm = newNameOnly))
+            case None           => Some(PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto))
+          }
+
+        preUserInformationService
+          .storePreUserInformation(context.getJourneyData, updatedPreUserInformation)
+          .map(_ => Redirect(routes.CalculateDeclareController.typeOfIdentification))
       }
     )
   }
