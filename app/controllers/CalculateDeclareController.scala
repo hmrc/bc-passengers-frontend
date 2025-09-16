@@ -152,12 +152,17 @@ class CalculateDeclareController @Inject() (
           )
         ),
       whatIsYourNameDto => {
-        val preUserInformation = PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto)
+        val newNameOnly = PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto).nameForm
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, Option(preUserInformation)).flatMap {
-          _ =>
-            Future.successful(Redirect(routes.CalculateDeclareController.typeOfIdentification))
-        }
+        val updatedPreUserInformation =
+          context.getJourneyData.preUserInformation match {
+            case Some(existing) => Some(existing.copy(nameForm = newNameOnly))
+            case None           => Some(PreUserInformation.fromWhatIsYourNameDto(whatIsYourNameDto))
+          }
+
+        preUserInformationService
+          .storePreUserInformation(context.getJourneyData, updatedPreUserInformation)
+          .map(_ => Redirect(routes.CalculateDeclareController.typeOfIdentification))
       }
     )
   }
@@ -199,14 +204,22 @@ class CalculateDeclareController @Inject() (
           )
         ),
       identificationTypeDto => {
-        val updatedPreUserInformation = context.getJourneyData.preUserInformation.map(
-          _.copy(identification = Some(IdentificationForm(identificationTypeDto.identificationType)))
-        )
+        val newType = identificationTypeDto.identificationType
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation).flatMap {
-          _ =>
-            Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
-        }
+        val updatedPreUserInformation =
+          context.getJourneyData.preUserInformation.map { pre =>
+            val merged = pre.identification match {
+              case Some(prev) if prev.identificationType == newType =>
+                prev
+              case _ =>
+                IdentificationForm(newType, None)
+            }
+            pre.copy(identification = Some(merged))
+          }
+
+        preUserInformationService
+          .storePreUserInformation(context.getJourneyData, updatedPreUserInformation)
+          .map(_ => Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
       }
     )
   }
