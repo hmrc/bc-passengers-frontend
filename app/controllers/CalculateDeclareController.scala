@@ -204,14 +204,22 @@ class CalculateDeclareController @Inject() (
           )
         ),
       identificationTypeDto => {
-        val updatedPreUserInformation = context.getJourneyData.preUserInformation.map(
-          _.copy(identification = Some(IdentificationForm(identificationTypeDto.identificationType)))
-        )
+        val newType = identificationTypeDto.identificationType
 
-        preUserInformationService.storePreUserInformation(context.getJourneyData, updatedPreUserInformation).flatMap {
-          _ =>
-            Future.successful(Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
-        }
+        val updatedPreUserInformation =
+          context.getJourneyData.preUserInformation.map { pre =>
+            val merged = pre.identification match {
+              case Some(prev) if prev.identificationType == newType =>
+                prev
+              case _ =>
+                IdentificationForm(newType, None)
+            }
+            pre.copy(identification = Some(merged))
+          }
+
+        preUserInformationService
+          .storePreUserInformation(context.getJourneyData, updatedPreUserInformation)
+          .map(_ => Redirect(routes.CalculateDeclareController.whatIsYourIdentificationNumber))
       }
     )
   }
