@@ -451,6 +451,34 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
+      "pre-populate country and currency when editing an existing item" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[views.html.alcohol.alcohol_input], times(1))(
+        formCaptor.capture(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
+
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe Some("FR")
+      capturedForm("currency").value shouldBe Some("EUR")
+    }
   }
 
   "Getting displayAddForm" should {
@@ -528,8 +556,9 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any()
       )(any(), any(), any())
 
-      formCaptor.getValue.data("country")  shouldBe "FR"
-      formCaptor.getValue.data("currency") shouldBe "EUR"
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe None
+      capturedForm("currency").value shouldBe None
     }
 
     "display default origin country if set in euOnly JourneyData" in new LocalSetup {
@@ -636,8 +665,9 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any()
       )(any(), any(), any())
 
-      formCaptor.getValue.data("country")  shouldBe ""
-      formCaptor.getValue.data("currency") shouldBe ""
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe None
+      capturedForm("currency").value shouldBe None
     }
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
