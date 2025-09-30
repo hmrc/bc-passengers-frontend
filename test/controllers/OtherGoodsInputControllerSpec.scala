@@ -327,6 +327,33 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       ).get
       status(result) shouldBe OK
     }
+    "pre-populate country and currency when editing an existing item" in new LocalSetup {
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[other_goods_input], times(1))(
+        formCaptor.capture(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
+
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe Some("FR")
+      capturedForm("currency").value shouldBe Some("EUR")
+    }
   }
 
   "Getting displayAddForm" should {
@@ -352,7 +379,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       status(result) shouldBe OK
     }
 
-    "display default searchTerm, country and currency if set in JourneyData" in new LocalSetup {
+    "display default searchTerm only (no country/currency) even if set in JourneyData" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
@@ -403,9 +430,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any()
       )(any(), any(), any())
 
-      formCaptor.getValue.data("country")    shouldBe "FR"
-      formCaptor.getValue.data("currency")   shouldBe "EUR"
-      formCaptor.getValue.data("searchTerm") shouldBe "Book"
+      val data = formCaptor.getValue.data
+      data should not contain key ("country")
+      data should not contain key ("currency")
+      data("searchTerm") shouldBe "Book"
     }
 
     "not display default searchTerm, country and currency if not set in JourneyData" in new LocalSetup {
@@ -456,9 +484,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any()
       )(any(), any(), any())
 
-      formCaptor.getValue.data("country")    shouldBe ""
-      formCaptor.getValue.data("currency")   shouldBe ""
-      formCaptor.getValue.data("searchTerm") shouldBe ""
+      val data = formCaptor.getValue.data
+      data should not contain key ("country")
+      data should not contain key ("currency")
+      data("searchTerm") shouldBe ""
     }
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
@@ -481,6 +510,38 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
+    "prefill originCountry if defaultOriginCountry is set and non-empty" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          selectedAliases = List(ProductAlias("Book", ProductPath("other-goods/books"))),
+          defaultOriginCountry = Some("FR")
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[other_goods_input], times(1))(
+        formCaptor.capture(),
+        any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+      )(any(), any(), any())
+
+      val data = formCaptor.getValue.data
+      data.get("originCountry") shouldBe Some("FR")
+      data should not contain key ("country")
+      data should not contain key ("currency")
     }
   }
 

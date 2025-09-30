@@ -354,7 +354,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       status(result) shouldBe OK
     }
 
-    "display default country and currency if set in JourneyData" in new LocalSetup {
+    "not display default country and currency even if set in JourneyData" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map[String, String]()
 
@@ -409,8 +409,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
         any()
       )(any(), any(), any())
 
-      formCaptor.getValue.data("country")  shouldBe "FR"
-      formCaptor.getValue.data("currency") shouldBe "EUR"
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe None
+      capturedForm("currency").value shouldBe None
     }
 
     "not display default country and currency if not set in JourneyData" in new LocalSetup {
@@ -466,8 +467,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
         any()
       )(any(), any(), any())
 
-      formCaptor.getValue.data("country")  shouldBe ""
-      formCaptor.getValue.data("currency") shouldBe ""
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe None
+      capturedForm("currency").value shouldBe None
     }
 
     "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
@@ -1806,6 +1808,54 @@ class TobaccoInputControllerSpec extends BaseSpec {
         enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
       ).get
       status(result) shouldBe OK
+    }
+
+    "pre-populate country and currency when editing an existing item (cigarettes)" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
+      override def weightOrVolume: Option[BigDecimal] = None
+      override def noOfSticks: Option[Int]            = Some(400)
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          euCountryCheck = Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = Some(true),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("tobacco/cigarettes"),
+              "iid0",
+              weightOrVolume = None,
+              noOfSticks = Some(400),
+              country = Some(Country("FR","title.france","FR", isEu = true, isCountry = true, Nil)),
+              originCountry = None,
+              currency = Some("EUR"),
+              cost = Some(BigDecimal(92.50))
+            )
+          )
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[no_of_sticks_input], times(1))(
+        formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+      )(any(), any(), any())
+
+      val capturedForm = formCaptor.getValue
+      capturedForm("country").value  shouldBe Some("FR")
+      capturedForm("currency").value shouldBe Some("EUR")
     }
 
     "return a 200 when all is ok for heated tobacco" in new LocalSetup {
