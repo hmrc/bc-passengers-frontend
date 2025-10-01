@@ -72,19 +72,20 @@ class AlcoholInputController @Inject() (
     } else {
       requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+           val baseForm = alcoholInputForm.alcoholForm(path)
+            val formForView =
+              defaultOriginCountry.filter(_.trim.nonEmpty) match {
+                case Some(oc) =>
+                  baseForm
+                    .bind(Map("originCountry" -> oc))
+                    .discardingErrors
+                case None =>
+                  baseForm
+              }
           Future.successful(
             Ok(
               alcohol_input(
-                alcoholInputForm
-                  .alcoholForm(path)
-                  .bind(
-                    Map(
-                      "country"       -> defaultCountry.getOrElse(""),
-                      "originCountry" -> defaultOriginCountry.getOrElse(""),
-                      "currency"      -> defaultCurrency.getOrElse("")
-                    )
-                  )
-                  .discardingErrors,
+                formForView,  
                 backLinkModel.backLink,
                 customBackLink = false,
                 product,
