@@ -76,19 +76,20 @@ class TobaccoInputController @Inject() (
     } else {
       requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          val baseForm = tobaccoInputForm.cigaretteAndHeatedTobaccoForm(path)
+          val formForView =
+           defaultOriginCountry.filter(_.trim.nonEmpty) match {
+             case Some(oc) =>
+                baseForm
+                  .bind(Map("originCountry" -> oc))
+                  .discardingErrors
+              case None =>
+                baseForm
+            }
           Future.successful(
             Ok(
               no_of_sticks_input(
-                tobaccoInputForm
-                  .cigaretteAndHeatedTobaccoForm(path)
-                  .bind(
-                    Map(
-                      "country"       -> defaultCountry.getOrElse(""),
-                      "originCountry" -> defaultOriginCountry.getOrElse(""),
-                      "currency"      -> defaultCurrency.getOrElse("")
-                    )
-                  )
-                  .discardingErrors,
+                formForView,
                 backLinkModel.backLink,
                 customBackLink = false,
                 product,
@@ -112,19 +113,20 @@ class TobaccoInputController @Inject() (
     } else {
       requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          val baseForm = tobaccoInputForm.looseTobaccoWeightForm(path)
+          val formForView =
+            defaultOriginCountry.filter(_.trim.nonEmpty) match {
+              case Some(oc) =>
+                baseForm
+                 .bind(Map("originCountry" -> oc))
+                  .discardingErrors
+              case None =>
+                baseForm
+            }
           Future.successful(
             Ok(
               weight_or_volume_input(
-                tobaccoInputForm
-                  .looseTobaccoWeightForm(path)
-                  .bind(
-                    Map(
-                      "country"       -> defaultCountry.getOrElse(""),
-                      "originCountry" -> defaultOriginCountry.getOrElse(""),
-                      "currency"      -> defaultCurrency.getOrElse("")
-                    )
-                  )
-                  .discardingErrors,
+                formForView,
                 backLinkModel.backLink,
                 customBackLink = false,
                 product,
@@ -149,19 +151,20 @@ class TobaccoInputController @Inject() (
       } else {
         requireProduct(path) { product =>
           withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+            val baseForm = tobaccoInputForm.cigarAndCigarilloForm(path)
+            val formForView =
+              defaultOriginCountry.filter(_.trim.nonEmpty) match {
+                case Some(oc) =>
+                  baseForm
+                    .bind(Map("originCountry" -> oc))
+                    .discardingErrors
+                case None =>
+                  baseForm
+              }
             Future.successful(
               Ok(
                 no_of_sticks_weight_or_volume_input(
-                  tobaccoInputForm
-                    .cigarAndCigarilloForm(path)
-                    .bind(
-                      Map(
-                        "country"       -> defaultCountry.getOrElse(""),
-                        "originCountry" -> defaultOriginCountry.getOrElse(""),
-                        "currency"      -> defaultCurrency.getOrElse("")
-                      )
-                    )
-                    .discardingErrors,
+                  formForView,
                   backLinkModel.backLink,
                   customBackLink = false,
                   product,
