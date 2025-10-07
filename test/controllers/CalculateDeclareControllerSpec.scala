@@ -668,7 +668,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(
         app.injector
           .instanceOf[PreUserInformationService]
-          .storeCompleteUserInformation(any(), any())(any(), any(), any())
+              .storeCompleteUserInformation(any(), any(), any())(any(), any(), any())
       ).thenReturn(Future.successful(JourneyData()))
       when(app.injector.instanceOf[Cache].fetch(any())).thenReturn(cachedJourneyData)
       when(
@@ -1992,7 +1992,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response) shouldBe INTERNAL_SERVER_ERROR
 
       verify(injected[PreUserInformationService], times(1))
-        .storeCompleteUserInformation(any(), any())(any(), any(), any())
+          .storeCompleteUserInformation(any(), any(), any())(any(), any(), any())
     }
 
     "Cache the submitted user information and redirect payment url when valid form " +
@@ -2037,7 +2037,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         redirectLocation(response).get shouldBe "http://example.com/payment-journey"
 
         verify(injected[PreUserInformationService], times(1))
-          .storeCompleteUserInformation(any(), any())(any(), any(), any())
+              .storeCompleteUserInformation(any(), any(), any())(any(), any(), any())
+
       }
 
     "Cache the submitted user information and redirect payment url when valid form input " +
@@ -2083,7 +2084,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         redirectLocation(response).get shouldBe "http://example.com/payment-journey"
 
         verify(injected[PreUserInformationService], times(1))
-          .storeCompleteUserInformation(any(), any())(any(), any(), any())
+              .storeCompleteUserInformation(any(), any(), any())(any(), any(), any())
       }
   }
 
@@ -2417,7 +2418,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/declaration-complete"
 
       verify(injected[PreUserInformationService], times(1))
-        .storeCompleteUserInformation(any(), any())(any(), any(), any())
+          .storeCompleteUserInformation(any(), any(), any())(any(), any(), any())
+
     }
 
   }

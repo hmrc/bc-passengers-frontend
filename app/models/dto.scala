@@ -483,7 +483,7 @@ object YourJourneyDetailsDto extends Validators {
         },
         dateString =>
           dateString.split("-") match {
-            case Array(dd, mm, yyyy) => (Some(dd), Some(mm), Some(yyyy))
+            case Array(yyyy, mm, dd) => (Some(dd), Some(mm), Some(yyyy))
           }
       )
 
@@ -557,6 +557,20 @@ object YourJourneyDetailsDto extends Validators {
       dateOfArrival = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
       timeOfArrival = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
+  /**
+   * Overload of toArrivalForm that allows a preserved raw month string
+   * (e.g. "Oct") to be passed in so the view can display the user’s
+   * original input instead of the normalised numeric month.
+   */
+  def toArrivalForm(dto: YourJourneyDetailsDto, rawMonth: Option[String]): ArrivalForm =
+    ArrivalForm(
+      selectPlaceOfArrival = dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
+      enterPlaceOfArrival  = dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
+      dateOfArrival        = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
+      timeOfArrival        = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival),
+      monthOfArrivalRaw    = rawMonth
+    )
+
 }
 
 object DeclarationRetrievalDto extends Validators {
