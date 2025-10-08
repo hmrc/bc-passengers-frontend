@@ -557,11 +557,7 @@ object YourJourneyDetailsDto extends Validators {
       dateOfArrival = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
       timeOfArrival = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
-  /**
-   * Overload of toArrivalForm that allows a preserved raw month string
-   * (e.g. "Oct") to be passed in so the view can display the user’s
-   * original input instead of the normalised numeric month.
-   */
+  
   def toArrivalForm(dto: YourJourneyDetailsDto, rawMonth: Option[String]): ArrivalForm =
     ArrivalForm(
       selectPlaceOfArrival = dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
