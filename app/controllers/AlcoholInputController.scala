@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import forms.AlcoholInputForm
 import models.{AlcoholDto, JourneyData, ProductPath}
@@ -72,20 +71,20 @@ class AlcoholInputController @Inject() (
     } else {
       requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-           val baseForm = alcoholInputForm.alcoholForm(path)
-            val formForView =
-              defaultOriginCountry.filter(_.trim.nonEmpty) match {
-                case Some(oc) =>
-                  baseForm
-                    .bind(Map("originCountry" -> oc))
-                    .discardingErrors
-                case None =>
-                  baseForm
-              }
+          val baseForm    = alcoholInputForm.alcoholForm(path)
+          val formForView =
+            defaultOriginCountry.filter(_.trim.nonEmpty) match {
+              case Some(oc) =>
+                baseForm
+                  .bind(Map("originCountry" -> oc))
+                  .discardingErrors
+              case None     =>
+                baseForm
+            }
           Future.successful(
             Ok(
               alcohol_input(
-                formForView,  
+                formForView,
                 backLinkModel.backLink,
                 customBackLink = false,
                 product,

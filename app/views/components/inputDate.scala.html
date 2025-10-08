@@ -26,25 +26,37 @@
   legendAsPageHeading: Boolean = true, 
   describedBy: Option[String] = None)(implicit messages: Messages)
 
- @defining(form.hasErrors || form.globalErrors.nonEmpty) { isSubmitted =>
+@defining(form.hasErrors || form.globalErrors.nonEmpty) { isSubmitted =>
 
-    @defining((
-        ( form(s"$id.day").hasErrors
-        || (isSubmitted && form(s"$id.day").value.forall(_.trim.isEmpty))
-        || form(s"$id").errors.exists(_.message.contains("real"))
-        || form.errors.exists(_.args.contains("day")) ),
+      @defining((
+    (
+      form(s"$id.day").hasErrors ||
+      (isSubmitted && form(s"$id.day").value.forall(_.trim.isEmpty)) ||
+      form(s"$id").errors.exists(e =>
+        e.args.exists(_.toString.equalsIgnoreCase("day")) ||
+        e.message.toLowerCase.contains("day")
+      )
+    ),
 
-        ( form(s"$id.month").hasErrors
-        || (isSubmitted && form(s"$id.month").value.forall(_.trim.isEmpty))
-        || form(s"$id").errors.exists(_.message.contains("real"))
-        || form.errors.exists(_.args.contains("month")) ),
+    (
+      form(s"$id.month").hasErrors ||
+      (isSubmitted && form(s"$id.month").value.forall(_.trim.isEmpty)) ||
+      form(s"$id").errors.exists(e =>
+        e.args.exists(_.toString.equalsIgnoreCase("month")) ||
+        e.message.toLowerCase.contains("month")
+      )
+    ),
 
-        ( form(s"$id.year").hasErrors
-        || form(s"$id").errors.exists(_.message.startsWith("error.date.year"))
-        || (isSubmitted && form(s"$id.year").value.forall(_.trim.isEmpty))
-        || form(s"$id").errors.exists(_.message.contains("real"))
-        || form.errors.exists(_.args.contains("year")) )
-    )) { case (dayErr, monthErr, yearErr) =>
+    (
+      form(s"$id.year").hasErrors ||
+      (isSubmitted && form(s"$id.year").value.forall(_.trim.isEmpty)) ||
+      form(s"$id").errors.exists(e =>
+        e.args.exists(_.toString.equalsIgnoreCase("year")) ||
+        e.message.toLowerCase.contains("year") ||
+        e.message.startsWith("error.date.year")
+      )
+    )
+  )) { case (dayErr, monthErr, yearErr) =>
 
         @defining(
         if (dayErr) Some(s"$id.day")
@@ -105,15 +117,15 @@
         }
     }
 
-@hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
-    val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
+    @hierarchyErrors(id: String, form: Form[?], appended: Seq[String]) = @{
+        val allFields = appended.flatMap(suffix => form(s"$id$suffix").error)
 
-    allFields.find(_.messages.find(_.contains("required"))) match {
-        case foundError if foundError.isDefined => foundError
-        case _ =>
-            allFields.find(_.messages.find(_.contains("invalid"))) match {
+        allFields.find(_.messages.find(_.contains("required"))) match {
             case foundError if foundError.isDefined => foundError
-            case _ => allFields.headOption
+            case _ =>
+                allFields.find(_.messages.find(_.contains("invalid"))) match {
+                case foundError if foundError.isDefined => foundError
+                case _ => allFields.headOption
+            }
         }
     }
-}
