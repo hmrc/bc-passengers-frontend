@@ -115,16 +115,15 @@ class OtherGoodsInputController @Inject() (
               .map(_ =>
                 Ok(
                   other_goods_input(
-                    continueForm
-                      .bind(
-                        Map(
-                          "searchTerm"    -> term.head,
-                          "country"       -> defaultCountry.getOrElse(""),
-                          "originCountry" -> defaultOriginCountry.getOrElse(""),
-                          "currency"      -> defaultCurrency.getOrElse("")
-                        )
-                      )
-                      .discardingErrors,
+                    {
+                      val bindData =
+                        Map("searchTerm" -> term.head) ++
+                          defaultOriginCountry
+                            .filter(_.trim.nonEmpty)
+                            .map(oc => Map("originCountry" -> oc))
+                            .getOrElse(Map.empty[String, String])
+                      continueForm.bind(bindData).discardingErrors
+                    },
                     None,
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
@@ -144,16 +143,15 @@ class OtherGoodsInputController @Inject() (
               .map(_ =>
                 Ok(
                   other_goods_input(
-                    continueForm
-                      .bind(
-                        Map(
-                          "searchTerm"    -> "",
-                          "country"       -> defaultCountry.getOrElse(""),
-                          "originCountry" -> defaultOriginCountry.getOrElse(""),
-                          "currency"      -> defaultCurrency.getOrElse("")
-                        )
-                      )
-                      .discardingErrors,
+                    {
+                      val bindData =
+                        Map("searchTerm" -> "") ++
+                          defaultOriginCountry
+                            .filter(_.trim.nonEmpty)
+                            .map(oc => Map("originCountry" -> oc))
+                            .getOrElse(Map.empty[String, String])
+                      continueForm.bind(bindData).discardingErrors
+                    },
                     None,
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
