@@ -184,7 +184,8 @@ class PreUserInformationServiceSpec extends BaseSpec {
       await(
         s.storeCompleteUserInformation(
           JourneyData(),
-          dto
+          dto,
+          None
         )
       )
 

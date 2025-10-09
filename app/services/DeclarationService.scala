@@ -54,6 +54,11 @@ class DeclarationService @Inject() (
 
   private val logger = Logger(this.getClass)
 
+  private def preserveRawMonth(journeyData: JourneyData, preFromUser: PreUserInformation): PreUserInformation = {
+    val raw = journeyData.preUserInformation.flatMap(_.arrivalForm.flatMap(_.monthOfArrivalRaw))
+    preFromUser.copy(arrivalForm = preFromUser.arrivalForm.map(_.copy(monthOfArrivalRaw = raw)))
+  }
+
   def retrieveDeclaration(
     previousDeclarationDetails: PreviousDeclarationRequest
   )(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {
@@ -512,10 +517,12 @@ class DeclarationService @Inject() (
       val cumulativePurchasedProductInstances = journeyData.purchasedProductInstances ++
         journeyData.declarationResponse.map(_.oldPurchaseProductInstances).getOrElse(Nil)
 
+      val __preFromUser = getPreUser(userInformation)
+
       val finalJourneyData = journeyData.copy(
         prevDeclaration = None,
         previousDeclarationRequest = None,
-        preUserInformation = Some(getPreUser(userInformation)),
+        preUserInformation = Some(preserveRawMonth(journeyData, __preFromUser)),
         purchasedProductInstances = cumulativePurchasedProductInstances,
         declarationResponse = None,
         deltaCalculation = journeyData.deltaCalculation,
@@ -568,10 +575,16 @@ class DeclarationService @Inject() (
     hc: HeaderCarrier
   ): Future[JourneyData] = {
 
+    val __preFromUser = getPreUser(userInformation)
+
     val updatedJourneyData =
-      journeyData.copy(chargeReference = Some(chargeReference), preUserInformation = Some(getPreUser(userInformation)))
+      journeyData.copy(
+        chargeReference     = Some(chargeReference),
+        preUserInformation  = Some(preserveRawMonth(journeyData, __preFromUser))
+      )
 
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
+
   }
 
   def updateDeclaration(reference: String)(implicit hc: HeaderCarrier): Future[DeclarationServiceResponse] = {

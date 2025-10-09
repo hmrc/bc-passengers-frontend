@@ -357,20 +357,30 @@ class CalculateDeclareController @Inject() (
   def whatAreYourJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
     context.getJourneyData.preUserInformation.flatMap(_.arrivalForm) match {
       case Some(arrival) =>
+
+        val displayMonth = arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
+
+        val formForView =
+          YourJourneyDetailsDto
+            .form(receiptDateTime)
+            .bind(
+              Map(
+                "placeOfArrival.selectPlaceOfArrival"   -> arrival.selectPlaceOfArrival,
+                "placeOfArrival.enterPlaceOfArrival"    -> arrival.enterPlaceOfArrival,
+                "dateTimeOfArrival.dateOfArrival.day"   -> arrival.dateOfArrival.getDayOfMonth.toString,
+                "dateTimeOfArrival.dateOfArrival.month" -> displayMonth,
+
+                "dateTimeOfArrival.dateOfArrival.year"  -> arrival.dateOfArrival.getYear.toString,
+                "dateTimeOfArrival.timeOfArrival.hour"  -> arrival.timeOfArrival.getHour.toString,
+                "dateTimeOfArrival.timeOfArrival.minute"-> arrival.timeOfArrival.getMinute.toString
+              )
+            )
+            .discardingErrors
+
         Future.successful(
           Ok(
             journey_details(
-              YourJourneyDetailsDto
-                .form(receiptDateTime)
-                .fill(
-                  YourJourneyDetailsDto(
-                    PlaceOfArrival(Some(arrival.selectPlaceOfArrival), Some(arrival.enterPlaceOfArrival)),
-                    DateTimeOfArrival(
-                      s"${arrival.dateOfArrival.getDayOfMonth}-${arrival.dateOfArrival.getMonthValue}-${arrival.dateOfArrival.getYear}",
-                      arrival.timeOfArrival.toString
-                    )
-                  )
-                ),
+              formForView,
               portsOfArrivalService.getAllPorts,
               context.getJourneyData.euCountryCheck,
               backLinkModel.backLink
@@ -394,6 +404,8 @@ class CalculateDeclareController @Inject() (
   def processJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
     val initialForm = YourJourneyDetailsDto.form(receiptDateTime)
     val boundForm   = initialForm.bindFromRequest()
+    val rawMonthOpt: Option[String] =
+    boundForm.data.get("dateTimeOfArrival.dateOfArrival.month").filter(_.nonEmpty)
 
     boundForm.fold(
       formWithErrors => {
@@ -415,8 +427,9 @@ class CalculateDeclareController @Inject() (
       journeyDetailsDto => {
         val correlationId = UUID.randomUUID.toString
 
-        preUserInformationService.storeCompleteUserInformation(context.getJourneyData, journeyDetailsDto).flatMap {
-          journeyData =>
+        preUserInformationService
+          .storeCompleteUserInformation(context.getJourneyData, journeyDetailsDto, rawMonthOpt)
+          .flatMap { journeyData =>
             val userInformation = getBasicUserInfo(journeyData.preUserInformation)
 
             requireCalculatorResponse { calculatorResponse =>
@@ -458,7 +471,7 @@ class CalculateDeclareController @Inject() (
                     }
               }
             }
-        }
+          }
       }
     )
   }

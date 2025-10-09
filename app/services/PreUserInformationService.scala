@@ -39,13 +39,20 @@ class PreUserInformationService @Inject() (val cache: Cache) {
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 
-  def storeCompleteUserInformation(journeyData: JourneyData, dto: YourJourneyDetailsDto)(implicit
+  def storeCompleteUserInformation(journeyData: JourneyData, dto: YourJourneyDetailsDto, rawMonth: Option[String])(implicit
     hc: HeaderCarrier,
     ex: ExecutionContext,
     lc: LocalContext
   ): Future[JourneyData] = {
 
-    val preUserInfo        = lc.getJourneyData.preUserInformation.map(_.copy(arrivalForm = Option(toArrivalForm(dto))))
+    val preUserInfo = lc.getJourneyData.preUserInformation.map { pre =>
+    val newArrival = toArrivalForm(dto).copy(
+      monthOfArrivalRaw = rawMonth.orElse(pre.arrivalForm.flatMap(_.monthOfArrivalRaw))
+    )
+    pre.copy(arrivalForm = Some(newArrival))
+  }
+
+
     val updatedJourneyData = journeyData.copy(preUserInformation = preUserInfo)
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
