@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
+import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import forms.AlcoholInputForm
 import models.{AlcoholDto, JourneyData, ProductPath}
