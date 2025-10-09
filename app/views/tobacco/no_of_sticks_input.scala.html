@@ -28,7 +28,8 @@
         label = messages(s"label.total_number_of_" + path.toMessageKey),
         hint = Some(Html(messages("label.you_cannot_use_this_service_"))),
         isPageHeading = false,
-        classes = Some("govuk-input govuk-!-width-one-half")
+        classes = Some("govuk-input govuk-!-width-one-half"),
+        inputmode = Some("numeric")
     )
 
 }
