@@ -39,19 +39,22 @@
         @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey), Some(s"tokens-${items(0)._1}"))
     }
 
-    <fieldset class="govuk-fieldset">
+    <fieldset class="govuk-fieldset" aria-describedby="select-products-hint">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
                 @Html(messages(s"select_products.heading.${path.toMessageKey}"))
             </h1>
         </legend>
 
+         <div id="select-products-hint" class="govuk-hint">
+            @messages("label.select_all_that_apply")
+        </div>
+
         @radios(
             field = selectProductsForm("tokens"),
             items = radioOptions(items),
             name = "tokens",
             path = Some(path),
-            legendText = Some(messages("label.select_all_that_apply"))
         )
     </fieldset>
 
