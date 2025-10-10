@@ -46,7 +46,7 @@
             </h1>
         </legend>
 
-         <div id="select-products-hint" class="govuk-hint">
+        <div id="select-products-hint" class="govuk-hint">
             @messages("label.select_all_that_apply")
         </div>
 
@@ -54,7 +54,7 @@
             field = selectProductsForm("tokens"),
             items = radioOptions(items),
             name = "tokens",
-            path = Some(path),
+            path = Some(path)
         )
     </fieldset>
 
