@@ -99,7 +99,8 @@ case class ArrivalForm(
   selectPlaceOfArrival: String,
   enterPlaceOfArrival: String,
   dateOfArrival: LocalDate,
-  timeOfArrival: LocalTime
+  timeOfArrival: LocalTime,
+  monthOfArrivalRaw: Option[String] = None
 )
 
 object ArrivalForm {
