@@ -329,19 +329,10 @@ object IdentificationNumberDto extends Validators {
 
 object EmailAddressDto extends Validators {
 
-  private def emailAddressMatchingConstraint: Constraint[EmailAddressDto] =
-    Constraint { model =>
-      (model.email, model.confirmEmail) match {
-        case (x, y) if x != y => Invalid("error.required.emailAddress.no_match")
-        case _                => Valid
-      }
-    }
-
   def form: Form[EmailAddressDto] = Form(
     mapping(
-      "email"        -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "email")),
-      "confirmEmail" -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "confirm_email"))
-    )(EmailAddressDto.apply)(o => Some(Tuple.fromProductTyped(o))).verifying(emailAddressMatchingConstraint)
+      "email" -> text.verifying(nonEmptyMaxLengthEmailFormat(132, "email"))
+    )(EmailAddressDto.apply)(o => Some(o.email))
   )
 }
 
@@ -589,7 +580,7 @@ object DeclarationRetrievalDto extends Validators {
 case class DateTimeOfArrival(dateOfArrival: String, timeOfArrival: String)
 case class DateOfArrival(day: Option[String], month: Option[String], year: Option[String])
 case class PlaceOfArrival(selectPlaceOfArrival: Option[String], enterPlaceOfArrival: Option[String])
-case class EmailAddressDto(email: String, confirmEmail: String)
+case class EmailAddressDto(email: String)
 case class WhatIsYourNameDto(firstName: String, lastName: String)
 case class IdentificationTypeDto(identificationType: String)
 case class IdentificationNumberDto(number: String)

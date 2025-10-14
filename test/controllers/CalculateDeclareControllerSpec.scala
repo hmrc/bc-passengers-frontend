@@ -1734,7 +1734,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       status(response) shouldBe BAD_REQUEST
     }
 
-    "Return BAD REQUEST and display what is your email page when only email address is entered" in new LocalSetup {
+    "redirect to user-information-journey when a valid email address is entered" in new LocalSetup {
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1758,15 +1758,16 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
           .withFormUrlEncodedBody(
-            "email"        -> "abc@gmail.com",
-            "confirmEmail" -> ""
+            "email"        -> "abc@gmail.com"
           )
       ).get
 
-      status(response) shouldBe BAD_REQUEST
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
     }
 
-    "Return BAD REQUEST and display what is your email page when email address and confirm email address do not match" in new LocalSetup {
+    "Return BAD REQUEST and display what is your email page when email address is invalid" in new LocalSetup {
+
 
       override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
@@ -1790,8 +1791,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/user-information-email")
           .withFormUrlEncodedBody(
-            "email"        -> "abc@gmail.com",
-            "confirmEmail" -> "xyz@gmail.com"
+            "email"        -> "abc"
           )
       ).get
 

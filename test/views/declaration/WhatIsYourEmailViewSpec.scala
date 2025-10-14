@@ -27,56 +27,35 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
   private val emptyForm: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> "",
-        "confirmEmail" -> ""
+        "email"        -> ""
       )
     )
 
   private val formWithInvalidEmailMaxLength: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> "blaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketyler@gmail.com",
-        "confirmEmail" -> "blaketyler@gmail.com"
-      )
-    )
-
-  private val formWithInvalidConfirmEmailMaxLength: Form[EmailAddressDto] = EmailAddressDto.form
-    .bind(
-      Map(
-        "email"        -> "blaketyler@gmail.com",
-        "confirmEmail" -> "blaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketyler@gmail.com"
+        "email"        -> "blaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketyler@gmail.com"
       )
     )
 
   private val formWithInvalidEmailLength: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> "",
-        "confirmEmail" -> "blaketyler@gmail.com"
-      )
-    )
-
-  private val formWithInvalidConfirmEmailLength: Form[EmailAddressDto] = EmailAddressDto.form
-    .bind(
-      Map(
-        "email"        -> "blaketyler@gmail.com",
-        "confirmEmail" -> ""
+        "email"        -> ""
       )
     )
 
   private val formWithInvalidEmailDontMatchPattern: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> ".123.]p[[;'gmail.com",
-        "confirmEmail" -> ".123.]p[[;'gmail.com"
+        "email"        -> ".123.]p[[;'gmail.com"
       )
     )
 
   private val validForm: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> "blaketyler@gmail.com",
-        "confirmEmail" -> "blaketyler@gmail.com"
+        "email"        -> "blaketyler@gmail.com"
       )
     )
 
@@ -113,41 +92,25 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
     )
 
   val expectedEmptyFormErrors: Seq[(String, String)] = List(
-    "#email"        -> messages("error.required.email"),
-    "#confirmEmail" -> messages("error.required.confirm_email")
+    "#email"        -> messages("error.required.email")
   )
 
   val expectedInvalidEmailMaxLengthFormErrors: Seq[(String, String)] = List(
     "#email" -> messages("error.max-length.email")
   )
 
-  val expectedInvalidConfirmEmailMaxLengthFormErrors: Seq[(String, String)] = List(
-    "#confirmEmail" -> messages("error.max-length.email")
-  )
-
   val expectedInvalidEmailFormErrors: Seq[(String, String)] = List(
     "#email" -> messages("error.required.email")
   )
 
-  val expectedInvalidConfirmEmailFormErrors: Seq[(String, String)] = List(
-    "#confirmEmail" -> messages("error.required.confirm_email")
-  )
-
   val expectedInvalidEmailDontMatchPatternFormErrors: Seq[(String, String)] = List(
-    "#email"        -> messages("error.format.email"),
-    "#confirmEmail" -> messages("error.format.confirm_email")
+    "#email"        -> messages("error.format.email")
   )
 
   val invalidTestCases: Seq[(String, Form[EmailAddressDto], Seq[(String, String)])] = Seq(
     Tuple3("Empty form", emptyForm, expectedEmptyFormErrors),
     Tuple3("Invalid email max length form", formWithInvalidEmailMaxLength, expectedInvalidEmailMaxLengthFormErrors),
-    Tuple3(
-      "Invalid confirm email max length form",
-      formWithInvalidConfirmEmailMaxLength,
-      expectedInvalidConfirmEmailMaxLengthFormErrors
-    ),
     Tuple3("Invalid email form", formWithInvalidEmailLength, expectedInvalidEmailFormErrors),
-    Tuple3("Invalid confirm email form", formWithInvalidConfirmEmailLength, expectedInvalidConfirmEmailFormErrors),
     Tuple3(
       "Invalid email dont match pattern form",
       formWithInvalidEmailDontMatchPattern,
