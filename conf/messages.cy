@@ -1389,7 +1389,7 @@ label.payment_breakdown = Dadansoddiad o’r taliad
 label.tax_paid = Treth a dalwyd
 label.excise_val = Ecséis
 label.declaration.note_reference_number = Gwnewch gofnod o’ch cyfeirnod – efallai y bydd angen ei roi i Lu’r Ffiniau.
-label.declaration.provided_email_address = Mae eich derbynneb datganiad wedi'i anfon i'r cyfeiriad e-bost a ddarparwyd gennych.
+label.declaration.provided_email_address = Mae’r dderbynneb ar gyfer eich datganiad wedi’i hanfon at y cyfeiriad e-bost yr ydych wedi’i roi i ni.
 label.declaration.no_tax_duty = Ar gyfer nwyddau heb dreth na thollau wedi’u talu arnynt, mae hyn oherwydd naill ai nad oedd treth neu dollau yn ddyledus neu cawsant eu talu pan brynwyd y nwyddau.
 label.declaration.go_to_green = Ewch i’r sianel werdd ‘dim byd i’w ddatgan’, os mai dyma’r unig nwyddau rydych yn eu datgan. Dangoswch eich derbynneb ar eich ffôn symudol neu’ch llechen i aelod o Lu’r Ffiniau, os gofynnir i chi wneud hynny.
 label.declaration.remove_goods = Os oes angen i chi dynnu nwyddau o’ch datganiad,
@@ -1397,7 +1397,7 @@ label.declaration.what_you_think_of_service = Beth oedd eich barn am y gwasanaet
 label.declaration.take_x_seconds = (mae’n cymryd 30 eiliad)
 text.read_more_about_refunds = ewch i GOV.UK i ofyn am ad-daliad
 label.amendment.note_reference_number = Gwnewch nodyn o’ch cyfeirnod – mae’n bosibl y bydd angen i chi ei roi i Lu’r Ffiniau. Dyma’r un cyfeirnod a ddefnyddiwyd ar gyfer eich datganiad blaenorol ar gyfer y daith hon.
-label.amendment.email_receipt = Mae eich derbynneb datganiad diwygiedig wedi'i anfon i'r cyfeiriad e-bost a ddarparwyd gennych.
+label.amendment.email_receipt = Mae’r dderbynneb ar gyfer eich datganiad diwygiedig wedi’i hanfon at y cyfeiriad e-bost yr ydych wedi’i roi i ni.
 label.amendment.goods_to_existing_declaration = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu nwyddau at eich datganiad presennol cyn i chi gyrraedd y DU. Bydd angen i chi nodi’ch cyfeirnod.
 
 heading.previous_declaration = Beth hoffech ei wneud?
