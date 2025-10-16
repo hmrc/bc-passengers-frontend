@@ -1442,8 +1442,8 @@ label.already_passed_custom = your scheduled time of arrival is in the past - if
 
 ############## Limit exceeded Add page ##############
 
-limitExceeded.title = There is a problem
-limitExceeded.h1 = There is a problem
+limitExceeded.title = You cannot use this service to declare this item
+limitExceeded.h1 = You cannot use this service to declare this item
 
 limitExceeded.p1.add.alcohol = You have entered a total of {0} {1} of {2}.
 limitExceeded.p1.add.tobacco = You have entered a total of {0} {1}.
@@ -1498,6 +1498,10 @@ limitExceeded.warning.alcohol = If you do not declare alcohol over the service l
 limitExceeded.warning.tobacco = If you do not declare tobacco over the service limit in person, or if you make a false declaration, you may have to pay a penalty and your tobacco may be seized.
 limitExceeded.h2b = If you have other items to declare
 limitExceeded.p5 = You can continue to use this service to declare other alcohol, tobacco and goods.
+
+limitExceeded.moreInfo.sentence=You can {0}.
+limitExceeded.moreInfo.link = find out more about alcohol and tobacco limits for the online service (opens in new tab)
+limitExceeded.moreInfo.href = https://www.gov.uk/guidance/simplified-rates-for-bringing-personal-goods-into-the-uk
 
 ############## Limit exceeded Edit page ##############
 
