@@ -72,8 +72,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
   "LimitExceedView" when {
 
     renderViewTest(
-      title = "There is a problem - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "There is a problem"
+      title = "You cannot use this service to declare this item - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "You cannot use this service to declare this item"
     )
 
     "Alcohol" should {
@@ -93,12 +93,13 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of beer.",
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> (
+              Selectors.p(6)    -> (
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                   "They will calculate and take payment of the taxes and duties due."
               ),
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -117,12 +118,13 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of beer.",
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(5)    -> (
+              Selectors.p(6)    -> (
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                   "They will calculate and take payment of the taxes and duties due."
               ),
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -139,7 +141,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 15 litres of cider.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -147,7 +150,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -164,14 +167,15 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 3.00 litres of cider.",
-              Selectors.p(5)    -> (
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    -> (
                 "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                   "They will calculate and take payment of the taxes and duties due."
               ),
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -188,7 +192,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 3.00 litres of cider.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -196,7 +201,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -213,7 +218,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 10 litres of spirits.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 1.00 litre of spirits.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -221,7 +227,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -240,7 +246,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               )                 -> "You cannot use this service to declare more than 60 litres of sparkling wine.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of sparkling wine.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -248,7 +255,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -267,7 +274,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               )                 -> "You cannot use this service to declare more than 90 litres of wine.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of wine.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -275,7 +283,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -294,7 +302,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 9.00 litres of wine.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -302,7 +311,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -319,7 +328,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 20 litres of other alcohol.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 20.00 litres of other alcohol.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -327,7 +337,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -346,7 +356,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                 "other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)."),
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 10.00 litres of other alcohol.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -354,7 +365,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare alcohol over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -377,7 +388,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 800 cigarettes.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 300 cigarettes.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -385,7 +397,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -402,7 +414,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 400 cigarillos.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100 cigarillos.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -410,7 +423,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -427,7 +440,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 200 cigars.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 50 cigars.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -435,7 +449,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -452,7 +466,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 800 tobacco sticks.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100 tobacco sticks.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -460,7 +475,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -477,7 +492,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of pipe or chewing tobacco.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100.00g of pipe or chewing tobacco.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -485,7 +501,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -502,7 +518,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of rolling tobacco.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100.01g of rolling tobacco.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -510,7 +527,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
@@ -534,7 +551,8 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.p(3)    -> "You cannot use this service to declare more than 1000g of loose tobacco.",
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(4)    -> "We will change your item back to 100.01g of rolling tobacco.",
-              Selectors.p(5)    ->
+              Selectors.p(5) -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+              Selectors.p(6)    ->
                 (
                   "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                     "They will calculate and take payment of the taxes and duties due."
@@ -542,7 +560,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
               Selectors.warning -> ("Warning If you do not declare tobacco over the service limit in person, or " +
                 "if you make a false declaration, you may have to pay a penalty and your tobacco may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
-              Selectors.p(6)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+              Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)

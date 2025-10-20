@@ -1444,8 +1444,8 @@ label.already_passed_custom = mae’ch amser cyrraedd disgwyliedig yn y gorffenn
 
 ############## Limit exceeded Add page ##############
 
-limitExceeded.title = Mae problem wedi codi
-limitExceeded.h1 = Mae problem wedi codi
+limitExceeded.title = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan yr eitem hon
+limitExceeded.h1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan yr eitem hon
 
 limitExceeded.p1.add.alcohol = Rydych wedi nodi cyfanswm o {0} {1} o {2}.
 limitExceeded.p1.add.tobacco = Rydych wedi nodi cyfanswm o {0} {1}.
@@ -1500,6 +1500,10 @@ limitExceeded.warning.alcohol = Os nad ydych yn datgan alcohol dros derfyn y gwa
 limitExceeded.warning.tobacco = Os nad ydych yn datgan tybaco dros derfyn y gwasanaeth yn bersonol, neu os gwnewch ddatganiad ffug, mae’n bosibl y bydd yn rhaid i chi dalu cosb ac mae’n bosibl y bydd eich tybaco yn cael ei atafaelu.
 limitExceeded.h2b = Os oes gennych eitemau eraill i’w datgan
 limitExceeded.p5 = Gallwch barhau i ddefnyddio’r gwasanaeth hwn er mwyn datgan alcohol, tybaco a nwyddau eraill.
+
+limitExceeded.moreInfo.sentence=Gallwch {0}.
+limitExceeded.moreInfo.link = ddysgu rhagor am derfynau alcohol a thybaco sy'n berthansol i’r gwasanaeth ar-lein (yn agor tab newydd)
+limitExceeded.moreInfo.href=https://www.gov.uk/guidance/simplified-rates-for-bringing-personal-goods-into-the-uk
 
 ############## Limit exceeded Edit page ##############
 
