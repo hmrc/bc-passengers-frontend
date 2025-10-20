@@ -451,7 +451,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
     }
-      "pre-populate country and currency when editing an existing item" in new LocalSetup {
+    "pre-populate country and currency when editing an existing item" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
 

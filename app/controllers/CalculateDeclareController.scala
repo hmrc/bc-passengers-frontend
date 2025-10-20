@@ -211,7 +211,7 @@ class CalculateDeclareController @Inject() (
             val merged = pre.identification match {
               case Some(prev) if prev.identificationType == newType =>
                 prev
-              case _ =>
+              case _                                                =>
                 IdentificationForm(newType, None)
             }
             pre.copy(identification = Some(merged))
@@ -365,14 +365,13 @@ class CalculateDeclareController @Inject() (
             .form(receiptDateTime)
             .bind(
               Map(
-                "placeOfArrival.selectPlaceOfArrival"   -> arrival.selectPlaceOfArrival,
-                "placeOfArrival.enterPlaceOfArrival"    -> arrival.enterPlaceOfArrival,
-                "dateTimeOfArrival.dateOfArrival.day"   -> arrival.dateOfArrival.getDayOfMonth.toString,
-                "dateTimeOfArrival.dateOfArrival.month" -> displayMonth,
-
-                "dateTimeOfArrival.dateOfArrival.year"  -> arrival.dateOfArrival.getYear.toString,
-                "dateTimeOfArrival.timeOfArrival.hour"  -> arrival.timeOfArrival.getHour.toString,
-                "dateTimeOfArrival.timeOfArrival.minute"-> arrival.timeOfArrival.getMinute.toString
+                "placeOfArrival.selectPlaceOfArrival"    -> arrival.selectPlaceOfArrival,
+                "placeOfArrival.enterPlaceOfArrival"     -> arrival.enterPlaceOfArrival,
+                "dateTimeOfArrival.dateOfArrival.day"    -> arrival.dateOfArrival.getDayOfMonth.toString,
+                "dateTimeOfArrival.dateOfArrival.month"  -> displayMonth,
+                "dateTimeOfArrival.dateOfArrival.year"   -> arrival.dateOfArrival.getYear.toString,
+                "dateTimeOfArrival.timeOfArrival.hour"   -> arrival.timeOfArrival.getHour.toString,
+                "dateTimeOfArrival.timeOfArrival.minute" -> arrival.timeOfArrival.getMinute.toString
               )
             )
             .discardingErrors
@@ -387,7 +386,7 @@ class CalculateDeclareController @Inject() (
             )
           )
         )
-      case _             =>
+      case _ =>
         Future.successful(
           Ok(
             journey_details(
@@ -402,10 +401,10 @@ class CalculateDeclareController @Inject() (
   }
 
   def processJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    val initialForm = YourJourneyDetailsDto.form(receiptDateTime)
-    val boundForm   = initialForm.bindFromRequest()
+    val initialForm                 = YourJourneyDetailsDto.form(receiptDateTime)
+    val boundForm                   = initialForm.bindFromRequest()
     val rawMonthOpt: Option[String] =
-    boundForm.data.get("dateTimeOfArrival.dateOfArrival.month").filter(_.nonEmpty)
+      boundForm.data.get("dateTimeOfArrival.dateOfArrival.month").filter(_.nonEmpty)
 
     boundForm.fold(
       formWithErrors => {

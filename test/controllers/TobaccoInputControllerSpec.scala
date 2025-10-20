@@ -1833,7 +1833,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
               "iid0",
               weightOrVolume = None,
               noOfSticks = Some(400),
-              country = Some(Country("FR","title.france","FR", isEu = true, isCountry = true, Nil)),
+              country = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
               originCountry = None,
               currency = Some("EUR"),
               cost = Some(BigDecimal(92.50))
@@ -1850,7 +1850,16 @@ class TobaccoInputControllerSpec extends BaseSpec {
       status(result) shouldBe OK
 
       verify(injected[no_of_sticks_input], times(1))(
-        formCaptor.capture(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+        formCaptor.capture(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
       )(any(), any(), any())
 
       val capturedForm = formCaptor.getValue
