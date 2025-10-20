@@ -121,7 +121,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
             doc
               .getElementsByTag("h1")
-              .text() shouldBe "There is a problem"
+              .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text() shouldBe s"You have entered a total of $userInput litres of $productToken."
@@ -180,7 +180,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
             doc
               .getElementsByTag("h1")
-              .text() shouldBe "There is a problem"
+              .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text() shouldBe s"You have entered a total of $totalWithGroupMessage"
@@ -236,7 +236,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
               doc
                 .getElementsByTag("h1")
-                .text() shouldBe "There is a problem"
+                .text() shouldBe "You cannot use this service to declare this item"
               doc
                 .getElementById("entered-amount")
                 .text() shouldBe s"You have entered a total of $totalVolume litres of $productToken."
@@ -311,7 +311,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
             doc
               .getElementsByTag("h1")
-              .text() shouldBe "There is a problem"
+              .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text() shouldBe s"You have entered a total of $totalWithGroupMessage"
@@ -366,7 +366,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You have entered a total of 1500g of $name."
@@ -410,7 +410,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
           doc
             .getElementsByTag("h1")
-            .text() shouldBe "There is a problem"
+            .text() shouldBe "You cannot use this service to declare this item"
           doc
             .getElementById("entered-amount")
             .text() shouldBe "You have entered a total of 1110g of loose tobacco."
@@ -470,7 +470,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You have entered a total of 1000.01g of $name."
@@ -524,7 +524,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
           doc
             .getElementsByTag("h1")
-            .text() shouldBe "There is a problem"
+            .text() shouldBe "You cannot use this service to declare this item"
           doc
             .getElementById("entered-amount")
             .text() shouldBe "You have entered a total of 1000.01g of loose tobacco."
@@ -560,7 +560,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You have entered a total of 900 $name."
@@ -626,7 +626,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You have entered a total of $totalSticks $name."
@@ -682,7 +682,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
             doc
               .getElementsByTag("h1")
-              .text() shouldBe "There is a problem"
+              .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text() shouldBe "You changed 20 litres of cider to 50.5 litres of cider."
@@ -743,7 +743,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
           doc
             .getElementsByTag("h1")
-            .text() shouldBe "There is a problem"
+            .text() shouldBe "You cannot use this service to declare this item"
           doc
             .getElementById("entered-amount")
             .text() shouldBe "You changed 40 litres of wine to 80 litres of wine."
@@ -810,7 +810,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
             doc
               .getElementsByTag("h1")
-              .text() shouldBe "There is a problem"
+              .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text() shouldBe "You changed 10 litres of cider to 10.001 litres of cider."
@@ -881,7 +881,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
           doc
             .getElementsByTag("h1")
-            .text() shouldBe "There is a problem"
+            .text() shouldBe "You cannot use this service to declare this item"
           doc
             .getElementById("entered-amount")
             .text() shouldBe "You changed 40 litres of wine to 50.001 litres of wine."
@@ -941,7 +941,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You changed 900g of $name to 1100g of $name."
@@ -1000,7 +1000,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           val content: String = contentAsString(result)
           val doc: Document   = Jsoup.parse(content)
 
-          doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+          doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
           doc
             .getElementById("entered-amount")
             .text()                         shouldBe "You changed 400g of pipe or chewing tobacco to 1200g of pipe or chewing tobacco."
@@ -1068,7 +1068,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You changed 900g of $name to 900.01g of $name."
@@ -1137,7 +1137,7 @@ class LimitExceedControllerSpec extends BaseSpec {
           val content: String = contentAsString(result)
           val doc: Document   = Jsoup.parse(content)
 
-          doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+          doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
           doc
             .getElementById("entered-amount")
             .text()                         shouldBe "You changed 400g of pipe or chewing tobacco to 400.01g of pipe or chewing tobacco."
@@ -1201,7 +1201,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You changed 150 $name to 801 $name."
@@ -1273,7 +1273,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             val content: String = contentAsString(result)
             val doc: Document   = Jsoup.parse(content)
 
-            doc.getElementsByTag("h1").text() shouldBe "There is a problem"
+            doc.getElementsByTag("h1").text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
               .text()                         shouldBe s"You changed 75 $name to 726 $name."

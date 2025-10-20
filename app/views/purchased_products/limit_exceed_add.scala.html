@@ -48,6 +48,16 @@
         @panelContent
     }
 
+    <p class="govuk-body">
+        @Html(
+            messages(
+            "limitExceeded.moreInfo.sentence",
+            s"""<a class="govuk-link" target="_blank" rel="noreferrer noopener"
+                    href="${messages("limitExceeded.moreInfo.href")}">${messages("limitExceeded.moreInfo.link")}</a>"""
+            )
+        )
+    </p>
+
     @h2(messages("limitExceeded.h2a"), id = Some("what-you-must-do"))
 
     @p(Html(messages("limitExceeded.p4")))
