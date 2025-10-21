@@ -37,42 +37,20 @@
     @errorSummary(form.errors)
 
     @fieldset("label.what_is_your_email",
-    describedBy = Some(
-        if (form("").hasErrors) "emailAddress-hint emailAddress-error" else "emailAddress-hint"
-    )
+    describedBy = Some("emailAddress-hint")
     ) {
 
          <div class="govuk-hint" id="emailAddress-hint">
             @messages("label.email_address_hint")
         </div>
 
-        <div class="govuk-form-group @{if(form("").hasErrors) "govuk-form-group--error" else "" }" id="emailAddress">
-
-            @form.errors.filter(_.key == "").map { error =>
-             <p class="govuk-error-message" id="emailAddress-error">
-                <span class="govuk-visually-hidden">@messages("label.error") </span>
-                @messages(error.message)
-             </p>
-           }
+        <div class="govuk-form-group @{if(form("email").hasErrors) "govuk-form-group--error" else "" }" id="emailAddress">
 
             @inputText(
                 form,
                 id = "email",
                 name = "email",
                 label = "label.email_address",
-                inputType = "email",
-                spellcheck = Some(false),
-                isPageHeading = false,
-                autocomplete = Some("email"),
-                classes = Some("govuk-input govuk-!-width-one-half"),
-                labelClasses = None
-            )
-
-            @inputText(
-                form,
-                id = "confirmEmail",
-                name = "confirmEmail",
-                label = "label.confirm_email_address",
                 inputType = "email",
                 spellcheck = Some(false),
                 isPageHeading = false,

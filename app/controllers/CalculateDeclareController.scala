@@ -314,7 +314,7 @@ class CalculateDeclareController @Inject() (
         Future.successful(
           Ok(
             what_is_your_email(
-              EmailAddressDto.form.fill(EmailAddressDto(email, email)),
+              EmailAddressDto.form.fill(EmailAddressDto(email)),
               backLinkModel.backLink
             )
           )

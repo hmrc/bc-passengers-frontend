@@ -218,10 +218,9 @@ class DtoTest extends BaseSpec {
 
   "Validating the EmailAddressDto form" should {
 
-    "allow the same email and confirmEmail in valid format" in {
+      "allow a valid email in valid format" in {
       val formData = Map(
-        "email"        -> "abc@gmail.com",
-        "confirmEmail" -> "abc@gmail.com"
+        "email" -> "abc@gmail.com"
       )
 
       val form = EmailAddressDto.form.bind(formData)
@@ -229,10 +228,10 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe false
     }
 
+
     "return validation errors if the email is invalid" in {
       val formData = Map(
-        "email"        -> "abc",
-        "confirmEmail" -> "abc@gmail.com"
+        "email"        -> "abc"
       )
 
       val form = EmailAddressDto.form.bind(formData)
@@ -242,50 +241,9 @@ class DtoTest extends BaseSpec {
       form.error("email").get.message shouldBe "error.format.email"
     }
 
-    "return validation errors if the confirmEmail is invalid" in {
-      val formData = Map(
-        "email"        -> "abc@gmail.com",
-        "confirmEmail" -> "abc"
-      )
-
-      val form = EmailAddressDto.form.bind(formData)
-
-      form.hasErrors   shouldBe true
-      form.errors.size shouldBe 1
-
-      form.error("confirmEmail").get.message shouldBe "error.format.confirm_email"
-    }
-
-    "return validation errors if the email and confirmEmail does not match" in {
-      val formData = Map(
-        "email"        -> "abc@gmail.com",
-        "confirmEmail" -> "xyz@gmail.com"
-      )
-
-      val form = EmailAddressDto.form.bind(formData)
-
-      form.hasErrors             shouldBe true
-      form.errors.size           shouldBe 1
-      form.error("").get.message shouldBe "error.required.emailAddress.no_match"
-    }
-
-    "return validation errors if the confirmEmail is empty" in {
-      val formData = Map(
-        "email"        -> "abc@gmail.com",
-        "confirmEmail" -> ""
-      )
-
-      val form = EmailAddressDto.form.bind(formData)
-
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 1
-      form.error("confirmEmail").get.message shouldBe "error.required.confirm_email"
-    }
-
     "return validation errors if the Email is empty" in {
       val formData = Map(
-        "email"        -> "",
-        "confirmEmail" -> "abc@gmail.com"
+        "email"        -> ""
       )
 
       val form = EmailAddressDto.form.bind(formData)
@@ -295,18 +253,16 @@ class DtoTest extends BaseSpec {
       form.error("email").get.message shouldBe "error.required.email"
     }
 
-    "return validation errors if the Email and Confirm email length exceeds 132 " in {
+      "return validation error if the email length exceeds 132" in {
       val formData = Map(
-        "email"        -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com",
-        "confirmEmail" -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com"
+        "email" -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com"
       )
 
       val form = EmailAddressDto.form.bind(formData)
 
-      form.hasErrors                         shouldBe true
-      form.errors.size                       shouldBe 2
-      form.error("email").get.message        shouldBe "error.max-length.email"
-      form.error("confirmEmail").get.message shouldBe "error.max-length.confirm_email"
+      form.hasErrors                  shouldBe true
+      form.errors.size                shouldBe 1
+      form.error("email").get.message shouldBe "error.max-length.email"
     }
   }
 

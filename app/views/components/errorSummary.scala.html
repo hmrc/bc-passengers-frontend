@@ -34,7 +34,6 @@
                 case key if key.equals("dateTimeOfArrival") => ".dateOfArrival.day"
                 case key if key.contains("placeOfArrival") => ".selectPlaceOfArrival"
                 case key if key.contains("identificationType") => "-passport"
-                case key if key.isEmpty && error.message.contains("emailAddress.no_match") => "confirmEmail"
                 case _ => ""
             }
 

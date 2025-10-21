@@ -238,7 +238,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "Declaration complete"
       content                             should include("Make a note of your reference number, you may need to provide it to Border Force.")
-      content                             should include("If you provided an email address, a copy of this receipt has been sent to you.")
+      content                             should include("Your declaration receipt has been sent to the email address you provided.")
       content                             should include(
         "You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number."
       )
@@ -284,7 +284,7 @@ class ZeroDeclarationControllerSpec extends BaseSpec {
       content                                  should include(
         "Make a note of your reference number, you may need to provide it to Border Force. This is the same reference number as your previous declaration for this journey."
       )
-      content                                  should include("If you provided an email address, your amended declaration receipt has been sent to you.")
+      content                                  should include("Your amended declaration receipt has been sent to the email address you provided.")
       content                                  should include(
         "You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number."
       )
