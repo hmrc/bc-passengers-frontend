@@ -1503,7 +1503,7 @@ limitExceeded.p5 = Gallwch barhau i ddefnyddio’r gwasanaeth hwn er mwyn datgan
 
 limitExceeded.moreInfo.sentence=Gallwch {0}.
 limitExceeded.moreInfo.link = ddysgu rhagor am derfynau alcohol a thybaco sy'n berthansol i’r gwasanaeth ar-lein (yn agor tab newydd)
-limitExceeded.moreInfo.href=https://www.gov.uk/guidance/simplified-rates-for-bringing-personal-goods-into-the-uk
+limitExceeded.moreInfo.href=https://www.gov.uk/guidance/simplified-rates-for-bringing-personal-goods-into-the-uk#alcohol-tobacco
 
 ############## Limit exceeded Edit page ##############
 
