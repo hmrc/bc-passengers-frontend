@@ -1497,7 +1497,7 @@ limitExceeded.p5 = You can continue to use this service to declare other alcohol
 
 limitExceeded.moreInfo.sentence=You can {0}.
 limitExceeded.moreInfo.link = find out more about alcohol and tobacco limits for the online service (opens in new tab)
-limitExceeded.moreInfo.href = https://www.gov.uk/guidance/simplified-rates-for-bringing-personal-goods-into-the-uk
+limitExceeded.moreInfo.href = https://www.gov.uk/guidance/simplified-rates-for-bringing-personal-goods-into-the-uk#alcohol-tobacco
 
 ############## Limit exceeded Edit page ##############
 
