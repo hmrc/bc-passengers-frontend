@@ -20,7 +20,6 @@
 @this(
   displayTaxBreakdown:components.display_tax_breakdown,
   govukLayout: templates.GovukLayoutWrapper,
-  h2: components.h2,
   p: components.p,
   formHelper: FormWithCSRF,
   button: components.button
@@ -84,26 +83,30 @@
 
   @if(deltaCalc.isDefined){
 
-    @h2(messages("label.additional_tax_due_on_these_goods"))
-  
-    <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @messages("label.amount_paid_previously")
-        </dt>
-        <dd class="govuk-summary-list__value">
-          &pound;@formatMonetaryValue(oldAllTax)
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @messages("label.total_due_now")
-        </dt>
-        <dd class="govuk-summary-list__value">
-          &pound;@formatMonetaryValue(deltaCalc.get.allTax)
-        </dd>
-      </div>
-    </dl>
+    <h2 id="additional-tax-heading" class="govuk-heading-m">
+      @messages("label.additional_tax_due_on_these_goods")
+    </h2>
+
+    <section id="delta" aria-labelledby="additional-tax-heading">
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @messages("label.amount_paid_previously")
+          </dt>
+          <dd class="govuk-summary-list__value">
+            &pound;@formatMonetaryValue(oldAllTax)
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @messages("label.total_due_now")
+          </dt>
+          <dd class="govuk-summary-list__value">
+            &pound;@formatMonetaryValue(deltaCalc.get.allTax)
+          </dd>
+        </div>
+      </dl>
+    </section>
   }
 
   <div class="govuk-inset-text">
