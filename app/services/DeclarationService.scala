@@ -124,7 +124,7 @@ class DeclarationService @Inject() (
           DeclarationServiceFailureResponse
         case HttpResponse(INTERNAL_SERVER_ERROR, body, _) =>
           logger.error(
-            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE NOT_FOUND received from bc-passengers-declarations. $body"
+            s"[DeclarationService][retrieveDeclaration] DECLARATION_RETRIEVAL_FAILURE INTERNAL_SERVER_ERROR received from bc-passengers-declarations. $body"
           )
           DeclarationServiceFailureResponse
         case HttpResponse(NOT_FOUND, _, _)                =>
@@ -194,7 +194,7 @@ class DeclarationService @Inject() (
           DeclarationServiceFailureResponse
         case HttpResponse(INTERNAL_SERVER_ERROR, body, _) =>
           logger.error(
-            s"[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted. $body"
+            s"[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE INTERNAL_SERVER_ERROR received from bc-passengers-declarations, invalid declaration submitted. $body"
           )
           DeclarationServiceFailureResponse
         case HttpResponse(status, _, _)                   =>
@@ -258,7 +258,7 @@ class DeclarationService @Inject() (
           DeclarationServiceFailureResponse
         case HttpResponse(INTERNAL_SERVER_ERROR, body, _) =>
           logger.error(
-            s"""[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE BAD_REQUEST received from bc-passengers-declarations, invalid declaration submitted. $body"""
+            s"""[DeclarationService][extractChargeReference] DECLARATION_SUBMIT_FAILURE INTERNAL_SERVER_ERROR received from bc-passengers-declarations, invalid declaration submitted. $body"""
           )
           DeclarationServiceFailureResponse
         case HttpResponse(status, _, _)                   =>
