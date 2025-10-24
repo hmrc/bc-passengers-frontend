@@ -37,6 +37,7 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val isAmendmentsEnabled: Boolean          = runModeConfiguration.get[Boolean]("features.amendments")
   lazy val timeout: Int                          = servicesConfig.getInt("timeout.timeout")
   lazy val countdown: Int                        = servicesConfig.getInt("timeout.countdown")
+  lazy val CMAEnabled: Boolean                   = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
 
