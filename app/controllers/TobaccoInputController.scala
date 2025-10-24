@@ -76,14 +76,14 @@ class TobaccoInputController @Inject() (
     } else {
       requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-          val baseForm = tobaccoInputForm.cigaretteAndHeatedTobaccoForm(path)
+          val baseForm    = tobaccoInputForm.cigaretteAndHeatedTobaccoForm(path)
           val formForView =
-           defaultOriginCountry.filter(_.trim.nonEmpty) match {
-             case Some(oc) =>
+            defaultOriginCountry.filter(_.trim.nonEmpty) match {
+              case Some(oc) =>
                 baseForm
                   .bind(Map("originCountry" -> oc))
                   .discardingErrors
-              case None =>
+              case None     =>
                 baseForm
             }
           Future.successful(
@@ -113,14 +113,14 @@ class TobaccoInputController @Inject() (
     } else {
       requireProduct(path) { product =>
         withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-          val baseForm = tobaccoInputForm.looseTobaccoWeightForm(path)
+          val baseForm    = tobaccoInputForm.looseTobaccoWeightForm(path)
           val formForView =
             defaultOriginCountry.filter(_.trim.nonEmpty) match {
               case Some(oc) =>
                 baseForm
-                 .bind(Map("originCountry" -> oc))
+                  .bind(Map("originCountry" -> oc))
                   .discardingErrors
-              case None =>
+              case None     =>
                 baseForm
             }
           Future.successful(
@@ -151,14 +151,14 @@ class TobaccoInputController @Inject() (
       } else {
         requireProduct(path) { product =>
           withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-            val baseForm = tobaccoInputForm.cigarAndCigarilloForm(path)
+            val baseForm    = tobaccoInputForm.cigarAndCigarilloForm(path)
             val formForView =
               defaultOriginCountry.filter(_.trim.nonEmpty) match {
                 case Some(oc) =>
                   baseForm
                     .bind(Map("originCountry" -> oc))
                     .discardingErrors
-                case None =>
+                case None     =>
                   baseForm
               }
             Future.successful(

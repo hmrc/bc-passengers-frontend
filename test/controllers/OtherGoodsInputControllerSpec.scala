@@ -431,8 +431,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       )(any(), any(), any())
 
       val data = formCaptor.getValue.data
-      data should not contain key ("country")
-      data should not contain key ("currency")
+      data                 should not contain key("country")
+      data                 should not contain key("currency")
       data("searchTerm") shouldBe "Book"
     }
 
@@ -485,8 +485,8 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       )(any(), any(), any())
 
       val data = formCaptor.getValue.data
-      data should not contain key ("country")
-      data should not contain key ("currency")
+      data                 should not contain key("country")
+      data                 should not contain key("currency")
       data("searchTerm") shouldBe ""
     }
 
@@ -535,13 +535,22 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[other_goods_input], times(1))(
         formCaptor.capture(),
-        any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
       )(any(), any(), any())
 
       val data = formCaptor.getValue.data
       data.get("originCountry") shouldBe Some("FR")
-      data should not contain key ("country")
-      data should not contain key ("currency")
+      data                        should not contain key("country")
+      data                        should not contain key("currency")
     }
   }
 

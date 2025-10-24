@@ -218,7 +218,7 @@ class DtoTest extends BaseSpec {
 
   "Validating the EmailAddressDto form" should {
 
-      "allow a valid email in valid format" in {
+    "allow a valid email in valid format" in {
       val formData = Map(
         "email" -> "abc@gmail.com"
       )
@@ -228,10 +228,9 @@ class DtoTest extends BaseSpec {
       form.hasErrors shouldBe false
     }
 
-
     "return validation errors if the email is invalid" in {
       val formData = Map(
-        "email"        -> "abc"
+        "email" -> "abc"
       )
 
       val form = EmailAddressDto.form.bind(formData)
@@ -243,7 +242,7 @@ class DtoTest extends BaseSpec {
 
     "return validation errors if the Email is empty" in {
       val formData = Map(
-        "email"        -> ""
+        "email" -> ""
       )
 
       val form = EmailAddressDto.form.bind(formData)
@@ -253,7 +252,7 @@ class DtoTest extends BaseSpec {
       form.error("email").get.message shouldBe "error.required.email"
     }
 
-      "return validation error if the email length exceeds 132" in {
+    "return validation error if the email length exceeds 132" in {
       val formData = Map(
         "email" -> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs@gmail.com"
       )

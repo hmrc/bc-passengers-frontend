@@ -548,14 +548,14 @@ object YourJourneyDetailsDto extends Validators {
       dateOfArrival = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
       timeOfArrival = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival)
     )
-  
+
   def toArrivalForm(dto: YourJourneyDetailsDto, rawMonth: Option[String]): ArrivalForm =
     ArrivalForm(
       selectPlaceOfArrival = dto.placeOfArrival.selectPlaceOfArrival.getOrElse(""),
-      enterPlaceOfArrival  = dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
-      dateOfArrival        = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
-      timeOfArrival        = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival),
-      monthOfArrivalRaw    = rawMonth
+      enterPlaceOfArrival = dto.placeOfArrival.enterPlaceOfArrival.getOrElse(""),
+      dateOfArrival = parseLocalDate(dto.dateTimeOfArrival.dateOfArrival),
+      timeOfArrival = parseLocalTime(dto.dateTimeOfArrival.timeOfArrival),
+      monthOfArrivalRaw = rawMonth
     )
 
 }

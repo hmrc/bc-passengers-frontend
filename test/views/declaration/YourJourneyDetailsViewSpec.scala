@@ -231,7 +231,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
       heading = "What are your journey details?"
     )
 
-    "formWithErrors" should
+    "formWithErrors"      should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
           val doc = document(buildView(form = testCase._2))
@@ -255,13 +255,13 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
           )
         }
       }
-          "autofocus behaviour" should {
+    "autofocus behaviour" should {
       "focus on day field when date is completely empty" in {
-        val doc  = document(buildView(emptyForm))
-        val day  = doc.getElementById("dateTimeOfArrival.dateOfArrival.day")
+        val doc = document(buildView(emptyForm))
+        val day = doc.getElementById("dateTimeOfArrival.dateOfArrival.day")
 
         day.hasAttr("autofocus") shouldBe true
-        day.className should include("govuk-input--error")
+        day.className              should include("govuk-input--error")
       }
 
       "focus on hour when time is invalid" in {
@@ -269,7 +269,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
         val hour = doc.getElementById("dateTimeOfArrival.timeOfArrival.hour")
 
         hour.hasAttr("autofocus") shouldBe true
-        hour.className should include("govuk-input--error")
+        hour.className              should include("govuk-input--error")
       }
     }
   }

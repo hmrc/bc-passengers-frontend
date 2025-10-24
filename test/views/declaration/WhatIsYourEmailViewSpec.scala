@@ -27,35 +27,35 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
   private val emptyForm: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> ""
+        "email" -> ""
       )
     )
 
   private val formWithInvalidEmailMaxLength: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> "blaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketyler@gmail.com"
+        "email" -> "blaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketylerblaketyler@gmail.com"
       )
     )
 
   private val formWithInvalidEmailLength: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> ""
+        "email" -> ""
       )
     )
 
   private val formWithInvalidEmailDontMatchPattern: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> ".123.]p[[;'gmail.com"
+        "email" -> ".123.]p[[;'gmail.com"
       )
     )
 
   private val validForm: Form[EmailAddressDto] = EmailAddressDto.form
     .bind(
       Map(
-        "email"        -> "blaketyler@gmail.com"
+        "email" -> "blaketyler@gmail.com"
       )
     )
 
@@ -92,7 +92,7 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
     )
 
   val expectedEmptyFormErrors: Seq[(String, String)] = List(
-    "#email"        -> messages("error.required.email")
+    "#email" -> messages("error.required.email")
   )
 
   val expectedInvalidEmailMaxLengthFormErrors: Seq[(String, String)] = List(
@@ -104,7 +104,7 @@ class WhatIsYourEmailViewSpec extends BaseViewSpec {
   )
 
   val expectedInvalidEmailDontMatchPatternFormErrors: Seq[(String, String)] = List(
-    "#email"        -> messages("error.format.email")
+    "#email" -> messages("error.format.email")
   )
 
   val invalidTestCases: Seq[(String, Form[EmailAddressDto], Seq[(String, String)])] = Seq(
