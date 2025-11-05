@@ -355,52 +355,48 @@ class CalculateDeclareController @Inject() (
   }
 
   def whatAreYourJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    if (context.getJourneyData.chargeReference.nonEmpty && context.getJourneyData.euCountryCheck
-      .contains("greatBritain")) {
-      cache.removeFrontendCache.map { _ =>
-        Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
-      }
-    } else {
-      context.getJourneyData.preUserInformation.flatMap(_.arrivalForm) match {
-        case Some(arrival) =>
-          val displayMonth = arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
-          val formForView =
-            YourJourneyDetailsDto
-              .form(receiptDateTime)
-              .bind(
-                Map(
-                  "placeOfArrival.selectPlaceOfArrival" -> arrival.selectPlaceOfArrival,
-                  "placeOfArrival.enterPlaceOfArrival" -> arrival.enterPlaceOfArrival,
-                  "dateTimeOfArrival.dateOfArrival.day" -> arrival.dateOfArrival.getDayOfMonth.toString,
-                  "dateTimeOfArrival.dateOfArrival.month" -> displayMonth,
-                  "dateTimeOfArrival.dateOfArrival.year" -> arrival.dateOfArrival.getYear.toString,
-                  "dateTimeOfArrival.timeOfArrival.hour" -> arrival.timeOfArrival.getHour.toString,
-                  "dateTimeOfArrival.timeOfArrival.minute" -> arrival.timeOfArrival.getMinute.toString
-                )
-              )
-              .discardingErrors
-          Future.successful(
-            Ok(
-              journey_details(
-                formForView,
-                portsOfArrivalService.getAllPorts,
-                context.getJourneyData.euCountryCheck,
-                backLinkModel.backLink
+    context.getJourneyData.preUserInformation.flatMap(_.arrivalForm) match {
+      case Some(arrival) =>
+
+        val displayMonth = arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
+
+        val formForView =
+          YourJourneyDetailsDto
+            .form(receiptDateTime)
+            .bind(
+              Map(
+                "placeOfArrival.selectPlaceOfArrival"    -> arrival.selectPlaceOfArrival,
+                "placeOfArrival.enterPlaceOfArrival"     -> arrival.enterPlaceOfArrival,
+                "dateTimeOfArrival.dateOfArrival.day"    -> arrival.dateOfArrival.getDayOfMonth.toString,
+                "dateTimeOfArrival.dateOfArrival.month"  -> displayMonth,
+                "dateTimeOfArrival.dateOfArrival.year"   -> arrival.dateOfArrival.getYear.toString,
+                "dateTimeOfArrival.timeOfArrival.hour"   -> arrival.timeOfArrival.getHour.toString,
+                "dateTimeOfArrival.timeOfArrival.minute" -> arrival.timeOfArrival.getMinute.toString
               )
             )
-          )
-        case _ =>
-          Future.successful(
-            Ok(
-              journey_details(
-                YourJourneyDetailsDto.form(receiptDateTime),
-                portsOfArrivalService.getAllPorts,
-                context.getJourneyData.euCountryCheck,
-                backLinkModel.backLink
-              )
+            .discardingErrors
+
+        Future.successful(
+          Ok(
+            journey_details(
+              formForView,
+              portsOfArrivalService.getAllPorts,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
             )
           )
-      }
+        )
+      case _ =>
+        Future.successful(
+          Ok(
+            journey_details(
+              YourJourneyDetailsDto.form(receiptDateTime),
+              portsOfArrivalService.getAllPorts,
+              context.getJourneyData.euCountryCheck,
+              backLinkModel.backLink
+            )
+          )
+        )
     }
   }
 
