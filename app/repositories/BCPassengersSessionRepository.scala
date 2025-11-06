@@ -90,7 +90,7 @@ class BCPassengersSessionRepository @Inject() (
         )
     }
 
-  def clearFrontendCacheById(id: Option[SessionId]): Future[Boolean] = {
+  def clearFrontendCacheById(id: Option[SessionId]): Future[Boolean] =
     id match {
       case Some(sessionId) =>
         val filter = equal("_id", sessionId.value)
@@ -101,5 +101,4 @@ class BCPassengersSessionRepository @Inject() (
       case None =>
         Future.successful(false)
     }
-  }
 }

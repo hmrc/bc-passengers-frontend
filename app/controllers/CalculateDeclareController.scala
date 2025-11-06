@@ -355,52 +355,51 @@ class CalculateDeclareController @Inject() (
   }
 
   def whatAreYourJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    if (context.getJourneyData.chargeReference.nonEmpty && context.getJourneyData.euCountryCheck
-      .contains("greatBritain")) {
+    val journeyData   = context.getJourneyData
+    val calcResponse  = journeyData.calculatorResponse.get
+    val allTax        = BigDecimal(calcResponse.calculation.allTax)
+    val shouldRedirect =
+      allTax == 0 &&
+        journeyData.euCountryCheck.contains("greatBritain") &&
+        calcResponse.isAnyItemOverAllowance &&
+        journeyData.chargeReference.nonEmpty
+    if (shouldRedirect) {
       cache.removeFrontendCache.map { _ =>
         Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
       }
     } else {
-      context.getJourneyData.preUserInformation.flatMap(_.arrivalForm) match {
+      val maybeArrival = journeyData.preUserInformation.flatMap(_.arrivalForm)
+      val formForView = maybeArrival match {
         case Some(arrival) =>
-          val displayMonth = arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
-          val formForView =
-            YourJourneyDetailsDto
-              .form(receiptDateTime)
-              .bind(
-                Map(
-                  "placeOfArrival.selectPlaceOfArrival" -> arrival.selectPlaceOfArrival,
-                  "placeOfArrival.enterPlaceOfArrival" -> arrival.enterPlaceOfArrival,
-                  "dateTimeOfArrival.dateOfArrival.day" -> arrival.dateOfArrival.getDayOfMonth.toString,
-                  "dateTimeOfArrival.dateOfArrival.month" -> displayMonth,
-                  "dateTimeOfArrival.dateOfArrival.year" -> arrival.dateOfArrival.getYear.toString,
-                  "dateTimeOfArrival.timeOfArrival.hour" -> arrival.timeOfArrival.getHour.toString,
-                  "dateTimeOfArrival.timeOfArrival.minute" -> arrival.timeOfArrival.getMinute.toString
-                )
-              )
-              .discardingErrors
-          Future.successful(
-            Ok(
-              journey_details(
-                formForView,
-                portsOfArrivalService.getAllPorts,
-                context.getJourneyData.euCountryCheck,
-                backLinkModel.backLink
+          val displayMonth =
+            arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
+          YourJourneyDetailsDto
+            .form(receiptDateTime)
+            .bind(
+              Map(
+                "placeOfArrival.selectPlaceOfArrival"    -> arrival.selectPlaceOfArrival,
+                "placeOfArrival.enterPlaceOfArrival"     -> arrival.enterPlaceOfArrival,
+                "dateTimeOfArrival.dateOfArrival.day"    -> arrival.dateOfArrival.getDayOfMonth.toString,
+                "dateTimeOfArrival.dateOfArrival.month"  -> displayMonth,
+                "dateTimeOfArrival.dateOfArrival.year"   -> arrival.dateOfArrival.getYear.toString,
+                "dateTimeOfArrival.timeOfArrival.hour"   -> arrival.timeOfArrival.getHour.toString,
+                "dateTimeOfArrival.timeOfArrival.minute" -> arrival.timeOfArrival.getMinute.toString
               )
             )
-          )
-        case _ =>
-          Future.successful(
-            Ok(
-              journey_details(
-                YourJourneyDetailsDto.form(receiptDateTime),
-                portsOfArrivalService.getAllPorts,
-                context.getJourneyData.euCountryCheck,
-                backLinkModel.backLink
-              )
-            )
-          )
+            .discardingErrors
+        case None =>
+          YourJourneyDetailsDto.form(receiptDateTime)
       }
+      Future.successful(
+        Ok(
+          journey_details(
+            formForView,
+            portsOfArrivalService.getAllPorts,
+            journeyData.euCountryCheck,
+            backLinkModel.backLink
+          )
+        )
+      )
     }
   }
 
