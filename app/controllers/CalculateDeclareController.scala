@@ -364,10 +364,6 @@ class CalculateDeclareController @Inject() (
         calcResponse.isAnyItemOverAllowance &&
         journeyData.chargeReference.nonEmpty
     }
-    println("allTax "+allTax)
-    println("journeyData.euCountryCheck "+journeyData.euCountryCheck)
-    println("calcResponse.isAnyItemOverAllowance "+calcResponse.isAnyItemOverAllowance)
-    println("journeyData.chargeReference "+journeyData.chargeReference)
     if (shouldRedirect) {
       cache.removeFrontendCache.map { _ =>
         Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
