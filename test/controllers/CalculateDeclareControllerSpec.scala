@@ -17,7 +17,6 @@
 package controllers
 
 import connectors.Cache
-import controllers.routes.CalculateDeclareController
 import models.UserInformation.getPreUser
 import models.*
 import org.jsoup.Jsoup
@@ -28,7 +27,7 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{Call, Request, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{route as rt, *}
 import repositories.BCPassengersSessionRepository
 import services.*
@@ -38,7 +37,6 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocal
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
-import play.api.test.FakeRequest
 
 class CalculateDeclareControllerSpec extends BaseSpec {
 
@@ -1090,7 +1088,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       when(
         app.injector.instanceOf[Cache].removeFrontendCache(any())
       ).thenReturn(Future.successful(true))
-      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
         Some(
           JourneyData(
             euCountryCheck = Some("greatBritain"),
@@ -1105,15 +1103,15 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           )
         )
       )
-      override lazy val payApiResponse: PayApiServiceResponse = PayApiServiceFailureResponse
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
       override lazy val declarationServiceResponse: DeclarationServiceResponse =
         DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
-      val response: Future[Result] =
+      val response: Future[Result]                                             =
         route(
           app,
           enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
         ).get
-      status(response) shouldBe SEE_OTHER
+      status(response)           shouldBe SEE_OTHER
       redirectLocation(response) shouldBe Some(routes.PreviousDeclarationController.loadPreviousDeclarationPage.url)
     }
   }

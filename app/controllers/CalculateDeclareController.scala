@@ -358,12 +358,11 @@ class CalculateDeclareController @Inject() (
     val journeyData    = context.getJourneyData
     val calcResponse   = journeyData.calculatorResponse.get
     val allTax         = BigDecimal(calcResponse.calculation.allTax)
-    val shouldRedirect = {
+    val shouldRedirect =
       allTax == 0 &&
         journeyData.euCountryCheck.contains("greatBritain") &&
         calcResponse.isAnyItemOverAllowance &&
         journeyData.chargeReference.nonEmpty
-    }
     if (shouldRedirect) {
       cache.removeFrontendCache.map { _ =>
         Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
