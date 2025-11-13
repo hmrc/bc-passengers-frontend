@@ -17,6 +17,7 @@
 package controllers
 
 import connectors.Cache
+import controllers.routes.CalculateDeclareController
 import models.UserInformation.getPreUser
 import models.*
 import org.jsoup.Jsoup
@@ -27,7 +28,7 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{route as rt, *}
 import repositories.BCPassengersSessionRepository
 import services.*
@@ -37,6 +38,7 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter, parseLocalDate, parseLocal
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
+import play.api.test.FakeRequest
 
 class CalculateDeclareControllerSpec extends BaseSpec {
 
@@ -1083,6 +1085,45 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "What are your journey details?"
+    }
+    "Redirect to initial page" in new LocalSetup {
+      // Mock the cache and its method
+      val mockCache: Cache = mock(classOf[Cache])
+      when(mockCache.removeFrontendCache).thenReturn(Future.successful(true))
+
+      val controller: CalculateDeclareController = app.injector.instanceOf[CalculateDeclareController]
+
+      // Prepare fake journey data satisfying redirect condition
+      val itemOverAllowance = crWithinLimitLow.copy(
+        isAnyItemOverAllowance = true,
+        calculation = crWithinLimitLow.calculation.copy(allTax = "0.00")
+      )
+
+      
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("greatBritain"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(arrivalForm = None)),
+            calculatorResponse = Some(crZero)
+          )
+        )
+      )
+
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+
+      val fakeRequest            = FakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
+      val result: Future[Result] = controller.whatAreYourJourneyDetails(fakeRequest)
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.PreviousDeclarationController.loadPreviousDeclarationPage.url)
     }
   }
 
