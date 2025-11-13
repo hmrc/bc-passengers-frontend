@@ -355,21 +355,26 @@ class CalculateDeclareController @Inject() (
   }
 
   def whatAreYourJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    val journeyData   = context.getJourneyData
-    val calcResponse  = journeyData.calculatorResponse.get
-    val allTax        = BigDecimal(calcResponse.calculation.allTax)
-    val shouldRedirect =
+    val journeyData    = context.getJourneyData
+    val calcResponse   = journeyData.calculatorResponse.get
+    val allTax         = BigDecimal(calcResponse.calculation.allTax)
+    val shouldRedirect = {
       allTax == 0 &&
         journeyData.euCountryCheck.contains("greatBritain") &&
         calcResponse.isAnyItemOverAllowance &&
         journeyData.chargeReference.nonEmpty
+    }
+    println("allTax "+allTax)
+    println("journeyData.euCountryCheck "+journeyData.euCountryCheck)
+    println("calcResponse.isAnyItemOverAllowance "+calcResponse.isAnyItemOverAllowance)
+    println("journeyData.chargeReference "+journeyData.chargeReference)
     if (shouldRedirect) {
       cache.removeFrontendCache.map { _ =>
         Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
       }
     } else {
       val maybeArrival = journeyData.preUserInformation.flatMap(_.arrivalForm)
-      val formForView = maybeArrival match {
+      val formForView  = maybeArrival match {
         case Some(arrival) =>
           val displayMonth =
             arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
@@ -387,7 +392,7 @@ class CalculateDeclareController @Inject() (
               )
             )
             .discardingErrors
-        case None =>
+        case None          =>
           YourJourneyDetailsDto.form(receiptDateTime)
       }
       Future.successful(
