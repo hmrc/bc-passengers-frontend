@@ -1084,6 +1084,36 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
       doc.getElementsByTag("h1").text() shouldBe "What are your journey details?"
     }
+    "Redirect to initial page" in new LocalSetup {
+      when(
+        app.injector.instanceOf[Cache].removeFrontendCache(any())
+      ).thenReturn(Future.successful(true))
+      override lazy val cachedJourneyData: Future[Option[JourneyData]]         = Future.successful(
+        Some(
+          JourneyData(
+            euCountryCheck = Some("greatBritain"),
+            isVatResClaimed = None,
+            isBringingDutyFree = None,
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false),
+            preUserInformation = Option(getPreUser(ui).copy(arrivalForm = None)),
+            calculatorResponse = Some(crZero),
+            chargeReference = Some("XJPR5768524625")
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceResponse                  = PayApiServiceFailureResponse
+      override lazy val declarationServiceResponse: DeclarationServiceResponse =
+        DeclarationServiceSuccessResponse(ChargeReference("XJPR5768524625"))
+      val response: Future[Result]                                             =
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/user-information-journey")
+        ).get
+      status(response)           shouldBe SEE_OTHER
+      redirectLocation(response) shouldBe Some(routes.PreviousDeclarationController.loadPreviousDeclarationPage.url)
+    }
   }
 
   "Calling GET /check-tax-on-goods-you-bring-into-the-uk/tax-due when in pending payment journey" should {

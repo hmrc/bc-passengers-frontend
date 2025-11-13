@@ -44,4 +44,7 @@ class Cache @Inject() (
 
   def updateUpdatedAtTimestamp(implicit hc: HeaderCarrier): Future[JsObject] =
     sessionRepository.updateUpdatedAtTimestamp
+
+  def removeFrontendCache(implicit hc: HeaderCarrier): Future[Boolean] =
+    sessionRepository.clearFrontendCacheById(hc.sessionId)
 }

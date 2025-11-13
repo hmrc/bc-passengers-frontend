@@ -355,12 +355,24 @@ class CalculateDeclareController @Inject() (
   }
 
   def whatAreYourJourneyDetails: Action[AnyContent] = dashboardAction { implicit context =>
-    context.getJourneyData.preUserInformation.flatMap(_.arrivalForm) match {
-      case Some(arrival) =>
-
-        val displayMonth = arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
-
-        val formForView =
+    val journeyData    = context.getJourneyData
+    val calcResponse   = journeyData.calculatorResponse.get
+    val allTax         = BigDecimal(calcResponse.calculation.allTax)
+    val shouldRedirect =
+      allTax == 0 &&
+        journeyData.euCountryCheck.contains("greatBritain") &&
+        calcResponse.isAnyItemOverAllowance &&
+        journeyData.chargeReference.nonEmpty
+    if (shouldRedirect) {
+      cache.removeFrontendCache.map { _ =>
+        Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage)
+      }
+    } else {
+      val maybeArrival = journeyData.preUserInformation.flatMap(_.arrivalForm)
+      val formForView  = maybeArrival match {
+        case Some(arrival) =>
+          val displayMonth =
+            arrival.monthOfArrivalRaw.getOrElse(arrival.dateOfArrival.getMonthValue.toString)
           YourJourneyDetailsDto
             .form(receiptDateTime)
             .bind(
@@ -375,28 +387,19 @@ class CalculateDeclareController @Inject() (
               )
             )
             .discardingErrors
-
-        Future.successful(
-          Ok(
-            journey_details(
-              formForView,
-              portsOfArrivalService.getAllPorts,
-              context.getJourneyData.euCountryCheck,
-              backLinkModel.backLink
-            )
+        case None          =>
+          YourJourneyDetailsDto.form(receiptDateTime)
+      }
+      Future.successful(
+        Ok(
+          journey_details(
+            formForView,
+            portsOfArrivalService.getAllPorts,
+            journeyData.euCountryCheck,
+            backLinkModel.backLink
           )
         )
-      case _ =>
-        Future.successful(
-          Ok(
-            journey_details(
-              YourJourneyDetailsDto.form(receiptDateTime),
-              portsOfArrivalService.getAllPorts,
-              context.getJourneyData.euCountryCheck,
-              backLinkModel.backLink
-            )
-          )
-        )
+      )
     }
   }
 
