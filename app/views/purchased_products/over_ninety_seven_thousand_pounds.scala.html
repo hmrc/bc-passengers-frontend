@@ -49,10 +49,10 @@
       <tbody>
       @calculatorResponseDto.items.map { item =>
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell">
+          <th scope="row" class="govuk-table__header">
             @messages(item.metadata.descriptionLabels.description,
             item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
-          </td>
+          </th>
           <td class="govuk-table__cell">
             @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
           </td>
@@ -65,7 +65,7 @@
         </tr>
       }
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell total table-foot" colspan="3">@messages("label.total")</td>
+        <th scope="row" class="govuk-table__header total table-foot" colspan="3">@messages("label.total")</th>
         <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
       </tr>
       </tbody>
@@ -73,23 +73,31 @@
   </div>
 
   @if(deltaCalc.isDefined){
-    <div class="responsive-table-wrapper">
-      <table class="govuk-table margin-bottom-30">
-        <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.additional_tax_due_on_these_goods")
-        </caption>
-        <tbody id="delta">
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">@messages("label.amount_paid_previously")</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(oldAllTax)</td>
-        </tr>
 
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell total table-foot">@messages("label.total_due_now")</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(deltaCalc.get.allTax)</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+    <h2 id="additional-tax-heading" class="govuk-heading-m">
+      @messages("label.additional_tax_due_on_these_goods")
+    </h2>
+
+    <section id="delta" aria-labelledby="additional-tax-heading">
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @messages("label.amount_paid_previously")
+          </dt>
+          <dd class="govuk-summary-list__value">
+            &pound;@formatMonetaryValue(oldAllTax)
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @messages("label.total_due_now")
+          </dt>
+          <dd class="govuk-summary-list__value">
+            &pound;@formatMonetaryValue(deltaCalc.get.allTax)
+          </dd>
+        </div>
+      </dl>
+    </section>
   }
 
   <div class="govuk-inset-text">
