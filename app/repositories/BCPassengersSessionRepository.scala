@@ -22,7 +22,7 @@ import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.{FindOneAndUpdateOptions, IndexModel, IndexOptions, ReturnDocument}
 import play.api.libs.json.{Format, JsObject, Json, Writes}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import org.mongodb.scala.SingleObservableFuture
@@ -88,5 +88,17 @@ class BCPassengersSessionRepository @Inject() (
             "[BCPassengersSessionRepository][updateUpdatedAtTimestamp]Could not find sessionId in HeaderCarrier"
           )
         )
+    }
+
+  def clearFrontendCacheById(id: Option[SessionId]): Future[Boolean] =
+    id match {
+      case Some(sessionId) =>
+        val filter = equal("_id", sessionId.value)
+        collection
+          .deleteOne(filter)
+          .toFuture()
+          .map(_.wasAcknowledged())
+      case None =>
+        Future.successful(false)
     }
 }
