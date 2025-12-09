@@ -195,7 +195,7 @@ class PortsOfArrivalServiceSpec extends BaseSpec {
     val portsService = app.injector.instanceOf[PortsOfArrivalService]
 
     "return the expected ports" in {
-      portsService.getAllPorts shouldEqual expectedPorts
+      portsService.getAllPortsGB shouldEqual expectedPorts
     }
   }
 

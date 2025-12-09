@@ -98,7 +98,7 @@ class BCPassengersSessionRepository @Inject() (
           .deleteOne(filter)
           .toFuture()
           .map(_.wasAcknowledged())
-      case None =>
+      case None            =>
         Future.successful(false)
     }
 }
