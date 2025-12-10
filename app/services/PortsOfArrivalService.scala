@@ -22,7 +22,7 @@ import models.PortsOfArrival
 @Singleton
 class PortsOfArrivalService {
 
-  def getAllPortsGB: List[PortsOfArrival] = ports
+  def getAllPortsGB: List[PortsOfArrival] = ports.filter(_.isGB)
 
   def getAllPortsNI: List[PortsOfArrival] = ports.filterNot(_.isGB)
 
