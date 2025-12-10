@@ -394,8 +394,8 @@ class CalculateDeclareController @Inject() (
         Ok(
           journey_details(
             formForView,
-            portsOfArrivalService.getAllPorts,
-            journeyData.euCountryCheck,
+            getPortsFor(context),
+            journeyData.arrivingNICheck,
             backLinkModel.backLink
           )
         )
@@ -410,22 +410,17 @@ class CalculateDeclareController @Inject() (
       boundForm.data.get("dateTimeOfArrival.dateOfArrival.month").filter(_.nonEmpty)
 
     boundForm.fold(
-      formWithErrors => {
-        val ports = context.getJourneyData.euCountryCheck match {
-          case Some("greatBritain") => portsOfArrivalService.getAllPortsNI
-          case _                    => portsOfArrivalService.getAllPorts
-        }
+      formWithErrors =>
         Future.successful(
           BadRequest(
             journey_details(
               formWithErrors,
-              ports,
-              context.getJourneyData.euCountryCheck,
+              getPortsFor(context),
+              context.getJourneyData.arrivingNICheck,
               backLinkModel.backLink
             )
           )
-        )
-      },
+        ),
       journeyDetailsDto => {
         val correlationId = UUID.randomUUID.toString
 
@@ -477,6 +472,12 @@ class CalculateDeclareController @Inject() (
       }
     )
   }
+
+  private def getPortsFor(context: LocalContext): List[PortsOfArrival] =
+    context.getJourneyData.arrivingNICheck match {
+      case Some(true) => portsOfArrivalService.getAllPortsNI
+      case _          => portsOfArrivalService.getAllPortsGB
+    }
 
   def processAmendment: Action[AnyContent] = dashboardAction { implicit context =>
     val correlationId   = UUID.randomUUID.toString

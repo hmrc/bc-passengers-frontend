@@ -142,7 +142,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   val viewViaApply: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
     portsOfArrival = portsOfArrival,
-    journeyStart = None,
+    arrivingNICheck = None,
     backLink = None
   )(
     request = request,
@@ -170,7 +170,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   val greatBritainView: HtmlFormat.Appendable = injected[journey_details].apply(
     form = validForm,
     portsOfArrival = portsOfArrival,
-    journeyStart = Some("greatBritain"),
+    arrivingNICheck = Some(true),
     backLink = None
   )(
     request = request,
@@ -182,7 +182,7 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
     injected[journey_details].apply(
       form = form,
       portsOfArrival = portsOfArrival,
-      journeyStart = None,
+      arrivingNICheck = None,
       backLink = None
     )(
       request = request,
