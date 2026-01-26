@@ -40,5 +40,7 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val CMAEnabled: Boolean                   = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
+  lazy val forceNavigation: Boolean            =
+    runModeConfiguration.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
 
 }

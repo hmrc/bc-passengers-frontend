@@ -29,7 +29,7 @@
     govukBackLink: GovukBackLink,
     HmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     languageSwitch: HmrcLanguageSelect,
-    header: HmrcHeader,
+    header: HmrcStandardHeader,
     hmrcHead: HmrcHead,
     hmrcScripts: HmrcScripts,
     footer: HmrcStandardFooter,
@@ -74,7 +74,7 @@
 
 @beforeContentBlock = {
 
-    @if(appConfig.languageTranslationEnabled) {
+    @if(!appConfig.forceNavigation && appConfig.languageTranslationEnabled) {
         @languageSwitch(LanguageSelect(
             if (messages.lang.code == "cy") Cy else En,
             (En, controllers.routes.LocalLanguageController.switchToLanguage("english").url),
@@ -110,12 +110,12 @@
 @govukLayout(
     pageTitle = pageTitle,
     headBlock = Some(hmrcHead(headBlock = Some(head))),
-    headerBlock = Some(header(Header(
-        homepageUrl = appConfig.govUK,
+    headerBlock = Some(header(
+        serviceUrl = Some(controllers.routes.TravelDetailsController.newSession.url),
         serviceName = Some(messages("service.name")),
-        serviceUrl = controllers.routes.TravelDetailsController.newSession.url,
-        language = if (messages.lang.code == "cy") Cy else En
-    ))),
+        isWelshTranslationAvailable = if (appConfig.forceNavigation && appConfig.languageTranslationEnabled) true else false,
+        displayHmrcBanner = false
+    )),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(footer()),
     bodyEndBlock = Some(hmrcScripts(scriptsBlock = Some(scriptsBlock)))
