@@ -3,13 +3,13 @@ import sbt.*
 object AppDependencies {
 
   private val hmrcMongoVersion     = "2.12.0"
-  private val bootstrapPlayVersion = "10.5.0"
+  private val bootstrapPlayVersion = "10.6.0"
 
   private val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc.mongo"            %% "hmrc-mongo-play-30"         % hmrcMongoVersion,
-    "uk.gov.hmrc"                  %% "play-frontend-hmrc-play-30" % "12.28.0",
+    "uk.gov.hmrc"                  %% "play-frontend-hmrc-play-30" % "12.31.0",
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.21.0"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.21.1"
   )
 
   private val test: Seq[ModuleID] = Seq(
