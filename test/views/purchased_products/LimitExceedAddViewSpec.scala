@@ -92,6 +92,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
               Selectors.p(2)    -> "You cannot use this service to declare more than 110 litres of beer.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.p(4)    -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(5)    ->
                 (
@@ -117,6 +118,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
               Selectors.p(2)    -> "You cannot use this service to declare more than 20 litres of cider.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.p(4)    -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
+
               Selectors.h2(1)   -> "What you must do",
               Selectors.p(5)    ->
                 (
@@ -214,7 +216,9 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
           val expectedContent =
             Seq(
               Selectors.p(1)    -> "You have entered a total of 90.01 litres of sparkling wine.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 60 litres of sparkling wine.",
+              Selectors.p(
+                2
+              )                 -> "You cannot use this service to declare more than 60 litres of sparkling wine.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.p(4)    -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
               Selectors.h2(1)   -> "What you must do",
@@ -239,7 +243,9 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
           val expectedContent =
             Seq(
               Selectors.p(1)    -> "You have entered a total of 90.01 litres of wine.",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 90 litres of wine.",
+              Selectors.p(
+                2
+              )                 -> "You cannot use this service to declare more than 90 litres of wine.",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.p(4)    -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
               Selectors.h2(1)   -> "What you must do",
@@ -264,7 +270,9 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
           val expectedContent =
             Seq(
               Selectors.p(1)    -> "You have entered a total of 100.01 litres of wine (this includes sparkling wine).",
-              Selectors.p(2)    -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
+              Selectors.p(
+                2
+              )                 -> "You cannot use this service to declare more than 90 litres of wine (this includes up to 60 litres of sparkling wine).",
               Selectors.p(3)    -> "This item will be removed from your goods to declare.",
               Selectors.p(4)    -> "You can find out more about alcohol and tobacco limits for the online service (opens in new tab).",
               Selectors.h2(1)   -> "What you must do",
