@@ -25,9 +25,9 @@
 )
 
 
-@(form: Form[ConfirmRemoveDto], path: ProductPath, iid: String)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[ConfirmRemoveDto], path: ProductPath, iid: String, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, messages(s"label.do_you_want_to_remove_.${path.toMessageKey}")))) {
+@govukLayout(pageTitle = Some(title(form, messages(s"label.do_you_want_to_remove_.${path.toMessageKey}"))), backLink = backLink, customBackLink = false) {
 
  @formHelper(action = routes.AlterProductsController.remove(path, iid)){
 
