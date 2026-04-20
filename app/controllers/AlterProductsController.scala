@@ -41,6 +41,7 @@ class AlterProductsController @Inject() (
   val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
+  val backLinkModel: BackLinkModel,
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
@@ -48,14 +49,14 @@ class AlterProductsController @Inject() (
     with ControllerHelpers {
 
   def confirmRemove(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    Future.successful(Ok(remove(ConfirmRemoveDto.form, path, iid)))
+    Future.successful(Ok(remove(ConfirmRemoveDto.form, path, iid, backLinkModel.backLink)))
   }
 
   def remove(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     ConfirmRemoveDto.form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(remove(formWithErrors, path, iid))),
+        formWithErrors => Future.successful(BadRequest(remove(formWithErrors, path, iid, backLinkModel.backLink))),
         confirmRemoveDto =>
           if (confirmRemoveDto.confirmRemove) {
             purchasedProductService.removePurchasedProductInstance(context.getJourneyData, iid) map { _ =>
