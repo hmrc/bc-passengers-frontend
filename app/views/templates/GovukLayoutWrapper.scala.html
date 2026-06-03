@@ -96,7 +96,7 @@
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = pageTitle,
     serviceName = Some(messages("service.name")),
-    isWelshTranslationAvailable = true,
+    isWelshTranslationAvailable = if (appConfig.languageTranslationEnabled) true else false,
     serviceURLs = ServiceURLs(
     serviceUrl = Some(controllers.routes.TravelDetailsController.newSession.url)
     ),
