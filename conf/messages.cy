@@ -1416,13 +1416,15 @@ label.excise_paid = Toll ecséis a dalwyd
 label.tax_exempt = Rhydd o dreth
 
 #eu_evidence_item
-heading.evidence_eu_item = A oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol?
+heading.evidence_eu_item = Tystiolaeth bod yr eitem wedi’i gwneud yn yr UE
+label.evidence_eu_item.question = A oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol?
+text.evidence_eu_item.intro = Os cafodd eich eitem ei gwneud neu ei chynhyrchu yn yr UE, efallai na fydd angen i chi dalu toll dramor. Mae’n rhaid bod gennych dystiolaeth bod yr eitem wedi’i gwneud neu ei chynhyrchu yn yr UE.
 text.evidence_include = Gall y dystiolaeth gynnwys un o’r canlynol:
 label.packaging_or_label = pecynnu neu label ynghlwm wrth yr eitem sy’n dangos ei bod wedi’i chynhyrchu neu ei gwneud yn yr UE
 label.item_is_handmade = tystiolaeth bod yr eitem wedi’i gwneud â llaw neu wedi’i thyfu gartref yn yr UE
 label.documents_by_seller = dogfennau a roddwyd i chi gan y gwerthwr sy’n dangos bod yr eitem wedi’i chynhyrchu neu ei gwneud yn yr UE
 label.statement_on_origin = '‘datganiad tarddiad’' gan gyflenwr yr eitem
-label.appropriate_evidence = Os nad oes gennych y dystiolaeth briodol, bydd yn rhaid i chi dalu toll dramor ar yr eitem hon.
+label.appropriate_evidence = Os nad oes gennych dystiolaeth, bydd yn rhaid i chi dalu toll dramor ar yr eitem hon
 error.evidence_eu_item = Dewiswch ‘Iawn’ os oes gennych unrhyw dystiolaeth sy’n dangos bod yr eitem hon wedi’i chynhyrchu neu ei gwneud yn yr UE yn wreiddiol
 
 label.change_your_goods=Newid eich nwyddau
