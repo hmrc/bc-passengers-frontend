@@ -73,8 +73,7 @@ class EUEvidenceItemViewSpec extends BaseViewSpec {
 
   "EUEvidenceItemView" when {
     renderViewTest(
-      title =
-        "Evidence the item was made in the EU - Check tax on goods you bring into the UK - GOV.UK",
+      title = "Evidence the item was made in the EU - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Evidence the item was made in the EU"
     )
 
