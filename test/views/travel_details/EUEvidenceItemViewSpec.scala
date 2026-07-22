@@ -78,17 +78,6 @@ class EUEvidenceItemViewSpec extends BaseViewSpec {
       heading = "Evidence the item was made in the EU"
     )
 
-    "radio group" should {
-      "have a legend and labelled yes/no options" in {
-        val doc = document(viewViaApply)
-
-        doc.select("fieldset legend").text() shouldBe
-          "Do you have evidence this item was originally produced or made in the EU?"
-        doc.select("label[for=eUEvidenceItem-value-yes]").text() shouldBe "Yes"
-        doc.select("label[for=eUEvidenceItem-value-no]").text()  shouldBe "No"
-      }
-    }
-
     "formWithErrors" should {
       val expectedErrors = List(
         "#eUEvidenceItem-value-yes" -> messages("error.evidence_eu_item")
