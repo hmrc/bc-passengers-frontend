@@ -339,6 +339,7 @@ label.country_the_item_was_bought_in=Y wlad lle y prynwyd yr eitem
 label.country_the_item_was_produced_in = Ble y cafodd yr eitem hon ei gwneud yn wreiddiol
 label.if_you_bought_this_item_=Os prynoch yr eitem hon ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu
 label.currency_used_to_buy_the_item=Yr arian cyfred a ddefnyddiwyd i brynu’r eitem
+label.currency_used_hint=Nodwch yr arian cyfred mewn geiriau, er enghraifft ‘punnoedd’ neu ‘doleri’.
 label.price_paid_for_this_item=Y pris a dalwyd am yr eitem hon
 label.country_the_item_was_produced_hint = Os nad ydych yn siŵr lle y cafodd yr eitem hon ei gwneud yn wreiddiol, gadewch hyn yn wag
 label.tell_us_about_the_goods_=Rhowch wybod i ni am eich nwyddau

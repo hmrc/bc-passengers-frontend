@@ -340,6 +340,7 @@ label.country_the_item_was_produced_in = Where this item was originally made
 label.if_you_bought_this_item_ = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
 label.country_the_item_was_produced_hint = If you are unsure where this item was originally made, leave this blank.
 label.currency_used_to_buy_the_item = Currency used to buy the item
+label.currency_used_hint = Enter the currency in words, for example ‘pounds’ or ‘dollars’.
 label.price_paid_for_this_item = Price paid for this item
 label.tell_us_about_the_goods_ = Tell us about your goods
 label.tell_us_about_the_additional_goods_ = Tell us about your additional goods
