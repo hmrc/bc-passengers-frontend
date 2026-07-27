@@ -991,7 +991,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text                shouldBe "Additional tax due on these goods £0.00"
-      doc.getElementsByClass("govuk-button").text()  shouldBe "Amend your declaration"
+      doc.getElementsByClass("govuk-button").text()  shouldBe "Continue to declaration"
       doc.getElementsByClass("govuk-heading-m").text() should include("Breakdown of tax and duty due")
       doc
         .select(".govuk-table thead th.govuk-table__header")
@@ -1101,7 +1101,7 @@ class DashboardControllerSpec extends BaseSpec {
       content                                          should include(
         "You can amend your declaration from 5 days before your scheduled time of arrival in the UK."
       )
-      doc.getElementsByClass("govuk-button").text()  shouldBe "Amend your declaration and pay online"
+      doc.getElementsByClass("govuk-button").text()  shouldBe "Continue to declaration"
     }
 
     "redirect to the declaration page if the amendment total is within free allowance" in new LocalSetup {

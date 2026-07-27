@@ -209,7 +209,7 @@ class PreviousGoodsControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text()             shouldBe "Your previously declared goods"
-      doc.getElementsByClass("govuk-button").text() shouldBe "Add goods"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Add new goods"
     }
 
     "respond with 200, display the previous-goods page if all the travel details exist & display button's text for Amendment:Add goods " in new LocalSetup {
@@ -325,7 +325,7 @@ class PreviousGoodsControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text()             shouldBe "Your previously declared goods"
-      doc.getElementsByClass("govuk-button").text() shouldBe "Add goods"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Add new goods"
     }
   }
 
