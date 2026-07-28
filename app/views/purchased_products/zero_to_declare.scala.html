@@ -133,19 +133,19 @@
 
     @p(Html(messages("label.amend_upto_5_days")))
     @formHelper(action = routes.CalculateDeclareController.declareYourGoods) {
-      @button(messages("label.amend_your_goods"))
+      @button(messages("label.continue_to_declaration"))
     }
   } else {
     <div class="govuk-inset-text"><p>@messages("label.still_need_to_declare")</p></div>
 
     @p(Html(messages("label.declare_upto_5_days")))
     @formHelper(action = routes.CalculateDeclareController.declareYourGoods) {
-      @button(messages("label.declare_your_goods"))
+      @button(messages("label.continue_to_declaration"))
     }
   }
 
   <p class="govuk-body">
-    <a class="govuk-link" href="@controllers.routes.TravelDetailsController.newSession">@messages("label.start_again")</a>
+    <a class="govuk-link" href="@controllers.routes.TravelDetailsController.newSession">@messages("label.cancel_declaration")</a>
   </p>
 
 }

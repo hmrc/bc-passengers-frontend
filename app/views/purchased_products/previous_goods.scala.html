@@ -20,7 +20,6 @@
 
 @this(
   govukLayout: templates.GovukLayoutWrapper,
-  displayItem: components.display_item,
   h1: components.h1,
   h2: components.h2
 )
@@ -41,51 +40,87 @@
 
   @h1(messages("label.your_previously_declared_goods"))
 
+  <p class="govuk-body">
+    @messages("label.previous_goods_additional_content")
+    <a href="https://www.gov.uk/government/publications/request-a-refund-of-overpaid-vat-or-duty-for-goods-declared-using-the-online-service-for-passengers" class="govuk-link" target="_blank">@messages("text.read_more_about_refunds")</a><span>.</span>
+  </p>
+
   @if(previousAlcoholPurchasedItemList.nonEmpty) {
     <div class="alcohol">
       @h2(messages("label.alcohol"))
-      <div class="govuk-summary-list">
-        @previousAlcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@messages("label.item")</th>
+            <th scope="col" class="govuk-table__header">@messages("label.price")</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        @previousAlcoholPurchasedItemList.map { purchasedItem =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "alcohol", idx)
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">@messages(description._1, description._2.map(messages(_).toLowerCase)*)</td>
+              <td class="govuk-table__cell">@purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)</td>
+            </tr>
             }
           }
-      </div>
+        </tbody>
+      </table>
     </div>
   }
 
   @if(previousTobaccoPurchasedItemList.nonEmpty){
     <div class="tobacco">
       @h2(messages("label.tobacco"))
-        <div class="govuk-summary-list">
-            @previousTobaccoPurchasedItemList.zipWithIndex.map {  case (purchasedItem, idx) =>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">@messages("label.item")</th>
+              <th scope="col" class="govuk-table__header">@messages("label.price")</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            @previousTobaccoPurchasedItemList.map { purchasedItem =>
               @purchasedItem.descriptionLabels(long = true).map { description =>
-                @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "tobacco", idx)
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">@messages(description._1, description._2.map(messages(_).toLowerCase)*)</td>
+                  <td class="govuk-table__cell">@purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)</td>
+                </tr>
               }
             }
-        </div>
+          </tbody>
+        </table>
     </div>
     }
 
   @if(previousOtherGoodsPurchasedItemList.nonEmpty){
     <div class="other-goods">
       @h2(messages("label.other_goods"))
-        <div class="govuk-summary-list">
-            @previousOtherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">@messages("label.item")</th>
+              <th scope="col" class="govuk-table__header">@messages("label.price")</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            @previousOtherGoodsPurchasedItemList.map { purchasedItem =>
               @purchasedItem.descriptionLabels(long = false).map { description =>
-                @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "otherGoods", idx)
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">@messages(description._1, description._2.map(messages(_).toLowerCase)*)</td>
+                  <td class="govuk-table__cell">@purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)</td>
+                </tr>
              }
             }
-        </div>
+          </tbody>
+        </table>
     </div>
     }
 
   @linkAsButton(
     routes.DashboardController.showDashboard,
-    messages("label.add_goods"),
+    messages("label.add_new_goods"),
     Some("add_goods")
     )
 
 }
-
-

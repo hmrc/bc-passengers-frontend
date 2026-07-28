@@ -1233,8 +1233,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           val content: String = contentAsString(response)
           val doc: Document   = Jsoup.parse(content)
 
-          doc.getElementsByTag("h1").text()             shouldBe "Amend your declaration"
-          doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
+          doc.getElementsByTag("h1").text()             shouldBe "Declare your additional goods"
+          doc.getElementsByClass("govuk-button").text() shouldBe "Declare goods"
         }
       }
 
@@ -1269,8 +1269,8 @@ class CalculateDeclareControllerSpec extends BaseSpec {
           val content: String = contentAsString(response)
           val doc: Document   = Jsoup.parse(content)
 
-          doc.getElementsByTag("h1").text()             shouldBe "Amend your declaration"
-          doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
+          doc.getElementsByTag("h1").text()             shouldBe "Declare your additional goods"
+          doc.getElementsByClass("govuk-button").text() shouldBe "Declare goods"
         }
       }
 
@@ -1326,7 +1326,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Declare your additional goods"
     }
 
     "display the Amend-your-declaration page, when tax to be paid is zero in amendment journey" in new LocalSetup {
@@ -1360,7 +1360,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text() shouldBe "Amend your declaration"
+      doc.getElementsByTag("h1").text() shouldBe "Declare your additional goods"
     }
   }
 
@@ -2477,10 +2477,10 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       val content: String = contentAsString(response)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()             shouldBe "Amend your declaration"
+      doc.getElementsByTag("h1").text()             shouldBe "Declare your additional goods"
       doc.text()                                      should include("these goods are for my own use or to give away as a gift")
       doc.text()                                      should include("I must pay duty and tax on these goods if I bring them into the UK")
-      doc.getElementsByClass("govuk-button").text() shouldBe "Amend your declaration"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Declare goods"
     }
   }
 

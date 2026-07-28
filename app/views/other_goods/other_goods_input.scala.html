@@ -46,14 +46,21 @@
         @if(form.errors){
             @errorSummary(form.errors)
         }
-        <fieldset class="govuk-fieldset">
 
-        @h1Product("label.tell_us_about_the", customHeading, form.errors)
-        <br>
-        <br>
+        <h1 class="govuk-heading-xl @if(form.errors){govuk-!-margin-top-0}">
+            <span class="govuk-caption-xl">@messages("label.tell_us_about_the")</span>
+            @customHeading
+        </h1>
 
         @if(otherItemMode.equals("create")){
+            @p{@messages("label.search_through_our_lists_and")
+                <a class="govuk-link" href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))">@messages("label.categorise_your_goods_yourself")</a>}
+        }
 
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-visually-hidden">@customHeading</legend>
+
+        @if(otherItemMode.equals("create")){
             @autoCompleteList(form,
                 id = "searchTerm",
                 name = "searchTerm",
@@ -65,10 +72,6 @@
                 list = otherGoodsSearchItems.map(c => (c.name,messages(c.name))),
                 jsonData = Json.toJson(otherGoodsSearchItems.map(_.toAutoCompleteJson)).toString
             )
-            <div class="govuk-inset-text">
-                @p{@messages("label.search_through_our_lists_and")
-                    <a class="govuk-link" href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))" class="add">@messages("label.categorise_your_goods_yourself")</a>}
-            </div>
         }
 
         @autoCompleteList(form,
@@ -99,8 +102,8 @@
         @autoCompleteList(form,
             id = "currency",
             name = "currency",
-            isPageHint = false,
-            hint = "",
+            isPageHint = true,
+            hint = messages("label.currency_used_hint"),
             isPageHeading = false,
             label = messages(s"label.currency_used_to_buy_the_item"),
             hintText = messages("label.enter_currency"),
