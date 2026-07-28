@@ -189,6 +189,10 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         )
       ).thenReturn(insertedPurchase)
       when(
+        injected[NewPurchaseService]
+          .insertPurchasesWithIid(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())
+      ).thenReturn(insertedPurchase)
+      when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
@@ -934,6 +938,39 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         meq("EUR"),
         meq(List(BigDecimal(12.50))),
         any(),
+        any()
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "add a PPI using submitted iid and redirect to next step" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "iid"            -> "ABCdef",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+      verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
+        meq(ProductPath("alcohol/beer")),
+        meq(Some(BigDecimal(20.0))),
+        any(),
+        meq("FR"),
+        any(),
+        meq("EUR"),
+        meq(List(BigDecimal(12.50))),
+        meq("ABCdef"),
         any()
       )(any())
 

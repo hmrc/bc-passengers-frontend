@@ -251,6 +251,15 @@ class AlcoholInputViewSpec extends BaseViewSpec {
       heading = "Tell us about the Wine"
     )
 
+    "render browser back to edit script on add journey" in {
+      noIidView.toString should include("""name="iid"""")
+      noIidView.toString should include("purchase-draft-")
+    }
+
+    "not render browser back to edit script on edit journey" in {
+      viewViaApply.toString should not include "purchase-draft-"
+    }
+
     "formWithErrors" should
       invalidTestCases.foreach { testCase =>
         s"have error prefix in title for ${testCase._1}" in {
