@@ -46,7 +46,9 @@ class PayApiService @Inject() (
   private lazy val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
 
   lazy val returnUrl: String =
-    configuration.getOptional[String]("feedback-frontend.host").getOrElse("") + "/feedback/passengers"
+    configuration
+      .getOptional[String]("feedback-frontend.host")
+      .getOrElse("") + "/feedback/passengers?useServiceNavigation"
 
   lazy val returnUrlFailed: String    = configuration
     .getOptional[String]("bc-passengers-frontend.host")
