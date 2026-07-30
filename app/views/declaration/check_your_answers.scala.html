@@ -1,0 +1,120 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.ViewUtils._
+@import util._
+@import uk.gov.hmrc.govukfrontend.views.Aliases._
+
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    govukSummaryList: GovukSummaryList,
+    h1: components.h1,
+    h2: components.h2,
+    button: components.button
+)
+
+@(userInformation: UserInformation, placeOfArrivalValue: String, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@identificationType = @{
+    userInformation.identificationType match {
+        case "passport" => messages("label.passport_number")
+        case "euId" => messages("label.euId_number")
+        case "driving" => messages("label.driving_licence_number")
+        case "telephone" => messages("label.telephone_number")
+        case _ => userInformation.identificationType
+    }
+}
+
+@summaryRow(key: String, value: String, changeUrl: Call, hiddenText: String) = @{
+    SummaryListRow(
+        key = Key(content = Text(key)),
+        value = Value(content = Text(value)),
+        actions = Some(Actions(
+            items = Seq(ActionItem(
+                href = changeUrl.url,
+                content = Text(messages("label.change")),
+                visuallyHiddenText = Some(hiddenText)
+            ))
+        ))
+    )
+}
+
+@govukLayout(pageTitle = Some(messages("label.check_your_answers") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+    @h1(messages("label.check_your_answers"))
+
+    @h2("label.personal_details")
+
+    @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-9",
+        rows = Seq(
+            summaryRow(
+            messages("label.name"),
+            userInformation.firstName + " " + userInformation.lastName,
+            routes.CalculateDeclareController.whatIsYourName,
+            messages("label.name").toLowerCase
+            ),
+            summaryRow(
+                messages("label.which_identification_number"),
+                identificationType,
+                routes.CalculateDeclareController.typeOfIdentification,
+                messages("label.which_identification_number").toLowerCase
+            ),
+            summaryRow(
+                identificationType,
+                userInformation.identificationNumber,
+                routes.CalculateDeclareController.whatIsYourIdentificationNumber,
+                identificationType.toLowerCase
+            ),
+            summaryRow(
+                messages("label.email_address"),
+                userInformation.emailAddress,
+                routes.CalculateDeclareController.whatIsYourEmail,
+                messages("label.email_address").toLowerCase
+            )
+        )
+    ))
+
+    @h2("label.journey_details")
+
+    @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-9",
+        rows = Seq(
+            summaryRow(
+                messages("label.place_of_arrival_uk"),
+                placeOfArrivalValue,
+                routes.CalculateDeclareController.whatAreYourJourneyDetails,
+                messages("label.place_of_arrival_uk").toLowerCase
+            ),
+            summaryRow(
+                messages("label.date_of_arrival"),
+                formatLocalDate(userInformation.dateOfArrival, "dd MMMM YYYY"),
+                routes.CalculateDeclareController.whatAreYourJourneyDetails,
+                messages("label.date_of_arrival").toLowerCase
+            ),
+            summaryRow(
+                messages("label.scheduled_time_of_arrival"),
+                formatLocalTime(userInformation.timeOfArrival),
+                routes.CalculateDeclareController.whatAreYourJourneyDetails,
+                messages("label.scheduled_time_of_arrival").toLowerCase
+            )
+        )
+    ))
+
+    @formHelper(action = routes.CalculateDeclareController.processCheckYourAnswers) {
+        @button("label.continue")
+    }
+}
