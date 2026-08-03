@@ -50,6 +50,10 @@ class OtherGoodsInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
+  private def submittedIid(implicit context: LocalContext): Option[String] =
+    context.request.body.asFormUrlEncoded
+      .flatMap(_.get("iid").flatMap(_.headOption))
+
   val addCostForm: Form[OtherGoodsDto] = Form(
     mapping(
       "searchTerm"    -> optional(text)
@@ -223,15 +227,29 @@ class OtherGoodsInputController @Inject() (
           ),
         dto =>
           requireProduct(dto.searchTerm.get.path) { _ =>
-            val jd = newPurchaseService.insertPurchases(
-              dto.searchTerm.get.path,
-              None,
-              None,
-              dto.country,
-              dto.originCountry,
-              dto.currency,
-              List(dto.cost),
-              dto.searchTerm
+            val jd = submittedIid.fold(
+              newPurchaseService.insertPurchases(
+                dto.searchTerm.get.path,
+                None,
+                None,
+                dto.country,
+                dto.originCountry,
+                dto.currency,
+                List(dto.cost),
+                dto.searchTerm
+              )
+            )(iid =>
+              newPurchaseService.insertPurchasesWithIid(
+                dto.searchTerm.get.path,
+                None,
+                None,
+                dto.country,
+                dto.originCountry,
+                dto.currency,
+                List(dto.cost),
+                iid,
+                dto.searchTerm
+              )
             )
             cache.store(jd._1) map { _ =>
               (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {

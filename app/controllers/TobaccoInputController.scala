@@ -70,6 +70,10 @@ class TobaccoInputController @Inject() (
         Redirect(routes.SelectProductController.nextStep())
     }
 
+  private def submittedIid(implicit context: LocalContext): Option[String] =
+    context.request.body.asFormUrlEncoded
+      .flatMap(_.get("iid").flatMap(_.headOption))
+
   def displayCigaretteAndHeatedTobaccoForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
@@ -249,14 +253,27 @@ class TobaccoInputController @Inject() (
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     val dto              = tobaccoInputForm.resilientForm.bindFromRequest().value.get
     val (journeyData, _) =
-      newPurchaseService.insertPurchases(
-        path,
-        dto.weightOrVolume,
-        dto.noOfSticks,
-        dto.country,
-        dto.originCountry,
-        dto.currency,
-        List(dto.cost)
+      submittedIid.fold(
+        newPurchaseService.insertPurchases(
+          path,
+          dto.weightOrVolume,
+          dto.noOfSticks,
+          dto.country,
+          dto.originCountry,
+          dto.currency,
+          List(dto.cost)
+        )
+      )(iid =>
+        newPurchaseService.insertPurchasesWithIid(
+          path,
+          dto.weightOrVolume,
+          dto.noOfSticks,
+          dto.country,
+          dto.originCountry,
+          dto.currency,
+          List(dto.cost),
+          iid
+        )
       )
 
     requireLimitUsage(journeyData) { limits =>
@@ -286,14 +303,27 @@ class TobaccoInputController @Inject() (
               dto =>
                 if (calculatorLimitConstraint(limits, product.applicableLimits)) {
                   val (journeyData: JourneyData, iid: String) =
-                    newPurchaseService.insertPurchases(
-                      path = path,
-                      weightOrVolume = dto.weightOrVolume,
-                      noOfSticks = dto.noOfSticks,
-                      countryCode = dto.country,
-                      originCountryCode = dto.originCountry,
-                      currency = dto.currency,
-                      costs = List(dto.cost)
+                    submittedIid.fold(
+                      newPurchaseService.insertPurchases(
+                        path = path,
+                        weightOrVolume = dto.weightOrVolume,
+                        noOfSticks = dto.noOfSticks,
+                        countryCode = dto.country,
+                        originCountryCode = dto.originCountry,
+                        currency = dto.currency,
+                        costs = List(dto.cost)
+                      )
+                    )(iid =>
+                      newPurchaseService.insertPurchasesWithIid(
+                        path = path,
+                        weightOrVolume = dto.weightOrVolume,
+                        noOfSticks = dto.noOfSticks,
+                        countryCode = dto.country,
+                        originCountryCode = dto.originCountry,
+                        currency = dto.currency,
+                        costs = List(dto.cost),
+                        iid = iid
+                      )
                     )
 
                   cache.store(journeyData) map { _ =>
@@ -337,14 +367,27 @@ class TobaccoInputController @Inject() (
                   alcoholAndTobaccoCalculationService.looseTobaccoAddHelper(context.getJourneyData, dto.weightOrVolume)
                 if (looseTobaccoWeightConstraint(totalWeightForLooseTobacco * 1000)) {
                   val (journeyData: JourneyData, iid: String) =
-                    newPurchaseService.insertPurchases(
-                      path,
-                      dto.weightOrVolume,
-                      dto.noOfSticks,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost)
+                    submittedIid.fold(
+                      newPurchaseService.insertPurchases(
+                        path,
+                        dto.weightOrVolume,
+                        dto.noOfSticks,
+                        dto.country,
+                        dto.originCountry,
+                        dto.currency,
+                        List(dto.cost)
+                      )
+                    )(iid =>
+                      newPurchaseService.insertPurchasesWithIid(
+                        path,
+                        dto.weightOrVolume,
+                        dto.noOfSticks,
+                        dto.country,
+                        dto.originCountry,
+                        dto.currency,
+                        List(dto.cost),
+                        iid
+                      )
                     )
                   cache.store(journeyData).map { _ =>
                     navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
@@ -386,14 +429,27 @@ class TobaccoInputController @Inject() (
               dto =>
                 if (calculatorLimitConstraint(limits, product.applicableLimits)) {
                   val (journeyData: JourneyData, iid: String) =
-                    newPurchaseService.insertPurchases(
-                      path,
-                      dto.weightOrVolume,
-                      dto.noOfSticks,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost)
+                    submittedIid.fold(
+                      newPurchaseService.insertPurchases(
+                        path,
+                        dto.weightOrVolume,
+                        dto.noOfSticks,
+                        dto.country,
+                        dto.originCountry,
+                        dto.currency,
+                        List(dto.cost)
+                      )
+                    )(iid =>
+                      newPurchaseService.insertPurchasesWithIid(
+                        path,
+                        dto.weightOrVolume,
+                        dto.noOfSticks,
+                        dto.country,
+                        dto.originCountry,
+                        dto.currency,
+                        List(dto.cost),
+                        iid
+                      )
                     )
                   cache.store(journeyData) map { _ =>
                     navigationHelper(context.getJourneyData, path, iid, dto.originCountry)

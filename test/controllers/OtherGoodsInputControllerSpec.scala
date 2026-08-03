@@ -146,6 +146,10 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         )
       ).thenReturn(insertedPurchase)
       when(
+        injected[NewPurchaseService]
+          .insertPurchasesWithIid(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())
+      ).thenReturn(insertedPurchase)
+      when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
@@ -695,6 +699,38 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         meq("EUR"),
         meq(List(BigDecimal(12.12))),
         any(),
+        any()
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "add a PPI using submitted iid and redirect to next step when action == continue" in new LocalSetup {
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+          .withFormUrlEncodedBody(
+            "iid"        -> "ABCdef",
+            "action"     -> "continue",
+            "searchTerm" -> "label.other-goods.womens_clothes",
+            "country"    -> "FR",
+            "currency"   -> "EUR",
+            "cost"       -> "12.12"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+      verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
+        meq(ProductPath("other-goods/adult/adult-clothing")),
+        any(),
+        any(),
+        meq("FR"),
+        any(),
+        meq("EUR"),
+        meq(List(BigDecimal(12.12))),
+        meq("ABCdef"),
         any()
       )(any())
 
