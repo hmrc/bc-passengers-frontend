@@ -25,7 +25,9 @@
     inputText: components.inputText,
     button: components.button,
     p: components.p,
-    autoCompleteList: components.autocompleteList
+    h1Product: components.h1Product,
+    autoCompleteList: components.autocompleteList,
+    browserBackToEdit: components.browserBackToEdit
 )
 
 @(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath, backLink: Option[String], customBackLink: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
@@ -37,6 +39,9 @@
 @govukLayout(pageTitle = Some(title(form, customTitle)), backLink = backLink, customBackLink = customBackLink) {
 
     @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm())(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
+        @if(iid.isEmpty) {
+            @browserBackToEdit(routes.OtherGoodsInputController.displayEditForm("iid").url)
+        }
 
         @if(form.errors){
             @errorSummary(form.errors)
