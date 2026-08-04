@@ -24,7 +24,19 @@
 <script @{CSPNonce.attr}>
     var iidField = document.getElementById("iid")
     var draftKey = "purchase-draft-" + window.location.pathname
-    iidField.value = iidField.value || window.sessionStorage.getItem(draftKey) || Math.random().toString(36).replace(/[^a-z]/g, "").substring(0, 6)
+
+    function isBackNavigation(event) {
+        var navigation = window.performance && window.performance.getEntriesByType("navigation")[0]
+        return (event && event.persisted) || (navigation && navigation.type === "back_forward")
+    }
+
+    var storedIid = window.sessionStorage.getItem(draftKey)
+    if (storedIid && window.sessionStorage.getItem("purchase-added-" + storedIid) === "true" && !isBackNavigation()) {
+        window.sessionStorage.removeItem(draftKey)
+        storedIid = null
+    }
+
+    iidField.value = iidField.value || storedIid || Math.random().toString(36).replace(/[^a-z]/g, "").substring(0, 6)
     window.sessionStorage.setItem(draftKey, iidField.value)
 
     function redirectToEditIfAdded() {
@@ -37,14 +49,11 @@
         window.sessionStorage.setItem("purchase-added-" + iidField.value, "true")
     })
     window.addEventListener("pageshow", function (event) {
-        var navigation = window.performance && window.performance.getEntriesByType("navigation")[0]
-        var isBackNavigation = event.persisted || navigation && navigation.type === "back_forward"
-        if (isBackNavigation) {
+        if (isBackNavigation(event)) {
             redirectToEditIfAdded()
         }
     })
-    var initialNavigation = window.performance && window.performance.getEntriesByType("navigation")[0]
-    if (initialNavigation && initialNavigation.type === "back_forward") {
+    if (isBackNavigation()) {
         redirectToEditIfAdded()
     }
 </script>
