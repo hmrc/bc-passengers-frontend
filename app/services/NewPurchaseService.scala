@@ -63,13 +63,14 @@ class NewPurchaseService @Inject() (
     searchTerm: Option[OtherGoodsSearchItem] = None
   )(implicit context: LocalContext): (JourneyData, String) = {
     val journeyData = context.journeyData.getOrElse(JourneyData())
+    val purchaseIid = if (journeyData.purchasedProductInstances.exists(_.iid == iid)) newIid() else iid
     val dataToAdd   = for {
       cost     <- costs
       country   = countriesService.getCountryByCode(countryCode)
       countryEU = countriesService.getCountryByCode(originCountryCode.getOrElse(""))
     } yield PurchasedProductInstance(
       path,
-      iid,
+      purchaseIid,
       weightOrVolume,
       noOfSticks,
       country,
@@ -87,7 +88,7 @@ class NewPurchaseService @Inject() (
         defaultCountry = Some(countryCode),
         defaultCurrency = Some(currency)
       ),
-      iid
+      purchaseIid
     )
   }
 
