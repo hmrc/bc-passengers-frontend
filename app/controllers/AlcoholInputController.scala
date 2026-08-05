@@ -66,6 +66,10 @@ class AlcoholInputController @Inject() (
         Redirect(routes.SelectProductController.nextStep())
     }
 
+  private def submittedIid(implicit context: LocalContext): Option[String] =
+    context.request.body.asFormUrlEncoded
+      .flatMap(_.get("iid").flatMap(_.headOption))
+
   def displayAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
@@ -141,15 +145,28 @@ class AlcoholInputController @Inject() (
     requireLimitUsage {
       val dto =
         alcoholInputForm.resilientForm.bindFromRequest().value.get
-      newPurchaseService
-        .insertPurchases(
-          path,
-          Some(dto.weightOrVolume),
-          None,
-          dto.country,
-          dto.originCountry,
-          dto.currency,
-          List(dto.cost)
+      submittedIid
+        .fold(
+          newPurchaseService.insertPurchases(
+            path,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            List(dto.cost)
+          )
+        )(iid =>
+          newPurchaseService.insertPurchasesWithIid(
+            path,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            List(dto.cost),
+            iid
+          )
         )
         ._1
     } { _ =>
@@ -181,14 +198,27 @@ class AlcoholInputController @Inject() (
                   .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
               if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
                 val (journeyData, item) =
-                  newPurchaseService.insertPurchases(
-                    path,
-                    Some(dto.weightOrVolume),
-                    None,
-                    dto.country,
-                    dto.originCountry,
-                    dto.currency,
-                    List(dto.cost)
+                  submittedIid.fold(
+                    newPurchaseService.insertPurchases(
+                      path,
+                      Some(dto.weightOrVolume),
+                      None,
+                      dto.country,
+                      dto.originCountry,
+                      dto.currency,
+                      List(dto.cost)
+                    )
+                  )(iid =>
+                    newPurchaseService.insertPurchasesWithIid(
+                      path,
+                      Some(dto.weightOrVolume),
+                      None,
+                      dto.country,
+                      dto.originCountry,
+                      dto.currency,
+                      List(dto.cost),
+                      iid
+                    )
                   )
                 cache.store(journeyData) map { _ =>
                   navigationHelper(context.getJourneyData, path, item, dto.originCountry)

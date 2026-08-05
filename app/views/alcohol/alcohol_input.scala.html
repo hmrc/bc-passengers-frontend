@@ -25,7 +25,8 @@
   inputText: components.inputText,
   button: components.button,
   h1Product: components.h1Product,
-  autoCompleteList: components.autocompleteList
+  autoCompleteList: components.autocompleteList,
+  browserBackToEdit: components.browserBackToEdit
 )
 
 @(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
@@ -33,6 +34,9 @@
 @govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase())), backLink = backLink, customBackLink = customBackLink) {
 
     @formHelper(action = iid.fold(routes.AlcoholInputController.processAddForm(path))(iid => routes.AlcoholInputController.processEditForm(iid))) {
+        @if(iid.isEmpty) {
+            @browserBackToEdit(routes.AlcoholInputController.displayEditForm("iid").url)
+        }
         @if(form.errors){
             @errorSummary(form.errors)
         }

@@ -26,6 +26,8 @@ class NewPurchaseService @Inject() (
   countriesService: CountriesService
 ) {
 
+  def newIid(rand: Random = Random): String = rand.alphanumeric.filter(_.isLetter).take(6).mkString
+
   def insertPurchases(
     path: ProductPath,
     weightOrVolume: Option[BigDecimal],
@@ -36,16 +38,39 @@ class NewPurchaseService @Inject() (
     costs: List[BigDecimal],
     searchTerm: Option[OtherGoodsSearchItem] = None,
     rand: Random = Random
+  )(implicit context: LocalContext): (JourneyData, String) =
+    insertPurchasesWithIid(
+      path,
+      weightOrVolume,
+      noOfSticks,
+      countryCode,
+      originCountryCode,
+      currency,
+      costs,
+      newIid(rand),
+      searchTerm
+    )
+
+  def insertPurchasesWithIid(
+    path: ProductPath,
+    weightOrVolume: Option[BigDecimal],
+    noOfSticks: Option[Int],
+    countryCode: String,
+    originCountryCode: Option[String],
+    currency: String,
+    costs: List[BigDecimal],
+    iid: String,
+    searchTerm: Option[OtherGoodsSearchItem] = None
   )(implicit context: LocalContext): (JourneyData, String) = {
     val journeyData = context.journeyData.getOrElse(JourneyData())
-    val iid         = rand.alphanumeric.filter(_.isLetter).take(6).mkString
+    val purchaseIid = if (journeyData.purchasedProductInstances.exists(_.iid == iid)) newIid() else iid
     val dataToAdd   = for {
       cost     <- costs
       country   = countriesService.getCountryByCode(countryCode)
       countryEU = countriesService.getCountryByCode(originCountryCode.getOrElse(""))
     } yield PurchasedProductInstance(
       path,
-      iid,
+      purchaseIid,
       weightOrVolume,
       noOfSticks,
       country,
@@ -63,7 +88,7 @@ class NewPurchaseService @Inject() (
         defaultCountry = Some(countryCode),
         defaultCurrency = Some(currency)
       ),
-      iid
+      purchaseIid
     )
   }
 

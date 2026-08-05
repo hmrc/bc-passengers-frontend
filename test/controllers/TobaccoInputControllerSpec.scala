@@ -175,6 +175,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         )
       ).thenReturn(insertedPurchase)
       when(
+        injected[NewPurchaseService]
+          .insertPurchasesWithIid(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())
+      ).thenReturn(insertedPurchase)
+      when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
@@ -763,6 +767,43 @@ class TobaccoInputControllerSpec extends BaseSpec {
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any(),
+        any()
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "add a PPI using submitted iid and redirect to next step for cigarettes" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
+      override def weightOrVolume: Option[BigDecimal] = None
+      override def noOfSticks: Option[Int]            = Some(400)
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+          .withFormUrlEncodedBody(
+            "iid"        -> "ABCdef",
+            "country"    -> "FR",
+            "currency"   -> "EUR",
+            "noOfSticks" -> "400",
+            "cost"       -> "92.50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+      verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
+        meq(ProductPath("tobacco/cigarettes")),
+        any(),
+        meq(Some(400)),
+        meq("FR"),
+        any(),
+        meq("EUR"),
+        meq(List(BigDecimal(92.50))),
+        meq("ABCdef"),
         any()
       )(any())
 

@@ -1,0 +1,59 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.helper.CSPNonce
+
+@this()
+
+@(editUrl: String)(implicit request: Request[?])
+
+<input type="hidden" name="iid" id="iid">
+<script @{CSPNonce.attr}>
+    var iidField = document.getElementById("iid")
+    var draftKey = "purchase-draft-" + window.location.pathname
+
+    function isBackNavigation(event) {
+        var navigation = window.performance && window.performance.getEntriesByType("navigation")[0]
+        return (event && event.persisted) || (navigation && navigation.type === "back_forward")
+    }
+
+    var storedIid = window.sessionStorage.getItem(draftKey)
+    if (storedIid && window.sessionStorage.getItem("purchase-added-" + storedIid) === "true" && !isBackNavigation()) {
+        window.sessionStorage.removeItem(draftKey)
+        storedIid = null
+    }
+
+    iidField.value = iidField.value || storedIid || Math.random().toString(36).replace(/[^a-z]/g, "").substring(0, 6)
+    window.sessionStorage.setItem(draftKey, iidField.value)
+
+    function redirectToEditIfAdded() {
+        if (window.sessionStorage.getItem("purchase-added-" + iidField.value) === "true") {
+            window.location.href = "@editUrl".replace("iid", iidField.value)
+        }
+    }
+
+    document.querySelector("form").addEventListener("submit", function () {
+        window.sessionStorage.setItem("purchase-added-" + iidField.value, "true")
+    })
+    window.addEventListener("pageshow", function (event) {
+        if (isBackNavigation(event)) {
+            redirectToEditIfAdded()
+        }
+    })
+    if (isBackNavigation()) {
+        redirectToEditIfAdded()
+    }
+</script>
