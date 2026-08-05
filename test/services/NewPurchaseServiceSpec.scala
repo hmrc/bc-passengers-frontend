@@ -175,6 +175,28 @@ class NewPurchaseServiceSpec extends BaseSpec {
       iid                                                    shouldBe "ABCdef"
       modifiedJourneyData.purchasedProductInstances.last.iid shouldBe "ABCdef"
     }
+
+    "add a purchase with a new iid when the supplied iid already exists" in new LocalSetup {
+      val localContext: LocalContext = LocalContext(
+        request = enhancedFakeRequest("GET", "anything"),
+        sessionId = "123",
+        journeyData = Some(JourneyData(purchasedProductInstances = List(ppi.copy(iid = "ABCdef"))))
+      )
+
+      val (modifiedJourneyData, iid) = newPurchaseService.insertPurchasesWithIid(
+        path = ProductPath("some/item/path"),
+        weightOrVolume = Some(185.5),
+        noOfSticks = Some(noOfSticks),
+        countryCode = "FR",
+        originCountryCode = None,
+        currency = "EUR",
+        costs = List(12.50),
+        iid = "ABCdef"
+      )(localContext)
+
+      iid                                                      should not be "ABCdef"
+      modifiedJourneyData.purchasedProductInstances.map(_.iid) should contain theSameElementsAs List("ABCdef", iid)
+    }
   }
 
   "Calling NewPurchaseService.updatePurchase" should {
