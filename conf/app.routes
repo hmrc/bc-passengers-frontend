@@ -146,6 +146,9 @@ POST       /user-information-email                                              
 GET        /user-information-journey                                                            controllers.CalculateDeclareController.whatAreYourJourneyDetails
 POST       /user-information-journey                                                            controllers.CalculateDeclareController.processJourneyDetails
 
+GET        /check-your-answers                                                                  controllers.CalculateDeclareController.checkYourAnswers
+POST       /check-your-answers                                                                  controllers.CalculateDeclareController.processCheckYourAnswers
+
 GET        /process-amendment                                                          controllers.CalculateDeclareController.processAmendment
 
 GET        /declaration-complete                                                       controllers.ZeroDeclarationController.loadDeclarationPage()
