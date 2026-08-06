@@ -52,6 +52,13 @@
 }
 
 @p(Html(messages("label.about_foreign_currencies")), id=Some("foreign-currency"))
+
+@if(isAmendment) {
+  @p(Html(messages(
+    "label.check_previously_declared_goods",
+    s"""<a class="govuk-link" href="${routes.PreviousGoodsController.showPreviousGoods}">${messages("label.view_your_previously_declared_goods")}</a>"""
+  )))
+}
 <br>
 
 <div class="alcohol">
