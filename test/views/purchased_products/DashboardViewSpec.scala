@@ -28,6 +28,7 @@ class DashboardViewSpec extends BaseViewSpec {
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
 
   private val alcoholProductPath: ProductPath    = ProductPath(path = "alcohol/wine")
+  private val vapeProductPath: ProductPath    = ProductPath(path = "vaping-products")
   private val tobaccoProductPath: ProductPath    = ProductPath(path = "tobacco/cigars")
   private val otherGoodsProductPath: ProductPath = ProductPath(path = "other-goods/furniture")
 
@@ -68,6 +69,14 @@ class DashboardViewSpec extends BaseViewSpec {
     applicableLimits = List("L-CIGAR")
   )
 
+  private val vapeProductTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
+    token = "vape",
+    name = "label.vape",
+    rateID = "VAP/V1/VPRODUCTS",
+    templateId = "vape",
+    applicableLimits = List("V-PRODUCTS")
+  )
+
   private val otherGoodsProductTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
     token = "furniture",
     name = "label.other-goods.furniture",
@@ -78,6 +87,16 @@ class DashboardViewSpec extends BaseViewSpec {
 
   private val alcoholPurchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
     path = alcoholProductPath,
+    iid = "iid0",
+    weightOrVolume = Some(weightOrVolume),
+    noOfSticks = None,
+    country = Some(country),
+    currency = Some("GBP"),
+    cost = Some(100.00)
+  )
+
+  private val vapePurchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+    path = vapeProductPath,
     iid = "iid0",
     weightOrVolume = Some(weightOrVolume),
     noOfSticks = None,
@@ -116,6 +135,16 @@ class DashboardViewSpec extends BaseViewSpec {
     )
   )
 
+  private val vapePurchasedItemList: List[PurchasedItem] = List(
+    PurchasedItem(
+      purchasedProductInstance = vapePurchasedProductInstance,
+      productTreeLeaf = vapeProductTreeLeaf,
+      currency = currency,
+      gbpCost = 200.00,
+      exchangeRate = exchangeRate
+    )
+  )
+
   private val tobaccoPurchasedItemList: List[PurchasedItem] = List(
     PurchasedItem(
       purchasedProductInstance = tobaccoPurchasedProductInstance,
@@ -140,6 +169,7 @@ class DashboardViewSpec extends BaseViewSpec {
     journeyData = JourneyData(),
     alcoholPurchasedItemList = alcoholPurchasedItemList,
     tobaccoPurchasedItemList = tobaccoPurchasedItemList,
+    vapePurchasedItemList = vapePurchasedItemList,
     otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     showCalculate = true,
@@ -160,6 +190,7 @@ class DashboardViewSpec extends BaseViewSpec {
     journeyData = JourneyData(),
     alcoholPurchasedItemList = alcoholPurchasedItemList,
     tobaccoPurchasedItemList = tobaccoPurchasedItemList,
+    vapePurchasedItemList = vapePurchasedItemList,
     otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     showCalculate = true,
@@ -179,6 +210,7 @@ class DashboardViewSpec extends BaseViewSpec {
     JourneyData(),
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,
+    vapePurchasedItemList,
     otherGoodsPurchasedItemList(),
     otherGoodsPurchasedItemList(),
     true,
@@ -208,6 +240,7 @@ class DashboardViewSpec extends BaseViewSpec {
             journeyData = JourneyData(),
             alcoholPurchasedItemList = alcoholPurchasedItemList,
             tobaccoPurchasedItemList = tobaccoPurchasedItemList,
+            vapePurchasedItemList = vapePurchasedItemList,
             otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
             previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
             showCalculate = true,

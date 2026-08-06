@@ -88,6 +88,9 @@ label.wine = Wine
 label.sparkling_wine = Sparkling wine
 label.spirits = Spirits (such as gin, vodka or whisky and alcohol over 22%)
 label.other_alcoholic_drinks = All other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
+label.vaping-products.vape = Vaping Products
+label.vaping_products = Vaping Products
+label.vaping-products = Vaping Products
 label.tobacco = Tobacco
 label.cigarettes = Cigarettes
 label.heated-tobacco = Heated tobacco
@@ -141,11 +144,13 @@ label.made_in = Made in
 label.evidence_of_origin = Evidence of origin
 label.add_alcohol = Add alcohol
 label.add_tobacco = Add tobacco
+label.add_vape = Add vaping products
 label.add_other_goods = Add other goods
 label.add_purchases_separately_ = Add purchases separately if you bought them from more than one country or used more than one currency.
 select_products.heading.alcohol = What type of alcohol do you want to add?
 select_products.heading.alcohol.cider = What type of cider do you want to add?
 select_products.heading.tobacco = What type of tobacco do you want to add?
+select_products.heading.vape = What type of tobacco do you want to add?
 select_products.heading.other-goods = What type of other goods do you want to add?
 select_products.heading.other-goods.adult = What adult clothing or footwear do you want to add?
 select_products.heading.other-goods.carpets-fabric = What items of carpet or fabric do you want to add?
@@ -279,6 +284,7 @@ error.required.noofsticks.cigarettes = Enter the number of cigarettes
 error.required.noofsticks.heated-tobacco=Enter the number of units of heated tobacco
 error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
 error.required.weight.tobacco.rolling-tobacco = Enter the weight of the rolling tobacco
+error.required.vaping_products = Enter the price of the vaping products
 
 error.no_of_sticks.required.tobacco.cigarettes = Enter the number of cigarettes
 error.no_of_sticks.required.tobacco.heated-tobacco = Enter the number of units of heated tobacco
@@ -399,6 +405,8 @@ label.other-goods.tableware = Tableware or kitchenware
 label.other-goods.watches-clocks = Watch or clock
 label.other-goods.other = Other item
 label.other-goods.item-of-other-goods = Item of other goods
+
+label.vaping-products.item-of-vaping-products = Vaping products
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
@@ -700,6 +708,9 @@ label.X_litres_X = {0} litres {1}
 label.Xg_of_X = {0}g of {1}
 label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
+
+label.X_ml_X = {0} millilitre {1}
+label.X_mls_X = {0} millilitres {1}
 
 label.calculate = Calculate taxes and duties
 

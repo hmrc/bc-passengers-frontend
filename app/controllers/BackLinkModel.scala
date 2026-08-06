@@ -59,6 +59,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
             Some(AlcoholInputController.displayEditForm(iid))
           case matchedPath if matchedPath.contains("enter-goods/tobacco")     =>
             Some(TobaccoInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/vaping-products")     =>
+            Some(VapingProductsInputController.displayEditForm(iid))
           case matchedPath if matchedPath.contains("enter-goods/other-goods") =>
             Some(OtherGoodsInputController.displayEditForm(iid))
         }
@@ -157,7 +159,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
       case "edit"
           if path.contains("enter-goods/alcohol")
             || path.contains("enter-goods/tobacco")
-            || path.contains("enter-goods/other-goods") =>
+            || path.contains("enter-goods/other-goods")
+            || path.contains("enter-goods/vaping-products") =>
         Some(DashboardController.showDashboard)
       case _                                                                              =>
         None

@@ -115,6 +115,11 @@ POST       /enter-goods/$path<tobacco/(rolling|chewing)-tobacco>/tell-us        
 GET        /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.displayEditForm(iid: String)
 POST       /enter-goods/tobacco/:iid/edit                                              controllers.TobaccoInputController.processEditForm(iid: String)
 
+GET        /enter-goods/$path<vaping-products.*>/tell-us                              controllers.VapingProductsInputController.displayAddForm(path: ProductPath)
+POST       /enter-goods/$path<vaping-products.*>/tell-us                              controllers.VapingProductsInputController.processAddForm(path: ProductPath)
+GET        /enter-goods/vape/:iid/edit                                                 controllers.VapingProductsInputController.displayEditForm(iid: String)
+POST       /enter-goods/vape/:iid/edit                                                 controllers.VapingProductsInputController.processEditForm(iid: String)
+
 GET        /enter-goods/other-goods/tell-us                                            controllers.OtherGoodsInputController.displayAddForm()
 POST       /enter-goods/other-goods/tell-us                                            controllers.OtherGoodsInputController.processAddForm()
 

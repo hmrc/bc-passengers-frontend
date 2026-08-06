@@ -75,6 +75,25 @@ object AlcoholDto {
   )
 }
 
+object VapeDto {
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[VapeDto] = for {
+    country        <- purchasedProductInstance.country
+    currency       <- purchasedProductInstance.currency
+    weightOrVolume <- purchasedProductInstance.weightOrVolume
+    cost           <- purchasedProductInstance.cost
+  } yield VapeDto(
+    weightOrVolume,
+    country.code,
+    purchasedProductInstance.originCountry.map(_.code),
+    currency,
+    cost,
+    purchasedProductInstance.isVatPaid,
+    purchasedProductInstance.isExcisePaid,
+    purchasedProductInstance.isCustomPaid,
+    purchasedProductInstance.hasEvidence
+  )
+}
+
 case class AlcoholDto(
   weightOrVolume: BigDecimal,
   country: String,
@@ -86,6 +105,18 @@ case class AlcoholDto(
   isCustomPaid: Option[Boolean],
   hasEvidence: Option[Boolean]
 )
+
+case class VapeDto(
+  weightOrVolume: BigDecimal,
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+ )
 
 object TobaccoDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[TobaccoDto] = for {

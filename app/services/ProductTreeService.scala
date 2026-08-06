@@ -102,6 +102,12 @@ class ProductTreeService {
           )
         ),
         ProductTreeBranch(
+          "vaping-products",
+          "label.vaping-products",
+          List(ProductTreeLeaf("vape", "label.vaping-products", "VAP/V1/VPRODUCTS", "vaping-products", List("V-PRODUCTS"))
+          )
+        ),
+        ProductTreeBranch(
           "other-goods",
           "label.other-goods",
           List(

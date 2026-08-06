@@ -1,0 +1,109 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.mvc.Call
+@import views.ViewUtils._
+@import play.api.libs.json.{JsObject, Json}
+
+@this(
+govukLayout: templates.GovukLayoutWrapper,
+formHelper: FormWithCSRF,
+errorSummary: components.errorSummary,
+inputText: components.inputText,
+button: components.button,
+h1Product: components.h1Product,
+autoCompleteList: components.autocompleteList,
+browserBackToEdit: components.browserBackToEdit
+)
+
+@(form: Form[VapeDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase())), backLink = backLink, customBackLink = customBackLink) {
+
+@formHelper(action = iid.fold(routes.VapingProductsInputController.processAddForm(path))(iid => routes.VapingProductsInputController.processEditForm(iid))) {
+@if(iid.isEmpty) {
+@browserBackToEdit(routes.VapingProductsInputController.displayEditForm("iid").url)
+}
+@if(form.errors){
+@errorSummary(form.errors)
+}
+<fieldset class="govuk-fieldset">
+
+    @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}", form.errors)
+
+    @inputText(
+    form,
+    id = "weightOrVolume",
+    name = "weightOrVolume",
+    label = "label.total_volume_in_litres",
+    hint = Some(Html(messages("label.you_cannot_use_this_service_"))),
+    isPageHeading = false,
+    classes = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @autoCompleteList(form,
+    id = "country",
+    name = "country",
+    isPageHint = true,
+    hint = messages("label.if_you_bought_this_alcohol_"),
+    isPageHeading = false,
+    label = messages(s"label.country_this_alcohol_was_"),
+    hintText = messages("label.select_a_country"),
+    list = countries.map(c => (c.code,messages(c.countryName))),
+    jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
+    )
+    @if(journeyStart.contains("euOnly")){
+    @autoCompleteList(form,
+    id = "originCountry",
+    name = "originCountry",
+    isPageHint = true,
+    hint = messages("label.country_this_alcohol_was_produced_hint"),
+    isPageHeading = false,
+    label = messages(s"label.country_this_alcohol_was_produced"),
+    hintText = messages("label.select_a_country"),
+    list = countriesEU.map(c => (c.code,messages(c.countryName))),
+    jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
+    )
+    }
+
+    @autoCompleteList(form,
+    id = "currency",
+    name = "currency",
+    isPageHint = true,
+    hint = messages("label.currency_used_hint"),
+    isPageHeading = false,
+    label = messages(s"label.currency_used_to_buy_this_alcohol"),
+    hintText = messages("label.enter_currency"),
+    list = currencies.map(c => (c.code ,messages(c.displayName))),
+    jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
+    )
+
+    @inputText(
+    form,
+    id = "cost",
+    name = "cost",
+    label = "label.price_paid",
+    isPageHeading = false,
+    hint = Some(Html(messages("label.price_format_description"))),
+    classes = Some("govuk-input govuk-!-width-one-half")
+    )
+
+</fieldset>
+
+@button("label.continue")
+
+}
+}

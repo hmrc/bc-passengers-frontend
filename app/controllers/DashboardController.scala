@@ -74,6 +74,12 @@ class DashboardController @Inject() (
                   item
               }
 
+              val vapingProductsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+                case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
+                  if tid == "vaping-products" && ppi.isEditable.contains(true) =>
+                  item
+              }
+
               val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
                     if tid == "other-goods" && ppi.isEditable.contains(true) =>
@@ -87,13 +93,14 @@ class DashboardController @Inject() (
               }
 
               val showCalculate =
-                !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
+                !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && vapingProductsPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
               Ok(
                 dashboard(
                   jd,
                   alcoholPurchasedItemList.reverse,
                   tobaccoPurchasedItemList.reverse,
+                  vapingProductsPurchasedItemList.reverse,
                   otherGoodsPurchasedItemList.reverse,
                   previousOtherGoodsPurchasedItemList.reverse,
                   showCalculate,

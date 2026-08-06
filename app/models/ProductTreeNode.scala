@@ -76,6 +76,14 @@ case class ProductTreeLeaf(
             } else {
               ("label.X_litres_X", List(weightOrVolume.toString, name))
             }
+      case "vaping-products"               =>
+        for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
+          yield
+            if (weightOrVolume == BigDecimal(1)) {
+              ("label.X_ml_X", List(weightOrVolume.toString, name))
+            } else {
+              ("label.X_mls_X", List(weightOrVolume.toString, name))
+            }
       case "other-goods"           =>
         Some((name, Nil))
     }
@@ -103,6 +111,11 @@ case class ProductTreeLeaf(
         purchasedProductInstance.cost.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined
+      case "vaping-products"     =>
+        purchasedProductInstance.currency.isDefined &&
+          purchasedProductInstance.cost.isDefined &&
+          purchasedProductInstance.country.isDefined &&
+          purchasedProductInstance.weightOrVolume.isDefined
       case "other-goods" =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.country.isDefined &&
