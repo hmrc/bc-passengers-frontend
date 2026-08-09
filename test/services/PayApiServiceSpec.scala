@@ -271,6 +271,40 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
         )
       ),
       Some(
+        VapingProducts(
+          List(
+            Band(
+              "B",
+              List(
+                Item(
+                  "ALC/A1/CIDER",
+                  "91.23",
+                  None,
+                  Some(5),
+                  Calculation("2.00", "0.30", "18.70", "21.00"),
+                  Metadata(
+                    "5 litres cider",
+                    "Cider",
+                    "120.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    Some(Country("DZ", "Algeria", "DZ", isEu = false, isCountry = true, Nil))
+                  ),
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("2.00", "0.30", "18.70", "21.00")
+            )
+          ),
+          Calculation("2.00", "0.30", "18.70", "21.00")
+        )
+      ),
+      Some(
         OtherGoods(
           List(
             Band(

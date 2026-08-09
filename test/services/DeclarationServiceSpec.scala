@@ -33,6 +33,7 @@ import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.{BaseSpec, EnhancedJsObject, parseLocalDate, parseLocalTime}
+import views.html.vaping_products.vaping_products_input
 
 import java.net.URL
 import java.time.LocalDateTime
@@ -220,6 +221,40 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           )
         ),
         Calculation("100.54", "192.94", "149.92", "443.40")
+      )
+    ),
+    Some(
+      VapingProducts(
+        List(
+          Band(
+            "B",
+            List(
+              Item(
+                "ALC/A1/CIDER",
+                "91.23",
+                None,
+                Some(5),
+                Calculation("2.00", "0.30", "18.70", "21.00"),
+                Metadata(
+                  "5 litres cider",
+                  "label.alcohol.cider",
+                  "120.00",
+                  DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                  Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                  Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                  ExchangeRate("1.2", "2018-10-29"),
+                  None
+                ),
+                None,
+                None,
+                None,
+                None
+              )
+            ),
+            Calculation("2.00", "0.30", "18.70", "21.00")
+          )
+        ),
+        Calculation("2.00", "0.30", "18.70", "21.00")
       )
     ),
     Some(
@@ -902,8 +937,9 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               Calculation("100.54", "192.94", "149.92", "443.40")
             )
           ),
-          otherGoods = None,
           tobacco = None,
+          vapingProducts = None,
+          otherGoods = None,
           calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
           withinFreeAllowance = false,
           limits = Map.empty,
@@ -1078,88 +1114,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               Calculation("100.54", "192.94", "149.92", "443.40")
             )
           ),
-          otherGoods = Some(
-            OtherGoods(
-              List(
-                Band(
-                  "A",
-                  List(
-                    Item(
-                      "OGD/CLTHS/CHILD",
-                      "250.10",
-                      None,
-                      None,
-                      Calculation("0.00", "0.00", "0.00", "0.00"),
-                      Metadata(
-                        "children's clothes",
-                        "Children's Clothes",
-                        "300.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.2", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None
-                    )
-                  ),
-                  Calculation("0.00", "0.00", "0.00", "0.00")
-                ),
-                Band(
-                  "B",
-                  List(
-                    Item(
-                      "OGD/BKS/MISC",
-                      "304.11",
-                      None,
-                      None,
-                      Calculation("74.00", "79.06", "91.43", "244.49"),
-                      Metadata(
-                        "books or publications",
-                        "Books or Publications",
-                        "400.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.2", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None
-                    ),
-                    Item(
-                      "OGD/BKS/MISC",
-                      "152.05",
-                      None,
-                      None,
-                      Calculation("26.54", "113.88", "58.49", "198.91"),
-                      Metadata(
-                        "books or publications",
-                        "Books or Publications",
-                        "200.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.2", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None
-                    )
-                  ),
-                  Calculation("100.54", "192.94", "149.92", "443.40")
-                )
-              ),
-              Calculation("100.54", "192.94", "149.92", "443.40")
-            )
-          ),
           tobacco = Some(
             Tobacco(
               List(
@@ -1223,6 +1177,170 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Metadata(
                         "120g rolling tobacco",
                         "Rolling Tobacco",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ALC/A1/CIDER",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "2 litres cider",
+                        "Cider",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          otherGoods = Some(
+            OtherGoods(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "OGD/CLTHS/CHILD",
+                      "250.10",
+                      None,
+                      None,
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "children's clothes",
+                        "Children's Clothes",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "OGD/BKS/MISC",
+                      "304.11",
+                      None,
+                      None,
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "books or publications",
+                        "Books or Publications",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    ),
+                    Item(
+                      "OGD/BKS/MISC",
+                      "152.05",
+                      None,
+                      None,
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "books or publications",
+                        "Books or Publications",
                         "200.00",
                         DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
                         Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
@@ -1485,6 +1603,88 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = Some(
             Alcohol(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ALC/A1/CIDER",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "2 litres cider",
+                        "Cider",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
               List(
                 Band(
                   "A",
@@ -2049,6 +2249,88 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               Calculation("100.54", "192.94", "149.92", "443.40")
             )
           ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ALC/A1/CIDER",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "2 litres cider",
+                        "Cider",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      Some(false),
+                      None,
+                      Some(false),
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      Some(true),
+                      None,
+                      Some(true),
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      Some(false),
+                      None,
+                      Some(true),
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
           otherGoods = Some(
             OtherGoods(
               List(
@@ -2472,6 +2754,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = None,
+          vapingProducts = None,
           otherGoods = None,
           tobacco = Some(
             Tobacco(
@@ -3796,6 +4079,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             )
           ),
           otherGoods = None,
+          vapingProducts = None,
           tobacco = None,
           calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
           withinFreeAllowance = false,
@@ -3891,6 +4175,88 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = Some(
             Alcohol(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ALC/A1/CIDER",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "2 litres cider",
+                        "Cider",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
               List(
                 Band(
                   "A",
@@ -4458,6 +4824,88 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               Calculation("100.54", "192.94", "149.92", "443.40")
             )
           ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ALC/A1/CIDER",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "2 litres cider",
+                        "Cider",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
           otherGoods = Some(
             OtherGoods(
               List(
@@ -4862,6 +5310,88 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = Some(
             Alcohol(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ALC/A1/CIDER",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "2 litres cider",
+                        "Cider",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      Some(false),
+                      None,
+                      Some(false),
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      Some(true),
+                      None,
+                      Some(true),
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      Some(false),
+                      None,
+                      Some(true),
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
               List(
                 Band(
                   "A",
@@ -5365,6 +5895,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = None,
+          vapingProducts = None,
           otherGoods = None,
           tobacco = Some(
             Tobacco(

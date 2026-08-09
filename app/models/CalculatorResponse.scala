@@ -46,6 +46,10 @@ object Tobacco {
   given formats: OFormat[Tobacco] = Json.format[Tobacco]
 }
 
+object VapingProducts {
+  given formats: OFormat[VapingProducts] = Json.format[VapingProducts]
+}
+
 object OtherGoods {
   given formats: OFormat[OtherGoods] = Json.format[OtherGoods]
 }
@@ -87,11 +91,13 @@ case class Band(code: String, items: List[Item], calculation: Calculation)
 
 case class Alcohol(bands: List[Band], calculation: Calculation)
 case class Tobacco(bands: List[Band], calculation: Calculation)
+case class VapingProducts(bands: List[Band], calculation: Calculation)
 case class OtherGoods(bands: List[Band], calculation: Calculation)
 
 case class CalculatorResponse(
   alcohol: Option[Alcohol],
   tobacco: Option[Tobacco],
+  vapingProducts: Option[VapingProducts],
   otherGoods: Option[OtherGoods],
   calculation: Calculation,
   withinFreeAllowance: Boolean,
@@ -102,6 +108,7 @@ case class CalculatorResponse(
   def allItemsUseGBP: Boolean = {
     val currencies = alcohol.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
       tobacco.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
+      vapingProducts.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code) ++
       otherGoods.toList.flatMap(_.bands.flatMap(_.items)).map(_.metadata.currency.code)
 
     currencies.forall(_ == "GBP")
@@ -119,13 +126,18 @@ case class CalculatorResponse(
         typ <- tobacco.toList; items <- typ.bands.map(_.items); item <- items
         if BigDecimal(item.calculation.allTax) >= 0
       ) yield item
+    val vapingProductsItems =
+      for (
+        typ <- vapingProducts.toList; items <- typ.bands.map(_.items); item <- items
+        if BigDecimal(item.calculation.allTax) >= 0
+      ) yield item
     val otherGoodsItems =
       for (
         typ <- otherGoods.toList; items <- typ.bands.map(_.items); item <- items
         if BigDecimal(item.calculation.allTax) >= 0
       ) yield item
 
-    val allItems = alcoholItems ++ tobaccoItems ++ otherGoodsItems
+    val allItems = alcoholItems ++ tobaccoItems ++ vapingProductsItems ++ otherGoodsItems
 
     allItems.filter(item => BigDecimal(item.calculation.allTax) >= 0)
   }
@@ -134,14 +146,15 @@ case class CalculatorResponse(
 
     val alcoholItems    = this.alcohol.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
     val tobaccoItems    = this.tobacco.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
+    val vapingProductsItems    = this.vapingProducts.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
     val otherGoodsItems = this.otherGoods.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
 
     val items = if (applySorting) {
-      (alcoholItems ++ tobaccoItems ++ otherGoodsItems).sortBy(item =>
+      (alcoholItems ++ tobaccoItems ++ vapingProductsItems ++ otherGoodsItems).sortBy(item =>
         BigDecimal(item.calculation.allTax) != BigDecimal(0.00)
       )
     } else {
-      alcoholItems ++ tobaccoItems ++ otherGoodsItems
+      alcoholItems ++ tobaccoItems ++ vapingProductsItems ++ otherGoodsItems
     }
 
     CalculatorResponseDto(items, this.calculation, allItemsUseGBP)
