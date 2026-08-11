@@ -174,6 +174,6 @@ package object util extends ProductDetector {
   def parseLocalDate(date: String): LocalDate =
     LocalDate.parse(date, localDateFormat)
 
-  def formatLocalDate(date: LocalDate, pattern: String): String =
-    date.format(DateTimeFormatter.ofPattern(pattern, Locale.UK))
+  def formatLocalDate(date: LocalDate, pattern: String, locale: Locale = Locale.UK): String =
+    date.format(DateTimeFormatter.ofPattern(pattern, locale))
 }
