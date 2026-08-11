@@ -74,7 +74,7 @@
         @messages("label.date_of_arrival")
       </dt>
       <dd class="govuk-summary-list__value">
-        @formatLocalDate(userInformation.get.dateOfArrival, "dd MMMM YYYY")
+        @formatLocalDate(userInformation.get.dateOfArrival, "dd MMMM yyyy", messages.lang.toLocale)
       </dd>
     </div>
     <div class="govuk-summary-list__row">
