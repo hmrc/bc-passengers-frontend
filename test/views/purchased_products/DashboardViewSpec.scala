@@ -228,6 +228,12 @@ class DashboardViewSpec extends BaseViewSpec {
       heading = "Tell us about your additional goods"
     )
 
+    "display a link to previously declared goods for an amendment journey" in {
+      val link = document(viewViaApply).select("a[href=/check-tax-on-goods-you-bring-into-the-uk/previous-goods]")
+
+      link.text() shouldBe "view your previously declared goods"
+    }
+
     def test(scenario: String, fillValue: Int): Unit =
       s"the total size of otherGoodsPurchasedItemList and previousAlcoholPurchasedItemList is $scenario" should {
         "return the correct message" in {

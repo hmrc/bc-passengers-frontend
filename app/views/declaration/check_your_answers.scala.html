@@ -22,7 +22,6 @@
     govukLayout: templates.GovukLayoutWrapper,
     formHelper: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
-    h1: components.h1,
     h2: components.h2,
     button: components.button
 )
@@ -54,7 +53,7 @@
 }
 
 @govukLayout(pageTitle = Some(messages("label.check_your_answers") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
-    @h1(messages("label.check_your_answers"))
+    <h1 class="govuk-heading-l">@messages("label.check_your_answers")</h1>
 
     @h2("label.personal_details")
 
@@ -101,7 +100,7 @@
             ),
             summaryRow(
                 messages("label.date_of_arrival"),
-                formatLocalDate(userInformation.dateOfArrival, "dd MMMM YYYY"),
+                formatLocalDate(userInformation.dateOfArrival, "dd MMMM yyyy", messages.lang.toLocale),
                 routes.CalculateDeclareController.whatAreYourJourneyDetails,
                 messages("label.date_of_arrival").toLowerCase
             ),
