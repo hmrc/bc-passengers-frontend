@@ -104,15 +104,37 @@ class SelectProductController @Inject() (
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
-        Future.successful(
+        val useDashboardBackLink =
+          context.request.session
+            .get(returnToAddedItemSelectUrlSessionKey)
+            .contains(routes.SelectProductController.askProductSelection(path).url)
+
+        val returnToAddedItemEditUrl =
+          if (useDashboardBackLink) context.request.session.get(returnToAddedItemSessionKey) else None
+        val returnToAddedItemProductPath =
+          if (useDashboardBackLink) context.request.session.get(returnToAddedItemProductPathKey) else None
+        val form                         =
+          returnToAddedItemProductPath
+            .map(ProductPath.apply)
+            .filter(_.components.dropRight(1) == path.components)
+            .flatMap(_.components.lastOption)
+            .fold(SelectProductsDto.form)(token => SelectProductsDto.form.fill(SelectProductsDto(List(token))))
+
+        val result =
           Ok(
             select_products(
-              SelectProductsDto.form,
+              form,
               children.map(i => (i.token, i.name)),
               path,
-              backLinkModel.backLink
+              if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url) else backLinkModel.backLink,
+              customBackLink = useDashboardBackLink,
+              returnToAddedItemEditUrl = returnToAddedItemEditUrl,
+              returnToAddedItemProductPath = returnToAddedItemProductPath
             )
           )
+
+        Future.successful(
+          if (useDashboardBackLink) popReturnToAddedItem(result) else result
         )
       case _                                 =>
         Future.successful(InternalServerError(errorTemplate()))
@@ -121,6 +143,12 @@ class SelectProductController @Inject() (
 
   def processProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireCategory(path) { branch =>
+      def returnToAddedItemEditUrl =
+        context.request.body.asFormUrlEncoded.flatMap(_.get("returnToAddedItemEditUrl").flatMap(_.headOption))
+
+      def returnToAddedItemProductPath =
+        context.request.body.asFormUrlEncoded.flatMap(_.get("returnToAddedItemProductPath").flatMap(_.headOption))
+
       SelectProductsDto.form
         .bindFromRequest()
         .fold(
@@ -137,18 +165,26 @@ class SelectProductController @Inject() (
             },
           selectProductsDto => {
 
-            val updatedJourneyData = context.getJourneyData
+            val selectedProductPaths = selectProductsDto.tokens.map(path.addingComponent)
 
-            selectProductService
-              .addSelectedProductsAsAliases(
-                updatedJourneyData,
-                selectProductsDto.tokens.map(path.addingComponent)
-              )
-              .flatMap { journeyData =>
-                purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-                  Redirect(routes.SelectProductController.nextStep())
-                }
-              }
+            (returnToAddedItemEditUrl, returnToAddedItemProductPath) match {
+              case (Some(editUrl), Some(productPath)) if selectedProductPaths.map(_.toString) == List(productPath) =>
+                Future.successful(markReturnToAddedItem(Redirect(editUrl), editUrl, ProductPath(productPath)))
+
+              case _ =>
+                val updatedJourneyData = context.getJourneyData
+
+                selectProductService
+                  .addSelectedProductsAsAliases(
+                    updatedJourneyData,
+                    selectedProductPaths
+                  )
+                  .flatMap { journeyData =>
+                    purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
+                      Redirect(routes.SelectProductController.nextStep())
+                    }
+                  }
+            }
           }
         )
     }
@@ -156,6 +192,12 @@ class SelectProductController @Inject() (
 
   def processProductSelectionOtherGoods(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireCategory(path) { branch =>
+      def returnToAddedItemEditUrl =
+        context.request.body.asFormUrlEncoded.flatMap(_.get("returnToAddedItemEditUrl").flatMap(_.headOption))
+
+      def returnToAddedItemProductPath =
+        context.request.body.asFormUrlEncoded.flatMap(_.get("returnToAddedItemProductPath").flatMap(_.headOption))
+
       SelectProductsDto.form
         .bindFromRequest()
         .fold(
@@ -175,18 +217,24 @@ class SelectProductController @Inject() (
             val updatedJourneyData       = context.getJourneyData
             val paths: List[ProductPath] = selectProductsDto.tokens.map(path.addingComponent)
 
-            selectProductService.addSelectedProductsAsAliases(updatedJourneyData, paths).flatMap { journeyData =>
-              val pathsOrdered = journeyData.selectedAliases.map(_.productPath)
+            (returnToAddedItemEditUrl, returnToAddedItemProductPath) match {
+              case (Some(editUrl), Some(productPath)) if paths.map(_.toString) == List(productPath) =>
+                Future.successful(markReturnToAddedItem(Redirect(editUrl), editUrl, ProductPath(productPath)))
 
-              pathsOrdered match {
-                case x :: _ if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
-                  Future.successful(Redirect(routes.SelectProductController.nextStep()))
+              case _ =>
+                selectProductService.addSelectedProductsAsAliases(updatedJourneyData, paths).flatMap { journeyData =>
+                  val pathsOrdered = journeyData.selectedAliases.map(_.productPath)
 
-                case _ =>
-                  purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
-                    Redirect(routes.OtherGoodsInputController.displayAddForm())
+                  pathsOrdered match {
+                    case x :: _ if productTreeService.productTree.getDescendant(x).fold(false)(_.isBranch) =>
+                      Future.successful(Redirect(routes.SelectProductController.nextStep()))
+
+                    case _ =>
+                      purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
+                        Redirect(routes.OtherGoodsInputController.displayAddForm())
+                      }
                   }
-              }
+                }
             }
           }
         )

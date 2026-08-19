@@ -89,6 +89,8 @@ class DashboardController @Inject() (
               val showCalculate =
                 !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
 
+              val backLink = context.request.session.get(returnToAddedItemSessionKey).orElse(backLinkModel.backLink)
+
               Ok(
                 dashboard(
                   jd,
@@ -98,7 +100,7 @@ class DashboardController @Inject() (
                   previousOtherGoodsPurchasedItemList.reverse,
                   showCalculate,
                   isAmendment,
-                  backLinkModel.backLink,
+                  backLink,
                   appConfig.isIrishBorderQuestionEnabled,
                   jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
                   jd.euCountryCheck.contains("euOnly"),

@@ -59,9 +59,10 @@ class TobaccoInputController @Inject() (
     jd: JourneyData,
     productPath: ProductPath,
     iid: String,
-    originCountry: Option[String]
-  ): Result =
-    (jd.arrivingNICheck, jd.euCountryCheck) match {
+    originCountry: Option[String],
+    isAddJourney: Boolean
+  )(implicit context: LocalContext): Result =
+    val result = (jd.arrivingNICheck, jd.euCountryCheck) match {
       case (Some(true), Some("greatBritain"))                                                    =>
         Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, iid))
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
@@ -69,6 +70,8 @@ class TobaccoInputController @Inject() (
       case _                                                                                     =>
         Redirect(routes.SelectProductController.nextStep())
     }
+    if (isAddJourney) markReturnToAddedItem(result, routes.TobaccoInputController.displayEditForm(iid).url, productPath)
+    else result
 
   private def submittedIid(implicit context: LocalContext): Option[String] =
     context.request.body.asFormUrlEncoded
@@ -202,7 +205,10 @@ class TobaccoInputController @Inject() (
                   Ok(
                     no_of_sticks_input(
                       tobaccoInputForm.cigaretteAndHeatedTobaccoForm(ppi.path).fill(dto),
-                      backLinkModel.backLink,
+                      backLinkForAddedItemEdit(
+                        backLinkModel.backLink,
+                        routes.TobaccoInputController.displayEditForm(iid).url
+                      ),
                       customBackLink = true,
                       product,
                       ppi.path,
@@ -217,7 +223,10 @@ class TobaccoInputController @Inject() (
                   Ok(
                     weight_or_volume_input(
                       tobaccoInputForm.looseTobaccoWeightForm(ppi.path).fill(dto),
-                      backLinkModel.backLink,
+                      backLinkForAddedItemEdit(
+                        backLinkModel.backLink,
+                        routes.TobaccoInputController.displayEditForm(iid).url
+                      ),
                       customBackLink = true,
                       product,
                       ppi.path,
@@ -232,7 +241,10 @@ class TobaccoInputController @Inject() (
                   Ok(
                     no_of_sticks_weight_or_volume_input(
                       tobaccoInputForm.cigarAndCigarilloForm(ppi.path).fill(dto),
-                      backLinkModel.backLink,
+                      backLinkForAddedItemEdit(
+                        backLinkModel.backLink,
+                        routes.TobaccoInputController.displayEditForm(iid).url
+                      ),
                       customBackLink = true,
                       product,
                       ppi.path,
@@ -327,7 +339,7 @@ class TobaccoInputController @Inject() (
                     )
 
                   cache.store(journeyData) map { _ =>
-                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
+                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
                   }
                 } else {
                   Future(
@@ -390,7 +402,7 @@ class TobaccoInputController @Inject() (
                       )
                     )
                   cache.store(journeyData).map { _ =>
-                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
+                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
                   }
                 } else {
                   Future(
@@ -452,7 +464,7 @@ class TobaccoInputController @Inject() (
                       )
                     )
                   cache.store(journeyData) map { _ =>
-                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry)
+                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
                   }
                 } else {
                   Future(
@@ -531,7 +543,16 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
+                      clearReturnToAddedItemUnlessCurrentEdit(
+                        navigationHelper(
+                          context.getJourneyData,
+                          ppi.path,
+                          iid,
+                          dto.originCountry,
+                          isAddJourney = false
+                        ),
+                        routes.TobaccoInputController.displayEditForm(iid).url
+                      )
                     }
                   } else {
                     Future(
@@ -583,7 +604,16 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
+                      clearReturnToAddedItemUnlessCurrentEdit(
+                        navigationHelper(
+                          context.getJourneyData,
+                          ppi.path,
+                          iid,
+                          dto.originCountry,
+                          isAddJourney = false
+                        ),
+                        routes.TobaccoInputController.displayEditForm(iid).url
+                      )
                     }
                   } else {
                     Future(
@@ -635,7 +665,16 @@ class TobaccoInputController @Inject() (
                         dto.cost
                       )
                     ) map { _ =>
-                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
+                      clearReturnToAddedItemUnlessCurrentEdit(
+                        navigationHelper(
+                          context.getJourneyData,
+                          ppi.path,
+                          iid,
+                          dto.originCountry,
+                          isAddJourney = false
+                        ),
+                        routes.TobaccoInputController.displayEditForm(iid).url
+                      )
                     }
                   } else {
                     Future(
