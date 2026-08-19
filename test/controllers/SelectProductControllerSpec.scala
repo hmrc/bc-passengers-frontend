@@ -152,6 +152,41 @@ class SelectProductControllerSpec extends BaseSpec {
       }
     }
 
+    "return the select products alcohol page with the added item selected when returning from the dashboard" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+            .withSession(
+              "return-to-added-item-url"          ->
+                "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid",
+              "return-to-added-item-select-url"   -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
+              "return-to-added-item-product-path" -> "alcohol/spirits",
+              "return-to-added-item-stack"        ->
+                ("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid-1|" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/beer\n" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid|" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/spirits")
+            )
+        ).get
+
+      status(result) shouldBe OK
+
+      doc.getElementById("tokens-spirits").hasAttr("checked") shouldBe true
+      doc.select("a.govuk-back-link").attr("href")             shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tell-us"
+      doc.select("input[name=returnToAddedItemEditUrl]").attr("value") shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
+      doc.select("input[name=returnToAddedItemProductPath]").attr("value") shouldBe "alcohol/spirits"
+
+      session(result).get("return-to-added-item-url") shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid-1"
+      )
+      session(result).get("return-to-added-item-product-path") shouldBe Some("alcohol/beer")
+    }
+
     "return the select products tobacco page given path /tobacco (branch)" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
@@ -278,6 +313,28 @@ class SelectProductControllerSpec extends BaseSpec {
         .addSelectedProductsAsAliases(meq(localRequiredJourneyData), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[Cache], times(1)).fetch(any())
     }
+
+    "redirect to the added item edit page when the selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+          .withFormUrlEncodedBody(
+            "tokens"                       -> "spirits",
+            "returnToAddedItemEditUrl"     ->
+              "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid",
+            "returnToAddedItemProductPath" -> "alcohol/spirits"
+          )
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
+      )
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
+    }
   }
 
   "Invoking processProductSelectionOtherGoods" should {
@@ -330,6 +387,25 @@ class SelectProductControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us"
       )
+    }
+
+    "redirect to the added other goods edit page when the selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/adult")
+          .withFormUrlEncodedBody(
+            "tokens"                       -> "adult-clothing",
+            "returnToAddedItemEditUrl"     -> "/check-tax-on-goods-you-bring-into-the-uk/tell-us/iid",
+            "returnToAddedItemProductPath" -> "other-goods/adult/adult-clothing"
+          )
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us/iid")
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
     }
 
     Seq(
