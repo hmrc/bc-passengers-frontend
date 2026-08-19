@@ -175,13 +175,13 @@ class SelectProductControllerSpec extends BaseSpec {
 
       status(result) shouldBe OK
 
-      doc.getElementById("tokens-spirits").hasAttr("checked") shouldBe true
-      doc.select("a.govuk-back-link").attr("href")             shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tell-us"
-      doc.select("input[name=returnToAddedItemEditUrl]").attr("value") shouldBe
+      doc.getElementById("tokens-spirits").hasAttr("checked")              shouldBe true
+      doc.select("a.govuk-back-link").attr("href")                         shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tell-us"
+      doc.select("input[name=returnToAddedItemEditUrl]").attr("value")     shouldBe
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
       doc.select("input[name=returnToAddedItemProductPath]").attr("value") shouldBe "alcohol/spirits"
 
-      session(result).get("return-to-added-item-url") shouldBe Some(
+      session(result).get("return-to-added-item-url")          shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid-1"
       )
       session(result).get("return-to-added-item-product-path") shouldBe Some("alcohol/beer")

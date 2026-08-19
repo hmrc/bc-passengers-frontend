@@ -100,13 +100,13 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
 
     ".markReturnToAddedItem" should {
       "store the item edit url, select url and product path in session" in {
-        val request = FakeRequest()
+        val request                      = FakeRequest()
         given localContext: LocalContext = LocalContext(
           request = request,
           sessionId = "sessionId"
         )
 
-        val result = exposedMarkReturnToAddedItem(Ok, "/edit-item", ProductPath("alcohol/spirits"))
+        val result  = exposedMarkReturnToAddedItem(Ok, "/edit-item", ProductPath("alcohol/spirits"))
         val session = result.session(request)
 
         session.get(returnToAddedItemSessionKey)          shouldBe Some("/edit-item")
@@ -122,7 +122,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
 
     ".popReturnToAddedItem" should {
       "move the previous item in the stack into the active backlink session keys" in {
-        val request = FakeRequest().withSession(
+        val request                      = FakeRequest().withSession(
           returnToAddedItemSessionKey          -> "/edit-item-2",
           returnToAddedItemSelectUrlSessionKey -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco",
           returnToAddedItemProductPathKey      -> "tobacco/cigars",
@@ -135,7 +135,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
           sessionId = "sessionId"
         )
 
-        val result = exposedPopReturnToAddedItem(Ok)
+        val result  = exposedPopReturnToAddedItem(Ok)
         val session = result.session(request)
 
         session.get(returnToAddedItemSessionKey)          shouldBe Some("/edit-item-1")
@@ -149,7 +149,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
       }
 
       "clear the active backlink session keys when there is no previous item in the stack" in {
-        val request = FakeRequest().withSession(
+        val request                      = FakeRequest().withSession(
           returnToAddedItemSessionKey          -> "/edit-item",
           returnToAddedItemSelectUrlSessionKey -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
           returnToAddedItemProductPathKey      -> "alcohol/spirits",
@@ -161,7 +161,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
           sessionId = "sessionId"
         )
 
-        val result = exposedPopReturnToAddedItem(Ok)
+        val result  = exposedPopReturnToAddedItem(Ok)
         val session = result.session(request)
 
         session.get(returnToAddedItemSessionKey)          shouldBe None
@@ -173,7 +173,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
 
     ".clearReturnToAddedItemUnlessCurrentEdit" should {
       "keep the session when the active item matches the edit url" in {
-        val request = FakeRequest().withSession(returnToAddedItemSessionKey -> "/edit-item")
+        val request                      = FakeRequest().withSession(returnToAddedItemSessionKey -> "/edit-item")
         given localContext: LocalContext = LocalContext(
           request = request,
           sessionId = "sessionId"
@@ -185,7 +185,7 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
       }
 
       "clear the session when the active item does not match the edit url" in {
-        val request = FakeRequest().withSession(returnToAddedItemSessionKey -> "/edit-item")
+        val request                      = FakeRequest().withSession(returnToAddedItemSessionKey -> "/edit-item")
         given localContext: LocalContext = LocalContext(
           request = request,
           sessionId = "sessionId"
