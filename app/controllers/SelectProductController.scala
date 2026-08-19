@@ -109,7 +109,7 @@ class SelectProductController @Inject() (
             .get(returnToAddedItemSelectUrlSessionKey)
             .contains(routes.SelectProductController.askProductSelection(path).url)
 
-        val returnToAddedItemEditUrl =
+        val returnToAddedItemEditUrl     =
           if (useDashboardBackLink) context.request.session.get(returnToAddedItemSessionKey) else None
         val returnToAddedItemProductPath =
           if (useDashboardBackLink) context.request.session.get(returnToAddedItemProductPathKey) else None

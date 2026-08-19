@@ -83,9 +83,11 @@ trait ControllerHelpers
     } yield AddedItemBackLink(editUrl, selectUrl, productPath)
 
   private def addedItemBackLinkStack(implicit context: LocalContext): List[AddedItemBackLink] =
-    context.request.session.get(returnToAddedItemStackSessionKey).fold(currentAddedItemBackLink.toList)(
-      deserialiseAddedItemBackLinks
-    )
+    context.request.session
+      .get(returnToAddedItemStackSessionKey)
+      .fold(currentAddedItemBackLink.toList)(
+        deserialiseAddedItemBackLinks
+      )
 
   protected def markReturnToAddedItem(result: Result, editUrl: String, productPath: ProductPath)(implicit
     context: LocalContext
