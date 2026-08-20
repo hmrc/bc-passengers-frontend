@@ -104,7 +104,7 @@ class ProductTreeService {
         ProductTreeBranch(
           "vaping-products",
           "label.vaping-products",
-          List(ProductTreeLeaf("vape", "label.vaping-products", "VAP/V1/VPRODUCTS", "vaping-products", List("V-PRODUCTS"))
+          List(ProductTreeLeaf("vape", "label.vaping-products", "VAP/V1/VPRODUCTS", "vaping-products", List("L-VPRODUCTS"))
           )
         ),
         ProductTreeBranch(
@@ -223,6 +223,7 @@ class ProductTreeService {
             ),
             ProductTreeLeaf("tableware", "label.other-goods.tableware", "OGD/TABLE", "other-goods", Nil),
             ProductTreeLeaf("watches-clocks", "label.other-goods.watches-clocks", "OGD/ORN/MISC", "other-goods", Nil),
+            ProductTreeLeaf("vaping-products", "label.other-goods.vaping-products", "OGD/VAPE", "other-goods", Nil),
             ProductTreeLeaf("other", "label.other-goods.other", "OGD/OTHER", "other-goods", Nil)
           )
         )
@@ -329,6 +330,7 @@ class ProductTreeService {
     OtherGoodsSearchItem("label.other-goods.stop-smoking-products", ProductPath("other-goods/stop-smoking-products")),
     OtherGoodsSearchItem("label.other-goods.tableware", ProductPath("other-goods/tableware")),
     OtherGoodsSearchItem("label.other-goods.watches-clocks", ProductPath("other-goods/watches-clocks")),
+    OtherGoodsSearchItem("label.other-goods.vaping-products", ProductPath("other-goods/vaping-products")),
     OtherGoodsSearchItem("label.other-goods.other", ProductPath("other-goods/other"))
   ).sortBy(_.name)
 }

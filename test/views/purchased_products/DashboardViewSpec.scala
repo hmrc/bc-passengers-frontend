@@ -74,7 +74,7 @@ class DashboardViewSpec extends BaseViewSpec {
     name = "label.vape",
     rateID = "VAP/V1/VPRODUCTS",
     templateId = "vape",
-    applicableLimits = List("V-PRODUCTS")
+    applicableLimits = List("L-VPRODUCTS")
   )
 
   private val otherGoodsProductTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(

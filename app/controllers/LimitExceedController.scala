@@ -22,7 +22,7 @@ import controllers.enforce.LimitExceedAction
 import models.*
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}
+import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService, VapingProductsCalculationService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 import views.html.purchased_products.{limit_exceed_add, limit_exceed_edit}
@@ -31,17 +31,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LimitExceedController @Inject() (
-  val cache: Cache,
-  alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
-  val productTreeService: ProductTreeService,
-  val calculatorService: CalculatorService,
-  limitExceedAction: LimitExceedAction,
-  val errorTemplate: views.html.errorTemplate,
-  limitExceedViewAdd: limit_exceed_add,
-  limitExceedViewEdit: limit_exceed_edit,
-  override val controllerComponents: MessagesControllerComponents,
-  implicit val appConfig: AppConfig,
-  implicit val ec: ExecutionContext
+                                        val cache: Cache,
+                                        alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
+                                        vapingProductsCalculationService: VapingProductsCalculationService,
+                                        val productTreeService: ProductTreeService,
+                                        val calculatorService: CalculatorService,
+                                        limitExceedAction: LimitExceedAction,
+                                        val errorTemplate: views.html.errorTemplate,
+                                        limitExceedViewAdd: limit_exceed_add,
+                                        limitExceedViewEdit: limit_exceed_edit,
+                                        override val controllerComponents: MessagesControllerComponents,
+                                        implicit val appConfig: AppConfig,
+                                        implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
     with ControllerHelpers
     with InstanceDecider
@@ -236,6 +237,52 @@ class LimitExceedController @Inject() (
             )
           case _       =>
             logger.error("[LimitExceedController][onPageLoadEditAlcoholVolume] no user input found in session")
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadEditVapeVolume(path: ProductPath, iid: String): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData, iid)
+
+        val originalAmountFormatted = originalAmountEntered.formatDecimalPlaces(3)
+
+        val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
+
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
+
+        val totalAccWeightForVapeProduct =
+          vapingProductsCalculationService.vapeEditHelper(
+            context.getJourneyData,
+            userInputBigDecimal,
+            product.token,
+            iid
+          )
+
+        val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
+
+        val totaledAmount: BigDecimal = totalAccWeightForVapeProduct
+
+        val totaledAmountFormatted: BigDecimal = totaledAmount.formatDecimalPlaces(3)
+
+        userInput match {
+          case Some(_) =>
+            Future(
+              Ok(
+                limitExceedViewEdit(
+                  totalEnteredAmount = totaledAmountFormatted.stripTrailingZerosToString,
+                  originalAmountEntered = originalAmountFormatted.stripTrailingZerosToString,
+                  userInput = userInputBigDecimalFormatted.stripTrailingZerosToString,
+                  token = product.token,
+                  productName = product.name,
+                  showGroupMessage = false
+                )
+              )
+            )
+          case _ =>
+            logger.error("[LimitExceedController][onPageLoadEditVapeVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }

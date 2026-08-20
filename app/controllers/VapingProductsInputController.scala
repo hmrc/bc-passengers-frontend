@@ -143,66 +143,99 @@ class VapingProductsInputController @Inject() (
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
 
-    def processContinue = requireProduct(path) { product =>
-      vapingProductsInputForm
-        .vapingProductsForm(path)
-        .bindFromRequest()
+    requireLimitUsage {
+      val dto =
+        vapingProductsInputForm.resilientForm.bindFromRequest().value.get
+      submittedIid
         .fold(
-          formWithErrors =>
-            Future.successful(
-              BadRequest(
-                vaping_products_input(
-                  formWithErrors,
-                  backLinkModel.backLink,
-                  customBackLink = false,
-                  product,
-                  path,
-                  None,
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck
+          newPurchaseService.insertPurchases(
+            path,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            List(dto.cost)
+          )
+        )(iid =>
+          newPurchaseService.insertPurchasesWithIid(
+            path,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            List(dto.cost),
+            iid
+          )
+        )
+        ._1
+    } { _ =>
+      requireProduct(path) { product =>
+        vapingProductsInputForm
+          .vapingProductsForm(path)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(
+                  vaping_products_input(
+                    formWithErrors,
+                    backLinkModel.backLink,
+                    customBackLink = false,
+                    product,
+                    path,
+                    None,
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck
+                  )
                 )
-              )
-            ),
-          dto => {
-            val (journeyData, item) =
-              submittedIid.fold(
-                newPurchaseService.insertPurchases(
-                  path,
-                  Some(dto.weightOrVolume),
-                  None,
-                  dto.country,
-                  dto.originCountry,
-                  dto.currency,
-                  List(dto.cost)
-                )
-              ) { iid =>
-                newPurchaseService.insertPurchasesWithIid(
-                  path,
-                  Some(dto.weightOrVolume),
-                  None,
-                  dto.country,
-                  dto.originCountry,
-                  dto.currency,
-                  List(dto.cost),
-                  iid
+              ),
+            dto => {
+              lazy val totalVolumeForVape =
+                vapingProductsCalculationService
+                  .vapeAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
+              if (vapeVolumeConstraint(context.getJourneyData, totalVolumeForVape, product.token)) {
+                val (journeyData, item) =
+                  submittedIid.fold(
+                    newPurchaseService.insertPurchases(
+                      path,
+                      Some(dto.weightOrVolume),
+                      None,
+                      dto.country,
+                      dto.originCountry,
+                      dto.currency,
+                      List(dto.cost)
+                    )
+                  )(iid =>
+                    newPurchaseService.insertPurchasesWithIid(
+                      path,
+                      Some(dto.weightOrVolume),
+                      None,
+                      dto.country,
+                      dto.originCountry,
+                      dto.currency,
+                      List(dto.cost),
+                      iid
+                    )
+                  )
+                cache.store(journeyData) map { _ =>
+                  navigationHelper(context.getJourneyData, path, item, dto.originCountry)
+                }
+              } else {
+                Future(
+                  Redirect(
+                    routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path)
+                  ).removingFromSession(s"user-amount-input-${product.token}")
+                    .addingToSession(s"user-amount-input-${product.token}" -> dto.weightOrVolume.toString)
                 )
               }
-
-            cache.store(journeyData).map { _ =>
-              navigationHelper(
-                context.getJourneyData,
-                path,
-                item,
-                dto.originCountry
-              )
             }
-          }
-        )
+          )
+      }
     }
-
-    processContinue
   }
   
   def processEditForm(iid: String): Action[AnyContent] =
@@ -244,10 +277,10 @@ class VapingProductsInputController @Inject() (
                     )
                   ),
                 success = dto => {
-                  lazy val totalVolumeForAlcohol =
+                  lazy val totalVolumeForVape =
                     vapingProductsCalculationService
-                      .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token, iid)
-                  if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
+                      .vapeEditHelper(context.getJourneyData, dto.weightOrVolume, product.token, iid)
+                  if (vapeVolumeConstraint(context.getJourneyData, totalVolumeForVape, product.token)) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -265,7 +298,7 @@ class VapingProductsInputController @Inject() (
                   } else {
                     Future(
                       Redirect(
-                        routes.LimitExceedController.onPageLoadEditAlcoholVolume(path = ppi.path, iid)
+                        routes.LimitExceedController.onPageLoadEditVapeVolume(path = ppi.path, iid)
                       )
                         .removingFromSession(s"user-amount-input-${product.token}")
                         .addingToSession(

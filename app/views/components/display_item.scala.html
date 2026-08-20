@@ -81,7 +81,6 @@
       }
     </dl>
 
-
     @if(purchasedItem.purchasedProductInstance.isEditable.contains(true)) {
         <div class="margin-bottom-20 edit-link">
             @if(category.contains("alcohol")){
@@ -90,7 +89,7 @@
             } else if(category.contains("otherGoods")) {
                 <p class="govuk-body"><a class="govuk-link" id="other-goods-@idx" href="@routes.OtherGoodsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)"
                 >@messages("label.edit_this_item")<span class="govuk-visually-hidden">@description</span></a></p>
-            } else if(category.contains("vapingProducts")) {
+            } else if(category.contains("vape")) {
                 <p class="govuk-body"><a class="govuk-link" id="vaping-products-@idx" href="@routes.VapingProductsInputController.displayEditForm(purchasedItem.purchasedProductInstance.iid)"
                 >@messages("label.edit_this_item")<span class="govuk-visually-hidden">@description</span></a></p>
             } else if(category.contains("tobacco")) {

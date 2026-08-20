@@ -23,6 +23,7 @@ import controllers.enforce.DashboardAction
 import models.*
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import play.twirl.api.TwirlFeatureImports.twirlOptionToBoolean
 import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -105,14 +106,22 @@ class SelectProductController @Inject() (
   }
 
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
+
+    val niJourney = context.getJourneyData.arrivingNICheck
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
+        val filteredChildren =
+          if (niJourney.contains(false))
+            children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
+          else
+            children
+
         Future.successful(
           Ok(
             select_products(
               SelectProductsDto.form,
-              children.map(i => (i.token, i.name)),
+              filteredChildren.map(i => (i.token, i.name)),
               path,
               backLinkModel.backLink
             )

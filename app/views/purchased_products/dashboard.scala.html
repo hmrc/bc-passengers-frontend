@@ -103,28 +103,28 @@
   }
 </div>
 <br>
-
-<div class="vaping_products">
-    @h2(messages("label.vaping_products"))
-    @if(vapePurchasedItemList.isEmpty) {
-    <p class="govuk-body"><a class="govuk-link" href="@routes.VapingProductsInputController.displayAddForm(ProductPath("vaping-products/vape"))">@messages("label.add_vape")</a></p>
-    } else {
-    <div class="add-more">
+@if(journeyData.arrivingNICheck.contains(false)){
+    <div class="vaping_products">
+        @h2(messages("label.vaping_products"))
+        @if(vapePurchasedItemList.isEmpty) {
         <p class="govuk-body"><a class="govuk-link" href="@routes.VapingProductsInputController.displayAddForm(ProductPath("vaping-products/vape"))">@messages("label.add_vape")</a></p>
-    </div>
-    @if(vapePurchasedItemList.nonEmpty){
-    <div class="govuk-summary-list">
-        @vapePurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-        @purchasedItem.descriptionLabels(long = false).map { description =>
-        @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "vape", idx)
+        } else {
+        <div class="add-more">
+            <p class="govuk-body"><a class="govuk-link" href="@routes.VapingProductsInputController.displayAddForm(ProductPath("vaping-products/vape"))">@messages("label.add_vape")</a></p>
+        </div>
+        @if(vapePurchasedItemList.nonEmpty){
+        <div class="govuk-summary-list">
+            @vapePurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+            @purchasedItem.descriptionLabels(long = false).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "vape", idx)
+            }
+            }
+        </div>
         }
         }
     </div>
-    }
-    }
-</div>
-<br>
-
+    <br>
+}
 <div class="other-goods">
   @h2(messages("label.other_goods"))
     @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {

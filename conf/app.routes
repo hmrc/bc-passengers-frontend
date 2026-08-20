@@ -91,6 +91,8 @@ GET        /goods/$path<.+>/upper-limits/:iid/edit/volume                       
 GET        /goods/$path<.+>/upper-limits/:iid/edit/weight                              controllers.LimitExceedController.onPageLoadEditTobaccoWeight(path: ProductPath, iid: String)
 GET        /goods/$path<.+>/upper-limits/:iid/edit/units-of-product                    controllers.LimitExceedController.onPageLoadEditNoOfSticks(path: ProductPath, iid: String)
 
+GET        /goods/$path<.+>/upper-limits/:iid/edit/vape-volume                         controllers.LimitExceedController.onPageLoadEditVapeVolume(path: ProductPath, iid: String)
+
 GET        /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.confirmRemove(path: ProductPath, iid: String)
 POST       /remove-goods/$path<.+>/:iid/remove                                         controllers.AlterProductsController.remove(path: ProductPath, iid: String)
 
