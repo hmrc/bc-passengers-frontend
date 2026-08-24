@@ -32,6 +32,10 @@
   tobaccoPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
+  totalItems: Int,
+  totalOtherGoodsItems: Int,
+  currentPage: Int,
+  totalPages: Int,
   showCalculate: Boolean,
   isAmendment: Boolean,
   backLink: Option[String],
@@ -43,13 +47,17 @@
 
 @defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
 
-@govukLayout(pageTitle = Some(if(isAmendment) messages("label.tell_us_about_the_additional_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.tell_us_about_the_goods_") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
-
-@if(isAmendment) {
-@h1(messages("label.tell_us_about_the_additional_goods_"))
+@defining(if(totalItems == 0) {
+  if(isAmendment) messages("label.tell_us_about_the_additional_goods_") else messages("label.tell_us_about_the_goods_")
+} else if(totalItems == 1) {
+  messages("label.you_have_added_one_item")
 } else {
-@h1(messages("label.tell_us_about_the_goods_"))
-}
+  messages("label.you_have_added_items", totalItems)
+}) { pageHeading =>
+
+@govukLayout(pageTitle = Some(pageHeading + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+
+@h1(pageHeading)
 
 @p(Html(messages("label.about_foreign_currencies")), id=Some("foreign-currency"))
 
@@ -70,13 +78,18 @@
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
       </div>
   @if(alcoholPurchasedItemList.nonEmpty){
-    <div class="govuk-summary-list">
-        @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-          @purchasedItem.descriptionLabels(long = false).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "alcohol", idx)
-          }
+    <dl class="govuk-summary-list goods-summary-list">
+      <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+        <dt class="govuk-summary-list__key">@messages("label.item")</dt>
+        <dd class="govuk-summary-list__value">@messages("label.price")</dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+      @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), "alcohol", idx)
         }
-    </div>
+      }
+    </dl>
     }
   }
 </div>
@@ -91,13 +104,18 @@
         <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
       </div>
   @if(tobaccoPurchasedItemList.nonEmpty){
-    <div class="govuk-summary-list">
-        @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-          @purchasedItem.descriptionLabels(long = true).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "tobacco", idx)
-          }
+    <dl class="govuk-summary-list goods-summary-list">
+      <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+        <dt class="govuk-summary-list__key">@messages("label.item")</dt>
+        <dd class="govuk-summary-list__value">@messages("label.price")</dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+      @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+        @purchasedItem.descriptionLabels(long = true).map { description =>
+          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), "tobacco", idx)
         }
-    </div>
+      }
+    </dl>
     }
   }
 </div>
@@ -105,35 +123,61 @@
 
 <div class="other-goods">
   @h2(messages("label.other_goods"))
-    @if(otherGoodsPurchasedItemList.isEmpty && previousOtherGoodsPurchasedItemList.isEmpty) {
+    @if(totalOtherGoodsItems == 0 && previousOtherGoodsPurchasedItemList.isEmpty) {
       <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
-    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
+    } else if((totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
       <div class="add-more">
         <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
       </div>
-    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
+    } else if((totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
      <div class="panel panel-border-wide">
         @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
      </div>
-    } else if((otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
+    } else if((totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) > appConfig.maxOtherGoods) {
     <div class="panel panel-border-wide">
       @p(Html(messages("label.you_can_only_calculate_taxes_and_duties_on_50_other_goods_or_fewer_")))
     </div>
     }
     @if(otherGoodsPurchasedItemList.nonEmpty){
-      <div class="govuk-summary-list">
-          @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
-            @purchasedItem.descriptionLabels(long = false).map { description =>
-              @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), isEU, isGbNi, isUkResident, "otherGoods", idx)
-            }
+      <dl class="govuk-summary-list goods-summary-list">
+        <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+          <dt class="govuk-summary-list__key">@messages("label.item")</dt>
+          <dd class="govuk-summary-list__value">@messages("label.price")</dd>
+          <dd class="govuk-summary-list__actions"></dd>
+        </div>
+        @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+          @purchasedItem.descriptionLabels(long = false).map { description =>
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), "otherGoods", idx)
           }
-      </div>
+        }
+      </dl>
     }
 </div>
 <br>
 
+@if(totalPages > 1) {
+  <nav class="govuk-pagination" aria-label="@messages("label.pagination")">
+    @if(currentPage > 1) {
+      <div class="govuk-pagination__prev">
+        <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@{currentPage - 1}" rel="prev">@messages("label.previous")</a>
+      </div>
+    }
+    <ul class="govuk-pagination__list">
+      @for(page <- 1 to totalPages) {
+        <li class="govuk-pagination__item@if(page == currentPage) { govuk-pagination__item--current}">
+          <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@page"@if(page == currentPage) { aria-current="page"}>@page</a>
+        </li>
+      }
+    </ul>
+    @if(currentPage < totalPages) {
+      <div class="govuk-pagination__next">
+        <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@{currentPage + 1}" rel="next">@messages("label.next")</a>
+      </div>
+    }
+  </nav>
+}
 
-  @if(showCalculate && (otherGoodsPurchasedItemList.size + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
+  @if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
     @if(isIrishBorderQuestionEnabled) {
       <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder">@messages("label.calculate")</a>
     } else if(isAmendment) {
@@ -146,5 +190,6 @@
       }
     }
   }
+}
 }
 }
