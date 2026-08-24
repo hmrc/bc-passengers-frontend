@@ -121,10 +121,27 @@ class SelectProductControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
       override val result: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")
+            .withSession(
+              "return-to-added-item-url"          ->
+                "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid",
+              "return-to-added-item-select-url"   -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
+              "return-to-added-item-product-path" -> "alcohol/beer",
+              "return-to-added-item-stack"        ->
+                ("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid|" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/beer")
+            )
+        ).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+
+      session(result).get("return-to-added-item-url")          shouldBe None
+      session(result).get("return-to-added-item-select-url")   shouldBe None
+      session(result).get("return-to-added-item-product-path") shouldBe None
+      session(result).get("return-to-added-item-stack")        shouldBe None
 
       verify(injected[Cache], times(1)).storeJourneyData(meq(localRequiredJourneyData.copy(selectedAliases = Nil)))(
         any()

@@ -97,7 +97,9 @@ class SelectProductController @Inject() (
   def clearAndAskProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     val journeyData = context.getJourneyData.copy(selectedAliases = Nil)
 
-    cache.storeJourneyData(journeyData).map(_ => Redirect(routes.SelectProductController.askProductSelection(path)))
+    cache
+      .storeJourneyData(journeyData)
+      .map(_ => clearReturnToAddedItem(Redirect(routes.SelectProductController.askProductSelection(path))))
   }
 
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
