@@ -198,7 +198,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text()             shouldBe "You have added 3 items"
-      doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Save and continue"
     }
 
     "respond with 200, display the page if all travel details exist & display button's text for Amendment:Calculate taxes and duties" in new LocalSetup {
@@ -330,7 +330,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text()             shouldBe "You have added 3 items"
-      doc.getElementsByClass("govuk-button").text() shouldBe "Calculate taxes and duties"
+      doc.getElementsByClass("govuk-button").text() shouldBe "Save and continue"
     }
 
     "respond with 200 and check if line showing foreign currencies accepted is shown on tell-us page " in new LocalSetup {

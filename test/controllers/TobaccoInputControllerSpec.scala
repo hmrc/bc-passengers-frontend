@@ -756,7 +756,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/cigarettes")),
@@ -793,7 +793,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
         meq(ProductPath("tobacco/cigarettes")),
@@ -883,7 +883,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = euGBRoute(app, req).get
 
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -907,7 +907,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = euGBRoute(app, req).get
 
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -1085,7 +1085,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/heated-tobacco")),
@@ -1278,7 +1278,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/rolling-tobacco")),
@@ -1656,7 +1656,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/cigars")),
@@ -2035,7 +2035,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
         meq(ProductPath("tobacco/cigars")),
@@ -2125,7 +2125,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = euGBRoute(app, req).get
 
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -2150,7 +2150,7 @@ class TobaccoInputControllerSpec extends BaseSpec {
       val result: Future[Result] = euGBRoute(app, req).get
 
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 

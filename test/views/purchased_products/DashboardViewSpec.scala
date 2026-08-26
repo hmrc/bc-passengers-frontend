@@ -177,6 +177,7 @@ class DashboardViewSpec extends BaseViewSpec {
     isGbNi = true,
     isEU = false,
     isUkResident = true,
+    addAnotherItemError = false,
     request = request,
     messagesApi = messagesApi,
     lang = Lang("en"),
@@ -199,7 +200,8 @@ class DashboardViewSpec extends BaseViewSpec {
     true,
     true,
     false,
-    true
+    true,
+    false
   )(request, messagesApi, Lang("en"), appConfig)
 
   "DashboardView" when {
@@ -212,11 +214,15 @@ class DashboardViewSpec extends BaseViewSpec {
       val doc = document(viewViaApply)
 
       doc.select("dl.goods-summary-list").size()                 shouldBe 3
+      doc.select("a.govuk-button[href*=add-an-item]").isEmpty    shouldBe true
       doc.select(".goods-summary-list__header").first().text()   shouldBe "Item Price"
       doc.select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key").text() shouldBe "50 litres wine"
       doc.select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__value").text() shouldBe "100 British pounds (GBP)"
       doc.select("a#alcohol-0").text()                         shouldBe "Edit 50 litres wine"
       doc.select("a[href*=remove-goods]").first().text()       shouldBe "Remove 50 litres wine"
+      doc.select("#addAnotherItem-yes").attr("value")         shouldBe "true"
+      doc.select("#addAnotherItem-no").attr("value")          shouldBe "false"
+      doc.select("button.govuk-button").text()                 shouldBe "Save and continue"
     }
 
     "show pagination when there is more than one page of items" in {

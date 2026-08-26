@@ -1568,6 +1568,18 @@ limitExceeded.p4.edit.loose.tobacco = Byddwn yn newid eich eitem yn ôl i {0}{1}
 #Previous declaration page content change
 label.check_tax_and_declare = Gwirio’r dreth ar nwyddau a’u datgan
 label.add_goods_previous_declaration = Ychwanegu nwyddau at ddatganiad blaenorol
+label.add_an_item = Ychwanegu eitem
+heading.which_type_of_goods_do_you_want_to_add = Pa fath o nwyddau rydych am eu hychwanegu?
+error.required.goods_type = Dewiswch y math o nwyddau rydych am eu hychwanegu
+error.required.add_another_item = Dewiswch ‘Iawn’ os ydych am ychwanegu eitem arall
+label.type_of_alcohol = Math o alcohol
+label.type_of_tobacco = Math o dybaco
+label.number_of_sticks = Nifer o unedau
+label.save_and_continue = Cadw a pharhau
+heading.check_your_answer = Gwirio eich atebion
+heading.do_you_want_to_add_another_item = A ydych am ychwanegu eitem arall?
+label.yes_add_another_item = Iawn, ychwanegu eitem arall
+label.no_calculate_taxes_and_duties = Na, cyfrifo trethi a thollau
 
 #No further amendment page
 heading.no_longer_declaration_available = Ni allwch ddefnyddio’r gwasanaeth hwn mwyach i ychwanegu nwyddau at eich datganiad

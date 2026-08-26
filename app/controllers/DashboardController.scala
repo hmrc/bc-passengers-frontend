@@ -127,7 +127,8 @@ class DashboardController @Inject() (
                   appConfig.isIrishBorderQuestionEnabled,
                   jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
                   jd.euCountryCheck.contains("euOnly"),
-                  jd.isUKResident.contains(true)
+                  jd.isUKResident.contains(true),
+                  context.request.getQueryString("addAnotherItemError").contains("true")
                 )
               )
           }

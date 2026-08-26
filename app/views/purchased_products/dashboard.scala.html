@@ -16,6 +16,7 @@
 
 @import views.ViewUtils._
 @import util._
+@import views.html.components.linkAsButton
 
 @this(
   govukLayout: templates.GovukLayoutWrapper,
@@ -24,7 +25,9 @@
   h1: components.h1,
   h2: components.h2,
   p: components.p,
-  button: components.button
+  button: components.button,
+  inputRadio: components.inputRadio,
+  errorSummary: components.errorSummary
 )
 
 @(journeyData: JourneyData,
@@ -42,7 +45,8 @@
   isIrishBorderQuestionEnabled: Boolean,
   isGbNi: Boolean,
   isEU: Boolean,
-  isUkResident: Boolean
+  isUkResident: Boolean,
+  addAnotherItemError: Boolean = false
 )(implicit request: Request[?], messagesApi: MessagesApi, lang: Lang, appConfig: config.AppConfig)
 
 @defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
@@ -55,7 +59,15 @@
   messages("label.you_have_added_items", totalItems)
 }) { pageHeading =>
 
+@defining(
+  if(addAnotherItemError) AddAnotherItemDto.form.withError("addAnotherItem", "error.required.add_another_item")
+  else AddAnotherItemDto.form
+) { addAnotherItemForm =>
 @govukLayout(pageTitle = Some(pageHeading + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+
+@if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
+  @errorSummary(addAnotherItemForm.errors, errorFieldSuffix = Some("yes"))
+}
 
 @h1(pageHeading)
 
@@ -69,14 +81,13 @@
 }
 <br>
 
+@if(totalItems == 0) {
+  @linkAsButton(routes.AddItemController.show, "label.add_an_item")
+}
+
+@if(alcoholPurchasedItemList.nonEmpty) {
 <div class="alcohol">
   @h2(messages("label.alcohol"))
-    @if(alcoholPurchasedItemList.isEmpty) {
-      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
-    } else {
-      <div class="add-more">
-        <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("alcohol"))">@messages("label.add_alcohol")</a></p>
-      </div>
   @if(alcoholPurchasedItemList.nonEmpty){
     <dl class="govuk-summary-list goods-summary-list">
       <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
@@ -90,19 +101,14 @@
         }
       }
     </dl>
-    }
   }
 </div>
 <br>
+}
 
+@if(tobaccoPurchasedItemList.nonEmpty) {
 <div class="tobacco">
   @h2(messages("label.tobacco"))
-    @if(tobaccoPurchasedItemList.isEmpty) {
-      <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
-    } else {
-      <div class="add-more">
-        <p class="govuk-body"><a class="govuk-link" href="@routes.SelectProductController.clearAndAskProductSelection(ProductPath("tobacco"))">@messages("label.add_tobacco")</a></p>
-      </div>
   @if(tobaccoPurchasedItemList.nonEmpty){
     <dl class="govuk-summary-list goods-summary-list">
       <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
@@ -116,20 +122,15 @@
         }
       }
     </dl>
-    }
   }
 </div>
 <br>
+}
 
+@if(otherGoodsPurchasedItemList.nonEmpty) {
 <div class="other-goods">
   @h2(messages("label.other_goods"))
-    @if(totalOtherGoodsItems == 0 && previousOtherGoodsPurchasedItemList.isEmpty) {
-      <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
-    } else if((totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) < appConfig.maxOtherGoods) {
-      <div class="add-more">
-        <p class="govuk-body"><a class="govuk-link" href="@routes.OtherGoodsInputController.displayAddForm()">@messages("label.add_other_goods")</a></p>
-      </div>
-    } else if((totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
+    @if((totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size)  == appConfig.maxOtherGoods) {
      <div class="panel panel-border-wide">
         @p(Html(messages("label.you_can_continue_to_calculate_taxes_and_duties_if_you_have_no_more_than_50_other_goods_to_declare_")))
      </div>
@@ -154,6 +155,7 @@
     }
 </div>
 <br>
+}
 
 @if(totalPages > 1) {
   <nav class="govuk-pagination" aria-label="@messages("label.pagination")">
@@ -177,19 +179,32 @@
   </nav>
 }
 
-  @if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
-    @if(isIrishBorderQuestionEnabled) {
-      <a class="govuk-link" href="@routes.CalculateDeclareController.irishBorder">@messages("label.calculate")</a>
-    } else if(isAmendment) {
-      @formHelper(action = routes.CalculateDeclareController.calculate) {
-        @button(messages("label.calculate"))
-      }
-    } else {
-      @formHelper(action = routes.CalculateDeclareController.calculate) {
-        @button(messages("label.calculate"))
-      }
-    }
+@if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
+  @formHelper(action = routes.CalculateDeclareController.calculate) {
+    @inputRadio(
+      form = addAnotherItemForm,
+      legend = "heading.do_you_want_to_add_another_item",
+      name = "addAnotherItem",
+      legendAsHeading = false,
+      classes = "govuk-fieldset__legend--m",
+      items = Seq(
+        RadioItem(
+          id = Some("addAnotherItem-yes"),
+          value = Some("true"),
+          content = Text(messages("label.yes_add_another_item"))
+        ),
+        RadioItem(
+          id = Some("addAnotherItem-no"),
+          value = Some("false"),
+          content = Text(messages("label.no_calculate_taxes_and_duties"))
+        )
+      )
+    )
+    @button("label.save_and_continue")
   }
+}
+
+}
 }
 }
 }

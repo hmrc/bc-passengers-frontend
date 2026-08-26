@@ -606,7 +606,13 @@ class CalculateDeclareController @Inject() (
   }
 
   def calculate: Action[AnyContent] = dashboardAction { implicit context =>
-    doCalculateAction(context.getJourneyData)
+    context.request.body.asFormUrlEncoded.flatMap(_.get("addAnotherItem").flatMap(_.headOption)) match {
+      case Some("true") => Future.successful(Redirect(routes.AddItemController.show))
+      case Some("false") => doCalculateAction(context.getJourneyData)
+      case _             => Future.successful(
+          Redirect(s"${routes.DashboardController.showDashboard.url}?addAnotherItemError=true")
+        )
+    }
   }
 
   private def doCalculateAction(journeyData: JourneyData)(implicit context: LocalContext): Future[Result] =

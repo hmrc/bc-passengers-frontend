@@ -2843,11 +2843,63 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         val response: Future[Result] = route(
           app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+            .withFormUrlEncodedBody("addAnotherItem" -> "false")
         ).get
 
         status(response)               shouldBe SEE_OTHER
         redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tax-due"
       }
+    }
+
+    "redirect to Add an item when the user wants to add another item" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(
+        Some(
+          JourneyData(
+            prevDeclaration = Some(false),
+            euCountryCheck = Some("greatBritain"),
+            arrivingNICheck = Some(true),
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceSuccessResponse                  = None.orNull
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = None.orNull
+
+      val response: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+          .withFormUrlEncodedBody("addAnotherItem" -> "true")
+      ).get
+
+      status(response)               shouldBe SEE_OTHER
+      redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/add-an-item"
+    }
+
+    "return to the dashboard with an error when no answer is selected" in new LocalSetup {
+      override lazy val cachedJourneyData: Future[Option[JourneyData]] = Future.successful(
+        Some(
+          JourneyData(
+            prevDeclaration = Some(false),
+            euCountryCheck = Some("greatBritain"),
+            arrivingNICheck = Some(true),
+            bringingOverAllowance = Some(true),
+            ageOver17 = Some(true),
+            privateCraft = Some(false)
+          )
+        )
+      )
+      override lazy val payApiResponse: PayApiServiceSuccessResponse                  = None.orNull
+      override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = None.orNull
+
+      val response: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+      ).get
+
+      status(response)               shouldBe SEE_OTHER
+      redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tell-us?addAnotherItemError=true"
     }
 
     "redirect to the cannot use service page" when {
@@ -2873,6 +2925,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = injected[CalculateDeclareController].calculate(
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+            .withFormUrlEncodedBody("addAnotherItem" -> "false")
         )
 
         status(response)               shouldBe SEE_OTHER
@@ -2903,6 +2956,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
 
         val response: Future[Result] = injected[CalculateDeclareController].calculate(
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+            .withFormUrlEncodedBody("addAnotherItem" -> "false")
         )
         val content: String          = contentAsString(response)
         val doc: Document            = Jsoup.parse(content)

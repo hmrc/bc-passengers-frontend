@@ -1564,6 +1564,18 @@ limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1} {2
 
 label.check_tax_and_declare = Check tax on goods and declare them
 label.add_goods_previous_declaration = Add goods to a previous declaration
+label.add_an_item = Add an item
+heading.which_type_of_goods_do_you_want_to_add = Which type of goods do you want to add?
+error.required.goods_type = Select the type of goods you want to add
+error.required.add_another_item = Select yes if you want to add another item
+label.type_of_alcohol = Type of alcohol
+label.type_of_tobacco = Type of tobacco
+label.number_of_sticks = Number of sticks
+label.save_and_continue = Save and continue
+heading.check_your_answer = Check your answers
+heading.do_you_want_to_add_another_item = Do you want to add another item?
+label.yes_add_another_item = Yes, add another item
+label.no_calculate_taxes_and_duties = No, calculate taxes and duties
 
 #No further amendment page
 heading.no_longer_declaration_available = You can no longer use this service to add goods to your declaration

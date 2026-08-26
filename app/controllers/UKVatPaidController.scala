@@ -76,7 +76,7 @@ class UKVatPaidController @Inject() (
                 if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
                   Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
                 } else {
-                  Redirect(routes.SelectProductController.nextStep())
+                  Redirect(routes.GoodsCheckYourAnswersController.show(path, iid))
                 }
               } else {
                 Redirect(routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid))

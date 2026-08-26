@@ -40,7 +40,7 @@
     }
 
     <fieldset class="govuk-fieldset" aria-describedby="select-products-hint">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+        <legend class="govuk-fieldset__legend @if(path.toMessageKey == "alcohol") {govuk-fieldset__legend--l} else {govuk-fieldset__legend--xl}">
             <h1 class="govuk-fieldset__heading">
                 @Html(messages(s"select_products.heading.${path.toMessageKey}"))
             </h1>
@@ -58,6 +58,6 @@
         )
     </fieldset>
 
-    @button("label.continue")
+    @button("label.save_and_continue")
     }
 }
