@@ -62,8 +62,35 @@
 
 @scriptsBlock = {
     @autocompleteJavascript()
+
+    <script @{CSPNonce.attr}>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputId = "placeOfArrival.selectPlaceOfArrival";
+            const labelId = inputId + "-label";
+
+            const updateListboxLabel = function () {
+                const listbox = document.getElementById(inputId + "__listbox");
+                const label = document.getElementById(labelId);
+
+                if (listbox && label) {
+                    listbox.setAttribute("aria-labelledby", labelId);
+                }
+            };
+
+            updateListboxLabel();
+
+            const observer = new MutationObserver(updateListboxLabel);
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    </script>
+
     @inlineScript
 }
+
 
 @beforeContentBlock = {
 
