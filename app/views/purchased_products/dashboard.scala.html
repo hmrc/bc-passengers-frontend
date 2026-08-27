@@ -52,7 +52,7 @@
 @defining(MessagesImpl(lang, messagesApi).messages) { implicit messages =>
 
 @defining(if(totalItems == 0) {
-  if(isAmendment) messages("label.tell_us_about_the_additional_goods_") else messages("label.tell_us_about_the_goods_")
+  if(isAmendment) messages("label.add_goods_previous_declaration") else messages("label.tell_us_about_the_goods_")
 } else if(totalItems == 1) {
   messages("label.you_have_added_one_item")
 } else {
