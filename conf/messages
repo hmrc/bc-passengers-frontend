@@ -1422,13 +1422,15 @@ label.excise_paid = Excise paid
 label.tax_exempt = Tax exempt
 
 #eu_evidence_item
-heading.evidence_eu_item = Do you have evidence this item was originally produced or made in the EU?
+heading.evidence_eu_item = Evidence the item was made in the EU
+label.evidence_eu_item.question = Do you have evidence this item was originally produced or made in the EU?
+text.evidence_eu_item.intro = If your item was made or produced in the EU you may not need to pay customs duty. You must have evidence that the item was made or produced in the EU.
 text.evidence_include = Evidence may include one of the following:
 label.packaging_or_label = packaging or a label attached to the item showing that it was produced or made in the EU
 label.item_is_handmade = evidence the item is handmade or homegrown in the EU
 label.documents_by_seller = documents given to you by the seller that show the item was produced or made in the EU
 label.statement_on_origin = a ''statement on origin'' from the supplier of the item
-label.appropriate_evidence = If you do not have the appropriate evidence you will have to pay customs duty on this item.
+label.appropriate_evidence = If you do not have evidence you will have to pay customs duty on this item
 error.evidence_eu_item = Select yes if you have evidence this item was originally produced or made in the EU
 
 label.change_your_goods = Change your goods

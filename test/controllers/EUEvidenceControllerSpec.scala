@@ -90,7 +90,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
       doc
         .getElementsByTag("h1")
-        .text() shouldBe "Do you have evidence this item was originally produced or made in the EU?"
+        .text() shouldBe "Evidence the item was made in the EU"
     }
 
     "load the page and populate hasEvidence as true" in {
@@ -125,7 +125,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
       doc
         .getElementsByTag("h1")
-        .text()                                                  shouldBe "Do you have evidence this item was originally produced or made in the EU?"
+        .text()                                                  shouldBe "Evidence the item was made in the EU"
       doc.select("#eUEvidenceItem-value-yes").hasAttr("checked") shouldBe true
     }
 
@@ -328,7 +328,7 @@ class EUEvidenceControllerSpec extends BaseSpec {
 
       doc
         .getElementsByTag("h1")
-        .text()                                        shouldBe "Do you have evidence this item was originally produced or made in the EU?"
+        .text()                                        shouldBe "Evidence the item was made in the EU"
       doc.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
       doc
         .select("a[href=#eUEvidenceItem-value-yes]")
