@@ -23,8 +23,8 @@ import views.html.purchased_products.check_your_goods_answers
 
 class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
 
-  private val country = Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)
-  private val item = PurchasedProductInstance(
+  private val country        = Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)
+  private val item           = PurchasedProductInstance(
     path = ProductPath("alcohol/beer"),
     iid = "iid0",
     weightOrVolume = Some(BigDecimal(5)),
@@ -33,14 +33,15 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     currency = Some("EUR"),
     cost = Some(BigDecimal(50))
   )
-  private val product = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A1/BEER", "alcohol", List("L-BEER"))
-  private val currency = Currency("EUR", "title.euro_eur", None, Nil)
-  private val tobaccoItem = item.copy(
+  private val product        = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A1/BEER", "alcohol", List("L-BEER"))
+  private val currency       = Currency("EUR", "title.euro_eur", None, Nil)
+  private val tobaccoItem    = item.copy(
     path = ProductPath("tobacco/cigars"),
     noOfSticks = Some(10),
     weightOrVolume = Some(BigDecimal(100))
   )
-  private val tobaccoProduct = ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR"))
+  private val tobaccoProduct =
+    ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR"))
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[check_your_goods_answers].apply(item, product, Some(currency))(request, messages, appConfig)
@@ -60,23 +61,26 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     "show the selected item and its answers in a summary list" in {
       val doc = document(viewViaApply)
 
-      doc.select("h2.govuk-heading-m").text() shouldBe "Beer"
-      doc.select(".govuk-summary-list__key").eachText() should contain allOf (
+      doc.select("h2.govuk-heading-m").text()                                 shouldBe "Beer"
+      doc.select(".govuk-summary-list__key").eachText()                         should contain allOf (
         "Type of goods",
         "Type of alcohol",
         "Total volume in litres",
         "Price paid"
       )
-      doc.select(".govuk-summary-list").text() should include("50")
+      doc.select(".govuk-summary-list").text()                                  should include("50")
       doc.select("a.govuk-link[href*=enter-goods/alcohol/iid0/edit]").isEmpty shouldBe false
-      doc.select("button.govuk-button").text() shouldBe "Save and continue"
+      doc.select("button.govuk-button").text()                                shouldBe "Save and continue"
     }
 
     "show the tobacco weight in grams" in {
-      val doc = document(injected[check_your_goods_answers].apply(tobaccoItem, tobaccoProduct, Some(currency))(request, messages, appConfig))
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(tobaccoItem, tobaccoProduct, Some(currency))(request, messages, appConfig)
+      )
 
       doc.select(".govuk-summary-list__key").eachText() should contain("Total weight in grams")
-      doc.select(".govuk-summary-list").text() should include("100 grams")
+      doc.select(".govuk-summary-list").text()          should include("100 grams")
     }
   }
 }

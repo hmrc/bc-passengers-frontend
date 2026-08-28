@@ -159,7 +159,7 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
             || path.contains("enter-goods/tobacco")
             || path.contains("enter-goods/other-goods") =>
         Some(DashboardController.showDashboard)
-      case "alcohol" | "tobacco" | "other-goods" if path.contains("/select-goods/") =>
+      case "alcohol" | "tobacco" | "other-goods" if path.contains("/select-goods/")       =>
         Some(AddItemController.show)
       case _                                                                              =>
         None

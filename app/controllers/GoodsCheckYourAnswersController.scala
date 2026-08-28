@@ -40,8 +40,8 @@ class GoodsCheckYourAnswersController @Inject() (
 
   def show(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
-    val item = context.getJourneyData.getPurchasedProductInstance(iid).filter(_.path == path)
-    val product = productTreeService.productTree.getDescendant(path).collect { case leaf: ProductTreeLeaf => leaf }
+    val item                                  = context.getJourneyData.getPurchasedProductInstance(iid).filter(_.path == path)
+    val product                               = productTreeService.productTree.getDescendant(path).collect { case leaf: ProductTreeLeaf => leaf }
 
     (item, product) match {
       case (Some(purchasedItem), Some(productTreeLeaf)) =>

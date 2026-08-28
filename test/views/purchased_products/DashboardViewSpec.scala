@@ -213,15 +213,19 @@ class DashboardViewSpec extends BaseViewSpec {
     "show each item in a summary list with contextual edit and remove actions" in {
       val doc = document(viewViaApply)
 
-      doc.select("dl.goods-summary-list").size()                 shouldBe 3
-      doc.select("a.govuk-button[href*=add-an-item]").isEmpty    shouldBe true
-      doc.select(".goods-summary-list__header").first().text()   shouldBe "Item Price"
-      doc.select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key").text() shouldBe "50 litres wine"
-      doc.select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__value").text() shouldBe "100 British pounds (GBP)"
+      doc.select("dl.goods-summary-list").size()               shouldBe 3
+      doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
+      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
+      doc
+        .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key")
+        .text()                                                shouldBe "50 litres wine"
+      doc
+        .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__value")
+        .text()                                                shouldBe "100 British pounds (GBP)"
       doc.select("a#alcohol-0").text()                         shouldBe "Edit 50 litres wine"
       doc.select("a[href*=remove-goods]").first().text()       shouldBe "Remove 50 litres wine"
-      doc.select("#addAnotherItem-yes").attr("value")         shouldBe "true"
-      doc.select("#addAnotherItem-no").attr("value")          shouldBe "false"
+      doc.select("#addAnotherItem-yes").attr("value")          shouldBe "true"
+      doc.select("#addAnotherItem-no").attr("value")           shouldBe "false"
       doc.select("button.govuk-button").text()                 shouldBe "Save and continue"
     }
 
@@ -247,9 +251,9 @@ class DashboardViewSpec extends BaseViewSpec {
 
       val doc = document(paginatedView)
 
-      doc.select("nav.govuk-pagination").attr("aria-label")      shouldBe "Pagination"
-      doc.select(".govuk-pagination__item--current").text()      shouldBe "1"
-      doc.select("a[href*=page=2]").first().text()               shouldBe "2"
+      doc.select("nav.govuk-pagination").attr("aria-label")                                       shouldBe "Pagination"
+      doc.select(".govuk-pagination__item--current").text()                                       shouldBe "1"
+      doc.select("a[href*=page=2]").first().text()                                                shouldBe "2"
       doc.select(".other-goods .govuk-summary-list__row:not(.goods-summary-list__header)").size() shouldBe 10
     }
 

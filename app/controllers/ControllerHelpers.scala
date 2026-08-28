@@ -47,11 +47,11 @@ trait ControllerHelpers
 
   private val logger = Logger(this.getClass)
 
-  protected val returnToAddedItemSessionKey          = "return-to-added-item-url"
-  protected val returnToAddedItemSelectUrlSessionKey = "return-to-added-item-select-url"
-  protected val returnToAddedItemProductPathKey      = "return-to-added-item-product-path"
+  protected val returnToAddedItemSessionKey             = "return-to-added-item-url"
+  protected val returnToAddedItemSelectUrlSessionKey    = "return-to-added-item-select-url"
+  protected val returnToAddedItemProductPathKey         = "return-to-added-item-product-path"
   protected val returnToAddedItemDashboardUrlSessionKey = "return-to-added-item-dashboard-url"
-  protected val returnToAddedItemStackSessionKey     = "return-to-added-item-stack"
+  protected val returnToAddedItemStackSessionKey        = "return-to-added-item-stack"
 
   private case class AddedItemBackLink(editUrl: String, selectUrl: String, productPath: String, dashboardUrl: String)
 
@@ -107,12 +107,12 @@ trait ControllerHelpers
   )(implicit
     context: LocalContext
   ): Result = {
-    val selectUrl = routes.SelectProductController
+    val selectUrl      = routes.SelectProductController
       .askProductSelection(ProductPath(productPath.components.dropRight(1)))
       .url
-    val backLink  = AddedItemBackLink(editUrl, selectUrl, productPath.toString, dashboardUrl.getOrElse(editUrl))
-    val stack     = addedItemBackLinkStack.filterNot(_.editUrl == editUrl) :+ backLink
-    val session   = context.request.session.data ++ Map(
+    val backLink       = AddedItemBackLink(editUrl, selectUrl, productPath.toString, dashboardUrl.getOrElse(editUrl))
+    val stack          = addedItemBackLinkStack.filterNot(_.editUrl == editUrl) :+ backLink
+    val session        = context.request.session.data ++ Map(
       returnToAddedItemSessionKey             -> editUrl,
       returnToAddedItemSelectUrlSessionKey    -> selectUrl,
       returnToAddedItemProductPathKey         -> productPath.toString,
@@ -138,11 +138,11 @@ trait ControllerHelpers
     addedItemBackLinkStack.dropRight(1).lastOption match {
       case Some(backLink) =>
         result.addingToSession(
-          returnToAddedItemSessionKey          -> backLink.editUrl,
-          returnToAddedItemSelectUrlSessionKey -> backLink.selectUrl,
-          returnToAddedItemProductPathKey      -> backLink.productPath,
+          returnToAddedItemSessionKey             -> backLink.editUrl,
+          returnToAddedItemSelectUrlSessionKey    -> backLink.selectUrl,
+          returnToAddedItemProductPathKey         -> backLink.productPath,
           returnToAddedItemDashboardUrlSessionKey -> backLink.dashboardUrl,
-          returnToAddedItemStackSessionKey     -> serialiseAddedItemBackLinks(addedItemBackLinkStack.dropRight(1))
+          returnToAddedItemStackSessionKey        -> serialiseAddedItemBackLinks(addedItemBackLinkStack.dropRight(1))
         )(using context.request)
       case None           => clearReturnToAddedItem(result)
     }

@@ -308,7 +308,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
               .withFormUrlEncodedBody("isUKVatPaid" -> "true")
           ).get
 
-          status(response)           shouldBe SEE_OTHER
+          status(response)             shouldBe SEE_OTHER
           redirectLocation(response).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
         }
       }

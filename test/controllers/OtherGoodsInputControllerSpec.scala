@@ -687,7 +687,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
@@ -719,7 +719,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
@@ -776,21 +776,21 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
       ("other-goods/electronic-devices/other", "label.other-goods.electronic-devices.other")
     ).foreach { case (path, searchTerm) =>
       s"add PPI to the JourneyData with path $path and redirect to the item CYA page" when {
-          "Non EU journey" in new LocalSetup {
-            val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-              enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-                .withFormUrlEncodedBody(
-                  "searchTerm" -> searchTerm,
-                  "country"    -> "FR",
-                  "currency"   -> "EUR",
-                  "cost"       -> "12.12"
-                )
+        "Non EU journey" in new LocalSetup {
+          val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+            enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+              .withFormUrlEncodedBody(
+                "searchTerm" -> searchTerm,
+                "country"    -> "FR",
+                "currency"   -> "EUR",
+                "cost"       -> "12.12"
+              )
 
-            val result: Future[Result] = route(app, req).get
-            status(result)           shouldBe SEE_OTHER
-            redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
-          }
+          val result: Future[Result] = route(app, req).get
+          status(result)             shouldBe SEE_OTHER
+          redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
         }
+      }
     }
 
     "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
@@ -830,7 +830,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }
 
@@ -848,7 +848,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
@@ -902,7 +902,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
@@ -976,7 +976,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
@@ -995,7 +995,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
+      status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }

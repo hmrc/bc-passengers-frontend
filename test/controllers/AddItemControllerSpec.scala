@@ -60,7 +60,7 @@ class AddItemControllerSpec extends BaseSpec {
     "display the goods type page" in {
       val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")).get
 
-      status(result) shouldBe OK
+      status(result)                                           shouldBe OK
       Jsoup.parse(contentAsString(result)).select("h1").text() shouldBe "Which type of goods do you want to add?"
     }
   }
@@ -68,8 +68,8 @@ class AddItemControllerSpec extends BaseSpec {
   "POST /add-an-item" should {
     forAll(
       Seq(
-        "alcohol" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol",
-        "tobacco" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/tobacco",
+        "alcohol"     -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol",
+        "tobacco"     -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/tobacco",
         "other-goods" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/other-goods"
       )
     ) { case (goodsType, destination) =>
@@ -88,7 +88,7 @@ class AddItemControllerSpec extends BaseSpec {
     "show an error when no goods type is selected" in {
       val result = route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")).get
 
-      status(result) shouldBe BAD_REQUEST
+      status(result)        shouldBe BAD_REQUEST
       contentAsString(result) should include("Select the type of goods you want to add")
     }
   }

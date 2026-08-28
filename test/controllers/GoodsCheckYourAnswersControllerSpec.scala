@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class GoodsCheckYourAnswersControllerSpec extends BaseSpec {
 
-  private val item = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0")
+  private val item        = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0")
   private val journeyData = JourneyData(
     prevDeclaration = Some(false),
     euCountryCheck = Some("nonEuOnly"),
@@ -64,16 +64,17 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec {
         enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0")
       ).get
 
-      status(result) shouldBe OK
+      status(result)                                           shouldBe OK
       Jsoup.parse(contentAsString(result)).select("h1").text() shouldBe "Check your answers"
     }
   }
 
   "POST /check-your-item" should {
     "continue to the existing item completion route" in {
-      val result = route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item")).get
+      val result =
+        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item")).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
   }

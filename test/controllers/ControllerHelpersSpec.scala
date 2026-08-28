@@ -109,13 +109,13 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
         val result  = exposedMarkReturnToAddedItem(Ok, "/edit-item", ProductPath("alcohol/spirits"))
         val session = result.session(request)
 
-        session.get(returnToAddedItemSessionKey)          shouldBe Some("/edit-item")
-        session.get(returnToAddedItemSelectUrlSessionKey) shouldBe Some(
+        session.get(returnToAddedItemSessionKey)             shouldBe Some("/edit-item")
+        session.get(returnToAddedItemSelectUrlSessionKey)    shouldBe Some(
           "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol"
         )
-        session.get(returnToAddedItemProductPathKey)      shouldBe Some("alcohol/spirits")
+        session.get(returnToAddedItemProductPathKey)         shouldBe Some("alcohol/spirits")
         session.get(returnToAddedItemDashboardUrlSessionKey) shouldBe Some("/edit-item")
-        session.get(returnToAddedItemStackSessionKey)     shouldBe Some(
+        session.get(returnToAddedItemStackSessionKey)        shouldBe Some(
           "/edit-item|/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/spirits|/edit-item"
         )
       }
@@ -124,11 +124,11 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
     ".popReturnToAddedItem" should {
       "move the previous item in the stack into the active backlink session keys" in {
         val request                      = FakeRequest().withSession(
-          returnToAddedItemSessionKey          -> "/edit-item-2",
-          returnToAddedItemSelectUrlSessionKey -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco",
-          returnToAddedItemProductPathKey      -> "tobacco/cigars",
+          returnToAddedItemSessionKey             -> "/edit-item-2",
+          returnToAddedItemSelectUrlSessionKey    -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco",
+          returnToAddedItemProductPathKey         -> "tobacco/cigars",
           returnToAddedItemDashboardUrlSessionKey -> "/check-your-item/tobacco/cigars/iid2",
-          returnToAddedItemStackSessionKey     ->
+          returnToAddedItemStackSessionKey        ->
             ("/edit-item-1|/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/spirits|/check-your-item/alcohol/spirits/iid1\n" +
               "/edit-item-2|/check-tax-on-goods-you-bring-into-the-uk/select-goods/tobacco|tobacco/cigars|/check-your-item/tobacco/cigars/iid2")
         )
@@ -140,24 +140,24 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
         val result  = exposedPopReturnToAddedItem(Ok)
         val session = result.session(request)
 
-        session.get(returnToAddedItemSessionKey)          shouldBe Some("/edit-item-1")
-        session.get(returnToAddedItemSelectUrlSessionKey) shouldBe Some(
+        session.get(returnToAddedItemSessionKey)             shouldBe Some("/edit-item-1")
+        session.get(returnToAddedItemSelectUrlSessionKey)    shouldBe Some(
           "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol"
         )
-        session.get(returnToAddedItemProductPathKey)      shouldBe Some("alcohol/spirits")
+        session.get(returnToAddedItemProductPathKey)         shouldBe Some("alcohol/spirits")
         session.get(returnToAddedItemDashboardUrlSessionKey) shouldBe Some("/check-your-item/alcohol/spirits/iid1")
-        session.get(returnToAddedItemStackSessionKey)     shouldBe Some(
+        session.get(returnToAddedItemStackSessionKey)        shouldBe Some(
           "/edit-item-1|/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/spirits|/check-your-item/alcohol/spirits/iid1"
         )
       }
 
       "clear the active backlink session keys when there is no previous item in the stack" in {
         val request                      = FakeRequest().withSession(
-          returnToAddedItemSessionKey          -> "/edit-item",
-          returnToAddedItemSelectUrlSessionKey -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
-          returnToAddedItemProductPathKey      -> "alcohol/spirits",
+          returnToAddedItemSessionKey             -> "/edit-item",
+          returnToAddedItemSelectUrlSessionKey    -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
+          returnToAddedItemProductPathKey         -> "alcohol/spirits",
           returnToAddedItemDashboardUrlSessionKey -> "/check-your-item/alcohol/spirits/iid0",
-          returnToAddedItemStackSessionKey     ->
+          returnToAddedItemStackSessionKey        ->
             "/edit-item|/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/spirits|/check-your-item/alcohol/spirits/iid0"
         )
         given localContext: LocalContext = LocalContext(
@@ -168,11 +168,11 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
         val result  = exposedPopReturnToAddedItem(Ok)
         val session = result.session(request)
 
-        session.get(returnToAddedItemSessionKey)          shouldBe None
-        session.get(returnToAddedItemSelectUrlSessionKey) shouldBe None
-        session.get(returnToAddedItemProductPathKey)      shouldBe None
+        session.get(returnToAddedItemSessionKey)             shouldBe None
+        session.get(returnToAddedItemSelectUrlSessionKey)    shouldBe None
+        session.get(returnToAddedItemProductPathKey)         shouldBe None
         session.get(returnToAddedItemDashboardUrlSessionKey) shouldBe None
-        session.get(returnToAddedItemStackSessionKey)     shouldBe None
+        session.get(returnToAddedItemStackSessionKey)        shouldBe None
       }
     }
 
