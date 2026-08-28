@@ -190,7 +190,10 @@ class OtherGoodsInputController @Inject() (
                 productTreeService.otherGoodsSearchItems,
                 "edit",
                 ppi.path,
-                backLinkModel.backLink,
+                backLinkForAddedItemEdit(
+                  backLinkModel.backLink,
+                  routes.OtherGoodsInputController.displayEditForm(iid).url
+                ),
                 customBackLink = true
               )
             )
@@ -252,17 +255,22 @@ class OtherGoodsInputController @Inject() (
               )
             )
             cache.store(jd._1) map { _ =>
-              (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                case (Some(true), Some("greatBritain")) =>
-                  Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
-                case (Some(false), Some("euOnly"))      =>
-                  if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                    Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
-                  } else {
-                    Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
-                  }
-                case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
-              }
+              markReturnToAddedItem(
+                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                  case (Some(true), Some("greatBritain")) =>
+                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
+                  case (Some(false), Some("euOnly"))      =>
+                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
+                    } else {
+                      Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
+                    }
+                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
+                },
+                routes.OtherGoodsInputController.displayEditForm(jd._2).url,
+                dto.searchTerm.get.path,
+                Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url)
+              )
             }
           }
       )
@@ -289,7 +297,10 @@ class OtherGoodsInputController @Inject() (
                     productTreeService.otherGoodsSearchItems,
                     "edit",
                     ppi.path,
-                    backLinkModel.backLink,
+                    backLinkForAddedItemEdit(
+                      backLinkModel.backLink,
+                      routes.OtherGoodsInputController.displayEditForm(iid).url
+                    ),
                     customBackLink = true
                   )
                 )
@@ -307,7 +318,7 @@ class OtherGoodsInputController @Inject() (
                 ppi.searchTerm
               )
               cache.store(jd) map { _ =>
-                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                val result = (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
                   case (Some(true), Some("greatBritain")) =>
                     Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
                   case (Some(false), Some("euOnly"))      =>
@@ -318,6 +329,10 @@ class OtherGoodsInputController @Inject() (
                     }
                   case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
                 }
+                clearReturnToAddedItemUnlessCurrentEdit(
+                  result,
+                  routes.OtherGoodsInputController.displayEditForm(iid).url
+                )
               }
             }
           )

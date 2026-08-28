@@ -49,13 +49,19 @@ class SelectProductsViewSpec extends BaseViewSpec {
     request = request,
     messages = messages,
     appConfig = appConfig,
-    backLink = None
+    backLink = None,
+    customBackLink = false,
+    returnToAddedItemEditUrl = None,
+    returnToAddedItemProductPath = None
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[select_products].ref.f(
     validForm,
     List(("televisions", "label.other-goods.electronic-devices.televisions")),
     productPath,
+    None,
+    false,
+    None,
     None
   )(request, messages, appConfig)
 

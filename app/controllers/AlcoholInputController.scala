@@ -55,9 +55,10 @@ class AlcoholInputController @Inject() (
     jd: JourneyData,
     productPath: ProductPath,
     iid: String,
-    originCountry: Option[String]
-  ): Result =
-    (jd.arrivingNICheck, jd.euCountryCheck) match {
+    originCountry: Option[String],
+    isAddJourney: Boolean
+  )(implicit context: LocalContext): Result =
+    val result = (jd.arrivingNICheck, jd.euCountryCheck) match {
       case (Some(true), Some("greatBritain"))                                                    =>
         Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, iid))
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
@@ -65,6 +66,14 @@ class AlcoholInputController @Inject() (
       case _                                                                                     =>
         Redirect(routes.GoodsCheckYourAnswersController.show(productPath, iid))
     }
+    if (isAddJourney)
+      markReturnToAddedItem(
+        result,
+        routes.AlcoholInputController.displayEditForm(iid).url,
+        productPath,
+        Some(routes.GoodsCheckYourAnswersController.show(productPath, iid).url)
+      )
+    else result
 
   private def submittedIid(implicit context: LocalContext): Option[String] =
     context.request.body.asFormUrlEncoded
@@ -119,7 +128,10 @@ class AlcoholInputController @Inject() (
                 Ok(
                   alcohol_input(
                     alcoholInputForm.alcoholForm(ppi.path).fill(dto),
-                    backLinkModel.backLink,
+                    backLinkForAddedItemEdit(
+                      backLinkModel.backLink,
+                      routes.AlcoholInputController.displayEditForm(iid).url
+                    ),
                     customBackLink = true,
                     product,
                     ppi.path,
@@ -221,7 +233,7 @@ class AlcoholInputController @Inject() (
                     )
                   )
                 cache.store(journeyData) map { _ =>
-                  navigationHelper(context.getJourneyData, path, item, dto.originCountry)
+                  navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
                 }
               } else {
                 Future(
@@ -292,7 +304,16 @@ class AlcoholInputController @Inject() (
                         dto.cost
                       )
                     ) map { (_: JourneyData) =>
-                      navigationHelper(context.getJourneyData, ppi.path, iid, dto.originCountry)
+                      clearReturnToAddedItemUnlessCurrentEdit(
+                        navigationHelper(
+                          context.getJourneyData,
+                          ppi.path,
+                          iid,
+                          dto.originCountry,
+                          isAddJourney = false
+                        ),
+                        routes.AlcoholInputController.displayEditForm(iid).url
+                      )
                     }
                   } else {
                     Future(

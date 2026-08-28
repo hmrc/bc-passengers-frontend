@@ -36,12 +36,15 @@ object ViewUtils {
   private def errorPrefix(form: Form[?])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
 
-  def radioOptions(items: List[(String, String)])(implicit messages: Messages): Seq[RadioItem] =
+  def radioOptions(items: List[(String, String)], selectedValue: Option[String] = None)(implicit
+    messages: Messages
+  ): Seq[RadioItem] =
     items.zipWithIndex.map { case (value, _) =>
       RadioItem(
         id = Some(messages(s"tokens-${value._1}")),
         value = Some(value._1),
-        content = Text(messages(s"${value._2}"))
+        content = Text(messages(s"${value._2}")),
+        checked = selectedValue.contains(value._1)
       )
     }
 }

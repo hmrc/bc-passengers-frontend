@@ -28,12 +28,21 @@
     selectProductsForm: Form[SelectProductsDto],
     items: List[(String, String)],
     path: ProductPath,
-    backLink: Option[String]
+    backLink: Option[String],
+    customBackLink: Boolean = false,
+    returnToAddedItemEditUrl: Option[String] = None,
+    returnToAddedItemProductPath: Option[String] = None
 )(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), customBackLink = false) {
+@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), backLink = backLink, customBackLink = customBackLink) {
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
+    @returnToAddedItemEditUrl.map { editUrl =>
+        <input type="hidden" name="returnToAddedItemEditUrl" value="@editUrl">
+    }
+    @returnToAddedItemProductPath.map { productPath =>
+        <input type="hidden" name="returnToAddedItemProductPath" value="@productPath">
+    }
 
     @if(selectProductsForm.errors){
         @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey), Some(s"tokens-${items(0)._1}"))
@@ -52,7 +61,7 @@
 
         @radios(
             field = selectProductsForm("tokens"),
-            items = radioOptions(items),
+            items = radioOptions(items, selectProductsForm("tokens").value),
             name = "tokens",
             path = Some(path)
         )
