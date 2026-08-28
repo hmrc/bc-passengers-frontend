@@ -2840,14 +2840,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         override lazy val payApiResponse: PayApiServiceSuccessResponse                  = None.orNull
         override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = None.orNull
 
-        val response: Future[Result] = route(
-          app,
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
-            .withFormUrlEncodedBody("addAnotherItem" -> "false")
-        ).get
+        val request = enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+          .withFormUrlEncodedBody("addAnotherItem" -> "false")
+        val response: Future[Result] = route(app, request).get
 
         status(response)               shouldBe SEE_OTHER
         redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tax-due"
+        await(response).session(request).get(AddAnotherItemDto.sessionKey) shouldBe Some("false")
       }
     }
 
@@ -2867,14 +2866,13 @@ class CalculateDeclareControllerSpec extends BaseSpec {
       override lazy val payApiResponse: PayApiServiceSuccessResponse                  = None.orNull
       override lazy val declarationServiceResponse: DeclarationServiceSuccessResponse = None.orNull
 
-      val response: Future[Result] = route(
-        app,
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
-          .withFormUrlEncodedBody("addAnotherItem" -> "true")
-      ).get
+      val request = enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")
+        .withFormUrlEncodedBody("addAnotherItem" -> "true")
+      val response: Future[Result] = route(app, request).get
 
       status(response)               shouldBe SEE_OTHER
       redirectLocation(response).get shouldBe "/check-tax-on-goods-you-bring-into-the-uk/add-an-item"
+      await(response).session(request).get(AddAnotherItemDto.sessionKey) shouldBe Some("true")
     }
 
     "return to the dashboard with an error when no answer is selected" in new LocalSetup {

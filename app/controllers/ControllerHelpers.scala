@@ -112,14 +112,17 @@ trait ControllerHelpers
       .url
     val backLink  = AddedItemBackLink(editUrl, selectUrl, productPath.toString, dashboardUrl.getOrElse(editUrl))
     val stack     = addedItemBackLinkStack.filterNot(_.editUrl == editUrl) :+ backLink
-
-    result.addingToSession(
-      returnToAddedItemSessionKey          -> editUrl,
-      returnToAddedItemSelectUrlSessionKey -> selectUrl,
-      returnToAddedItemProductPathKey      -> productPath.toString,
+    val session   = context.request.session.data ++ Map(
+      returnToAddedItemSessionKey             -> editUrl,
+      returnToAddedItemSelectUrlSessionKey    -> selectUrl,
+      returnToAddedItemProductPathKey         -> productPath.toString,
       returnToAddedItemDashboardUrlSessionKey -> backLink.dashboardUrl,
-      returnToAddedItemStackSessionKey     -> serialiseAddedItemBackLinks(stack)
-    )(using context.request)
+      returnToAddedItemStackSessionKey        -> serialiseAddedItemBackLinks(stack)
+    )
+    val updatedSession =
+      if (dashboardUrl.isDefined) session - AddAnotherItemDto.sessionKey else session
+
+    result.withSession(Session(updatedSession))
   }
 
   protected def clearReturnToAddedItem(result: Result)(implicit context: LocalContext): Result =

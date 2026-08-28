@@ -238,6 +238,8 @@ object GoodsTypeDto {
 case class GoodsTypeDto(goodsType: String)
 
 object AddAnotherItemDto {
+  val sessionKey = "add-another-item"
+
   val form: Form[AddAnotherItemDto] = Form(
     mapping(
       "addAnotherItem" -> optional(boolean)

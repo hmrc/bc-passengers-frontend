@@ -61,7 +61,10 @@
 
 @defining(
   if(addAnotherItemError) AddAnotherItemDto.form.withError("addAnotherItem", "error.required.add_another_item")
-  else AddAnotherItemDto.form
+  else request.session
+    .get(AddAnotherItemDto.sessionKey)
+    .flatMap(_.toBooleanOption)
+    .fold(AddAnotherItemDto.form)(value => AddAnotherItemDto.form.fill(AddAnotherItemDto(value)))
 ) { addAnotherItemForm =>
 @govukLayout(pageTitle = Some(pageHeading + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
 
