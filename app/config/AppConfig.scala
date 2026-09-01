@@ -43,6 +43,4 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
 
-
-
 }
