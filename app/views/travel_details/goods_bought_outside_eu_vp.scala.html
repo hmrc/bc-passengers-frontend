@@ -24,20 +24,19 @@
   formHelper: FormWithCSRF,
   h1: components.h1,
   h2: components.h2,
-  h2Small: components.h2Small,
   p: components.p,
   panelIndent: components.panelIndent
 )
 
 @(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "heading.goods_brought_into_ni")), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, "heading.bringing_goods_into_ni")), backLink = backLink) {
 
     @formHelper(action = routes.TravelDetailsController.goodsBoughtIntoNIPost) {
 
         @errorSummary(form.errors, Some("value-yes"))
 
-        @h1(messages("heading.vje.goods_brought_into_ni"))
+        @h1(messages("heading.bringing_goods_into_ni"))
 
         @p{@messages("text.if_you_travelling_to_ni_")}
         @p{@messages("text.there_is_not_an_allowance_")}
@@ -54,7 +53,7 @@
           </ul>
           @p{@messages("text.ni.allowance.msg_01")}
 
-          @h2Small(messages("heading.if_you_bring_more_than_your_allowance"))
+          @h2(messages("heading.if_you_bring_more_than_your_allowance"), "govuk-heading-s")
           @p{@messages("text.ni.allowance.msg_04")}
           @p{@messages("text.ni.allowance.msg_05")}
 
@@ -69,13 +68,13 @@
           </ul>
           @p{@messages("text.allowance.msg_4")}
 
-          @h2Small(messages("heading.if_you_bring_more_than_your_allowance"))
+          @h2(messages("heading.if_you_bring_more_than_your_allowance"), "govuk-heading-s")
           @p{@messages("text.ni.allowance.msg_06")}
           @p{@messages("text.ni.allowance.msg_07")}
 
           @h2(messages("text.your_allowance_for_other_goods"))
           @p{@messages("text.you_can_bring_a_total")}
-          @h2Small(messages("heading.if_you_bring_more_than_your_allowance"))
+          @h2(messages("heading.if_you_bring_more_than_your_allowance"), "govuk-heading-s")
 
           @p{@messages("text.ni.allowance.msg_08")}
           @p{@messages("text.ni.allowance.msg_09")}

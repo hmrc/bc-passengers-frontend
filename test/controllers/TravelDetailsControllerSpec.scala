@@ -41,6 +41,8 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 
 class TravelDetailsControllerSpec extends BaseSpec {
 
+  lazy val appConfig: AppConfig = injected[AppConfig]
+
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
@@ -385,8 +387,11 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
         val content: String = contentAsString(response)
         val doc: Document   = Jsoup.parse(content)
-
-        doc.select("h1").text() shouldBe "Goods brought into Northern Ireland"
+        if (appConfig.isVapingJourneyEnabled) {
+          doc.select("h1").text() shouldBe "Bringing goods into Northern Ireland"
+        } else {
+          doc.select("h1").text() shouldBe "Goods brought into Northern Ireland"
+        }
       }
 
     Seq(Some(true), None).foreach(test)

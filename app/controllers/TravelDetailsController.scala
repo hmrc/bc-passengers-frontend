@@ -77,7 +77,7 @@ class TravelDetailsController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private val logger = Logger(this.getClass)
+  private val logger                          = Logger(this.getClass)
   private val isVapingJourneyEnabled: Boolean = appConfig.isVapingJourneyEnabled
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
@@ -339,7 +339,7 @@ class TravelDetailsController @Inject() (
                 BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
                 backLinkModel.backLink
               )
-            } else{
+            } else {
               goods_brought_into_ni(
                 BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
                 backLinkModel.backLink
@@ -348,12 +348,12 @@ class TravelDetailsController @Inject() (
           )
         case _ =>
           Ok(
-              if (isVapingJourneyEnabled) {
-                goods_brought_into_ni_vp(BringingOverAllowanceDto.form, backLinkModel.backLink)
-              } else{
-                goods_brought_into_ni(BringingOverAllowanceDto.form, backLinkModel.backLink)
-              }
-            )
+            if (isVapingJourneyEnabled) {
+              goods_brought_into_ni_vp(BringingOverAllowanceDto.form, backLinkModel.backLink)
+            } else {
+              goods_brought_into_ni(BringingOverAllowanceDto.form, backLinkModel.backLink)
+            }
+          )
       }
     }
   }
@@ -365,7 +365,7 @@ class TravelDetailsController @Inject() (
         formWithErrors =>
           if (isVapingJourneyEnabled) {
             Future.successful(BadRequest(goods_brought_into_ni_vp(formWithErrors, backLinkModel.backLink)))
-          } else{
+          } else {
             Future.successful(BadRequest(goods_brought_into_ni(formWithErrors, backLinkModel.backLink)))
           },
         overAllowanceDto =>

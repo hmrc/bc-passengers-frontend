@@ -21,10 +21,12 @@ import util.BaseSpec
 
 class AppConfigSpec extends BaseSpec with Matchers {
 
+  val appConfig: AppConfig                  = injected[AppConfig]
+  val isVapingJourneyEnabledToggle: Boolean = appConfig.isVapingJourneyEnabled
+
   "AppConfig" should {
 
     "return the correct declareGoodsUrl" in {
-      val appConfig = injected[AppConfig]
       appConfig.declareGoodsUrl shouldBe "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     }
   }
