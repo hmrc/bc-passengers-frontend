@@ -16,7 +16,7 @@
 
 @this()
 
-@(msg: String, cssClass: String = "heading-m", id:Option[String] = None)(implicit messages: Messages)
+@(msg: String, cssClass: String = "govuk-heading-m", id:Option[String] = None)(implicit messages: Messages)
 
 @if(id.isDefined){
 <h2 class="@cssClass" id="@id">@messages(msg)</h2>
