@@ -16,11 +16,11 @@
 
 @this()
 
-@(msg: String, id:Option[String] = None)(implicit messages: Messages)
+@(msg: String, cssClass: String = "heading-m", id:Option[String] = None)(implicit messages: Messages)
 
 @if(id.isDefined){
-<h2 class="govuk-heading-m" id="@id">@messages(msg)</h2>
+<h2 class="@cssClass" id="@id">@messages(msg)</h2>
 } else {
-<h2 class="govuk-heading-m">@messages(msg)</h2>
+<h2 class="@cssClass">@messages(msg)</h2>
 }
 
