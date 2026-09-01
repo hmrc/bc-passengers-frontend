@@ -1,0 +1,88 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.ViewUtils._
+
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  summaryYesNo: components.summaryYesNo,
+  button: components.button,
+  formHelper: FormWithCSRF,
+  h1: components.h1,
+  h2: components.h2,
+  h2Small: components.h2Small,
+  p: components.p,
+  panelIndent: components.panelIndent
+)
+
+@(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@govukLayout(pageTitle = Some(title(form, "heading.goods_brought_into_ni")), backLink = backLink) {
+
+    @formHelper(action = routes.TravelDetailsController.goodsBoughtIntoNIPost) {
+
+        @errorSummary(form.errors, Some("value-yes"))
+
+        @h1(messages("heading.vje.goods_brought_into_ni"))
+
+        @p{@messages("text.if_you_travelling_to_ni_")}
+        @p{@messages("text.there_is_not_an_allowance_")}
+        @panelIndent{
+            @p{@messages("text.ni.allowance.msg_03")}
+        }
+        @h2(messages("text.allowance_for_alcohol"))
+          @p{@messages("text.you_can_bring_in_the_following")}
+
+          <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("text.ni.allowance.alc_1")</li>
+            <li>@messages("text.ni.allowance.alc_2")</li>
+            <li>@messages("text.ni.allowance.alc_3")</li>
+          </ul>
+          @p{@messages("text.ni.allowance.msg_01")}
+
+          @h2Small(messages("heading.if_you_bring_more_than_your_allowance"))
+          @p{@messages("text.ni.allowance.msg_04")}
+          @p{@messages("text.ni.allowance.msg_05")}
+
+          @h2(messages("text.your_allowance_for_tobacco"))
+          @p{@messages("text.you_can_bring_in_the_following")}
+          <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("text.allowance.tob_1")</li>
+            <li>@messages("text.allowance.tob_2")</li>
+            <li>@messages("text.allowance.tob_3")</li>
+            <li>@messages("text.allowance.tob_4")</li>
+            <li>@messages("text.allowance.tob_5")</li>
+          </ul>
+          @p{@messages("text.allowance.msg_4")}
+
+          @h2Small(messages("heading.if_you_bring_more_than_your_allowance"))
+          @p{@messages("text.ni.allowance.msg_06")}
+          @p{@messages("text.ni.allowance.msg_07")}
+
+          @h2(messages("text.your_allowance_for_other_goods"))
+          @p{@messages("text.you_can_bring_a_total")}
+          @h2Small(messages("heading.if_you_bring_more_than_your_allowance"))
+
+          @p{@messages("text.ni.allowance.msg_08")}
+          @p{@messages("text.ni.allowance.msg_09")}
+
+        @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages(s"text.allowance.msg_08")))
+
+        @button("label.continue")
+
+  }
+}

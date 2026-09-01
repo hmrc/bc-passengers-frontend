@@ -39,6 +39,10 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val countdown: Int                        = servicesConfig.getInt("timeout.countdown")
   lazy val CMAEnabled: Boolean                   = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
 
+  lazy val isVapingJourneyEnabled: Boolean = runModeConfiguration.get[Boolean]("toggle.isVapingJourneyEnabled")
+
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
+
+
 
 }
