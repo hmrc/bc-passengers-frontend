@@ -41,21 +41,23 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 
 class TravelDetailsControllerSpec extends BaseSpec {
 
-  lazy val appConfig: AppConfig = injected[AppConfig]
+  val mockCache: Cache         = mock(classOf[Cache])
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[TravelDetailsService].toInstance(mock(classOf[TravelDetailsService])))
     .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
-    .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
+    .overrides(bind[Cache].toInstance(mockCache))
+    .overrides(bind[AppConfig].toInstance(mockAppConfig))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .build()
 
   override def beforeEach(): Unit = {
     reset(injected[TravelDetailsService])
     reset(injected[Cache])
+    reset(mockAppConfig, mockCache)
     when(
       injected[AppConfig].declareGoodsUrl
     ).thenReturn("https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods")
@@ -67,7 +69,8 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
     def cachedJourneyData: Future[Option[JourneyData]] = Future.successful(Some(JourneyData()))
 
-    when(injected[Cache].fetch(any())).thenReturn(cachedJourneyData)
+    when(mockCache.fetch(any())).thenReturn(cachedJourneyData)
+
     when(injected[TravelDetailsService].storeAgeOver17(any())(any())(any())).thenReturn(
       Future.successful(
         Some(JourneyData())
@@ -364,7 +367,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     Seq(Some(true), None).foreach(test)
   }
 
-  "calling GET /check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland" should {
+  "calling GET /check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland toggle is off" should {
     def test(bringingOverAllowance: Option[Boolean]): Unit =
       s"load the goods bought outside EU page when bringingOverAllowance is $bringingOverAllowance" in new LocalSetup {
         override lazy val cachedJourneyData: Future[Some[JourneyData]] =
@@ -387,11 +390,50 @@ class TravelDetailsControllerSpec extends BaseSpec {
 
         val content: String = contentAsString(response)
         val doc: Document   = Jsoup.parse(content)
-        if (appConfig.isVapingJourneyEnabled) {
-          doc.select("h1").text() shouldBe "Bringing goods into Northern Ireland"
-        } else {
-          doc.select("h1").text() shouldBe "Goods brought into Northern Ireland"
-        }
+
+        doc.select("h1").text() shouldBe "Goods brought into Northern Ireland"
+
+      }
+
+    Seq(Some(true), None).foreach(test)
+  }
+
+  "calling GET /check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland toggle is on" should {
+
+    def test(bringingOverAllowance: Option[Boolean]): Unit =
+      s"load the goods bought outside EU page when bringingOverAllowance is $bringingOverAllowance" in new LocalSetup {
+
+        lazy val app: Application = GuiceApplicationBuilder()
+          .overrides(bind[Cache].toInstance(mockCache))
+          .overrides(bind[AppConfig].toInstance(mockAppConfig))
+          .build()
+
+        when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
+
+        when(mockCache.fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              JourneyData(
+                prevDeclaration = Some(false),
+                euCountryCheck = Some("nonEuOnly"),
+                arrivingNICheck = Some(true),
+                bringingOverAllowance = bringingOverAllowance
+              )
+            )
+          )
+        )
+
+        val response: Future[Result] = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-northern-ireland")
+        ).get
+        status(response) shouldBe OK
+
+        val content: String = contentAsString(response)
+        val doc: Document   = Jsoup.parse(content)
+
+        doc.select("h1").text() shouldBe "Bringing goods into Northern Ireland"
+
       }
 
     Seq(Some(true), None).foreach(test)
