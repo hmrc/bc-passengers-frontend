@@ -51,6 +51,10 @@ text.gb.allowance.alc_1 = 42 litres of beer
 text.gb.allowance.alc_2 = 18 litres of still wine
 text.gb.allowance.alc_3 = 4 litres of spirits or 9 litres of sparkling wine, fortified wine or any alcoholic beverage less than 22% ABV
 text.gb.allowance.msg_1 = You can split this last allowance, for example you could bring in 2 litres of spirits and 4.5 litres of sparkling wine.
+text.gb.allowance.alc_1.still-or-sparkling = 42 litres of beer or cider (or a combination of both)
+text.gb.allowance.alc_2.still-or-sparkling = 18 litres of wine (still or sparkling)
+text.gb.allowance.alc_3.still-or-sparkling = 4 litres of spirits or 9 litres of fortified wine or any other alcoholic beverage less than 22% ABV
+text.gb.allowance.msg_1.still-or-sparkling = You can split this last allowance, for example you could bring in 2 litres of spirits and 4.5 litres of fortified wine.
 text.gb.allowance.msg_2 = You will need to pay tax on all alcohol within each of these three allowances if you go over the individual limits. For example, if you are bringing in 50 litres of beer you will need to pay tax on all 50 litres.
 
 text.if_you_bring_in_goods_over_ = If you bring in goods over your allowances, you must declare them.

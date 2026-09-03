@@ -54,4 +54,21 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
       title = "Goods brought into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Goods brought into Great Britain or the Isle of Man"
     )
+
+  "GoodsBoughtInsideAndOutsideEUView with the wine-still-or-sparkling toggle" should {
+
+    "render the merged wine allowance copy when the toggle is ON" in {
+      val view = injected[goods_bought_inside_and_outside_eu]
+        .apply(validForm, None)(request, messages, appConfigWith("features.wine-still-or-sparkling" -> true))
+      view.body should include(messages("text.gb.allowance.alc_2.still-or-sparkling"))
+      view.body should include(messages("text.gb.allowance.alc_1.still-or-sparkling"))
+    }
+
+    "render the original allowance copy when the toggle is OFF" in {
+      val view = injected[goods_bought_inside_and_outside_eu]
+        .apply(validForm, None)(request, messages, appConfigWith("features.wine-still-or-sparkling" -> false))
+      view.body should include(messages("text.gb.allowance.alc_2"))
+      view.body should not include messages("text.gb.allowance.alc_2.still-or-sparkling")
+    }
+  }
 }
