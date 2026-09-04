@@ -372,6 +372,7 @@ label.alcohol.cider.non-sparkling-cider=Seidr di-befriog
 label.alcohol.cider.sparkling-cider=Seidr pefriog (1.3% i 5.5%)
 label.alcohol.cider.sparkling-cider-up=Seidr pefriog (5.6% i 8.4%)
 label.alcohol.wine=Gwin
+label.alcohol.wine.still-or-sparkling=Gwin (pefriog neu lonydd)
 label.alcohol.spirits=Gwirodydd
 label.alcohol.other=Alcohol arall
 label.alcohol.sparkling-wine=Gwin pefriog
