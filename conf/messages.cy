@@ -401,6 +401,7 @@ label.other-goods.tableware=Llestri neu gyfarpar cegin
 label.other-goods.watches-clocks=Oriawr neu gloc
 label.other-goods.other=Eitem arall
 label.other-goods.item-of-other-goods = Eitem o nwyddau eraill
+label.other-goods.vaping-products = Cynhyrchion fepio
 
 
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?

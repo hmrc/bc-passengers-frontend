@@ -401,6 +401,7 @@ label.other-goods.tableware = Tableware or kitchenware
 label.other-goods.watches-clocks = Watch or clock
 label.other-goods.other = Other item
 label.other-goods.item-of-other-goods = Item of other goods
+label.other-goods.vaping-products = Vaping products
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?

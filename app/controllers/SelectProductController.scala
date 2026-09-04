@@ -49,6 +49,8 @@ class SelectProductController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
+  private val isVapingJourneyEnabled: Boolean = appConfig.isVapingJourneyEnabled
+
   def cancel(): Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
       Future.successful(Redirect(routes.SelectProductController.nextStep()))
@@ -103,6 +105,7 @@ class SelectProductController @Inject() (
   }
 
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
+    val niJourney = context.getJourneyData.arrivingNICheck
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
@@ -124,15 +127,34 @@ class SelectProductController @Inject() (
 
         val result =
           Ok(
-            select_products(
-              form,
-              children.map(i => (i.token, i.name)),
-              path,
-              if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url) else backLinkModel.backLink,
-              customBackLink = useDashboardBackLink,
-              returnToAddedItemEditUrl = returnToAddedItemEditUrl,
-              returnToAddedItemProductPath = returnToAddedItemProductPath
-            )
+            if (isVapingJourneyEnabled) {
+              val filteredChildren =
+                if (niJourney.contains(false))
+                  children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
+                else
+                  children
+              select_products(
+                form,
+                filteredChildren.map(i => (i.token, i.name)),
+                path,
+                if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
+                else backLinkModel.backLink,
+                customBackLink = useDashboardBackLink,
+                returnToAddedItemEditUrl = returnToAddedItemEditUrl,
+                returnToAddedItemProductPath = returnToAddedItemProductPath
+              )
+            } else {
+              select_products(
+                form,
+                children.map(i => (i.token, i.name)),
+                path,
+                if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
+                else backLinkModel.backLink,
+                customBackLink = useDashboardBackLink,
+                returnToAddedItemEditUrl = returnToAddedItemEditUrl,
+                returnToAddedItemProductPath = returnToAddedItemProductPath
+              )
+            }
           )
 
         Future.successful(
