@@ -51,6 +51,10 @@ text.gb.allowance.alc_1 = 42 litr o gwrw
 text.gb.allowance.alc_2 = 18 litr o win llonydd
 text.gb.allowance.alc_3 = 4 litr o wirodydd neu 9 litr o win pefriog, gwin cadarn neu unrhyw ddiod alcohol sy’n llai na 22% o alcohol
 text.gb.allowance.msg_1 = Gallwch rannu’r lwfans olaf hwn – er enghraifft, gallech ddod â 2 litr o wirodydd a 4.5 litr o win pefriog i mewn.
+text.gb.allowance.alc_1.still-or-sparkling = 42 litr o gwrw neu seidr (neu gyfuniad o’r ddau)
+text.gb.allowance.alc_2.still-or-sparkling = 18 litr o win (pefriog neu lonydd)
+text.gb.allowance.alc_3.still-or-sparkling = 4 litr o wirodydd neu 9 litr o win cadarn neu unrhyw ddiodydd alcoholaidd eraill sy’n llai na 22% ABV
+text.gb.allowance.msg_1.still-or-sparkling = Gallwch rannu’r lwfans diwethaf hwn – er enghraifft, gallech ddod â 2 litr o wirodydd a 4.5 litr o win cadarn i mewn i’r wlad.
 text.gb.allowance.msg_2 = Bydd angen i chi dalu treth ar yr holl alcohol o fewn pob un o’r tri lwfans hyn, os byddwch yn mynd dros y terfynau unigol. Er enghraifft, os ydych yn dod â 50 litr o gwrw i mewn, bydd angen i chi dalu treth ar yr holl 50 litr.
 
 text.if_you_bring_in_goods_over_=Os byddwch yn dod â nwyddau i mewn sy’n mynd dros eich lwfansau, bydd yn rhaid i chi eu datgan.
