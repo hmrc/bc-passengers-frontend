@@ -54,7 +54,7 @@
 
         @if(otherItemMode.equals("create")){
             @p{@messages("label.search_through_our_lists_and")
-                <a class="govuk-link" href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))">@messages("label.categorise_your_goods_yourself")</a>}
+                <a class="govuk-link" href='@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))'>@messages("label.categorise_your_goods_yourself")</a>}
         }
 
         <fieldset class="govuk-fieldset">
