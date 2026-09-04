@@ -30,12 +30,16 @@
 )
 @(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
+@labelToken = @{
+    if(appConfig.isWineStillOrSparklingEnabled && token == "wine" && !showGroupMessage) "wine.still-or-sparkling" else token
+}
+
 @userInputSectionContent = {
-    @limitExceededViewUtils.addViewContent(productName, token, totalAccAmount, showGroupMessage)
+    @limitExceededViewUtils.addViewContent(productName, labelToken, totalAccAmount, showGroupMessage)
 }
 
 @panelContent = {
-    @limitExceededViewUtils.addViewPanelContent(productName, token, userInput)
+    @limitExceededViewUtils.addViewPanelContent(productName, labelToken, userInput)
 }
 
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {

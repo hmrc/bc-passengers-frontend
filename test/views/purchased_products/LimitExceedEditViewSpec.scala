@@ -16,11 +16,14 @@
 
 package views.purchased_products
 
+import config.AppConfig
 import play.twirl.api.HtmlFormat
 import views.{BaseSelectors, BaseViewSpec}
 import views.html.purchased_products.limit_exceed_edit
 
 class LimitExceedEditViewSpec extends BaseViewSpec {
+
+  override val appConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> false)
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_edit].apply(
@@ -300,6 +303,28 @@ class LimitExceedEditViewSpec extends BaseViewSpec {
                 "if you make a false declaration, you may have to pay a penalty and your alcohol may be seized."),
               Selectors.h2(2)   -> "If you have other items to declare",
               Selectors.p(7)    -> "You can continue to use this service to declare other alcohol, tobacco and goods."
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        "the user enters too much wine with the wine-still-or-sparkling toggle ON" should {
+
+          val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+          val view                =
+            injected[limit_exceed_edit]
+              .apply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine", false)(request, messages, onConfig)
+
+          val expectedContent =
+            Seq(
+              Selectors.p(
+                1
+              )              -> "You changed 9.00 litres of wine (still or sparkling) to 10.01 litres of wine (still or sparkling).",
+              Selectors.p(2) -> "This means your total is now 90.01 litres of wine (still or sparkling).",
+              Selectors.p(
+                3
+              )              -> "You cannot use this service to declare more than 90 litres of wine (still or sparkling).",
+              Selectors.p(4) -> "We will change your item back to 9.00 litres of wine (still or sparkling)."
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
