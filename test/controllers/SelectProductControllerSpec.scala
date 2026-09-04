@@ -28,6 +28,7 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import play.api.test.Helpers.{route => rt, *}
 import repositories.BCPassengersSessionRepository
@@ -52,14 +53,17 @@ class SelectProductControllerSpec extends BaseSpec {
     privateCraft = Some(false)
   )
 
-  override given app: Application = GuiceApplicationBuilder()
+  private def appWithWineToggle(enabled: Boolean): Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
     .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .configure("features.wine-still-or-sparkling" -> enabled)
     .build()
+
+  override given app: Application = appWithWineToggle(false)
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
@@ -147,6 +151,41 @@ class SelectProductControllerSpec extends BaseSpec {
         any()
       )
 
+    }
+  }
+
+  private def selectPageDoc(testApp: Application, url: String): Document = {
+    val cache = testApp.injector.instanceOf[Cache]
+    when(cache.fetch(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    when(cache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    val res   = rt(testApp, enhancedFakeRequest("GET", url)).get
+    status(res) shouldBe OK
+    Jsoup.parse(contentAsString(res))
+  }
+
+  "Invoking askProductSelection for the alcohol branch with the wine-still-or-sparkling toggle" should {
+
+    "show Sparkling wine as a separate option when the toggle is OFF" in {
+      val doc =
+        selectPageDoc(appWithWineToggle(false), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      Option(doc.getElementById("tokens-sparkling-wine")) should not be None
+      Option(doc.getElementById("tokens-wine"))           should not be None
+    }
+
+    "drop Sparkling wine and relabel Wine when the toggle is ON" in {
+      val on       = appWithWineToggle(true)
+      val doc      = selectPageDoc(on, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      val messages = on.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+      Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
+      Option(doc.getElementById("tokens-wine"))             should not be None
+      doc.select("label[for=tokens-wine]").text           shouldBe messages("label.alcohol.wine.still-or-sparkling")
+    }
+
+    "not change other branches (cider) when the toggle is ON" in {
+      val doc =
+        selectPageDoc(appWithWineToggle(true), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/cider")
+      Option(doc.getElementById("tokens-sparkling-cider"))     should not be None
+      Option(doc.getElementById("tokens-non-sparkling-cider")) should not be None
     }
   }
 
