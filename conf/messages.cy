@@ -62,6 +62,7 @@ text.your_allowance_for_other_goods = Eich lwfans ar gyfer nwyddau eraill
 text.allowance.otg_1 = Gwerth hyd at £390 o unrhyw nwyddau eraill rydych yn dod â nhw i mewn (£270 os ydych yn teithio mewn awyren breifat neu gwch preifat)
 text.allowance.msg_7 = Bydd angen i chi dalu treth ar yr holl nwyddau eraill, os byddwch yn mynd dros y lwfans hwn. Er enghraifft, os ydych yn dod â gliniadur sy’n werth £500 ac oriawr sy’n werth £100 i mewn, bydd angen i chi dalu treth ar yr oriawr ac ar y gliniadur.
 text.allowance.msg_8 = Os ydych yn ansicr neu heb benderfynu, dewiswch ‘Iawn’ ac ewch yn eich blaen i roi gwybod i ni am eich nwyddau. Byddwch wedyn yn gallu gwirio faint o dreth neu doll a allai fod arnoch.
+text.allowance.msg_08 = Os nad ydych yn siŵr, dewiswch ‘Iawn’ a rhowch wybod i ni am eich nwyddau i wirio faint o dreth neu doll a allai fod arnoch.
 
 text.gb.allowance = Mae lwfansau rhydd o dreth a lwfansau rhydd o dollau gwahanol ar gyfer dod ag alcohol, tybaco a nwyddau eraill i mewn i Brydain Fawr (Cymru, Lloegr a’r Alban) neu Ynys Manaw.
 text.gb.allowance.alc_1 = 42 litr o gwrw
