@@ -29,6 +29,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
 
   override val appConfig: AppConfig = appConfigToggleOff
 
+  override val appConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> false)
+
   private val productPath: ProductPath = ProductPath(path = "alcohol/wine")
 
   private val productTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
