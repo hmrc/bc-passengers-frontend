@@ -1,0 +1,137 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.mvc.Call
+@import views.ViewUtils._
+@import play.api.libs.json.{JsObject, Json}
+
+@this(
+    govukLayout: templates.GovukLayoutWrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputText: components.inputText,
+    button: components.button,
+    p: components.p,
+    h1Product: components.h1Product,
+    autoCompleteList: components.autocompleteList,
+    browserBackToEdit: components.browserBackToEdit
+)
+
+@(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], niJourney: Option[Boolean], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath, backLink: Option[String], customBackLink: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@customTitle = @{ otherItemMode match { case "create" =>  messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods") case "edit" => messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}") case _ => messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods")}}
+
+@customHeading = @{ otherItemMode match { case "create" => messages("label.other-goods.item-of-other-goods") case "edit" => messages(s"label.${path.toMessageKey}") case _ => messages("label.other-goods.item-of-other-goods")}}
+
+@govukLayout(pageTitle = Some(title(form, customTitle)), backLink = backLink, customBackLink = customBackLink) {
+
+    @formHelper(action = iid.fold(routes.OtherGoodsInputController.processAddForm())(iid => routes.OtherGoodsInputController.processEditForm(iid))) {
+        @if(iid.isEmpty) {
+            @browserBackToEdit(routes.OtherGoodsInputController.displayEditForm("iid").url)
+        }
+
+        @if(form.errors){
+            @errorSummary(form.errors)
+        }
+
+        <h1 class="govuk-heading-xl @if(form.errors){govuk-!-margin-top-0}">
+            <span class="govuk-caption-xl">@messages("label.tell_us_about_the")</span>
+            @customHeading
+        </h1>
+
+        @if(otherItemMode.equals("create")){
+            @p{@messages("label.search_through_our_lists_and")
+                <a class="govuk-link" href="@routes.SelectProductController.askProductSelection(ProductPath("other-goods"))">@messages("label.categorise_your_goods_yourself")</a>}
+        }
+
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-visually-hidden">@customHeading</legend>
+
+            @if(otherItemMode.equals("create")) {
+                @defining(
+                    if (niJourney.contains(false)) {
+                        otherGoodsSearchItems.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
+                    } else {
+                        otherGoodsSearchItems
+                    }
+                ) { filteredOtherGoodsSearchItems =>
+
+                    @autoCompleteList(form,
+                        id = "searchTerm",
+                        name = "searchTerm",
+                        isPageHint = false,
+                        hintText = messages("label.add_your_goods"),
+                        isPageHeading = false,
+                        label = messages("label.add_your_goods"),
+                        hint = "",
+                        list = filteredOtherGoodsSearchItems.map(c => (c.name, messages(c.name))),
+                        jsonData = Json.toJson(filteredOtherGoodsSearchItems.map(_.toAutoCompleteJson)).toString
+                    )
+                }
+            }
+
+        @autoCompleteList(form,
+            id = "country",
+            name = "country",
+            isPageHint = true,
+            hint = messages("label.if_you_bought_this_item_"),
+            isPageHeading = false,
+            label = messages(s"label.country_the_item_was_bought_in"),
+            hintText = messages("label.select_a_country"),
+            list = countries.map(c => (c.code,messages(c.countryName))),
+            jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
+        )
+        @if(journeyStart.contains("euOnly")){
+            @autoCompleteList(form,
+                id = "originCountry",
+                name = "originCountry",
+                isPageHint = true,
+                hint = messages("label.country_the_item_was_produced_hint"),
+                isPageHeading = false,
+                label = messages(s"label.country_the_item_was_produced_in"),
+                hintText = messages("label.select_a_country"),
+                list = countriesEU.map(c => (c.code,messages(c.countryName))),
+                jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
+            )
+        }
+
+        @autoCompleteList(form,
+            id = "currency",
+            name = "currency",
+            isPageHint = true,
+            hint = messages("label.currency_used_hint"),
+            isPageHeading = false,
+            label = messages(s"label.currency_used_to_buy_the_item"),
+            hintText = messages("label.enter_currency"),
+            list = currencies.map(c => (c.code ,messages(c.displayName))),
+            jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
+        )
+
+        @inputText(
+            form,
+            id = "cost",
+            name = "cost",
+            label = "label.price_paid",
+            hint = Some(Html(messages("label.price_format_description"))),
+            isPageHeading = false,
+            classes = Some("govuk-input govuk-!-width-one-half")
+        )
+        </fieldset>
+
+        @button("label.continue")
+
+    }
+}
