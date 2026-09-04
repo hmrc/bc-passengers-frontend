@@ -102,6 +102,16 @@ class SelectProductController @Inject() (
       .map(_ => clearReturnToAddedItem(Redirect(routes.SelectProductController.askProductSelection(path))))
   }
 
+  private def selectItems(path: ProductPath, children: List[ProductTreeNode]): List[(String, String)] = {
+    val items = children.map(i => (i.token, i.name))
+    if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol"))
+      items.filterNot(_._1 == "sparkling-wine").map {
+        case ("wine", _) => ("wine", "label.alcohol.wine.still-or-sparkling")
+        case other       => other
+      }
+    else items
+  }
+
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     requireProductOrCategory(path) {
 
@@ -126,7 +136,7 @@ class SelectProductController @Inject() (
           Ok(
             select_products(
               form,
-              children.map(i => (i.token, i.name)),
+              selectItems(path, children),
               path,
               if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url) else backLinkModel.backLink,
               customBackLink = useDashboardBackLink,
@@ -159,7 +169,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  branch.children.map(i => (i.token, i.name)),
+                  selectItems(path, branch.children),
                   path,
                   backLinkModel.backLink
                 )
@@ -208,7 +218,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  branch.children.map(i => (i.token, i.name)),
+                  selectItems(path, branch.children),
                   path,
                   backLinkModel.backLink
                 )
