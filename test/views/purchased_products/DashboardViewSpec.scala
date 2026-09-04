@@ -142,6 +142,10 @@ class DashboardViewSpec extends BaseViewSpec {
     tobaccoPurchasedItemList = tobaccoPurchasedItemList,
     otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+    totalItems = 3,
+    totalOtherGoodsItems = 1,
+    currentPage = 1,
+    totalPages = 1,
     showCalculate = true,
     isAmendment = true,
     backLink = None,
@@ -162,6 +166,10 @@ class DashboardViewSpec extends BaseViewSpec {
     tobaccoPurchasedItemList = tobaccoPurchasedItemList,
     otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+    totalItems = 3,
+    totalOtherGoodsItems = 1,
+    currentPage = 1,
+    totalPages = 1,
     showCalculate = true,
     isAmendment = true,
     backLink = None,
@@ -169,6 +177,7 @@ class DashboardViewSpec extends BaseViewSpec {
     isGbNi = true,
     isEU = false,
     isUkResident = true,
+    addAnotherItemError = false,
     request = request,
     messagesApi = messagesApi,
     lang = Lang("en"),
@@ -181,20 +190,72 @@ class DashboardViewSpec extends BaseViewSpec {
     tobaccoPurchasedItemList,
     otherGoodsPurchasedItemList(),
     otherGoodsPurchasedItemList(),
+    3,
+    1,
+    1,
+    1,
     true,
     true,
     None,
     true,
     true,
     false,
-    true
+    true,
+    false
   )(request, messagesApi, Lang("en"), appConfig)
 
   "DashboardView" when {
     renderViewTest(
-      title = "Tell us about your additional goods - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "Tell us about your additional goods"
+      title = "You have added 3 items - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "You have added 3 items"
     )
+
+    "show each item in a summary list with contextual edit and remove actions" in {
+      val doc = document(viewViaApply)
+
+      doc.select("dl.goods-summary-list").size()               shouldBe 3
+      doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
+      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
+      doc
+        .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key")
+        .text()                                                shouldBe "50 litres wine"
+      doc
+        .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__value")
+        .text()                                                shouldBe "100 British pounds (GBP)"
+      doc.select("a#alcohol-0").text()                         shouldBe "Edit 50 litres wine"
+      doc.select("a[href*=remove-goods]").first().text()       shouldBe "Remove 50 litres wine"
+      doc.select("#addAnotherItem-yes").attr("value")          shouldBe "true"
+      doc.select("#addAnotherItem-no").attr("value")           shouldBe "false"
+      doc.select("button.govuk-button").text()                 shouldBe "Save and continue"
+    }
+
+    "show pagination when there is more than one page of items" in {
+      val paginatedView = injected[dashboard].apply(
+        journeyData = JourneyData(),
+        alcoholPurchasedItemList = Nil,
+        tobaccoPurchasedItemList = Nil,
+        otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(10),
+        previousOtherGoodsPurchasedItemList = Nil,
+        totalItems = 11,
+        totalOtherGoodsItems = 11,
+        currentPage = 1,
+        totalPages = 2,
+        showCalculate = true,
+        isAmendment = false,
+        backLink = None,
+        isIrishBorderQuestionEnabled = false,
+        isGbNi = false,
+        isEU = false,
+        isUkResident = true
+      )(request, messagesApi, Lang("en"), appConfig)
+
+      val doc = document(paginatedView)
+
+      doc.select("nav.govuk-pagination").attr("aria-label")                                       shouldBe "Pagination"
+      doc.select(".govuk-pagination__item--current").text()                                       shouldBe "1"
+      doc.select("a[href*=page=2]").first().text()                                                shouldBe "2"
+      doc.select(".other-goods .govuk-summary-list__row:not(.goods-summary-list__header)").size() shouldBe 10
+    }
 
     "display a link to previously declared goods for an amendment journey" in {
       val link = document(viewViaApply).select("a[href=/check-tax-on-goods-you-bring-into-the-uk/previous-goods]")
@@ -216,6 +277,10 @@ class DashboardViewSpec extends BaseViewSpec {
             tobaccoPurchasedItemList = tobaccoPurchasedItemList,
             otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
             previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
+            totalItems = alcoholPurchasedItemList.size + tobaccoPurchasedItemList.size + fillValue,
+            totalOtherGoodsItems = fillValue,
+            currentPage = 1,
+            totalPages = 1,
             showCalculate = true,
             isAmendment = true,
             backLink = None,

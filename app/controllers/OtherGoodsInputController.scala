@@ -263,12 +263,13 @@ class OtherGoodsInputController @Inject() (
                     if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                       Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
                     } else {
-                      Redirect(routes.SelectProductController.nextStep())
+                      Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
                     }
-                  case _                                  => Redirect(routes.SelectProductController.nextStep())
+                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
                 },
                 routes.OtherGoodsInputController.displayEditForm(jd._2).url,
-                dto.searchTerm.get.path
+                dto.searchTerm.get.path,
+                Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url)
               )
             }
           }
@@ -324,9 +325,9 @@ class OtherGoodsInputController @Inject() (
                     if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
                       Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
                     } else {
-                      Redirect(routes.SelectProductController.nextStep())
+                      Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
                     }
-                  case _                                  => Redirect(routes.SelectProductController.nextStep())
+                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
                 }
                 clearReturnToAddedItemUnlessCurrentEdit(
                   result,
