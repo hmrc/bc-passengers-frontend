@@ -54,17 +54,27 @@
                 @Html(messages(s"select_products.heading.${path.toMessageKey}"))
             </h1>
         </legend>
+        @if(!appConfig.isVapingJourneyEnabled){
+            <div id="select-products-hint" class="govuk-hint">
+                @messages("label.select_all_that_apply")
+            </div>
+        }
+        @if(appConfig.isVapingJourneyEnabled && path.toMessageKey.equals("other-goods")){
+            @radios(
+                field = selectProductsForm("tokens"),
+                items = radioOptionsForSelectProducts(items, selectProductsForm("tokens").value),
+                name = "tokens",
+                path = Some(path)
+            )
+        } else {
+            @radios(
+                field = selectProductsForm("tokens"),
+                items = radioOptions(items, selectProductsForm("tokens").value),
+                name = "tokens",
+                path = Some(path)
+            )
+        }
 
-        <div id="select-products-hint" class="govuk-hint">
-            @messages("label.select_all_that_apply")
-        </div>
-
-        @radios(
-            field = selectProductsForm("tokens"),
-            items = radioOptions(items, selectProductsForm("tokens").value),
-            name = "tokens",
-            path = Some(path)
-        )
     </fieldset>
 
     @button("label.continue")
