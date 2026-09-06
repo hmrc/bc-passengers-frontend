@@ -38,6 +38,27 @@ $hmrc-assets-path: "/check-tax-on-goods-you-bring-into-the-uk/assets/lib/hmrc-fr
   padding-bottom: 35px;
 }
 
+.goods-summary-list__header {
+  display: none;
+
+  @include govuk-media-query($from: tablet) {
+    display: table-row;
+  }
+}
+
+.goods-summary-list__header > .govuk-summary-list__key,
+.goods-summary-list__header > .govuk-summary-list__value,
+.goods-summary-list__header > .govuk-summary-list__actions {
+  @include govuk-media-query($from: tablet) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.goods-summary-list__header > .govuk-summary-list__value {
+  font-weight: bold;
+}
+
 .official-status-tag {
   margin-bottom: -6px;
 }

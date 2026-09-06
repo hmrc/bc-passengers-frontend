@@ -64,9 +64,15 @@ class AlcoholInputController @Inject() (
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
       case _                                                                                     =>
-        Redirect(routes.SelectProductController.nextStep())
+        Redirect(routes.GoodsCheckYourAnswersController.show(productPath, iid))
     }
-    if (isAddJourney) markReturnToAddedItem(result, routes.AlcoholInputController.displayEditForm(iid).url, productPath)
+    if (isAddJourney)
+      markReturnToAddedItem(
+        result,
+        routes.AlcoholInputController.displayEditForm(iid).url,
+        productPath,
+        Some(routes.GoodsCheckYourAnswersController.show(productPath, iid).url)
+      )
     else result
 
   private def submittedIid(implicit context: LocalContext): Option[String] =

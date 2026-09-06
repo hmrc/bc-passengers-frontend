@@ -223,6 +223,34 @@ object SelectProductsDto {
 }
 case class SelectProductsDto(tokens: List[String])
 
+object GoodsTypeDto {
+
+  private val validGoodsTypes = Set("alcohol", "tobacco", "other-goods")
+
+  val form: Form[GoodsTypeDto] = Form(
+    mapping(
+      "goodsType" -> optional(text)
+        .verifying("error.required.goods_type", _.exists(validGoodsTypes.contains))
+        .transform[String](_.getOrElse(""), value => Option(value))
+    )(GoodsTypeDto.apply)(o => Some(o.goodsType))
+  )
+}
+case class GoodsTypeDto(goodsType: String)
+
+object AddAnotherItemDto {
+  val sessionKey = "add-another-item"
+
+  val form: Form[AddAnotherItemDto] = Form(
+    mapping(
+      "addAnotherItem" -> optional(boolean)
+        .verifying("error.required.add_another_item", _.isDefined)
+        .transform[Boolean](_.get, value => Option(value))
+    )(AddAnotherItemDto.apply)(dto => Some(dto.addAnotherItem))
+  )
+}
+
+case class AddAnotherItemDto(addAnotherItem: Boolean)
+
 case class CalculatorResponseDto(items: List[Item], calculation: Calculation, allItemsUseGBP: Boolean)
 
 trait Validators {

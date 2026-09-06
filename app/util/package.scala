@@ -52,6 +52,11 @@ package object util extends ProductDetector {
     if (value < 1) "0" + df.format(value) else df.format(value)
   }
 
+  def formatMonetaryValueWithoutTrailingZeros(value: BigDecimal): String = {
+    val df = new DecimalFormat("#,##0.##")
+    df.format(value)
+  }
+
   implicit class EnhancedJsObject(jsObject: JsObject) {
     def stripNulls: JsObject =
       alterFields { case (_, JsNull) =>

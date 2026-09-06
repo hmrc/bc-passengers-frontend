@@ -1,0 +1,65 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.ViewUtils._
+
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  inputRadioPanel: components.inputRadioPanel,
+  button: components.button,
+  formHelper: FormWithCSRF
+)
+
+@(form: Form[GoodsTypeDto])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@govukLayout(
+  pageTitle = Some(title(form, "heading.which_type_of_goods_do_you_want_to_add")),
+  backLink = Some(routes.DashboardController.showDashboard.url)
+) {
+  @formHelper(action = routes.AddItemController.submit) {
+    @errorSummary(form.errors, Some("alcohol"))
+
+    @inputRadioPanel(
+      form = form,
+      legend = "heading.which_type_of_goods_do_you_want_to_add",
+      name = "goodsType",
+      classes = "govuk-fieldset__legend--l",
+      items = Seq(
+        RadioItem(
+          id = Some("goodsType-alcohol"),
+          value = Some("alcohol"),
+          content = Text(messages("label.alcohol")),
+          checked = form("goodsType").value.contains("alcohol")
+        ),
+        RadioItem(
+          id = Some("goodsType-tobacco"),
+          value = Some("tobacco"),
+          content = Text(messages("label.tobacco")),
+          checked = form("goodsType").value.contains("tobacco")
+        ),
+        RadioItem(
+          id = Some("goodsType-other-goods"),
+          value = Some("other-goods"),
+          content = Text(messages("label.other_goods")),
+          checked = form("goodsType").value.contains("other-goods")
+        )
+      )
+    )
+
+    @button("label.save_and_continue")
+  }
+}
