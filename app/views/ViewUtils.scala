@@ -49,7 +49,7 @@ object ViewUtils {
     }
 
   def radioOptionsForSelectProducts(items: List[(String, String)], selectedValue: Option[String] = None)(implicit
-                                                                                        messages: Messages
+    messages: Messages
   ): Seq[RadioItem] =
     items.zipWithIndex.map { case (value, _) =>
       RadioItem(
@@ -57,7 +57,10 @@ object ViewUtils {
         value = Some(value._1),
         content = Text(messages(s"${value._2}")),
         checked = selectedValue.contains(value._1),
-        hint = if (value._2.equals("label.other-goods.stop-smoking-products")) Some(Hint(content = Text(messages("This does not include vaping products")))) else None
+        hint =
+          if (value._2.equals("label.other-goods.stop-smoking-products"))
+            Some(Hint(content = Text(messages("This does not include vaping products"))))
+          else None
       )
     }
 }

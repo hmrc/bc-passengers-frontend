@@ -42,7 +42,6 @@ class OtherGoodsInputController @Inject() (
   val backLinkModel: BackLinkModel,
   dashboardAction: DashboardAction,
   val other_goods_input: views.html.other_goods.other_goods_input,
-  val other_goods_input_vp: views.html.other_goods.other_goods_input_vp,
   val errorTemplate: views.html.errorTemplate,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
@@ -121,52 +120,28 @@ class OtherGoodsInputController @Inject() (
               .storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil))
               .map(_ =>
                 Ok(
-                  if (isVapingJourneyEnabled) {
-                    other_goods_input_vp(
-                      {
-                        val bindData =
-                          Map("searchTerm" -> term.head) ++
-                            defaultOriginCountry
-                              .filter(_.trim.nonEmpty)
-                              .map(oc => Map("originCountry" -> oc))
-                              .getOrElse(Map.empty[String, String])
-                        continueForm.bind(bindData).discardingErrors
-                      },
-                      None,
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck,
-                      context.getJourneyData.arrivingNICheck,
-                      productTreeService.otherGoodsSearchItems,
-                      "create",
-                      ProductPath.apply(Nil),
-                      backLinkModel.backLink,
-                      customBackLink = false
-                    )
-                  } else {
-                    other_goods_input(
-                      {
-                        val bindData =
-                          Map("searchTerm" -> term.head) ++
-                            defaultOriginCountry
-                              .filter(_.trim.nonEmpty)
-                              .map(oc => Map("originCountry" -> oc))
-                              .getOrElse(Map.empty[String, String])
-                        continueForm.bind(bindData).discardingErrors
-                      },
-                      None,
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck,
-                      productTreeService.otherGoodsSearchItems,
-                      "create",
-                      ProductPath.apply(Nil),
-                      backLinkModel.backLink,
-                      customBackLink = false
-                    )
-                  }
+                  other_goods_input(
+                    {
+                      val bindData =
+                        Map("searchTerm" -> term.head) ++
+                          defaultOriginCountry
+                            .filter(_.trim.nonEmpty)
+                            .map(oc => Map("originCountry" -> oc))
+                            .getOrElse(Map.empty[String, String])
+                      continueForm.bind(bindData).discardingErrors
+                    },
+                    None,
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck,
+                    context.getJourneyData.arrivingNICheck,
+                    productTreeService.otherGoodsSearchItems,
+                    "create",
+                    ProductPath.apply(Nil),
+                    backLinkModel.backLink,
+                    customBackLink = false
+                  )
                 )
               )
           case _ =>
@@ -174,52 +149,28 @@ class OtherGoodsInputController @Inject() (
               .storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil))
               .map(_ =>
                 Ok(
-                  if (isVapingJourneyEnabled) {
-                    other_goods_input_vp(
-                      {
-                        val bindData =
-                          Map("searchTerm" -> "") ++
-                            defaultOriginCountry
-                              .filter(_.trim.nonEmpty)
-                              .map(oc => Map("originCountry" -> oc))
-                              .getOrElse(Map.empty[String, String])
-                        continueForm.bind(bindData).discardingErrors
-                      },
-                      None,
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck,
-                      context.getJourneyData.arrivingNICheck,
-                      productTreeService.otherGoodsSearchItems,
-                      "create",
-                      ProductPath.apply(Nil),
-                      backLinkModel.backLink,
-                      customBackLink = false
-                    )
-                  } else {
-                    other_goods_input(
-                      {
-                        val bindData =
-                          Map("searchTerm" -> "") ++
-                            defaultOriginCountry
-                              .filter(_.trim.nonEmpty)
-                              .map(oc => Map("originCountry" -> oc))
-                              .getOrElse(Map.empty[String, String])
-                        continueForm.bind(bindData).discardingErrors
-                      },
-                      None,
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck,
-                      productTreeService.otherGoodsSearchItems,
-                      "create",
-                      ProductPath.apply(Nil),
-                      backLinkModel.backLink,
-                      customBackLink = false
-                    )
-                  }
+                  other_goods_input(
+                    {
+                      val bindData =
+                        Map("searchTerm" -> "") ++
+                          defaultOriginCountry
+                            .filter(_.trim.nonEmpty)
+                            .map(oc => Map("originCountry" -> oc))
+                            .getOrElse(Map.empty[String, String])
+                      continueForm.bind(bindData).discardingErrors
+                    },
+                    None,
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck,
+                    context.getJourneyData.arrivingNICheck,
+                    productTreeService.otherGoodsSearchItems,
+                    "create",
+                    ProductPath.apply(Nil),
+                    backLinkModel.backLink,
+                    customBackLink = false
+                  )
                 )
               )
         }
@@ -233,42 +184,23 @@ class OtherGoodsInputController @Inject() (
         case Some(dto) =>
           Future.successful(
             Ok(
-              if (isVapingJourneyEnabled) {
-                other_goods_input_vp(
-                  addCostForm.fill(dto),
-                  Some(iid),
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck,
-                  context.getJourneyData.arrivingNICheck,
-                  productTreeService.otherGoodsSearchItems,
-                  "edit",
-                  ppi.path,
-                  backLinkForAddedItemEdit(
-                    backLinkModel.backLink,
-                    routes.OtherGoodsInputController.displayEditForm(iid).url
-                  ),
-                  customBackLink = true
-                )
-              } else {
-                other_goods_input(
-                  addCostForm.fill(dto),
-                  Some(iid),
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck,
-                  productTreeService.otherGoodsSearchItems,
-                  "edit",
-                  ppi.path,
-                  backLinkForAddedItemEdit(
-                    backLinkModel.backLink,
-                    routes.OtherGoodsInputController.displayEditForm(iid).url
-                  ),
-                  customBackLink = true
-                )
-              }
+              other_goods_input(
+                addCostForm.fill(dto),
+                Some(iid),
+                countriesService.getAllCountries,
+                countriesService.getAllCountriesAndEu,
+                currencyService.getAllCurrencies,
+                context.getJourneyData.euCountryCheck,
+                context.getJourneyData.arrivingNICheck,
+                productTreeService.otherGoodsSearchItems,
+                "edit",
+                ppi.path,
+                backLinkForAddedItemEdit(
+                  backLinkModel.backLink,
+                  routes.OtherGoodsInputController.displayEditForm(iid).url
+                ),
+                customBackLink = true
+              )
             )
           )
         case None      =>
@@ -286,36 +218,20 @@ class OtherGoodsInputController @Inject() (
         formWithErrors =>
           Future.successful(
             BadRequest(
-              if (isVapingJourneyEnabled) {
-                other_goods_input_vp(
-                  formWithErrors,
-                  None,
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck,
-                  context.getJourneyData.arrivingNICheck,
-                  productTreeService.otherGoodsSearchItems,
-                  "create",
-                  ProductPath.apply(Nil),
-                  backLinkModel.backLink,
-                  customBackLink = false
-                )
-              } else {
-                other_goods_input(
-                  formWithErrors,
-                  None,
-                  countriesService.getAllCountries,
-                  countriesService.getAllCountriesAndEu,
-                  currencyService.getAllCurrencies,
-                  context.getJourneyData.euCountryCheck,
-                  productTreeService.otherGoodsSearchItems,
-                  "create",
-                  ProductPath.apply(Nil),
-                  backLinkModel.backLink,
-                  customBackLink = false
-                )
-              }
+              other_goods_input(
+                formWithErrors,
+                None,
+                countriesService.getAllCountries,
+                countriesService.getAllCountriesAndEu,
+                currencyService.getAllCurrencies,
+                context.getJourneyData.euCountryCheck,
+                context.getJourneyData.arrivingNICheck,
+                productTreeService.otherGoodsSearchItems,
+                "create",
+                ProductPath.apply(Nil),
+                backLinkModel.backLink,
+                customBackLink = false
+              )
             )
           ),
         dto =>
@@ -376,42 +292,23 @@ class OtherGoodsInputController @Inject() (
             formWithErrors =>
               Future.successful(
                 BadRequest(
-                  if (isVapingJourneyEnabled) {
-                    other_goods_input_vp(
-                      formWithErrors,
-                      Some(iid),
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck,
-                      context.getJourneyData.arrivingNICheck,
-                      productTreeService.otherGoodsSearchItems,
-                      "edit",
-                      ppi.path,
-                      backLinkForAddedItemEdit(
-                        backLinkModel.backLink,
-                        routes.OtherGoodsInputController.displayEditForm(iid).url
-                      ),
-                      customBackLink = true
-                    )
-                  } else {
-                    other_goods_input(
-                      formWithErrors,
-                      Some(iid),
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck,
-                      productTreeService.otherGoodsSearchItems,
-                      "edit",
-                      ppi.path,
-                      backLinkForAddedItemEdit(
-                        backLinkModel.backLink,
-                        routes.OtherGoodsInputController.displayEditForm(iid).url
-                      ),
-                      customBackLink = true
-                    )
-                  }
+                  other_goods_input(
+                    formWithErrors,
+                    Some(iid),
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck,
+                    context.getJourneyData.arrivingNICheck,
+                    productTreeService.otherGoodsSearchItems,
+                    "edit",
+                    ppi.path,
+                    backLinkForAddedItemEdit(
+                      backLinkModel.backLink,
+                      routes.OtherGoodsInputController.displayEditForm(iid).url
+                    ),
+                    customBackLink = true
+                  )
                 )
               ),
             dto => {

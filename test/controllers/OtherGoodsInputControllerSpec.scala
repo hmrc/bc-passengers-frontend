@@ -157,7 +157,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       when(
         injected[other_goods_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(
+            any(),
+            any(),
+            any()
+          )
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -180,7 +184,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       when(
         injected[other_goods_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(
+            any(),
+            any(),
+            any()
+          )
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -203,7 +211,11 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       when(
         injected[other_goods_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(
+            any(),
+            any(),
+            any()
+          )
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -351,6 +363,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -431,6 +444,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -476,6 +490,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[other_goods_input], times(1))(
         formCaptor.capture(),
+        any(),
         any(),
         any(),
         any(),
@@ -539,6 +554,7 @@ class OtherGoodsInputControllerSpec extends BaseSpec {
 
       verify(injected[other_goods_input], times(1))(
         formCaptor.capture(),
+        any(),
         any(),
         any(),
         any(),
