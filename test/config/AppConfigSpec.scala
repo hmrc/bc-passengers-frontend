@@ -17,13 +17,13 @@
 package config
 
 import org.scalatest.matchers.should.Matchers
-import util.{BaseSpec, WineStillOrSparklingFeature}
 import org.mockito.Mockito.*
+import util.{BaseSpec, WineStillOrSparklingFeature}
 
 class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature {
 
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
-  val appConfig: AppConfig     = injected[AppConfig]
+  val appConfig                = injected[AppConfig]
 
   "AppConfig" should {
     "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
