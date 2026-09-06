@@ -18,7 +18,7 @@ package views
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{CheckboxItem, Hint, HtmlContent, RadioItem, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, RadioItem, Text}
 
 object ViewUtils {
 
@@ -59,7 +59,7 @@ object ViewUtils {
         checked = selectedValue.contains(value._1),
         hint =
           if (value._2.equals("label.other-goods.stop-smoking-products"))
-            Some(Hint(content = Text(messages("This does not include vaping products"))))
+            Some(Hint(content = Text(messages("label.other_goods.vaping_product_hint"))))
           else None
       )
     }
