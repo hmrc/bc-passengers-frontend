@@ -687,6 +687,7 @@ label.do_you_want_to_remove_.other-goods.stop-smoking-products = Do you want to 
 label.do_you_want_to_remove_.other-goods.tableware = Do you want to remove this tableware or kitchenware?
 label.do_you_want_to_remove_.other-goods.watches-clocks = Do you want to remove this watch or clock?
 label.do_you_want_to_remove_.other-goods.other = Do you want to remove this item?
+label.do_you_want_to_remove_.other-goods.vaping-products = Do you want to remove this Vaping products?
 
 label.do_you_want_to_remove_.tobacco.cigarettes = Do you want to remove these cigarettes?
 label.do_you_want_to_remove_.tobacco.cigarillos = Do you want to remove these cigarillos?
