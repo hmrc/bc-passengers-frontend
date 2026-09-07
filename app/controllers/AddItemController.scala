@@ -49,7 +49,11 @@ class AddItemController @Inject() (
         formWithErrors => Future.successful(BadRequest(add_item(formWithErrors))),
         goodsType =>
           Future.successful(
-            Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
+            goodsType.goodsType match {
+              case "other-goods" => Redirect(routes.OtherGoodsInputController.displayAddForm())
+              case _             =>
+                Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
+            }
           )
       )
   }
