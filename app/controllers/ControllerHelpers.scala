@@ -47,12 +47,13 @@ trait ControllerHelpers
 
   private val logger = Logger(this.getClass)
 
-  protected val returnToAddedItemSessionKey          = "return-to-added-item-url"
-  protected val returnToAddedItemSelectUrlSessionKey = "return-to-added-item-select-url"
-  protected val returnToAddedItemProductPathKey      = "return-to-added-item-product-path"
-  protected val returnToAddedItemStackSessionKey     = "return-to-added-item-stack"
+  protected val returnToAddedItemSessionKey             = "return-to-added-item-url"
+  protected val returnToAddedItemSelectUrlSessionKey    = "return-to-added-item-select-url"
+  protected val returnToAddedItemProductPathKey         = "return-to-added-item-product-path"
+  protected val returnToAddedItemDashboardUrlSessionKey = "return-to-added-item-dashboard-url"
+  protected val returnToAddedItemStackSessionKey        = "return-to-added-item-stack"
 
-  private case class AddedItemBackLink(editUrl: String, selectUrl: String, productPath: String)
+  private case class AddedItemBackLink(editUrl: String, selectUrl: String, productPath: String, dashboardUrl: String)
 
   private val addedItemBackLinkPartSeparator  = "|"
   private val addedItemBackLinkEntrySeparator = "\n"
@@ -60,7 +61,8 @@ trait ControllerHelpers
   private def serialiseAddedItemBackLinks(backLinks: List[AddedItemBackLink]): String =
     backLinks
       .map(backLink =>
-        List(backLink.editUrl, backLink.selectUrl, backLink.productPath).mkString(addedItemBackLinkPartSeparator)
+        List(backLink.editUrl, backLink.selectUrl, backLink.productPath, backLink.dashboardUrl)
+          .mkString(addedItemBackLinkPartSeparator)
       )
       .mkString(addedItemBackLinkEntrySeparator)
 
@@ -70,8 +72,11 @@ trait ControllerHelpers
       .toList
       .flatMap { entry =>
         entry.split("\\|", -1).toList match {
-          case editUrl :: selectUrl :: productPath :: Nil => Some(AddedItemBackLink(editUrl, selectUrl, productPath))
-          case _                                          => None
+          case editUrl :: selectUrl :: productPath :: dashboardUrl :: Nil =>
+            Some(AddedItemBackLink(editUrl, selectUrl, productPath, dashboardUrl))
+          case editUrl :: selectUrl :: productPath :: Nil                 =>
+            Some(AddedItemBackLink(editUrl, selectUrl, productPath, editUrl))
+          case _                                                          => None
         }
       }
 
@@ -80,7 +85,12 @@ trait ControllerHelpers
       editUrl     <- context.request.session.get(returnToAddedItemSessionKey)
       selectUrl   <- context.request.session.get(returnToAddedItemSelectUrlSessionKey)
       productPath <- context.request.session.get(returnToAddedItemProductPathKey)
-    } yield AddedItemBackLink(editUrl, selectUrl, productPath)
+    } yield AddedItemBackLink(
+      editUrl,
+      selectUrl,
+      productPath,
+      context.request.session.get(returnToAddedItemDashboardUrlSessionKey).getOrElse(editUrl)
+    )
 
   private def addedItemBackLinkStack(implicit context: LocalContext): List[AddedItemBackLink] =
     context.request.session
@@ -89,21 +99,30 @@ trait ControllerHelpers
         deserialiseAddedItemBackLinks
       )
 
-  protected def markReturnToAddedItem(result: Result, editUrl: String, productPath: ProductPath)(implicit
+  protected def markReturnToAddedItem(
+    result: Result,
+    editUrl: String,
+    productPath: ProductPath,
+    dashboardUrl: Option[String] = None
+  )(implicit
     context: LocalContext
   ): Result = {
-    val selectUrl = routes.SelectProductController
+    val selectUrl      = routes.SelectProductController
       .askProductSelection(ProductPath(productPath.components.dropRight(1)))
       .url
-    val backLink  = AddedItemBackLink(editUrl, selectUrl, productPath.toString)
-    val stack     = addedItemBackLinkStack.filterNot(_.editUrl == editUrl) :+ backLink
+    val backLink       = AddedItemBackLink(editUrl, selectUrl, productPath.toString, dashboardUrl.getOrElse(editUrl))
+    val stack          = addedItemBackLinkStack.filterNot(_.editUrl == editUrl) :+ backLink
+    val session        = context.request.session.data ++ Map(
+      returnToAddedItemSessionKey             -> editUrl,
+      returnToAddedItemSelectUrlSessionKey    -> selectUrl,
+      returnToAddedItemProductPathKey         -> productPath.toString,
+      returnToAddedItemDashboardUrlSessionKey -> backLink.dashboardUrl,
+      returnToAddedItemStackSessionKey        -> serialiseAddedItemBackLinks(stack)
+    )
+    val updatedSession =
+      if (dashboardUrl.isDefined) session - AddAnotherItemDto.sessionKey else session
 
-    result.addingToSession(
-      returnToAddedItemSessionKey          -> editUrl,
-      returnToAddedItemSelectUrlSessionKey -> selectUrl,
-      returnToAddedItemProductPathKey      -> productPath.toString,
-      returnToAddedItemStackSessionKey     -> serialiseAddedItemBackLinks(stack)
-    )(using context.request)
+    result.withSession(Session(updatedSession))
   }
 
   protected def clearReturnToAddedItem(result: Result)(implicit context: LocalContext): Result =
@@ -111,6 +130,7 @@ trait ControllerHelpers
       returnToAddedItemSessionKey,
       returnToAddedItemSelectUrlSessionKey,
       returnToAddedItemProductPathKey,
+      returnToAddedItemDashboardUrlSessionKey,
       returnToAddedItemStackSessionKey
     )(using context.request)
 
@@ -118,10 +138,11 @@ trait ControllerHelpers
     addedItemBackLinkStack.dropRight(1).lastOption match {
       case Some(backLink) =>
         result.addingToSession(
-          returnToAddedItemSessionKey          -> backLink.editUrl,
-          returnToAddedItemSelectUrlSessionKey -> backLink.selectUrl,
-          returnToAddedItemProductPathKey      -> backLink.productPath,
-          returnToAddedItemStackSessionKey     -> serialiseAddedItemBackLinks(addedItemBackLinkStack.dropRight(1))
+          returnToAddedItemSessionKey             -> backLink.editUrl,
+          returnToAddedItemSelectUrlSessionKey    -> backLink.selectUrl,
+          returnToAddedItemProductPathKey         -> backLink.productPath,
+          returnToAddedItemDashboardUrlSessionKey -> backLink.dashboardUrl,
+          returnToAddedItemStackSessionKey        -> serialiseAddedItemBackLinks(addedItemBackLinkStack.dropRight(1))
         )(using context.request)
       case None           => clearReturnToAddedItem(result)
     }

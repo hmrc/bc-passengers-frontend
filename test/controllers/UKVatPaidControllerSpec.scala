@@ -280,7 +280,7 @@ class UKVatPaidControllerSpec extends BaseSpec {
       "other-goods/electronic-devices/televisions",
       "other-goods/electronic-devices/other"
     ).foreach { path =>
-      "redirect to the tell us page via the path /check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step" when {
+      "redirect to the item CYA page" when {
         s"data in path $path is successfully submitted and a uk resident i.e. GBNI journey" in {
           val ppi: PurchasedProductInstance = PurchasedProductInstance(
             iid = "brTuNh",
@@ -308,8 +308,8 @@ class UKVatPaidControllerSpec extends BaseSpec {
               .withFormUrlEncodedBody("isUKVatPaid" -> "true")
           ).get
 
-          status(response)           shouldBe SEE_OTHER
-          redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+          status(response)             shouldBe SEE_OTHER
+          redirectLocation(response).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
         }
       }
     }

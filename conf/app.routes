@@ -83,6 +83,12 @@ GET        /previous-goods                                                      
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard
 POST       /tell-us                                                                    controllers.CalculateDeclareController.calculate
 
+GET        /add-an-item                                                                controllers.AddItemController.show
+POST       /add-an-item                                                                controllers.AddItemController.submit
+
+GET        /check-your-item/$path<.+>/:iid                                             controllers.GoodsCheckYourAnswersController.show(path: ProductPath, iid: String)
+POST       /check-your-item                                                            controllers.GoodsCheckYourAnswersController.submit
+
 GET        /goods/$path<.+>/upper-limits/volume                                        controllers.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path: ProductPath)
 GET        /goods/$path<.+>/upper-limits/weight                                        controllers.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path: ProductPath)
 GET        /goods/$path<.+>/upper-limits/units-of-product                              controllers.LimitExceedController.onPageLoadAddJourneyNoOfSticks(path: ProductPath)
