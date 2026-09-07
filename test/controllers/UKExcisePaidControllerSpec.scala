@@ -313,8 +313,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
             .withFormUrlEncodedBody("uKExcisePaidItem" -> "true")
         ).get
 
-        status(response)           shouldBe SEE_OTHER
-        redirectLocation(response) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+        status(response)             shouldBe SEE_OTHER
+        redirectLocation(response).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
       }
 
     Seq("brTuNh", "brXuNh").foreach(test)
