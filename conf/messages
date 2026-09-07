@@ -592,6 +592,7 @@ label.time_of_arrival = Time of arrival
 label.scheduled_time_of_arrival = Scheduled time of arrival
 label.for_example_930 = For example, 9:30 or 14:55
 label.other_goods.vaping_product_hint = This does not include vaping products
+label.other_goods.ni_vaping_product_hint = For all other goods including vaping products
 
 time.fields.hour = Hour
 time.fields.minute = Minute

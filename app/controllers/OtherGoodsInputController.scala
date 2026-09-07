@@ -50,8 +50,6 @@ class OtherGoodsInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private val isVapingJourneyEnabled: Boolean = appConfig.isVapingJourneyEnabled
-
   private def submittedIid(implicit context: LocalContext): Option[String] =
     context.request.body.asFormUrlEncoded
       .flatMap(_.get("iid").flatMap(_.headOption))

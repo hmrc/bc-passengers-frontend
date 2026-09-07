@@ -24,7 +24,7 @@
   formHelper: FormWithCSRF
 )
 
-@(form: Form[GoodsTypeDto])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[GoodsTypeDto], journeyData: models.JourneyData)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(
   pageTitle = Some(title(form, "heading.which_type_of_goods_do_you_want_to_add")),
@@ -55,7 +55,10 @@
           id = Some("goodsType-other-goods"),
           value = Some("other-goods"),
           content = Text(messages("label.other_goods")),
-          checked = form("goodsType").value.contains("other-goods")
+          checked = form("goodsType").value.contains("other-goods"),
+          hint = if (appConfig.isVapingJourneyEnabled && journeyData.arrivingNICheck.contains(true))
+            Some(Hint(content = Text(messages("label.other_goods.ni_vaping_product_hint"))))
+            else None
         )
       )
     )
