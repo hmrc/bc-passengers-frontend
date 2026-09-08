@@ -27,5 +27,13 @@ class AppConfigSpec extends BaseSpec with Matchers {
       val appConfig = injected[AppConfig]
       appConfig.declareGoodsUrl shouldBe "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     }
+
+    "read isWineStillOrSparklingEnabled as true when features.wine-still-or-sparkling is true" in {
+      appConfigWith("features.wine-still-or-sparkling" -> true).isWineStillOrSparklingEnabled shouldBe true
+    }
+
+    "read isWineStillOrSparklingEnabled as false when features.wine-still-or-sparkling is false" in {
+      appConfigWith("features.wine-still-or-sparkling" -> false).isWineStillOrSparklingEnabled shouldBe false
+    }
   }
 }

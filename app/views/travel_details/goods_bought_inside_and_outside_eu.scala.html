@@ -40,12 +40,12 @@
         @p{@messages("text.you_can_bring_in")}
 
         <ul class="govuk-list govuk-list--bullet">
-              <li>@messages("text.gb.allowance.alc_1")</li>
-              <li>@messages("text.gb.allowance.alc_2")</li>
-              <li>@messages("text.gb.allowance.alc_3")</li>
+              <li>@toggledMessage("text.gb.allowance.alc_1", appConfig.isWineStillOrSparklingEnabled)</li>
+              <li>@toggledMessage("text.gb.allowance.alc_2", appConfig.isWineStillOrSparklingEnabled)</li>
+              <li>@toggledMessage("text.gb.allowance.alc_3", appConfig.isWineStillOrSparklingEnabled)</li>
         </ul>
 
-        @p{@messages("text.gb.allowance.msg_1")}
+        @p{@toggledMessage("text.gb.allowance.msg_1", appConfig.isWineStillOrSparklingEnabled)}
         @p{@messages("text.gb.allowance.msg_2")}
 
         @panelIndent{

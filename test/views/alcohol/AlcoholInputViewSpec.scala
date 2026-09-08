@@ -16,6 +16,7 @@
 
 package views.alcohol
 
+import config.AppConfig
 import forms.AlcoholInputForm
 import models.*
 import play.api.data.Form
@@ -24,6 +25,8 @@ import views.BaseViewSpec
 import views.html.alcohol.alcohol_input
 
 class AlcoholInputViewSpec extends BaseViewSpec {
+
+  override val appConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> false)
 
   private val productPath: ProductPath = ProductPath(path = "alcohol/wine")
 
@@ -250,6 +253,64 @@ class AlcoholInputViewSpec extends BaseViewSpec {
       title = "Tell us about the wine - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Tell us about the Wine"
     )
+
+    "show 'Wine (still or sparkling)' in the heading and title when the wine-still-or-sparkling toggle is ON" in {
+      val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+      val view                = injected[alcohol_input].apply(
+        validForm,
+        None,
+        false,
+        productTreeLeaf,
+        productPath,
+        Some("iid0"),
+        nonEuropeanCountries,
+        europeanCountries,
+        currencies,
+        None
+      )(request, messages, onConfig)
+      document(view).getElementsByTag("h1").text should include(messages("label.alcohol.wine.still-or-sparkling"))
+      document(view).title                       should include(messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
+    }
+
+    "not add still-or-sparkling for a non-wine product (beer) when the toggle is ON" in {
+      val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+      val beerLeaf            = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A2/BEER", "alcohol", List("L-BEER"))
+      val view                = injected[alcohol_input].apply(
+        validForm,
+        None,
+        false,
+        beerLeaf,
+        ProductPath("alcohol/beer"),
+        Some("iid0"),
+        nonEuropeanCountries,
+        europeanCountries,
+        currencies,
+        None
+      )(request, messages, onConfig)
+      document(view).getElementsByTag("h1").text                    should not include "still or sparkling"
+      document(view).getElementsByClass("govuk-input__suffix").text should not include messages("label.litres")
+    }
+
+    "show the 'litres' suffix on the volume input when the wine-still-or-sparkling toggle is ON" in {
+      val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+      val view                = injected[alcohol_input].apply(
+        validForm,
+        None,
+        false,
+        productTreeLeaf,
+        productPath,
+        Some("iid0"),
+        nonEuropeanCountries,
+        europeanCountries,
+        currencies,
+        None
+      )(request, messages, onConfig)
+      document(view).getElementsByClass("govuk-input__suffix").text should include(messages("label.litres"))
+    }
+
+    "not show the 'litres' suffix on the volume input when the toggle is OFF" in {
+      document(viewViaApply).getElementsByClass("govuk-input__suffix").text should not include messages("label.litres")
+    }
 
     "render browser back to edit script on add journey" in {
       noIidView.toString should include("""name="iid"""")

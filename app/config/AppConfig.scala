@@ -32,12 +32,14 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val paymentLimit: Int  = runModeConfiguration.getOptional[Int]("payment-limit").getOrElse(97000)
 
   // Feature Flags
-  lazy val isVatResJourneyEnabled: Boolean       = runModeConfiguration.get[Boolean]("features.vat-res")
-  lazy val isIrishBorderQuestionEnabled: Boolean = runModeConfiguration.get[Boolean]("features.ireland")
-  lazy val isAmendmentsEnabled: Boolean          = runModeConfiguration.get[Boolean]("features.amendments")
-  lazy val timeout: Int                          = servicesConfig.getInt("timeout.timeout")
-  lazy val countdown: Int                        = servicesConfig.getInt("timeout.countdown")
-  lazy val CMAEnabled: Boolean                   = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
+  lazy val isVatResJourneyEnabled: Boolean        = runModeConfiguration.get[Boolean]("features.vat-res")
+  lazy val isIrishBorderQuestionEnabled: Boolean  = runModeConfiguration.get[Boolean]("features.ireland")
+  lazy val isAmendmentsEnabled: Boolean           = runModeConfiguration.get[Boolean]("features.amendments")
+  lazy val isWineStillOrSparklingEnabled: Boolean =
+    runModeConfiguration.get[Boolean]("features.wine-still-or-sparkling")
+  lazy val timeout: Int                           = servicesConfig.getInt("timeout.timeout")
+  lazy val countdown: Int                         = servicesConfig.getInt("timeout.countdown")
+  lazy val CMAEnabled: Boolean                    = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
 
