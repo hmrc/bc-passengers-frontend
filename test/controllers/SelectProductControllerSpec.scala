@@ -21,6 +21,8 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+
+import scala.jdk.CollectionConverters.*
 import org.mockito.ArgumentMatchers.{eq => meq, *}
 import org.mockito.Mockito.*
 import org.scalatest.Inspectors.*
@@ -176,9 +178,13 @@ class SelectProductControllerSpec extends BaseSpec {
       val on       = appWithWineToggle(true)
       val doc      = selectPageDoc(on, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
       val messages = on.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
-      Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
-      Option(doc.getElementById("tokens-wine"))             should not be None
-      doc.select("label[for=tokens-wine]").text           shouldBe messages("label.alcohol.wine.still-or-sparkling")
+      Option(doc.getElementById("tokens-sparkling-wine"))           shouldBe None
+      Option(doc.getElementById("tokens-wine"))                       should not be None
+      doc.select("label[for=tokens-wine]").text                     shouldBe messages("label.alcohol.wine.still-or-sparkling")
+      doc.select("label[for=tokens-spirits]").text                  shouldBe messages("label.alcohol.spirits.still-or-sparkling")
+      doc.select("label[for=tokens-other]").text                    shouldBe messages("label.alcohol.other.still-or-sparkling")
+      doc.select("input[type=radio]").eachAttr("id").asScala.toList shouldBe
+        List("tokens-beer", "tokens-cider", "tokens-wine", "tokens-spirits", "tokens-other")
     }
 
     "not change other branches (cider) when the toggle is ON" in {
