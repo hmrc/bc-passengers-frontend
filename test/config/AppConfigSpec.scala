@@ -23,7 +23,7 @@ import util.{BaseSpec, WineStillOrSparklingFeature}
 class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature {
 
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
-  val appConfig                = injected[AppConfig]
+  val appConfig: AppConfig     = injected[AppConfig]
 
   "AppConfig" should {
     "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
