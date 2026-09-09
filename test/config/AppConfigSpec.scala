@@ -22,7 +22,7 @@ import util.BaseSpec
 class AppConfigSpec extends BaseSpec with Matchers {
 
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
-  val appConfig: AppConfig = injected[AppConfig]
+  val appConfig: AppConfig     = injected[AppConfig]
 
   "AppConfig" should {
     "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
