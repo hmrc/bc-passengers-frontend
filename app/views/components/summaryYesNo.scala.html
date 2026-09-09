@@ -22,7 +22,7 @@
 @(form: Form[?], h2Message: Option[String], name: String, hintMessage: Option[String] = None, keyPrefix: String = "site", hintHtml: Option[Html] = None, inline: Boolean = true)(implicit messages: Messages)
 
 @govukRadios(Radios(
-    classes = s"${if(inline){"govuk-radios--inline"}else{""}}",
+    classes = if(inline) "govuk-radios--inline" else "",
     idPrefix = None,
     name = name,
     fieldset = Some(Fieldset(
