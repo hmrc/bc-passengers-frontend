@@ -17,11 +17,12 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    sm2 --start BC_PASSENGERS_ALL
    sm2 --stop BC_PASSENGERS_FRONTEND
    ```
-3. Restart the service locally:
-   ```
+   3. Restart the service locally:
+      ```
    cd bc-passengers-frontend
-   sbt run
-   ```
+## Running the app locally
+   sbt "run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"
+      ```
 4. For the card payment service to run successfully, you need the internal auth service running and to enable a token by doing the following command:
    ```
    sm2 --start INTERNAL_AUTH INTERNAL_AUTH_FRONTEND --appendArgs '{"INTERNAL_AUTH": ["-Dapplication.router=testOnlyDoNotUseInAppConf.Routes"], "INTERNAL_AUTH_FRONTEND": ["-Dapplication.router=testOnlyDoNotUseInAppConf.Routes"]}'
