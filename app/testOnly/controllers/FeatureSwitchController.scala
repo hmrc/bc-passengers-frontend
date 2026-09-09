@@ -22,6 +22,7 @@ import models.FeatureSwitchModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import testOnly.views.html.FeatureSwitchView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import play.api.libs.json.Json
 
 import javax.inject.Inject
 
@@ -39,6 +40,10 @@ class FeatureSwitchController @Inject() (
         )
       )
     )
+  }
+
+  def featureSwitchVaping: Action[AnyContent] = Action {
+    Ok(Json.toJson(appConfig.isVapingJourneyEnabled))
   }
 
   def submitFeatureSwitch: Action[AnyContent] = Action { implicit request =>
