@@ -28,7 +28,6 @@ import javax.inject.Inject
 
 class FeatureSwitchController @Inject() (
   mcc: MessagesControllerComponents,
-  implicit val appConfig: AppConfig,
   featureSwitchView: FeatureSwitchView
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) {

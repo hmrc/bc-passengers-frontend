@@ -12,6 +12,7 @@
 GET        /check-tax-on-goods-you-bring-into-the-uk/test-only/feature-switch                              testOnly.controllers.FeatureSwitchController.featureSwitch
 POST       /check-tax-on-goods-you-bring-into-the-uk/test-only/feature-switch                              testOnly.controllers.FeatureSwitchController.submitFeatureSwitch
 
-GET        /check-tax-on-goods-you-bring-into-the-uk/test-only/vaping-feature-switch               testOnly.controllers.FeatureSwitchController.featureSwitchVaping
+GET        /check-tax-on-goods-you-bring-into-the-uk/test-only/vaping-feature-switch                       testOnly.controllers.FeatureSwitchController.featureSwitchVaping
+
 # Add all the application routes to the prod.routes file
 ->         /                                                                                               prod.Routes
