@@ -694,7 +694,7 @@ label.do_you_want_to_remove_.other-goods.stop-smoking-products=A ydych am dynnu�
 label.do_you_want_to_remove_.other-goods.tableware=A ydych am dynnu’r llestri neu’r cyfarpar cegin hyn?
 label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r oriawr neu’r cloc hwn?
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
-label.do_you_want_to_remove_.other-goods.vaping-products = Do you want to remove this Vaping products?sb
+label.do_you_want_to_remove_.other-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
 
 label.do_you_want_to_remove_.tobacco.cigarettes=A ydych am dynnu’r sigaréts hyn?
 label.do_you_want_to_remove_.tobacco.cigarillos=A ydych am dynnu’r sigarilos hyn?
