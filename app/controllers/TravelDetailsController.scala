@@ -336,10 +336,9 @@ class TravelDetailsController @Inject() (
           val form = BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString))
           Ok(
             if (isVapingJourneyEnabled) {
-              goods_brought_into_ni_vp(form,backLinkModel.backLink)
+              goods_brought_into_ni_vp(form, backLinkModel.backLink)
             } else {
-              goods_brought_into_ni(form, backLinkModel.backLink
-              )
+              goods_brought_into_ni(form, backLinkModel.backLink)
             }
           )
         case _ =>
@@ -365,7 +364,8 @@ class TravelDetailsController @Inject() (
             } else {
               goods_brought_into_ni(formWithErrors, backLinkModel.backLink)
             }
-          Future.successful(BadRequest(view)),
+          Future.successful(BadRequest(view))
+        ,
         overAllowanceDto =>
           travelDetailsService.storeBringingOverAllowance(context.journeyData)(
             overAllowanceDto.bringingOverAllowance
