@@ -374,7 +374,9 @@ label.alcohol.cider.sparkling-cider-up=Seidr pefriog (5.6% i 8.4%)
 label.alcohol.wine=Gwin
 label.alcohol.wine.still-or-sparkling=Gwin (pefriog neu lonydd)
 label.alcohol.spirits=Gwirodydd
+label.alcohol.spirits.still-or-sparkling=Gwirodydd dros 22% ABV (alcohol yn ôl cyfaint), fel jin neu fodca
 label.alcohol.other=Alcohol arall
+label.alcohol.other.still-or-sparkling=Diodydd alcoholaidd eraill o dan 22% ABV, fel gwin cadarn neu sieri
 label.alcohol.sparkling-wine=Gwin pefriog
 label.price_paid_for_item_=Y pris a dalwyd ar gyfer eitem {0}
 

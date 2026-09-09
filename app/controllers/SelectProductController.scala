@@ -105,9 +105,11 @@ class SelectProductController @Inject() (
   private def selectItems(path: ProductPath, children: List[ProductTreeNode]): List[(String, String)] = {
     val items = children.map(i => (i.token, i.name))
     if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol"))
-      items.filterNot(_._1 == "sparkling-wine").map {
-        case ("wine", _) => ("wine", "label.alcohol.wine.still-or-sparkling")
-        case other       => other
+      items.filterNot(_._1 == "wine").map {
+        case ("sparkling-wine", _) => ("wine", "label.alcohol.wine.still-or-sparkling")
+        case ("spirits", _)        => ("spirits", "label.alcohol.spirits.still-or-sparkling")
+        case ("other", _)          => ("other", "label.alcohol.other.still-or-sparkling")
+        case other                 => other
       }
     else items
   }

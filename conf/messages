@@ -374,7 +374,9 @@ label.alcohol.cider.sparkling-cider-up = Sparkling cider (5.6% to 8.4%)
 label.alcohol.wine = Wine
 label.alcohol.wine.still-or-sparkling = Wine (still or sparkling)
 label.alcohol.spirits = Spirits
+label.alcohol.spirits.still-or-sparkling = Spirits such as gin or vodka with alcohol over 22% ABV (alcohol by volume)
 label.alcohol.other = Other alcohol
+label.alcohol.other.still-or-sparkling = Other alcoholic drinks under 22% abv such as fortified wine or sherry
 label.alcohol.sparkling-wine = Sparkling wine
 label.price_paid_for_item_ = Price paid for item {0}
 
