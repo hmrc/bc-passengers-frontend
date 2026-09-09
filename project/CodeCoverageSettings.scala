@@ -6,6 +6,7 @@ object CodeCoverageSettings {
   private val excludedPackages: Seq[String] = Seq(
     "<empty>",
     ".*Routes.*",
+    ".*testOnly.*",
     ".*\\$anon\\$.*",
     ".*\\$.*\\$\\$.*"
   )

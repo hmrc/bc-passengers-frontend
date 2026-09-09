@@ -9,8 +9,10 @@
 # !!!WARNING!!! Every route defined in this file MUST be prefixed with "/test-only/". This is because NGINX is blocking every uri containing the string "test-only" in production.
 # Failing to follow this rule may result in test routes deployed in production.
 
+GET        /check-tax-on-goods-you-bring-into-the-uk/test-only/feature-switch                              testOnly.controllers.FeatureSwitchController.featureSwitch
+POST       /check-tax-on-goods-you-bring-into-the-uk/test-only/feature-switch                              testOnly.controllers.FeatureSwitchController.submitFeatureSwitch
+
+GET        /check-tax-on-goods-you-bring-into-the-uk/test-only/vaping-feature-switch               testOnly.controllers.FeatureSwitchController.featureSwitchVaping
+
 # Add all the application routes to the prod.routes file
-
-GET        /check-tax-on-goods-you-bring-into-the-uk/test-only/feature-switch               testOnly.controllers.FeatureSwitchController.featureSwitch
-
-->         /                                          prod.Routes
+->         /                                                                                               prod.Routes

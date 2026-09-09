@@ -18,12 +18,11 @@ package config
 
 import org.scalatest.matchers.should.Matchers
 import util.BaseSpec
-import org.mockito.Mockito.*
 
 class AppConfigSpec extends BaseSpec with Matchers {
 
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
-  val appConfig                = injected[AppConfig]
+  val appConfig: AppConfig = injected[AppConfig]
 
   "AppConfig" should {
     "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
@@ -42,6 +41,14 @@ class AppConfigSpec extends BaseSpec with Matchers {
 
     "return the correct govUKUrl" in {
       appConfig.govUK shouldBe "https://www.gov.uk"
+    }
+
+    "read isWineStillOrSparklingEnabled as true when features.wine-still-or-sparkling is true" in {
+      appConfigWith("features.wine-still-or-sparkling" -> true).isWineStillOrSparklingEnabled shouldBe true
+    }
+
+    "read isWineStillOrSparklingEnabled as false when features.wine-still-or-sparkling is false" in {
+      appConfigWith("features.wine-still-or-sparkling" -> false).isWineStillOrSparklingEnabled shouldBe false
     }
   }
 }
