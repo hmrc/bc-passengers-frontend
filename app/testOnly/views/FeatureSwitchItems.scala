@@ -34,6 +34,10 @@ class FeatureSwitchItems {
 
   def items(form: Form[FeatureSwitchModel]): Seq[CheckboxItem] =
     Seq(
-      formCheckBoxItem(form, ConfigKeys.wineStillOrSparklingFeature, "Enable wine still-or-sparkling restructured content")
+      formCheckBoxItem(
+        form,
+        ConfigKeys.wineStillOrSparklingFeature,
+        "Enable wine still-or-sparkling restructured content"
+      )
     )
 }

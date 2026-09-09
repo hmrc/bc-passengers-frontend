@@ -27,7 +27,9 @@ import util.BaseSpec
 class FeatureSwitchControllerSpec extends BaseSpec {
 
   private lazy val target =
-    new FeatureSwitchController(injected[MessagesControllerComponents], injected[FeatureSwitchView])(injected[AppConfig])
+    new FeatureSwitchController(injected[MessagesControllerComponents], injected[FeatureSwitchView])(
+      injected[AppConfig]
+    )
 
   override def afterEach(): Unit = {
     sys.props.remove("features.wine-still-or-sparkling")
@@ -56,8 +58,8 @@ class FeatureSwitchControllerSpec extends BaseSpec {
           .withCSRFToken
       )
 
-      status(result)           shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.FeatureSwitchController.featureSwitch.url)
+      status(result)                                             shouldBe Status.SEE_OTHER
+      redirectLocation(result)                                   shouldBe Some(routes.FeatureSwitchController.featureSwitch.url)
       injected[AppConfig].features.wineStillOrSparklingEnabled() shouldBe true
     }
 
