@@ -111,5 +111,14 @@ class CacheSpec extends BaseSpec {
         result.map(_ shouldBe JsObject.empty)
       }
     }
+    ".removeFrontendCache"      should {
+      "return an empty object" in {
+        when(mockBCPassengersSessionRepository.clearFrontendCacheById(hc.sessionId)).thenReturn(Future.successful(true))
+
+        val result: Future[Boolean] = cache.removeFrontendCache
+
+        result.map(_ shouldBe true)
+      }
+    }
   }
 }

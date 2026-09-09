@@ -445,6 +445,7 @@ label.other-goods.tableware = Tableware or kitchenware
 label.other-goods.watches-clocks = Watch or clock
 label.other-goods.other = Other item
 label.other-goods.item-of-other-goods = Item of other goods
+label.other-goods.vaping-products = Vaping products
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
@@ -628,6 +629,9 @@ label.for_example_31_10_2021 = For example, 31 10 2021
 label.time_of_arrival = Time of arrival
 label.scheduled_time_of_arrival = Scheduled time of arrival
 label.for_example_930 = For example, 9:30 or 14:55
+label.other_goods.vaping_product_hint = This does not include vaping products
+label.other_goods.ni_vaping_product_hint = For all other goods including vaping products
+
 time.fields.hour = Hour
 time.fields.minute = Minute
 time.fields.am-pm = am or pm
@@ -722,6 +726,7 @@ label.do_you_want_to_remove_.other-goods.stop-smoking-products = Do you want to 
 label.do_you_want_to_remove_.other-goods.tableware = Do you want to remove this tableware or kitchenware?
 label.do_you_want_to_remove_.other-goods.watches-clocks = Do you want to remove this watch or clock?
 label.do_you_want_to_remove_.other-goods.other = Do you want to remove this item?
+label.do_you_want_to_remove_.other-goods.vaping-products = Do you want to remove the vaping product?
 
 label.do_you_want_to_remove_.tobacco.cigarettes = Do you want to remove these cigarettes?
 label.do_you_want_to_remove_.tobacco.cigarillos = Do you want to remove these cigarillos?

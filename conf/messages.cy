@@ -445,6 +445,7 @@ label.other-goods.tableware=Llestri neu gyfarpar cegin
 label.other-goods.watches-clocks=Oriawr neu gloc
 label.other-goods.other=Eitem arall
 label.other-goods.item-of-other-goods = Eitem o nwyddau eraill
+label.other-goods.vaping-products = Cynhyrchion fepio
 
 
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?
@@ -634,6 +635,9 @@ label.for_example_31_10_2021=Er enghraifft, 31 10 2021
 label.time_of_arrival=Amser cyrraedd
 label.scheduled_time_of_arrival = Amser cyrraedd disgwyliedig
 label.for_example_930=Er enghraifft, 9:30 neu 14:55
+label.other_goods.vaping_product_hint = Nid yw hyn yn cynnwys cynhyrchion fepio
+label.other_goods.ni_vaping_product_hint = Ar gyfer unrhyw nwyddau eraill, gan cynnwys cynhyrchion fepio
+
 time.fields.hour=Awr
 time.fields.minute=Munud
 time.fields.am-pm=am neu pm
@@ -728,6 +732,7 @@ label.do_you_want_to_remove_.other-goods.stop-smoking-products=A ydych am dynnu�
 label.do_you_want_to_remove_.other-goods.tableware=A ydych am dynnu’r llestri neu’r cyfarpar cegin hyn?
 label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r oriawr neu’r cloc hwn?
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
+label.do_you_want_to_remove_.other-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
 
 label.do_you_want_to_remove_.tobacco.cigarettes=A ydych am dynnu’r sigaréts hyn?
 label.do_you_want_to_remove_.tobacco.cigarillos=A ydych am dynnu’r sigarilos hyn?
