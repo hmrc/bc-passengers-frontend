@@ -21,6 +21,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import config.AppConfig
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,10 +37,14 @@ import scala.reflect.ClassTag
 
 trait BaseSpec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach {
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
+  protected def guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
-    .build()
+
+  override implicit lazy val app: Application = guiceApplicationBuilder.build()
+
+  def appConfigWith(config: (String, Any)*): AppConfig =
+    guiceApplicationBuilder.configure(config*).build().injector.instanceOf[AppConfig]
 
   lazy val injector: Injector = app.injector
 
