@@ -68,9 +68,8 @@ class AddItemControllerSpec extends BaseSpec {
   "POST /add-an-item" should {
     forAll(
       Seq(
-        "alcohol"     -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol",
-        "tobacco"     -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/tobacco",
-        "other-goods" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/other-goods"
+        "alcohol" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol",
+        "tobacco" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/tobacco"
       )
     ) { case (goodsType, destination) =>
       s"redirect to $goodsType selection" in {
@@ -83,6 +82,19 @@ class AddItemControllerSpec extends BaseSpec {
         status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(destination)
       }
+    }
+
+    "redirect to the other goods input page when other goods are selected" in {
+      val result = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")
+          .withFormUrlEncodedBody("goodsType" -> "other-goods")
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us"
+      )
     }
 
     "show an error when no goods type is selected" in {
