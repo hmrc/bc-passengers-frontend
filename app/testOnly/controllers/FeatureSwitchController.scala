@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class FeatureSwitchController @Inject(
 ) (override val controllerComponents: MessagesControllerComponents, implicit val appConfig: AppConfig)
-  extends FrontendController(controllerComponents) {
+    extends FrontendController(controllerComponents) {
 
   def featureSwitch: Action[AnyContent] = Action {
     Ok(Json.toJson(appConfig.isVapingJourneyEnabled))
