@@ -18,6 +18,7 @@ package config
 
 import org.scalatest.matchers.should.Matchers
 import util.BaseSpec
+import org.mockito.Mockito.*
 
 class AppConfigSpec extends BaseSpec with Matchers {
 
