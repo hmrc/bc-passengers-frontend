@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package config.features
 
-@(msg: String, cssClass: String = "govuk-heading-m", id:Option[String] = None)(implicit messages: Messages)
+import play.api.Configuration
 
-@if(id.isDefined){
-<h2 class="@cssClass" id="@id">@messages(msg)</h2>
-} else {
-<h2 class="@cssClass">@messages(msg)</h2>
+class Feature(val key: String, config: Configuration) {
+
+  def apply(value: Boolean): Unit = sys.props += key -> value.toString
+
+  def apply(): Boolean = sys.props.get(key).fold(config.get[Boolean](key))(_.toBoolean)
 }
-

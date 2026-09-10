@@ -34,49 +34,101 @@
 
         @errorSummary(form.errors, Some("value-yes"))
         @h1(messages("heading.goods_brought_into_gb"))
-        @p{@messages("text.gb.allowance")}
 
-        @h2(messages("text.alcohol_allowance"))
-        @p{@messages("text.you_can_bring_in")}
+        @if(appConfig.isWineStillOrSparklingEnabled) {
 
-        <ul class="govuk-list govuk-list--bullet">
-              <li>@messages("text.gb.allowance.alc_1")</li>
-              <li>@messages("text.gb.allowance.alc_2")</li>
-              <li>@messages("text.gb.allowance.alc_3")</li>
-        </ul>
+            @p{@messages("text.gb.allowance.still-or-sparkling")}
 
-        @p{@messages("text.gb.allowance.msg_1")}
-        @p{@messages("text.gb.allowance.msg_2")}
+            @panelIndent{
+            @p{@messages("text.gb.allowance.under_17.still-or-sparkling")}
+            }
 
-        @panelIndent{
-        @p{@messages("text.ni.allowance.msg_3")}
+            @h2(messages("text.alcohol_allowance.still-or-sparkling"))
+            @p{@messages("text.you_can_bring_in.still-or-sparkling")}
+
+            <ul class="govuk-list govuk-list--bullet">
+                  <li>@messages("text.gb.allowance.alc_1.still-or-sparkling")</li>
+                  <li>@messages("text.gb.allowance.alc_2.still-or-sparkling")</li>
+                  <li>@messages("text.gb.allowance.alc_3.still-or-sparkling")</li>
+            </ul>
+            @p{@messages("text.gb.allowance.msg_1.still-or-sparkling")}
+
+            <h3 class="govuk-heading-s">@messages("text.gb.allowance.over_heading.still-or-sparkling")</h3>
+            @p{@messages("text.gb.allowance.alcohol_over.still-or-sparkling")}
+            @p{@messages("text.gb.allowance.alcohol_over_example.still-or-sparkling")}
+
+            @h2(messages("text.tobacco_allowance.still-or-sparkling"))
+            @p{@messages("text.you_can_bring_in.still-or-sparkling")}
+
+            <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("text.allowance.tob_1")</li>
+                    <li>@messages("text.allowance.tob_2")</li>
+                    <li>@messages("text.allowance.tob_3")</li>
+                    <li>@messages("text.allowance.tob_4")</li>
+                    <li>@messages("text.allowance.tob_5")</li>
+            </ul>
+            @p{@messages("text.allowance.msg_4.still-or-sparkling")}
+
+            <h3 class="govuk-heading-s">@messages("text.gb.allowance.over_heading.still-or-sparkling")</h3>
+            @p{@messages("text.allowance.tobacco_over.still-or-sparkling")}
+            @p{@messages("text.allowance.tobacco_over_example.still-or-sparkling")}
+
+            @h2(messages("text.other_goods_allowance.still-or-sparkling"))
+            @p{@messages("text.allowance.otg_1.still-or-sparkling")}
+
+            <h3 class="govuk-heading-s">@messages("text.allowance.other_over_heading.still-or-sparkling")</h3>
+            @p{@messages("text.allowance.other_over.still-or-sparkling")}
+            @p{@messages("text.allowance.other_over_example.still-or-sparkling")}
+
+            @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages("text.allowance.msg_8")), inline = false)
+
+        } else {
+
+            @p{@messages("text.gb.allowance")}
+
+            @h2(messages("text.alcohol_allowance"))
+            @p{@messages("text.you_can_bring_in")}
+
+            <ul class="govuk-list govuk-list--bullet">
+                  <li>@messages("text.gb.allowance.alc_1")</li>
+                  <li>@messages("text.gb.allowance.alc_2")</li>
+                  <li>@messages("text.gb.allowance.alc_3")</li>
+            </ul>
+
+            @p{@messages("text.gb.allowance.msg_1")}
+            @p{@messages("text.gb.allowance.msg_2")}
+
+            @panelIndent{
+            @p{@messages("text.ni.allowance.msg_3")}
+            }
+
+            @h2(messages("text.tobacco_allowance"))
+            @p{@messages("text.you_can_bring_in_either")}
+
+            <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("text.allowance.tob_1")</li>
+                    <li>@messages("text.allowance.tob_2")</li>
+                    <li>@messages("text.allowance.tob_3")</li>
+                    <li>@messages("text.allowance.tob_4")</li>
+                    <li>@messages("text.allowance.tob_5")</li>
+            </ul>
+            @p{@messages("text.allowance.msg_4")}
+            @p{@messages("text.allowance.msg_5")}
+
+            @panelIndent{
+            @p{@messages("text.allowance.msg_6")}
+            }
+
+            @h2(messages("text.other_goods_allowance"))
+
+            <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("text.allowance.otg_1")</li>
+            </ul>
+            @p{@messages("text.allowance.msg_7")}
+
+            @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages(s"text.allowance.msg_8")))
+
         }
-
-        @h2(messages("text.tobacco_allowance"))
-        @p{@messages("text.you_can_bring_in_either")}
-
-        <ul class="govuk-list govuk-list--bullet">
-                <li>@messages("text.allowance.tob_1")</li>
-                <li>@messages("text.allowance.tob_2")</li>
-                <li>@messages("text.allowance.tob_3")</li>
-                <li>@messages("text.allowance.tob_4")</li>
-                <li>@messages("text.allowance.tob_5")</li>
-        </ul>
-        @p{@messages("text.allowance.msg_4")}
-        @p{@messages("text.allowance.msg_5")}
-
-        @panelIndent{
-        @p{@messages("text.allowance.msg_6")}
-        }
-
-        @h2(messages("text.other_goods_allowance"))
-
-        <ul class="govuk-list govuk-list--bullet">
-                <li>@messages("text.allowance.otg_1")</li>
-        </ul>
-        @p{@messages("text.allowance.msg_7")}
-
-        @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages(s"text.allowance.msg_8")))
 
         @button("label.continue")
 

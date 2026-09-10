@@ -22,6 +22,9 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{CheckboxItem, RadioItem, Text}
 
 object ViewUtils {
 
+  def toggledMessage(key: String, wineStillOrSparklingEnabled: Boolean)(implicit messages: Messages): String =
+    if (wineStillOrSparklingEnabled) messages(s"$key.still-or-sparkling") else messages(key)
+
   def title(form: Form[?], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(
     implicit messages: Messages
   ): String =
