@@ -33,7 +33,8 @@
   hintText: String,
   list: Seq[(String, String)],
   jsonData: String,
-  labelClass: Boolean = false)(implicit messages: Messages, requestHeader: RequestHeader)
+  labelClass: Boolean = false,
+  describedBy: Option[String] = None)(implicit messages: Messages, requestHeader: RequestHeader)
 
 <div class='@govukToClasses("govuk-form-group", if(form(id).hasErrors) "govuk-form-group--error" else "")'>
 
@@ -44,9 +45,14 @@
             </label>
         </h1>
     } else if(labelClass) {
-        <label class="govuk-label govuk-!-font-weight-bold" for=@id>
+       <label
+            id="@id-label"
+            class="govuk-label govuk-!-font-weight-bold"
+            for="@id">
             @messages(label, headingMessageArgs*)
         </label>
+
+
     }else {
         <label class="govuk-label" for=@id>
             @messages(label, headingMessageArgs*)
@@ -56,7 +62,14 @@
     @select(hmrcComponent.Select(
         id = id,
         name = name,
-        describedBy = if(hint) {Some(id + s"-hint")} else {None},
+        describedBy = {
+        val ids = Seq(
+            if (hint.nonEmpty) Some(s"$id-hint") else None,
+            describedBy
+        ).flatten
+
+        if (ids.nonEmpty) Some(ids.mkString(" ")) else None
+        },
         errorMessage = form(id).error.map(fe => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(messages(fe.message)))),
         items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
             case (k,v) => SelectItem(
