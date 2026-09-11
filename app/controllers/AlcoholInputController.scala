@@ -64,9 +64,15 @@ class AlcoholInputController @Inject() (
       case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
         Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
       case _                                                                                     =>
-        Redirect(routes.SelectProductController.nextStep())
+        Redirect(routes.GoodsCheckYourAnswersController.show(productPath, iid))
     }
-    if (isAddJourney) markReturnToAddedItem(result, routes.AlcoholInputController.displayEditForm(iid).url, productPath)
+    if (isAddJourney)
+      markReturnToAddedItem(
+        result,
+        routes.AlcoholInputController.displayEditForm(iid).url,
+        productPath,
+        Some(routes.GoodsCheckYourAnswersController.show(productPath, iid).url)
+      )
     else result
 
   private def submittedIid(implicit context: LocalContext): Option[String] =
@@ -199,33 +205,37 @@ class AlcoholInputController @Inject() (
                 )
               ),
             dto => {
+              def insertItem                 =
+                submittedIid.fold(
+                  newPurchaseService.insertPurchases(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost)
+                  )
+                )(iid =>
+                  newPurchaseService.insertPurchasesWithIid(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    iid
+                  )
+                )
               lazy val totalVolumeForAlcohol =
                 alcoholAndTobaccoCalculationService
                   .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
-              if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
-                val (journeyData, item) =
-                  submittedIid.fold(
-                    newPurchaseService.insertPurchases(
-                      path,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost)
-                    )
-                  )(iid =>
-                    newPurchaseService.insertPurchasesWithIid(
-                      path,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost),
-                      iid
-                    )
-                  )
+              if (
+                appConfig.isWineStillOrSparklingEnabled ||
+                alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)
+              ) {
+                val (journeyData, item) = insertItem
                 cache.store(journeyData) map { _ =>
                   navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
                 }
@@ -285,7 +295,10 @@ class AlcoholInputController @Inject() (
                   lazy val totalVolumeForAlcohol =
                     alcoholAndTobaccoCalculationService
                       .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token, iid)
-                  if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
+                  if (
+                    appConfig.isWineStillOrSparklingEnabled ||
+                    alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)
+                  ) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,

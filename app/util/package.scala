@@ -52,6 +52,11 @@ package object util extends ProductDetector {
     if (value < 1) "0" + df.format(value) else df.format(value)
   }
 
+  def formatMonetaryValueWithoutTrailingZeros(value: BigDecimal): String = {
+    val df = new DecimalFormat("#,##0.##")
+    df.format(value)
+  }
+
   implicit class EnhancedJsObject(jsObject: JsObject) {
     def stripNulls: JsObject =
       alterFields { case (_, JsNull) =>
@@ -90,7 +95,7 @@ package object util extends ProductDetector {
     val sparklingWineLimit: BigDecimal = if (checkProductExists(journeyData, "alcohol/wine")) 90 else 60
     val beerLimit: BigDecimal          = 110
     val spiritsLimit: BigDecimal       = 10
-    val ciderOrOtherLimit: BigDecimal  = 20
+    val ciderOrOtherLimit: BigDecimal  = if (checkProductExists(journeyData, "alcohol/cider")) 110 else 20
 
     productToken match {
       case "wine"           => alcoholVolume <= wineLimit

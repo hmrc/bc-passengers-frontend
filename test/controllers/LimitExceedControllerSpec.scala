@@ -132,6 +132,48 @@ class LimitExceedControllerSpec extends BaseSpec {
           }
         }
 
+        "display the entered-amount panel for a single wine item when the wine-still-or-sparkling toggle is on" in {
+          when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData())))
+
+          val result: Future[Result] = route(
+            app,
+            FakeRequest(
+              "GET",
+              "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
+            ).withSession("user-amount-input-wine" -> "100")
+          ).get
+
+          status(result) shouldBe OK
+
+          val doc: Document = Jsoup.parse(contentAsString(result))
+          doc.getElementById("entered-amount").text() shouldBe
+            "You have entered a total of 100 litres of wine (still or sparkling)."
+          doc.select(".govuk-inset-text").text()      shouldBe "100 litres of wine (still or sparkling)"
+        }
+
+        "not display the entered-amount panel for a single wine item when the toggle is off" in {
+          val offApp: Application = GuiceApplicationBuilder()
+            .configure("features.wine-still-or-sparkling" -> false)
+            .overrides(bind[Cache].toInstance(mockCache))
+            .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
+            .build()
+          when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData())))
+
+          val result: Future[Result] = route(
+            offApp,
+            FakeRequest(
+              "GET",
+              "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
+            ).withSession("user-amount-input-wine" -> "100")
+          ).get
+
+          status(result) shouldBe OK
+
+          val doc: Document = Jsoup.parse(contentAsString(result))
+          doc.getElementById("entered-amount").text() shouldBe "You have entered a total of 100 litres of wine."
+          doc.select(".govuk-inset-text").size()      shouldBe 0
+        }
+
         val wineSparklingWineGroupMessage: String = "wine (this includes sparkling wine)."
         val ciderOtherAlcoholGroupMessage: String =
           "all other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)."

@@ -82,15 +82,19 @@ class LimitExceedController @Inject() (
         val totalAccNoOfVolume: BigDecimal =
           (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
 
-        val showPanelIndent: Boolean = checkAlcoholProductExists(
-          productToken = product.token,
-          wineOrSparklingExists = checkProductExists(context.getJourneyData, "wine"),
-          ciderOrOtherAlcoholExists =
-            checkProductExists(context.getJourneyData, "cider") || checkProductExists(context.getJourneyData, "other"),
-          beerOrSpiritExists = checkProductExists(context.getJourneyData, path.toString)
-        )
-
         val showGroupMessage: Boolean = showAlcoholGroupMessage(context.getJourneyData, product.token)
+
+        val showPanelIndent: Boolean =
+          (appConfig.isWineStillOrSparklingEnabled && product.token == "wine" && !showGroupMessage) ||
+            checkAlcoholProductExists(
+              productToken = product.token,
+              wineOrSparklingExists = checkProductExists(context.getJourneyData, "wine"),
+              ciderOrOtherAlcoholExists = checkProductExists(context.getJourneyData, "cider") || checkProductExists(
+                context.getJourneyData,
+                "other"
+              ),
+              beerOrSpiritExists = checkProductExists(context.getJourneyData, path.toString)
+            )
 
         userInput match {
           case Some(_) =>

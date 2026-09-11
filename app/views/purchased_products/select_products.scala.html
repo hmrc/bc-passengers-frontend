@@ -34,7 +34,15 @@
     returnToAddedItemProductPath: Option[String] = None
 )(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), backLink = backLink, customBackLink = customBackLink) {
+@headingKey = @{
+    if(appConfig.isWineStillOrSparklingEnabled && path.toMessageKey == "alcohol") {
+        "select_products.heading.alcohol.still-or-sparkling"
+    } else {
+        s"select_products.heading.${path.toMessageKey}"
+    }
+}
+
+@govukLayout(pageTitle = Some(title(selectProductsForm, messages(headingKey))), backLink = backLink, customBackLink = customBackLink) {
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
     @returnToAddedItemEditUrl.map { editUrl =>
@@ -49,9 +57,9 @@
     }
 
     <fieldset class="govuk-fieldset" aria-describedby="select-products-hint">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-            <h1 class="govuk-fieldset__heading">
-                @Html(messages(s"select_products.heading.${path.toMessageKey}"))
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading select-products__heading">
+                @Html(messages(headingKey))
             </h1>
         </legend>
 

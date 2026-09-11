@@ -53,6 +53,14 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
       appConfig = appConfig
     )
 
+  private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable =
+    injected[select_products].apply(
+      selectProductsForm = validForm,
+      items = items,
+      path = productPath,
+      None
+    )(request, messages, appConfigWith("features.wine-still-or-sparkling" -> enabled))
+
   val viewViaApply: HtmlFormat.Appendable = buildView(form = validForm)
 
   val viewViaRender: HtmlFormat.Appendable = injected[select_products].render(
@@ -80,9 +88,27 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
 
   "SelectAlcoholProductsViewSpec" when {
     renderViewTest(
-      title = "What type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "What type of alcohol do you want to add?"
+      title = "Which type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Which type of alcohol do you want to add?"
     )
+
+    "the wine-still-or-sparkling toggle is ON" should {
+      "show the 'Which type of alcohol do you want to add?' heading" in {
+        val body = viewWithToggle(true).body
+        body should include(messages("select_products.heading.alcohol.still-or-sparkling"))
+        body should include("Which type of alcohol do you want to add?")
+        body should not include "What type of alcohol do you want to add?"
+      }
+    }
+
+    "the wine-still-or-sparkling toggle is OFF" should {
+      "show the 'What type of alcohol do you want to add?' heading" in {
+        val body = viewWithToggle(false).body
+        body should include(messages("select_products.heading.alcohol"))
+        body should include("What type of alcohol do you want to add?")
+        body should not include "Which type of alcohol do you want to add?"
+      }
+    }
 
     "formWithErrors" should {
 
