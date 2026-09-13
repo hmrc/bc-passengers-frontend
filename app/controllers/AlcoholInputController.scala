@@ -205,33 +205,42 @@ class AlcoholInputController @Inject() (
                 )
               ),
             dto => {
+              def insertItem                 =
+                submittedIid.fold(
+                  newPurchaseService.insertPurchases(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost)
+                  )
+                )(iid =>
+                  newPurchaseService.insertPurchasesWithIid(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    iid
+                  )
+                )
               lazy val totalVolumeForAlcohol =
                 alcoholAndTobaccoCalculationService
                   .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
-              if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
-                val (journeyData, item) =
-                  submittedIid.fold(
-                    newPurchaseService.insertPurchases(
-                      path,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost)
-                    )
-                  )(iid =>
-                    newPurchaseService.insertPurchasesWithIid(
-                      path,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost),
-                      iid
-                    )
-                  )
+              if (
+                appConfig.isWineStillOrSparklingEnabled ||
+                alcoholVolumeConstraint(
+                  context.getJourneyData,
+                  totalVolumeForAlcohol,
+                  product.token,
+                  appConfig.isWineStillOrSparklingEnabled
+                )
+              ) {
+                val (journeyData, item) = insertItem
                 cache.store(journeyData) map { _ =>
                   navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
                 }
@@ -291,7 +300,15 @@ class AlcoholInputController @Inject() (
                   lazy val totalVolumeForAlcohol =
                     alcoholAndTobaccoCalculationService
                       .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token, iid)
-                  if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
+                  if (
+                    appConfig.isWineStillOrSparklingEnabled ||
+                    alcoholVolumeConstraint(
+                      context.getJourneyData,
+                      totalVolumeForAlcohol,
+                      product.token,
+                      appConfig.isWineStillOrSparklingEnabled
+                    )
+                  ) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,

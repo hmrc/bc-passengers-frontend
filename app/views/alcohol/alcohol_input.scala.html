@@ -37,7 +37,7 @@
 }
 
 @volumeSuffix = @{
-    if(appConfig.isWineStillOrSparklingEnabled && path.toMessageKey == "alcohol.wine") Some("label.litres")
+    if(appConfig.isWineStillOrSparklingEnabled && (path.toMessageKey == "alcohol.wine" || path.toMessageKey.startsWith("alcohol.cider"))) Some("label.litres")
     else None
 }
 

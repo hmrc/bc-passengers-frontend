@@ -20,16 +20,17 @@ import models.BringingOverAllowanceDto
 import models.BringingOverAllowanceDto.form
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.travel_details.goods_bought_inside_and_outside_eu
 
-class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
+class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
   private val validForm: Form[BringingOverAllowanceDto] = form.bind(Map("bringingOverAllowance" -> "true"))
 
   private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable =
     injected[goods_bought_inside_and_outside_eu]
-      .apply(validForm, None)(request, messages, appConfigWith("features.wine-still-or-sparkling" -> enabled))
+      .apply(validForm, None)(request, messages, appConfigToggle(enabled))
 
   val viewViaApply: HtmlFormat.Appendable = injected[goods_bought_inside_and_outside_eu].apply(
     form = validForm,
@@ -53,15 +54,13 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "GoodsBoughtInsideAndOutsideEUView" when
-    renderViewTest(
-      title = "Goods brought into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "Goods brought into Great Britain or the Isle of Man"
-    )
-
   "GoodsBoughtInsideAndOutsideEUView with the wine-still-or-sparkling toggle ON" should {
 
     lazy val body = viewWithToggle(true).body
+
+    "show title header" in {
+      body should include(messages("heading.goods_brought_into_gb.still-or-sparkling"))
+    }
 
     "show the personal-allowance intro" in {
       body should include(messages("text.gb.allowance.still-or-sparkling"))
@@ -98,6 +97,10 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
 
     lazy val body = viewWithToggle(false).body
 
+    "show title header with" in {
+      body should include(messages("heading.goods_brought_into_gb"))
+    }
+
     "show the original intro and section heading" in {
       body should include(messages("text.gb.allowance"))
       body should include(messages("text.alcohol_allowance"))
@@ -116,23 +119,6 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
 
     "keep the Yes/No buttons inline" in {
       body should include("govuk-radios--inline")
-    }
-  }
-
-  "GoodsBoughtInsideAndOutsideEUView with the wine-still-or-sparkling toggle" should {
-
-    "render the merged wine allowance copy when the toggle is ON" in {
-      val view = injected[goods_bought_inside_and_outside_eu]
-        .apply(validForm, None)(request, messages, appConfigWith("features.wine-still-or-sparkling" -> true))
-      view.body should include(messages("text.gb.allowance.alc_2.still-or-sparkling"))
-      view.body should include(messages("text.gb.allowance.alc_1.still-or-sparkling"))
-    }
-
-    "render the original allowance copy when the toggle is OFF" in {
-      val view = injected[goods_bought_inside_and_outside_eu]
-        .apply(validForm, None)(request, messages, appConfigWith("features.wine-still-or-sparkling" -> false))
-      view.body should include(messages("text.gb.allowance.alc_2"))
-      view.body should not include messages("text.gb.allowance.alc_2.still-or-sparkling")
     }
   }
 }

@@ -36,7 +36,7 @@
 }
 
 @calculationSectionContent = {
-    @limitExceededEditUtils.editViewContent(productName, labelToken, totalEnteredAmount, originalAmountEntered, userInput, showGroupMessage)
+    @limitExceededEditUtils.editViewContent(productName, labelToken, totalEnteredAmount, originalAmountEntered, userInput, showGroupMessage, appConfig.isWineStillOrSparklingEnabled)
 }
 
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {

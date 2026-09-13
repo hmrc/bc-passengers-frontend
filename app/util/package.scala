@@ -90,19 +90,26 @@ package object util extends ProductDetector {
     looseTobaccoWeight <= oneThousandGrams
   }
 
-  def alcoholVolumeConstraint(journeyData: JourneyData, alcoholVolume: BigDecimal, productToken: String): Boolean = {
+  def alcoholVolumeConstraint(
+    journeyData: JourneyData,
+    alcoholVolume: BigDecimal,
+    productToken: String,
+    isWineStillOrSparklingEnabled: Boolean = false
+  ): Boolean = {
     val wineLimit: BigDecimal          = 90
-    val sparklingWineLimit: BigDecimal = if (checkProductExists(journeyData, "alcohol/wine")) 90 else 60
+    val sparklingWineLimit: BigDecimal = if (isWineStillOrSparklingEnabled) 90 else 60
     val beerLimit: BigDecimal          = 110
     val spiritsLimit: BigDecimal       = 10
-    val ciderOrOtherLimit: BigDecimal  = 20
+    val ciderLimit: BigDecimal         = if (isWineStillOrSparklingEnabled) 110 else 20
+    val otherLimit: BigDecimal         = if (isWineStillOrSparklingEnabled) 110 else 20
 
     productToken match {
-      case "wine"           => alcoholVolume <= wineLimit
-      case "sparkling-wine" => alcoholVolume <= sparklingWineLimit
-      case "beer"           => alcoholVolume <= beerLimit
-      case "spirits"        => alcoholVolume <= spiritsLimit
-      case _                => alcoholVolume <= ciderOrOtherLimit
+      case "wine"                           => alcoholVolume <= wineLimit
+      case "sparkling-wine"                 => alcoholVolume <= sparklingWineLimit
+      case "beer"                           => alcoholVolume <= beerLimit
+      case "spirits"                        => alcoholVolume <= spiritsLimit
+      case token if token.contains("cider") => alcoholVolume <= ciderLimit
+      case _                                => alcoholVolume <= otherLimit
     }
   }
 

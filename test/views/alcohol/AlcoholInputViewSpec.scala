@@ -21,12 +21,13 @@ import forms.AlcoholInputForm
 import models.*
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.alcohol.alcohol_input
 
-class AlcoholInputViewSpec extends BaseViewSpec {
+class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
-  override val appConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> false)
+  override val appConfig: AppConfig = appConfigToggleOff
 
   private val productPath: ProductPath = ProductPath(path = "alcohol/wine")
 
@@ -255,7 +256,7 @@ class AlcoholInputViewSpec extends BaseViewSpec {
     )
 
     "show 'Wine (still or sparkling)' in the heading and title when the wine-still-or-sparkling toggle is ON" in {
-      val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+      val onConfig: AppConfig = appConfigToggleOn
       val view                = injected[alcohol_input].apply(
         validForm,
         None,
@@ -273,7 +274,7 @@ class AlcoholInputViewSpec extends BaseViewSpec {
     }
 
     "not add still-or-sparkling for a non-wine product (beer) when the toggle is ON" in {
-      val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+      val onConfig: AppConfig = appConfigToggleOn
       val beerLeaf            = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A2/BEER", "alcohol", List("L-BEER"))
       val view                = injected[alcohol_input].apply(
         validForm,
@@ -292,7 +293,7 @@ class AlcoholInputViewSpec extends BaseViewSpec {
     }
 
     "show the 'litres' suffix on the volume input when the wine-still-or-sparkling toggle is ON" in {
-      val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+      val onConfig: AppConfig = appConfigToggleOn
       val view                = injected[alcohol_input].apply(
         validForm,
         None,

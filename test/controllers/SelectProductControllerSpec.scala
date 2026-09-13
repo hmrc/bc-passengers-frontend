@@ -37,12 +37,12 @@ import repositories.BCPassengersSessionRepository
 import services.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
 import views.html.errorTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectProductControllerSpec extends BaseSpec {
+class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
 
   val requiredJourneyData: JourneyData = JourneyData(
     prevDeclaration = Some(false),
@@ -62,7 +62,7 @@ class SelectProductControllerSpec extends BaseSpec {
     .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .configure("features.wine-still-or-sparkling" -> enabled)
+    .configure(wineStillOrSparklingKey -> enabled)
     .build()
 
   override given app: Application = appWithWineToggle(false)

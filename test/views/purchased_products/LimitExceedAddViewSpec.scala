@@ -18,12 +18,13 @@ package views.purchased_products
 
 import config.AppConfig
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.{BaseSelectors, BaseViewSpec}
 import views.html.purchased_products.limit_exceed_add
 
-class LimitExceedAddViewSpec extends BaseViewSpec {
+class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
-  override val appConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> false)
+  override val appConfig: AppConfig = appConfigToggleOff
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_add].apply(
@@ -280,7 +281,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much wine with the wine-still-or-sparkling toggle ON" should {
 
-          val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+          val onConfig: AppConfig = appConfigToggleOn
           val view                =
             injected[limit_exceed_add]
               .apply(

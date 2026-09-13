@@ -29,17 +29,23 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.mongo.MongoComponent
-import util.BaseSpec
+import util.{BaseSpec, WineStillOrSparklingFeature}
 
 import scala.concurrent.Future
 
-class LimitExceedControllerSpec extends BaseSpec {
+class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
 
   private val mockCache: Cache = mock(classOf[Cache])
 
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
+    .build()
+
+  private val appWithWineStillOrSparklingDisabled: Application = GuiceApplicationBuilder()
+    .overrides(bind[Cache].toInstance(mockCache))
+    .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
+    .configure(wineStillOrSparklingKey -> false)
     .build()
 
   override def beforeEach(): Unit = {
@@ -138,14 +144,7 @@ class LimitExceedControllerSpec extends BaseSpec {
 
         Seq(
           ("wine", "sparking wine", "alcohol/sparkling-wine", "100", s"110 litres of $wineSparklingWineGroupMessage"),
-          ("sparkling-wine", "wine", "alcohol/wine", "100", s"110 litres of $wineSparklingWineGroupMessage"),
-          (
-            "other",
-            "cider",
-            "alcohol/cider/non-sparkling-cider",
-            "30.01",
-            s"40.01 litres of $ciderOtherAlcoholGroupMessage"
-          )
+          ("sparkling-wine", "wine", "alcohol/wine", "100", s"110 litres of $wineSparklingWineGroupMessage")
         ).foreach { case (productToken, previouslyAddedAlcohol, path, userInput, totalWithGroupMessage) =>
           s"load limit exceed page and display the group content for $productToken when $previouslyAddedAlcohol has been added" in {
             when(mockCache.fetch(any())).thenReturn(
@@ -189,6 +188,78 @@ class LimitExceedControllerSpec extends BaseSpec {
                 "They will calculate and take payment of the taxes and duties due."
             )
           }
+        }
+
+        "display the group content for other when cider has been added and wine-still-or-sparkling is disabled" in {
+          when(mockCache.fetch(any())).thenReturn(
+            Future.successful(
+              Some(
+                journeyData(
+                  purchasedProductInstances = List(
+                    purchasedProductInstance(
+                      path = "alcohol/cider/non-sparkling-cider",
+                      iid = "iid0",
+                      weightOrVolume = Some(10.0),
+                      noOfSticks = None
+                    )
+                  )
+                )
+              )
+            )
+          )
+
+          val result: Future[Result] = route(
+            appWithWineStillOrSparklingDisabled,
+            FakeRequest(
+              "GET",
+              "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/other/upper-limits/volume"
+            ).withSession("user-amount-input-other" -> "30.01")
+          ).get
+
+          status(result) shouldBe OK
+
+          Jsoup
+            .parse(contentAsString(result))
+            .getElementById("entered-amount")
+            .text() shouldBe s"You have entered a total of 40.01 litres of $ciderOtherAlcoholGroupMessage"
+        }
+
+        "display the individual cider content and not the group content when cider and other have both been added and wine-still-or-sparkling is enabled" in {
+          when(mockCache.fetch(any())).thenReturn(
+            Future.successful(
+              Some(
+                journeyData(
+                  purchasedProductInstances = List(
+                    purchasedProductInstance(
+                      path = "alcohol/other",
+                      iid = "iid0",
+                      weightOrVolume = Some(10.0),
+                      noOfSticks = None
+                    )
+                  )
+                )
+              )
+            )
+          )
+
+          val result: Future[Result] = route(
+            app,
+            FakeRequest(
+              "GET",
+              "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/volume"
+            ).withSession("user-amount-input-non-sparkling-cider" -> "100.01")
+          ).get
+
+          status(result) shouldBe OK
+
+          val doc: Document = Jsoup.parse(contentAsString(result))
+
+          doc
+            .getElementById("entered-amount")
+            .text() shouldBe "You have entered a total of 110.01 litres of cider."
+          doc
+            .getElementById("limit-exceeded-cannot-use-service")
+            .text() shouldBe "You cannot use this service to declare more than 110 litres of cider."
         }
       }
 
@@ -259,14 +330,7 @@ class LimitExceedControllerSpec extends BaseSpec {
             "75.001",
             s"90.001 litres of $wineSparklingWineGroupMessage"
           ),
-          ("sparkling-wine", "wine", "alcohol/wine", "75.001", s"90.001 litres of $wineSparklingWineGroupMessage"),
-          (
-            "other",
-            "cider",
-            "alcohol/cider/non-sparkling-cider",
-            "5.001",
-            s"20.001 litres of $ciderOtherAlcoholGroupMessage"
-          )
+          ("sparkling-wine", "wine", "alcohol/wine", "75.001", s"90.001 litres of $wineSparklingWineGroupMessage")
         ).foreach { case (productToken, previouslyAddedAlcohol, path, userInput, totalWithGroupMessage) =>
           s"load limit exceed page and display the group content for $productToken when $previouslyAddedAlcohol has been added" in {
             when(mockCache.fetch(any())).thenReturn(
@@ -320,6 +384,50 @@ class LimitExceedControllerSpec extends BaseSpec {
                 "They will calculate and take payment of the taxes and duties due."
             )
           }
+        }
+
+        "display the group content for other when cider has been added and wine-still-or-sparkling is disabled" in {
+          when(mockCache.fetch(any())).thenReturn(
+            Future.successful(
+              Some(
+                journeyData(
+                  purchasedProductInstances = List(
+                    purchasedProductInstance(
+                      path = "alcohol/cider/non-sparkling-cider",
+                      iid = "iid1",
+                      weightOrVolume = Some(10.0),
+                      noOfSticks = None
+                    )
+                  ),
+                  declarationResponse = declarationResponse(
+                    oldPurchaseProductInstances = List(
+                      purchasedProductInstance(
+                        path = "alcohol/cider/non-sparkling-cider",
+                        iid = "iid0",
+                        weightOrVolume = Some(5.0),
+                        noOfSticks = None
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+
+          val result: Future[Result] = route(
+            appWithWineStillOrSparklingDisabled,
+            FakeRequest(
+              "GET",
+              "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/other/upper-limits/volume"
+            ).withSession("user-amount-input-other" -> "5.001")
+          ).get
+
+          status(result) shouldBe OK
+
+          Jsoup
+            .parse(contentAsString(result))
+            .getElementById("entered-amount")
+            .text() shouldBe s"You have entered a total of 20.001 litres of $ciderOtherAlcoholGroupMessage"
         }
       }
 

@@ -18,19 +18,13 @@ package views
 
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.test.FakeRequest
-import util.BaseSpec
+import util.{BaseSpec, WineStillOrSparklingFeature}
 
-class ViewUtilsSpec extends BaseSpec {
+class ViewUtilsSpec extends BaseSpec with WineStillOrSparklingFeature {
 
   private val messagesApi: MessagesApi    = injected[MessagesApi]
   private implicit val messages: Messages = messagesApi.preferred(FakeRequest())
   private val welshMessages: Messages     = messagesApi.preferred(Seq(Lang("cy")))
-
-  private val toggleOn: Boolean  = appConfigWith(
-    "features.wine-still-or-sparkling" -> true
-  ).isWineStillOrSparklingEnabled
-  private val toggleOff: Boolean =
-    appConfigWith("features.wine-still-or-sparkling" -> false).isWineStillOrSparklingEnabled
 
   "ViewUtils.toggledMessage" when {
 

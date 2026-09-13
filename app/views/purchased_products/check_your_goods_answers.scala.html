@@ -28,6 +28,10 @@
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
+@typeOfAlcohol = @{
+  if(appConfig.isWineStillOrSparklingEnabled && item.path.toMessageKey == "alcohol.wine") messages("label.alcohol.wine.still-or-sparkling")
+  else itemType
+}
 @editCall = @{ category match {
   case "alcohol" => routes.AlcoholInputController.displayEditForm(item.iid)
   case "tobacco" => routes.TobaccoInputController.displayEditForm(item.iid)
@@ -82,7 +86,7 @@
 
   Seq(
     row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
-    row(typeLabel, itemType, messages(typeLabel).toLowerCase)
+    row(typeLabel, typeOfAlcohol, messages(typeLabel).toLowerCase)
   ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 
@@ -95,7 +99,7 @@
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 
-  @formHelper(action = routes.GoodsCheckYourAnswersController.submit) {
+  @formHelper(action = routes.GoodsCheckYourAnswersController.submit(item.path, item.iid)) {
     @button("label.save_and_continue")
   }
 }

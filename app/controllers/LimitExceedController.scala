@@ -53,8 +53,10 @@ class LimitExceedController @Inject() (
   private def showAlcoholGroupMessage(journeyData: JourneyData, productToken: String): Boolean = productToken match {
     case token if token == "wine"           => checkProductExists(journeyData, "alcohol/sparkling-wine")
     case token if token == "sparkling-wine" => checkProductExists(journeyData, "alcohol/wine")
-    case token if token == "other"          => checkProductExists(journeyData, "cider")
-    case token if token.contains("cider")   => checkProductExists(journeyData, "other")
+    case token if token == "other"          =>
+      !appConfig.isWineStillOrSparklingEnabled && checkProductExists(journeyData, "cider")
+    case token if token.contains("cider")   =>
+      !appConfig.isWineStillOrSparklingEnabled && checkProductExists(journeyData, "other")
     case _                                  => false
   }
 
@@ -82,13 +84,17 @@ class LimitExceedController @Inject() (
         val totalAccNoOfVolume: BigDecimal =
           (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
 
-        val showPanelIndent: Boolean = checkAlcoholProductExists(
-          productToken = product.token,
-          wineOrSparklingExists = checkProductExists(context.getJourneyData, "wine"),
-          ciderOrOtherAlcoholExists =
-            checkProductExists(context.getJourneyData, "cider") || checkProductExists(context.getJourneyData, "other"),
-          beerOrSpiritExists = checkProductExists(context.getJourneyData, path.toString)
-        )
+        val showPanelIndent: Boolean =
+          product.token.contains("wine") || product.token.contains("cider") ||
+            checkAlcoholProductExists(
+              productToken = product.token,
+              wineOrSparklingExists = checkProductExists(context.getJourneyData, "wine"),
+              ciderOrOtherAlcoholExists = checkProductExists(context.getJourneyData, "cider") || checkProductExists(
+                context.getJourneyData,
+                "other"
+              ),
+              beerOrSpiritExists = checkProductExists(context.getJourneyData, path.toString)
+            )
 
         val showGroupMessage: Boolean = showAlcoholGroupMessage(context.getJourneyData, product.token)
 
