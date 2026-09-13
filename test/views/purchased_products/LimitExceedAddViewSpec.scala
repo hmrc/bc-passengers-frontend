@@ -26,8 +26,6 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
 
   override val appConfig: AppConfig = appConfigToggleOff
 
-  override val appConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> false)
-
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_add].apply(
       totalAccAmount = "110",
@@ -283,7 +281,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
 
         "the user enters too much wine with the wine-still-or-sparkling toggle ON" should {
 
-          val onConfig: AppConfig = appConfigWith("features.wine-still-or-sparkling" -> true)
+          val onConfig: AppConfig = appConfigToggleOn
           val view                =
             injected[limit_exceed_add]
               .apply(
