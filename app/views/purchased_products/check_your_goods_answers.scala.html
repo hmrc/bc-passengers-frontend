@@ -24,7 +24,7 @@
   button: components.button
 )
 
-@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency],path: ProductPath, iid: String)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
@@ -84,7 +84,8 @@
   val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase))
 
   Seq(
-    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase)
+    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
+    row(typeLabel, itemType, messages(typeLabel).toLowerCase)
   ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 
@@ -97,7 +98,7 @@
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 
-  @formHelper(action = routes.GoodsCheckYourAnswersController.submit(path,iid)) {
+  @formHelper(action = routes.GoodsCheckYourAnswersController.submit(item.path, item.iid)) {
     @button("label.save_and_continue")
   }
 }

@@ -245,7 +245,7 @@ class DashboardViewSpec extends BaseViewSpec {
     "show each item in a summary list with contextual edit and remove actions" in {
       val doc = document(viewViaApply)
 
-      doc.select("dl.goods-summary-list").size()               shouldBe 3
+      doc.select("dl.goods-summary-list").size()               shouldBe 4
       doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
       doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
       doc

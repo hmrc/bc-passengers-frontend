@@ -1596,6 +1596,8 @@ limitExceeded.max.limit.rolling-tobacco = 1000g of rolling tobacco
 limitExceeded.max.limit.group.chewing-tobacco = 1000g of loose tobacco
 limitExceeded.max.limit.group.rolling-tobacco = 1000g of loose tobacco
 
+limitExceeded.max.limit.vape = 1000 millilitres of vaping products
+
 limitExceeded.p1.edit.alcohol.a = You changed {0} {1} of {2} {3}.
 limitExceeded.p1.edit.alcohol.b = to {0} {1} of {2}
 
