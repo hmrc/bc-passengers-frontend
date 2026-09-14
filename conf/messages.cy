@@ -169,6 +169,9 @@ label.your_purchases=Yr hyn rydych wedi’i brynu
 label.17_or_over=yn 17 neu’n hŷn
 label.private_aircraft_or_private_boat=Awyren breifat neu gwch preifat
 label.other_goods=Nwyddau eraill
+label.vaping_products = Cynhyrchion fepio
+label.vaping-products.vape = Cynhyrchion fepio
+label.vaping-products = Cynhyrchion fepio
 label.change=Newid
 label.cancel=Canslo
 label.edit_this_item=Golygu’r eitem hon
@@ -253,6 +256,7 @@ error.required.other-goods.electronic-devices=Dewiswch setiau teledu neu bob dyf
 
 error.required.other-goods.price = Nodwch y pris a dalwyd
 label.total_volume_in_litres=Cyfanswm cyfaint mewn litrau
+label.total_volume_in_millilitres = Cyfanswm cyfaint yr hylif mewn mililitrau
 error.required.volume.alcohol.beer=Nodwch gyfaint y cwrw
 error.required.volume.alcohol.cider.non-sparkling-cider=Nodwch gyfaint y seidr
 error.required.volume.alcohol.cider.sparkling-cider=Nodwch gyfaint y seidr
@@ -264,6 +268,8 @@ error.required.volume.alcohol.other=Nodwch gyfaint y diodydd alcoholaidd eraill
 error.invalid.characters.volume=Mae’n rhaid i’r cyfaint gynnwys rhifau’n unig, megis 12 neu 6.55
 label.litre=litr
 label.litres=litr
+label.millilitre = mililitr
+label.millilitres = millilitres
 label.tobacco.cigarettes=Sigaréts
 label.tobacco.cigarettes.single=Sigarét
 label.tobacco.cigarillos=Sigarilos
@@ -416,6 +422,12 @@ label.alcohol.spirits=Gwirodydd
 label.alcohol.other=Alcohol arall
 label.alcohol.sparkling-wine=Gwin pefriog
 label.price_paid_for_item_=Y pris a dalwyd ar gyfer eitem {0}
+
+label.country_this_vaping_was_ = Y wlad y cafodd y cynhyrchion fepio eu prynu ynddi
+label.if_you_bought_this_vaping_ = Os prynoch chi’r cynhyrchion fepio hyn ar awyren neu gwch, nodwch y wlad roeddech chi’n teithio ohoni ar yr adeg brynu.
+label.country_this_vaping_was_produced_hint = Os nad ydych chi’n siŵr lle y cafodd y cynhyrchion fepio hyn eu cynhyrchu’n wreiddiol, gadewch hyn yn wag.
+label.currency_used_to_buy_this_vaping = Yr arian cyfred a gafodd ei ddefnyddio i brynu’r cynhyrchion fepio
+label.price_format_description_vaping = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 983.34.
 
 label.other-goods.adult=Dillad ac esgidiau i oedolion
 label.other-goods.adult.adult-clothing=Dillad i oedolion
@@ -753,6 +765,9 @@ label.X_litres_X={0} litr {1}
 label.Xg_of_X={0}g o {1}
 label.X_X={0} {1}
 label.X_X_Xg={0} {1}, {2}g
+
+label.X_ml_X = {0} mililitrau {1}
+label.X_mls_X = {0} mililitrau {1}
 
 label.calculate=Cyfrifo trethi a thollau
 

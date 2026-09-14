@@ -24,7 +24,7 @@
   formHelper: FormWithCSRF
 )
 
-@(form: Form[GoodsTypeDto])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[GoodsTypeDto], journeyData: models.JourneyData)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(
   pageTitle = Some(title(form, "heading.which_type_of_goods_do_you_want_to_add")),
@@ -50,7 +50,17 @@
           value = Some("tobacco"),
           content = Text(messages("label.tobacco")),
           checked = form("goodsType").value.contains("tobacco")
-        ),
+        )
+      ) ++
+        Option.when(appConfig.isVapingJourneyEnabled && journeyData.arrivingNICheck.contains(false)) {
+            RadioItem(
+                id = Some("goodsType-vaping-products"),
+                value = Some("vaping-products"),
+                content = Text(messages("label.vaping_products")),
+                checked = form("goodsType").value.contains("vaping-products")
+            )
+        }.toSeq ++
+      Seq(
         RadioItem(
           id = Some("goodsType-other-goods"),
           value = Some("other-goods"),

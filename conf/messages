@@ -169,6 +169,9 @@ label.your_purchases = Your purchases
 label.17_or_over = 17 or over
 label.private_aircraft_or_private_boat = Private aircraft or private boat
 label.other_goods = Other goods
+label.vaping_products = Vaping Products
+label.vaping-products.vape = Vaping Products
+label.vaping-products = Vaping Products
 label.change = Change
 label.cancel = Cancel
 label.edit_this_item = Edit this item
@@ -253,6 +256,7 @@ error.required.other-goods.electronic-devices = Select televisions or all other 
 
 error.required.other-goods.price = Enter the price paid
 label.total_volume_in_litres = Total volume in litres
+label.total_volume_in_millilitres = Total volume of liquid in millilitres
 error.required.volume.alcohol.beer = Enter the volume of beer
 error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
 error.required.volume.alcohol.cider.sparkling-cider = Enter the volume of cider
@@ -264,6 +268,8 @@ error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
 error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
 label.litre = litre
 label.litres = litres
+label.millilitre = millilitre
+label.millilitres = millilitres
 label.tobacco.cigarettes = Cigarettes
 label.tobacco.cigarettes.single = Cigarette
 label.tobacco.cigarillos = Cigarillos
@@ -416,6 +422,12 @@ label.alcohol.spirits = Spirits
 label.alcohol.other = Other alcohol
 label.alcohol.sparkling-wine = Sparkling wine
 label.price_paid_for_item_ = Price paid for item {0}
+
+label.country_this_vaping_was_ = Country the vaping products were bought in
+label.if_you_bought_this_vaping_ = If you bought these vaping products on a plane or boat, enter the country you were travelling from at the time of purchase.
+label.country_this_vaping_was_produced_hint = If you are unsure where these vaping products were orginally produced, leave this blank.
+label.currency_used_to_buy_this_vaping = Currency used to buy the vaping products
+label.price_format_description_vaping = Enter the amount without a currency sign. For example, 983.34.
 
 label.other-goods.adult = Adult clothing and footwear
 label.other-goods.adult.adult-clothing = Adult clothing
@@ -747,6 +759,9 @@ label.X_litres_X = {0} litres {1}
 label.Xg_of_X = {0}g of {1}
 label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
+
+label.X_ml_X = {0} millilitre {1}
+label.X_mls_X = {0} millilitres {1}
 
 label.calculate = Calculate taxes and duties
 

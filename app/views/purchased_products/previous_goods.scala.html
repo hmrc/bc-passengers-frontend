@@ -27,6 +27,7 @@
 @(journeyData: JourneyData,
   previousAlcoholPurchasedItemList: List[PurchasedItem],
   previousTobaccoPurchasedItemList: List[PurchasedItem],
+  previousVapingProductsPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
   backLink: Option[String],
   isIrishBorderQuestionEnabled: Boolean,
@@ -90,6 +91,30 @@
             }
           </tbody>
         </table>
+    </div>
+    }
+
+    @if(previousVapingProductsPurchasedItemList.nonEmpty) {
+    <div class="vaping-products">
+      @h2(messages("label.vaping-products"))
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">@messages("label.item")</th>
+          <th scope="col" class="govuk-table__header">@messages("label.price")</th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        @previousVapingProductsPurchasedItemList.map { purchasedItem =>
+        @purchasedItem.descriptionLabels(long = false).map { description =>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">@messages(description._1, description._2.map(messages(_).toLowerCase)*)</td>
+          <td class="govuk-table__cell">@purchasedItem.purchasedProductInstance.cost.map(c => formatMonetaryValue(c)) @messages(purchasedItem.displayCurrency)</td>
+        </tr>
+        }
+        }
+        </tbody>
+      </table>
     </div>
     }
 

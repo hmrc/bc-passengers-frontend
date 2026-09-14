@@ -38,7 +38,7 @@ class AddItemController @Inject() (
 
   def show: Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
-    Future.successful(Ok(add_item(GoodsTypeDto.form)))
+    Future.successful(Ok(add_item(GoodsTypeDto.form, context.getJourneyData)))
   }
 
   def submit: Action[AnyContent] = dashboardAction { implicit context =>
@@ -46,12 +46,16 @@ class AddItemController @Inject() (
     GoodsTypeDto.form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(add_item(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(add_item(formWithErrors, context.getJourneyData))),
         goodsType =>
           Future.successful(
             goodsType.goodsType match {
-              case "other-goods" => Redirect(routes.OtherGoodsInputController.displayAddForm())
-              case _             =>
+              case "other-goods"     => Redirect(routes.OtherGoodsInputController.displayAddForm())
+              case "vaping-products" =>
+                Redirect(
+                  routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
+                )
+              case _                 =>
                 Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
             }
           )

@@ -33,6 +33,7 @@
 @(journeyData: JourneyData,
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
+  vapingProductsPurchasedItemList: List[PurchasedItem],
   otherGoodsPurchasedItemList: List[PurchasedItem],
   previousOtherGoodsPurchasedItemList: List[PurchasedItem],
   totalItems: Int,
@@ -125,6 +126,27 @@
         }
       }
     </dl>
+  }
+</div>
+<br>
+}
+
+@if(vapingProductsPurchasedItemList.nonEmpty) {
+<div class="vaping-products">
+  @h2(messages("label.vaping-products"))
+  @if(vapingProductsPurchasedItemList.nonEmpty){
+  <dl class="govuk-summary-list goods-summary-list">
+    <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+      <dt class="govuk-summary-list__key">@messages("label.item")</dt>
+      <dd class="govuk-summary-list__value">@messages("label.price")</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    @vapingProductsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
+    @purchasedItem.descriptionLabels(long = false).map { description =>
+    @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), "vapingProducts", idx)
+    }
+    }
+  </dl>
   }
 </div>
 <br>

@@ -17,26 +17,32 @@
 package controllers
 
 import config.AppConfig
+import connectors.Cache
 import controllers.enforce.DashboardAction
 import models.{ProductPath, ProductTreeLeaf}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import services.{CurrencyService, ProductTreeService}
+import services.{CalculatorService, CurrencyService, ProductTreeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import util.calculatorLimitConstraint
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsCheckYourAnswersController @Inject() (
+  val cache: Cache,
+  val errorTemplate: views.html.errorTemplate,
   dashboardAction: DashboardAction,
-  productTreeService: ProductTreeService,
-  currencyService: CurrencyService,
+  val productTreeService: ProductTreeService,
+  val calculatorService: CalculatorService,
+  val currencyService: CurrencyService,
   val check_your_goods_answers: views.html.purchased_products.check_your_goods_answers,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
-    with I18nSupport {
+    with I18nSupport
+    with ControllerHelpers {
 
   def show(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
@@ -46,13 +52,26 @@ class GoodsCheckYourAnswersController @Inject() (
     (item, product) match {
       case (Some(purchasedItem), Some(productTreeLeaf)) =>
         val currency = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
-        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency)))
+        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, path, iid)))
       case _                                            =>
         Future.successful(Redirect(routes.DashboardController.showDashboard))
     }
   }
 
-  def submit: Action[AnyContent] = dashboardAction { _ =>
-    Future.successful(Redirect(routes.SelectProductController.nextStep()))
+  def submit(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    implicit val request: Request[AnyContent] = context.request
+    requireLimitUsage(context.getJourneyData) { limits =>
+      requireProduct(path) { product =>
+        if (!calculatorLimitConstraint(limits, product.applicableLimits)) {
+          Future(
+            Redirect(
+              routes.LimitExceedController.onPageLoadEditVapeVolume(path, iid)
+            )
+          )
+        } else {
+          Future.successful(Redirect(routes.SelectProductController.nextStep()))
+        }
+      }
+    }
   }
 }

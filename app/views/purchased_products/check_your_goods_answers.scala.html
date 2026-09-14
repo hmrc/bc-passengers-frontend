@@ -24,14 +24,15 @@
   button: components.button
 )
 
-@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency],path: ProductPath, iid: String)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
 @editCall = @{ category match {
-  case "alcohol" => routes.AlcoholInputController.displayEditForm(item.iid)
-  case "tobacco" => routes.TobaccoInputController.displayEditForm(item.iid)
-  case _ => routes.OtherGoodsInputController.displayEditForm(item.iid)
+  case "alcohol"          => routes.AlcoholInputController.displayEditForm(item.iid)
+  case "tobacco"          => routes.TobaccoInputController.displayEditForm(item.iid)
+  case "vaping-products"  => routes.VapingProductsInputController.displayEditForm(item.iid)
+  case _                  => routes.OtherGoodsInputController.displayEditForm(item.iid)
 } }
 
 @row(key: String, value: String, hiddenText: String) = @{
@@ -69,6 +70,8 @@
   }
   val (quantityLabel, quantityUnit) = if (category == "tobacco") {
     ("label.total_weight_in_grams", "label.grams")
+  } else if (category == "vaping-products") {
+    ("label.total_volume_in_millilitres", "label.millilitres")
   } else {
     ("label.total_volume_in_litres", "label.litres")
   }
@@ -81,8 +84,7 @@
   val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase))
 
   Seq(
-    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
-    row(typeLabel, itemType, messages(typeLabel).toLowerCase)
+    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase)
   ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 
@@ -95,7 +97,7 @@
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 
-  @formHelper(action = routes.GoodsCheckYourAnswersController.submit) {
+  @formHelper(action = routes.GoodsCheckYourAnswersController.submit(path,iid)) {
     @button("label.save_and_continue")
   }
 }
