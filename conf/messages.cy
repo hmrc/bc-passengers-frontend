@@ -94,6 +94,7 @@ text.gb.allowance.msg_2 = Bydd angen i chi dalu treth ar yr holl alcohol o fewn 
 text.if_you_bring_in_goods_over_=Os byddwch yn dod â nwyddau i mewn sy’n mynd dros eich lwfansau, bydd yn rhaid i chi eu datgan.
 text.our_online_calculator_accepts_=Mae ein cyfrifiannell ar-lein yn derbyn bron pob arian cyfred tramor, a bydd yn cyfrifo’r dreth sy’n ddyledus mewn punnoedd Prydeinig.
 heading.are_you_bringing_in_goods_over_=A ydych yn dod â nwyddau i mewn sy’n mynd dros eich lwfansau?
+heading.are_you_bringing_in_goods_over_your_allowance = A ydych yn dod â nwyddau i mewn sy’n mynd dros eich lwfans?
 label.interrupt_tobacco=Tybaco
 label.interrupt_alcohol=Alcohol
 label.interrupt_other_goods=Nwyddau eraill
