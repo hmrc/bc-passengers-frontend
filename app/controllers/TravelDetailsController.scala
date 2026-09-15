@@ -333,7 +333,9 @@ class TravelDetailsController @Inject() (
                 _
               )
             ) =>
-          val form = BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString))
+          val form = BringingOverAllowanceDto
+            .formForJourney(isVapingJourneyEnabled)
+            .bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString))
           Ok(
             if (isVapingJourneyEnabled) {
               goods_brought_into_ni_vp(form, backLinkModel.backLink)
@@ -342,11 +344,12 @@ class TravelDetailsController @Inject() (
             }
           )
         case _ =>
+          val form = BringingOverAllowanceDto.formForJourney(isVapingJourneyEnabled)
           val view =
             if (isVapingJourneyEnabled) {
-              goods_brought_into_ni_vp(BringingOverAllowanceDto.form, backLinkModel.backLink)
+              goods_brought_into_ni_vp(form, backLinkModel.backLink)
             } else {
-              goods_brought_into_ni(BringingOverAllowanceDto.form, backLinkModel.backLink)
+              goods_brought_into_ni(form, backLinkModel.backLink)
             }
           Ok(view)
       }
@@ -354,7 +357,8 @@ class TravelDetailsController @Inject() (
   }
 
   val goodsBoughtIntoNIPost: Action[AnyContent] = goodsBoughtIntoNIAction { implicit context =>
-    BringingOverAllowanceDto.form
+    BringingOverAllowanceDto
+      .formForJourney(isVapingJourneyEnabled)
       .bindFromRequest()
       .fold(
         formWithErrors =>
