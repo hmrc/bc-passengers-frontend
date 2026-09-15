@@ -78,7 +78,8 @@ class LimitExceedController @Inject() (
           alcoholAndTobaccoCalculationService.alcoholAddHelper(
             context.getJourneyData,
             BigDecimal(0),
-            product.token
+            product.token,
+            appConfig.isWineStillOrSparklingEnabled
           )
 
         val totalAccNoOfVolume: BigDecimal =
@@ -215,7 +216,8 @@ class LimitExceedController @Inject() (
             context.getJourneyData,
             userInputBigDecimal,
             product.token,
-            iid
+            iid,
+            appConfig.isWineStillOrSparklingEnabled
           )
 
         val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)

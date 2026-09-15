@@ -70,7 +70,12 @@ class GoodsCheckYourAnswersController @Inject() (
       (item, product) match {
         case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol" =>
           val totalVolumeForAlcohol =
-            alcoholAndTobaccoCalculationService.alcoholAddHelper(journeyData, BigDecimal(0), productTreeLeaf.token)
+            alcoholAndTobaccoCalculationService.alcoholAddHelper(
+              journeyData,
+              BigDecimal(0),
+              productTreeLeaf.token,
+              appConfig.isWineStillOrSparklingEnabled
+            )
           if (
             alcoholVolumeConstraint(
               journeyData,

@@ -230,7 +230,12 @@ class AlcoholInputController @Inject() (
                 )
               lazy val totalVolumeForAlcohol =
                 alcoholAndTobaccoCalculationService
-                  .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
+                  .alcoholAddHelper(
+                    context.getJourneyData,
+                    dto.weightOrVolume,
+                    product.token,
+                    appConfig.isWineStillOrSparklingEnabled
+                  )
               if (
                 appConfig.isWineStillOrSparklingEnabled ||
                 alcoholVolumeConstraint(
@@ -299,7 +304,13 @@ class AlcoholInputController @Inject() (
                 success = dto => {
                   lazy val totalVolumeForAlcohol =
                     alcoholAndTobaccoCalculationService
-                      .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token, iid)
+                      .alcoholEditHelper(
+                        context.getJourneyData,
+                        dto.weightOrVolume,
+                        product.token,
+                        iid,
+                        appConfig.isWineStillOrSparklingEnabled
+                      )
                   if (
                     appConfig.isWineStillOrSparklingEnabled ||
                     alcoholVolumeConstraint(

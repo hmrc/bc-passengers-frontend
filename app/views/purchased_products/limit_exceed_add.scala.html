@@ -31,7 +31,9 @@
 @(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @labelToken = @{
-    if(appConfig.isWineStillOrSparklingEnabled && token == "wine" && !showGroupMessage) "wine.still-or-sparkling" else token
+    if(appConfig.isWineStillOrSparklingEnabled && token == "wine" && !showGroupMessage) "wine.still-or-sparkling"
+    else if(appConfig.isWineStillOrSparklingEnabled && token.contains("cider") && !showGroupMessage) s"$token.still-or-sparkling"
+    else token
 }
 
 @userInputSectionContent = {

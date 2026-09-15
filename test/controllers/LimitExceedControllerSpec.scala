@@ -37,6 +37,13 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
 
   private val mockCache: Cache = mock(classOf[Cache])
 
+  private def ciderVariantName(productToken: String): String = productToken match {
+    case "non-sparkling-cider" => "non-sparkling cider"
+    case "sparkling-cider"     => "sparkling cider (1.3% to 5.5%)"
+    case "sparkling-cider-up"  => "sparkling cider (5.6% to 8.4%)"
+    case other                 => other
+  }
+
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
@@ -231,8 +238,14 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                 journeyData(
                   purchasedProductInstances = List(
                     purchasedProductInstance(
-                      path = "alcohol/other",
+                      path = "alcohol/cider/non-sparkling-cider",
                       iid = "iid0",
+                      weightOrVolume = Some(10.0),
+                      noOfSticks = None
+                    ),
+                    purchasedProductInstance(
+                      path = "alcohol/other",
+                      iid = "iid1",
                       weightOrVolume = Some(10.0),
                       noOfSticks = None
                     )
@@ -256,10 +269,10 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
 
           doc
             .getElementById("entered-amount")
-            .text() shouldBe "You have entered a total of 110.01 litres of cider."
+            .text() shouldBe "You have entered a total of 110.01 litres of non-sparkling cider."
           doc
             .getElementById("limit-exceeded-cannot-use-service")
-            .text() shouldBe "You cannot use this service to declare more than 110 litres of cider."
+            .text() shouldBe "You cannot use this service to declare more than 110 litres of non-sparkling cider."
         }
       }
 
@@ -793,10 +806,10 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
               .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
-              .text() shouldBe "You changed 20 litres of cider to 50.5 litres of cider."
+              .text() shouldBe s"You changed 20 litres of ${ciderVariantName(productToken)} to 50.5 litres of ${ciderVariantName(productToken)}."
             doc
               .getElementById("new-total-amount")
-              .text() shouldBe "This means your total is now 50.5 litres of cider."
+              .text() shouldBe s"This means your total is now 50.5 litres of ${ciderVariantName(productToken)}."
             content     should include(
               "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                 "They will calculate and take payment of the taxes and duties due."
@@ -921,10 +934,10 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
               .text() shouldBe "You cannot use this service to declare this item"
             doc
               .getElementById("entered-amount")
-              .text() shouldBe "You changed 10 litres of cider to 10.001 litres of cider."
+              .text() shouldBe s"You changed 10 litres of ${ciderVariantName(productToken)} to 10.001 litres of ${ciderVariantName(productToken)}."
             doc
               .getElementById("new-total-amount")
-              .text() shouldBe "This means your total is now 20.001 litres of cider."
+              .text() shouldBe s"This means your total is now 20.001 litres of ${ciderVariantName(productToken)}."
             content     should include(
               "You must use the red channel to declare this item in person to Border Force when you arrive in the UK. " +
                 "They will calculate and take payment of the taxes and duties due."

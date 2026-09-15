@@ -304,6 +304,35 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
+        Seq(
+          ("non-sparkling-cider", "label.alcohol.non-sparkling-cider", "non-sparkling cider"),
+          ("sparkling-cider", "label.alcohol.sparkling-cider", "sparkling cider (1.3% to 5.5%)"),
+          ("sparkling-cider-up", "label.alcohol.sparkling-cider-up", "sparkling cider (5.6% to 8.4%)")
+        ).foreach { case (token, productName, expectedName) =>
+          s"the user enters too much $token with the wine-still-or-sparkling toggle ON" should {
+
+            val onConfig: AppConfig = appConfigToggleOn
+            val view                =
+              injected[limit_exceed_add]
+                .apply(
+                  totalAccAmount = "110.01",
+                  userInput = "0.01",
+                  token = token,
+                  productName = productName,
+                  showPanelIndent = true
+                )(request, messages, onConfig)
+
+            val expectedContent =
+              Seq(
+                Selectors.p(1)        -> s"You have entered a total of 110.01 litres of $expectedName.",
+                Selectors.p(2)        -> s"You cannot use this service to declare more than 110 litres of $expectedName.",
+                Selectors.panelIndent -> s"0.01 litres of $expectedName"
+              )
+
+            behave like pageWithExpectedMessages(view, expectedContent)
+          }
+        }
+
         "the user enters too much wine when sparkling wine has been previously added" should {
 
           val view = viewApply("100.01", "0.01", "wine", "label.alcohol.wine", showGroupMessage = true)
