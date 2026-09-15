@@ -70,9 +70,15 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec {
   }
 
   "POST /check-your-item" should {
-    "continue to the existing item completion route" in {
+    "continue to the item completion route when the item is within the limit" in {
       val result =
-        route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item")).get
+        route(
+          app,
+          enhancedFakeRequest(
+            "POST",
+            "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/vaping-products/vape/iid0"
+          )
+        ).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")

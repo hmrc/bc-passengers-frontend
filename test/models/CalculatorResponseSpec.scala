@@ -219,6 +219,27 @@ class CalculatorResponseSpec extends BaseSpec {
           "100.00",
           Some(1),
           None,
+          Calculation("100.00", "0.00", "0.00", "100.00"),
+          Metadata(
+            "Desc",
+            "Desc",
+            "100.00",
+            DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+            Currency("USD", "US Dollars", Some("USD"), List()),
+            Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, List()),
+            ExchangeRate("1.20", "2018-10-29"),
+            None
+          ),
+          None,
+          None,
+          None,
+          None
+        ),
+        Item(
+          "ANYTHING",
+          "100.00",
+          Some(1),
+          None,
           Calculation("0.00", "0.00", "0.00", "0.00"),
           Metadata(
             "Desc",
@@ -247,6 +268,8 @@ class CalculatorResponseSpec extends BaseSpec {
       def tobaccoCurrency: Currency
 
       def otherGoodsCurrency: Currency
+
+      def vapingProductsCurrency: Currency
 
       lazy val cr: CalculatorResponse = CalculatorResponse(
         Some(
@@ -334,7 +357,7 @@ class CalculatorResponseSpec extends BaseSpec {
                       "Desc",
                       "100.00",
                       DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                      Currency("USD", "US Dollars", Some("USD"), Nil),
+                      vapingProductsCurrency,
                       Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
                       ExchangeRate("1.20", "2018-10-29"),
                       None
@@ -394,36 +417,50 @@ class CalculatorResponseSpec extends BaseSpec {
 
     "work with alcohol not GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency: Currency    = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
-      override lazy val tobaccoCurrency: Currency    = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val otherGoodsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val alcoholCurrency: Currency        = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val tobaccoCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val vapingProductsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency     = Currency("GBP", "British Pound (GBP)", None, Nil)
 
       cr.allItemsUseGBP shouldBe false
     }
 
     "work with tobacco not GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency: Currency    = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val tobaccoCurrency: Currency    = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
-      override lazy val otherGoodsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val alcoholCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency        = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val vapingProductsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency     = Currency("GBP", "British Pound (GBP)", None, Nil)
+
+      cr.allItemsUseGBP shouldBe false
+    }
+
+    "work with vapingProducts not GBP" in new LocalSetup {
+
+      override lazy val alcoholCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val vapingProductsCurrency: Currency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val otherGoodsCurrency: Currency     = Currency("GBP", "British Pound (GBP)", None, Nil)
 
       cr.allItemsUseGBP shouldBe false
     }
 
     "work with other goods not GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency: Currency    = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val tobaccoCurrency: Currency    = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val otherGoodsCurrency: Currency = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
+      override lazy val alcoholCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val vapingProductsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency     = Currency("UGX", "Uganda Schilling (UGX)", Some("UGX"), Nil)
 
       cr.allItemsUseGBP shouldBe false
     }
 
     "work when all GBP" in new LocalSetup {
 
-      override lazy val alcoholCurrency: Currency    = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val tobaccoCurrency: Currency    = Currency("GBP", "British Pound (GBP)", None, Nil)
-      override lazy val otherGoodsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val alcoholCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val tobaccoCurrency: Currency        = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val vapingProductsCurrency: Currency = Currency("GBP", "British Pound (GBP)", None, Nil)
+      override lazy val otherGoodsCurrency: Currency     = Currency("GBP", "British Pound (GBP)", None, Nil)
 
       cr.allItemsUseGBP shouldBe true
     }
@@ -536,8 +573,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     Calculation("100.00", "0.00", "0.00", "100.00"),
                     Metadata(
-                      "Desc",
-                      "Desc",
+                      "a vaping product",
+                      "a vaping product",
                       "100.00",
                       DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
                       Currency("USD", "US Dollars", Some("USD"), Nil),
@@ -601,7 +638,8 @@ class CalculatorResponseSpec extends BaseSpec {
         "an alcohol item",
         "another alcohol item",
         "a tobacco item",
-        "an other-goods item"
+        "an other-goods item",
+        "a vaping product"
       )
     }
 
@@ -710,8 +748,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     Calculation("100.00", "0.00", "0.00", "100.00"),
                     Metadata(
-                      "Desc",
-                      "Desc",
+                      "a vaping product",
+                      "a vaping product",
                       "100.00",
                       DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
                       Currency("USD", "US Dollars", Some("USD"), Nil),
@@ -775,7 +813,8 @@ class CalculatorResponseSpec extends BaseSpec {
         "an alcohol item",
         "a tobacco item",
         "an other-goods item",
-        "an alcohol item with duty"
+        "an alcohol item with duty",
+        "a vaping product"
       )
     }
 
@@ -905,8 +944,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     Calculation("100.00", "0.00", "0.00", "100.00"),
                     Metadata(
-                      "Desc",
-                      "Desc",
+                      "a vaping product",
+                      "a vaping product",
                       "100.00",
                       DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
                       Currency("USD", "US Dollars", Some("USD"), Nil),
@@ -993,6 +1032,7 @@ class CalculatorResponseSpec extends BaseSpec {
         "an other-goods item",
         "an alcohol item with duty",
         "a tobacco item with duty",
+        "a vaping product",
         "an other-goods item with duty"
       )
     }
@@ -1767,7 +1807,7 @@ class CalculatorResponseSpec extends BaseSpec {
           Calculation("0.00", "0.00", "0.00", "0.00")
         )
       ),
-      Some(
+      vapingProducts = Some(
         VapingProducts(
           List(
             Band(
@@ -1844,7 +1884,108 @@ class CalculatorResponseSpec extends BaseSpec {
     "serialize to JSON" when {
       "all fields are valid" in {
         Json.toJson(calculatorResponse) shouldBe Json.obj(
-          "withinFreeAllowance"    -> true,
+          "alcohol"                -> Some(
+            Alcohol(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ANYTHING",
+                      "100.00",
+                      Some(1),
+                      None,
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "Desc",
+                        "Desc",
+                        "100.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.20", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          "tobacco"                -> Some(
+            Tobacco(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ANYTHING",
+                      "100.00",
+                      Some(1),
+                      None,
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "Desc",
+                        "Desc",
+                        "100.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.20", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          "vapingProducts"         -> Some(
+            VapingProducts(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ANYTHING",
+                      "100.00",
+                      Some(1),
+                      None,
+                      Calculation("100.00", "0.00", "0.00", "100.00"),
+                      Metadata(
+                        "Desc",
+                        "Desc",
+                        "100.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "US Dollars", Some("USD"), Nil),
+                        Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.20", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.00", "0.00", "0.00", "100.00")
+                )
+              ),
+              Calculation("100.00", "0.00", "0.00", "100.00")
+            )
+          ),
           "otherGoods"             -> Some(
             OtherGoods(
               List(
@@ -1880,76 +2021,9 @@ class CalculatorResponseSpec extends BaseSpec {
             )
           ),
           "calculation"            -> Calculation("0.00", "0.00", "0.00", "9.00"),
-          "tobacco"                -> Some(
-            Tobacco(
-              List(
-                Band(
-                  "A",
-                  List(
-                    Item(
-                      "ANYTHING",
-                      "100.00",
-                      Some(1),
-                      None,
-                      Calculation("0.00", "0.00", "0.00", "0.00"),
-                      Metadata(
-                        "Desc",
-                        "Desc",
-                        "100.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.20", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None
-                    )
-                  ),
-                  Calculation("0.00", "0.00", "0.00", "0.00")
-                )
-              ),
-              Calculation("0.00", "0.00", "0.00", "0.00")
-            )
-          ),
-          "isAnyItemOverAllowance" -> false,
-          "alcohol"                -> Some(
-            Alcohol(
-              List(
-                Band(
-                  "A",
-                  List(
-                    Item(
-                      "ANYTHING",
-                      "100.00",
-                      Some(1),
-                      None,
-                      Calculation("0.00", "0.00", "0.00", "0.00"),
-                      Metadata(
-                        "Desc",
-                        "Desc",
-                        "100.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.20", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None
-                    )
-                  ),
-                  Calculation("0.00", "0.00", "0.00", "0.00")
-                )
-              ),
-              Calculation("0.00", "0.00", "0.00", "0.00")
-            )
-          ),
-          "limits"                 -> Json.toJson(Map.empty[String, String])
+          "withinFreeAllowance"    -> true,
+          "limits"                 -> Json.toJson(Map.empty[String, String]),
+          "isAnyItemOverAllowance" -> false
         )
       }
     }
@@ -2025,6 +2099,40 @@ class CalculatorResponseSpec extends BaseSpec {
                 )
               ),
               Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          "vapingProducts"         -> Some(
+            VapingProducts(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "ANYTHING",
+                      "100.00",
+                      Some(1),
+                      None,
+                      Calculation("100.00", "0.00", "0.00", "100.00"),
+                      Metadata(
+                        "Desc",
+                        "Desc",
+                        "100.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "US Dollars", Some("USD"), Nil),
+                        Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.20", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.00", "0.00", "0.00", "100.00")
+                )
+              ),
+              Calculation("100.00", "0.00", "0.00", "100.00")
             )
           ),
           "isAnyItemOverAllowance" -> false,

@@ -84,6 +84,14 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
        |            "producedIn" : "Unknown",
        |            "evidenceOfOrigin" : "Not required"
        |        },
+       |        {
+       |            "name": "51 milliliters of vaping products",
+       |            "costInGbp": "21.00",
+       |            "price": "120.00 USA dollars (USD)",
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "Algeria",
+       |            "evidenceOfOrigin" : "Not required"
+       |        },
        |        {   "name": "Televisions",
        |            "costInGbp": "0.00",
        |            "price": "1500.00 USA dollars (USD)",
@@ -141,6 +149,14 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
        |            "price": "200.00 USA dollars (USD)",
        |            "purchaseLocation": "United States of America",
        |            "producedIn" : "Unknown",
+       |            "evidenceOfOrigin" : "Not required"
+       |        },
+       |        {
+       |            "name": "51 milliliters of vaping products",
+       |            "costInGbp": "21.00",
+       |            "price": "120.00 USA dollars (USD)",
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "Algeria",
        |            "evidenceOfOrigin" : "Not required"
        |        },
        |        {   "name": "Televisions",
@@ -283,8 +299,8 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   Some(5),
                   Calculation("2.00", "0.30", "18.70", "21.00"),
                   Metadata(
-                    "5 litres cider",
-                    "Cider",
+                    "51 milliliters of vaping products",
+                    "Vaping products",
                     "120.00",
                     DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
                     Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
