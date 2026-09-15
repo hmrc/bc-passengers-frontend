@@ -18,10 +18,11 @@ package views.purchased_products
 
 import models._
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.done
 
-class DoneViewSpec extends BaseViewSpec {
+class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
   private val weightOrVolume: BigDecimal = 40
 
@@ -125,9 +126,30 @@ class DoneViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "DoneView" when
+  private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable = injected[done].apply(
+    previousDeclaration = true,
+    calculatorResponseDto = calculatorResponseDto,
+    deltaCalc = Some(calculation),
+    oldAllTax = "0.00",
+    hideExchangeRateInfo = true,
+    backLink = None
+  )(request, messages, appConfigToggle(enabled))
+
+  "DoneView" when {
     renderViewTest(
       title = "Additional tax due on these goods - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Additional tax due on these goods £0.00"
     )
+  }
+
+  "DoneView with the wine-still-or-sparkling toggle" should {
+
+    "show the wine line item as 'wine (still or sparkling)' when ON" in {
+      viewWithToggle(true).body should include(messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
+    }
+
+    "show the plain wine line item without 'still or sparkling' when OFF" in {
+      viewWithToggle(false).body should not include "(still or sparkling)"
+    }
+  }
 }

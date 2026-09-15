@@ -25,6 +25,13 @@ object ViewUtils {
   def toggledMessage(key: String, wineStillOrSparklingEnabled: Boolean)(implicit messages: Messages): String =
     if (wineStillOrSparklingEnabled) messages(s"$key.still-or-sparkling") else messages(key)
 
+  def wineStillOrSparklingArgs(args: Seq[String], wineStillOrSparklingEnabled: Boolean): Seq[String] =
+    if (wineStillOrSparklingEnabled) {
+      args.map(arg => if (arg == "label.alcohol.wine") "label.alcohol.wine.still-or-sparkling" else arg)
+    } else {
+      args
+    }
+
   def title(form: Form[?], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(
     implicit messages: Messages
   ): String =
