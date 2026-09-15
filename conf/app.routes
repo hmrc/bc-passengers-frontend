@@ -80,6 +80,7 @@ GET        /keep-alive                                                          
 
 GET        /start-again-are-you-sure                                                  controllers.StartAgainController.show
 POST       /start-again-are-you-sure                                                  controllers.StartAgainController.submit
+GET        /your-declaration-has-been-deleted                                         controllers.StartAgainController.declarationDeleted
 
 GET        /previous-goods                                                             controllers.PreviousGoodsController.showPreviousGoods
 

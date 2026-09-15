@@ -56,6 +56,7 @@ class StartAgainControllerSpec extends BaseSpec {
     super.beforeEach()
     reset(mockCache)
     when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
+    when(mockCache.removeFrontendCache(any())).thenReturn(Future.successful(true))
   }
 
   "show" should {
@@ -65,22 +66,24 @@ class StartAgainControllerSpec extends BaseSpec {
         enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/start-again-are-you-sure")
       ).get
 
-      status(result) shouldBe OK
+      status(result)                                                     shouldBe OK
       Jsoup.parse(contentAsString(result)).getElementsByTag("h1").text() shouldBe
         "Are you sure you want to start again?"
     }
   }
 
   "submit" should {
-    "start a new session when the user selects Yes" in {
+    "delete the declaration and start a new session when the user selects Yes" in {
       val result: Future[Result] = route(
         app,
         enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/start-again-are-you-sure")
           .withFormUrlEncodedBody("startAgain" -> "true")
       ).get
 
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe
+        Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration?startAgain=true")
+      verify(mockCache, times(1)).removeFrontendCache(any())
     }
 
     "return to the calculation page when the user selects No" in {
@@ -90,7 +93,7 @@ class StartAgainControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody("startAgain" -> "false")
       ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tax-due")
     }
 
@@ -104,9 +107,22 @@ class StartAgainControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
 
       val document = Jsoup.parse(contentAsString(result))
-      document.select(".govuk-error-summary__list a").text() shouldBe
+      document.select(".govuk-error-summary__list a").text()       shouldBe
         "Select yes if you want to delete this declaration and start again"
       document.select(".govuk-error-summary__list a").attr("href") shouldBe "#startAgain-yes"
+    }
+  }
+
+  "declarationDeleted" should {
+    "display the declaration deleted page" in {
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/your-declaration-has-been-deleted")
+      ).get
+
+      status(result)                                                     shouldBe OK
+      Jsoup.parse(contentAsString(result)).getElementsByTag("h1").text() shouldBe
+        "Your declaration has been deleted"
     }
   }
 }

@@ -17,29 +17,40 @@
 package controllers
 
 import config.AppConfig
-import controllers.enforce.DashboardAction
+import connectors.Cache
+import controllers.enforce.{DashboardAction, PublicAction}
 import forms.StartAgainForm
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class StartAgainController @Inject() (
+  cache: Cache,
   dashboardAction: DashboardAction,
+  publicAction: PublicAction,
   startAgain: views.html.purchased_products.start_again,
+  declarationDeletedPage: views.html.purchased_products.declaration_deleted,
   override val controllerComponents: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
   implicit override val messagesApi: MessagesApi,
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
-    with I18nSupport {
+    with I18nSupport
+    with FrontendHeaderCarrierProvider {
 
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   private def calculationPage: Call = routes.CalculateDeclareController.showCalculation
+
+  private def startPageAfterDeletion: Call =
+    Call("GET", s"${routes.PreviousDeclarationController.loadPreviousDeclarationPage.url}?startAgain=true")
 
   val show: Action[AnyContent] = dashboardAction { implicit context =>
     Future.successful(Ok(startAgain(StartAgainForm.form, Some(calculationPage.url))))
@@ -51,13 +62,18 @@ class StartAgainController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(startAgain(formWithErrors, Some(calculationPage.url)))),
         startAgainSelection =>
-          Future.successful {
-            if (startAgainSelection) {
-              Redirect(routes.TravelDetailsController.newSession)
-            } else {
-              Redirect(calculationPage)
+          if (startAgainSelection) {
+            cache.removeFrontendCache.map { _ =>
+              Redirect(startPageAfterDeletion)
+                .addingToSession(SessionKeys.sessionId -> UUID.randomUUID.toString)
             }
+          } else {
+            Future.successful(Redirect(calculationPage))
           }
       )
+  }
+
+  val declarationDeleted: Action[AnyContent] = publicAction { implicit context =>
+    Future.successful(Ok(declarationDeletedPage()))
   }
 }
