@@ -101,7 +101,7 @@ package object util extends ProductDetector {
     val beerLimit: BigDecimal          = 110
     val spiritsLimit: BigDecimal       = 10
     val ciderLimit: BigDecimal         = if (isWineStillOrSparklingEnabled) 110 else 20
-    val otherLimit: BigDecimal         = if (isWineStillOrSparklingEnabled) 110 else 20
+    val otherLimit: BigDecimal         = 20
 
     productToken match {
       case "wine"                           => alcoholVolume <= wineLimit
