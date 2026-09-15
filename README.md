@@ -22,6 +22,7 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    cd bc-passengers-frontend
    ```
 ## Running the app locally
+   ```
    sbt "run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"
    ```
 4. For the card payment service to run successfully, you need the internal auth service running and to enable a token by doing the following command:
