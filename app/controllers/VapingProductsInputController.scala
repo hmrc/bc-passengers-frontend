@@ -112,28 +112,39 @@ class VapingProductsInputController @Inject() (
   }
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    requirePurchasedProductInstance(iid) { ppi =>
-      VapeDto.fromPurchasedProductInstance(ppi) match {
-        case Some(dto) =>
-          Future.successful(
-            Ok(
-              vaping_products_input(
-                vapingProductsInputForm.vapingProductsForm(ppi.path).fill(dto),
-                backLinkModel.backLink,
-                customBackLink = true,
-                ppi.path,
-                Some(iid),
-                countriesService.getAllCountries,
-                countriesService.getAllCountriesAndEu,
-                currencyService.getAllCurrencies,
-                context.getJourneyData.euCountryCheck
+    if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
+      Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
+    } else {
+      requirePurchasedProductInstance(iid) { ppi =>
+        requireProduct(ppi.path) { product =>
+          println("product"+ product)
+          println("ppi"+ ppi)
+          VapeDto.fromPurchasedProductInstance(ppi) match {
+            case Some(dto) =>
+              Future.successful(
+                Ok(
+                  vaping_products_input(
+                    vapingProductsInputForm.vapingProductsForm(ppi.path).fill(dto),
+                    backLinkForAddedItemEdit(
+                      backLinkModel.backLink,
+                      routes.VapingProductsInputController.displayEditForm(iid).url
+                    ),
+                    customBackLink = true,
+                    ppi.path,
+                    Some(iid),
+                    countriesService.getAllCountries,
+                    countriesService.getAllCountriesAndEu,
+                    currencyService.getAllCurrencies,
+                    context.getJourneyData.euCountryCheck
+                  )
+                )
               )
-            )
-          )
-        case None      =>
-          logAndRenderError(
-            "[VapingProductsInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
-          )
+            case None      =>
+              logAndRenderError(
+                "[VapingProductsInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
+              )
+          }
+        }
       }
     }
   }
