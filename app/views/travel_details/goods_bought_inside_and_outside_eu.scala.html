@@ -28,19 +28,32 @@
 )
 @(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "heading.goods_brought_into_gb")), backLink = backLink) {
+@govukLayout(pageTitle = Some(title(form, if(appConfig.isVapingJourneyEnabled) "heading.bringing_goods_into_gb" else "heading.goods_brought_into_gb")), backLink = backLink) {
 
     @formHelper(action = routes.TravelDetailsController.goodsBoughtIntoGBPost){
 
         @errorSummary(form.errors, Some("value-yes"))
-        @h1(messages("heading.goods_brought_into_gb"))
+        @h1(if(appConfig.isVapingJourneyEnabled) messages("heading.bringing_goods_into_gb") else messages("heading.goods_brought_into_gb"))
+
 
         @if(appConfig.isWineStillOrSparklingEnabled) {
 
-            @p{@messages("text.gb.allowance.still-or-sparkling")}
+            @p {
+                @if(appConfig.isVapingJourneyEnabled) {
+                    @messages("text.gb.allowance.still-or-sparkling_vp")
+                } else {
+                    @messages("text.gb.allowance.still-or-sparkling")
+                }
+            }
 
             @panelIndent{
-            @p{@messages("text.gb.allowance.under_17.still-or-sparkling")}
+            @p{
+                @if(appConfig.isVapingJourneyEnabled) {
+                    @messages("text.gb.allowance.under_17.still-or-sparkling_vp")
+                } else {
+                    @messages("text.gb.allowance.under_17.still-or-sparkling")
+                }
+               }
             }
 
             @h2(messages("text.alcohol_allowance.still-or-sparkling"))
@@ -73,6 +86,15 @@
             @p{@messages("text.allowance.tobacco_over.still-or-sparkling")}
             @p{@messages("text.allowance.tobacco_over_example.still-or-sparkling")}
 
+            @if(appConfig.isVapingJourneyEnabled) {
+                @h2(messages("text.vaping_products_allowance"))
+                @p{@messages("text.allowance.vaping_products_you_can_bring")}
+
+                <h3 class="govuk-heading-s">@messages("heading.if_you_bring_more_than_your_allowance")</h3>
+                @p{@messages("text.allowance.vaping_products_you_will_need_to_pay_tax")}
+                @p{@messages("text.allowance.vaping_products_for_example")}
+            }
+
             @h2(messages("text.other_goods_allowance.still-or-sparkling"))
             @p{@messages("text.allowance.otg_1.still-or-sparkling")}
 
@@ -80,7 +102,7 @@
             @p{@messages("text.allowance.other_over.still-or-sparkling")}
             @p{@messages("text.allowance.other_over_example.still-or-sparkling")}
 
-            @summaryYesNo(form = form, h2Message = Some("heading.are_you_bringing_in_goods_over_"), name = "bringingOverAllowance", hintMessage = Some(messages("text.allowance.msg_8")), inline = false)
+            @summaryYesNo(form = form, h2Message = Some(if(appConfig.isVapingJourneyEnabled) messages("heading.are_you_bringing_in_goods_over_your_allowance") else messages("heading.are_you_bringing_in_goods_over_")), name = "bringingOverAllowance", hintMessage = Some(if(appConfig.isVapingJourneyEnabled) messages("text.allowance.msg_08") else messages("text.allowance.msg_8")), inline = false)
 
         } else {
 

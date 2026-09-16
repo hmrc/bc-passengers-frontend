@@ -53,22 +53,40 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "GoodsBoughtInsideAndOutsideEUView" when
-    renderViewTest(
-      title = "Goods brought into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "Goods brought into Great Britain or the Isle of Man"
-    )
+  "GoodsBoughtInsideAndOutsideEUView" when {
+    if (appConfig.isVapingJourneyEnabled) {
+      renderViewTest(
+        title =
+          "Bringing goods into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
+        heading = "Bringing goods into Great Britain or the Isle of Man"
+      )
+    } else {
+      renderViewTest(
+        title =
+          "Goods brought into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
+        heading = "Goods brought into Great Britain or the Isle of Man"
+      )
+    }
+  }
 
   "GoodsBoughtInsideAndOutsideEUView with the wine-still-or-sparkling toggle ON" should {
 
     lazy val body = viewWithToggle(true).body
 
     "show the personal-allowance intro" in {
-      body should include(messages("text.gb.allowance.still-or-sparkling"))
+      if (appConfig.isVapingJourneyEnabled) {
+        body should include(messages("text.gb.allowance.still-or-sparkling_vp"))
+      } else {
+        body should include(messages("text.gb.allowance.still-or-sparkling"))
+      }
     }
 
     "show a single combined under-17 inset (alcohol or tobacco), without the two original insets" in {
-      body should include(messages("text.gb.allowance.under_17.still-or-sparkling"))
+      if (appConfig.isVapingJourneyEnabled) {
+        body should include(messages("text.gb.allowance.under_17.still-or-sparkling_vp"))
+      } else {
+        body should include(messages("text.gb.allowance.under_17.still-or-sparkling"))
+      }
       body should not include messages("text.ni.allowance.msg_3")
       body should not include messages("text.allowance.msg_6")
     }
