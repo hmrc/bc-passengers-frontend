@@ -141,6 +141,20 @@ object BringingOverAllowanceDto {
         .transform[Boolean](_.get, b => Option(b))
     )(BringingOverAllowanceDto.apply)(o => Some(o.bringingOverAllowance))
   )
+
+  def formForJourney(isVapingJourneyEnabled: Boolean): Form[BringingOverAllowanceDto] = Form(
+    mapping(
+      "bringingOverAllowance" -> optional(boolean)
+        .verifying(
+          if (isVapingJourneyEnabled)
+            "error.bringing_over_allowance_ni"
+          else
+            "error.bringing_over_allowance",
+          _.isDefined
+        )
+        .transform[Boolean](_.get, b => Option(b))
+    )(BringingOverAllowanceDto.apply)(o => Some(o.bringingOverAllowance))
+  )
 }
 case class BringingOverAllowanceDto(bringingOverAllowance: Boolean)
 
