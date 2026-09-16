@@ -26,6 +26,15 @@ class AppConfigSpec extends BaseSpec with Matchers {
   val appConfig: AppConfig     = injected[AppConfig]
 
   "AppConfig" should {
+    "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
+      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
+      mockAppConfig.isVapingJourneyEnabled shouldBe true
+    }
+
+    "read isVapingJourneyEnabled as false when toggle.isVapingJourneyEnabled is false" in {
+      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(false)
+      mockAppConfig.isVapingJourneyEnabled shouldBe false
+    }
 
     "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
       when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
