@@ -85,8 +85,10 @@
 
   Seq(
     row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
-    row(typeLabel, itemType, messages(typeLabel).toLowerCase)
-  ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
+  ) ++
+    Option.when(category != "vaping-products") {
+      row(typeLabel, itemType, messages(typeLabel).toLowerCase)
+    } ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 
 @govukLayout(
@@ -94,7 +96,9 @@
   backLink = Some(editCall.url)
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
-  <h2 class="govuk-heading-m">@itemType</h2>
+  @if(!appConfig.isVapingJourneyEnabled){
+    <h2 class="govuk-heading-m">@itemType</h2>
+  }
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 

@@ -125,4 +125,16 @@ class BCPassengersSessionRepositoryISpec
       ).getMessage shouldBe "[BCPassengersSessionRepository][updateUpdatedAtTimestamp]Could not find sessionId in HeaderCarrier"
     }
   }
+
+  "remove" should {
+    "clear cache from frontend if sessionId exists" in {
+      val result: Boolean = await(repository.clearFrontendCacheById(hc.sessionId))
+      result shouldBe true
+    }
+
+    "clear cache from frontend if sessionId not exists" in {
+      val result: Boolean = await(repository.clearFrontendCacheById(None))
+      result shouldBe false
+    }
+  }
 }

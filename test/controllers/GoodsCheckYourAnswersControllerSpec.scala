@@ -34,6 +34,8 @@ import scala.concurrent.Future
 
 class GoodsCheckYourAnswersControllerSpec extends BaseSpec {
 
+  private val mockCache: Cache = mock(classOf[Cache])
+
   private val item        = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0")
   private val journeyData = JourneyData(
     prevDeclaration = Some(false),
@@ -71,6 +73,26 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec {
 
   "POST /check-your-item" should {
     "continue to the item completion route when the item is within the limit" in {
+      val result =
+        route(
+          app,
+          enhancedFakeRequest(
+            "POST",
+            "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/vaping-products/vape/iid0"
+          )
+        ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+    }
+
+    "continue to the item completion route when the item is over the limit" in {
+      def journeyDataWith(instance: PurchasedProductInstance): JourneyData =
+        journeyData.copy(purchasedProductInstances = List(instance))
+      val overLimit                                                        =
+        PurchasedProductInstance(ProductPath("vaping-products/vape"), "iid0", weightOrVolume = Some(BigDecimal(1001)))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(overLimit))))
+
       val result =
         route(
           app,

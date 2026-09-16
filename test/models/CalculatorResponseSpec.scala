@@ -1494,6 +1494,126 @@ class CalculatorResponseSpec extends BaseSpec {
     }
   }
 
+  "VapingProducts" should {
+
+    val vapingProducts = VapingProducts(
+      bands = List(
+        Band(
+          "A",
+          List(
+            Item(
+              "ANYTHING",
+              "100.00",
+              Some(1),
+              None,
+              Calculation("0.00", "0.00", "0.00", "0.00"),
+              Metadata(
+                "Desc",
+                "Desc",
+                "100.00",
+                DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                ExchangeRate("1.20", "2018-10-29"),
+                None
+              ),
+              None,
+              None,
+              None,
+              None
+            )
+          ),
+          Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      ),
+      calculation = Calculation("0.00", "0.00", "0.00", "0.00")
+    )
+
+    "serialize to JSON" when {
+      "all fields are valid" in {
+        Json.toJson(vapingProducts) shouldBe Json.obj(
+          "bands"       -> List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          "calculation" -> Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      }
+    }
+
+    "deserialize from JSON" when {
+      "all fields are valid" in {
+        val json = Json.obj(
+          "bands"       -> List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          "calculation" -> Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+        json.validate[VapingProducts] shouldBe JsSuccess(vapingProducts)
+      }
+
+      "error when JSON is invalid" in {
+        Json.arr().validate[VapingProducts] shouldBe a[JsError]
+      }
+
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[VapingProducts] shouldBe a[JsError]
+      }
+    }
+  }
+
   "Tobacco" should {
 
     val tobacco = Tobacco(
