@@ -495,6 +495,41 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
       }
     }
 
+    "other de-pooling for .alcoholAddHelper with the wine-still-or-sparkling toggle" when {
+
+      val ciderAndOtherJourneyData: JourneyData = JourneyData(
+        purchasedProductInstances = List(
+          PurchasedProductInstance(
+            ProductPath("alcohol/cider/non-sparkling-cider"),
+            iid = "iid0",
+            weightOrVolume = Some(0.5)
+          ),
+          PurchasedProductInstance(
+            ProductPath("alcohol/other"),
+            iid = "iid1",
+            weightOrVolume = Some(2.3)
+          )
+        )
+      )
+
+      "the toggle is OFF" should {
+        "pool other together with cider" in {
+          service.alcoholAddHelper(ciderAndOtherJourneyData, BigDecimal(0), "other") shouldBe BigDecimal(2.8)
+        }
+      }
+
+      "the toggle is ON" should {
+        "sum only other, not cider" in {
+          service.alcoholAddHelper(
+            ciderAndOtherJourneyData,
+            BigDecimal(0),
+            "other",
+            isWineStillOrSparklingEnabled = true
+          ) shouldBe BigDecimal(2.3)
+        }
+      }
+    }
+
     "edit product helpers" when {
       ".alcoholEditHelper" when {
         "there are multiple wine products" should {

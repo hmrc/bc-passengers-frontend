@@ -26,7 +26,7 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDe
     productToken: String,
     isWineStillOrSparklingEnabled: Boolean
   ): Boolean =
-    if (isWineStillOrSparklingEnabled && productToken.contains("cider")) {
+    if (isWineStillOrSparklingEnabled && (productToken.contains("cider") || productToken.contains("other"))) {
       productPath.endsWith(s"/$productToken")
     } else {
       productPath.contains("cider") || productPath.contains("other")
