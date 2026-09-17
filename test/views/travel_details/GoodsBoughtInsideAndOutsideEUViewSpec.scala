@@ -20,11 +20,14 @@ import models.BringingOverAllowanceDto
 import models.BringingOverAllowanceDto.form
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
+import util.{VapingProductsFeature, WineStillOrSparklingFeature}
 import views.BaseViewSpec
 import views.html.travel_details.goods_bought_inside_and_outside_eu
 
-class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
+class GoodsBoughtInsideAndOutsideEUViewSpec
+    extends BaseViewSpec
+    with WineStillOrSparklingFeature
+    with VapingProductsFeature {
 
   private val validForm: Form[BringingOverAllowanceDto] = form.bind(Map("bringingOverAllowance" -> "true"))
 
@@ -110,7 +113,11 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec with WineStillO
     }
 
     "show the original intro and section heading" in {
-      body should include(messages("text.gb.allowance"))
+      if (appConfig.isVapingJourneyEnabled) {
+        body should include(messages("text.gb.allowance.still-or-sparkling_vp"))
+      } else {
+        body should include(messages("text.gb.allowance"))
+      }
       body should include(messages("text.alcohol_allowance"))
     }
 

@@ -30,6 +30,8 @@
 
 @isToggleOn = @{ appConfig.isWineStillOrSparklingEnabled }
 
+@isVpToggleOn = @{ appConfig.isVapingJourneyEnabled }
+
 @msgKey(key: String) = @{
     if(isToggleOn) s"$key.still-or-sparkling" else key
 }
@@ -44,7 +46,7 @@
         @h1(messages(headingKey))
 
         @p{
-            @if(appConfig.isVapingJourneyEnabled) {
+            @if(isVpToggleOn) {
                 @messages("text.gb.allowance.still-or-sparkling_vp")
             } else {
                 @messages(msgKey("text.gb.allowance"))
@@ -54,7 +56,7 @@
         @if(isToggleOn) {
             @panelIndent {
                 @p{
-                    @if(appConfig.isVapingJourneyEnabled) {
+                    @if(isVpToggleOn) {
                         @messages("text.gb.allowance.under_17.still-or-sparkling_vp")
                     } else {
                         @messages("text.gb.allowance.under_17.still-or-sparkling")
@@ -109,7 +111,7 @@
             }
         }
 
-        @if(appConfig.isVapingJourneyEnabled) {
+        @if(isVpToggleOn) {
             @h2(messages("text.vaping_products_allowance"))
             @p{@messages("text.allowance.vaping_products_you_can_bring")}
 

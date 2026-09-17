@@ -506,7 +506,7 @@ class TravelDetailsControllerSpec extends BaseSpec {
     }
   }
 
-  "calling GET /check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom vaping toggle is off" should {
+  "calling GET /check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom" should {
     def test(bringingOverAllowance: Option[Boolean]): Unit =
       s"load the goods bought inside and outside EU page when bringingOverAllowance is $bringingOverAllowance" in new LocalSetup {
         override lazy val cachedJourneyData: Future[Some[JourneyData]] =
@@ -531,44 +531,6 @@ class TravelDetailsControllerSpec extends BaseSpec {
         val doc: Document   = Jsoup.parse(content)
 
         doc.select("h1").text() shouldBe "Goods brought into Great Britain or the Isle of Man"
-      }
-
-    Seq(Some(true), None).foreach(test)
-  }
-
-  "calling GET /check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom vaping toggle is on" should {
-    def test(bringingOverAllowance: Option[Boolean]): Unit =
-      s"load the goods bought inside and outside EU page when bringingOverAllowance is $bringingOverAllowance" in new LocalSetup {
-
-        lazy val app: Application = GuiceApplicationBuilder()
-          .overrides(bind[Cache].toInstance(mockCache))
-          .overrides(bind[AppConfig].toInstance(mockAppConfig))
-          .build()
-
-        when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
-
-        override lazy val cachedJourneyData: Future[Some[JourneyData]] =
-          Future.successful(
-            Some(
-              JourneyData(
-                prevDeclaration = Some(false),
-                euCountryCheck = Some("nonEuOnly"),
-                arrivingNICheck = Some(false),
-                bringingOverAllowance = bringingOverAllowance
-              )
-            )
-          )
-
-        val response: Future[Result] = route(
-          app,
-          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/goods-brought-into-great-britain-iom")
-        ).get
-        status(response) shouldBe OK
-
-        val content: String = contentAsString(response)
-        val doc: Document   = Jsoup.parse(content)
-
-        doc.select("h1").text() shouldBe "Bringing goods into Great Britain or the Isle of Man"
       }
 
     Seq(Some(true), None).foreach(test)
