@@ -62,7 +62,7 @@
 
             @if(otherItemMode.equals("create")) {
                 @defining(
-                    if (niJourney.contains(false)) {
+                    if (niJourney.contains(false) || !(appConfig.isVapingJourneyEnabled)) {
                         otherGoodsSearchItems.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
                     } else {
                         otherGoodsSearchItems

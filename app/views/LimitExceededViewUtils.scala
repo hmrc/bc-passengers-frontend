@@ -52,7 +52,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     productName: String,
     productToken: String,
     totalAmount: String,
-    showGroupMessage: Boolean
+    showGroupMessage: Boolean,
+    isWineStillOrSparklingEnabled: Boolean = false
   )(implicit messages: Messages): Html = {
 
     val p1 =
@@ -120,20 +121,18 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
         )
       )
 
+    val maxLimitMessage: String =
+      if (showGroupMessage) {
+        messages(s"limitExceeded.max.limit.group.$productToken")
+      } else if (productToken.contains("cider")) {
+        messages(s"limitExceeded.max.limit.$productToken", if (isWineStillOrSparklingEnabled) "110" else "20")
+      } else {
+        messages(s"limitExceeded.max.limit.$productToken")
+      }
+
     val p2 = Option(
       p(
-        Html(
-          messages(
-            "limitExceeded.you_cannot_use_this_service",
-            messages(
-              if (showGroupMessage) {
-                s"limitExceeded.max.limit.group.$productToken"
-              } else {
-                s"limitExceeded.max.limit.$productToken"
-              }
-            )
-          )
-        ),
+        Html(messages("limitExceeded.you_cannot_use_this_service", maxLimitMessage)),
         id = Some("limit-exceeded-cannot-use-service")
       )
     )
@@ -215,7 +214,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     totalAmount: String,
     originalAmountFormatted: String,
     userInput: String,
-    showGroupMessage: Boolean
+    showGroupMessage: Boolean,
+    isWineStillOrSparklingEnabled: Boolean = false
   )(implicit messages: Messages): Html = {
 
     val p1Content =
@@ -352,18 +352,21 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
         )
       )
 
+    val editMaxLimitMessage: String =
+      if (showGroupMessage) {
+        messages(s"limitExceeded.max.limit.group.$productToken")
+      } else if (productToken.contains("cider")) {
+        messages(s"limitExceeded.max.limit.$productToken", if (isWineStillOrSparklingEnabled) "110" else "20")
+      } else {
+        messages(s"limitExceeded.max.limit.$productToken")
+      }
+
     val p3Content = Option(
       p(
         Html(
           messages(
             "limitExceeded.you_cannot_use_this_service",
-            messages(
-              if (showGroupMessage) {
-                s"limitExceeded.max.limit.group.$productToken"
-              } else {
-                s"limitExceeded.max.limit.$productToken"
-              }
-            )
+            editMaxLimitMessage
           )
         ),
         id = Some("limit-exceeded-cannot-use-service")
