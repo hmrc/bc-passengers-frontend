@@ -273,7 +273,12 @@ class OtherGoodsInputController @Inject() (
                 },
                 routes.OtherGoodsInputController.displayEditForm(jd._2).url,
                 dto.searchTerm.get.path,
-                Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url)
+                Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url),
+                Option
+                  .when(!context.request.session.get(OtherGoodsInputController.categorisedSessionKey).contains("true"))(
+                    routes.AddItemController.show.url
+                  ),
+                Seq(OtherGoodsInputController.categorisedSessionKey)
               )
             }
           }
@@ -346,4 +351,8 @@ class OtherGoodsInputController @Inject() (
     }
   }
 
+}
+
+object OtherGoodsInputController {
+  val categorisedSessionKey = "categorised-other-goods"
 }

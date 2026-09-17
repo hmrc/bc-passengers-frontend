@@ -38,7 +38,10 @@ class AddItemController @Inject() (
 
   def show: Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
-    Future.successful(Ok(add_item(GoodsTypeDto.form, context.getJourneyData)))
+    Future.successful(
+      Ok(add_item(GoodsTypeDto.form, context.getJourneyData))
+        .removingFromSession(ControllerHelpers.returnToAddedItemSessionKeys*)(using context.request)
+    )
   }
 
   def submit: Action[AnyContent] = dashboardAction { implicit context =>
@@ -50,7 +53,9 @@ class AddItemController @Inject() (
         goodsType =>
           Future.successful(
             goodsType.goodsType match {
-              case "other-goods" => Redirect(routes.OtherGoodsInputController.displayAddForm())
+              case "other-goods" =>
+                Redirect(routes.OtherGoodsInputController.displayAddForm())
+                  .removingFromSession(OtherGoodsInputController.categorisedSessionKey)(using context.request)
               case _             =>
                 Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
             }

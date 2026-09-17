@@ -256,6 +256,7 @@ class SelectProductController @Inject() (
                     case _ =>
                       purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
                         Redirect(routes.OtherGoodsInputController.displayAddForm())
+                          .addingToSession(OtherGoodsInputController.categorisedSessionKey -> "true")
                       }
                   }
                 }

@@ -47,11 +47,11 @@ trait ControllerHelpers
 
   private val logger = Logger(this.getClass)
 
-  protected val returnToAddedItemSessionKey             = "return-to-added-item-url"
-  protected val returnToAddedItemSelectUrlSessionKey    = "return-to-added-item-select-url"
-  protected val returnToAddedItemProductPathKey         = "return-to-added-item-product-path"
-  protected val returnToAddedItemDashboardUrlSessionKey = "return-to-added-item-dashboard-url"
-  protected val returnToAddedItemStackSessionKey        = "return-to-added-item-stack"
+  protected val returnToAddedItemSessionKey             = ControllerHelpers.returnToAddedItemSessionKey
+  protected val returnToAddedItemSelectUrlSessionKey    = ControllerHelpers.returnToAddedItemSelectUrlSessionKey
+  protected val returnToAddedItemProductPathKey         = ControllerHelpers.returnToAddedItemProductPathKey
+  protected val returnToAddedItemDashboardUrlSessionKey = ControllerHelpers.returnToAddedItemDashboardUrlSessionKey
+  protected val returnToAddedItemStackSessionKey        = ControllerHelpers.returnToAddedItemStackSessionKey
 
   private case class AddedItemBackLink(editUrl: String, selectUrl: String, productPath: String, dashboardUrl: String)
 
@@ -103,13 +103,17 @@ trait ControllerHelpers
     result: Result,
     editUrl: String,
     productPath: ProductPath,
-    dashboardUrl: Option[String] = None
+    dashboardUrl: Option[String] = None,
+    selectionUrl: Option[String] = None,
+    sessionKeysToRemove: Seq[String] = Nil
   )(implicit
     context: LocalContext
   ): Result = {
-    val selectUrl      = routes.SelectProductController
-      .askProductSelection(ProductPath(productPath.components.dropRight(1)))
-      .url
+    val selectUrl      = selectionUrl.getOrElse(
+      routes.SelectProductController
+        .askProductSelection(ProductPath(productPath.components.dropRight(1)))
+        .url
+    )
     val backLink       = AddedItemBackLink(editUrl, selectUrl, productPath.toString, dashboardUrl.getOrElse(editUrl))
     val stack          = addedItemBackLinkStack.filterNot(_.editUrl == editUrl) :+ backLink
     val session        = context.request.session.data ++ Map(
@@ -122,7 +126,7 @@ trait ControllerHelpers
     val updatedSession =
       if (dashboardUrl.isDefined) session - AddAnotherItemDto.sessionKey else session
 
-    result.withSession(Session(updatedSession))
+    result.withSession(Session(updatedSession -- sessionKeysToRemove))
   }
 
   protected def clearReturnToAddedItem(result: Result)(implicit context: LocalContext): Result =
@@ -327,4 +331,20 @@ trait ControllerHelpers
           ) =>
         block(defaultCountry)(defaultOriginCountry)(defaultCurrency)
     }
+}
+
+object ControllerHelpers {
+  val returnToAddedItemSessionKey             = "return-to-added-item-url"
+  val returnToAddedItemSelectUrlSessionKey    = "return-to-added-item-select-url"
+  val returnToAddedItemProductPathKey         = "return-to-added-item-product-path"
+  val returnToAddedItemDashboardUrlSessionKey = "return-to-added-item-dashboard-url"
+  val returnToAddedItemStackSessionKey        = "return-to-added-item-stack"
+
+  val returnToAddedItemSessionKeys: Seq[String] = Seq(
+    returnToAddedItemSessionKey,
+    returnToAddedItemSelectUrlSessionKey,
+    returnToAddedItemProductPathKey,
+    returnToAddedItemDashboardUrlSessionKey,
+    returnToAddedItemStackSessionKey
+  )
 }
