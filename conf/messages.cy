@@ -411,6 +411,7 @@ label.price_paid=Y pris a dalwyd
 label.price_format_description = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 1000.40, 1000.4 neu 1,000.
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
 label.country_this_alcohol_was_produced = Ble y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol
+label.country_this_vaping_was_produced = Ble y cafodd y cynhyrchion fepio eu cynhyrchu’n wreiddiol
 label.if_you_bought_this_alcohol_=Os prynoch yr alcohol hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu.
 label.country_this_alcohol_was_produced_hint = Os nad ydych yn siŵr lle y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol, gadewch hyn yn wag
 label.currency_used_to_buy_this_alcohol=Yr arian cyfred a ddefnyddiwyd i brynu’r alcohol hwn
