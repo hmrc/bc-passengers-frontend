@@ -148,9 +148,14 @@ class SelectProductController @Inject() (
                 returnToAddedItemProductPath = returnToAddedItemProductPath
               )
             } else {
+              val filteredChildren =
+                if (niJourney.contains(true) || !isVapingJourneyEnabled)
+                  children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
+                else
+                  children
               select_products(
                 form,
-                children.map(i => (i.token, i.name)),
+                filteredChildren.map(i => (i.token, i.name)),
                 path,
                 if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
                 else backLinkModel.backLink,
