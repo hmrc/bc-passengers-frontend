@@ -145,7 +145,7 @@ class SelectProductController @Inject() (
               )
             } else {
               val filteredChildren =
-                if (niJourney.contains(true))
+                if (niJourney.contains(true) || !isVapingJourneyEnabled)
                   children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
                 else
                   children
