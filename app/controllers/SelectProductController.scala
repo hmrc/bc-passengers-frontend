@@ -106,14 +106,25 @@ class SelectProductController @Inject() (
 
   private def selectItems(path: ProductPath, children: List[ProductTreeNode]): List[(String, String)] = {
     val items = children.map(i => (i.token, i.name))
-    if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol"))
-      items.filterNot(_._1 == "wine").map {
-        case ("sparkling-wine", _) => ("wine", "label.alcohol.wine.still-or-sparkling")
-        case ("spirits", _)        => ("spirits", "label.alcohol.spirits.still-or-sparkling")
-        case ("other", _)          => ("other", "label.alcohol.other.still-or-sparkling")
-        case other                 => other
+    if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol")) {
+      val transformed  = items
+        .filterNot(_._1 == "sparkling-wine")
+        .map {
+          case ("wine", _)    => ("wine", "label.alcohol.wine.still-or-sparkling")
+          case ("spirits", _) => ("spirits", "label.alcohol.spirits.still-or-sparkling")
+          case ("other", _)   => ("other", "label.alcohol.other.still-or-sparkling")
+          case other          => other
+        }
+      val desiredOrder = List("beer", "cider", "wine", "spirits", "other")
+
+      transformed.sortBy { case (token, _) =>
+        val index = desiredOrder.indexOf(token)
+        if (index == -1) Int.MaxValue else index
       }
-    else items
+    } else {
+      items
+    }
+
   }
 
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
@@ -147,7 +158,7 @@ class SelectProductController @Inject() (
                   children
               select_products(
                 form,
-                filteredChildren.map(i => (i.token, i.name)),
+                selectItems(path, filteredChildren),
                 path,
                 if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
                 else backLinkModel.backLink,
@@ -163,7 +174,7 @@ class SelectProductController @Inject() (
                   children
               select_products(
                 form,
-                filteredChildren.map(i => (i.token, i.name)),
+                selectItems(path, filteredChildren),
                 path,
                 if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
                 else backLinkModel.backLink,
