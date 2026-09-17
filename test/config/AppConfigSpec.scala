@@ -17,10 +17,10 @@
 package config
 
 import org.scalatest.matchers.should.Matchers
-import util.BaseSpec
 import org.mockito.Mockito.*
+import util.{BaseSpec, WineStillOrSparklingFeature}
 
-class AppConfigSpec extends BaseSpec with Matchers {
+class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature {
 
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
   val appConfig: AppConfig     = injected[AppConfig]
@@ -55,11 +55,11 @@ class AppConfigSpec extends BaseSpec with Matchers {
     }
 
     "read isWineStillOrSparklingEnabled as true when features.wine-still-or-sparkling is true" in {
-      appConfigWith("features.wine-still-or-sparkling" -> true).isWineStillOrSparklingEnabled shouldBe true
+      appConfigToggleOn.isWineStillOrSparklingEnabled shouldBe true
     }
 
     "read isWineStillOrSparklingEnabled as false when features.wine-still-or-sparkling is false" in {
-      appConfigWith("features.wine-still-or-sparkling" -> false).isWineStillOrSparklingEnabled shouldBe false
+      appConfigToggleOff.isWineStillOrSparklingEnabled shouldBe false
     }
   }
 }

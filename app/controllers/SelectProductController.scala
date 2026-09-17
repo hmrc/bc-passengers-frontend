@@ -22,10 +22,10 @@ import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import models.*
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.data.Form
 import play.api.mvc.*
 import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -108,6 +108,29 @@ class SelectProductController @Inject() (
       .map(_ => clearReturnToAddedItem(Redirect(routes.SelectProductController.askProductSelection(path))))
   }
 
+  private def selectItems(path: ProductPath, children: List[ProductTreeNode]): List[(String, String)] = {
+    val items = children.map(i => (i.token, i.name))
+    if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol")) {
+      val transformed  = items
+        .filterNot(_._1 == "sparkling-wine")
+        .map {
+          case ("wine", _)    => ("wine", "label.alcohol.wine.still-or-sparkling")
+          case ("spirits", _) => ("spirits", "label.alcohol.spirits.still-or-sparkling")
+          case ("other", _)   => ("other", "label.alcohol.other.still-or-sparkling")
+          case other          => other
+        }
+      val desiredOrder = List("beer", "cider", "wine", "spirits", "other")
+
+      transformed.sortBy { case (token, _) =>
+        val index = desiredOrder.indexOf(token)
+        if (index == -1) Int.MaxValue else index
+      }
+    } else {
+      items
+    }
+
+  }
+
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
     val niJourney = context.getJourneyData.arrivingNICheck
     requireProductOrCategory(path) {
@@ -118,11 +141,11 @@ class SelectProductController @Inject() (
             .get(returnToAddedItemSelectUrlSessionKey)
             .contains(routes.SelectProductController.askProductSelection(path).url)
 
-        val returnToAddedItemEditUrl     =
+        val returnToAddedItemEditUrl      =
           if (useDashboardBackLink) context.request.session.get(returnToAddedItemSessionKey) else None
-        val returnToAddedItemProductPath =
+        val returnToAddedItemProductPath  =
           if (useDashboardBackLink) context.request.session.get(returnToAddedItemProductPathKey) else None
-        val form                         =
+        val form: Form[SelectProductsDto] =
           returnToAddedItemProductPath
             .map(ProductPath.apply)
             .filter(_.components.dropRight(1) == path.components)
@@ -139,7 +162,7 @@ class SelectProductController @Inject() (
                   children
               select_products(
                 form,
-                filteredChildren.map(i => (i.token, i.name)),
+                selectItems(path, filteredChildren),
                 path,
                 if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
                 else backLinkModel.backLink,
@@ -155,7 +178,7 @@ class SelectProductController @Inject() (
                   children
               select_products(
                 form,
-                filteredChildren.map(i => (i.token, i.name)),
+                selectItems(path, filteredChildren),
                 path,
                 if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
                 else backLinkModel.backLink,
@@ -190,7 +213,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  branch.children.map(i => (i.token, i.name)),
+                  selectItems(path, branch.children),
                   path,
                   backLinkModel.backLink
                 )
@@ -239,7 +262,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  branch.children.map(i => (i.token, i.name)),
+                  selectItems(path, branch.children),
                   path,
                   backLinkModel.backLink
                 )

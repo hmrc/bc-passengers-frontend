@@ -101,7 +101,13 @@
       </div>
       @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
-          @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), "alcohol", idx)
+          @defining(
+            if(appConfig.isWineStillOrSparklingEnabled && purchasedItem.productTreeLeaf.token == "wine")
+              description._2.map(arg => if(arg == "label.alcohol.wine") "label.alcohol.wine.still-or-sparkling" else arg)
+            else description._2
+          ) { args =>
+            @displayItem(purchasedItem, messages(description._1, args.map(messages(_).toLowerCase)*), "alcohol", idx)
+          }
         }
       }
     </dl>

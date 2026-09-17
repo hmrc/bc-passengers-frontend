@@ -35,26 +35,35 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
 import views.html.alcohol.alcohol_input
 
 import scala.concurrent.Future
 
-class AlcoholInputControllerSpec extends BaseSpec with Injecting {
+class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillOrSparklingFeature {
 
-  val injectedCache: Cache                           = inject[Cache]
-  val injectedNewPurchaseService: NewPurchaseService = inject[NewPurchaseService]
-  val injectedAlcoholInput: alcohol_input            = inject[alcohol_input]
+  private val mockCache: Cache                           = mock(classOf[Cache])
+  private val mockNewPurchaseService: NewPurchaseService = mock(classOf[NewPurchaseService])
+  private val mockCalculatorService: CalculatorService   = mock(classOf[CalculatorService])
+  private val mockAlcoholInput: alcohol_input            = mock(classOf[alcohol_input])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+  val injectedCache: Cache                           = mockCache
+  val injectedNewPurchaseService: NewPurchaseService = mockNewPurchaseService
+  val injectedAlcoholInput: alcohol_input            = mockAlcoholInput
+
+  private def appBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder()
+    .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
-    .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
-    .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
+    .overrides(bind[NewPurchaseService].toInstance(mockNewPurchaseService))
+    .overrides(bind[CalculatorService].toInstance(mockCalculatorService))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[alcohol_input].toInstance(mock(classOf[alcohol_input])))
-    .build()
+    .overrides(bind[alcohol_input].toInstance(mockAlcoholInput))
+
+  override implicit lazy val app: Application = appBuilder.build()
+
+  private lazy val appWithWineStillOrSparklingDisabled: Application =
+    appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
   override def beforeEach(): Unit = {
     reset(injectedCache)
@@ -864,7 +873,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             "cost"           -> "12.50"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/volume"
@@ -885,7 +894,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         "cost"           -> "50"
       )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits/volume"
@@ -905,11 +914,84 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             "cost"           -> "50"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is disabled and sparkling-wine is within the 60 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINESP" -> "1.0")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
+        "POST",
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/sparkling-wine/tell-us"
+      ).withFormUrlEncodedBody(
+        "weightOrVolume" -> "60",
+        "country"        -> "FR",
+        "currency"       -> "EUR",
+        "cost"           -> "50"
+      )
+
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is disabled and wine is within the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.0")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "90",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is enabled and the merged wine option is over the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "95",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is enabled and the merged wine option is within the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.0")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "50",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }
 
     "add a PPI to the JourneyData and redirect to next step" in new LocalSetup {
@@ -1098,7 +1180,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             "cost"           -> "12.50"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/iid0/edit/volume"
