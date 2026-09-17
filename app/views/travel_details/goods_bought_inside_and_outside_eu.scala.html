@@ -34,7 +34,7 @@
     if(isToggleOn) s"$key.still-or-sparkling" else key
 }
 
-@headingKey = @{ msgKey(if(appConfig.isVapingJourneyEnabled) "heading.bringing_goods_into_gb" else "heading.goods_brought_into_gb") }
+@headingKey = @{ msgKey("heading.goods_brought_into_gb") }
 
 @govukLayout(pageTitle = Some(title(form, headingKey)), backLink = backLink) {
 
@@ -43,11 +43,23 @@
         @errorSummary(form.errors, Some("value-yes"))
         @h1(messages(headingKey))
 
-        @p{@messages(msgKey("text.gb.allowance"))}
+        @p{
+            @if(appConfig.isVapingJourneyEnabled) {
+                @messages("text.gb.allowance.still-or-sparkling_vp")
+            } else {
+                @messages(msgKey("text.gb.allowance"))
+            }
+        }
 
         @if(isToggleOn) {
             @panelIndent {
-                @p{@messages("text.gb.allowance.under_17.still-or-sparkling")}
+                @p{
+                    @if(appConfig.isVapingJourneyEnabled) {
+                        @messages("text.gb.allowance.under_17.still-or-sparkling_vp")
+                    } else {
+                        @messages("text.gb.allowance.under_17.still-or-sparkling")
+                    }
+                }
             }
         }
 

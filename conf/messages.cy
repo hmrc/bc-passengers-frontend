@@ -23,7 +23,6 @@ heading.goods_brought_into_ni = Nwyddau sy’n dod i mewn i Ogledd Iwerddon
 heading.bringing_goods_into_ni = Dod â nwyddau i mewn i Ogledd Iwerddon
 heading.goods_brought_into_gb.still-or-sparkling = Dod â nwyddau i mewn i Brydain Fawr neu Ynys Manaw
 heading.goods_brought_into_gb = Nwyddau sy’n dod i mewn i Brydain Fawr neu Ynys Manaw
-heading.bringing_goods_into_gb = Dod â nwyddau i mewn i Brydain Fawr neu Ynys Manaw
 heading.if_you_bring_more_than_your_allowance = Os byddwch yn mynd dros y lwfans
 text.you_do_not_need_to_tell_us_ = Nid oes angen i chi roi gwybod i ni am nwyddau sy’n dod i mewn o wledydd yn yr UE. Os ydych yn gwneud hynny, efallai y byddwch yn talu mwy na’r hyn sydd ei angen.
 text.there_are_separate_allowances_ = Mae lwfansau rhydd o dreth a lwfansau rhydd o dollau gwahanol ar gyfer dod ag alcohol, tybaco a nwyddau eraill i mewn i Ogledd Iwerddon.
