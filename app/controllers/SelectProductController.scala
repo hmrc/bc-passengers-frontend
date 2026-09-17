@@ -22,10 +22,10 @@ import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import models.*
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.data.Form
 import play.api.mvc.*
 import services.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -126,11 +126,11 @@ class SelectProductController @Inject() (
             .get(returnToAddedItemSelectUrlSessionKey)
             .contains(routes.SelectProductController.askProductSelection(path).url)
 
-        val returnToAddedItemEditUrl     =
+        val returnToAddedItemEditUrl      =
           if (useDashboardBackLink) context.request.session.get(returnToAddedItemSessionKey) else None
-        val returnToAddedItemProductPath =
+        val returnToAddedItemProductPath  =
           if (useDashboardBackLink) context.request.session.get(returnToAddedItemProductPathKey) else None
-        val form                         =
+        val form: Form[SelectProductsDto] =
           returnToAddedItemProductPath
             .map(ProductPath.apply)
             .filter(_.components.dropRight(1) == path.components)
