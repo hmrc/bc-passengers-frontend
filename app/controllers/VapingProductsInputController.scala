@@ -117,8 +117,6 @@ class VapingProductsInputController @Inject() (
     } else {
       requirePurchasedProductInstance(iid) { ppi =>
         requireProduct(ppi.path) { product =>
-          println("product" + product)
-          println("ppi" + ppi)
           VapeDto.fromPurchasedProductInstance(ppi) match {
             case Some(dto) =>
               Future.successful(
