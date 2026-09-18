@@ -1541,6 +1541,8 @@ limitExceeded.p1.add.tobacco = Rydych wedi nodi cyfanswm o {0} {1}.
 limitExceeded.p1.add.loose.tobacco = Rydych wedi nodi cyfanswm o {0}{1} {2}.
 limitExceeded.p1.add.vaping_products = You have entered a total of {0} {1} of vaping liquid.
 
+limitExceeded.litre = litr
+limitExceeded.litres = litr
 limitExceeded.millilitre = mililitr
 limitExceeded.millilitres = mililitrau
 
