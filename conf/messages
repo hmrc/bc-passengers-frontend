@@ -172,6 +172,9 @@ label.your_purchases = Your purchases
 label.17_or_over = 17 or over
 label.private_aircraft_or_private_boat = Private aircraft or private boat
 label.other_goods = Other goods
+label.vaping_products = Vaping Products
+label.vaping-products.vape = Vaping Products
+label.vaping-products = Vaping Products
 label.change = Change
 label.cancel = Cancel
 label.edit_this_item = Edit this item
@@ -257,6 +260,7 @@ error.required.other-goods.electronic-devices = Select televisions or all other 
 
 error.required.other-goods.price = Enter the price paid
 label.total_volume_in_litres = Total volume in litres
+label.total_volume_in_millilitres = Total volume of liquid in millilitres
 error.required.volume.alcohol.beer = Enter the volume of beer
 error.required.volume.alcohol.cider.non-sparkling-cider = Enter the volume of cider
 error.required.volume.alcohol.cider.sparkling-cider = Enter the volume of cider
@@ -266,8 +270,12 @@ error.required.volume.alcohol.spirits = Enter the volume of spirits
 error.required.volume.alcohol.wine = Enter the volume of wine
 error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
 error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
+error.required.volume.vaping-products.vape = Enter the total volume of vaping liquid in millilitres
+
 label.litre = litre
 label.litres = litres
+label.millilitre = millilitre
+label.millilitres = millilitres
 label.tobacco.cigarettes = Cigarettes
 label.tobacco.cigarettes.single = Cigarette
 label.tobacco.cigarillos = Cigarillos
@@ -321,6 +329,7 @@ error.required.alcohol.spirits = Enter the price of the spirits
 error.required.alcohol.sparkling-wine = Enter the price of the sparkling wine
 error.required.alcohol.wine = Enter the price of the wine
 error.required.alcohol.other = Enter the price of the other alcoholic drinks
+error.required.vaping-products.vape = Enter the price of the vaping products
 error.required.noofsticks.cigarettes = Enter the number of cigarettes
 error.required.noofsticks.heated-tobacco=Enter the number of units of heated tobacco
 error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
@@ -407,6 +416,7 @@ label.price_paid = Price paid
 label.price_format_description = Enter the amount without a currency sign. For example 1000.40, 1000.4 or 1,000.
 label.country_this_alcohol_was_ = Country this alcohol was bought in
 label.country_this_alcohol_was_produced = Where this alcohol was originally produced
+label.country_this_vaping_was_produced = Where the vaping products were originally produced
 label.if_you_bought_this_alcohol_ = If you bought this alcohol on a plane or boat, enter the country you were travelling from at the time of purchase.
 label.country_this_alcohol_was_produced_hint = If you are unsure where this alcohol was originally produced, leave this blank.
 label.currency_used_to_buy_this_alcohol = Currency used to buy this alcohol
@@ -423,6 +433,12 @@ label.alcohol.other = Other alcohol
 label.alcohol.other.still-or-sparkling = Other alcoholic drinks under 22% abv such as fortified wine or sherry
 label.alcohol.sparkling-wine = Sparkling wine
 label.price_paid_for_item_ = Price paid for item {0}
+
+label.country_this_vaping_was_ = Country the vaping products were bought in
+label.if_you_bought_this_vaping_ = If you bought these vaping products on a plane or boat, enter the country you were travelling from at the time of purchase.
+label.country_this_vaping_was_produced_hint = If you are unsure where these vaping products were orginally produced, leave this blank.
+label.currency_used_to_buy_this_vaping = Currency used to buy the vaping products
+label.price_format_description_vaping = Enter the amount without a currency sign. For example, 983.34.
 
 label.other-goods.adult = Adult clothing and footwear
 label.other-goods.adult.adult-clothing = Adult clothing
@@ -735,6 +751,8 @@ label.do_you_want_to_remove_.other-goods.watches-clocks = Do you want to remove 
 label.do_you_want_to_remove_.other-goods.other = Do you want to remove this item?
 label.do_you_want_to_remove_.other-goods.vaping-products = Do you want to remove the vaping product?
 
+label.do_you_want_to_remove_.vaping-products.vape = Do you want to remove the vaping product?
+
 label.do_you_want_to_remove_.tobacco.cigarettes = Do you want to remove these cigarettes?
 label.do_you_want_to_remove_.tobacco.cigarillos = Do you want to remove these cigarillos?
 label.do_you_want_to_remove_.tobacco.cigars = Do you want to remove these cigars?
@@ -759,6 +777,9 @@ label.X_litres_X = {0} litres {1}
 label.Xg_of_X = {0}g of {1}
 label.X_X = {0} {1}
 label.X_X_Xg = {0} {1}, {2}g
+
+label.X_ml_X = {0} millilitre {1}
+label.X_mls_X = {0} millilitres {1}
 
 label.calculate = Calculate taxes and duties
 
@@ -1512,9 +1533,12 @@ limitExceeded.h1 = You cannot use this service to declare this item
 limitExceeded.p1.add.alcohol = You have entered a total of {0} {1} of {2}.
 limitExceeded.p1.add.tobacco = You have entered a total of {0} {1}.
 limitExceeded.p1.add.loose.tobacco = You have entered a total of {0}{1} {2}.
+limitExceeded.p1.add.vaping_products = You have entered a total of {0} {1} of vaping liquid.
 
 limitExceeded.litre = litre
 limitExceeded.litres = litres
+limitExceeded.millilitre = millilitre
+limitExceeded.millilitres = millilitres
 
 limitExceeded.grams.of = g of
 
@@ -1601,8 +1625,13 @@ limitExceeded.max.limit.rolling-tobacco = 1000g of rolling tobacco
 limitExceeded.max.limit.group.chewing-tobacco = 1000g of loose tobacco
 limitExceeded.max.limit.group.rolling-tobacco = 1000g of loose tobacco
 
+limitExceeded.max.limit.vape = 1000 millilitres of vaping products
+
 limitExceeded.p1.edit.alcohol.a = You changed {0} {1} of {2} {3}.
 limitExceeded.p1.edit.alcohol.b = to {0} {1} of {2}
+
+limitExceeded.p1.edit.vaping.a = You changed {0} {1} of {2} {3}.
+limitExceeded.p1.edit.vaping.b = to {0} {1} of {2}
 
 limitExceeded.p1.edit.tobacco.a = You changed {0} {1} {2}.
 limitExceeded.p1.edit.tobacco.b = to {0} {1}
@@ -1610,10 +1639,12 @@ limitExceeded.p1.edit.tobacco.b = to {0} {1}
 limitExceeded.p1.edit.loose.tobacco = You changed {0}{1} {2} to {3}{1} {2}.
 
 limitExceeded.p2.edit.alcohol = This means your total is now {0} {1} of {2}.
+limitExceeded.p2.edit.vaping = This means your total is now {0} {1} of {2}.
 limitExceeded.p2.edit.tobacco = This means your total is now {0} {1}.
 limitExceeded.p2.edit.loose.tobacco = This means your total is now {0}{1} {2}.
 
 limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1} of {2}.
+limitExceeded.p4.edit.vaping = We will change your item back to {0} {1} of {2}.
 limitExceeded.p4.edit.tobacco = We will change your item back to {0} {1}.
 limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1} {2}.
 

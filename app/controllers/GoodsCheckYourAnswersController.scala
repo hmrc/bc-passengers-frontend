@@ -22,7 +22,7 @@ import controllers.enforce.DashboardAction
 import models.{ProductPath, ProductTreeLeaf}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import services.{AlcoholAndTobaccoCalculationService, CurrencyService, ProductTreeService}
+import services.{AlcoholAndTobaccoCalculationService, CurrencyService, ProductTreeService, VapingProductsCalculationService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendController, FrontendHeaderCarrierProvider}
 import util.*
@@ -35,6 +35,7 @@ class GoodsCheckYourAnswersController @Inject() (
   productTreeService: ProductTreeService,
   currencyService: CurrencyService,
   alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
+  vapingProductsCalculationService: VapingProductsCalculationService,
   cache: Cache,
   val check_your_goods_answers: views.html.purchased_products.check_your_goods_answers,
   override val controllerComponents: MessagesControllerComponents,
@@ -68,7 +69,7 @@ class GoodsCheckYourAnswersController @Inject() (
       val product     = productTreeService.productTree.getDescendant(path).collect { case leaf: ProductTreeLeaf => leaf }
 
       (item, product) match {
-        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol" =>
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol"         =>
           val totalVolumeForAlcohol =
             alcoholAndTobaccoCalculationService.alcoholAddHelper(
               journeyData,
@@ -96,7 +97,30 @@ class GoodsCheckYourAnswersController @Inject() (
                 )
             }
           }
-        case _                                                                                       =>
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "vaping-products" =>
+          val totalVolumeForVape =
+            vapingProductsCalculationService
+              .vapeAddHelper(journeyData, BigDecimal(0), productTreeLeaf.token)
+          if (
+            vapeVolumeConstraint(
+              journeyData,
+              totalVolumeForVape,
+              productTreeLeaf.token
+            )
+          )
+            Future.successful(Redirect(routes.SelectProductController.nextStep()))
+          else {
+            implicit val headerCarrier: HeaderCarrier = hc(context.request)
+            cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
+              Redirect(routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path))
+                .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
+                .addingToSession(
+                  s"user-amount-input-${productTreeLeaf.token}" ->
+                    purchasedItem.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                )
+            }
+          }
+        case _                                                                                               =>
           Future.successful(Redirect(routes.SelectProductController.nextStep()))
       }
     }

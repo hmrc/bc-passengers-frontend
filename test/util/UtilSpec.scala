@@ -204,4 +204,51 @@ class UtilSpec extends BaseSpec {
       }
     }
   }
+
+  "validating vaping-products volume" should {
+    val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+      path = ProductPath("vaping-products/vape"),
+      iid = "iid0",
+      weightOrVolume = Some(20.00),
+      currency = Some("GBP"),
+      cost = Some(100.00)
+    )
+
+    def journeyData(purchasedProductInstances: List[PurchasedProductInstance]): JourneyData = JourneyData(
+      prevDeclaration = Some(false),
+      euCountryCheck = Some("greatBritain"),
+      arrivingNICheck = Some(true),
+      bringingOverAllowance = Some(true),
+      isUKResident = Some(false),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = purchasedProductInstances
+    )
+
+    "return true" when {
+      Seq(
+        ("vape", 49)
+      ).foreach { case (productToken, volume) =>
+        s"supplied volume is less than the limit for $productToken" in {
+          vapeVolumeConstraint(journeyData(List(purchasedProductInstance)), volume, productToken) shouldBe true
+        }
+      }
+
+      Seq(
+        ("vape", 1000)
+      ).foreach { case (productToken, volume) =>
+        s"supplied volume is equal to the limit for $productToken" in {
+          vapeVolumeConstraint(journeyData(List(purchasedProductInstance)), volume, productToken) shouldBe true
+        }
+      }
+    }
+
+    Seq(
+      ("vape", 1001)
+    ).foreach { case (productToken, volume) =>
+      s"return false when supplied volume is greater than the limit for $productToken" in {
+        vapeVolumeConstraint(journeyData(Nil), volume, productToken) shouldBe false
+      }
+    }
+  }
 }

@@ -172,6 +172,9 @@ label.your_purchases=Yr hyn rydych wedi’i brynu
 label.17_or_over=yn 17 neu’n hŷn
 label.private_aircraft_or_private_boat=Awyren breifat neu gwch preifat
 label.other_goods=Nwyddau eraill
+label.vaping_products = Cynhyrchion fepio
+label.vaping-products.vape = Cynhyrchion fepio
+label.vaping-products = Cynhyrchion fepio
 label.change=Newid
 label.cancel=Canslo
 label.edit_this_item=Golygu’r eitem hon
@@ -257,6 +260,7 @@ error.required.other-goods.electronic-devices=Dewiswch setiau teledu neu bob dyf
 
 error.required.other-goods.price = Nodwch y pris a dalwyd
 label.total_volume_in_litres=Cyfanswm cyfaint mewn litrau
+label.total_volume_in_millilitres = Cyfanswm cyfaint yr hylif mewn mililitrau
 error.required.volume.alcohol.beer=Nodwch gyfaint y cwrw
 error.required.volume.alcohol.cider.non-sparkling-cider=Nodwch gyfaint y seidr
 error.required.volume.alcohol.cider.sparkling-cider=Nodwch gyfaint y seidr
@@ -266,8 +270,12 @@ error.required.volume.alcohol.spirits=Nodwch gyfaint y gwirodydd
 error.required.volume.alcohol.wine=Nodwch gyfaint y gwin
 error.required.volume.alcohol.other=Nodwch gyfaint y diodydd alcoholaidd eraill
 error.invalid.characters.volume=Mae’n rhaid i’r cyfaint gynnwys rhifau’n unig, megis 12 neu 6.55
+error.required.volume.vaping-products.vape = Nodwch gyfanswm cyfaint yr hylif fepio mewn mililitrau
+
 label.litre=litr
 label.litres=litr
+label.millilitre = mililitr
+label.millilitres = millilitres
 label.tobacco.cigarettes=Sigaréts
 label.tobacco.cigarettes.single=Sigarét
 label.tobacco.cigarillos=Sigarilos
@@ -321,6 +329,7 @@ error.required.alcohol.spirits=Nodwch bris y gwirodydd
 error.required.alcohol.sparkling-wine=Nodwch bris y gwin pefriog
 error.required.alcohol.wine=Nodwch bris y gwin
 error.required.alcohol.other=Nodwch bris y diodydd alcoholaidd eraill
+error.required.vaping-products.vape = Nodwch bris y cynhyrchion fepio
 error.required.noofsticks.cigarettes=Nodwch nifer y sigaréts
 error.required.noofsticks.heated-tobacco=Nodwch nifer yr unedau o dybaco gwresogi nid llosgi
 error.required.weight.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
@@ -407,6 +416,7 @@ label.price_paid=Y pris a dalwyd
 label.price_format_description = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 1000.40, 1000.4 neu 1,000.
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
 label.country_this_alcohol_was_produced = Ble y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol
+label.country_this_vaping_was_produced = Ble y cafodd y cynhyrchion fepio eu cynhyrchu’n wreiddiol
 label.if_you_bought_this_alcohol_=Os prynoch yr alcohol hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu.
 label.country_this_alcohol_was_produced_hint = Os nad ydych yn siŵr lle y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol, gadewch hyn yn wag
 label.currency_used_to_buy_this_alcohol=Yr arian cyfred a ddefnyddiwyd i brynu’r alcohol hwn
@@ -423,6 +433,12 @@ label.alcohol.other=Alcohol arall
 label.alcohol.other.still-or-sparkling=Diodydd alcoholaidd eraill o dan 22% ABV, fel gwin cadarn neu sieri
 label.alcohol.sparkling-wine=Gwin pefriog
 label.price_paid_for_item_=Y pris a dalwyd ar gyfer eitem {0}
+
+label.country_this_vaping_was_ = Y wlad y cafodd y cynhyrchion fepio eu prynu ynddi
+label.if_you_bought_this_vaping_ = Os prynoch chi’r cynhyrchion fepio hyn ar awyren neu gwch, nodwch y wlad roeddech chi’n teithio ohoni ar yr adeg brynu.
+label.country_this_vaping_was_produced_hint = Os nad ydych chi’n siŵr lle y cafodd y cynhyrchion fepio hyn eu cynhyrchu’n wreiddiol, gadewch hyn yn wag.
+label.currency_used_to_buy_this_vaping = Yr arian cyfred a gafodd ei ddefnyddio i brynu’r cynhyrchion fepio
+label.price_format_description_vaping = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 983.34.
 
 label.other-goods.adult=Dillad ac esgidiau i oedolion
 label.other-goods.adult.adult-clothing=Dillad i oedolion
@@ -741,6 +757,8 @@ label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r ori
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
 label.do_you_want_to_remove_.other-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
 
+label.do_you_want_to_remove_.vaping-products.vape = A ydych am dynnu’r cynnyrch fepio?
+
 label.do_you_want_to_remove_.tobacco.cigarettes=A ydych am dynnu’r sigaréts hyn?
 label.do_you_want_to_remove_.tobacco.cigarillos=A ydych am dynnu’r sigarilos hyn?
 label.do_you_want_to_remove_.tobacco.cigars=A ydych am dynnu’r sigârs hyn?
@@ -765,6 +783,9 @@ label.X_litres_X={0} litr {1}
 label.Xg_of_X={0}g o {1}
 label.X_X={0} {1}
 label.X_X_Xg={0} {1}, {2}g
+
+label.X_ml_X = {0} mililitrau {1}
+label.X_mls_X = {0} mililitrau {1}
 
 label.calculate=Cyfrifo trethi a thollau
 
@@ -1518,9 +1539,12 @@ limitExceeded.h1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan yr eitem ho
 limitExceeded.p1.add.alcohol = Rydych wedi nodi cyfanswm o {0} {1} o {2}.
 limitExceeded.p1.add.tobacco = Rydych wedi nodi cyfanswm o {0} {1}.
 limitExceeded.p1.add.loose.tobacco = Rydych wedi nodi cyfanswm o {0}{1} {2}.
+limitExceeded.p1.add.vaping_products = You have entered a total of {0} {1} of vaping liquid.
 
 limitExceeded.litre = litr
 limitExceeded.litres = litr
+limitExceeded.millilitre = mililitr
+limitExceeded.millilitres = mililitrau
 
 limitExceeded.grams.of = g o
 
@@ -1609,6 +1633,9 @@ limitExceeded.max.limit.group.rolling-tobacco = 1000 gram o dybaco rhydd
 
 limitExceeded.p1.edit.alcohol.a = Rydych wedi newid {0} {1} o {2} {3}.
 limitExceeded.p1.edit.alcohol.b = i {0} {1} o {2}
+
+limitExceeded.p1.edit.vaping.a = Rydych wedi newid {0} {1} o {2} {3}.
+limitExceeded.p1.edit.vaping.b = i {0} {1} o {2}
 
 limitExceeded.p1.edit.tobacco.a = Rydych wedi newid {0} {1} {2}.
 limitExceeded.p1.edit.tobacco.b = i {0} {1}

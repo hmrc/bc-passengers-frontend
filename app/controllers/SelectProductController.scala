@@ -72,23 +72,27 @@ class SelectProductController @Inject() (
 
             case ProductTreeLeaf(_, _, _, templateId, _) =>
               templateId match {
-                case "alcohol"     =>
+                case "alcohol"         =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "cigarettes"  =>
+                case "cigarettes"      =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "cigars"      =>
+                case "cigars"          =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "tobacco"     =>
+                case "tobacco"         =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
+                case "vaping-products" =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "other-goods"     => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
               }
 
           }
