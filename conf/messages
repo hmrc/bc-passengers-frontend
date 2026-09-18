@@ -77,9 +77,13 @@ text.gb.allowance.msg_1.still-or-sparkling = You can split this last allowance, 
 text.gb.allowance.msg_2 = You will need to pay tax on all alcohol within each of these three allowances if you go over the individual limits. For example, if you are bringing in 50 litres of beer you will need to pay tax on all 50 litres.
 text.gb.allowance.still-or-sparkling = If you’re travelling to Great Britain (England, Scotland and Wales) or the Isle of Man, you can bring in a certain amount of goods without paying tax or duty. This is known as your personal allowance. There are different allowances for alcohol, tobacco and other goods.
 text.gb.allowance.under_17.still-or-sparkling = If you are under the age of 17, the allowances do not apply. You will have to pay duty and tax on any amount of alcohol or tobacco that you bring in.
+text.gb.allowance.still-or-sparkling_vp = If you’re travelling to Great Britain (England, Scotland and Wales) or the Isle of Man, you can bring in a certain amount of goods without paying tax or duty. This is known as your personal allowance. There are different allowances for alcohol, tobacco, vaping products and other goods.
+text.gb.allowance.under_17.still-or-sparkling_vp = If you are under the age of 17, the allowances do not apply. You will have to pay duty and tax on any amount of alcohol, tobacco or vaping products that you bring in.
 text.alcohol_allowance.still-or-sparkling = Your allowance for alcohol
 text.tobacco_allowance.still-or-sparkling = Your allowance for tobacco
 text.other_goods_allowance.still-or-sparkling = Your allowance for other goods
+text.vaping_products_allowance = Your allowance for vaping products
+
 text.you_can_bring_in.still-or-sparkling = You can bring in the following amounts without paying tax or duty:
 text.gb.allowance.over_heading.still-or-sparkling = If you bring more than your allowance
 text.gb.allowance.alcohol_over.still-or-sparkling = You will need to pay tax on all alcohol if you go over the limit of an allowance.
@@ -91,6 +95,9 @@ text.allowance.otg_1.still-or-sparkling = You can bring a total of £390 worth o
 text.allowance.other_over_heading.still-or-sparkling = If you bring more than your allowance
 text.allowance.other_over.still-or-sparkling = You will need to pay tax on all other goods if you go over the allowance.
 text.allowance.other_over_example.still-or-sparkling = For example, if you bring a £500 laptop and a £100 watch you will need to pay tax on the watch and the laptop.
+text.allowance.vaping_products_you_can_bring = You can bring vaping products containing up to 50ml of vaping liquid without paying tax or duty.
+text.allowance.vaping_products_you_will_need_to_pay_tax = You will need to pay tax on all vaping products if you go over the allowance.
+text.allowance.vaping_products_for_example = For example, if you bring a 50ml bottle of vaping liquid and a pack of four 2ml vape pods you will need to pay tax on all 58ml of vaping liquid in your vaping products.
 
 text.if_you_bring_in_goods_over_ = If you bring in goods over your allowances, you must declare them.
 text.our_online_calculator_accepts_ = Our online calculator accepts most foreign currencies and will work out the tax due in British pounds.
