@@ -104,7 +104,7 @@ class AddItemControllerSpec extends BaseSpec {
           .withFormUrlEncodedBody("goodsType" -> "vaping-products")
       ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/vaping-products/vape/tell-us"
       )
