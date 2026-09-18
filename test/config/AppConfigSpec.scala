@@ -17,33 +17,19 @@
 package config
 
 import org.scalatest.matchers.should.Matchers
-import org.mockito.Mockito.*
-import util.{BaseSpec, WineStillOrSparklingFeature}
+import util.{BaseSpec, VapingProductsFeature, WineStillOrSparklingFeature}
 
-class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature {
+class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature with VapingProductsFeature {
 
-  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
-  val appConfig: AppConfig     = injected[AppConfig]
+  val appConfig: AppConfig = injected[AppConfig]
 
   "AppConfig" should {
     "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
-      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
-      mockAppConfig.isVapingJourneyEnabled shouldBe true
+      appConfigVpToggleOn.isVapingJourneyEnabled shouldBe true
     }
 
     "read isVapingJourneyEnabled as false when toggle.isVapingJourneyEnabled is false" in {
-      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(false)
-      mockAppConfig.isVapingJourneyEnabled shouldBe false
-    }
-
-    "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
-      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
-      mockAppConfig.isVapingJourneyEnabled shouldBe true
-    }
-
-    "read isVapingJourneyEnabled as false when toggle.isVapingJourneyEnabled is false" in {
-      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(false)
-      mockAppConfig.isVapingJourneyEnabled shouldBe false
+      appConfigVpToggleOff.isVapingJourneyEnabled shouldBe false
     }
 
     "return the correct declareGoodsUrl" in {

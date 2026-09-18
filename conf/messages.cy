@@ -270,6 +270,8 @@ error.required.volume.alcohol.spirits=Nodwch gyfaint y gwirodydd
 error.required.volume.alcohol.wine=Nodwch gyfaint y gwin
 error.required.volume.alcohol.other=Nodwch gyfaint y diodydd alcoholaidd eraill
 error.invalid.characters.volume=Mae’n rhaid i’r cyfaint gynnwys rhifau’n unig, megis 12 neu 6.55
+error.required.volume.vaping-products.vape = Nodwch gyfanswm cyfaint yr hylif fepio mewn mililitrau
+
 label.litre=litr
 label.litres=litr
 label.millilitre = mililitr
@@ -327,6 +329,7 @@ error.required.alcohol.spirits=Nodwch bris y gwirodydd
 error.required.alcohol.sparkling-wine=Nodwch bris y gwin pefriog
 error.required.alcohol.wine=Nodwch bris y gwin
 error.required.alcohol.other=Nodwch bris y diodydd alcoholaidd eraill
+error.required.vaping-products.vape = Nodwch bris y cynhyrchion fepio
 error.required.noofsticks.cigarettes=Nodwch nifer y sigaréts
 error.required.noofsticks.heated-tobacco=Nodwch nifer yr unedau o dybaco gwresogi nid llosgi
 error.required.weight.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
@@ -1536,9 +1539,10 @@ limitExceeded.h1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan yr eitem ho
 limitExceeded.p1.add.alcohol = Rydych wedi nodi cyfanswm o {0} {1} o {2}.
 limitExceeded.p1.add.tobacco = Rydych wedi nodi cyfanswm o {0} {1}.
 limitExceeded.p1.add.loose.tobacco = Rydych wedi nodi cyfanswm o {0}{1} {2}.
+limitExceeded.p1.add.vaping_products = You have entered a total of {0} {1} of vaping liquid.
 
-limitExceeded.litre = litr
-limitExceeded.litres = litr
+limitExceeded.millilitre = mililitr
+limitExceeded.millilitres = mililitrau
 
 limitExceeded.grams.of = g o
 
@@ -1627,6 +1631,9 @@ limitExceeded.max.limit.group.rolling-tobacco = 1000 gram o dybaco rhydd
 
 limitExceeded.p1.edit.alcohol.a = Rydych wedi newid {0} {1} o {2} {3}.
 limitExceeded.p1.edit.alcohol.b = i {0} {1} o {2}
+
+limitExceeded.p1.edit.vaping.a = Rydych wedi newid {0} {1} o {2} {3}.
+limitExceeded.p1.edit.vaping.b = i {0} {1} o {2}
 
 limitExceeded.p1.edit.tobacco.a = Rydych wedi newid {0} {1} {2}.
 limitExceeded.p1.edit.tobacco.b = i {0} {1}

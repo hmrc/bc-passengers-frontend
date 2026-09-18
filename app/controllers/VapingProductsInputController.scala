@@ -123,10 +123,7 @@ class VapingProductsInputController @Inject() (
                 Ok(
                   vaping_products_input(
                     vapingProductsInputForm.vapingProductsForm(ppi.path).fill(dto),
-                    backLinkForAddedItemEdit(
-                      backLinkModel.backLink,
-                      routes.VapingProductsInputController.displayEditForm(iid).url
-                    ),
+                    backLinkModel.backLink,
                     customBackLink = true,
                     ppi.path,
                     Some(iid),

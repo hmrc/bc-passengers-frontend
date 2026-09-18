@@ -29,7 +29,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
 
   private[views] def selectProduct[A](
     productName: String
-  )(alcohol: Option[A], stickTobacco: Option[A], looseTobacco: Option[A]): Option[A] =
+  )(alcohol: Option[A], vapingProducts: Option[A], stickTobacco: Option[A], looseTobacco: Option[A]): Option[A] =
     productName match {
       case name if name.contains("alcohol")    => alcohol
       case name if name.contains("cigarettes") => stickTobacco
@@ -80,6 +80,37 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                   "limitExceeded.p1.add.alcohol",
                   totalAmount,
                   messages("limitExceeded.litres"),
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
+                )
+              ),
+              id = Some("entered-amount")
+            )
+          )
+        ),
+        vapingProducts = Option(
+          determineSingularOrPlural(
+            amount = totalAmount,
+            singular = p(
+              Html(
+                messages(
+                  "limitExceeded.p1.add.vaping_products",
+                  totalAmount,
+                  messages("limitExceeded.millilitre"),
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
+                )
+              ),
+              id = Some("entered-amount")
+            ),
+            plural = p(
+              Html(
+                messages(
+                  "limitExceeded.p1.add.vaping_products",
+                  totalAmount,
+                  messages("limitExceeded.millilitre"),
                   messages(
                     if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
                   )
@@ -174,6 +205,22 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
             )
           )
         ),
+        vapingProducts = Option(
+          panelIndent(
+            Html(
+              messages(
+                "limitExceeded.add.panelIndent",
+                userInput,
+                determineSingularOrPlural(
+                  userInput,
+                  messages("limitExceeded.millilitre"),
+                  messages("limitExceeded.millilitres")
+                ),
+                messages(s"limitExceeded.$productToken")
+              )
+            )
+          )
+        ),
         stickTobacco = Option(
           panelIndent(
             Html(
@@ -239,6 +286,33 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
                     userInput,
                     messages("limitExceeded.litre"),
                     messages("limitExceeded.litres")
+                  ),
+                  messages(s"limitExceeded.$productToken")
+                )
+              )
+            ),
+            id = Some("entered-amount")
+          )
+        ),
+        vapingProducts = Option(
+          p(
+            Html(
+              messages(
+                "limitExceeded.p1.edit.vaping.a",
+                originalAmountFormatted,
+                determineSingularOrPlural(
+                  originalAmountFormatted,
+                  messages("limitExceeded.millilitre"),
+                  messages("limitExceeded.millilitres")
+                ),
+                messages(s"limitExceeded.$productToken"),
+                messages(
+                  "limitExceeded.p1.edit.vaping.b",
+                  userInput,
+                  determineSingularOrPlural(
+                    userInput,
+                    messages("limitExceeded.millilitre"),
+                    messages("limitExceeded.millilitres")
                   ),
                   messages(s"limitExceeded.$productToken")
                 )
@@ -321,6 +395,37 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
             )
           )
         ),
+        vapingProducts = Option(
+          determineSingularOrPlural(
+            totalAmount,
+            p(
+              Html(
+                messages(
+                  "limitExceeded.p2.edit.vaping",
+                  totalAmount,
+                  messages(s"limitExceeded.millilitre"),
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
+                )
+              ),
+              id = Some("new-total-amount")
+            ),
+            p(
+              Html(
+                messages(
+                  "limitExceeded.p2.edit.vaping",
+                  totalAmount,
+                  messages(s"limitExceeded.millilitres"),
+                  messages(
+                    if (showGroupMessage) s"limitExceeded.group.$productToken" else s"limitExceeded.$productToken"
+                  )
+                )
+              ),
+              id = Some("new-total-amount")
+            )
+          )
+        ),
         stickTobacco = Option(
           p(
             Html(
@@ -376,6 +481,23 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     val p4Content =
       selectProduct(productName)(
         alcohol = Option(
+          p(
+            Html(
+              messages(
+                "limitExceeded.p4.edit.vaping",
+                originalAmountFormatted,
+                determineSingularOrPlural(
+                  originalAmountFormatted,
+                  messages(s"limitExceeded.millilitre"),
+                  messages(s"limitExceeded.millilitres")
+                ),
+                messages(s"limitExceeded.$productToken")
+              )
+            ),
+            id = Some("revert-back")
+          )
+        ),
+        vapingProducts = Option(
           p(
             Html(
               messages(

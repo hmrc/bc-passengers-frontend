@@ -69,7 +69,7 @@ class GoodsCheckYourAnswersController @Inject() (
       val product     = productTreeService.productTree.getDescendant(path).collect { case leaf: ProductTreeLeaf => leaf }
 
       (item, product) match {
-        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol" =>
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol"         =>
           val totalVolumeForAlcohol =
             alcoholAndTobaccoCalculationService.alcoholAddHelper(
               journeyData,
@@ -120,7 +120,7 @@ class GoodsCheckYourAnswersController @Inject() (
                 )
             }
           }
-        case _                                                                                       =>
+        case _                                                                                               =>
           Future.successful(Redirect(routes.SelectProductController.nextStep()))
       }
     }

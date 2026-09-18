@@ -138,7 +138,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       )
     }
 
-    "continue to the item completion route when the item is within the limit" in {
+    "continue to the item completion route when the vaping item is within the limit" in {
       val result =
         route(
           app,
@@ -152,7 +152,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
-    "continue to the item completion route when the item is over the limit" in {
+    "continue to the item completion route when the vaping item is over the limit" in {
       def journeyDataWith(instance: PurchasedProductInstance): JourneyData =
         journeyData.copy(purchasedProductInstances = List(instance))
       val overLimit                                                        =
@@ -169,7 +169,9 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
         ).get
 
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/vaping-products/vape/upper-limits/volume"
+      )
     }
   }
 }

@@ -38,11 +38,12 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   val features: config.features.Features         = new config.features.Features(runModeConfiguration)
 
   def isWineStillOrSparklingEnabled: Boolean = features.wineStillOrSparklingEnabled()
-  lazy val timeout: Int                      = servicesConfig.getInt("timeout.timeout")
-  lazy val countdown: Int                    = servicesConfig.getInt("timeout.countdown")
-  lazy val CMAEnabled: Boolean               = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
+  def isVapingJourneyEnabled: Boolean        = features.vapingProductsEnabled()
 
-  lazy val isVapingJourneyEnabled: Boolean     = runModeConfiguration.get[Boolean]("toggle.isVapingJourneyEnabled")
+  lazy val timeout: Int        = servicesConfig.getInt("timeout.timeout")
+  lazy val countdown: Int      = servicesConfig.getInt("timeout.countdown")
+  lazy val CMAEnabled: Boolean = runModeConfiguration.get[Boolean]("feature.isUsingCMA")
+
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.get[Seq[String]]("play.i18n.langs").contains("cy")
 
 }

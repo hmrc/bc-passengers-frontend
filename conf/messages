@@ -270,8 +270,8 @@ error.required.volume.alcohol.spirits = Enter the volume of spirits
 error.required.volume.alcohol.wine = Enter the volume of wine
 error.required.volume.alcohol.other = Enter the volume of other alcoholic drinks
 error.invalid.characters.volume = Volume must only include numbers, such as 12 or 6.55
+error.required.volume.vaping-products.vape = Enter the total volume of vaping liquid in millilitres
 
-error.required.volume.vaping-products.vape = Enter the volume of Vaping products
 label.litre = litre
 label.litres = litres
 label.millilitre = millilitre
@@ -329,7 +329,7 @@ error.required.alcohol.spirits = Enter the price of the spirits
 error.required.alcohol.sparkling-wine = Enter the price of the sparkling wine
 error.required.alcohol.wine = Enter the price of the wine
 error.required.alcohol.other = Enter the price of the other alcoholic drinks
-error.required.vaping-products.vape = Enter the price of the Vaping products
+error.required.vaping-products.vape = Enter the price of the vaping products
 error.required.noofsticks.cigarettes = Enter the number of cigarettes
 error.required.noofsticks.heated-tobacco=Enter the number of units of heated tobacco
 error.required.weight.tobacco.chewing-tobacco = Enter the weight of the pipe or chewing tobacco
@@ -1533,9 +1533,13 @@ limitExceeded.h1 = You cannot use this service to declare this item
 limitExceeded.p1.add.alcohol = You have entered a total of {0} {1} of {2}.
 limitExceeded.p1.add.tobacco = You have entered a total of {0} {1}.
 limitExceeded.p1.add.loose.tobacco = You have entered a total of {0}{1} {2}.
+limitExceeded.p1.add.vaping_products = You have entered a total of {0} {1} of vaping liquid.
 
 limitExceeded.litre = litre
 limitExceeded.litres = litres
+
+limitExceeded.millilitre = millilitre
+limitExceeded.millilitres = millilitres
 
 limitExceeded.grams.of = g of
 
@@ -1627,16 +1631,21 @@ limitExceeded.max.limit.vape = 1000 millilitres of vaping products
 limitExceeded.p1.edit.alcohol.a = You changed {0} {1} of {2} {3}.
 limitExceeded.p1.edit.alcohol.b = to {0} {1} of {2}
 
+limitExceeded.p1.edit.vaping.a = You changed {0} {1} of {2} {3}.
+limitExceeded.p1.edit.vaping.b = to {0} {1} of {2}
+
 limitExceeded.p1.edit.tobacco.a = You changed {0} {1} {2}.
 limitExceeded.p1.edit.tobacco.b = to {0} {1}
 
 limitExceeded.p1.edit.loose.tobacco = You changed {0}{1} {2} to {3}{1} {2}.
 
 limitExceeded.p2.edit.alcohol = This means your total is now {0} {1} of {2}.
+limitExceeded.p2.edit.vaping = This means your total is now {0} {1} of {2}.
 limitExceeded.p2.edit.tobacco = This means your total is now {0} {1}.
 limitExceeded.p2.edit.loose.tobacco = This means your total is now {0}{1} {2}.
 
 limitExceeded.p4.edit.alcohol = We will change your item back to {0} {1} of {2}.
+limitExceeded.p4.edit.vaping = We will change your item back to {0} {1} of {2}.
 limitExceeded.p4.edit.tobacco = We will change your item back to {0} {1}.
 limitExceeded.p4.edit.loose.tobacco = We will change your item back to {0}{1} {2}.
 
