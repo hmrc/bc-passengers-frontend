@@ -135,12 +135,11 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     backLink = None
   )(request, messages, appConfigToggle(enabled))
 
-  "DoneView" when {
+  "DoneView" when
     renderViewTest(
       title = "Additional tax due on these goods - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Additional tax due on these goods £0.00"
     )
-  }
 
   "DoneView with the wine-still-or-sparkling toggle" should {
 
