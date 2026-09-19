@@ -30,6 +30,8 @@
 
 @isToggleOn = @{ appConfig.isWineStillOrSparklingEnabled }
 
+@isVpToggleOn = @{ appConfig.isVapingJourneyEnabled }
+
 @msgKey(key: String) = @{
     if(isToggleOn) s"$key.still-or-sparkling" else key
 }
@@ -43,11 +45,23 @@
         @errorSummary(form.errors, Some("value-yes"))
         @h1(messages(headingKey))
 
-        @p{@messages(msgKey("text.gb.allowance"))}
+        @p{
+            @if(isVpToggleOn) {
+                @messages("text.gb.allowance.still-or-sparkling_vp")
+            } else {
+                @messages(msgKey("text.gb.allowance"))
+            }
+        }
 
         @if(isToggleOn) {
             @panelIndent {
-                @p{@messages("text.gb.allowance.under_17.still-or-sparkling")}
+                @p{
+                    @if(isVpToggleOn) {
+                        @messages("text.gb.allowance.under_17.still-or-sparkling_vp")
+                    } else {
+                        @messages("text.gb.allowance.under_17.still-or-sparkling")
+                    }
+                }
             }
         }
 
@@ -95,6 +109,15 @@
             @panelIndent {
                 @p{@messages("text.allowance.msg_6")}
             }
+        }
+
+        @if(isVpToggleOn) {
+            @h2(messages("text.vaping_products_allowance"))
+            @p{@messages("text.allowance.vaping_products_you_can_bring")}
+
+            <h3 class="govuk-heading-s">@messages("heading.if_you_bring_more_than_your_allowance")</h3>
+            @p{@messages("text.allowance.vaping_products_you_will_need_to_pay_tax")}
+            @p{@messages("text.allowance.vaping_products_for_example")}
         }
 
         @h2(messages(msgKey("text.other_goods_allowance")))
