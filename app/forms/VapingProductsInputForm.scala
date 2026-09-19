@@ -30,6 +30,21 @@ class VapingProductsInputForm @Inject() (
   currencyService: CurrencyService
 ) {
 
+  val resilientForm: Form[VapeDto] = Form(
+    mapping(
+      "weightOrVolume" -> optional(text)
+        .transform[BigDecimal](_.flatMap(x => Try(BigDecimal(x)).toOption).getOrElse(0), _ => None),
+      "country"        -> ignored(""),
+      "originCountry"  -> optional(text),
+      "currency"       -> ignored(""),
+      "cost"           -> ignored(BigDecimal(0)),
+      "isVatPaid"      -> optional(boolean),
+      "isExcisePaid"   -> optional(boolean),
+      "isCustomPaid"   -> optional(boolean),
+      "hasEvidence"    -> optional(boolean)
+    )(VapeDto.apply)(o => Some(Tuple.fromProductTyped(o)))
+  )
+
   def vapingProductsForm(path: ProductPath): Form[VapeDto] = Form(
     mapping(
       "weightOrVolume" -> optional(text)

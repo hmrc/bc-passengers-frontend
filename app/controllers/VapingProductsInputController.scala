@@ -21,7 +21,7 @@ import connectors.Cache
 import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
 import forms.VapingProductsInputForm
-import models.{ProductPath, VapeDto}
+import models.{JourneyData, ProductPath, VapeDto}
 import play.api.i18n.I18nSupport
 import play.api.mvc.*
 import services.*
@@ -49,6 +49,30 @@ class VapingProductsInputController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
+  private def navigationHelper(
+    jd: JourneyData,
+    productPath: ProductPath,
+    iid: String,
+    originCountry: Option[String],
+    isAddJourney: Boolean
+  )(implicit context: LocalContext): Result =
+    val result = (jd.arrivingNICheck, jd.euCountryCheck) match {
+      case (Some(true), Some("greatBritain"))                                                    =>
+        Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(productPath, iid))
+      case (Some(false), Some("euOnly")) if countriesService.isInEu(originCountry.getOrElse("")) =>
+        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(productPath, iid))
+      case _                                                                                     =>
+        Redirect(routes.GoodsCheckYourAnswersController.show(productPath, iid))
+    }
+    if (isAddJourney)
+      markReturnToAddedItem(
+        result,
+        routes.VapingProductsInputController.displayEditForm(iid).url,
+        productPath,
+        Some(routes.GoodsCheckYourAnswersController.show(productPath, iid).url)
+      )
+    else result
+
   private def submittedIid(implicit context: LocalContext): Option[String] =
     context.request.body.asFormUrlEncoded
       .flatMap(_.get("iid").flatMap(_.headOption))
@@ -57,55 +81,33 @@ class VapingProductsInputController @Inject() (
     if (context.journeyData.isDefined && context.getJourneyData.amendState.getOrElse("").equals("pending-payment")) {
       Future.successful(Redirect(routes.PreviousDeclarationController.loadPreviousDeclarationPage))
     } else {
-      withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
-        val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
-        val baseForm           = vapingProductsInputForm.vapingProductsForm(path)
-        val formForView        =
-          defaultOriginCountry.filter(_.trim.nonEmpty) match {
-            case Some(oc) =>
-              baseForm
-                .bind(Map("originCountry" -> oc))
-                .discardingErrors
-            case None     =>
-              baseForm
-          }
-        term.size match {
-          case 1 =>
-            cache
-              .storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil))
-              .map(_ =>
-                Ok(
-                  vaping_products_input(
-                    formForView,
-                    backLinkModel.backLink,
-                    customBackLink = false,
-                    path,
-                    None,
-                    countriesService.getAllCountries,
-                    countriesService.getAllCountriesAndEu,
-                    currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
-                  )
-                )
+      requireProduct(path) { product =>
+        withDefaults(context.getJourneyData) { defaultCountry => defaultOriginCountry => defaultCurrency =>
+          val baseForm    = vapingProductsInputForm.vapingProductsForm(path)
+          val formForView =
+            defaultOriginCountry.filter(_.trim.nonEmpty) match {
+              case Some(oc) =>
+                baseForm
+                  .bind(Map("originCountry" -> oc))
+                  .discardingErrors
+              case None     =>
+                baseForm
+            }
+          Future.successful(
+            Ok(
+              vaping_products_input(
+                formForView,
+                backLinkModel.backLink,
+                customBackLink = false,
+                path,
+                None,
+                countriesService.getAllCountries,
+                countriesService.getAllCountriesAndEu,
+                currencyService.getAllCurrencies,
+                context.getJourneyData.euCountryCheck
               )
-          case _ =>
-            cache
-              .storeJourneyData(context.getJourneyData.copy(selectedAliases = Nil))
-              .map(_ =>
-                Ok(
-                  vaping_products_input(
-                    formForView,
-                    backLinkModel.backLink,
-                    customBackLink = false,
-                    path,
-                    None,
-                    countriesService.getAllCountries,
-                    countriesService.getAllCountriesAndEu,
-                    currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
-                  )
-                )
-              )
+            )
+          )
         }
       }
     }
@@ -145,79 +147,37 @@ class VapingProductsInputController @Inject() (
   }
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    val processContinue = vapingProductsInputForm
-      .vapingProductsForm(path)
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          Future.successful(
-            BadRequest(
-              vaping_products_input(
-                formWithErrors,
-                backLinkModel.backLink,
-                customBackLink = false,
-                path,
-                None,
-                countriesService.getAllCountries,
-                countriesService.getAllCountriesAndEu,
-                currencyService.getAllCurrencies,
-                context.getJourneyData.euCountryCheck
-              )
-            )
-          ),
-        dto =>
-          requireProduct(path) { _ =>
-            val jd = submittedIid.fold(
-              newPurchaseService.insertPurchases(
-                path,
-                Some(dto.weightOrVolume),
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost)
-              )
-            )(iid =>
-              newPurchaseService.insertPurchasesWithIid(
-                path,
-                Some(dto.weightOrVolume),
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost),
-                iid
-              )
-            )
-            cache.store(jd._1) map { _ =>
-              markReturnToAddedItem(
-                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                  case (Some(true), Some("greatBritain")) =>
-                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(path, jd._2))
-                  case (Some(false), Some("euOnly"))      =>
-                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(path, jd._2))
-                    } else {
-                      Redirect(routes.GoodsCheckYourAnswersController.show(path, jd._2))
-                    }
-                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(path, jd._2))
-                },
-                routes.VapingProductsInputController.displayEditForm(jd._2).url,
-                path,
-                Some(routes.GoodsCheckYourAnswersController.show(path, jd._2).url)
-              )
-            }
-          }
-      )
-    processContinue
-
-  }
-
-  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    requirePurchasedProductInstance(iid) { ppi =>
-      requireProduct(ppi.path) { _ =>
-        def processContinue = vapingProductsInputForm
-          .vapingProductsForm(ppi.path)
+    requireLimitUsage {
+      val dto =
+        vapingProductsInputForm.resilientForm.bindFromRequest().value.get
+      submittedIid
+        .fold(
+          newPurchaseService.insertPurchases(
+            path,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            List(dto.cost)
+          )
+        )(iid =>
+          newPurchaseService.insertPurchasesWithIid(
+            path,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            List(dto.cost),
+            iid
+          )
+        )
+        ._1
+    } { _ =>
+      requireProduct(path) { product =>
+        vapingProductsInputForm
+          .vapingProductsForm(path)
           .bindFromRequest()
           .fold(
             formWithErrors =>
@@ -226,9 +186,9 @@ class VapingProductsInputController @Inject() (
                   vaping_products_input(
                     formWithErrors,
                     backLinkModel.backLink,
-                    customBackLink = true,
-                    ppi.path,
-                    Some(iid),
+                    customBackLink = false,
+                    path,
+                    None,
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
                     currencyService.getAllCurrencies,
@@ -237,36 +197,101 @@ class VapingProductsInputController @Inject() (
                 )
               ),
             dto => {
-              val jd = newPurchaseService.updatePurchase(
-                ppi.path,
-                iid,
-                Some(dto.weightOrVolume),
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                dto.cost
-              )
-              cache.store(jd) map { _ =>
-                val result = (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                  case (Some(true), Some("greatBritain")) =>
-                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
-                  case (Some(false), Some("euOnly"))      =>
-                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
-                    } else {
-                      Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
-                    }
-                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
-                }
-                clearReturnToAddedItemUnlessCurrentEdit(
-                  result,
-                  routes.VapingProductsInputController.displayEditForm(iid).url
+              def insertItem          =
+                submittedIid.fold(
+                  newPurchaseService.insertPurchases(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost)
+                  )
+                )(iid =>
+                  newPurchaseService.insertPurchasesWithIid(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    iid
+                  )
                 )
+              val (journeyData, item) = insertItem
+              cache.store(journeyData) map { _ =>
+                navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
               }
             }
           )
-        processContinue
+      }
+    }
+  }
+
+  def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    requirePurchasedProductInstance(iid) { ppi =>
+      requireProduct(ppi.path) { product =>
+        requireLimitUsage {
+          val dto = vapingProductsInputForm.resilientForm.bindFromRequest().value.get
+          newPurchaseService.updatePurchase(
+            ppi.path,
+            iid,
+            Some(dto.weightOrVolume),
+            None,
+            dto.country,
+            dto.originCountry,
+            dto.currency,
+            dto.cost
+          )
+        } { _ =>
+          vapingProductsInputForm
+            .vapingProductsForm(ppi.path)
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(
+                    vaping_products_input(
+                      formWithErrors,
+                      backLinkModel.backLink,
+                      customBackLink = true,
+                      ppi.path,
+                      Some(iid),
+                      countriesService.getAllCountries,
+                      countriesService.getAllCountriesAndEu,
+                      currencyService.getAllCurrencies,
+                      context.getJourneyData.euCountryCheck
+                    )
+                  )
+                ),
+              success = dto =>
+                cache.store(
+                  newPurchaseService.updatePurchase(
+                    ppi.path,
+                    iid,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    dto.cost
+                  )
+                ) map { (_: JourneyData) =>
+                  clearReturnToAddedItemUnlessCurrentEdit(
+                    navigationHelper(
+                      context.getJourneyData,
+                      ppi.path,
+                      iid,
+                      dto.originCountry,
+                      isAddJourney = false
+                    ),
+                    routes.VapingProductsInputController.displayEditForm(iid).url
+                  )
+                }
+            )
+        }
       }
     }
   }
