@@ -58,6 +58,9 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
   override given app: Application = appBuilder.build()
 
+  private lazy val appWithWineStillOrSparklingEnabled: Application =
+    appBuilder.configure(wineStillOrSparklingKey -> true).build()
+
   private lazy val appWithWineStillOrSparklingDisabled: Application =
     appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
@@ -76,6 +79,29 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       status(result)                                           shouldBe OK
       Jsoup.parse(contentAsString(result)).select("h1").text() shouldBe "Check your answers"
+    }
+
+    "display the item CYA page resolving the currency when the item has one" in {
+      val itemWithCurrency = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0", currency = Some("GBP"))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(itemWithCurrency))))
+
+      val result = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0")
+      ).get
+
+      status(result)                                           shouldBe OK
+      Jsoup.parse(contentAsString(result)).select("h1").text() shouldBe "Check your answers"
+    }
+
+    "redirect to the dashboard when the requested item cannot be found" in {
+      val result = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/missing")
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us")
     }
   }
 
@@ -113,7 +139,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       val result =
         route(
-          app,
+          appWithWineStillOrSparklingEnabled,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
         ).get
 
@@ -121,14 +147,14 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
-    "remove the item and redirect to the over-limit page when wine-still-or-sparkling is enabled and the merged wine option is over the 90 litre limit" in {
+    "remove the item and redirect to the over-limit page when wine-still-or-sparkling is ON and the merged wine option is over the 90 litre limit" in {
       val overLimitWine =
         PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(95)))
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(overLimitWine))))
 
       val result =
         route(
-          app,
+          appWithWineStillOrSparklingEnabled,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
         ).get
 
@@ -136,6 +162,40 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
+    }
+
+    "remove the item and redirect to the over-limit page when wine-still-or-sparkling is OFF and the merged wine option is over the 90 litre limit" in {
+      val overLimitWine =
+        PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(95)))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(overLimitWine))))
+
+      val result =
+        route(
+          appWithWineStillOrSparklingDisabled,
+          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
+        ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step"
+      )
+    }
+
+    "continue to the item completion route when wine-still-or-sparkling is ON and the item is not alcohol" in {
+      val tobacco = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0")
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(tobacco))))
+
+      val result =
+        route(
+          appWithWineStillOrSparklingEnabled,
+          enhancedFakeRequest(
+            "POST",
+            "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/tobacco/cigarettes/iid0"
+          )
+        ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
   }
 }

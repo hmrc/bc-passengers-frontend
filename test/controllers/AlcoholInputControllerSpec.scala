@@ -62,6 +62,9 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
 
   override implicit lazy val app: Application = appBuilder.build()
 
+  private lazy val appWithWineStillOrSparklingEnabled: Application =
+    appBuilder.configure(wineStillOrSparklingKey -> true).build()
+
   private lazy val appWithWineStillOrSparklingDisabled: Application =
     appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
@@ -958,7 +961,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }
 
-    "redirect to check-your-item when wine-still-or-sparkling is enabled and the merged wine option is over the 90 litre limit" in new LocalSetup {
+    "redirect to check-your-item when wine-still-or-sparkling is ON and the merged wine option is over the 90 litre limit" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
 
@@ -971,9 +974,29 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "50"
           )
 
-      val result: Future[Result] = route(app, req).get
-      status(result)             shouldBe SEE_OTHER
-      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+      val onResult: Future[Result] = route(appWithWineStillOrSparklingEnabled, req).get
+      status(onResult)             shouldBe SEE_OTHER
+      redirectLocation(onResult).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+    }
+
+    "redirect to upper-limits/volume when wine-still-or-sparkling is OFF and the merged wine option is over the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "95",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val offResult: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      status(offResult)           shouldBe SEE_OTHER
+      redirectLocation(offResult) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
+      )
     }
 
     "redirect to check-your-item when wine-still-or-sparkling is enabled and the merged wine option is within the 90 litre limit" in new LocalSetup {
