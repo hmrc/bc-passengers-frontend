@@ -1587,6 +1587,9 @@ limitExceeded.loose_tobacco = loose tobacco
 limitExceeded.you_cannot_use_this_service = You cannot use this service to declare more than {0}.
 limitExceeded.p3 = This item will be removed from your goods to declare.
 
+limitExceeded.p.panelIndent = {0}ml of vaping liquid
+limitExceeded.p.you_have_entered = You have entered a total of {0} millilitres of vaping liquid
+
 limitExceeded.add.panelIndent = {0} {1} of {2}
 limitExceeded.add.panelIndent.tobacco = {0} {1}
 limitExceeded.add.panelIndent.loose.tobacco = {0}{1} {2}

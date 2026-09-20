@@ -170,7 +170,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/goods/vaping-products/vape/upper-limits/volume"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/vaping-products/vape/upper-limits/volume/vaping"
       )
     }
   }

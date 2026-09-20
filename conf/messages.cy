@@ -1593,6 +1593,9 @@ limitExceeded.loose_tobacco = dybaco rhydd
 limitExceeded.you_cannot_use_this_service = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na {0}.
 limitExceeded.p3 = Bydd yr eitem hon yn cael ei dileu o’ch nwyddau i’w datgan.
 
+limitExceeded.p.panelIndent = {0}ml o hylif fepio
+limitExceeded.p.you_have_entered = Rydych wedi nodi cyfanswm o {0} mililitrau o hylif fepio
+
 limitExceeded.add.panelIndent = {0} {1} o {2}
 limitExceeded.add.panelIndent.tobacco = {0} {1}
 limitExceeded.add.panelIndent.loose.tobacco = {0}{1} {2}

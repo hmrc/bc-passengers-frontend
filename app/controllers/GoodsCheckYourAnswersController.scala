@@ -112,7 +112,7 @@ class GoodsCheckYourAnswersController @Inject() (
           else {
             implicit val headerCarrier: HeaderCarrier = hc(context.request)
             cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
-              Redirect(routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path))
+              Redirect(routes.LimitExceedController.onPageLoadAddJourneyVapingVolume(path))
                 .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
                 .addingToSession(
                   s"user-amount-input-${productTreeLeaf.token}" ->

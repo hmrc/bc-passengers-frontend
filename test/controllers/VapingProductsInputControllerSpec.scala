@@ -62,7 +62,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
       JourneyData(
         prevDeclaration = Some(false),
         Some("nonEuOnly"),
-        arrivingNICheck = Some(true),
+        arrivingNICheck = Some(false),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -87,7 +87,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
       JourneyData(
         prevDeclaration = Some(false),
         Some("greatBritain"),
-        arrivingNICheck = Some(true),
+        arrivingNICheck = Some(false),
         isVatResClaimed = None,
         isBringingDutyFree = None,
         bringingOverAllowance = Some(true),
@@ -227,7 +227,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
+          arrivingNICheck = Some(false),
           isVatResClaimed = None,
           isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
@@ -264,7 +264,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
+          arrivingNICheck = Some(false),
           isVatResClaimed = None,
           isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
@@ -301,7 +301,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
+          arrivingNICheck = Some(false),
           isVatResClaimed = None,
           isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
@@ -423,7 +423,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
+          arrivingNICheck = Some(false),
           bringingOverAllowance = Some(true),
           privateCraft = Some(false),
           ageOver17 = Some(true),
@@ -681,7 +681,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
         val result: Future[Result] = gbNIRoute(app, req).get
         status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(
-          s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$path/pid/gb-ni-vat-check"
+          s"/check-tax-on-goods-you-bring-into-the-uk/check-your-item/$path/pid"
         )
       }
     }
@@ -869,7 +869,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
       val result: Future[Result] = gbNIRoute(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/vaping-products/vape/iid0/gb-ni-vat-check"
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/vaping-products/vape/iid0"
       )
     }
 

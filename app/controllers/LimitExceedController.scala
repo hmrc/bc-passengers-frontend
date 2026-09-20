@@ -61,6 +61,11 @@ class LimitExceedController @Inject() (
     case _                                  => false
   }
 
+  private def showVapingGroupMessage(journeyData: JourneyData, productToken: String): Boolean = productToken match {
+    case token if token == "vape" => checkProductExists(journeyData, "vaping-products/vape")
+    case _                        => false
+  }
+
   private def showLooseTobaccoGroupMessage(journeyData: JourneyData, productToken: String): Boolean =
     if (productToken == "chewing-tobacco") {
       checkProductExists(journeyData, "rolling-tobacco")
@@ -158,6 +163,47 @@ class LimitExceedController @Inject() (
             )
           case _       =>
             logger.error("[LimitExceedController][onPageLoadAddJourneyTobaccoWeight] no user input found in session")
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadAddJourneyVapingVolume(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
+        val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
+
+        val totalAccPreviouslyAddedVolume =
+          vapingProductsCalculationService.vapeAddHelper(
+            context.getJourneyData,
+            BigDecimal(0),
+            product.token
+          )
+
+        val totalAccNoOfVolume: BigDecimal =
+          (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
+
+        val showPanelIndent: Boolean  = product.token.contains("vape")
+        val showGroupMessage: Boolean = showVapingGroupMessage(context.getJourneyData, product.token)
+
+        userInput match {
+          case Some(_) =>
+            Future(
+              Ok(
+                limitExceedViewAdd(
+                  totalAccNoOfVolume.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
+                  product.token,
+                  product.name,
+                  showPanelIndent,
+                  showGroupMessage
+                )
+              )
+            )
+          case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyVapingVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
