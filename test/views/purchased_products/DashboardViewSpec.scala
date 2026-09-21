@@ -290,12 +290,12 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
     "show each item in a summary list with contextual edit and remove actions when wine-still-or-sparkling is OFF" in {
       val doc = document(dashboardWith(appConfigToggle(enabled = false)))
-      if(appConfig.isVapingJourneyEnabled) {
-        doc.select("dl.goods-summary-list").size()               shouldBe 4
+      if (appConfig.isVapingJourneyEnabled) {
+        doc.select("dl.goods-summary-list").size() shouldBe 4
       } else {
-        doc.select("dl.goods-summary-list").size()               shouldBe 3
+        doc.select("dl.goods-summary-list").size() shouldBe 3
       }
-      doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
+      doc.select("a.govuk-button[href*=add-an-item]").isEmpty shouldBe true
       doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
       doc
         .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key")
