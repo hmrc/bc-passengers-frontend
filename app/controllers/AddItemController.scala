@@ -36,10 +36,13 @@ class AddItemController @Inject() (
 ) extends FrontendController(controllerComponents)
     with I18nSupport {
 
+  private def itemReplacementCyaUrl(implicit context: LocalContext): Option[String] =
+    context.request.session.get(ControllerHelpers.itemReplacementCyaUrlSessionKey)
+
   def show: Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
     Future.successful(
-      Ok(add_item(GoodsTypeDto.form, context.getJourneyData))
+      Ok(add_item(GoodsTypeDto.form, context.getJourneyData, itemReplacementCyaUrl))
         .removingFromSession(ControllerHelpers.returnToAddedItemSessionKeys*)(using context.request)
     )
   }
@@ -49,7 +52,8 @@ class AddItemController @Inject() (
     GoodsTypeDto.form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(add_item(formWithErrors, context.getJourneyData))),
+        formWithErrors =>
+          Future.successful(BadRequest(add_item(formWithErrors, context.getJourneyData, itemReplacementCyaUrl))),
         goodsType =>
           Future.successful(
             goodsType.goodsType match {

@@ -101,7 +101,7 @@ class AddItemControllerSpec extends BaseSpec {
       val result = route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")).get
 
       status(result)        shouldBe BAD_REQUEST
-      contentAsString(result) should include("Select the type of goods you want to add")
+      contentAsString(result) should include("Select which type of goods you want to add")
     }
   }
 }

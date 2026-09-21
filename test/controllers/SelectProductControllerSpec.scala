@@ -352,6 +352,33 @@ class SelectProductControllerSpec extends BaseSpec {
       )
       verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
     }
+
+    "return to CYA without changing the item when the replacement selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        requiredJourneyData.copy(
+          purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0"))
+        )
+      )
+
+      override val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+          .withSession(
+            ControllerHelpers.itemBeingReplacedSessionKey     -> "iid0",
+            ControllerHelpers.itemReplacementCyaUrlSessionKey ->
+              "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+          )
+          .withFormUrlEncodedBody("tokens" -> "beer")
+      ).get
+
+      status(result)                                                     shouldBe SEE_OTHER
+      redirectLocation(result)                                           shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+      )
+      session(result).get(ControllerHelpers.itemBeingReplacedSessionKey) shouldBe None
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
+    }
   }
 
   "Invoking processProductSelectionOtherGoods" should {

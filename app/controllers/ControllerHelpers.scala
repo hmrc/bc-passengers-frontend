@@ -53,6 +53,20 @@ trait ControllerHelpers
   protected val returnToAddedItemDashboardUrlSessionKey = ControllerHelpers.returnToAddedItemDashboardUrlSessionKey
   protected val returnToAddedItemStackSessionKey        = ControllerHelpers.returnToAddedItemStackSessionKey
 
+  protected def itemBeingReplaced(implicit context: LocalContext): Option[PurchasedProductInstance] =
+    context.request.session
+      .get(ControllerHelpers.itemBeingReplacedSessionKey)
+      .flatMap(context.getJourneyData.getPurchasedProductInstance)
+
+  protected def itemReplacementCyaUrl(implicit context: LocalContext): Option[String] =
+    context.request.session.get(ControllerHelpers.itemReplacementCyaUrlSessionKey)
+
+  protected def removeItemBeingReplaced(journeyData: JourneyData)(implicit context: LocalContext): JourneyData =
+    itemBeingReplaced.fold(journeyData)(item => journeyData.removePurchasedProductInstance(item.iid))
+
+  protected def clearItemReplacement(result: Result)(implicit context: LocalContext): Result =
+    result.removingFromSession(ControllerHelpers.itemReplacementSessionKeys*)(using context.request)
+
   private case class AddedItemBackLink(editUrl: String, selectUrl: String, productPath: String, dashboardUrl: String)
 
   private val addedItemBackLinkPartSeparator  = "|"
@@ -334,6 +348,8 @@ trait ControllerHelpers
 }
 
 object ControllerHelpers {
+  val itemBeingReplacedSessionKey             = "item-being-replaced"
+  val itemReplacementCyaUrlSessionKey         = "item-replacement-cya-url"
   val checkYourItemEditModeSessionKey         = "check-your-item-edit-mode"
   val returnToAddedItemSessionKey             = "return-to-added-item-url"
   val returnToAddedItemSelectUrlSessionKey    = "return-to-added-item-select-url"
@@ -347,5 +363,10 @@ object ControllerHelpers {
     returnToAddedItemProductPathKey,
     returnToAddedItemDashboardUrlSessionKey,
     returnToAddedItemStackSessionKey
+  )
+
+  val itemReplacementSessionKeys: Seq[String] = Seq(
+    itemBeingReplacedSessionKey,
+    itemReplacementCyaUrlSessionKey
   )
 }

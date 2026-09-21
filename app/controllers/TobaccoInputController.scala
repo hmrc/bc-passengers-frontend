@@ -344,8 +344,10 @@ class TobaccoInputController @Inject() (
                       )
                     )
 
-                  cache.store(journeyData) map { _ =>
-                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
+                  cache.store(removeItemBeingReplaced(journeyData)) map { _ =>
+                    clearItemReplacement(
+                      navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
+                    )
                   }
                 } else {
                   Future(
@@ -407,8 +409,10 @@ class TobaccoInputController @Inject() (
                         iid
                       )
                     )
-                  cache.store(journeyData).map { _ =>
-                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
+                  cache.store(removeItemBeingReplaced(journeyData)).map { _ =>
+                    clearItemReplacement(
+                      navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
+                    )
                   }
                 } else {
                   Future(
@@ -469,8 +473,10 @@ class TobaccoInputController @Inject() (
                         iid
                       )
                     )
-                  cache.store(journeyData) map { _ =>
-                    navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
+                  cache.store(removeItemBeingReplaced(journeyData)) map { _ =>
+                    clearItemReplacement(
+                      navigationHelper(context.getJourneyData, path, iid, dto.originCountry, isAddJourney = true)
+                    )
                   }
                 } else {
                   Future(

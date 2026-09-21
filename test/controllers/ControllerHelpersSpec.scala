@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import models.{JourneyData, ProductPath}
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.mockito.Mockito.*
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
@@ -58,6 +58,12 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
     context: LocalContext
   ): Option[String] =
     backLinkForAddedItemEdit(defaultBackLink, editUrl)
+
+  def exposedRemoveItemBeingReplaced(journeyData: JourneyData)(implicit context: LocalContext): JourneyData =
+    removeItemBeingReplaced(journeyData)
+
+  def exposedClearItemReplacement(result: Result)(implicit context: LocalContext): Result =
+    clearItemReplacement(result)
 
   "ControllerHelpers" when {
     ".logAndRedirect" should {
@@ -224,6 +230,33 @@ class ControllerHelpersSpec extends BaseSpec with ControllerHelpers {
         )
 
         exposedBackLinkForAddedItemEdit(Some("/default"), "/different-item") shouldBe Some("/default")
+      }
+    }
+
+    ".removeItemBeingReplaced" should {
+      "remove only the original item and clear the replacement session state" in {
+        val original                     = PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0")
+        val newItem                      = PurchasedProductInstance(ProductPath("alcohol/wine"), "iid1")
+        val request                      = FakeRequest().withSession(
+          ControllerHelpers.itemBeingReplacedSessionKey     -> original.iid,
+          ControllerHelpers.itemReplacementCyaUrlSessionKey -> "/check-your-item/alcohol/beer/iid0"
+        )
+        given localContext: LocalContext = LocalContext(
+          request = request,
+          sessionId = "sessionId",
+          journeyData = Some(JourneyData(purchasedProductInstances = List(original)))
+        )
+
+        exposedRemoveItemBeingReplaced(
+          JourneyData(purchasedProductInstances = List(original, newItem))
+        ).purchasedProductInstances shouldBe List(newItem)
+
+        val result  = exposedClearItemReplacement(exposedMarkReturnToAddedItem(Ok, "/edit-item", newItem.path))
+        val session = result.session(request)
+
+        session.get(ControllerHelpers.itemBeingReplacedSessionKey)     shouldBe None
+        session.get(ControllerHelpers.itemReplacementCyaUrlSessionKey) shouldBe None
+        session.get(returnToAddedItemSessionKey)                       shouldBe Some("/edit-item")
       }
     }
   }

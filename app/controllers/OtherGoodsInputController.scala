@@ -234,52 +234,62 @@ class OtherGoodsInputController @Inject() (
           ),
         dto =>
           requireProduct(dto.searchTerm.get.path) { _ =>
-            val jd = submittedIid.fold(
-              newPurchaseService.insertPurchases(
-                dto.searchTerm.get.path,
-                None,
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost),
-                dto.searchTerm
-              )
-            )(iid =>
-              newPurchaseService.insertPurchasesWithIid(
-                dto.searchTerm.get.path,
-                None,
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost),
-                iid,
-                dto.searchTerm
-              )
-            )
-            cache.store(jd._1) map { _ =>
-              markReturnToAddedItem(
-                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                  case (Some(true), Some("greatBritain")) =>
-                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
-                  case (Some(false), Some("euOnly"))      =>
-                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
-                    } else {
-                      Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
-                    }
-                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
-                },
-                routes.OtherGoodsInputController.displayEditForm(jd._2).url,
-                dto.searchTerm.get.path,
-                Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url),
-                Option
-                  .when(!context.request.session.get(OtherGoodsInputController.categorisedSessionKey).contains("true"))(
-                    routes.AddItemController.show.url
-                  ),
-                Seq(OtherGoodsInputController.categorisedSessionKey)
-              )
+            (itemBeingReplaced, itemReplacementCyaUrl) match {
+              case (Some(item), Some(cyaUrl)) if item.path == dto.searchTerm.get.path =>
+                Future.successful(clearItemReplacement(Redirect(cyaUrl)))
+
+              case _ =>
+                val jd = submittedIid.fold(
+                  newPurchaseService.insertPurchases(
+                    dto.searchTerm.get.path,
+                    None,
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    dto.searchTerm
+                  )
+                )(iid =>
+                  newPurchaseService.insertPurchasesWithIid(
+                    dto.searchTerm.get.path,
+                    None,
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    iid,
+                    dto.searchTerm
+                  )
+                )
+                cache.store(removeItemBeingReplaced(jd._1)) map { _ =>
+                  clearItemReplacement(
+                    markReturnToAddedItem(
+                      (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                        case (Some(true), Some("greatBritain")) =>
+                          Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
+                        case (Some(false), Some("euOnly"))      =>
+                          if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                            Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
+                          } else {
+                            Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
+                          }
+                        case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
+                      },
+                      routes.OtherGoodsInputController.displayEditForm(jd._2).url,
+                      dto.searchTerm.get.path,
+                      Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url),
+                      Option
+                        .when(
+                          !context.request.session.get(OtherGoodsInputController.categorisedSessionKey).contains("true")
+                        )(
+                          routes.AddItemController.show.url
+                        ),
+                      Seq(OtherGoodsInputController.categorisedSessionKey)
+                    )
+                  )
+                }
             }
           }
       )

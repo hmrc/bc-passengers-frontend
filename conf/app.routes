@@ -86,6 +86,8 @@ POST       /tell-us                                                             
 GET        /add-an-item                                                                controllers.AddItemController.show
 POST       /add-an-item                                                                controllers.AddItemController.submit
 
+GET        /check-your-item/$path<.+>/:iid/change-type                                 controllers.GoodsCheckYourAnswersController.changeType(path: ProductPath, iid: String)
+GET        /check-your-item/$path<.+>/:iid/change-product                              controllers.GoodsCheckYourAnswersController.changeProduct(path: ProductPath, iid: String)
 GET        /check-your-item/$path<.+>/:iid                                             controllers.GoodsCheckYourAnswersController.show(path: ProductPath, iid: String)
 POST       /check-your-item                                                            controllers.GoodsCheckYourAnswersController.submit
 

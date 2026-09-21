@@ -72,6 +72,8 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
       )
       doc.select(".govuk-summary-list").text()                                  should include("50")
       doc.select("a.govuk-link[href*=enter-goods/alcohol/iid0/edit]").isEmpty shouldBe false
+      doc.select("a[href*=change-type]").isEmpty                              shouldBe false
+      doc.select("a[href*=change-product]").isEmpty                           shouldBe false
       doc.select("button.govuk-button").text()                                shouldBe "Save and continue"
     }
 

@@ -232,8 +232,10 @@ class AlcoholInputController @Inject() (
                       iid
                     )
                   )
-                cache.store(journeyData) map { _ =>
-                  navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
+                cache.store(removeItemBeingReplaced(journeyData)) map { _ =>
+                  clearItemReplacement(
+                    navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
+                  )
                 }
               } else {
                 Future(
