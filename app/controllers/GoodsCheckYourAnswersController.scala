@@ -45,8 +45,9 @@ class GoodsCheckYourAnswersController @Inject() (
 
     (item, product) match {
       case (Some(purchasedItem), Some(productTreeLeaf)) =>
-        val currency = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
-        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency)))
+        val currency   = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
+        val isEditMode = context.request.session.get(ControllerHelpers.checkYourItemEditModeSessionKey).contains(iid)
+        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, isEditMode)))
       case _                                            =>
         Future.successful(Redirect(routes.DashboardController.showDashboard))
     }

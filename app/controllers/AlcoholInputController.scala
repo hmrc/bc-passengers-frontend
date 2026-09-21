@@ -311,6 +311,8 @@ class AlcoholInputController @Inject() (
                           iid,
                           dto.originCountry,
                           isAddJourney = false
+                        ).addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                          context.request
                         ),
                         routes.AlcoholInputController.displayEditForm(iid).url
                       )

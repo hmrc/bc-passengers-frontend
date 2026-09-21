@@ -44,13 +44,16 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR"))
 
   val viewViaApply: HtmlFormat.Appendable =
-    injected[check_your_goods_answers].apply(item, product, Some(currency))(request, messages, appConfig)
+    injected[check_your_goods_answers]
+      .apply(item, product, Some(currency), isEditMode = false)(request, messages, appConfig)
 
   val viewViaRender: HtmlFormat.Appendable =
-    injected[check_your_goods_answers].render(item, product, Some(currency), request, messages, appConfig)
+    injected[check_your_goods_answers]
+      .render(item, product, Some(currency), isEditMode = false, request, messages, appConfig)
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[check_your_goods_answers].ref.f(item, product, Some(currency))(request, messages, appConfig)
+    injected[check_your_goods_answers].ref
+      .f(item, product, Some(currency), false)(request, messages, appConfig)
 
   "GoodsCheckYourAnswersView" when {
     renderViewTest(
@@ -75,11 +78,22 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     "show the tobacco weight in grams" in {
       val doc = document(
         injected[check_your_goods_answers]
-          .apply(tobaccoItem, tobaccoProduct, Some(currency))(request, messages, appConfig)
+          .apply(tobaccoItem, tobaccoProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
       )
 
       doc.select(".govuk-summary-list__key").eachText() should contain("Total weight in grams")
       doc.select(".govuk-summary-list").text()          should include("100 grams")
+    }
+
+    "hide type change actions in edit mode" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(item, product, Some(currency), isEditMode = true)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__row").get(0).select(".govuk-summary-list__actions").isEmpty shouldBe true
+      doc.select(".govuk-summary-list__row").get(1).select(".govuk-summary-list__actions").isEmpty shouldBe true
+      doc.select(".govuk-summary-list__row").get(2).select(".govuk-summary-list__actions").isEmpty shouldBe false
     }
   }
 }

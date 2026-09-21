@@ -1119,8 +1119,9 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)             shouldBe SEE_OTHER
-      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+      status(result)                                                         shouldBe SEE_OTHER
+      redirectLocation(result).get                                             should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+      session(result).get(ControllerHelpers.checkYourItemEditModeSessionKey) shouldBe Some("iid0")
 
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
         meq(ProductPath("alcohol/beer")),

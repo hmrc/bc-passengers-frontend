@@ -24,7 +24,7 @@
   button: components.button
 )
 
-@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency], isEditMode: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
@@ -34,15 +34,15 @@
   case _ => routes.OtherGoodsInputController.displayEditForm(item.iid)
 } }
 
-@row(key: String, value: String, hiddenText: String) = @{
+@row(key: String, value: String, hiddenText: String, showAction: Boolean) = @{
   SummaryListRow(
     key = Key(content = Text(messages(key))),
     value = Value(content = Text(value)),
-    actions = Some(Actions(items = Seq(ActionItem(
+    actions = if (showAction) Some(Actions(items = Seq(ActionItem(
       href = editCall.url,
       content = Text(messages("label.change")),
       visuallyHiddenText = Some(hiddenText)
-    ))))
+    )))) else None
   )
 }
 
@@ -72,17 +72,17 @@
   } else {
     ("label.total_volume_in_litres", "label.litres")
   }
-  val quantity = item.weightOrVolume.map(value => row(quantityLabel, s"${formatMonetaryValueWithoutTrailingZeros(value)} ${messages(quantityUnit)}", messages(quantityLabel).toLowerCase))
-    .orElse(item.noOfSticks.map(value => row("label.number_of_sticks", value.toString, messages("label.number_of_sticks").toLowerCase)))
-  val country = item.country.map(value => row(countryLabel, messages(value.countryName), messages(countryLabel).toLowerCase))
-  val originCountry = item.originCountry.map(value => row(originLabel, messages(value.countryName), messages(originLabel).toLowerCase))
+  val quantity = item.weightOrVolume.map(value => row(quantityLabel, s"${formatMonetaryValueWithoutTrailingZeros(value)} ${messages(quantityUnit)}", messages(quantityLabel).toLowerCase, showAction = true))
+    .orElse(item.noOfSticks.map(value => row("label.number_of_sticks", value.toString, messages("label.number_of_sticks").toLowerCase, showAction = true)))
+  val country = item.country.map(value => row(countryLabel, messages(value.countryName), messages(countryLabel).toLowerCase, showAction = true))
+  val originCountry = item.originCountry.map(value => row(originLabel, messages(value.countryName), messages(originLabel).toLowerCase, showAction = true))
   val currencyValue = item.currency.map(code => currency.map(value => messages(value.displayName)).getOrElse(code))
-  val currencyRow = currencyValue.map(value => row(currencyLabel, value, messages(currencyLabel).toLowerCase))
-  val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase))
+  val currencyRow = currencyValue.map(value => row(currencyLabel, value, messages(currencyLabel).toLowerCase, showAction = true))
+  val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase, showAction = true))
 
   Seq(
-    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
-    row(typeLabel, itemType, messages(typeLabel).toLowerCase)
+    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase, showAction = !isEditMode),
+    row(typeLabel, itemType, messages(typeLabel).toLowerCase, showAction = !isEditMode)
   ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 

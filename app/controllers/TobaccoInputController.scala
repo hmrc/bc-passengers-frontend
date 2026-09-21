@@ -556,6 +556,8 @@ class TobaccoInputController @Inject() (
                           iid,
                           dto.originCountry,
                           isAddJourney = false
+                        ).addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                          context.request
                         ),
                         routes.TobaccoInputController.displayEditForm(iid).url
                       )
@@ -617,6 +619,8 @@ class TobaccoInputController @Inject() (
                           iid,
                           dto.originCountry,
                           isAddJourney = false
+                        ).addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                          context.request
                         ),
                         routes.TobaccoInputController.displayEditForm(iid).url
                       )
@@ -678,6 +682,8 @@ class TobaccoInputController @Inject() (
                           iid,
                           dto.originCountry,
                           isAddJourney = false
+                        ).addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                          context.request
                         ),
                         routes.TobaccoInputController.displayEditForm(iid).url
                       )

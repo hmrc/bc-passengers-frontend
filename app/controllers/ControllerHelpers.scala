@@ -334,6 +334,7 @@ trait ControllerHelpers
 }
 
 object ControllerHelpers {
+  val checkYourItemEditModeSessionKey         = "check-your-item-edit-mode"
   val returnToAddedItemSessionKey             = "return-to-added-item-url"
   val returnToAddedItemSelectUrlSessionKey    = "return-to-added-item-select-url"
   val returnToAddedItemProductPathKey         = "return-to-added-item-product-path"

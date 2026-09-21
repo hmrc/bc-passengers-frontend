@@ -18,8 +18,8 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
+import controllers.enforce.DashboardAction
 import models.{OtherGoodsDto, OtherGoodsSearchItem, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.{optional, *}
@@ -340,7 +340,9 @@ class OtherGoodsInputController @Inject() (
                   case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
                 }
                 clearReturnToAddedItemUnlessCurrentEdit(
-                  result,
+                  result.addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                    context.request
+                  ),
                   routes.OtherGoodsInputController.displayEditForm(iid).url
                 )
               }
