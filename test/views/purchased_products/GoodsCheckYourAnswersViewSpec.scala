@@ -87,6 +87,24 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
       doc.select(".govuk-summary-list").text()          should include("100 grams")
     }
 
+    "show the entered other-goods term" in {
+      val otherGoodsItem    = item.copy(
+        path = ProductPath("other-goods/electronic-devices/other"),
+        searchTerm =
+          Some(OtherGoodsSearchItem("label.other-goods.computer", ProductPath("other-goods/electronic-devices/other")))
+      )
+      val otherGoodsProduct =
+        ProductTreeLeaf("other", "label.other-goods.electronic-devices.other", "OGD/DIGI/OTHER", "other-goods", Nil)
+
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(otherGoodsItem, otherGoodsProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list").text() should include("Computer")
+      doc.select(".govuk-summary-list").text() should not include "Electronic device"
+    }
+
     "hide type change actions in edit mode" in {
       val doc = document(
         injected[check_your_goods_answers]
