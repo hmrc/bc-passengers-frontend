@@ -208,7 +208,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
           )
         ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
@@ -229,7 +229,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
           )
         ).get
 
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/vaping-products/vape/upper-limits/volume/vaping"
       )
