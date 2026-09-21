@@ -61,7 +61,6 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     "show the selected item and its answers in a summary list" in {
       val doc = document(viewViaApply)
 
-      doc.select("h2.govuk-heading-m").text()                                 shouldBe "Beer"
       doc.select(".govuk-summary-list__key").eachText()                         should contain allOf (
         "Type of goods",
         "Type of alcohol",

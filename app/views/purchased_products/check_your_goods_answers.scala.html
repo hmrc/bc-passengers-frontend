@@ -76,7 +76,7 @@
     .orElse(item.noOfSticks.map(value => row("label.number_of_sticks", value.toString, messages("label.number_of_sticks").toLowerCase)))
   val country = item.country.map(value => row(countryLabel, messages(value.countryName), messages(countryLabel).toLowerCase))
   val originCountry = item.originCountry.map(value => row(originLabel, messages(value.countryName), messages(originLabel).toLowerCase))
-  val currencyValue = item.currency.map(code => currency.map(value => s"${messages(value.displayName)} ($code)").getOrElse(code))
+  val currencyValue = item.currency.map(code => currency.map(value => messages(value.displayName)).getOrElse(code))
   val currencyRow = currencyValue.map(value => row(currencyLabel, value, messages(currencyLabel).toLowerCase))
   val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase))
 
@@ -91,7 +91,6 @@
   backLink = Some(editCall.url)
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
-  <h2 class="govuk-heading-m">@itemType</h2>
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 
