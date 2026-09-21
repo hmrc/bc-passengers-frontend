@@ -296,52 +296,6 @@ class LimitExceedController @Inject() (
       }
     }
 
-  def onPageLoadEditVapeVolume(path: ProductPath, iid: String): Action[AnyContent] =
-    limitExceedAction { implicit context =>
-      requireProduct(path) { product =>
-        val originalAmountEntered: BigDecimal = originalAmountEnteredWeightOrVolume(context.getJourneyData, iid)
-
-        val originalAmountFormatted = originalAmountEntered.formatDecimalPlaces(3)
-
-        val userInput: Option[String] = context.request.session.data.get(s"user-amount-input-${product.token}")
-
-        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
-
-        val totalAccWeightForVapeProduct =
-          vapingProductsCalculationService.vapeEditHelper(
-            context.getJourneyData,
-            userInputBigDecimal,
-            product.token,
-            iid
-          )
-
-        val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
-
-        val totaledAmount: BigDecimal = totalAccWeightForVapeProduct
-
-        val totaledAmountFormatted: BigDecimal = totaledAmount.formatDecimalPlaces(3)
-
-        userInput match {
-          case Some(_) =>
-            Future(
-              Ok(
-                limitExceedViewEdit(
-                  totalEnteredAmount = totaledAmountFormatted.stripTrailingZerosToString,
-                  originalAmountEntered = originalAmountFormatted.stripTrailingZerosToString,
-                  userInput = userInputBigDecimalFormatted.stripTrailingZerosToString,
-                  token = product.token,
-                  productName = product.name,
-                  showGroupMessage = false
-                )
-              )
-            )
-          case _       =>
-            logger.error("[LimitExceedController][onPageLoadEditVapeVolume] no user input found in session")
-            Future(InternalServerError(errorTemplate()))
-        }
-      }
-    }
-
   def onPageLoadEditTobaccoWeight(path: ProductPath, iid: String): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
