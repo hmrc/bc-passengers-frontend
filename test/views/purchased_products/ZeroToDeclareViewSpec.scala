@@ -124,9 +124,15 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "ZeroToDeclareView" when
+  "ZeroToDeclareView" when {
     renderViewTest(
       title = "Additional tax due on these goods - Check tax on goods you bring into the UK - GOV.UK",
       heading = "Additional tax due on these goods £0.00"
     )
+
+    "link to the start again confirmation page" in {
+      document(viewViaApply).select("#start-again").attr("href") shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/start-again-are-you-sure"
+    }
+  }
 }
