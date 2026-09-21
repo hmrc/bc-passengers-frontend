@@ -325,6 +325,12 @@ class ProductTreeService {
     OtherGoodsSearchItem("label.other-goods.tableware", ProductPath("other-goods/tableware")),
     OtherGoodsSearchItem("label.other-goods.watches-clocks", ProductPath("other-goods/watches-clocks")),
     OtherGoodsSearchItem("label.other-goods.vaping-products", ProductPath("other-goods/vaping-products")),
+    OtherGoodsSearchItem("label.other-goods.vape", ProductPath("other-goods/vaping-products")),
+    OtherGoodsSearchItem("label.other-goods.vaping-liquid", ProductPath("other-goods/vaping-products")),
+    OtherGoodsSearchItem("label.other-goods.vape-liquid", ProductPath("other-goods/vaping-products")),
+    OtherGoodsSearchItem("label.other-goods.vape-pods", ProductPath("other-goods/vaping-products")),
+    OtherGoodsSearchItem("label.other-goods.e-liquid", ProductPath("other-goods/vaping-products")),
+    OtherGoodsSearchItem("label.other-goods.e-cigarettes", ProductPath("other-goods/vaping-products")),
     OtherGoodsSearchItem("label.other-goods.other", ProductPath("other-goods/other"))
   ).sortBy(_.name)
 }
