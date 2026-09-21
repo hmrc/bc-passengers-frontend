@@ -93,6 +93,35 @@ class DashboardControllerSpec extends BaseSpec {
       verify(controller.cache, times(1)).fetch(any())
     }
 
+    "respond with 200 using an empty JourneyData when the cache holds no journey data on the second fetch" in new LocalSetup {
+      override val cachedJourneyData: Option[JourneyData] = None
+
+      when(injected[Cache].fetch(any()))
+        .thenReturn(Future.successful(Some(travelDetailsJourneyData)))
+        .thenReturn(Future.successful(None))
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any()))
+        .thenReturn(Future.successful(None))
+
+      val result: Future[Result] =
+        rt(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+      status(result) shouldBe OK
+    }
+
+    "respond with 200 for a GB-NI journey and honour the page query parameter" in new LocalSetup {
+      override val cachedJourneyData: Option[JourneyData] = Some(
+        travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true))
+      )
+
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any()))
+        .thenReturn(Future.successful(None))
+
+      val result: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us?page=2")).get
+
+      status(result) shouldBe OK
+    }
+
     "respond with 200, display the page if all travel details exist & display button's text for declaration:Calculate taxes and duties" in new LocalSetup {
       val alcohol: PurchasedProductInstance = PurchasedProductInstance(
         ProductPath("alcohol/beer"),

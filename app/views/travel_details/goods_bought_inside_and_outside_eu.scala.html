@@ -28,15 +28,25 @@
 )
 @(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@isToggleOn = @{ appConfig.isWineStillOrSparklingEnabled }
+@isWineOn = @{ appConfig.isWineStillOrSparklingEnabled }
 
-@isVpToggleOn = @{ appConfig.isVapingJourneyEnabled }
+@isVapingOn = @{ appConfig.isVapingJourneyEnabled }
 
 @msgKey(key: String) = @{
-    if(isToggleOn) s"$key.still-or-sparkling" else key
+    if(isWineOn) s"$key.still-or-sparkling" else key
 }
 
-@headingKey = @{ msgKey("heading.goods_brought_into_gb") }
+@headingKey = @{ if(isWineOn || isVapingOn) "heading.goods_brought_into_gb.still-or-sparkling" else "heading.goods_brought_into_gb" }
+
+@introKey = @{
+    if(isVapingOn) {
+        "text.gb.allowance.still-or-sparkling_vp"
+    } else if(isWineOn) {
+        "text.gb.allowance.still-or-sparkling"
+    } else {
+        "text.gb.allowance"
+    }
+}
 
 @govukLayout(pageTitle = Some(title(form, headingKey)), backLink = backLink) {
 
@@ -45,18 +55,12 @@
         @errorSummary(form.errors, Some("value-yes"))
         @h1(messages(headingKey))
 
-        @p{
-            @if(isVpToggleOn) {
-                @messages("text.gb.allowance.still-or-sparkling_vp")
-            } else {
-                @messages(msgKey("text.gb.allowance"))
-            }
-        }
+        @p{@messages(introKey)}
 
-        @if(isToggleOn) {
+        @if(isWineOn || isVapingOn) {
             @panelIndent {
                 @p{
-                    @if(isVpToggleOn) {
+                    @if(isVapingOn) {
                         @messages("text.gb.allowance.under_17.still-or-sparkling_vp")
                     } else {
                         @messages("text.gb.allowance.under_17.still-or-sparkling")
@@ -76,7 +80,7 @@
 
         @p{@messages(msgKey("text.gb.allowance.msg_1"))}
 
-        @if(isToggleOn) {
+        @if(isWineOn || isVapingOn) {
             <h3 class="govuk-heading-s">@messages("text.gb.allowance.over_heading.still-or-sparkling")</h3>
             @p{@messages("text.gb.allowance.alcohol_over.still-or-sparkling")}
             @p{@messages("text.gb.allowance.alcohol_over_example.still-or-sparkling")}
@@ -88,7 +92,7 @@
         }
 
         @h2(messages(msgKey("text.tobacco_allowance")))
-        @p{@messages(if(isToggleOn) "text.you_can_bring_in.still-or-sparkling" else "text.you_can_bring_in_either")}
+        @p{@messages(if(isWineOn) "text.you_can_bring_in.still-or-sparkling" else "text.you_can_bring_in_either")}
 
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("text.allowance.tob_1")</li>
@@ -100,7 +104,7 @@
 
         @p{@messages(msgKey("text.allowance.msg_4"))}
 
-        @if(isToggleOn) {
+        @if(isWineOn || isVapingOn) {
             <h3 class="govuk-heading-s">@messages("text.gb.allowance.over_heading.still-or-sparkling")</h3>
             @p{@messages("text.allowance.tobacco_over.still-or-sparkling")}
             @p{@messages("text.allowance.tobacco_over_example.still-or-sparkling")}
@@ -111,7 +115,7 @@
             }
         }
 
-        @if(isVpToggleOn) {
+        @if(isVapingOn) {
             @h2(messages("text.vaping_products_allowance"))
             @p{@messages("text.allowance.vaping_products_you_can_bring")}
 
@@ -122,7 +126,7 @@
 
         @h2(messages(msgKey("text.other_goods_allowance")))
 
-        @if(isToggleOn) {
+        @if(isWineOn || isVapingOn) {
             @p{@messages("text.allowance.otg_1.still-or-sparkling")}
             <h3 class="govuk-heading-s">@messages("text.allowance.other_over_heading.still-or-sparkling")</h3>
             @p{@messages("text.allowance.other_over.still-or-sparkling")}
@@ -134,10 +138,10 @@
             @p{@messages("text.allowance.msg_7")}
         }
 
-        @if(isToggleOn) {
+        @if(isWineOn || isVapingOn) {
             @summaryYesNo(
                 form = form,
-                h2Message = Some("heading.are_you_bringing_in_goods_over_"),
+                h2Message = Some("heading.are_you_bringing_in_goods_over_your_allowance"),
                 name = "bringingOverAllowance",
                 hintMessage = Some(messages("text.allowance.msg_8")),
                 inline = false
