@@ -867,6 +867,7 @@ class JourneyDataSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -1166,6 +1167,7 @@ class JourneyDataSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,

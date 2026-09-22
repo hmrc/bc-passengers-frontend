@@ -51,6 +51,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
+                    None,
                     None
                   )
                 ),
@@ -82,6 +83,7 @@ class CalculatorResponseSpec extends BaseSpec {
                       ExchangeRate("1.20", "2018-10-29"),
                       None
                     ),
+                    None,
                     None,
                     None,
                     None,
@@ -119,6 +121,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
+                    None,
                     None
                   )
                 ),
@@ -150,6 +153,7 @@ class CalculatorResponseSpec extends BaseSpec {
                       ExchangeRate("1.20", "2018-10-29"),
                       None
                     ),
+                    None,
                     None,
                     None,
                     None,
@@ -191,6 +195,7 @@ class CalculatorResponseSpec extends BaseSpec {
           None,
           None,
           None,
+          None,
           None
         ),
         Item(
@@ -209,6 +214,7 @@ class CalculatorResponseSpec extends BaseSpec {
             ExchangeRate("1.20", "2018-10-29"),
             None
           ),
+          None,
           None,
           None,
           None,
@@ -233,6 +239,7 @@ class CalculatorResponseSpec extends BaseSpec {
           None,
           None,
           None,
+          None,
           None
         ),
         Item(
@@ -251,6 +258,7 @@ class CalculatorResponseSpec extends BaseSpec {
             ExchangeRate("1.20", "2018-10-29"),
             None
           ),
+          None,
           None,
           None,
           None,
@@ -297,7 +305,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -331,7 +340,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("tobacco")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -365,7 +375,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("vaping-products")
                   )
                 ),
                 Calculation("100.00", "0.00", "0.00", "100.00")
@@ -399,7 +410,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("other-goods")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -496,7 +508,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   ),
                   Item(
                     "ALC",
@@ -517,7 +530,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -551,7 +565,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("tobacco")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -585,7 +600,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("vaping-products")
                   )
                 ),
                 Calculation("100.00", "0.00", "0.00", "100.00")
@@ -619,7 +635,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("other-goods")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -671,7 +688,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   ),
                   Item(
                     "ALC",
@@ -692,7 +710,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "100.00")
@@ -726,7 +745,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("tobacco")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -760,7 +780,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("vaping-products")
                   )
                 ),
                 Calculation("100.00", "0.00", "0.00", "100.00")
@@ -794,7 +815,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("other-goods")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "0.00")
@@ -846,7 +868,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   ),
                   Item(
                     "ALC",
@@ -867,7 +890,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("alcohol")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "100.00")
@@ -901,7 +925,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("tobacco")
                   ),
                   Item(
                     "TOB",
@@ -922,7 +947,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("tobacco")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "100.00")
@@ -956,7 +982,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("vaping-products")
                   )
                 ),
                 Calculation("100.00", "0.00", "0.00", "100.00")
@@ -990,7 +1017,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("other-goods")
                   ),
                   Item(
                     "OGD",
@@ -1011,7 +1039,8 @@ class CalculatorResponseSpec extends BaseSpec {
                     None,
                     None,
                     None,
-                    None
+                    None,
+                    Some("other-goods")
                   )
                 ),
                 Calculation("0.00", "0.00", "0.00", "100.00")
@@ -1213,7 +1242,8 @@ class CalculatorResponseSpec extends BaseSpec {
       isVatPaid = None,
       isCustomPaid = None,
       isExcisePaid = None,
-      isUccRelief = None
+      isUccRelief = None,
+      itemKeyName = Some("tobacco")
     )
 
     "serialize to JSON" when {
@@ -1232,7 +1262,8 @@ class CalculatorResponseSpec extends BaseSpec {
             None
           ),
           "purchaseCost" -> "purchaseCost",
-          "rateId"       -> "rateId"
+          "rateId"       -> "rateId",
+          "itemKeyName"  -> Some("tobacco")
         )
       }
     }
@@ -1253,7 +1284,8 @@ class CalculatorResponseSpec extends BaseSpec {
             None
           ),
           "purchaseCost" -> "purchaseCost",
-          "rateId"       -> "rateId"
+          "rateId"       -> "rateId",
+          "itemKeyName"  -> Some("tobacco")
         )
         json.validate[Item] shouldBe JsSuccess(item)
       }
@@ -1293,6 +1325,7 @@ class CalculatorResponseSpec extends BaseSpec {
           None,
           None,
           None,
+          None,
           None
         )
       ),
@@ -1320,6 +1353,7 @@ class CalculatorResponseSpec extends BaseSpec {
                 ExchangeRate("1.20", "2018-10-29"),
                 None
               ),
+              None,
               None,
               None,
               None,
@@ -1352,6 +1386,7 @@ class CalculatorResponseSpec extends BaseSpec {
                 ExchangeRate("1.20", "2018-10-29"),
                 None
               ),
+              None,
               None,
               None,
               None,
@@ -1400,6 +1435,7 @@ class CalculatorResponseSpec extends BaseSpec {
               None,
               None,
               None,
+              None,
               None
             )
           ),
@@ -1432,6 +1468,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1469,6 +1506,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1520,6 +1558,7 @@ class CalculatorResponseSpec extends BaseSpec {
               None,
               None,
               None,
+              None,
               None
             )
           ),
@@ -1552,6 +1591,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1589,6 +1629,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1640,6 +1681,7 @@ class CalculatorResponseSpec extends BaseSpec {
               None,
               None,
               None,
+              None,
               None
             )
           ),
@@ -1672,6 +1714,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1709,6 +1752,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1761,6 +1805,7 @@ class CalculatorResponseSpec extends BaseSpec {
               None,
               None,
               None,
+              None,
               None
             )
           ),
@@ -1793,6 +1838,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1830,6 +1876,7 @@ class CalculatorResponseSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -1884,7 +1931,8 @@ class CalculatorResponseSpec extends BaseSpec {
                   None,
                   None,
                   None,
-                  None
+                  None,
+                  Some("alcohol")
                 )
               ),
               Calculation("0.00", "0.00", "0.00", "0.00")
@@ -1918,7 +1966,8 @@ class CalculatorResponseSpec extends BaseSpec {
                   None,
                   None,
                   None,
-                  None
+                  None,
+                  Some("tobacco")
                 )
               ),
               Calculation("0.00", "0.00", "0.00", "0.00")
@@ -1952,7 +2001,8 @@ class CalculatorResponseSpec extends BaseSpec {
                   None,
                   None,
                   None,
-                  None
+                  None,
+                  Some("vaping-products")
                 )
               ),
               Calculation("100.00", "0.00", "0.00", "100.00")
@@ -1986,7 +2036,8 @@ class CalculatorResponseSpec extends BaseSpec {
                   None,
                   None,
                   None,
-                  None
+                  None,
+                  Some("other-goods")
                 )
               ),
               Calculation("0.00", "0.00", "0.00", "0.00")
@@ -2029,7 +2080,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("alcohol")
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")
@@ -2063,7 +2115,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("tobacco")
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")
@@ -2097,7 +2150,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("vaping-products")
                     )
                   ),
                   Calculation("100.00", "0.00", "0.00", "100.00")
@@ -2131,7 +2185,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("other-goods")
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")
@@ -2177,7 +2232,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("other-goods")
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")
@@ -2212,7 +2268,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("tobacco")
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")
@@ -2246,7 +2303,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("vaping-products")
                     )
                   ),
                   Calculation("100.00", "0.00", "0.00", "100.00")
@@ -2281,7 +2339,8 @@ class CalculatorResponseSpec extends BaseSpec {
                       None,
                       None,
                       None,
-                      None
+                      None,
+                      Some("alcohol")
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")

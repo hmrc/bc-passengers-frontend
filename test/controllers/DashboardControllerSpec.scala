@@ -425,6 +425,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -491,6 +492,7 @@ class DashboardControllerSpec extends BaseSpec {
                             ExchangeRate("1.20", "2018-10-29"),
                             None
                           ),
+                          None,
                           None,
                           None,
                           None,
@@ -565,6 +567,7 @@ class DashboardControllerSpec extends BaseSpec {
                             ExchangeRate("1.20", "2018-10-29"),
                             None
                           ),
+                          None,
                           None,
                           None,
                           None,
@@ -669,6 +672,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -765,6 +769,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -858,6 +863,7 @@ class DashboardControllerSpec extends BaseSpec {
                             ExchangeRate("1.20", "2018-10-29"),
                             None
                           ),
+                          None,
                           None,
                           None,
                           None,
@@ -966,6 +972,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1067,6 +1074,7 @@ class DashboardControllerSpec extends BaseSpec {
                             ExchangeRate("1.20", "2018-10-29"),
                             None
                           ),
+                          None,
                           None,
                           None,
                           None,
@@ -1173,6 +1181,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1271,6 +1280,7 @@ class DashboardControllerSpec extends BaseSpec {
                             ExchangeRate("1.20", "2018-10-29"),
                             None
                           ),
+                          None,
                           None,
                           None,
                           None,
@@ -1375,6 +1385,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1436,6 +1447,7 @@ class DashboardControllerSpec extends BaseSpec {
                             ExchangeRate("1.20", "2018-10-29"),
                             None
                           ),
+                          None,
                           None,
                           None,
                           None,
@@ -1501,6 +1513,7 @@ class DashboardControllerSpec extends BaseSpec {
                           ExchangeRate("1.20", "2018-10-29"),
                           None
                         ),
+                        None,
                         None,
                         None,
                         None,
@@ -1575,6 +1588,7 @@ class DashboardControllerSpec extends BaseSpec {
                         None,
                         None,
                         None,
+                        None,
                         None
                       )
                     ),
@@ -1645,6 +1659,7 @@ class DashboardControllerSpec extends BaseSpec {
                         None,
                         None,
                         None,
+                        None,
                         None
                       )
                     ),
@@ -1711,6 +1726,7 @@ class DashboardControllerSpec extends BaseSpec {
                         None,
                         None,
                         None,
+                        None,
                         None
                       )
                     ),
@@ -1744,6 +1760,7 @@ class DashboardControllerSpec extends BaseSpec {
                           ExchangeRate("1.20", "2018-10-29"),
                           None
                         ),
+                        None,
                         None,
                         None,
                         None,

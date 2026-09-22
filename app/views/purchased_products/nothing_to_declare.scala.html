@@ -25,7 +25,7 @@
 )
 
 @(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
-
+@isVapingOn = @{ appConfig.isVapingJourneyEnabled }
 @govukLayout(pageTitle = Some(if(deltaCalc.isDefined){messages("label.additional_tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}else{messages("label.tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}), backLink = backLink) {
 
   <h1 class="govuk-heading-xl margin-bottom-20">
@@ -44,44 +44,199 @@
     <br>
     @p(Html(messages("label.amend_personal_allowances")))
   }
-
+  @if(isVapingOn) {
   <div class="responsive-table-wrapper">
     <table class="govuk-table margin-bottom-30">
-      <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.tax_due_on_these_goods")</caption>
+      @calculatorResponseDto.items.zipWithIndex.map { case (item, index) =>
+      @if(!item.itemKeyName.contains("other-goods")) {
+      @if(index == 0) {
+      <caption class="govuk-table__caption govuk-table__caption--m">
+        @if(
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("alcohol")) &&
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("tobacco")) &&
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("vaping-products"))
+        ) {
+        @messages("label.alcohol_tobacco_vaping")
+        } else if (
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("alcohol")) &&
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("tobacco"))
+        ) {
+        @messages("label.alcohol_tobacco")
+        } else if (
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("alcohol")) &&
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("vaping-products"))
+        ) {
+        @messages("label.alcohol_vaping")
+        } else if (
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("tobacco")) &&
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("vaping-products"))
+        ) {
+        @messages("label.tobacco_vaping")
+        } else if (
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("alcohol"))
+        ) {
+        @messages("label.alcohol")
+        } else if (
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("tobacco"))
+        ) {
+        @messages("label.tobacco")
+        } else if (
+        calculatorResponseDto.items.exists(i => i.itemKeyName.contains("vaping-products"))
+        ) {
+        @messages("label.vaping-products")
+        }
+      </caption>
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">@messages("label.item")</th>
-        <th class="govuk-table__header" scope="col">@messages("label.price")</th>
-        <th class="govuk-table__header" scope="col">@messages("label.purchased_in")</th>
-        <th class="govuk-table__header govuk-table__header--numeric" scope="col">@messages("label.tax_due")</th>
+        <th class="govuk-table__header" scope="col">
+          @messages("label.item")
+        </th>
+        <th class="govuk-table__header" scope="col">
+          @messages("label.price")
+        </th>
+        <th class="govuk-table__header" scope="col">
+          @messages("label.purchased_in")
+        </th>
+        <th class="govuk-table__header govuk-table__header--numeric" scope="col">
+          @messages("label.tax_due")
+        </th>
       </tr>
       </thead>
-      <tbody>
-      @calculatorResponseDto.items.map { item =>
-        <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header">
-            @messages(item.metadata.descriptionLabels.description,
-            item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
-          </th>
-          <td class="govuk-table__cell">
-            @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
-          </td>
-          <td class="govuk-table__cell">
-            @messages(item.metadata.country.countryName)
-          </td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">
-            &pound;@formatMonetaryValue(item.calculation.allTax)
-          </td>
-        </tr>
       }
+      <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header total table-foot" colspan="3">@messages("label.total")</th>
-        <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
+        <td class="govuk-table__cell">
+          @messages(
+          item.metadata.descriptionLabels.description,
+          item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*
+          )
+        </td>
+
+        <td class="govuk-table__cell">
+          @formatMonetaryValue(item.metadata.cost)
+          @messages(item.metadata.currency.displayName)
+        </td>
+
+        <td class="govuk-table__cell">
+          @messages(item.metadata.country.countryName)
+        </td>
+
+        <td class="govuk-table__cell govuk-table__cell--numeric">
+          &pound;@formatMonetaryValue(item.calculation.allTax)
+        </td>
       </tr>
+      @if(
+      !calculatorResponseDto.items.exists(i => i.itemKeyName.contains("other-goods")) &&
+      index == calculatorResponseDto.items.size - 1
+      ) {
+      <tr class="govuk-table__row">
+        <th scope="row"
+            class="govuk-table__header total table-foot"
+            colspan="3">
+          @messages("label.total")
+        </th>
+
+        <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">
+          &pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)
+        </td>
+      </tr>
+      }
       </tbody>
+      }
+      }
+    </table>
+    <table class="govuk-table margin-bottom-30">
+      @calculatorResponseDto.items.zipWithIndex.map { case (item, index) =>
+      @if(item.itemKeyName.contains("other-goods")) {
+      @if( index == calculatorResponseDto.items.indexWhere(i => i.itemKeyName.contains("other-goods"))) {
+      <caption class="govuk-table__caption govuk-table__caption--m">
+        Other goods
+      </caption>
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">
+          @messages("label.item")
+        </th>
+        <th class="govuk-table__header" scope="col">
+          @messages("label.price")
+        </th>
+        <th class="govuk-table__header" scope="col">
+          @messages("label.purchased_in")
+        </th>
+        <th class="govuk-table__header govuk-table__header--numeric" scope="col">
+          @messages("label.tax_due")
+        </th>
+      </tr>
+      </thead>
+      }
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          @messages( item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)* )
+        </td>
+        <td class="govuk-table__cell">
+          @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
+        </td>
+        <td class="govuk-table__cell">
+          @messages(item.metadata.country.countryName)
+        </td>
+        <td class="govuk-table__cell govuk-table__cell--numeric">
+          &pound;@formatMonetaryValue(item.calculation.allTax)
+        </td>
+      </tr>
+      @if(index == calculatorResponseDto.items.size - 1) {
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header total table-foot" colspan="3">
+          @messages("label.total")
+        </th>
+        <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">
+          &pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)
+        </td>
+      </tr>
+      }
+      </tbody>
+      }
+      }
     </table>
   </div>
-
+  } else {
+      <div class="responsive-table-wrapper">
+        <table class="govuk-table margin-bottom-30">
+          <caption class="govuk-table__caption govuk-visually-hidden">@messages("label.tax_due_on_these_goods")</caption>
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">@messages("label.item")</th>
+            <th class="govuk-table__header" scope="col">@messages("label.price")</th>
+            <th class="govuk-table__header" scope="col">@messages("label.purchased_in")</th>
+            <th class="govuk-table__header govuk-table__header--numeric" scope="col">@messages("label.tax_due")</th>
+          </tr>
+          </thead>
+          <tbody>
+          @calculatorResponseDto.items.map { item =>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">
+                @messages(item.metadata.descriptionLabels.description,
+                item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
+              </th>
+              <td class="govuk-table__cell">
+                @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
+              </td>
+              <td class="govuk-table__cell">
+                @messages(item.metadata.country.countryName)
+              </td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                &pound;@formatMonetaryValue(item.calculation.allTax)
+              </td>
+            </tr>
+          }
+          <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header total table-foot" colspan="3">@messages("label.total")</th>
+            <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+  }
   @if(deltaCalc.isDefined){
 
     <h2 id="additional-tax-heading" class="govuk-heading-m">
@@ -118,7 +273,7 @@
     <a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a>
   </p>
 
-  @displayTaxBreakdown(calculatorResponseDto)
+  @displayTaxBreakdown(calculatorResponseDto, appConfig)
   <br>
 
   @if(!hideExchangeRateInfo) {

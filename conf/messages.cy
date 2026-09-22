@@ -667,6 +667,10 @@ label.scheduled_time_of_arrival = Amser cyrraedd disgwyliedig
 label.for_example_930=Er enghraifft, 9:30 neu 14:55
 label.other_goods.vaping_product_hint = Nid yw hyn yn cynnwys cynhyrchion fepio
 label.other_goods.ni_vaping_product_hint = Ar gyfer unrhyw nwyddau eraill, gan cynnwys cynhyrchion fepio
+label.alcohol_tobacco_vaping = Cynhyrchion alcohol, tybaco a fepio
+label.alcohol_tobacco = Alcohol a thybaco
+label.alcohol_vaping = Cynhyrchion alcohol a fepio
+label.tobacco_vaping = Cynhyrchion tybaco a fepio
 
 time.fields.hour=Awr
 time.fields.minute=Munud

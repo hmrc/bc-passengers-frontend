@@ -80,7 +80,8 @@ class OverNinetySevenThousandPoundsViewSpec extends BaseViewSpec {
       isVatPaid = Some(false),
       isCustomPaid = Some(false),
       isExcisePaid = Some(false),
-      isUccRelief = Some(false)
+      isUccRelief = Some(false),
+      itemKeyName = None
     )
   )
 

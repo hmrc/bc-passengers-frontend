@@ -85,7 +85,8 @@ case class Item(
   isVatPaid: Option[Boolean],
   isCustomPaid: Option[Boolean],
   isExcisePaid: Option[Boolean],
-  isUccRelief: Option[Boolean]
+  isUccRelief: Option[Boolean],
+  itemKeyName: Option[String]
 )
 case class Band(code: String, items: List[Item], calculation: Calculation)
 
@@ -144,10 +145,34 @@ case class CalculatorResponse(
 
   def asDto(applySorting: Boolean): CalculatorResponseDto = {
 
-    val alcoholItems        = this.alcohol.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
-    val tobaccoItems        = this.tobacco.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
-    val vapingProductsItems = this.vapingProducts.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
-    val otherGoodsItems     = this.otherGoods.map(_.bands.flatMap(b => b.items)).getOrElse(Nil)
+    val alcoholItems        = this.alcohol
+      .map(
+        _.bands
+          .flatMap(b => b.items)
+          .map(item => item.copy(itemKeyName = Some("alcohol")))
+      )
+      .getOrElse(Nil)
+    val tobaccoItems        = this.tobacco
+      .map(
+        _.bands
+          .flatMap(b => b.items)
+          .map(item => item.copy(itemKeyName = Some("tobacco")))
+      )
+      .getOrElse(Nil)
+    val vapingProductsItems = this.vapingProducts
+      .map(
+        _.bands
+          .flatMap(b => b.items)
+          .map(item => item.copy(itemKeyName = Some("vaping-products")))
+      )
+      .getOrElse(Nil)
+    val otherGoodsItems     = this.otherGoods
+      .map(
+        _.bands
+          .flatMap(b => b.items)
+          .map(item => item.copy(itemKeyName = Some("other-goods")))
+      )
+      .getOrElse(Nil)
 
     val items = if (applySorting) {
       (alcoholItems ++ tobaccoItems ++ vapingProductsItems ++ otherGoodsItems).sortBy(item =>

@@ -222,6 +222,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -256,6 +257,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   None,
                   Some(false),
                   None,
+                  None,
                   None
                 ),
                 Item(
@@ -276,6 +278,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   ),
                   None,
                   Some(true),
+                  None,
                   None,
                   None
                 )
@@ -308,6 +311,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                     ExchangeRate("1.20", "2018-10-29"),
                     Some(Country("DZ", "Algeria", "DZ", isEu = false, isCountry = true, Nil))
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -345,6 +349,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   None,
                   Some(true),
                   None,
+                  None,
                   None
                 ),
                 Item(
@@ -372,6 +377,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   ),
                   None,
                   Some(true),
+                  None,
                   None,
                   None
                 )
