@@ -137,6 +137,7 @@ label.sparkling_wine=Gwin pefriog
 label.spirits=Gwirodydd (megis jin, fodca neu wisgi ac alcohol sydd dros 22%)
 label.other_alcoholic_drinks=Diodydd alcoholaidd eraill (gan gynnwys seidr, port, sieri ac alcohol hyd at 22%)
 label.tobacco=Tybaco
+label.tobacco_ni = Tybaco (heb gynnwys cynhyrchion fepio)
 label.cigarettes=Sigaréts
 label.cigars=Sigârs
 label.cigarillos=Sigarilos
