@@ -310,8 +310,8 @@ label.go_to_the_red_channel_=mynd i’r sianel goch neu’r ffôn pwynt coch, ne
 label.what_other_goods_are_= Pa nwyddau eraill rydych am eu hychwanegu?
 label.add_your_goods= Nodwch eich eitem
 label.if_there_are_no_search_results_ = Os nad oes canlyniadau chwilio ar gyfer y nwyddau rydych am eu hychwanegu
-label.search_through_our_lists_and = Os na allwch ddod o hyd i’ch eitem, gallwch
-label.categorise_your_goods_yourself= gategoreiddio’ch nwyddau eich hun.
+label.search_through_our_lists_and = Gallwch nodi enw’ch eitem neu
+label.categorise_your_goods_yourself= ddewis eich eitem o restr.
 error.required.enter_other_goods = Nodwch eich eitem
 
 error.required.tobacco.cigarettes=Nodwch bris y sigaréts
