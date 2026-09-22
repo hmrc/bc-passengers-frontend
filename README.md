@@ -17,11 +17,16 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    sm2 --start BC_PASSENGERS_ALL
    sm2 --stop BC_PASSENGERS_FRONTEND
    ```
-3. Restart the service locally:
+   3. Restart the service locally:
    ```
    cd bc-passengers-frontend
    ```
 ## Running the app locally
+   ```
+   sbt run
+
+   ```
+## Running the app locally for Test
    ```
    sbt "run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"
    ```

@@ -420,18 +420,27 @@ class TravelDetailsController @Inject() (
             ) =>
           Ok(
             goods_brought_into_gb(
-              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
+              BringingOverAllowanceDto
+                .formForJourney(isVapingJourneyEnabled)
+                .bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
               backLinkModel.backLink
             )
           )
         case _ =>
-          Ok(goods_brought_into_gb(BringingOverAllowanceDto.form, backLinkModel.backLink))
+          Ok(
+            goods_brought_into_gb(
+              BringingOverAllowanceDto
+                .formForJourney(isVapingJourneyEnabled),
+              backLinkModel.backLink
+            )
+          )
       }
     }
   }
 
   val goodsBoughtIntoGBPost: Action[AnyContent] = goodsBoughtIntoGBAction { implicit context =>
-    BringingOverAllowanceDto.form
+    BringingOverAllowanceDto
+      .formForJourney(isVapingJourneyEnabled)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(goods_brought_into_gb(formWithErrors, backLinkModel.backLink))),

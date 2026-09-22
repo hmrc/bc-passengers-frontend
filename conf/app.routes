@@ -89,7 +89,7 @@ POST       /add-an-item                                                         
 GET        /check-your-item/$path<.+>/:iid/change-type                                 controllers.GoodsCheckYourAnswersController.changeType(path: ProductPath, iid: String)
 GET        /check-your-item/$path<.+>/:iid/change-product                              controllers.GoodsCheckYourAnswersController.changeProduct(path: ProductPath, iid: String)
 GET        /check-your-item/$path<.+>/:iid                                             controllers.GoodsCheckYourAnswersController.show(path: ProductPath, iid: String)
-POST       /check-your-item                                                            controllers.GoodsCheckYourAnswersController.submit
+POST       /check-your-item/$path<.+>/:iid                                             controllers.GoodsCheckYourAnswersController.submit(path: ProductPath, iid: String)
 
 GET        /goods/$path<.+>/upper-limits/volume                                        controllers.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path: ProductPath)
 GET        /goods/$path<.+>/upper-limits/weight                                        controllers.LimitExceedController.onPageLoadAddJourneyTobaccoWeight(path: ProductPath)

@@ -21,7 +21,22 @@ import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 
 class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDetector with FormatsAndConversions {
 
-  private def sumPreviouslyDeclaredAlcoholVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
+  private def ciderOrOtherAlcoholExists(
+    productPath: String,
+    productToken: String,
+    isWineStillOrSparklingEnabled: Boolean
+  ): Boolean =
+    if (isWineStillOrSparklingEnabled && (productToken.contains("cider") || productToken.contains("other"))) {
+      productPath.endsWith(s"/$productToken")
+    } else {
+      productPath.contains("cider") || productPath.contains("other")
+    }
+
+  private def sumPreviouslyDeclaredAlcoholVolume(
+    contextJourneyData: JourneyData,
+    productToken: String,
+    isWineStillOrSparklingEnabled: Boolean
+  ): BigDecimal =
     contextJourneyData.declarationResponse
       .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
       .filter { product =>
@@ -29,21 +44,25 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDe
           productToken = productToken,
           wineOrSparklingExists = product.path.toString.contains("wine"),
           ciderOrOtherAlcoholExists =
-            product.path.toString.contains("cider") || product.path.toString.contains("other"),
+            ciderOrOtherAlcoholExists(product.path.toString, productToken, isWineStillOrSparklingEnabled),
           beerOrSpiritExists = product.path.toString.contains(productToken)
         )
       }
       .map(_.weightOrVolume.getOrElseZero)
       .sum
 
-  private def sumAlcoholProductTotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
+  private def sumAlcoholProductTotalVolume(
+    contextJourneyData: JourneyData,
+    productToken: String,
+    isWineStillOrSparklingEnabled: Boolean
+  ): BigDecimal =
     contextJourneyData.purchasedProductInstances
       .filter { product =>
         checkAlcoholProductExists(
           productToken = productToken,
           wineOrSparklingExists = product.path.toString.contains("wine"),
           ciderOrOtherAlcoholExists =
-            product.path.toString.contains("cider") || product.path.toString.contains("other"),
+            ciderOrOtherAlcoholExists(product.path.toString, productToken, isWineStillOrSparklingEnabled),
           beerOrSpiritExists = product.path.toString.contains(productToken)
         )
       }
@@ -70,14 +89,15 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDe
   def alcoholAddHelper(
     contextJourneyData: JourneyData,
     weightOrVolume: BigDecimal,
-    productToken: String
+    productToken: String,
+    isWineStillOrSparklingEnabled: Boolean = false
   ): BigDecimal = {
 
     val previouslyDeclaredAlcoholVolume: BigDecimal =
-      sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken)
+      sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken, isWineStillOrSparklingEnabled)
 
     val alcoholProductTotalVolume: BigDecimal =
-      sumAlcoholProductTotalVolume(contextJourneyData, productToken)
+      sumAlcoholProductTotalVolume(contextJourneyData, productToken, isWineStillOrSparklingEnabled)
 
     val totalAlcoholVolume: BigDecimal =
       (weightOrVolume + previouslyDeclaredAlcoholVolume + alcoholProductTotalVolume).formatDecimalPlaces(5)
@@ -89,16 +109,17 @@ class AlcoholAndTobaccoCalculationService extends InstanceDecider with ProductDe
     contextJourneyData: JourneyData,
     weightOrVolume: BigDecimal,
     productToken: String,
-    iid: String
+    iid: String,
+    isWineStillOrSparklingEnabled: Boolean = false
   ): BigDecimal = {
 
     val previouslyDeclaredAlcoholVolume: BigDecimal =
-      sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken)
+      sumPreviouslyDeclaredAlcoholVolume(contextJourneyData, productToken, isWineStillOrSparklingEnabled)
 
     val originalVolume: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData, iid)
 
     val alcoholProductTotalVolume: BigDecimal =
-      sumAlcoholProductTotalVolume(contextJourneyData, productToken)
+      sumAlcoholProductTotalVolume(contextJourneyData, productToken, isWineStillOrSparklingEnabled)
 
     val totalAlcoholVolume: BigDecimal =
       (weightOrVolume + previouslyDeclaredAlcoholVolume + alcoholProductTotalVolume - originalVolume)

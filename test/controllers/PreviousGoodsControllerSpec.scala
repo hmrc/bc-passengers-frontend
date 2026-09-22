@@ -327,6 +327,25 @@ class PreviousGoodsControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text()             shouldBe "Your previously declared goods"
       doc.getElementsByClass("govuk-button").text() shouldBe "Add new goods"
     }
+
+    "respond with 200 using an empty JourneyData when the cache holds no journey data" in new LocalSetup {
+
+      override val cachedJourneyData: Option[JourneyData] = None
+
+      when(injected[Cache].fetch(any()))
+        .thenReturn(Future.successful(Some(travelDetailsJourneyData)))
+        .thenReturn(Future.successful(None))
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any()))
+        .thenReturn(Future.successful(None))
+
+      val result: Future[Result] =
+        rt(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-goods")).get
+
+      status(result) shouldBe OK
+
+      val doc: Document = Jsoup.parse(contentAsString(result))
+      doc.getElementsByTag("h1").text() shouldBe "Your previously declared goods"
+    }
   }
 
 }

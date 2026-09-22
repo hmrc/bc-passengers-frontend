@@ -16,13 +16,15 @@
 
 package views.purchased_products
 
+import config.AppConfig
 import models._
 import play.api.i18n.Lang
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.dashboard
 
-class DashboardViewSpec extends BaseViewSpec {
+class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
   private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (BigDecimal(50), 10)
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
@@ -204,14 +206,57 @@ class DashboardViewSpec extends BaseViewSpec {
     false
   )(request, messagesApi, Lang("en"), appConfig)
 
+  private def dashboardWith(config: AppConfig): HtmlFormat.Appendable = injected[dashboard].apply(
+    journeyData = JourneyData(),
+    alcoholPurchasedItemList = alcoholPurchasedItemList,
+    tobaccoPurchasedItemList = tobaccoPurchasedItemList,
+    otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+    previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+    totalItems = 3,
+    totalOtherGoodsItems = 1,
+    currentPage = 1,
+    totalPages = 1,
+    showCalculate = true,
+    isAmendment = true,
+    backLink = None,
+    isIrishBorderQuestionEnabled = true,
+    isGbNi = true,
+    isEU = false,
+    isUkResident = true
+  )(
+    request = request,
+    messagesApi = messagesApi,
+    lang = Lang("en"),
+    appConfig = config
+  )
+
   "DashboardView" when {
     renderViewTest(
       title = "You have added 3 items - Check tax on goods you bring into the UK - GOV.UK",
       heading = "You have added 3 items"
     )
 
-    "show each item in a summary list with contextual edit and remove actions" in {
-      val doc = document(viewViaApply)
+    "show each item in a summary list with contextual edit and remove actions when wine-still-or-sparkling is ON" in {
+      val doc = document(dashboardWith(appConfigToggle(enabled = true)))
+
+      doc.select("dl.goods-summary-list").size()               shouldBe 3
+      doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
+      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price Actions"
+      doc
+        .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key")
+        .text()                                                shouldBe "50 litres wine (still or sparkling)"
+      doc
+        .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__value")
+        .text()                                                shouldBe "100 British pounds (GBP)"
+      doc.select("a#alcohol-0").text()                         shouldBe "Edit 50 litres wine (still or sparkling)"
+      doc.select("a[href*=remove-goods]").first().text()       shouldBe "Remove 50 litres wine (still or sparkling)"
+      doc.select("#addAnotherItem-yes").attr("value")          shouldBe "true"
+      doc.select("#addAnotherItem-no").attr("value")           shouldBe "false"
+      doc.select("button.govuk-button").text()                 shouldBe "Save and continue"
+    }
+
+    "show each item in a summary list with contextual edit and remove actions when wine-still-or-sparkling is OFF" in {
+      val doc = document(dashboardWith(appConfigToggle(enabled = false)))
 
       doc.select("dl.goods-summary-list").size()               shouldBe 3
       doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
