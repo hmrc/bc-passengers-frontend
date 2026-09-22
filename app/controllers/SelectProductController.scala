@@ -160,7 +160,7 @@ class SelectProductController @Inject() (
                 form,
                 selectItems(path, filteredChildren),
                 path,
-                if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
+                if (useDashboardBackLink) Some(routes.AddItemController.show.url)
                 else backLinkModel.backLink,
                 customBackLink = useDashboardBackLink,
                 returnToAddedItemEditUrl = returnToAddedItemEditUrl,
@@ -176,7 +176,7 @@ class SelectProductController @Inject() (
                 form,
                 selectItems(path, filteredChildren),
                 path,
-                if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
+                if (useDashboardBackLink) Some(routes.AddItemController.show.url)
                 else backLinkModel.backLink,
                 customBackLink = useDashboardBackLink,
                 returnToAddedItemEditUrl = returnToAddedItemEditUrl,

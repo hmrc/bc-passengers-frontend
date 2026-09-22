@@ -238,7 +238,7 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
       status(result) shouldBe OK
 
       doc.getElementById("tokens-spirits").hasAttr("checked")              shouldBe true
-      doc.select("a.govuk-back-link").attr("href")                         shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tell-us"
+      doc.select("a.govuk-back-link").attr("href")                         shouldBe "/check-tax-on-goods-you-bring-into-the-uk/add-an-item"
       doc.select("input[name=returnToAddedItemEditUrl]").attr("value")     shouldBe
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
       doc.select("input[name=returnToAddedItemProductPath]").attr("value") shouldBe "alcohol/spirits"
