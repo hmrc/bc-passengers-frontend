@@ -1989,6 +1989,114 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ).get
       status(result) shouldBe OK
     }
+
+    "return a 200 and render the weight input when editing loose tobacco (rolling-tobacco)" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.25))
+      override def noOfSticks: Option[Int]            = None
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("tobacco/rolling-tobacco"),
+              "iid0",
+              weightOrVolume,
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(92.50))
+            )
+          )
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[weight_or_volume_input], times(1))(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
+    }
+
+    "return a 200 and render the no-of-sticks-and-weight input when editing cigars" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/cigars")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+      override def noOfSticks: Option[Int]            = Some(5)
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("tobacco/cigars"),
+              "iid0",
+              weightOrVolume,
+              noOfSticks,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(92.50))
+            )
+          )
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
+    }
   }
 
   "Posting processEditForm" should {

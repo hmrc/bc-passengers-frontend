@@ -18,11 +18,12 @@ package views.purchased_products
 
 import models.*
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import util.VapingProductsFeature
 import views.BaseViewSpec
 import views.html.purchased_products.check_your_goods_answers
 
-class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with VapingProductsFeature {
+class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparklingFeature with VapingProductsFeature {
 
   private val country        = Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)
   private val item           = PurchasedProductInstance(
@@ -72,8 +73,14 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with VapingProductsFeat
       heading = "Check your answers"
     )
 
-    "show the selected item and its answers in a summary list" in {
-      val doc = document(viewViaApply)
+    "show the selected item and its answers in a summary list, with the item type heading when the toggle is OFF" in {
+      val doc = document(
+        injected[check_your_goods_answers].apply(item, product, Some(currency))(
+          request,
+          messages,
+          appConfigToggle(enabled = false)
+        )
+      )
 
       if (vpToggleOff) {
         doc.select("h2.govuk-heading-m").text() shouldBe "Beer"
@@ -87,6 +94,19 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with VapingProductsFeat
       doc.select(".govuk-summary-list").text()                                  should include("50")
       doc.select("a.govuk-link[href*=enter-goods/alcohol/iid0/edit]").isEmpty shouldBe false
       doc.select("button.govuk-button").text()                                shouldBe "Save and continue"
+    }
+
+    "hide the item type heading when the wine-still-or-sparkling toggle is ON" in {
+      val doc = document(
+        injected[check_your_goods_answers].apply(item, product, Some(currency))(
+          request,
+          messages,
+          appConfigToggle(enabled = true)
+        )
+      )
+
+      doc.select("h2.govuk-heading-m").isEmpty        shouldBe true
+      doc.select(".govuk-summary-list__key").eachText() should contain("Type of alcohol")
     }
 
     "show the tobacco weight in grams" in {
