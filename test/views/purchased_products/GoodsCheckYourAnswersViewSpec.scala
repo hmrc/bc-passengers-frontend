@@ -18,10 +18,11 @@ package views.purchased_products
 
 import models.*
 import play.twirl.api.HtmlFormat
+import util.VapingProductsFeature
 import views.BaseViewSpec
 import views.html.purchased_products.check_your_goods_answers
 
-class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
+class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with VapingProductsFeature {
 
   private val country        = Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)
   private val item           = PurchasedProductInstance(
@@ -43,6 +44,19 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
   private val tobaccoProduct =
     ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR"))
 
+  private val otherItem    = item.copy(
+    path = ProductPath("other-goods/car-seats")
+  )
+  private val otherProduct =
+    ProductTreeLeaf("car-seats", "label.other-goods.car-seats", "OGD/MOB/MISC", "other-goods", Nil)
+
+  private val vapingProductsItem = item.copy(
+    path = ProductPath("vaping-products/vape"),
+    weightOrVolume = Some(BigDecimal(100))
+  )
+  private val vapingProducts     =
+    ProductTreeLeaf("vape", "label.vaping-products", "VAP/V1/VPRODUCTS", "vaping-products", List("L-VPRODUCTS"))
+
   val viewViaApply: HtmlFormat.Appendable =
     injected[check_your_goods_answers].apply(item, product, Some(currency))(request, messages, appConfig)
 
@@ -61,7 +75,9 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     "show the selected item and its answers in a summary list" in {
       val doc = document(viewViaApply)
 
-      doc.select("h2.govuk-heading-m").text()                                 shouldBe "Beer"
+      if (vpToggleOff) {
+        doc.select("h2.govuk-heading-m").text() shouldBe "Beer"
+      }
       doc.select(".govuk-summary-list__key").eachText()                         should contain allOf (
         "Type of goods",
         "Type of alcohol",
@@ -81,6 +97,26 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
 
       doc.select(".govuk-summary-list__key").eachText() should contain("Total weight in grams")
       doc.select(".govuk-summary-list").text()          should include("100 grams")
+    }
+
+    "show the vaping products volume in millilitres" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(vapingProductsItem, vapingProducts, Some(currency))(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__key").eachText() should contain("Total volume of liquid in millilitres")
+      doc.select(".govuk-summary-list").text()          should include("100 millilitres")
+    }
+
+    "show the other goods cost" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(otherItem, otherProduct, Some(currency))(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__key").eachText() should contain("Type of goods")
+      doc.select(".govuk-summary-list").text()          should include("car seat")
     }
   }
 }

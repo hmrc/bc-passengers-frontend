@@ -964,6 +964,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
     val calculationResponse: CalculatorResponse = CalculatorResponse(
       Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("0.00", "0.00", "0.00", "0.00"),
       withinFreeAllowance = false,
@@ -1052,6 +1053,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
         CalculatorResponse(
           Some(Alcohol(List(), Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(Tobacco(List(), Calculation("0.00", "0.00", "0.00", "0.00"))),
+          Some(VapingProducts(List(), Calculation("0.00", "0.00", "0.00", "0.00"))),
           Some(OtherGoods(List(), Calculation("0.00", "0.00", "0.00", "0.00"))),
           Calculation("0.00", "0.00", "0.00", "0.00"),
           withinFreeAllowance = false,
@@ -1116,6 +1118,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
       None,
       None,
       None,
+      None,
       calculation,
       withinFreeAllowance = true,
       limits = Map.empty,
@@ -1135,6 +1138,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
       journeyDataBodyCapture.getValue shouldBe JourneyData(
         calculatorResponse = Some(
           CalculatorResponse(
+            None,
             None,
             None,
             None,
@@ -1168,6 +1172,7 @@ class CalculatorServiceSpec extends BaseSpec with ScalaFutures {
       journeyDataBodyCapture.getValue shouldBe JourneyData(
         calculatorResponse = Some(
           CalculatorResponse(
+            None,
             None,
             None,
             None,

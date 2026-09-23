@@ -39,6 +39,7 @@ import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
+
   given messages: MessagesApi = injected[MessagesApi]
 
   private val mockRequestBuilder: RequestBuilder           = mock(classOf[RequestBuilder])
@@ -158,6 +159,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 None,
                 None,
                 None,
+                None,
                 None
               )
             ),
@@ -192,6 +194,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 None,
                 None,
                 None,
+                None,
                 None
               ),
               Item(
@@ -213,6 +216,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 None,
                 None,
                 None,
+                None,
                 None
               )
             ),
@@ -220,6 +224,41 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
           )
         ),
         Calculation("100.54", "192.94", "149.92", "443.40")
+      )
+    ),
+    Some(
+      VapingProducts(
+        List(
+          Band(
+            "B",
+            List(
+              Item(
+                "VAP/V1/VPRODUCTS",
+                "91.23",
+                None,
+                Some(5),
+                Calculation("2.00", "0.30", "18.70", "21.00"),
+                Metadata(
+                  "52 millilitres vaping products",
+                  "label.vaping-products.vape",
+                  "120.00",
+                  DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                  Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                  Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                  ExchangeRate("1.2", "2018-10-29"),
+                  None
+                ),
+                None,
+                None,
+                None,
+                None,
+                None
+              )
+            ),
+            Calculation("2.00", "0.30", "18.70", "21.00")
+          )
+        ),
+        Calculation("2.00", "0.30", "18.70", "21.00")
       )
     ),
     Some(
@@ -247,6 +286,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 None,
                 None,
                 None,
+                None,
                 None
               ),
               Item(
@@ -265,6 +305,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   ExchangeRate("1.2", "2018-10-29"),
                   None
                 ),
+                None,
                 None,
                 None,
                 None,
@@ -893,6 +934,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -903,6 +945,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
             )
           ),
           otherGoods = None,
+          vapingProducts = None,
           tobacco = None,
           calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
           withinFreeAllowance = false,
@@ -1021,6 +1064,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -1048,6 +1092,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -1066,6 +1111,92 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "A",
+                  List(
+                    Item(
+                      "VAP/V1/VPRODUCTS",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "60 millilitres vaping products",
+                        "label.vaping-products.vape",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
+                ),
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "ALC/A2/BEER",
+                      "304.11",
+                      None,
+                      Some(BigDecimal("3.00")),
+                      Calculation("74.00", "79.06", "91.43", "244.49"),
+                      Metadata(
+                        "3 litres beer",
+                        "Beer",
+                        "400.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    ),
+                    Item(
+                      "ALC/A3/WINE",
+                      "152.05",
+                      None,
+                      Some(BigDecimal("4.00")),
+                      Calculation("26.54", "113.88", "58.49", "198.91"),
+                      Metadata(
+                        "4 litres wine",
+                        "Wine",
+                        "200.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
                       None,
                       None,
                       None,
@@ -1103,6 +1234,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -1130,6 +1262,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -1148,6 +1281,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -1185,6 +1319,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -1212,6 +1347,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -1230,6 +1366,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -1508,6 +1645,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -1535,6 +1673,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -1556,10 +1695,46 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
                   Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "VAP/V1/VPRODUCTS",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "52 millilitres vaping products",
+                        "label.vaping-products.vape",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
                 )
               ),
               Calculation("100.54", "192.94", "149.92", "443.40")
@@ -1590,6 +1765,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -1617,6 +1793,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -1635,6 +1812,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -1672,6 +1850,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -1699,6 +1878,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -1717,6 +1897,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -1992,6 +2173,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(false),
                       None,
                       Some(false),
+                      None,
                       None
                     )
                   ),
@@ -2019,6 +2201,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     ),
                     Item(
@@ -2040,10 +2223,46 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(false),
                       None,
                       Some(true),
+                      None,
                       None
                     )
                   ),
                   Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "VAP/V1/VPRODUCTS",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "52 millilitres vaping products",
+                        "label.vaping-products.vape",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
                 )
               ),
               Calculation("100.54", "192.94", "149.92", "443.40")
@@ -2074,6 +2293,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       Some(true),
                       None,
+                      None,
                       None
                     )
                   ),
@@ -2101,6 +2321,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       Some(false),
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -2121,6 +2342,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       ),
                       None,
                       Some(true),
+                      None,
                       None,
                       None
                     )
@@ -2156,6 +2378,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     )
                   ),
@@ -2183,6 +2406,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     ),
                     Item(
@@ -2204,6 +2428,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     )
                   ),
@@ -2472,6 +2697,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = None,
+          vapingProducts = None,
           otherGoods = None,
           tobacco = Some(
             Tobacco(
@@ -2495,6 +2721,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -2525,6 +2752,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -2543,6 +2771,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -3786,6 +4015,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -3795,6 +4025,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
               Calculation("100.54", "192.94", "149.92", "443.40")
             )
           ),
+          vapingProducts = None,
           otherGoods = None,
           tobacco = None,
           calculation = Calculation("102.54", "192.94", "149.92", "443.40"),
@@ -3914,6 +4145,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -3941,6 +4173,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -3962,10 +4195,46 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
                   Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "VAP/V1/VPRODUCTS",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "52 millilitres vaping products",
+                        "label.vaping-products.vape",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
                 )
               ),
               Calculation("100.54", "192.94", "149.92", "443.40")
@@ -3996,6 +4265,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -4023,6 +4293,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -4041,6 +4312,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -4078,6 +4350,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -4105,6 +4378,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -4123,6 +4397,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -4401,6 +4676,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -4428,6 +4704,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -4449,10 +4726,46 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
                   Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "VAP/V1/VPRODUCTS",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "52 millilitres vaping products",
+                        "label.vaping-products.vape",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
                 )
               ),
               Calculation("100.54", "192.94", "149.92", "443.40")
@@ -4483,6 +4796,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -4510,6 +4824,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -4528,6 +4843,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -4565,6 +4881,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     )
                   ),
@@ -4592,6 +4909,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -4610,6 +4928,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -4885,6 +5204,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(false),
                       None,
                       Some(false),
+                      None,
                       None
                     )
                   ),
@@ -4912,6 +5232,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     ),
                     Item(
@@ -4933,10 +5254,46 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(false),
                       None,
                       Some(true),
+                      None,
                       None
                     )
                   ),
                   Calculation("100.54", "192.94", "149.92", "443.40")
+                )
+              ),
+              Calculation("100.54", "192.94", "149.92", "443.40")
+            )
+          ),
+          vapingProducts = Some(
+            VapingProducts(
+              List(
+                Band(
+                  "B",
+                  List(
+                    Item(
+                      "VAP/V1/VPRODUCTS",
+                      "250.10",
+                      None,
+                      Some(BigDecimal("2.00")),
+                      Calculation("0.00", "0.00", "0.00", "0.00"),
+                      Metadata(
+                        "52 millilitres vaping products",
+                        "label.vaping-products.vape",
+                        "300.00",
+                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                        ExchangeRate("1.2", "2018-10-29"),
+                        None
+                      ),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  ),
+                  Calculation("0.00", "0.00", "0.00", "0.00")
                 )
               ),
               Calculation("100.54", "192.94", "149.92", "443.40")
@@ -4967,6 +5324,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       Some(true),
                       None,
+                      None,
                       None
                     )
                   ),
@@ -4994,6 +5352,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       Some(false),
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -5014,6 +5373,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       ),
                       None,
                       Some(true),
+                      None,
                       None,
                       None
                     )
@@ -5049,6 +5409,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     )
                   ),
@@ -5076,6 +5437,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     ),
                     Item(
@@ -5097,6 +5459,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       Some(true),
                       None,
                       Some(true),
+                      None,
                       None
                     )
                   ),
@@ -5365,6 +5728,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
 
         val calculatorResponse: CalculatorResponse = CalculatorResponse(
           alcohol = None,
+          vapingProducts = None,
           otherGoods = None,
           tobacco = Some(
             Tobacco(
@@ -5388,6 +5752,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,
@@ -5418,6 +5783,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       None,
                       None,
                       None,
+                      None,
                       None
                     ),
                     Item(
@@ -5436,6 +5802,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                         ExchangeRate("1.2", "2018-10-29"),
                         None
                       ),
+                      None,
                       None,
                       None,
                       None,

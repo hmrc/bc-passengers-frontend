@@ -33,9 +33,10 @@
   else itemType
 }
 @editCall = @{ category match {
-  case "alcohol" => routes.AlcoholInputController.displayEditForm(item.iid)
-  case "tobacco" => routes.TobaccoInputController.displayEditForm(item.iid)
-  case _ => routes.OtherGoodsInputController.displayEditForm(item.iid)
+  case "alcohol"          => routes.AlcoholInputController.displayEditForm(item.iid)
+  case "tobacco"          => routes.TobaccoInputController.displayEditForm(item.iid)
+  case "vaping-products"  => routes.VapingProductsInputController.displayEditForm(item.iid)
+  case _                  => routes.OtherGoodsInputController.displayEditForm(item.iid)
 } }
 
 @row(key: String, value: String, hiddenText: String) = @{
@@ -73,6 +74,8 @@
   }
   val (quantityLabel, quantityUnit) = if (category == "tobacco") {
     ("label.total_weight_in_grams", "label.grams")
+  } else if (category == "vaping-products") {
+    ("label.total_volume_in_millilitres", "label.millilitres")
   } else {
     ("label.total_volume_in_litres", "label.litres")
   }
@@ -86,8 +89,10 @@
 
   Seq(
     row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
-    row(typeLabel, typeOfAlcohol, messages(typeLabel).toLowerCase)
-  ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
+  ) ++
+    Option.when(category != "vaping-products") {
+      row(typeLabel, typeOfAlcohol, messages(typeLabel).toLowerCase)
+    } ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 
 @govukLayout(
@@ -95,7 +100,9 @@
   backLink = Some(editCall.url)
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
-  <h2 class="govuk-heading-m">@itemType</h2>
+  @if(!appConfig.isVapingJourneyEnabled){
+    <h2 class="govuk-heading-m">@itemType</h2>
+  }
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 
