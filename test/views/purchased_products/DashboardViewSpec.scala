@@ -241,7 +241,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
       doc.select("dl.goods-summary-list").size()               shouldBe 3
       doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
-      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
+      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price Actions"
       doc
         .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key")
         .text()                                                shouldBe "50 litres wine (still or sparkling)"
@@ -260,7 +260,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
       doc.select("dl.goods-summary-list").size()               shouldBe 3
       doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
-      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
+      doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price Actions"
       doc
         .select(".alcohol .govuk-summary-list__row:not(.goods-summary-list__header) .govuk-summary-list__key")
         .text()                                                shouldBe "50 litres wine"
@@ -299,6 +299,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
       doc.select("nav.govuk-pagination").attr("aria-label")                                       shouldBe "Pagination"
       doc.select(".govuk-pagination__item--current").text()                                       shouldBe "1"
       doc.select("a[href*=page=2]").first().text()                                                shouldBe "2"
+      doc.select(".govuk-pagination__next .govuk-pagination__icon--next").isEmpty                 shouldBe false
       doc.select(".other-goods .govuk-summary-list__row:not(.goods-summary-list__header)").size() shouldBe 10
     }
 

@@ -21,7 +21,7 @@ import connectors.Cache
 import controllers.enforce.DashboardAction
 import models.{ProductPath, ProductTreeLeaf}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Session}
 import services.{AlcoholAndTobaccoCalculationService, CurrencyService, ProductTreeService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendController, FrontendHeaderCarrierProvider}
@@ -51,8 +51,9 @@ class GoodsCheckYourAnswersController @Inject() (
 
     (item, product) match {
       case (Some(purchasedItem), Some(productTreeLeaf)) =>
-        val currency = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
-        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency)))
+        val currency   = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
+        val isEditMode = context.request.session.get(ControllerHelpers.checkYourItemEditModeSessionKey).contains(iid)
+        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, isEditMode)))
       case _                                            =>
         Future.successful(Redirect(routes.DashboardController.showDashboard))
     }
@@ -101,4 +102,33 @@ class GoodsCheckYourAnswersController @Inject() (
       }
     }
   }
+
+  def changeType(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    startItemReplacement(path, iid, routes.AddItemController.show)
+  }
+
+  def changeProduct(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
+    val nextPage = path.components.headOption match {
+      case Some("other-goods") => routes.OtherGoodsInputController.displayAddForm()
+      case Some(category)      => routes.SelectProductController.clearAndAskProductSelection(ProductPath(category))
+      case None                => routes.DashboardController.showDashboard
+    }
+    startItemReplacement(path, iid, nextPage)
+  }
+
+  private def startItemReplacement(path: ProductPath, iid: String, nextPage: play.api.mvc.Call)(implicit
+    context: LocalContext
+  ): Future[play.api.mvc.Result] =
+    context.getJourneyData.getPurchasedProductInstance(iid).filter(_.path == path) match {
+      case Some(item) =>
+        val session = (context.request.session.data -- ControllerHelpers.returnToAddedItemSessionKeys) ++ Map(
+          ControllerHelpers.itemBeingReplacedSessionKey     -> item.iid,
+          ControllerHelpers.itemReplacementCyaUrlSessionKey -> routes.GoodsCheckYourAnswersController
+            .show(item.path, item.iid)
+            .url
+        )
+        Future.successful(Redirect(nextPage).withSession(Session(session)))
+      case None       =>
+        Future.successful(Redirect(routes.DashboardController.showDashboard))
+    }
 }

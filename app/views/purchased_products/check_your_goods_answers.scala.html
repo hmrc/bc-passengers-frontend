@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.Aliases._
 @import util.formatMonetaryValueWithoutTrailingZeros
+@import play.api.mvc.Call
 
 @this(
   govukLayout: templates.GovukLayoutWrapper,
@@ -24,7 +25,7 @@
   button: components.button
 )
 
-@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency], isEditMode: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
@@ -37,16 +38,18 @@
   case "tobacco" => routes.TobaccoInputController.displayEditForm(item.iid)
   case _ => routes.OtherGoodsInputController.displayEditForm(item.iid)
 } }
+@changeTypeCall = @{ routes.GoodsCheckYourAnswersController.changeType(item.path, item.iid) }
+@changeProductCall = @{ routes.GoodsCheckYourAnswersController.changeProduct(item.path, item.iid) }
 
-@row(key: String, value: String, hiddenText: String) = @{
+@row(key: String, value: String, hiddenText: String, action: Call, showAction: Boolean) = @{
   SummaryListRow(
     key = Key(content = Text(messages(key))),
     value = Value(content = Text(value)),
-    actions = Some(Actions(items = Seq(ActionItem(
-      href = editCall.url,
+    actions = if (showAction) Some(Actions(items = Seq(ActionItem(
+      href = action.url,
       content = Text(messages("label.change")),
       visuallyHiddenText = Some(hiddenText)
-    ))))
+    )))) else None
   )
 }
 
@@ -76,17 +79,18 @@
   } else {
     ("label.total_volume_in_litres", "label.litres")
   }
-  val quantity = item.weightOrVolume.map(value => row(quantityLabel, s"${formatMonetaryValueWithoutTrailingZeros(value)} ${messages(quantityUnit)}", messages(quantityLabel).toLowerCase))
-    .orElse(item.noOfSticks.map(value => row("label.number_of_sticks", value.toString, messages("label.number_of_sticks").toLowerCase)))
-  val country = item.country.map(value => row(countryLabel, messages(value.countryName), messages(countryLabel).toLowerCase))
-  val originCountry = item.originCountry.map(value => row(originLabel, messages(value.countryName), messages(originLabel).toLowerCase))
+  val quantity = item.weightOrVolume.map(value => row(quantityLabel, s"${formatMonetaryValueWithoutTrailingZeros(value)} ${messages(quantityUnit)}", messages(quantityLabel).toLowerCase, editCall, showAction = true))
+    .orElse(item.noOfSticks.map(value => row("label.number_of_sticks", value.toString, messages("label.number_of_sticks").toLowerCase, editCall, showAction = true)))
+  val country = item.country.map(value => row(countryLabel, messages(value.countryName), messages(countryLabel).toLowerCase, editCall, showAction = true))
+  val originCountry = item.originCountry.map(value => row(originLabel, messages(value.countryName), messages(originLabel).toLowerCase, editCall, showAction = true))
   val currencyValue = item.currency.map(code => currency.map(value => messages(value.displayName)).getOrElse(code))
-  val currencyRow = currencyValue.map(value => row(currencyLabel, value, messages(currencyLabel).toLowerCase))
-  val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase))
+  val currencyRow = currencyValue.map(value => row(currencyLabel, value, messages(currencyLabel).toLowerCase, editCall, showAction = true))
+  val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase, editCall, showAction = true))
+  val productType = if (category == "other-goods") item.searchTerm.map(term => messages(term.name)).getOrElse(itemType) else typeOfAlcohol
 
   Seq(
-    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
-    row(typeLabel, typeOfAlcohol, messages(typeLabel).toLowerCase)
+    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase, changeTypeCall, showAction = !isEditMode),
+    row(typeLabel, productType, messages(typeLabel).toLowerCase, changeProductCall, showAction = !isEditMode)
   ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
 }
 
@@ -95,7 +99,6 @@
   backLink = Some(editCall.url)
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
-  <h2 class="govuk-heading-m">@itemType</h2>
 
   @govukSummaryList(SummaryList(rows = categoryRows))
 

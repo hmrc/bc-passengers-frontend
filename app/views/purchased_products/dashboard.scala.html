@@ -93,10 +93,10 @@
   @h2(messages("label.alcohol"))
   @if(alcoholPurchasedItemList.nonEmpty){
     <dl class="govuk-summary-list goods-summary-list">
-      <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+      <div class="govuk-summary-list__row goods-summary-list__header">
         <dt class="govuk-summary-list__key">@messages("label.item")</dt>
         <dd class="govuk-summary-list__value">@messages("label.price")</dd>
-        <dd class="govuk-summary-list__actions"></dd>
+        <dd class="govuk-summary-list__actions"><span class="govuk-visually-hidden">@messages("label.actions")</span></dd>
       </div>
       @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
@@ -120,10 +120,10 @@
   @h2(messages("label.tobacco"))
   @if(tobaccoPurchasedItemList.nonEmpty){
     <dl class="govuk-summary-list goods-summary-list">
-      <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+      <div class="govuk-summary-list__row goods-summary-list__header">
         <dt class="govuk-summary-list__key">@messages("label.item")</dt>
         <dd class="govuk-summary-list__value">@messages("label.price")</dd>
-        <dd class="govuk-summary-list__actions"></dd>
+        <dd class="govuk-summary-list__actions"><span class="govuk-visually-hidden">@messages("label.actions")</span></dd>
       </div>
       @tobaccoPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = true).map { description =>
@@ -150,10 +150,10 @@
     }
     @if(otherGoodsPurchasedItemList.nonEmpty){
       <dl class="govuk-summary-list goods-summary-list">
-        <div class="govuk-summary-list__row goods-summary-list__header" aria-hidden="true">
+        <div class="govuk-summary-list__row goods-summary-list__header">
           <dt class="govuk-summary-list__key">@messages("label.item")</dt>
           <dd class="govuk-summary-list__value">@messages("label.price")</dd>
-          <dd class="govuk-summary-list__actions"></dd>
+          <dd class="govuk-summary-list__actions"><span class="govuk-visually-hidden">@messages("label.actions")</span></dd>
         </div>
         @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
@@ -170,7 +170,12 @@
   <nav class="govuk-pagination" aria-label="@messages("label.pagination")">
     @if(currentPage > 1) {
       <div class="govuk-pagination__prev">
-        <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@{currentPage - 1}" rel="prev">@messages("label.previous")</a>
+        <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@{currentPage - 1}" rel="prev">
+          <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" viewBox="0 0 15 13" aria-hidden="true" focusable="false">
+            <path d="m8.5 0 1.2 1.2L4.9 6H15v1.7H4.9l4.8 4.8-1.2 1.2L1.7 7z" />
+          </svg>
+          @messages("label.previous")
+        </a>
       </div>
     }
     <ul class="govuk-pagination__list">
@@ -182,7 +187,12 @@
     </ul>
     @if(currentPage < totalPages) {
       <div class="govuk-pagination__next">
-        <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@{currentPage + 1}" rel="next">@messages("label.next")</a>
+        <a class="govuk-link govuk-pagination__link" href="@routes.DashboardController.showDashboard.url?page=@{currentPage + 1}" rel="next">
+          @messages("label.next")
+          <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" viewBox="0 0 15 13" aria-hidden="true" focusable="false">
+            <path d="m6.5 0-1.2 1.2L10.1 6H0v1.7h10.1l-4.8 4.8 1.2 1.2L13.3 7z" />
+          </svg>
+        </a>
       </div>
     }
   </nav>

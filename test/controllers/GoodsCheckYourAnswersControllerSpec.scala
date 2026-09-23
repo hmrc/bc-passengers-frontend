@@ -20,7 +20,7 @@ import connectors.Cache
 import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{mock, reset, when}
+import org.mockito.Mockito.{mock, never, reset, verify, when}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -196,6 +196,41 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+    }
+  }
+
+  "GET /check-your-item/change-type" should {
+    "start a replacement journey without changing the existing item" in {
+      val result = route(
+        app,
+        enhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0/change-type"
+        )
+      ).get
+
+      status(result)                                                         shouldBe SEE_OTHER
+      redirectLocation(result)                                               shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/add-an-item")
+      session(result).get(ControllerHelpers.itemBeingReplacedSessionKey)     shouldBe Some("iid0")
+      session(result).get(ControllerHelpers.itemReplacementCyaUrlSessionKey) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+      )
+      verify(injected[Cache], never()).store(any())(any())
+    }
+  }
+
+  "GET /check-your-item/change-product" should {
+    "start selection for the item's product category" in {
+      val result = route(
+        app,
+        enhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0/change-product"
+        )
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")
     }
   }
 }

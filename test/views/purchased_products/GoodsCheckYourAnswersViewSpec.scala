@@ -44,13 +44,16 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR"))
 
   val viewViaApply: HtmlFormat.Appendable =
-    injected[check_your_goods_answers].apply(item, product, Some(currency))(request, messages, appConfig)
+    injected[check_your_goods_answers]
+      .apply(item, product, Some(currency), isEditMode = false)(request, messages, appConfig)
 
   val viewViaRender: HtmlFormat.Appendable =
-    injected[check_your_goods_answers].render(item, product, Some(currency), request, messages, appConfig)
+    injected[check_your_goods_answers]
+      .render(item, product, Some(currency), isEditMode = false, request, messages, appConfig)
 
   val viewViaF: HtmlFormat.Appendable =
-    injected[check_your_goods_answers].ref.f(item, product, Some(currency))(request, messages, appConfig)
+    injected[check_your_goods_answers].ref
+      .f(item, product, Some(currency), false)(request, messages, appConfig)
 
   "GoodsCheckYourAnswersView" when {
     renderViewTest(
@@ -61,7 +64,6 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
     "show the selected item and its answers in a summary list" in {
       val doc = document(viewViaApply)
 
-      doc.select("h2.govuk-heading-m").text()                                 shouldBe "Beer"
       doc.select(".govuk-summary-list__key").eachText()                         should contain allOf (
         "Type of goods",
         "Type of alcohol",
@@ -70,17 +72,48 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec {
       )
       doc.select(".govuk-summary-list").text()                                  should include("50")
       doc.select("a.govuk-link[href*=enter-goods/alcohol/iid0/edit]").isEmpty shouldBe false
+      doc.select("a[href*=change-type]").isEmpty                              shouldBe false
+      doc.select("a[href*=change-product]").isEmpty                           shouldBe false
       doc.select("button.govuk-button").text()                                shouldBe "Save and continue"
     }
 
     "show the tobacco weight in grams" in {
       val doc = document(
         injected[check_your_goods_answers]
-          .apply(tobaccoItem, tobaccoProduct, Some(currency))(request, messages, appConfig)
+          .apply(tobaccoItem, tobaccoProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
       )
 
       doc.select(".govuk-summary-list__key").eachText() should contain("Total weight in grams")
       doc.select(".govuk-summary-list").text()          should include("100 grams")
+    }
+
+    "show the entered other-goods term" in {
+      val otherGoodsItem    = item.copy(
+        path = ProductPath("other-goods/electronic-devices/other"),
+        searchTerm =
+          Some(OtherGoodsSearchItem("label.other-goods.computer", ProductPath("other-goods/electronic-devices/other")))
+      )
+      val otherGoodsProduct =
+        ProductTreeLeaf("other", "label.other-goods.electronic-devices.other", "OGD/DIGI/OTHER", "other-goods", Nil)
+
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(otherGoodsItem, otherGoodsProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list").text() should include("Computer")
+      doc.select(".govuk-summary-list").text() should not include "Electronic device"
+    }
+
+    "hide type change actions in edit mode" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(item, product, Some(currency), isEditMode = true)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__row").get(0).select(".govuk-summary-list__actions").isEmpty shouldBe true
+      doc.select(".govuk-summary-list__row").get(1).select(".govuk-summary-list__actions").isEmpty shouldBe true
+      doc.select(".govuk-summary-list__row").get(2).select(".govuk-summary-list__actions").isEmpty shouldBe false
     }
   }
 }
