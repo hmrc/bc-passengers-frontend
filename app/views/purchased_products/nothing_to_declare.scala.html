@@ -25,7 +25,7 @@
 )
 
 @(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, underNinePounds: Boolean, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
-@isVapingOn = @{ appConfig.isVapingJourneyEnabled }
+
 @govukLayout(pageTitle = Some(if(deltaCalc.isDefined){messages("label.additional_tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}else{messages("label.tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}), backLink = backLink) {
 
   <h1 class="govuk-heading-xl margin-bottom-20">
@@ -118,7 +118,7 @@
     <a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a>
   </p>
 
-  @displayTaxBreakdown(calculatorResponseDto, appConfig)
+  @displayTaxBreakdown(calculatorResponseDto)
   <br>
 
   @if(!hideExchangeRateInfo) {

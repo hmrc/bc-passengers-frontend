@@ -117,7 +117,7 @@
     <a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a>
   </p>
 
-  @displayTaxBreakdown(calculatorResponseDto, appConfig)
+  @displayTaxBreakdown(calculatorResponseDto)
   <br>
 
   @if(!hideExchangeRateInfo) {

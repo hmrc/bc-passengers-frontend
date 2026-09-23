@@ -102,7 +102,7 @@
   <p>@messages("label.tax_on_all_if_go_over_allowance")</p>
 </div>
 <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a></p>
-@displayTaxBreakdown(calculatorResponseDto, appConfig)
+@displayTaxBreakdown(calculatorResponseDto)
 <br>
 
 @if(!hideExchangeRateInfo) {
