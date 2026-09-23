@@ -460,6 +460,12 @@ label.other-goods.watches-clocks=Oriawr neu gloc
 label.other-goods.other=Eitem arall
 label.other-goods.item-of-other-goods = Eitem o nwyddau eraill
 label.other-goods.vaping-products = Cynhyrchion fepio
+label.other-goods.vape = Fêp
+label.other-goods.vaping-liquid = Hylif fepio
+label.other-goods.vape-liquid = Hylif fêp
+label.other-goods.vape-pods = Podiau fêp
+label.other-goods.e-liquid = E-hylif
+label.other-goods.e-cigarettes = E-sigaréts
 
 
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?

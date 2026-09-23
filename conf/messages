@@ -460,6 +460,12 @@ label.other-goods.watches-clocks = Watch or clock
 label.other-goods.other = Other item
 label.other-goods.item-of-other-goods = Item of other goods
 label.other-goods.vaping-products = Vaping products
+label.other-goods.vape = Vape
+label.other-goods.vaping-liquid = Vaping liquid
+label.other-goods.vape-liquid = Vape liquid
+label.other-goods.vape-pods = Vape pods
+label.other-goods.e-liquid = E-liquid
+label.other-goods.e-cigarettes = E-cigarettes
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
