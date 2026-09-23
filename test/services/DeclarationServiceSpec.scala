@@ -39,6 +39,7 @@ import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
+
   given messages: MessagesApi = injected[MessagesApi]
 
   private val mockRequestBuilder: RequestBuilder           = mock(classOf[RequestBuilder])
