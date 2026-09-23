@@ -31,29 +31,40 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{route as rt, *}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
-import services.NewPurchaseService
+import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import views.html.alcohol.alcohol_input
 import views.html.vaping_products.vaping_products_input
 
 import scala.concurrent.Future
 
 class VapingProductsInputControllerSpec extends BaseSpec {
 
+  private val mockCache: Cache                           = mock(classOf[Cache])
+  private val mockNewPurchaseService: NewPurchaseService = mock(classOf[NewPurchaseService])
+  private val mockCalculatorService: CalculatorService   = mock(classOf[CalculatorService])
+  private val mockVapingInput: vaping_products_input     = mock(classOf[vaping_products_input])
+
+  val injectedCache: Cache                           = mockCache
+  val injectedNewPurchaseService: NewPurchaseService = mockNewPurchaseService
+  val injectedVapingInput: vaping_products_input     = mockVapingInput
+
   override given app: Application = GuiceApplicationBuilder()
+    .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
-    .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
+    .overrides(bind[NewPurchaseService].toInstance(mockNewPurchaseService))
+    .overrides(bind[CalculatorService].toInstance(mockCalculatorService))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[vaping_products_input].toInstance(mock(classOf[vaping_products_input])))
+    .overrides(bind[vaping_products_input].toInstance(mockVapingInput))
     .build()
 
   override def beforeEach(): Unit = {
-    reset(injected[Cache])
-    reset(injected[NewPurchaseService])
-    reset(injected[vaping_products_input])
+    reset(injectedCache)
+    reset(injectedNewPurchaseService)
+    reset(injectedVapingInput)
   }
 
   trait LocalSetup {
@@ -135,10 +146,19 @@ class VapingProductsInputControllerSpec extends BaseSpec {
 
     val formCaptor: ArgumentCaptor[Form[VapeDto]] = ArgumentCaptor.forClass(classOf[Form[VapeDto]])
 
+    lazy val fakeLimits: Map[String, String] = Map("L-VPRODUCTS" -> "1000")
+
     def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
       when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
       when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
       when(injected[Cache].storeJourneyData(any())(any())).thenReturn(Future.successful(cachedJourneyData))
+
+      when(injected[CalculatorService].limitUsage(any())(any())).thenReturn(
+        Future.successful(
+          LimitUsageSuccessResponse(fakeLimits)
+        )
+      )
+
       val insertedPurchase = (cachedJourneyData.get, "pid")
       when(
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
