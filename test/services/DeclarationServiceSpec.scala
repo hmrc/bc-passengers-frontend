@@ -236,7 +236,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 "VAP/V1/VPRODUCTS",
                 "91.23",
                 None,
-                Some(5),
+                Some(52),
                 Calculation("2.00", "0.30", "18.70", "21.00"),
                 Metadata(
                   "52 millilitres vaping products",
@@ -412,6 +412,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 Json.obj(
                   "commodityDescription" -> "Cider",
                   "volume"               -> "5",
+                  "goodsValue"           -> "120.00",
+                  "valueCurrency"        -> "USD",
+                  "valueCurrencyName"    -> "USA dollars (USD)",
+                  "originCountry"        -> "US",
+                  "originCountryName"    -> "United States of America",
+                  "exchangeRate"         -> "1.20",
+                  "exchangeRateDate"     -> "2018-10-29",
+                  "goodsValueGBP"        -> "91.23",
+                  "VATRESClaimed"        -> false,
+                  "exciseGBP"            -> "2.00",
+                  "customsGBP"           -> "0.30",
+                  "vatGBP"               -> "18.70"
+                )
+              )
+            ),
+            "declarationVaping"  -> Json.obj(
+              "totalExciseVaping"     -> "2.00",
+              "totalCustomsVaping"    -> "0.30",
+              "totalVATVaping"        -> "18.70",
+              "declarationItemVaping" -> Json.arr(
+                Json.obj(
+                  "commodityDescription" -> "Vaping Products",
+                  "volume"               -> "52",
                   "goodsValue"           -> "120.00",
                   "valueCurrency"        -> "USD",
                   "valueCurrencyName"    -> "USA dollars (USD)",
@@ -713,6 +736,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 Json.obj(
                   "commodityDescription" -> "Cider",
                   "volume"               -> "5",
+                  "goodsValue"           -> "120.00",
+                  "valueCurrency"        -> "USD",
+                  "valueCurrencyName"    -> "USA dollars (USD)",
+                  "originCountry"        -> "US",
+                  "originCountryName"    -> "United States of America",
+                  "exchangeRate"         -> "1.20",
+                  "exchangeRateDate"     -> "2018-10-29",
+                  "goodsValueGBP"        -> "91.23",
+                  "VATRESClaimed"        -> false,
+                  "exciseGBP"            -> "2.00",
+                  "customsGBP"           -> "0.30",
+                  "vatGBP"               -> "18.70"
+                )
+              )
+            ),
+            "declarationVaping"         -> Json.obj(
+              "totalExciseVaping"     -> "2.00",
+              "totalCustomsVaping"    -> "0.30",
+              "totalVATVaping"        -> "18.70",
+              "declarationItemVaping" -> Json.arr(
+                Json.obj(
+                  "commodityDescription" -> "Vaping Products",
+                  "volume"               -> "52",
                   "goodsValue"           -> "120.00",
                   "valueCurrency"        -> "USD",
                   "valueCurrencyName"    -> "USA dollars (USD)",
@@ -1134,7 +1180,7 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       "VAP/V1/VPRODUCTS",
                       "250.10",
                       None,
-                      Some(BigDecimal("2.00")),
+                      Some(BigDecimal("52")),
                       Calculation("0.00", "0.00", "0.00", "0.00"),
                       Metadata(
                         "60 millilitres vaping products",
@@ -1154,56 +1200,6 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                     )
                   ),
                   Calculation("0.00", "0.00", "0.00", "0.00")
-                ),
-                Band(
-                  "B",
-                  List(
-                    Item(
-                      "ALC/A2/BEER",
-                      "304.11",
-                      None,
-                      Some(BigDecimal("3.00")),
-                      Calculation("74.00", "79.06", "91.43", "244.49"),
-                      Metadata(
-                        "3 litres beer",
-                        "Beer",
-                        "400.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.2", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None,
-                      None
-                    ),
-                    Item(
-                      "ALC/A3/WINE",
-                      "152.05",
-                      None,
-                      Some(BigDecimal("4.00")),
-                      Calculation("26.54", "113.88", "58.49", "198.91"),
-                      Metadata(
-                        "4 litres wine",
-                        "Wine",
-                        "200.00",
-                        DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
-                        Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
-                        Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
-                        ExchangeRate("1.2", "2018-10-29"),
-                        None
-                      ),
-                      None,
-                      None,
-                      None,
-                      None,
-                      None
-                    )
-                  ),
-                  Calculation("100.54", "192.94", "149.92", "443.40")
                 )
               ),
               Calculation("100.54", "192.94", "149.92", "443.40")
@@ -1525,6 +1521,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   )
                 )
               ),
+              "declarationVaping"  -> Json.obj(
+                "totalExciseVaping"     -> "100.54",
+                "totalCustomsVaping"    -> "192.94",
+                "totalVATVaping"        -> "149.92",
+                "declarationItemVaping" -> Json.arr(
+                  Json.obj(
+                    "commodityDescription" -> "Vaping Products",
+                    "volume"               -> "52",
+                    "goodsValue"           -> "300.00",
+                    "valueCurrency"        -> "USD",
+                    "valueCurrencyName"    -> "USA dollars (USD)",
+                    "originCountry"        -> "US",
+                    "originCountryName"    -> "United States of America",
+                    "exchangeRate"         -> "1.20",
+                    "exchangeRateDate"     -> "2018-10-29",
+                    "goodsValueGBP"        -> "250.10",
+                    "VATRESClaimed"        -> false,
+                    "exciseGBP"            -> "0.00",
+                    "customsGBP"           -> "0.00",
+                    "vatGBP"               -> "0.00"
+                  )
+                )
+              ),
               "declarationOther"   -> Json.obj(
                 "totalExciseOther"     -> "100.54",
                 "totalCustomsOther"    -> "192.94",
@@ -1715,12 +1734,12 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                       "VAP/V1/VPRODUCTS",
                       "250.10",
                       None,
-                      Some(BigDecimal("2.00")),
+                      Some(BigDecimal("52")),
                       Calculation("0.00", "0.00", "0.00", "0.00"),
                       Metadata(
                         "52 millilitres vaping products",
                         "label.vaping-products.vape",
-                        "300.00",
+                        "120.00",
                         DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
                         Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
                         Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
@@ -2053,6 +2072,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                     "exciseGBP"            -> "26.54",
                     "customsGBP"           -> "113.88",
                     "vatGBP"               -> "58.49"
+                  )
+                )
+              ),
+              "declarationVaping"  -> Json.obj(
+                "totalExciseVaping"     -> "100.54",
+                "totalCustomsVaping"    -> "192.94",
+                "totalVATVaping"        -> "149.92",
+                "declarationItemVaping" -> Json.arr(
+                  Json.obj(
+                    "commodityDescription" -> "Vaping Products",
+                    "volume"               -> "52",
+                    "goodsValue"           -> "120.00",
+                    "valueCurrency"        -> "USD",
+                    "valueCurrencyName"    -> "USA dollars (USD)",
+                    "originCountry"        -> "US",
+                    "originCountryName"    -> "United States of America",
+                    "exchangeRate"         -> "1.20",
+                    "exchangeRateDate"     -> "2018-10-29",
+                    "goodsValueGBP"        -> "250.10",
+                    "VATRESClaimed"        -> false,
+                    "exciseGBP"            -> "0.00",
+                    "customsGBP"           -> "0.00",
+                    "vatGBP"               -> "0.00"
                   )
                 )
               ),
@@ -2593,6 +2635,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                     "vatGBP"               -> "58.49",
                     "ukVATPaid"            -> false,
                     "ukExcisePaid"         -> true
+                  )
+                )
+              ),
+              "declarationVaping"  -> Json.obj(
+                "totalExciseVaping"     -> "100.54",
+                "totalCustomsVaping"    -> "192.94",
+                "totalVATVaping"        -> "149.92",
+                "declarationItemVaping" -> Json.arr(
+                  Json.obj(
+                    "commodityDescription" -> "Vaping Products",
+                    "volume"               -> "2.00",
+                    "goodsValue"           -> "300.00",
+                    "valueCurrency"        -> "USD",
+                    "valueCurrencyName"    -> "USA dollars (USD)",
+                    "originCountry"        -> "US",
+                    "originCountryName"    -> "United States of America",
+                    "exchangeRate"         -> "1.20",
+                    "exchangeRateDate"     -> "2018-10-29",
+                    "goodsValueGBP"        -> "250.10",
+                    "VATRESClaimed"        -> false,
+                    "exciseGBP"            -> "0.00",
+                    "customsGBP"           -> "0.00",
+                    "vatGBP"               -> "0.00"
                   )
                 )
               ),
@@ -3508,6 +3573,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 )
               )
             ),
+            "declarationVaping"  -> Json.obj(
+              "totalExciseVaping"     -> "2.00",
+              "totalCustomsVaping"    -> "0.30",
+              "totalVATVaping"        -> "18.70",
+              "declarationItemVaping" -> Json.arr(
+                Json.obj(
+                  "commodityDescription" -> "Vaping Products",
+                  "volume"               -> "52",
+                  "goodsValue"           -> "120.00",
+                  "valueCurrency"        -> "USD",
+                  "valueCurrencyName"    -> "USA dollars (USD)",
+                  "originCountry"        -> "US",
+                  "originCountryName"    -> "United States of America",
+                  "exchangeRate"         -> "1.20",
+                  "exchangeRateDate"     -> "2018-10-29",
+                  "goodsValueGBP"        -> "91.23",
+                  "VATRESClaimed"        -> false,
+                  "exciseGBP"            -> "2.00",
+                  "customsGBP"           -> "0.30",
+                  "vatGBP"               -> "18.70"
+                )
+              )
+            ),
             "declarationOther"   -> Json.obj(
               "totalExciseOther"     -> "0.00",
               "totalCustomsOther"    -> "341.65",
@@ -3794,6 +3882,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                 Json.obj(
                   "commodityDescription" -> "Cider",
                   "volume"               -> "5",
+                  "goodsValue"           -> "120.00",
+                  "valueCurrency"        -> "USD",
+                  "valueCurrencyName"    -> "USA dollars (USD)",
+                  "originCountry"        -> "US",
+                  "originCountryName"    -> "United States of America",
+                  "exchangeRate"         -> "1.20",
+                  "exchangeRateDate"     -> "2018-10-29",
+                  "goodsValueGBP"        -> "91.23",
+                  "VATRESClaimed"        -> false,
+                  "exciseGBP"            -> "2.00",
+                  "customsGBP"           -> "0.30",
+                  "vatGBP"               -> "18.70"
+                )
+              )
+            ),
+            "declarationVaping"         -> Json.obj(
+              "totalExciseVaping"     -> "2.00",
+              "totalCustomsVaping"    -> "0.30",
+              "totalVATVaping"        -> "18.70",
+              "declarationItemVaping" -> Json.arr(
+                Json.obj(
+                  "commodityDescription" -> "Vaping Products",
+                  "volume"               -> "52",
                   "goodsValue"           -> "120.00",
                   "valueCurrency"        -> "USD",
                   "valueCurrencyName"    -> "USA dollars (USD)",
@@ -4556,6 +4667,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                   )
                 )
               ),
+              "declarationVaping"  -> Json.obj(
+                "totalExciseVaping"     -> "100.54",
+                "totalCustomsVaping"    -> "192.94",
+                "totalVATVaping"        -> "149.92",
+                "declarationItemVaping" -> Json.arr(
+                  Json.obj(
+                    "commodityDescription" -> "Vaping Products",
+                    "volume"               -> "2.00",
+                    "goodsValue"           -> "300.00",
+                    "valueCurrency"        -> "USD",
+                    "valueCurrencyName"    -> "USA dollars (USD)",
+                    "originCountry"        -> "US",
+                    "originCountryName"    -> "United States of America",
+                    "exchangeRate"         -> "1.20",
+                    "exchangeRateDate"     -> "2018-10-29",
+                    "goodsValueGBP"        -> "250.10",
+                    "VATRESClaimed"        -> false,
+                    "exciseGBP"            -> "0.00",
+                    "customsGBP"           -> "0.00",
+                    "vatGBP"               -> "0.00"
+                  )
+                )
+              ),
               "declarationOther"   -> Json.obj(
                 "totalExciseOther"     -> "100.54",
                 "totalCustomsOther"    -> "192.94",
@@ -5084,6 +5218,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                     "exciseGBP"            -> "26.54",
                     "customsGBP"           -> "113.88",
                     "vatGBP"               -> "58.49"
+                  )
+                )
+              ),
+              "declarationVaping"  -> Json.obj(
+                "totalExciseVaping"     -> "100.54",
+                "totalCustomsVaping"    -> "192.94",
+                "totalVATVaping"        -> "149.92",
+                "declarationItemVaping" -> Json.arr(
+                  Json.obj(
+                    "commodityDescription" -> "Vaping Products",
+                    "volume"               -> "2.00",
+                    "goodsValue"           -> "300.00",
+                    "valueCurrency"        -> "USD",
+                    "valueCurrencyName"    -> "USA dollars (USD)",
+                    "originCountry"        -> "US",
+                    "originCountryName"    -> "United States of America",
+                    "exchangeRate"         -> "1.20",
+                    "exchangeRateDate"     -> "2018-10-29",
+                    "goodsValueGBP"        -> "250.10",
+                    "VATRESClaimed"        -> false,
+                    "exciseGBP"            -> "0.00",
+                    "customsGBP"           -> "0.00",
+                    "vatGBP"               -> "0.00"
                   )
                 )
               ),
@@ -5624,6 +5781,29 @@ class DeclarationServiceSpec extends BaseSpec with ScalaFutures {
                     "vatGBP"               -> "58.49",
                     "ukVATPaid"            -> false,
                     "ukExcisePaid"         -> true
+                  )
+                )
+              ),
+              "declarationVaping"  -> Json.obj(
+                "totalExciseVaping"     -> "100.54",
+                "totalCustomsVaping"    -> "192.94",
+                "totalVATVaping"        -> "149.92",
+                "declarationItemVaping" -> Json.arr(
+                  Json.obj(
+                    "commodityDescription" -> "Vaping Products",
+                    "volume"               -> "2.00",
+                    "goodsValue"           -> "300.00",
+                    "valueCurrency"        -> "USD",
+                    "valueCurrencyName"    -> "USA dollars (USD)",
+                    "originCountry"        -> "US",
+                    "originCountryName"    -> "United States of America",
+                    "exchangeRate"         -> "1.20",
+                    "exchangeRateDate"     -> "2018-10-29",
+                    "goodsValueGBP"        -> "250.10",
+                    "VATRESClaimed"        -> false,
+                    "exciseGBP"            -> "0.00",
+                    "customsGBP"           -> "0.00",
+                    "vatGBP"               -> "0.00"
                   )
                 )
               ),
