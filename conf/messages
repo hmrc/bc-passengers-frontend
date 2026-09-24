@@ -137,6 +137,7 @@ label.sparkling_wine = Sparkling wine
 label.spirits = Spirits (such as gin, vodka or whisky and alcohol over 22%)
 label.other_alcoholic_drinks = All other alcoholic drinks (including cider, port, sherry and alcohol up to 22%)
 label.tobacco = Tobacco
+label.tobacco_ni = Tobacco (not including vaping products)
 label.cigarettes = Cigarettes
 label.heated-tobacco = Heated tobacco
 label.cigars = Cigars

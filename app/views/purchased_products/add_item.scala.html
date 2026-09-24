@@ -48,7 +48,7 @@
         RadioItem(
           id = Some("goodsType-tobacco"),
           value = Some("tobacco"),
-          content = Text(messages("label.tobacco")),
+          content = Text(if(appConfig.isVapingJourneyEnabled && journeyData.arrivingNICheck.contains(true)) messages("label.tobacco_ni") else messages("label.tobacco")),
           checked = form("goodsType").value.contains("tobacco")
         )
       ) ++
