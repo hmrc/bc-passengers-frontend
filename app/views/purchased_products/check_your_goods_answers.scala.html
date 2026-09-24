@@ -100,7 +100,7 @@
   backLink = Some(editCall.url)
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
-  @if(!appConfig.isVapingJourneyEnabled){
+  @if(!appConfig.isWineStillOrSparklingEnabled || !appConfig.isVapingJourneyEnabled) {
     <h2 class="govuk-heading-m">@itemType</h2>
   }
 
