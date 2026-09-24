@@ -39,10 +39,20 @@
         @h1(messages("heading.bringing_goods_into_ni"))
 
         @p{@messages("text.if_you_travelling_to_ni_")}
-        @p{@messages("text.there_is_not_an_allowance_")}
+
         @panelIndent{
             @p{@messages("text.ni.allowance.msg_03")}
         }
+
+        @h2(messages("text.if_you_bring_vaping_products"))
+          @p{@messages("text.you_can_include_your_vaping_products")}
+          @p{@messages("text.text.vaping_products_need_to_know")}
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("text.if_vp_contain_liquid")</li>
+            <li>@messages("text.liquid_amount")</li>
+        </ul>
+
         @h2(messages("text.allowance_for_alcohol"))
           @p{@messages("text.you_can_bring_in_the_following")}
 
@@ -74,6 +84,15 @@
 
           @h2(messages("text.your_allowance_for_other_goods"))
           @p{@messages("text.you_can_bring_a_total")}
+
+          @p{@messages("text.if_you_are_unsure_of_the_total_value")}
+
+          <ul class="govuk-list govuk-list--bullet">
+              <li>@messages("text.ni.allowance.other_1")</li>
+              <li>@messages("text.ni.allowance.other_2")</li>
+              <li>@messages("text.ni.allowance.other_3")</li>
+          </ul>
+
           @h2(messages("heading.if_you_bring_more_than_your_allowance"), "govuk-heading-s")
 
           @p{@messages("text.ni.allowance.msg_08")}
