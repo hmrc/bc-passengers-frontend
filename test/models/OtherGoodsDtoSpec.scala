@@ -22,6 +22,8 @@ class OtherGoodsDtoSpec extends BaseSpec {
 
   private val productPath: ProductPath = ProductPath(path = "other-goods/antiques")
 
+  private val weightOrVolume: BigDecimal = 50
+
   private val country: Country = Country(
     code = "FR",
     countryName = "title.france",
@@ -51,6 +53,7 @@ class OtherGoodsDtoSpec extends BaseSpec {
   )
 
   private val model: OtherGoodsDto = OtherGoodsDto(
+    weightOrVolume = Some(weightOrVolume),
     searchTerm = Some(otherGoodsSearchItem),
     country = "FR",
     originCountry = Some("FR"),

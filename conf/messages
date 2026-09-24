@@ -498,6 +498,9 @@ label.other-goods.vape-pods = Vape pods
 label.other-goods.e-liquid = E-liquid
 label.other-goods.e-cigarettes = E-cigarettes
 
+label.other-goods.vaping-products-liquid = Vaping products that contain liquid
+label.other-goods.vaping-products-others = Vaping products that don’t contain liquid
+
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
 label.enter_currency = Enter currency

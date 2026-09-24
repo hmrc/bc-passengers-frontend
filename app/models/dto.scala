@@ -29,8 +29,10 @@ object OtherGoodsDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsDto] = for {
     country  <- purchasedProductInstance.country
     currency <- purchasedProductInstance.currency
+    weightOrVolume = purchasedProductInstance.weightOrVolume
     cost     <- purchasedProductInstance.cost
   } yield OtherGoodsDto(
+    weightOrVolume,
     purchasedProductInstance.searchTerm,
     country.code,
     purchasedProductInstance.originCountry.map(_.code),
@@ -40,11 +42,13 @@ object OtherGoodsDto {
     purchasedProductInstance.isUccRelief,
     purchasedProductInstance.isCustomPaid,
     purchasedProductInstance.hasEvidence
+
   )
 
 }
 
 case class OtherGoodsDto(
+  weightOrVolume: Option[BigDecimal],
   searchTerm: Option[OtherGoodsSearchItem],
   country: String,
   originCountry: Option[String],
