@@ -37,8 +37,7 @@
 @if(isVapingOn) {
     <div class="responsive-table-wrapper">
         <table class="govuk-table margin-bottom-30">
-        @calculatorResponseDto.items.zipWithIndex.map { case (item, index) =>
-            @if(!item.itemKeyName.contains("other-goods")) {
+        @calculatorResponseDto.items.filter(item => !item.itemKeyName.contains("other-goods")).zipWithIndex.map { case (item, index) =>
                 @if(index == 0) {
                 <caption class="govuk-table__caption govuk-table__caption--m">
                     @if(
@@ -132,7 +131,6 @@
                 </tr>
                 }
                 </tbody>
-            }
         }
         </table>
         <table class="govuk-table margin-bottom-30">
