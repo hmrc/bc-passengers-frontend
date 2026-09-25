@@ -21,7 +21,9 @@
   h2: components.h2,
 )
 
-@(calculatorResponseDto: CalculatorResponseDto)(implicit messages: Messages, appConfig: config.AppConfig)
+@(calculatorResponseDto: CalculatorResponseDto, appConfig: config.AppConfig)(implicit messages: Messages)
+
+@isVapingOn = @{ appConfig.isVapingJourneyEnabled }
 
 @h2(messages("label.breakdown_of_tax_and_duty_due"))
 
@@ -42,24 +44,53 @@
       </th>
     </tr>
     </thead>
-    <tbody class="govuk-table__body">
-    @calculatorResponseDto.items.map { item =>
+    @if(isVapingOn) {
+        <tbody class="govuk-table__body">
+        @calculatorResponseDto.items.map { item =>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              @messages(item.metadata.descriptionLabels.description,
+              item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+              &pound;@formatMonetaryValue(item.calculation.customs)
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+              &pound;@formatMonetaryValue(item.calculation.excise)
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+              &pound;@formatMonetaryValue(item.calculation.vat)
+            </td>
+          </tr>
+        }
+        <tr class="govuk-table__row govuk-table__row--total">
+            <th class="govuk-table__header">@messages("label.total")</th>
+            <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.customs)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.excise)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.vat)</td>
+        </tr>
+        </tbody>
+    } else{
+      <tbody class="govuk-table__body">
+      @calculatorResponseDto.items.map { item =>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">
-          @messages(item.metadata.descriptionLabels.description,
-          wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, appConfig.isWineStillOrSparklingEnabled).map(messages(_).toLowerCase)*)
-        </th>
-        <td class="govuk-table__cell govuk-table__cell--numeric">
-          &pound;@formatMonetaryValue(item.calculation.customs)
-        </td>
-        <td class="govuk-table__cell govuk-table__cell--numeric">
-          &pound;@formatMonetaryValue(item.calculation.excise)
-        </td>
-        <td class="govuk-table__cell govuk-table__cell--numeric">
-          &pound;@formatMonetaryValue(item.calculation.vat)
-        </td>
+          <th scope="row" class="govuk-table__header">
+              @messages(item.metadata.descriptionLabels.description,
+              item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
+          </th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">
+              &pound;@formatMonetaryValue(item.calculation.customs)
+          </td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">
+              &pound;@formatMonetaryValue(item.calculation.excise)
+          </td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">
+              &pound;@formatMonetaryValue(item.calculation.vat)
+          </td>
       </tr>
+      }
+      </tbody>
     }
-    </tbody>
+
   </table>
 </div>
