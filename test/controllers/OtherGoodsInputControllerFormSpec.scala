@@ -43,7 +43,6 @@ class OtherGoodsInputControllerFormSpec extends BaseSpec {
 
     ".continueForm" should {
       val otherDto: OtherGoodsDto             = OtherGoodsDto(
-        weightOrVolume = Some(BigDecimal(0.0)),
         searchTerm = Some(
           OtherGoodsSearchItem(
             name = "label.other-goods.antiques",

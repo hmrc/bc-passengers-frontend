@@ -84,7 +84,9 @@ case class ProductTreeLeaf(
             } else {
               ("label.X_mls_X", List(weightOrVolume.toString, name))
             }
-      case "other-goods"           =>
+      case "other-goods"        =>
+        Some((name, Nil))
+      case "other-ni-goods"        =>
         Some((name, Nil))
     }
 
@@ -117,6 +119,10 @@ case class ProductTreeLeaf(
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined
       case "other-goods"     =>
+        purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.country.isDefined &&
+        purchasedProductInstance.cost.isDefined
+      case "other-ni-goods"     =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.cost.isDefined

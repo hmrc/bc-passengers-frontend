@@ -31,7 +31,6 @@ import util.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class OtherGoodsInputController @Inject() (
   val cache: Cache,
@@ -57,15 +56,6 @@ class OtherGoodsInputController @Inject() (
 
   val addCostForm: Form[OtherGoodsDto] = Form(
     mapping(
-      "weightOrVolume" -> optional(text)
-        .verifying("error.required.volume", _.isDefined)
-        .verifying(
-          "error.invalid.characters.volume",
-          x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
-        )
-        .transform[Option[BigDecimal]](_.fold(Some(BigDecimal(0)))(x => Some(BigDecimal(x))), x => Some(x.toString))
-        .verifying("error.max.decimal.places.volume", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
-        .transform[Option[BigDecimal]](identity, identity),
       "searchTerm"    -> optional(text)
         .transform[Option[OtherGoodsSearchItem]](
           _.flatMap(term => productTreeService.otherGoodsSearchItems.find(_.name == term)),
@@ -89,15 +79,6 @@ class OtherGoodsInputController @Inject() (
 
   def continueForm(implicit context: LocalContext): Form[OtherGoodsDto] = Form(
     mapping(
-      "weightOrVolume" -> optional(text)
-        .verifying("error.required.volume", _.isDefined)
-        .verifying(
-          "error.invalid.characters.volume",
-          x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
-        )
-        .transform[Option[BigDecimal]](_.fold(Some(BigDecimal(0)))(x => Some(BigDecimal(x))), x => Some(x.toString))
-        .verifying("error.max.decimal.places.volume", weightOrVolume => weightOrVolume.fold(true)(x => x.scale <= 2))
-        .transform[Option[BigDecimal]](identity, identity),
       "searchTerm"    -> optional(text)
         .verifying(
           "error.other_goods_search",
@@ -153,7 +134,6 @@ class OtherGoodsInputController @Inject() (
                     currencyService.getAllCurrencies,
                     context.getJourneyData.euCountryCheck,
                     context.getJourneyData.arrivingNICheck,
-                    term,
                     productTreeService.otherGoodsSearchItems,
                     "create",
                     ProductPath.apply(Nil),
@@ -183,7 +163,6 @@ class OtherGoodsInputController @Inject() (
                     currencyService.getAllCurrencies,
                     context.getJourneyData.euCountryCheck,
                     context.getJourneyData.arrivingNICheck,
-                    term,
                     productTreeService.otherGoodsSearchItems,
                     "create",
                     ProductPath.apply(Nil),
@@ -198,7 +177,6 @@ class OtherGoodsInputController @Inject() (
   }
 
   def displayEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
     requirePurchasedProductInstance(iid) { ppi =>
       OtherGoodsDto.fromPurchasedProductInstance(ppi) match {
         case Some(dto) =>
@@ -212,7 +190,6 @@ class OtherGoodsInputController @Inject() (
                 currencyService.getAllCurrencies,
                 context.getJourneyData.euCountryCheck,
                 context.getJourneyData.arrivingNICheck,
-                term,
                 productTreeService.otherGoodsSearchItems,
                 "edit",
                 ppi.path,
@@ -233,7 +210,6 @@ class OtherGoodsInputController @Inject() (
   }
 
   val processAddForm: Action[AnyContent] = dashboardAction { implicit context =>
-    val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
     def processContinue = continueForm
       .bindFromRequest()
       .fold(
@@ -248,7 +224,6 @@ class OtherGoodsInputController @Inject() (
                 currencyService.getAllCurrencies,
                 context.getJourneyData.euCountryCheck,
                 context.getJourneyData.arrivingNICheck,
-                term,
                 productTreeService.otherGoodsSearchItems,
                 "create",
                 ProductPath.apply(Nil),
@@ -308,7 +283,6 @@ class OtherGoodsInputController @Inject() (
   }
 
   def processEditForm(iid: String): Action[AnyContent] = dashboardAction { implicit context =>
-    val term: List[String] = context.getJourneyData.selectedAliases.map(_.term)
     requirePurchasedProductInstance(iid) { ppi =>
       requireProduct(ppi.path) { _ =>
         def processContinue = addCostForm
@@ -325,7 +299,6 @@ class OtherGoodsInputController @Inject() (
                     currencyService.getAllCurrencies,
                     context.getJourneyData.euCountryCheck,
                     context.getJourneyData.arrivingNICheck,
-                    term,
                     productTreeService.otherGoodsSearchItems,
                     "edit",
                     ppi.path,

@@ -30,7 +30,7 @@
     browserBackToEdit: components.browserBackToEdit
 )
 
-@(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], niJourney: Option[Boolean], term : List[String], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath, backLink: Option[String], customBackLink: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[OtherGoodsDto], iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], niJourney: Option[Boolean], otherGoodsSearchItems: List[OtherGoodsSearchItem], otherItemMode: String, path: ProductPath, backLink: Option[String], customBackLink: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @customTitle = @{ otherItemMode match { case "create" =>  messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods") case "edit" => messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}") case _ => messages("label.tell_us_about_the") + " " + messages("label.other-goods.item-of-other-goods")}}
 
@@ -82,20 +82,6 @@
                     )
                 }
             }
-
-        @if(term.contains("label.other-goods.vaping-products-liquid")){
-            @inputText(
-                form,
-                id = "weightOrVolume",
-                name = "weightOrVolume",
-                label = "label.total_volume_in_millilitres",
-                hint = Some(Html(messages("label.you_cannot_use_this_service_"))),
-                isPageHeading = false,
-                classes = Some("govuk-input govuk-input--width-5"),
-                suffix = Some("ml")
-            )
-
-        }
 
         @autoCompleteList(form,
             id = "country",

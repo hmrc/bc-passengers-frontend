@@ -43,7 +43,6 @@ class AddItemController @Inject() (
 
   def submit: Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
-    val niJourney = context.getJourneyData.arrivingNICheck
     GoodsTypeDto.form
       .bindFromRequest()
       .fold(
@@ -51,12 +50,7 @@ class AddItemController @Inject() (
         goodsType =>
           Future.successful(
             goodsType.goodsType match {
-              case "other-goods"     =>
-                if(niJourney.contains(true) && appConfig.isVapingJourneyEnabled){
-                  Redirect(routes.SelectProductController.askProductSelection(ProductPath(goodsType.goodsType)))
-                } else {
-                  Redirect(routes.OtherGoodsInputController.displayAddForm())
-                }
+              case "other-goods"     => Redirect(routes.OtherGoodsInputController.displayAddForm())
               case "vaping-products" =>
                 Redirect(
                   routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
