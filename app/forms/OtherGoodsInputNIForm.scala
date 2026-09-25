@@ -47,15 +47,27 @@ class OtherGoodsInputNIForm @Inject()(
 
   def otherGoodsNIForm(path: ProductPath): Form[OtherGoodsNIDto] = Form(
     mapping(
-      "weightOrVolume" -> optional(text)
-
-        .verifying(
-          "error.invalid.characters.volume",
-          x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
-        )
-        .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString))
-        .verifying("error.max.decimal.places.volume", _.scale <= 3)
-        .transform[BigDecimal](identity, identity),
+      "weightOrVolume" -> {
+        val baseValidation = optional(text)
+        if (path.toMessageKey.contains("other-ni-goods.vaping-products-liquid"))
+          baseValidation.verifying("error.required.volume", _.isDefined)
+            .verifying(
+              "error.invalid.characters.volume",
+              x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
+            )
+            .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString))
+            .verifying("error.max.decimal.places.volume", _.scale <= 3)
+            .transform[BigDecimal](identity, identity)
+        else
+          baseValidation
+            .verifying(
+              "error.invalid.characters.volume",
+              x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)
+            )
+            .transform[BigDecimal](_.fold(BigDecimal(0))(x => BigDecimal(x)), x => Some(x.toString))
+            .verifying("error.max.decimal.places.volume", _.scale <= 3)
+            .transform[BigDecimal](identity, identity)
+      },
       "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
       "originCountry"  -> optional(text),
       "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),

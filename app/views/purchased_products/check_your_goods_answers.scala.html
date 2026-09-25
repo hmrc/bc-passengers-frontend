@@ -36,6 +36,7 @@
   case "alcohol"          => routes.AlcoholInputController.displayEditForm(item.iid)
   case "tobacco"          => routes.TobaccoInputController.displayEditForm(item.iid)
   case "vaping-products"  => routes.VapingProductsInputController.displayEditForm(item.iid)
+  case "other-ni-goods"   => routes.OtherGoodsInputNIController.displayEditForm(item.iid)
   case _                  => routes.OtherGoodsInputController.displayEditForm(item.iid)
 } }
 

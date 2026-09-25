@@ -71,7 +71,6 @@ class SelectProductController @Inject() (
               Future.successful(Redirect(routes.SelectProductController.askProductSelection(productPath)))
 
             case ProductTreeLeaf(_, _, _, templateId, _) =>
-              println("templateId "+templateId)
               templateId match {
                 case "alcohol"         =>
                   Future.successful(
@@ -137,7 +136,6 @@ class SelectProductController @Inject() (
   }
 
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    println("askProductSelection")
     val niJourney = context.getJourneyData.arrivingNICheck
     requireProductOrCategory(path) {
 
@@ -204,7 +202,6 @@ class SelectProductController @Inject() (
   }
 
   def processProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    println("processProductSelection")
     requireCategory(path) { branch =>
       def returnToAddedItemEditUrl =
         context.request.body.asFormUrlEncoded.flatMap(_.get("returnToAddedItemEditUrl").flatMap(_.headOption))
@@ -260,7 +257,6 @@ class SelectProductController @Inject() (
   }
 
   def processProductSelectionOtherGoods(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    println("processProductSelectionOtherGoods")
     requireCategory(path) { branch =>
       def returnToAddedItemEditUrl =
         context.request.body.asFormUrlEncoded.flatMap(_.get("returnToAddedItemEditUrl").flatMap(_.headOption))
