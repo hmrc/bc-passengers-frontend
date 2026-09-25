@@ -236,7 +236,13 @@ class SelectProductController @Inject() (
                     selectedProductPaths
                   )
                   .flatMap { journeyData =>
-                    purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
+                    val cleanedJourneyData =
+                      if (appConfig.isWineStillOrSparklingEnabled) {
+                        purchasedProductService.revertWorkingInstance(journeyData)
+                      } else {
+                        purchasedProductService.clearWorkingInstance(journeyData)
+                      }
+                    cleanedJourneyData map { _ =>
                       Redirect(routes.SelectProductController.nextStep())
                     }
                   }
