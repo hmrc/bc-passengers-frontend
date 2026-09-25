@@ -188,41 +188,41 @@
         </table>
     </div>
 } else {
-    <div class="responsive-table-wrapper">
-        <table class="govuk-table margin-bottom-30">
-            <caption class="govuk-table__caption govuk-table__caption--m">@messages("label.tax_due_on_these_goods")</caption>
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">@messages("label.item")</th>
-                <th class="govuk-table__header" scope="col">@messages("label.price")</th>
-                <th class="govuk-table__header" scope="col">@messages("label.purchased_in")</th>
-                <th class="govuk-table__header govuk-table__header--numeric" scope="col">@messages("label.tax_due")</th>
-            </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-            @calculatorResponseDto.items.map { item =>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">
-                    @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
-                </th>
-                <td class="govuk-table__cell">
-                    @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
-                </td>
-                <td class="govuk-table__cell">
-                    @messages(item.metadata.country.countryName)
-                </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">
-                    &pound;@formatMonetaryValue(item.calculation.allTax)
-                </td>
-            </tr>
-            }
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header total table-foot" colspan="3">@messages("label.total")</th>
-                <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="responsive-table-wrapper">
+            <table class="govuk-table margin-bottom-30">
+                <caption class="govuk-table__caption govuk-table__caption--m">@messages("label.tax_due_on_these_goods")</caption>
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">@messages("label.item")</th>
+                    <th class="govuk-table__header" scope="col">@messages("label.price")</th>
+                    <th class="govuk-table__header" scope="col">@messages("label.purchased_in")</th>
+                    <th class="govuk-table__header govuk-table__header--numeric" scope="col">@messages("label.tax_due")</th>
+                </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                @calculatorResponseDto.items.map { item =>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        @messages(item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
+                    </th>
+                    <td class="govuk-table__cell">
+                        @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
+                    </td>
+                    <td class="govuk-table__cell">
+                        @messages(item.metadata.country.countryName)
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                        &pound;@formatMonetaryValue(item.calculation.allTax)
+                    </td>
+                </tr>
+                }
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header total table-foot" colspan="3">@messages("label.total")</th>
+                    <td class="govuk-table__cell govuk-table__cell--numeric total-value table-foot">&pound;@formatMonetaryValue(calculatorResponseDto.calculation.allTax)</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 }
 @if(deltaCalc.isDefined){
 
