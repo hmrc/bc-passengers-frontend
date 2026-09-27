@@ -93,7 +93,12 @@
   ) ++
     Option.when(category != "vaping-products") {
       row(typeLabel, typeOfAlcohol, messages(typeLabel).toLowerCase)
-    } ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
+  } ++
+  (if (category != "other-ni-goods" || item.path.toMessageKey == "other-ni-goods.vaping-products-liquid")
+    quantity
+  else
+    Seq.empty)
+    ++ country ++ originCountry ++ currencyRow ++ price
 }
 
 @govukLayout(

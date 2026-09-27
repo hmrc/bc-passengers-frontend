@@ -21,7 +21,7 @@ import connectors.Cache
 import controllers.ControllerHelpers
 import controllers.enforce.DashboardAction
 import forms.OtherGoodsInputNIForm
-import models.{OtherGoodsNIDto, JourneyData, ProductPath}
+import models.{JourneyData, OtherGoodsNIDto, ProductPath}
 import play.api.i18n.I18nSupport
 import play.api.mvc.*
 import services.*
@@ -243,59 +243,67 @@ class OtherGoodsInputNIController @Inject()(
     dashboardAction { implicit context =>
       requirePurchasedProductInstance(iid) { ppi =>
         requireProduct(ppi.path) { product =>
-          def processContinue = otherGoodsInputNIForm
-            .otherGoodsNIForm(ppi.path)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(
-                  BadRequest(
-                    other_goods_input_ni(
-                      formWithErrors,
-                      backLinkModel.backLink,
-                      customBackLink = true,
-                      product,
-                      ppi.path,
-                      Some(iid),
-                      countriesService.getAllCountries,
-                      countriesService.getAllCountriesAndEu,
-                      currencyService.getAllCurrencies,
-                      context.getJourneyData.euCountryCheck
-                    )
-                  )
-                ),
-              dto => {
-                val jd = newPurchaseService.updatePurchase(
-                  ppi.path,
-                  iid,
-                  None,
-                  None,
-                  dto.country,
-                  dto.originCountry,
-                  dto.currency,
-                  dto.cost,
-                  ppi.searchTerm
-                )
-                cache.store(jd) map { _ =>
-                  val result = (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                    case (Some(true), Some("greatBritain")) =>
-                      Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(ppi.path, iid))
-                    case (Some(false), Some("euOnly"))      =>
-                      if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                        Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(ppi.path, iid))
-                      } else {
-                        Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
-                      }
-                    case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
-                  }
-                  clearReturnToAddedItemUnlessCurrentEdit(
-                    result,
-                    routes.OtherGoodsInputController.displayEditForm(iid).url
-                  )
-                }
-              }
+          requireLimitUsage {
+            val dto = otherGoodsInputNIForm.resilientForm.bindFromRequest().value.get
+            newPurchaseService.updatePurchase(
+              ppi.path,
+              iid,
+              Some(dto.weightOrVolume),
+              None,
+              dto.country,
+              dto.originCountry,
+              dto.currency,
+              dto.cost
             )
-          processContinue
+          } { _ =>
+            otherGoodsInputNIForm
+              .otherGoodsNIForm(ppi.path)
+              .bindFromRequest()
+              .fold(
+                formWithErrors =>
+                  Future.successful(
+                    BadRequest(
+                      other_goods_input_ni(
+                        formWithErrors,
+                        backLinkModel.backLink,
+                        customBackLink = true,
+                        product,
+                        ppi.path,
+                        Some(iid),
+                        countriesService.getAllCountries,
+                        countriesService.getAllCountriesAndEu,
+                        currencyService.getAllCurrencies,
+                        context.getJourneyData.euCountryCheck
+                      )
+                    )
+                  ),
+                success = dto => {
+                  cache.store(
+                    newPurchaseService.updatePurchase(
+                      ppi.path,
+                      iid,
+                      Some(dto.weightOrVolume),
+                      None,
+                      dto.country,
+                      dto.originCountry,
+                      dto.currency,
+                      dto.cost
+                    )
+                  ) map { (_: JourneyData) =>
+                    clearReturnToAddedItemUnlessCurrentEdit(
+                      navigationHelper(
+                        context.getJourneyData,
+                        ppi.path,
+                        iid,
+                        dto.originCountry,
+                        isAddJourney = false
+                      ),
+                      routes.AlcoholInputController.displayEditForm(iid).url
+                    )
+                  }
+                }
+              )
+          }
         }
       }
     }
