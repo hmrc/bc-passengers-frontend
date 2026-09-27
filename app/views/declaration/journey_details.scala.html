@@ -91,63 +91,78 @@
     @errorSummary(errorsForSummary)
   }
 }
-
-
         @h1("label.what_are_your_journey_details")     
    
-        <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
+        @fieldset(
+            legend = "label.place_of_arrival",
+            asHeading = false,
+            legendClasses = "govuk-visually-hidden"
+        ) {
 
-            @form.errors.filter(_.key == "placeOfArrival").map { error =>
-                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span>
-                    @messages(error.message)
+    <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
+
+        @form.errors.filter(_.key == "placeOfArrival").map { error =>
+            <span class="govuk-error-message" id="placeOfArrival-error">
+                <span class="govuk-visually-hidden">@messages("label.error")</span>
+                @messages(error.message)
+            </span>
+        }
+
+        @if(arrivingNICheck.contains(true)){
+            @autoCompleteList(
+                form,
+                id = "placeOfArrival.selectPlaceOfArrival",
+                name = "placeOfArrival.selectPlaceOfArrival",
+                isPageHint = true,
+                hint = messages("label.for_example_belfast_international_airport"),
+                isPageHeading = false,
+                label = messages("label.place_of_arrival_ni"),
+                hintText = messages("label.select_a_country"),
+                list = portsOfArrival.map(c => (c.code, messages(c.displayName))),
+                jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
+                labelClass = true
+            )
+        } else {
+            @autoCompleteList(
+                form,
+                id = "placeOfArrival.selectPlaceOfArrival",
+                name = "placeOfArrival.selectPlaceOfArrival",
+                isPageHint = true,
+                hint = messages("label.for_example_heathrow_airport_or_dover"),
+                isPageHeading = false,
+                label = messages("label.place_of_arrival_uk"),
+                hintText = messages("label.enter_place_of_arrival"),
+                list = portsOfArrival.map(c => (c.code, messages(c.displayName))),
+                jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
+                labelClass = true
+            )
+        }
+
+        <details class="govuk-details govuk-!-margin-bottom-6">
+
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    @messages("label.place_of_arrival_not_listed")
                 </span>
-            }
-            @if(arrivingNICheck.contains(true)){
-                @autoCompleteList(form,
-                    id = "placeOfArrival.selectPlaceOfArrival",
-                    name = "placeOfArrival.selectPlaceOfArrival",
-                    isPageHint = true,
-                    hint = messages("label.for_example_belfast_international_airport"),
-                    isPageHeading = false,
-                    label = messages(s"label.place_of_arrival_ni"),
-                    hintText = messages("label.select_a_country"),
-                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
-                    jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
-                    labelClass = true
-                )
-            } else {
-                @autoCompleteList(form,
-                    id = "placeOfArrival.selectPlaceOfArrival",
-                    name = "placeOfArrival.selectPlaceOfArrival",
-                    isPageHint = true,
-                    hint = messages("label.for_example_heathrow_airport_or_dover"),
-                    isPageHeading = false,
-                    label = messages(s"label.place_of_arrival_uk"),
-                    hintText = messages("label.enter_place_of_arrival"),
-                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
-                    jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
-                    labelClass = true
-                )
-            }
-            <details class="govuk-details govuk-!-margin-bottom-6">
+            </summary>
 
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">@messages("label.place_of_arrival_not_listed")</span>
-                </summary>
+            <div class="govuk-details__text">
+                @inputText(
+                    form,
+                    id = "placeOfArrival.enterPlaceOfArrival",
+                    name = "placeOfArrival.enterPlaceOfArrival",
+                    label = "label.enter_place_of_arrival",
+                    isPageHeading = false,
+                    classes = Some("govuk-input govuk-!-width-one-half"),
+                    labelClasses = Some("govuk-!-font-weight-bold")
+                )
+            </div>
 
-                <div class="govuk-details__text">
-                        @inputText(
-                            form,
-                            id = "placeOfArrival.enterPlaceOfArrival",
-                            name = "placeOfArrival.enterPlaceOfArrival",
-                            label = "label.enter_place_of_arrival",
-                            isPageHeading = false,
-                            classes = Some("govuk-input govuk-!-width-one-half"),
-                            labelClasses = Some("govuk-!-font-weight-bold")
-                        )
-                </div>
-            </details>
-        </div>
+        </details>
+
+    </div>
+
+}
 
         @if(form("dateTimeOfArrival").hasErrors){
             <div class="govuk-form-group govuk-form-group--error" id="dateOfArrival.date">
