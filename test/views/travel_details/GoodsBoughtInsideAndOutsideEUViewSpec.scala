@@ -96,6 +96,13 @@ class GoodsBoughtInsideAndOutsideEUViewSpec
       body should include(messages("text.gb.allowance.alc_3.still-or-sparkling"))
     }
 
+    "show the 'use this service to value your other goods' block" in {
+      body should include(messages("text.allowance.other_goods_value_intro.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_1.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_2.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_3.still-or-sparkling"))
+    }
+
     "stack the Yes/No buttons" in {
       body should not include "govuk-radios--inline"
     }
@@ -126,8 +133,24 @@ class GoodsBoughtInsideAndOutsideEUViewSpec
       body should not include messages("text.gb.allowance.alc_2.still-or-sparkling")
     }
 
+    "not show the 'use this service to value your other goods' block" in {
+      body should not include messages("text.allowance.other_goods_value_intro.still-or-sparkling")
+    }
+
     "keep the Yes/No buttons inline" in {
       body should include("govuk-radios--inline")
+    }
+  }
+
+  "GoodsBoughtInsideAndOutsideEUView with the vaping toggle ON" should {
+
+    lazy val body = viewWith(wineStillOrSparkling = false, vaping = true).body
+
+    "show the 'use this service to value your other goods' block" in {
+      body should include(messages("text.allowance.other_goods_value_intro.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_1.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_2.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_3.still-or-sparkling"))
     }
   }
 }
