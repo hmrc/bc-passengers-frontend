@@ -121,6 +121,7 @@ object OtherGoodsNIDto {
     currency,
     cost,
     purchasedProductInstance.isVatPaid,
+    purchasedProductInstance.isUccRelief,
     purchasedProductInstance.isExcisePaid,
     purchasedProductInstance.isCustomPaid,
     purchasedProductInstance.hasEvidence
@@ -134,6 +135,7 @@ case class OtherGoodsNIDto(
   currency: String,
   cost: BigDecimal,
   isVatPaid: Option[Boolean],
+  isUccRelief: Option[Boolean],
   isExcisePaid: Option[Boolean],
   isCustomPaid: Option[Boolean],
   hasEvidence: Option[Boolean]

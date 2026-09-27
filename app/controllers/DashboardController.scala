@@ -88,25 +88,13 @@ class DashboardController @Inject() (
 
               val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" && ppi.isEditable.contains(true) =>
-                  item
-              }
-
-              val otherGoodsNIPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-ni-goods" && ppi.isEditable.contains(true) =>
+                    if tid == "other-goods" | tid == "other-ni-goods" && ppi.isEditable.contains(true) =>
                   item
               }
 
               val previousOtherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" && ppi.isEditable.contains(false) =>
-                  item
-              }
-
-              val previousOtherGoodsNIPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-ni-goods" && ppi.isEditable.contains(false) =>
+                    if tid == "other-goods" | tid == "other-ni-goods" && ppi.isEditable.contains(false) =>
                   item
               }
 
@@ -114,14 +102,13 @@ class DashboardController @Inject() (
               val tobaccoItems        = tobaccoPurchasedItemList.reverse
               val vapingProductsItems = vapingProductsPurchasedItemList.reverse
               val otherGoodsItems     = otherGoodsPurchasedItemList.reverse
-              val otherGoodsNIItems   = otherGoodsNIPurchasedItemList.reverse
 
               val allItems    =
                 alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
                   "vaping-products" -> _
                 ) ++ otherGoodsItems.map(
                   "other-goods" -> _
-                ) ++ otherGoodsNIItems.map(
+                ) ++ otherGoodsItems.map(
                   "other-ni-goods" -> _
                 )
               val totalItems  = allItems.size
@@ -148,10 +135,8 @@ class DashboardController @Inject() (
                   pageAlcoholItems,
                   pageTobaccoItems,
                   pageVapingProductsItems,
-                  pageOtherGoodsItems,
-                  pageOtherGoodsNIItems,
+                  if (pageOtherGoodsItems.isEmpty) pageOtherGoodsItems else pageOtherGoodsNIItems,
                   previousOtherGoodsPurchasedItemList.reverse,
-                  previousOtherGoodsNIPurchasedItemList.reverse,
                   totalItems,
                   otherGoodsItems.size,
                   currentPage,

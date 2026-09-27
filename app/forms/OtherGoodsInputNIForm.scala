@@ -39,6 +39,7 @@ class OtherGoodsInputNIForm @Inject() (
       "currency"       -> ignored(""),
       "cost"           -> ignored(BigDecimal(0)),
       "isVatPaid"      -> optional(boolean),
+      "isUccRelief"    -> optional(boolean),
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
@@ -77,6 +78,7 @@ class OtherGoodsInputNIForm @Inject() (
         .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid"      -> optional(boolean),
+      "isUccRelief"    -> optional(boolean),
       "isExcisePaid"   -> optional(boolean),
       "isCustomPaid"   -> optional(boolean),
       "hasEvidence"    -> optional(boolean)
