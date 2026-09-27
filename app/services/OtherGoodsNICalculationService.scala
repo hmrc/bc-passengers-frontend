@@ -36,7 +36,7 @@ class OtherGoodsNICalculationService extends InstanceDecider with ProductDetecto
   private def sumVapeProductNITotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
     contextJourneyData.purchasedProductInstances
       .filter { product =>
-        checkVapingProductExists(
+        checkVapingProductNIExists(
           productToken = productToken,
           vapingProductsExists = product.path.toString.contains(productToken)
         )
