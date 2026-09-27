@@ -50,8 +50,12 @@ class AddItemController @Inject() (
         goodsType =>
           Future.successful(
             goodsType.goodsType match {
-              case "other-goods" => Redirect(routes.OtherGoodsInputController.displayAddForm())
-              case _             =>
+              case "other-goods"     => Redirect(routes.OtherGoodsInputController.displayAddForm())
+              case "vaping-products" =>
+                Redirect(
+                  routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
+                )
+              case _                 =>
                 Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
             }
           )

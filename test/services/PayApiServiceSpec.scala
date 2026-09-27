@@ -84,6 +84,14 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
        |            "producedIn" : "Unknown",
        |            "evidenceOfOrigin" : "Not required"
        |        },
+       |        {
+       |            "name": "51 milliliters of vaping products",
+       |            "costInGbp": "21.00",
+       |            "price": "120.00 USA dollars (USD)",
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "Algeria",
+       |            "evidenceOfOrigin" : "Not required"
+       |        },
        |        {   "name": "Televisions",
        |            "costInGbp": "0.00",
        |            "price": "1500.00 USA dollars (USD)",
@@ -141,6 +149,14 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
        |            "price": "200.00 USA dollars (USD)",
        |            "purchaseLocation": "United States of America",
        |            "producedIn" : "Unknown",
+       |            "evidenceOfOrigin" : "Not required"
+       |        },
+       |        {
+       |            "name": "51 milliliters of vaping products",
+       |            "costInGbp": "21.00",
+       |            "price": "120.00 USA dollars (USD)",
+       |            "purchaseLocation": "United States of America",
+       |            "producedIn" : "Algeria",
        |            "evidenceOfOrigin" : "Not required"
        |        },
        |        {   "name": "Televisions",
@@ -206,6 +222,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -240,6 +257,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   None,
                   Some(false),
                   None,
+                  None,
                   None
                 ),
                 Item(
@@ -261,6 +279,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   None,
                   Some(true),
                   None,
+                  None,
                   None
                 )
               ),
@@ -268,6 +287,41 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
             )
           ),
           Calculation("100.54", "192.94", "149.92", "443.40")
+        )
+      ),
+      Some(
+        VapingProducts(
+          List(
+            Band(
+              "B",
+              List(
+                Item(
+                  "ALC/A1/CIDER",
+                  "91.23",
+                  None,
+                  Some(5),
+                  Calculation("2.00", "0.30", "18.70", "21.00"),
+                  Metadata(
+                    "51 milliliters of vaping products",
+                    "Vaping products",
+                    "120.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA dollars (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    Some(Country("DZ", "Algeria", "DZ", isEu = false, isCountry = true, Nil))
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("2.00", "0.30", "18.70", "21.00")
+            )
+          ),
+          Calculation("2.00", "0.30", "18.70", "21.00")
         )
       ),
       Some(
@@ -294,6 +348,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   ),
                   None,
                   Some(true),
+                  None,
                   None,
                   None
                 ),
@@ -322,6 +377,7 @@ class PayApiServiceSpec extends BaseSpec with ScalaFutures {
                   ),
                   None,
                   Some(true),
+                  None,
                   None,
                   None
                 )

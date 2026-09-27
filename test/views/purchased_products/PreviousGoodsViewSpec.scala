@@ -28,6 +28,7 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
 
   private val alcoholProductPath: ProductPath    = ProductPath(path = "alcohol/wine")
   private val tobaccoProductPath: ProductPath    = ProductPath(path = "tobacco/cigars")
+  private val vapingProductPath: ProductPath     = ProductPath(path = "vaping-products/vape")
   private val otherGoodsProductPath: ProductPath = ProductPath(path = "other-goods/furniture")
 
   private val currency: Currency = Currency(
@@ -67,6 +68,14 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     applicableLimits = List("L-CIGAR")
   )
 
+  private val vapingProductsProductTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
+    token = "vape",
+    name = "label.vaping-products.vape",
+    rateID = "VAP/V1/VPRODUCTS",
+    templateId = "alcohol",
+    applicableLimits = List("L-VPRODUCTS")
+  )
+
   private val otherGoodsProductTreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
     token = "furniture",
     name = "label.other-goods.furniture",
@@ -90,6 +99,16 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     iid = "iid1",
     weightOrVolume = Some(weightOrVolume),
     noOfSticks = Some(noOfSticks),
+    country = Some(country),
+    currency = Some("GBP"),
+    cost = Some(100.00)
+  )
+
+  private val vapingProductsPurchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+    path = vapingProductPath,
+    iid = "iid3",
+    weightOrVolume = Some(weightOrVolume),
+    noOfSticks = None,
     country = Some(country),
     currency = Some("GBP"),
     cost = Some(100.00)
@@ -125,6 +144,16 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     )
   )
 
+  private val vapingProductsPurchasedItemList: List[PurchasedItem] = List(
+    PurchasedItem(
+      purchasedProductInstance = vapingProductsPurchasedProductInstance,
+      productTreeLeaf = vapingProductsProductTreeLeaf,
+      currency = currency,
+      gbpCost = 200.00,
+      exchangeRate = exchangeRate
+    )
+  )
+
   private def otherGoodsPurchasedItemList(fillNumber: Int = 1): List[PurchasedItem] = List.fill(fillNumber)(
     PurchasedItem(
       purchasedProductInstance = otherGoodsPurchasedProductInstance,
@@ -139,6 +168,7 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     journeyData = JourneyData(),
     previousAlcoholPurchasedItemList = alcoholPurchasedItemList,
     previousTobaccoPurchasedItemList = tobaccoPurchasedItemList,
+    previousVapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     backLink = None,
     isIrishBorderQuestionEnabled = true,
@@ -156,6 +186,7 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     journeyData = JourneyData(),
     previousAlcoholPurchasedItemList = alcoholPurchasedItemList,
     previousTobaccoPurchasedItemList = tobaccoPurchasedItemList,
+    previousVapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
     previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
     backLink = None,
     isIrishBorderQuestionEnabled = true,
@@ -172,6 +203,7 @@ class PreviousGoodsViewSpec extends BaseViewSpec {
     JourneyData(),
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,
+    vapingProductsPurchasedItemList,
     otherGoodsPurchasedItemList(),
     None,
     true,

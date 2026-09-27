@@ -76,38 +76,51 @@ case class ProductTreeLeaf(
             } else {
               ("label.X_litres_X", List(weightOrVolume.toString, name))
             }
+      case "vaping-products"       =>
+        for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
+          yield
+            if (weightOrVolume == BigDecimal(1)) {
+              ("label.X_ml_X", List(weightOrVolume.toString, name))
+            } else {
+              ("label.X_mls_X", List(weightOrVolume.toString, name))
+            }
       case "other-goods"           =>
         Some((name, Nil))
     }
 
   def isValid(purchasedProductInstance: PurchasedProductInstance): Boolean =
     templateId match {
-      case "cigarettes"  =>
+      case "cigarettes"      =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.noOfSticks.isDefined
-      case "cigars"      =>
+      case "cigars"          =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined &&
         purchasedProductInstance.noOfSticks.isDefined
-      case "tobacco"     =>
+      case "tobacco"         =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined
-      case "alcohol"     =>
+      case "alcohol"         =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.cost.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.weightOrVolume.isDefined
-      case "other-goods" =>
+      case "vaping-products" =>
+        purchasedProductInstance.currency.isDefined &&
+        purchasedProductInstance.cost.isDefined &&
+        purchasedProductInstance.country.isDefined &&
+        purchasedProductInstance.weightOrVolume.isDefined
+      case "other-goods"     =>
         purchasedProductInstance.currency.isDefined &&
         purchasedProductInstance.country.isDefined &&
         purchasedProductInstance.cost.isDefined
-      case _             => false
+      case _                 => false
     }
 
 }
