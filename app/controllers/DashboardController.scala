@@ -93,8 +93,8 @@ class DashboardController @Inject() (
               }
 
               val otherGoodsNIPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                  if tid == "other-ni-goods" && ppi.isEditable.contains(true) =>
+                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
+                    if tid == "other-ni-goods" && ppi.isEditable.contains(true) =>
                   item
               }
 
@@ -105,8 +105,8 @@ class DashboardController @Inject() (
               }
 
               val previousOtherGoodsNIPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
-                case item@PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                  if tid == "other-ni-goods" && ppi.isEditable.contains(false) =>
+                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
+                    if tid == "other-ni-goods" && ppi.isEditable.contains(false) =>
                   item
               }
 
@@ -116,7 +116,7 @@ class DashboardController @Inject() (
               val otherGoodsItems     = otherGoodsPurchasedItemList.reverse
               val otherGoodsNIItems   = otherGoodsNIPurchasedItemList.reverse
 
-              val allItems            =
+              val allItems    =
                 alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
                   "vaping-products" -> _
                 ) ++ otherGoodsItems.map(
@@ -124,10 +124,10 @@ class DashboardController @Inject() (
                 ) ++ otherGoodsNIItems.map(
                   "other-ni-goods" -> _
                 )
-              val totalItems          = allItems.size
-              val totalPages          = math.max(1, math.ceil(totalItems.toDouble / itemsPerPage).toInt)
-              val currentPage         = math.min(requestedPage, totalPages)
-              val pageItems           = allItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+              val totalItems  = allItems.size
+              val totalPages  = math.max(1, math.ceil(totalItems.toDouble / itemsPerPage).toInt)
+              val currentPage = math.min(requestedPage, totalPages)
+              val pageItems   = allItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
               val pageAlcoholItems        = pageItems.collect { case ("alcohol", item) => item }
               val pageTobaccoItems        = pageItems.collect { case ("tobacco", item) => item }

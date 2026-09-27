@@ -31,7 +31,7 @@ import util.*
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherGoodsInputNIController @Inject()(
+class OtherGoodsInputNIController @Inject() (
   val cache: Cache,
   otherGoodsInputNIForm: OtherGoodsInputNIForm,
   val productTreeService: ProductTreeService,
@@ -205,7 +205,7 @@ class OtherGoodsInputNIController @Inject()(
                 )
               ),
             dto => {
-              def insertItem                 =
+              def insertItem          =
                 submittedIid.fold(
                   newPurchaseService.insertPurchases(
                     path,
@@ -232,7 +232,7 @@ class OtherGoodsInputNIController @Inject()(
               cache.store(journeyData) map { _ =>
                 navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
               }
-              
+
             }
           )
       }
@@ -277,7 +277,7 @@ class OtherGoodsInputNIController @Inject()(
                       )
                     )
                   ),
-                success = dto => {
+                success = dto =>
                   cache.store(
                     newPurchaseService.updatePurchase(
                       ppi.path,
@@ -301,7 +301,6 @@ class OtherGoodsInputNIController @Inject()(
                       routes.AlcoholInputController.displayEditForm(iid).url
                     )
                   }
-                }
               )
           }
         }

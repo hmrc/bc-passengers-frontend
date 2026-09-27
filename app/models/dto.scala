@@ -128,16 +128,16 @@ object OtherGoodsNIDto {
 }
 
 case class OtherGoodsNIDto(
-   weightOrVolume: BigDecimal,
-   country: String,
-   originCountry: Option[String],
-   currency: String,
-   cost: BigDecimal,
-   isVatPaid: Option[Boolean],
-   isExcisePaid: Option[Boolean],
-   isCustomPaid: Option[Boolean],
-   hasEvidence: Option[Boolean]
- )
+  weightOrVolume: BigDecimal,
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
 
 object VapeDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[VapeDto] = for {

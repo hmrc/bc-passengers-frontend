@@ -16,7 +16,7 @@
 
 package forms
 
-import models.{ProductPath, OtherGoodsNIDto}
+import models.{OtherGoodsNIDto, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.*
 import services.{CountriesService, CurrencyService}
@@ -25,7 +25,7 @@ import util.{bigDecimalCostCheckConstraint, formatMonetaryValue}
 import javax.inject.Inject
 import scala.util.Try
 
-class OtherGoodsInputNIForm @Inject()(
+class OtherGoodsInputNIForm @Inject() (
   countriesService: CountriesService,
   currencyService: CurrencyService
 ) {
@@ -50,7 +50,8 @@ class OtherGoodsInputNIForm @Inject()(
       "weightOrVolume" -> {
         val baseValidation = optional(text)
         if (path.toMessageKey.contains("other-ni-goods.vaping-products-liquid"))
-          baseValidation.verifying("error.required.volume", _.isDefined)
+          baseValidation
+            .verifying("error.required.volume", _.isDefined)
             .verifying(
               "error.invalid.characters.volume",
               x => x.isEmpty || x.flatMap(x => Try(BigDecimal(x)).toOption.map(d => d > 0.0)).getOrElse(false)

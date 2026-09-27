@@ -257,8 +257,20 @@ class ProductTreeService {
               "carpets-fabric",
               "label.other-goods.carpets-fabric",
               List(
-                ProductTreeLeaf("carpets", "label.other-goods.carpets-fabric.carpets", "OGD/CRPT", "other-ni-goods", Nil),
-                ProductTreeLeaf("fabrics", "label.other-goods.carpets-fabric.fabrics", "OGD/FBRIC", "other-ni-goods", Nil)
+                ProductTreeLeaf(
+                  "carpets",
+                  "label.other-goods.carpets-fabric.carpets",
+                  "OGD/CRPT",
+                  "other-ni-goods",
+                  Nil
+                ),
+                ProductTreeLeaf(
+                  "fabrics",
+                  "label.other-goods.carpets-fabric.fabrics",
+                  "OGD/FBRIC",
+                  "other-ni-goods",
+                  Nil
+                )
               )
             ),
             ProductTreeLeaf("car-seats", "label.other-goods.car-seats", "OGD/MOB/MISC", "other-ni-goods", Nil),
@@ -342,9 +354,27 @@ class ProductTreeService {
               Nil
             ),
             ProductTreeLeaf("tableware", "label.other-goods.tableware", "OGD/TABLE", "other-ni-goods", Nil),
-            ProductTreeLeaf("watches-clocks", "label.other-goods.watches-clocks", "OGD/ORN/MISC", "other-ni-goods", Nil),
-            ProductTreeLeaf("vaping-products-liquid", "label.other-goods.vaping-products-liquid", "OGD/VAPELIQ", "other-ni-goods", Nil),
-            ProductTreeLeaf("vaping-products-others", "label.other-goods.vaping-products-others", "OGD/VAPE", "other-ni-goods", Nil),
+            ProductTreeLeaf(
+              "watches-clocks",
+              "label.other-goods.watches-clocks",
+              "OGD/ORN/MISC",
+              "other-ni-goods",
+              Nil
+            ),
+            ProductTreeLeaf(
+              "vaping-products-liquid",
+              "label.other-goods.vaping-products-liquid",
+              "OGD/VAPELIQ",
+              "other-ni-goods",
+              Nil
+            ),
+            ProductTreeLeaf(
+              "vaping-products-others",
+              "label.other-goods.vaping-products-others",
+              "OGD/VAPE",
+              "other-ni-goods",
+              Nil
+            ),
             ProductTreeLeaf("other", "label.other-goods.other", "OGD/OTHER", "other-ni-goods", Nil)
           )
         )

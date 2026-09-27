@@ -33,22 +33,22 @@ trait ProductDetector {
     }
 
   def checkVapingProductExists(
-     productToken: String,
-     vapingProductsExists: Boolean
-   ): Boolean =
+    productToken: String,
+    vapingProductsExists: Boolean
+  ): Boolean =
     productToken match {
       case token if token.contains("vape") => vapingProductsExists
-      case _ => false
+      case _                               => false
     }
 
   def checkVapingProductNIExists(
-     productToken: String,
-     vapingProductsExists: Boolean
-   ): Boolean =
+    productToken: String,
+    vapingProductsExists: Boolean
+  ): Boolean =
     productToken match {
       case token if token.contains("vaping-liquids") => vapingProductsExists
-      case _ => false
-    }  
+      case _                                         => false
+    }
 
   def checkProductExists(journeyData: JourneyData, path: String): Boolean =
     checkProductExistsInPurchasedProductInstances(

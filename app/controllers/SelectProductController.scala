@@ -92,7 +92,7 @@ class SelectProductController @Inject() (
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "other-ni-goods"         =>
+                case "other-ni-goods"  =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
