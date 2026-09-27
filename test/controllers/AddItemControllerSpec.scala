@@ -97,6 +97,19 @@ class AddItemControllerSpec extends BaseSpec {
       )
     }
 
+    "redirect to the vaping products input page when vaping products are selected" in {
+      val result = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")
+          .withFormUrlEncodedBody("goodsType" -> "vaping-products")
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/vaping-products/vape/tell-us"
+      )
+    }
+
     "show an error when no goods type is selected" in {
       val result = route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")).get
 

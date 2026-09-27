@@ -31,22 +31,31 @@ text.there_is_not_an_allowance_ = Gallwch ddatgan eich cynhyrchion fepio eraill 
 text.alcohol_allowance = Lwfans alcohol
 text.allowance_for_alcohol = Eich lwfans ar gyfer alcohol
 text.you_can_bring_in = Gallwch ddod â’r canlynol i mewn:
+text.if_you_bring_vaping_products = Os ydych yn dod â chynhyrchion fepio
+text.you_can_include_your_vaping_products = Gallwch gynnwys eich cynhyrchion fepio yn eich lwfans ar gyfer nwyddau eraill.
+text.vaping_products_need_to_know = Er mwyn datgan eich cynhyrchion fepio bydd angen i chi wybod y canlynol:
+text.if_vp_contain_liquid = os yw’r cynhyrchion yn cynnwys hylif
+text.liquid_amount = faint o hylif sydd ynddynt (os yw’n berthnasol)
+text.if_you_are_unsure_of_the_total_value = Os ydych yn ansicr o gyfanswm gwerth eich nwyddau mewn punnoedd, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
 text.you_can_bring_in_the_following = Gallwch ddod â’r niferoedd canlynol i mewn i’r wlad heb dalu treth na thollau arnynt:
 text.you_can_bring_a_total = Gallwch ddod â gwerth hyd at £390 o unrhyw nwyddau eraill heb dalu treth na thollau arnynt (£270 os ydych yn teithio mewn awyren breifat neu gwch preifat).
 text.ni.allowance.alc_1 = 16 litr o gwrw
 text.ni.allowance.alc_2 = 4 litr o win llonydd
 text.ni.allowance.alc_3 = 1 litr o wirodydd neu 2 litr o win pefriog, gwin cadarn neu unrhyw ddiod alcohol sy’n llai na 22% o alcohol
+text.ni.allowance.other_1 = trosi gwerth pob eitem i bunnoedd
+text.ni.allowance.other_2 = cyfrifo cyfanswm gwerth eich nwyddau mewn punnoedd
+text.ni.allowance.other_3 = find out if you need to pay tax or duty
 text.ni.allowance.msg_1 = Gallwch rannu’r lwfans olaf hwn – er enghraifft, gallech ddod â hanner litr o wirodydd ac 1 litr o win pefriog i mewn.
 text.ni.allowance.msg_01 = Gallwch rannu’r lwfans olaf hwn – er enghraifft, gallech ddod â hanner litr o wirodydd ac 1 litr o win pefriog i mewn.
 text.ni.allowance.msg_2 = Bydd angen i chi dalu treth ar yr holl alcohol o fewn pob un o’r tri lwfans hyn, os byddwch yn mynd dros y terfynau unigol. Er enghraifft, os ydych yn dod ag 20 litr o gwrw i mewn, bydd angen i chi dalu treth ar yr holl 20 litr.
 text.ni.allowance.msg_3 = Os ydych o dan 17 mlwydd oed, nid yw’r lwfansau ar gyfer alcohol yn berthnasol. Bydd yn rhaid i chi dalu tollau a threth ar unrhyw faint o alcohol rydych yn dod ag ef i mewn.
-text.ni.allowance.msg_03 = Os ydych o dan 17 oed, nid yw’r lwfansau hyn yn berthnasol. Bydd yn rhaid i chi dalu treth a thollau ar unrhyw faint o alcohol neu dybaco rydych yn dod ag ef i mewn i’r wlad.
+text.ni.allowance.msg_03 = Os ydych o dan 17 oed, nid oes gennych lwfans ar gyfer tybaco nac alcohol. Mae hyn yn golygu y bydd yn rhaid i chi dalu treth a thollau ar unrhyw faint o alcohol neu dybaco rydych yn dod ag ef i mewn i’r wlad.
 text.ni.allowance.msg_04 = Os byddwch yn mynd dros y lwfans, bydd angen i chi dalu treth ar yr holl alcohol.
 text.ni.allowance.msg_05 = Er enghraifft, os ydych yn dod â 20 litr o gwrw i mewn i’r wlad, bydd angen i chi dalu treth ar yr holl 20 litr.
 text.ni.allowance.msg_06 = Os byddwch yn mynd dros y lwfans, bydd angen i chi dalu treth ar yr holl dybaco.
 text.ni.allowance.msg_07 = Er enghraifft, os ydych yn dod â 400 sigarét a 10 sigâr i mewn i’r wlad, bydd angen i chi dalu treth ar yr holl sigaréts a sigârs.
 text.ni.allowance.msg_08 = Os byddwch yn mynd dros y lwfans, bydd angen i chi dalu treth ar yr holl nwyddau eraill.
-text.ni.allowance.msg_09 = Er enghraifft, os ydych yn dod â gliniadur sy’n werth £500 ac oriawr sy’n werth £100 i mewn i’r wlad, bydd angen i chi dalu treth ar y gliniadur a’r oriawr.
+text.ni.allowance.msg_09 = Er enghraifft, os ydych yn dod â gliniadur sy’n werth £500 a chynhyrchion fepio sy’n werth £60 i mewn i’r wlad, bydd angen i chi dalu treth ar y gliniadur ac ar y cynhyrchion fepio.
 text.tobacco_allowance = Lwfans tybaco
 text.your_allowance_for_tobacco = Eich lwfans ar gyfer tybaco
 text.you_can_bring_in_either = Gallwch ddod â’r naill neu’r llall o’r canlynol i mewn:
@@ -141,6 +150,7 @@ label.sparkling_wine=Gwin pefriog
 label.spirits=Gwirodydd (megis jin, fodca neu wisgi ac alcohol sydd dros 22%)
 label.other_alcoholic_drinks=Diodydd alcoholaidd eraill (gan gynnwys seidr, port, sieri ac alcohol hyd at 22%)
 label.tobacco=Tybaco
+label.tobacco_ni = Tybaco (heb gynnwys cynhyrchion fepio)
 label.cigarettes=Sigaréts
 label.cigars=Sigârs
 label.cigarillos=Sigarilos
@@ -166,6 +176,20 @@ text.will_use_them_yourself_or_give_=y byddwch yn eu defnyddio nhw chi’ch hun 
 text.paid_duty_and_tax_=eich bod wedi talu toll a threth yn y wlad lle roeddech wedi’u prynu
 label.customs_checks=Archwiliadau tollau ar alcohol ac ar dybaco
 text.customs_officers_are_more_likely_=Mae swyddogion tollau yn fwy tebygol o’ch stopio a’ch holi os oes gennych fwy o alcohol a thybaco na’r symiau hyn.
+text.tell_us.customs_sell.still-or-sparkling = Mae’n bosibl y bydd swyddog y tollau yn gwneud y canlynol os yw o’r farn eich bod yn dod â nwyddau i mewn i’r wlad i’w gwerthu:
+text.tell_us.check_goods.still-or-sparkling = gwirio’ch nwyddau
+text.tell_us.ask_personal_use.still-or-sparkling = gofyn cwestiynau i chi er mwyn cael gwybod a fydd y nwyddau’n cael eu defnyddio at ddibenion personol
+text.tell_us.you_might_be_asked.still-or-sparkling = Mae’n bosibl y bydd cwestiynau yn cael eu gofyn i chi gan swyddog y tollau os oes gennych:
+label.tell_us.alcohol.beer_cider.still-or-sparkling = dros 110 litr o gwrw neu unrhyw fath o seidr
+label.tell_us.alcohol.wine.still-or-sparkling = dros 90 litr o win (pefriog neu lonydd)
+label.tell_us.alcohol.spirits.still-or-sparkling = dros 10 litr o wirodydd (diodydd alcoholaidd dros 22% ABV)
+label.tell_us.alcohol.fortified.still-or-sparkling = dros 20 litr o win cadarn (neu ddiodydd alcoholaidd eraill hyd at 22% ABV)
+label.tell_us.tobacco.cigarettes.still-or-sparkling = dros 800 sigarét
+label.tell_us.tobacco.cigars.still-or-sparkling = dros 200 sigâr
+label.tell_us.tobacco.cigarillos.still-or-sparkling = dros 400 sigarilo
+label.tell_us.tobacco.tobacco.still-or-sparkling = dros 1 kg o dybaco
+label.tell_us.tobacco.heated.still-or-sparkling = dros 800 darn o dybaco ar gyfer dyfeisiau electronig sy’n gwresogi tybaco
+label.tell_us.find_out_more.still-or-sparkling = Dysgwch ragor am ddod â nwyddau i mewn i’r DU o’r Undeb Ewropeaidd, gan gynnwys eitemau sydd wedi’u gwahardd ac eitemau o dan gyfyngiadau
 label.type_of_goods=Math o nwyddau
 label.amount=Faint
 error.irish_border=Dewiswch ‘Iawn’ os ydych yn cyrraedd Gogledd Iwerddon o Iwerddon
@@ -183,6 +207,9 @@ label.your_purchases=Yr hyn rydych wedi’i brynu
 label.17_or_over=yn 17 neu’n hŷn
 label.private_aircraft_or_private_boat=Awyren breifat neu gwch preifat
 label.other_goods=Nwyddau eraill
+label.vaping_products = Cynhyrchion fepio
+label.vaping-products.vape = Cynhyrchion fepio
+label.vaping-products = Cynhyrchion fepio
 label.change=Newid
 label.cancel=Canslo
 label.edit_this_item=Golygu’r eitem hon
@@ -268,6 +295,7 @@ error.required.other-goods.electronic-devices=Dewiswch setiau teledu neu bob dyf
 
 error.required.other-goods.price = Nodwch y pris a dalwyd
 label.total_volume_in_litres=Cyfanswm cyfaint mewn litrau
+label.total_volume_in_millilitres = Cyfanswm cyfaint yr hylif mewn mililitrau
 error.required.volume.alcohol.beer=Nodwch gyfaint y cwrw
 error.required.volume.alcohol.cider.non-sparkling-cider=Nodwch gyfaint y seidr
 error.required.volume.alcohol.cider.sparkling-cider=Nodwch gyfaint y seidr
@@ -277,8 +305,12 @@ error.required.volume.alcohol.spirits=Nodwch gyfaint y gwirodydd
 error.required.volume.alcohol.wine=Nodwch gyfaint y gwin
 error.required.volume.alcohol.other=Nodwch gyfaint y diodydd alcoholaidd eraill
 error.invalid.characters.volume=Mae’n rhaid i’r cyfaint gynnwys rhifau’n unig, megis 12 neu 6.55
+error.required.volume.vaping-products.vape = Nodwch gyfanswm cyfaint yr hylif fepio mewn mililitrau
+
 label.litre=litr
 label.litres=litr
+label.millilitre = mililitr
+label.millilitres = millilitres
 label.tobacco.cigarettes=Sigaréts
 label.tobacco.cigarettes.single=Sigarét
 label.tobacco.cigarillos=Sigarilos
@@ -314,8 +346,8 @@ label.go_to_the_red_channel_=mynd i’r sianel goch neu’r ffôn pwynt coch, ne
 label.what_other_goods_are_= Pa nwyddau eraill rydych am eu hychwanegu?
 label.add_your_goods= Nodwch eich eitem
 label.if_there_are_no_search_results_ = Os nad oes canlyniadau chwilio ar gyfer y nwyddau rydych am eu hychwanegu
-label.search_through_our_lists_and = Os na allwch ddod o hyd i’ch eitem, gallwch
-label.categorise_your_goods_yourself= gategoreiddio’ch nwyddau eich hun.
+label.search_through_our_lists_and = Gallwch nodi enw’ch eitem neu
+label.categorise_your_goods_yourself= ddewis eich eitem o restr.
 error.required.enter_other_goods = Nodwch eich eitem
 
 error.required.tobacco.cigarettes=Nodwch bris y sigaréts
@@ -332,6 +364,7 @@ error.required.alcohol.spirits=Nodwch bris y gwirodydd
 error.required.alcohol.sparkling-wine=Nodwch bris y gwin pefriog
 error.required.alcohol.wine=Nodwch bris y gwin
 error.required.alcohol.other=Nodwch bris y diodydd alcoholaidd eraill
+error.required.vaping-products.vape = Nodwch bris y cynhyrchion fepio
 error.required.noofsticks.cigarettes=Nodwch nifer y sigaréts
 error.required.noofsticks.heated-tobacco=Nodwch nifer yr unedau o dybaco gwresogi nid llosgi
 error.required.weight.tobacco.chewing-tobacco=Nodwch bwysau’r tybaco cetyn neu gnoi
@@ -418,6 +451,7 @@ label.price_paid=Y pris a dalwyd
 label.price_format_description = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 1000.40, 1000.4 neu 1,000.
 label.country_this_alcohol_was_=Y wlad lle y prynwyd yr alcohol hwn
 label.country_this_alcohol_was_produced = Ble y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol
+label.country_this_vaping_was_produced = Ble y cafodd y cynhyrchion fepio eu cynhyrchu’n wreiddiol
 label.if_you_bought_this_alcohol_=Os prynoch yr alcohol hwn ar awyren neu gwch, nodwch y wlad yr oeddech yn ei gadael ar adeg y prynu.
 label.country_this_alcohol_was_produced_hint = Os nad ydych yn siŵr lle y cafodd yr alcohol hwn ei gynhyrchu’n wreiddiol, gadewch hyn yn wag
 label.currency_used_to_buy_this_alcohol=Yr arian cyfred a ddefnyddiwyd i brynu’r alcohol hwn
@@ -434,6 +468,12 @@ label.alcohol.other=Alcohol arall
 label.alcohol.other.still-or-sparkling=Diodydd alcoholaidd eraill o dan 22% ABV, fel gwin cadarn neu sieri
 label.alcohol.sparkling-wine=Gwin pefriog
 label.price_paid_for_item_=Y pris a dalwyd ar gyfer eitem {0}
+
+label.country_this_vaping_was_ = Y wlad y cafodd y cynhyrchion fepio eu prynu ynddi
+label.if_you_bought_this_vaping_ = Os prynoch chi’r cynhyrchion fepio hyn ar awyren neu gwch, nodwch y wlad roeddech chi’n teithio ohoni ar yr adeg brynu.
+label.country_this_vaping_was_produced_hint = Os nad ydych chi’n siŵr lle y cafodd y cynhyrchion fepio hyn eu cynhyrchu’n wreiddiol, gadewch hyn yn wag.
+label.currency_used_to_buy_this_vaping = Yr arian cyfred a gafodd ei ddefnyddio i brynu’r cynhyrchion fepio
+label.price_format_description_vaping = Nodwch y swm heb arwydd arian cyfred. Er enghraifft, 983.34.
 
 label.other-goods.adult=Dillad ac esgidiau i oedolion
 label.other-goods.adult.adult-clothing=Dillad i oedolion
@@ -464,6 +504,12 @@ label.other-goods.watches-clocks=Oriawr neu gloc
 label.other-goods.other=Eitem arall
 label.other-goods.item-of-other-goods = Eitem o nwyddau eraill
 label.other-goods.vaping-products = Cynhyrchion fepio
+label.other-goods.vape = Fêp
+label.other-goods.vaping-liquid = Hylif fepio
+label.other-goods.vape-liquid = Hylif fêp
+label.other-goods.vape-pods = Podiau fêp
+label.other-goods.e-liquid = E-hylif
+label.other-goods.e-cigarettes = E-sigaréts
 
 
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?
@@ -655,6 +701,10 @@ label.scheduled_time_of_arrival = Amser cyrraedd disgwyliedig
 label.for_example_930=Er enghraifft, 9:30 neu 14:55
 label.other_goods.vaping_product_hint = Nid yw hyn yn cynnwys cynhyrchion fepio
 label.other_goods.ni_vaping_product_hint = Ar gyfer unrhyw nwyddau eraill, gan cynnwys cynhyrchion fepio
+label.alcohol_tobacco_vaping = Cynhyrchion alcohol, tybaco a fepio
+label.alcohol_tobacco = Alcohol a thybaco
+label.alcohol_vaping = Cynhyrchion alcohol a fepio
+label.tobacco_vaping = Cynhyrchion tybaco a fepio
 
 time.fields.hour=Awr
 time.fields.minute=Munud
@@ -752,6 +802,8 @@ label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r ori
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
 label.do_you_want_to_remove_.other-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
 
+label.do_you_want_to_remove_.vaping-products.vape = A ydych am dynnu’r cynnyrch fepio?
+
 label.do_you_want_to_remove_.tobacco.cigarettes=A ydych am dynnu’r sigaréts hyn?
 label.do_you_want_to_remove_.tobacco.cigarillos=A ydych am dynnu’r sigarilos hyn?
 label.do_you_want_to_remove_.tobacco.cigars=A ydych am dynnu’r sigârs hyn?
@@ -776,6 +828,9 @@ label.X_litres_X={0} litr {1}
 label.Xg_of_X={0}g o {1}
 label.X_X={0} {1}
 label.X_X_Xg={0} {1}, {2}g
+
+label.X_ml_X = {0} mililitrau {1}
+label.X_mls_X = {0} mililitrau {1}
 
 label.calculate=Cyfrifo trethi a thollau
 
@@ -1529,9 +1584,12 @@ limitExceeded.h1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan yr eitem ho
 limitExceeded.p1.add.alcohol = Rydych wedi nodi cyfanswm o {0} {1} o {2}.
 limitExceeded.p1.add.tobacco = Rydych wedi nodi cyfanswm o {0} {1}.
 limitExceeded.p1.add.loose.tobacco = Rydych wedi nodi cyfanswm o {0}{1} {2}.
+limitExceeded.p1.add.vaping_products = You have entered a total of {0} {1} of vaping liquid.
 
 limitExceeded.litre = litr
 limitExceeded.litres = litr
+limitExceeded.millilitre = mililitr
+limitExceeded.millilitres = mililitrau
 
 limitExceeded.grams.of = g o
 
@@ -1572,6 +1630,9 @@ limitExceeded.loose_tobacco = dybaco rhydd
 
 limitExceeded.you_cannot_use_this_service = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan mwy na {0}.
 limitExceeded.p3 = Bydd yr eitem hon yn cael ei dileu o’ch nwyddau i’w datgan.
+
+limitExceeded.p.panelIndent = {0}ml o hylif fepio
+limitExceeded.p.you_have_entered = Rydych wedi nodi cyfanswm o {0} mililitrau o hylif fepio
 
 limitExceeded.add.panelIndent = {0} {1} o {2}
 limitExceeded.add.panelIndent.tobacco = {0} {1}
@@ -1620,6 +1681,9 @@ limitExceeded.max.limit.group.rolling-tobacco = 1000 gram o dybaco rhydd
 
 limitExceeded.p1.edit.alcohol.a = Rydych wedi newid {0} {1} o {2} {3}.
 limitExceeded.p1.edit.alcohol.b = i {0} {1} o {2}
+
+limitExceeded.p1.edit.vaping.a = Rydych wedi newid {0} {1} o {2} {3}.
+limitExceeded.p1.edit.vaping.b = i {0} {1} o {2}
 
 limitExceeded.p1.edit.tobacco.a = Rydych wedi newid {0} {1} {2}.
 limitExceeded.p1.edit.tobacco.b = i {0} {1}

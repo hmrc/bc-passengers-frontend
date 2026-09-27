@@ -61,7 +61,7 @@
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">
             @messages(item.metadata.descriptionLabels.description,
-            item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)*)
+            wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, appConfig.isWineStillOrSparklingEnabled).map(messages(_).toLowerCase)*)
           </th>
           <td class="govuk-table__cell">
             @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)

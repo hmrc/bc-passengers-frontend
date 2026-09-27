@@ -99,6 +99,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -133,6 +134,42 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      ),
+      Some(
+        VapingProducts(
+          List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
                   None
                 )
               ),
@@ -164,6 +201,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -208,6 +246,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -242,6 +281,42 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      ),
+      Some(
+        VapingProducts(
+          List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
                   None
                 )
               ),
@@ -273,6 +348,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -317,6 +393,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -351,6 +428,42 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      ),
+      Some(
+        VapingProducts(
+          List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
                   None
                 )
               ),
@@ -382,6 +495,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -426,6 +540,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -460,6 +575,42 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      ),
+      Some(
+        VapingProducts(
+          List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
                   None
                 )
               ),
@@ -491,6 +642,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -535,6 +687,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -569,6 +722,42 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
+                  None
+                )
+              ),
+              Calculation("0.00", "0.00", "0.00", "0.00")
+            )
+          ),
+          Calculation("0.00", "0.00", "0.00", "0.00")
+        )
+      ),
+      Some(
+        VapingProducts(
+          List(
+            Band(
+              "A",
+              List(
+                Item(
+                  "ANYTHING",
+                  "100.00",
+                  Some(1),
+                  None,
+                  Calculation("0.00", "0.00", "0.00", "0.00"),
+                  Metadata(
+                    "Desc",
+                    "Desc",
+                    "100.00",
+                    DescriptionLabels("label.Xg_of_X", List("200", "label.tobacco.rolling-tobacco")),
+                    Currency("USD", "USA Dollar (USD)", Some("USD"), Nil),
+                    Country("US", "United States of America (the)", "US", isEu = false, isCountry = true, Nil),
+                    ExchangeRate("1.20", "2018-10-29"),
+                    None
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
                   None
                 )
               ),
@@ -600,6 +789,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
                     ExchangeRate("1.20", "2018-10-29"),
                     None
                   ),
+                  None,
                   None,
                   None,
                   None,
@@ -696,6 +886,7 @@ class CalculateDeclareControllerSpec extends BaseSpec {
         Future.successful(
           CalculatorServiceSuccessResponse(
             CalculatorResponse(
+              None,
               None,
               None,
               None,
