@@ -207,6 +207,7 @@ label.your_purchases=Yr hyn rydych wedi’i brynu
 label.17_or_over=yn 17 neu’n hŷn
 label.private_aircraft_or_private_boat=Awyren breifat neu gwch preifat
 label.other_goods=Nwyddau eraill
+label.other_ni_goods=Nwyddau eraill
 label.vaping_products = Cynhyrchion fepio
 label.vaping-products.vape = Cynhyrchion fepio
 label.vaping-products = Cynhyrchion fepio
@@ -236,6 +237,12 @@ select_products.heading.other-goods.carpets-fabric=Pa eitemau o garped neu ffabr
 select_products.heading.other-goods.childrens=Pa ddillad neu esgidiau i blant rydych am eu hychwanegu?
 select_products.heading.other-goods.electronic-devices=Pa ddyfeisiau electronig rydych am eu hychwanegu?
 select_products.heading.other-goods.glassware-ornaments=Pa eitemau gwydr ac addurnau rydych yn dod â nhw i’r DU?
+select_products.heading.other-ni-goods=Pa fath o nwyddau eraill rydych am eu hychwanegu?
+select_products.heading.other-ni-goods.adult=Pa ddillad neu esgidiau i oedolion rydych am eu hychwanegu?
+select_products.heading.other-ni-goods.carpets-fabric=Pa eitemau o garped neu ffabrig rydych am eu hychwanegu?
+select_products.heading.other-ni-goods.childrens=Pa ddillad neu esgidiau i blant rydych am eu hychwanegu?
+select_products.heading.other-ni-goods.electronic-devices=Pa ddyfeisiau electronig rydych am eu hychwanegu?
+select_products.heading.other-ni-goods.glassware-ornaments=Pa eitemau gwydr ac addurnau rydych yn dod â nhw i’r DU?
 error.other_goods_search = Nodwch eich eitem
 error.required.other-goods.glassware-ornaments=Dewiswch eitemau gwydr neu addurnau neu’r ddau
 label.select_all_that_apply=Dewiswch y categori mwyaf perthnasol.
@@ -284,6 +291,35 @@ select_products.label.other-goods.stop-smoking-products=Cynhyrchion rhoi’r gor
 select_products.label.other-goods.tableware=Llestri a chyfarpar cegin
 select_products.label.other-goods.watches-clocks=Oriorau a chlociau
 select_products.label.other-goods.other=Unrhyw beth arall
+
+select_products.label.other-ni-goods=Nwyddau eraill
+select_products.label.other-ni-goods.adult=Dillad ac esgidiau i oedolion
+select_products.label.other-ni-goods.adult.adult-clothing=Dillad i oedolion
+select_products.label.other-ni-goods.adult.adult-footwear=Esgidiau i oedolion
+select_products.label.other-ni-goods.antiques=Hynafolion, eitemau prin a gwaith celf
+select_products.label.other-ni-goods.books=Llyfrau a chyhoeddiadau
+select_products.label.other-ni-goods.carpets-fabric=Carpedi a ffabrigau
+select_products.label.other-ni-goods.carpets-fabric.carpets=Carpedi
+select_products.label.other-ni-goods.carpets-fabric.fabrics=Ffabrigau
+select_products.label.other-ni-goods.car-seats=Seddi car i blant
+select_products.label.other-ni-goods.childrens=Dillad ac esgidiau i blant
+select_products.label.other-ni-goods.childrens.childrens-clothing=Dillad i blant
+select_products.label.other-ni-goods.childrens.childrens-footwear=Esgidiau i blant
+select_products.label.other-ni-goods.disability-equipment=Offer anabledd
+select_products.label.other-ni-goods.electronic-devices=Dyfeisiau electronig
+select_products.label.other-ni-goods.electronic-devices.televisions=Setiau teledu
+select_products.label.other-ni-goods.electronic-devices.other=Pob dyfais electronig arall
+select_products.label.other-ni-goods.furniture=Dodrefn
+select_products.label.other-ni-goods.glassware=Eitemau gwydr
+select_products.label.other-ni-goods.jewellery=Gemwaith
+select_products.label.other-ni-goods.mobility-aids=Cymhorthion symud
+select_products.label.other-ni-goods.perfumes-cosmetics=Persawr a chynhyrchion cosmetig
+select_products.label.other-ni-goods.protective-helmets=Helmedau diogelwch
+select_products.label.other-ni-goods.sanitary-products=Cynhyrchion misglwyf
+select_products.label.other-ni-goods.stop-smoking-products=Cynhyrchion rhoi’r gorau i ysmygu (nad ydynt yn cynnwys tybaco)
+select_products.label.other-ni-goods.tableware=Llestri a chyfarpar cegin
+select_products.label.other-ni-goods.watches-clocks=Oriorau a chlociau
+select_products.label.other-ni-goods.other=Unrhyw beth arall
 error.required.alcohol=Dewiswch y math o alcohol rydych am ei ychwanegu
 error.required.alcohol.cider=Dewiswch y math o seidr rydych am ei ychwanegu
 error.required.tobacco=Dewiswch y math o dybaco rydych am ei ychwanegu
@@ -294,6 +330,14 @@ error.required.other-goods.childrens=Dewiswch ddillad i blant neu esgidiau i bla
 error.required.other-goods.electronic-devices=Dewiswch setiau teledu neu bob dyfais electronig arall
 
 error.required.other-goods.price = Nodwch y pris a dalwyd
+
+error.required.other-ni-goods=Dewiswch y math o nwyddau eraill rydych am eu hychwanegu
+error.required.other-ni-goods.adult=Dewiswch ddillad i oedolion neu esgidiau i oedolion
+error.required.other-ni-goods.carpets-fabric=Dewiswch garpedi neu ffabrigau
+error.required.other-ni-goods.childrens=Dewiswch ddillad i blant neu esgidiau i blant
+error.required.other-ni-goods.electronic-devices=Dewiswch setiau teledu neu bob dyfais electronig arall
+
+error.required.other-ni-goods.price = Nodwch y pris a dalwyd
 label.total_volume_in_litres=Cyfanswm cyfaint mewn litrau
 label.total_volume_in_millilitres = Cyfanswm cyfaint yr hylif mewn mililitrau
 error.required.volume.alcohol.beer=Nodwch gyfaint y cwrw
@@ -511,6 +555,44 @@ label.other-goods.vape-pods = Podiau fêp
 label.other-goods.e-liquid = E-hylif
 label.other-goods.e-cigarettes = E-sigaréts
 
+label.other-ni-goods.adult=Dillad ac esgidiau i oedolion
+label.other-ni-goods.adult.adult-clothing=Dillad i oedolion
+label.other-ni-goods.adult.adult-footwear=Esgidiau i oedolion
+label.other-ni-goods.antiques=Hynafolion, eitemau prin a gwaith celf
+label.other-ni-goods.books=Llyfr neu gyhoeddiad
+label.other-ni-goods.carpets-fabric=Carpedi a ffabrigau
+label.other-ni-goods.carpets-fabric.carpets=Carped
+label.other-ni-goods.carpets-fabric.fabrics=Ffabrig
+label.other-ni-goods.car-seats=Sedd car i blant
+label.other-ni-goods.childrens=Dillad ac esgidiau i blant
+label.other-ni-goods.childrens.childrens-clothing=Dillad i blant
+label.other-ni-goods.childrens.childrens-footwear=Esgidiau i blant
+label.other-ni-goods.disability-equipment=Offer anabledd
+label.other-ni-goods.electronic-devices=Dyfeisiau electronig
+label.other-ni-goods.electronic-devices.televisions=Set deledu
+label.other-ni-goods.electronic-devices.other=Dyfais electronig
+label.other-ni-goods.furniture=Dodrefn
+label.other-ni-goods.glassware=Eitemau gwydr
+label.other-ni-goods.jewellery=Gemwaith
+label.other-ni-goods.mobility-aids=Cymorth symud
+label.other-ni-goods.perfumes-cosmetics=Persawr neu gynhyrchion cosmetig
+label.other-ni-goods.protective-helmets=Helmed diogelwch
+label.other-ni-goods.sanitary-products=Cynhyrchion misglwyf
+label.other-ni-goods.stop-smoking-products=Cynhyrchion rhoi’r gorau i ysmygu (nad ydynt yn cynnwys tybaco)
+label.other-ni-goods.tableware=Llestri neu gyfarpar cegin
+label.other-ni-goods.watches-clocks=Oriawr neu gloc
+label.other-ni-goods.other=Eitem arall
+label.other-ni-goods.item-of-other-ni-goods = Eitem o nwyddau eraill
+label.other-ni-goods.vaping-products = Cynhyrchion fepio
+label.other-ni-goods.vape = Fêp
+label.other-ni-goods.vaping-liquid = Hylif fepio
+label.other-ni-goods.vape-liquid = Hylif fêp
+label.other-ni-goods.vape-pods = Podiau fêp
+label.other-ni-goods.e-liquid = E-hylif
+label.other-ni-goods.e-cigarettes = E-sigaréts
+label.other-ni-goods.vaping-products-liquid = Cynhyrchion fepio sy’n cynnwys hylif
+label.other-ni-goods.vaping-products-others = Cynhyrchion fepio sydd ddim yn cynnwys hylif
+
 
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?
 label.enter_currency=Nodwch yr arian cyfred
@@ -523,8 +605,8 @@ label.price_in=Pris mewn {0}
 
 error.required.cost=Nodwch y pris
 
-
-
+error.required.volume = Nodwch gyfanswm cyfaint yr hylif fepio mewn mililitrau
+error.required.other-ni-goods.vaping-products-liquid = Nodwch bris y cynhyrchion fepio
 
 
 error.invalid.characters.cost.other-goods.adult.adult-clothing=Mae’n rhaid i’r pris gynnwys rhifau’n unig, fel 12 neu 6.58
@@ -700,10 +782,9 @@ label.time_of_arrival=Amser cyrraedd
 label.scheduled_time_of_arrival = Amser cyrraedd disgwyliedig
 label.for_example_930=Er enghraifft, 9:30 neu 14:55
 label.other_goods.vaping_product_hint = Nid yw hyn yn cynnwys cynhyrchion fepio
+label.other_goods.ni_vaping_product_hint = Ar gyfer unrhyw nwyddau eraill, gan cynnwys cynhyrchion fepio
 label.other_goods_ni.vaping_product_liquid_hint = Mae hyn yn cynnwys poteli o hylif fepio neu unrhyw ddyfeisiau fepio megis pennau fepio, podiau neu gynwysyddion y gellir eu hail-lenwi (refills) sy’n cynnwys hylif
 label.other_goods_ni.vaping_product_other_hint = Mae hyn yn cynnwys ategolion fepio a dyfeisiau fepio gwag megis pennau fepio neu podiau gwag y gellir eu hail-lenwi
-
-label.other_goods.ni_vaping_product_hint = Ar gyfer unrhyw nwyddau eraill, gan cynnwys cynhyrchion fepio
 label.alcohol_tobacco_vaping = Cynhyrchion alcohol, tybaco a fepio
 label.alcohol_tobacco = Alcohol a thybaco
 label.alcohol_vaping = Cynhyrchion alcohol a fepio
@@ -805,7 +886,6 @@ label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r ori
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
 label.do_you_want_to_remove_.other-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
 
-label.do_you_want_to_remove_this=A ydych am dynnu’r {0}?
 label.do_you_want_to_remove_.other-ni-goods.adult.adult-clothing=A ydych am dynnu’r eitem hon o ddillad i oedolion?
 label.do_you_want_to_remove_.other-ni-goods.adult.adult-footwear=A ydych am dynnu’r pâr hwn o esgidiau i oedolion?
 label.do_you_want_to_remove_.other-ni-goods.antiques=A ydych am dynnu’r hen beth hwn, yr eitem brin hon neu’r gwaith celf hwn?
@@ -832,7 +912,6 @@ label.do_you_want_to_remove_.other-ni-goods.other=A ydych am dynnu’r eitem hon
 label.do_you_want_to_remove_.other-ni-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
 label.do_you_want_to_remove_.other-ni-goods.vaping-products-liquid = A ydych am dynnu’r eitem hon?
 label.do_you_want_to_remove_.other-ni-goods.vaping-products-others = A ydych am dynnu’r eitem hon?
-
 
 label.do_you_want_to_remove_.vaping-products.vape = A ydych am dynnu’r cynnyrch fepio?
 

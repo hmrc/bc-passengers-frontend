@@ -158,15 +158,9 @@ class SelectProductController @Inject() (
 
         val result =
           Ok(
-            if (isVapingJourneyEnabled && path.toMessageKey.equals("other-goods")) {
-              val filteredChildren =
-                if (niJourney.contains(false))
-                  children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
-                else
-                  children
               select_products(
                 form,
-                selectItems(path, filteredChildren),
+                selectItems(path, children),
                 path,
                 if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
                 else backLinkModel.backLink,
@@ -174,25 +168,7 @@ class SelectProductController @Inject() (
                 returnToAddedItemEditUrl = returnToAddedItemEditUrl,
                 returnToAddedItemProductPath = returnToAddedItemProductPath
               )
-            } else {
-              val filteredChildren =
-                if (niJourney.contains(true) || !isVapingJourneyEnabled)
-                  children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
-                else
-                  children
-              select_products(
-                form,
-                selectItems(path, filteredChildren),
-                path,
-                if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
-                else backLinkModel.backLink,
-                customBackLink = useDashboardBackLink,
-                returnToAddedItemEditUrl = returnToAddedItemEditUrl,
-                returnToAddedItemProductPath = returnToAddedItemProductPath
-              )
-            }
           )
-
         Future.successful(
           if (useDashboardBackLink) popReturnToAddedItem(result) else result
         )

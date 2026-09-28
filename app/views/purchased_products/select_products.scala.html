@@ -67,7 +67,7 @@
                 @messages("label.select_all_that_apply")
             </div>
         }
-        @if(appConfig.isVapingJourneyEnabled && path.toMessageKey.equals("other-ni-goods")){
+        @if(appConfig.isVapingJourneyEnabled){
             @radios(
                 field = selectProductsForm("tokens"),
                 items = radioOptionsForSelectProducts(items, selectProductsForm("tokens").value),

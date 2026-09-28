@@ -331,6 +331,14 @@ error.required.other-goods.childrens = Select children’s clothing or children�
 error.required.other-goods.electronic-devices = Select televisions or all other electronic devices
 
 error.required.other-goods.price = Enter the price paid
+
+error.required.other-ni-goods = Select what type of other goods you want to add
+error.required.other-ni-goods.adult = Select adult clothing or adult footwear
+error.required.other-ni-goods.carpets-fabric = Select carpets or fabrics
+error.required.other-ni-goods.childrens = Select children’s clothing or children’s footwear
+error.required.other-ni-goods.electronic-devices = Select televisions or all other electronic devices
+
+error.required.other-ni-goods.price = Enter the price paid
 label.total_volume_in_litres = Total volume in litres
 label.total_volume_in_millilitres = Total volume of liquid in millilitres
 error.required.volume.alcohol.beer = Enter the volume of beer
@@ -585,8 +593,6 @@ label.other-ni-goods.e-liquid = E-liquid
 label.other-ni-goods.e-cigarettes = E-cigarettes
 label.other-ni-goods.vaping-products-liquid = Vaping products that contain liquid
 label.other-ni-goods.vaping-products-others = Vaping products that don’t contain liquid
-label.other-goods.vaping-products-liquid = Vaping products that contain liquid
-label.other-goods.vaping-products-others = Vaping products that don’t contain liquid
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
@@ -597,6 +603,9 @@ label.how_much_did_you_pay_for_this_ = How much did you pay for this {0}?
 label.price_in = Price in {0}
 
 error.required.cost = Enter the price
+
+error.required.volume = Enter the total volume of vaping liquid in millilitres
+error.required.other-ni-goods.vaping-products-liquid = Enter the price of the vaping products
 
 error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
 error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
@@ -671,6 +680,81 @@ error.exceeded.max.cost.other-goods.stop-smoking-products = Price must be no mor
 error.exceeded.max.cost.other-goods.tableware = Price must be no more than 9,999,999,999
 error.exceeded.max.cost.other-goods.watches-clocks = Price must be no more than 9,999,999,999
 error.exceeded.max.cost.other-goods.other = Price must be no more than 9,999,999,999
+
+error.invalid.characters.cost.other-goods.adult.adult-clothing = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.adult.adult-footwear = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.antiques = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.books = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.carpets-fabric.carpets = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.carpets-fabric.fabrics = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.car-seats = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.childrens.childrens-clothing = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.childrens.childrens-footwear = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.disability-equipment = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.electronic-devices.televisions = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.electronic-devices.other = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.furniture = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.glassware = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.jewellery = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.mobility-aids = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.perfumes-cosmetics = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.protective-helmets = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.sanitary-products = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.stop-smoking-products = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.tableware = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.watches-clocks = Price must only include numbers, such as 12 or 6.58
+error.invalid.characters.cost.other-goods.other = Price must only include numbers, such as 12 or 6.58
+
+
+error.invalid.format.cost.other-ni-goods.adult.adult-clothing = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.adult.adult-footwear = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.antiques = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.books = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.carpets-fabric.carpets = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.carpets-fabric.fabrics = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.car-seats = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.childrens.childrens-clothing = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.childrens.childrens-footwear = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.disability-equipment = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.electronic-devices.televisions = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.electronic-devices.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.furniture = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.glassware = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.jewellery = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.mobility-aids = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.perfumes-cosmetics = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.protective-helmets = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.sanitary-products = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.stop-smoking-products = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.tableware = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.watches-clocks = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+error.invalid.format.cost.other-ni-goods.other = Price must be to a maximum of 2 decimal places, such as 12.69 or 6.33
+
+
+error.exceeded.max.cost.other-ni-goods.adult.adult-clothing = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.adult.adult-footwear = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.antiques = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.books = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.carpets-fabric.carpets = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.carpets-fabric.fabrics = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.car-seats = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.childrens.childrens-clothing = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.childrens.childrens-footwear = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.disability-equipment = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.electronic-devices.televisions = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.electronic-devices.other = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.furniture = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.glassware = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.jewellery = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.mobility-aids = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.perfumes-cosmetics = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.protective-helmets = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.sanitary-products = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.stop-smoking-products = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.tableware = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.watches-clocks = Price must be no more than 9,999,999,999
+error.exceeded.max.cost.other-ni-goods.other = Price must be no more than 9,999,999,999
+
 
 label.are_entering_northern_ireland_ = Are you entering Northern Ireland from Ireland?
 label.if_you_do_not_know_the_volume = If you do not know the volume
