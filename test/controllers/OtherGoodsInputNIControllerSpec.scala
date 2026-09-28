@@ -31,7 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{route as rt, *}
 import play.twirl.api.Html
 import repositories.BCPassengersSessionRepository
-import services.NewPurchaseService
+import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseService}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
@@ -46,6 +46,7 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
+    .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
     .overrides(bind[other_goods_input_ni].toInstance(mock(classOf[other_goods_input_ni])))
     .build()
@@ -53,6 +54,7 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
   override def beforeEach(): Unit = {
     reset(injected[Cache])
     reset(injected[NewPurchaseService])
+    reset(injected[CalculatorService])
     reset(injected[other_goods_input_ni])
   }
 
@@ -140,6 +142,8 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
           any()
         )
       ).thenReturn(journeyData.get)
+      when(injected[CalculatorService].limitUsage(any())(any()))
+        .thenReturn(Future.successful(LimitUsageSuccessResponse(Map.empty)))
       when(
         injected[other_goods_input_ni]
           .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
