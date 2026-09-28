@@ -231,7 +231,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       if (appConfig.isVapingJourneyEnabled) {
-        doc.getElementsByTag("h1").text() shouldBe "You have added 4 items"
+        doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
       } else {
         doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
       }
@@ -368,7 +368,7 @@ class DashboardControllerSpec extends BaseSpec {
       val doc: Document   = Jsoup.parse(content)
 
       if (appConfig.isVapingJourneyEnabled) {
-        doc.getElementsByTag("h1").text() shouldBe "You have added 4 items"
+        doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
       } else {
         doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
       }

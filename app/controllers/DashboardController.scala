@@ -103,14 +103,20 @@ class DashboardController @Inject() (
               val vapingProductsItems = vapingProductsPurchasedItemList.reverse
               val otherGoodsItems     = otherGoodsPurchasedItemList.reverse
 
-              val allItems    =
+              val allItems = if (appConfig.isIrishBorderQuestionEnabled) {
+                alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
+                  "vaping-products" -> _
+                ) ++ otherGoodsItems.map(
+                  "other-ni-goods" -> _
+                )
+              } else {
                 alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
                   "vaping-products" -> _
                 ) ++ otherGoodsItems.map(
                   "other-goods" -> _
-                ) ++ otherGoodsItems.map(
-                  "other-ni-goods" -> _
                 )
+              }
+
               val totalItems  = allItems.size
               val totalPages  = math.max(1, math.ceil(totalItems.toDouble / itemsPerPage).toInt)
               val currentPage = math.min(requestedPage, totalPages)
@@ -135,7 +141,7 @@ class DashboardController @Inject() (
                   pageAlcoholItems,
                   pageTobaccoItems,
                   pageVapingProductsItems,
-                  if (pageOtherGoodsItems.isEmpty) pageOtherGoodsItems else pageOtherGoodsNIItems,
+                  if (pageOtherGoodsItems.isEmpty) pageOtherGoodsNIItems else pageOtherGoodsItems,
                   previousOtherGoodsPurchasedItemList.reverse,
                   totalItems,
                   otherGoodsItems.size,
