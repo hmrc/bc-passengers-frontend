@@ -88,8 +88,15 @@ class GoodsCheckYourAnswersController @Inject() (
             Future.successful(Redirect(routes.SelectProductController.nextStep()))
           else {
             implicit val headerCarrier: HeaderCarrier = hc(context.request)
-            cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
-              Redirect(routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path))
+            val isEdit                                = journeyData.workingInstance.exists(_.cost.isDefined)
+            val updatedJourneyData                    =
+              if (isEdit) journeyData.revertPurchasedProductInstance()
+              else journeyData.removePurchasedProductInstance(iid)
+            val limitExceedCall                       =
+              if (isEdit) routes.LimitExceedController.onPageLoadEditAlcoholVolume(path, iid)
+              else routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path)
+            cache.store(updatedJourneyData).map { _ =>
+              Redirect(limitExceedCall)
                 .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
                 .addingToSession(
                   s"user-amount-input-${productTreeLeaf.token}" ->

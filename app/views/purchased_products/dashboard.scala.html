@@ -179,7 +179,7 @@
         </div>
         @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
-            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), "otherGoods", idx)
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), if(purchasedItem.productTreeLeaf.templateId == "other-ni-goods") "nIOtherGoods" else "otherGoods", idx)
           }
         }
       </dl>

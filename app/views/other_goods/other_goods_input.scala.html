@@ -60,28 +60,19 @@
         <fieldset class="govuk-fieldset">
             <legend class="govuk-visually-hidden">@customHeading</legend>
 
-            @if(otherItemMode.equals("create")) {
-                @defining(
-                    if (niJourney.contains(false) || !(appConfig.isVapingJourneyEnabled)) {
-                        otherGoodsSearchItems.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
-                    } else {
-                        otherGoodsSearchItems
-                    }
-                ) { filteredOtherGoodsSearchItems =>
-
-                    @autoCompleteList(form,
-                        id = "searchTerm",
-                        name = "searchTerm",
-                        isPageHint = false,
-                        hintText = messages("label.add_your_goods"),
-                        isPageHeading = false,
-                        label = messages("label.add_your_goods"),
-                        hint = "",
-                        list = filteredOtherGoodsSearchItems.map(c => (c.name, messages(c.name))),
-                        jsonData = Json.toJson(filteredOtherGoodsSearchItems.map(_.toAutoCompleteJson)).toString
-                    )
-                }
-            }
+        @if(otherItemMode.equals("create")){
+            @autoCompleteList(form,
+                id = "searchTerm",
+                name = "searchTerm",
+                isPageHint = false,
+                hintText = messages("label.add_your_goods"),
+                isPageHeading = false,
+                label = messages(s"label.add_your_goods"),
+                hint = "",
+                list = otherGoodsSearchItems.map(c => (c.name,messages(c.name))),
+                jsonData = Json.toJson(otherGoodsSearchItems.map(_.toAutoCompleteJson)).toString
+            )
+        }
 
         @autoCompleteList(form,
             id = "country",

@@ -135,6 +135,11 @@ POST       /enter-goods/other-goods/tell-us                                     
 GET        /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.displayEditForm(iid: String)
 POST       /enter-goods/other-goods/:iid/edit                                          controllers.OtherGoodsInputController.processEditForm(iid: String)
 
+GET        /enter-goods/$path<other-ni-goods/.+>/tell-us                               controllers.OtherGoodsInputNIController.displayAddForm(path: ProductPath)
+POST       /enter-goods/$path<other-ni-goods/.+>/tell-us                               controllers.OtherGoodsInputNIController.processAddForm(path: ProductPath)
+GET        /enter-goods/other-ni-goods/:iid/edit                                       controllers.OtherGoodsInputNIController.displayEditForm(iid: String)
+POST       /enter-goods/other-ni-goods/:iid/edit                                       controllers.OtherGoodsInputNIController.processEditForm(iid: String)
+
 
 GET        /select-new-goods/*path                                                     controllers.SelectProductController.clearAndAskProductSelection(path: ProductPath)
 GET        /select-goods/*path                                                         controllers.SelectProductController.askProductSelection(path: ProductPath)

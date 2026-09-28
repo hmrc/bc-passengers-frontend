@@ -28,13 +28,13 @@
     browserBackToEdit: components.browserBackToEdit
 )
 
-@(form: Form[VapeDto], backLink: Option[String], customBackLink: Boolean, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[OtherGoodsNIDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase())), backLink = backLink, customBackLink = customBackLink) {
 
-@formHelper(action = iid.fold(routes.VapingProductsInputController.processAddForm(path))(iid => routes.VapingProductsInputController.processEditForm(iid))) {
+@formHelper(action = iid.fold(routes.OtherGoodsInputNIController.processAddForm(path))(iid => routes.OtherGoodsInputNIController.processEditForm(iid))) {
 @if(iid.isEmpty) {
-    @browserBackToEdit(routes.VapingProductsInputController.displayEditForm("iid").url)
+    @browserBackToEdit(routes.OtherGoodsInputNIController.displayEditForm("iid").url)
 }
 @if(form.errors){
     @errorSummary(form.errors)
@@ -46,7 +46,7 @@
     </h1>
     <fieldset class="govuk-fieldset">
         <legend class="govuk-visually-hidden">@messages(s"label.${path.toMessageKey}")</legend>
-
+    @if(product.token == "vaping-products-liquid"){
         @inputText(
         form,
         id = "weightOrVolume",
@@ -57,53 +57,53 @@
         classes = Some("govuk-input govuk-input--width-5"),
         suffix = Some("ml")
         )
-
-    @autoCompleteList(form,
+    }
+        @autoCompleteList(form,
         id = "country",
         name = "country",
         isPageHint = true,
-        hint = messages("label.if_you_bought_this_vaping_"),
+        hint = messages("label.if_you_bought_this_item_"),
         isPageHeading = false,
-        label = messages(s"label.country_this_vaping_was_"),
+        label = messages(s"label.country_the_item_was_bought_in"),
         hintText = messages("label.select_a_country"),
         list = countries.map(c => (c.code,messages(c.countryName))),
         jsonData = Json.toJson(countries.map(_.toAutoCompleteJson)).toString
-    )
-    @if(journeyStart.contains("euOnly")){
+        )
+        @if(journeyStart.contains("euOnly")){
         @autoCompleteList(form,
         id = "originCountry",
         name = "originCountry",
         isPageHint = true,
-        hint = messages("label.country_this_vaping_was_produced_hint"),
+        hint = messages("label.country_the_item_was_produced_hint"),
         isPageHeading = false,
-        label = messages(s"label.country_this_vaping_was_produced"),
+        label = messages(s"label.country_the_item_was_produced_in"),
         hintText = messages("label.select_a_country"),
         list = countriesEU.map(c => (c.code,messages(c.countryName))),
         jsonData = Json.toJson(countriesEU.map(_.toAutoCompleteJson)).toString
         )
-    }
+        }
 
-    @autoCompleteList(form,
+        @autoCompleteList(form,
         id = "currency",
         name = "currency",
         isPageHint = true,
         hint = messages("label.currency_used_hint"),
         isPageHeading = false,
-        label = messages(s"label.currency_used_to_buy_this_vaping"),
+        label = messages(s"label.currency_used_to_buy_the_item"),
         hintText = messages("label.enter_currency"),
         list = currencies.map(c => (c.code ,messages(c.displayName))),
         jsonData = Json.toJson(currencies.map(_.toAutoCompleteJson)).toString
-    )
+        )
 
-    @inputText(
+        @inputText(
         form,
         id = "cost",
         name = "cost",
         label = "label.price_paid",
+        hint = Some(Html(messages("label.price_format_description"))),
         isPageHeading = false,
-        hint = Some(Html(messages("label.price_format_description_vaping"))),
-        classes = Some("govuk-input--width-5")
-    )
+        classes = Some("govuk-input govuk-!-width-one-half")
+        )
 
 </fieldset>
 

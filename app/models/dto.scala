@@ -108,6 +108,39 @@ object TobaccoDto {
   )
 }
 
+object OtherGoodsNIDto {
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsNIDto] = for {
+    country        <- purchasedProductInstance.country
+    currency       <- purchasedProductInstance.currency
+    weightOrVolume <- purchasedProductInstance.weightOrVolume
+    cost           <- purchasedProductInstance.cost
+  } yield OtherGoodsNIDto(
+    weightOrVolume,
+    country.code,
+    purchasedProductInstance.originCountry.map(_.code),
+    currency,
+    cost,
+    purchasedProductInstance.isVatPaid,
+    purchasedProductInstance.isUccRelief,
+    purchasedProductInstance.isExcisePaid,
+    purchasedProductInstance.isCustomPaid,
+    purchasedProductInstance.hasEvidence
+  )
+}
+
+case class OtherGoodsNIDto(
+  weightOrVolume: BigDecimal,
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isUccRelief: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
+
 object VapeDto {
   def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[VapeDto] = for {
     country        <- purchasedProductInstance.country
@@ -270,7 +303,7 @@ case class SelectProductsDto(tokens: List[String])
 
 object GoodsTypeDto {
 
-  private val validGoodsTypes = Set("alcohol", "tobacco", "other-goods", "vaping-products")
+  private val validGoodsTypes = Set("alcohol", "tobacco", "other-goods", "other-ni-goods", "vaping-products")
 
   val form: Form[GoodsTypeDto] = Form(
     mapping(

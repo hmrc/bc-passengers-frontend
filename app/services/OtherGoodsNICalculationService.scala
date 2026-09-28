@@ -19,13 +19,13 @@ package services
 import models.{JourneyData, PurchasedProductInstance}
 import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 
-class VapingProductsCalculationService extends InstanceDecider with ProductDetector with FormatsAndConversions {
+class OtherGoodsNICalculationService extends InstanceDecider with ProductDetector with FormatsAndConversions {
 
-  private def sumPreviouslyDeclaredVapeVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
+  private def sumPreviouslyDeclaredNIVapeVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
     contextJourneyData.declarationResponse
       .fold[List[PurchasedProductInstance]](List.empty)(_.oldPurchaseProductInstances)
       .filter { product =>
-        checkVapingProductExists(
+        checkVapingProductNIExists(
           productToken = productToken,
           vapingProductsExists = product.path.toString.contains(productToken)
         )
@@ -33,10 +33,10 @@ class VapingProductsCalculationService extends InstanceDecider with ProductDetec
       .map(_.weightOrVolume.getOrElseZero)
       .sum
 
-  private def sumVapeProductTotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
+  private def sumVapeProductNITotalVolume(contextJourneyData: JourneyData, productToken: String): BigDecimal =
     contextJourneyData.purchasedProductInstances
       .filter { product =>
-        checkVapingProductExists(
+        checkVapingProductNIExists(
           productToken = productToken,
           vapingProductsExists = product.path.toString.contains(productToken)
         )
@@ -44,17 +44,17 @@ class VapingProductsCalculationService extends InstanceDecider with ProductDetec
       .map(_.weightOrVolume.getOrElseZero)
       .sum
 
-  def vapeAddHelper(
+  def vapeNIAddHelper(
     contextJourneyData: JourneyData,
     weightOrVolume: BigDecimal,
     productToken: String
   ): BigDecimal = {
 
     val previouslyDeclaredVapeVolume: BigDecimal =
-      sumPreviouslyDeclaredVapeVolume(contextJourneyData, productToken)
+      sumPreviouslyDeclaredNIVapeVolume(contextJourneyData, productToken)
 
     val vapeProductTotalVolume: BigDecimal =
-      sumVapeProductTotalVolume(contextJourneyData, productToken)
+      sumVapeProductNITotalVolume(contextJourneyData, productToken)
 
     val totalVapeVolume: BigDecimal =
       (weightOrVolume + previouslyDeclaredVapeVolume + vapeProductTotalVolume).formatDecimalPlaces(5)
@@ -70,12 +70,12 @@ class VapingProductsCalculationService extends InstanceDecider with ProductDetec
   ): BigDecimal = {
 
     val previouslyDeclaredVapeVolume: BigDecimal =
-      sumPreviouslyDeclaredVapeVolume(contextJourneyData, productToken)
+      sumPreviouslyDeclaredNIVapeVolume(contextJourneyData, productToken)
 
     val originalVolume: BigDecimal = originalAmountEnteredWeightOrVolume(contextJourneyData, iid)
 
     val vapeProductTotalVolume: BigDecimal =
-      sumVapeProductTotalVolume(contextJourneyData, productToken)
+      sumVapeProductNITotalVolume(contextJourneyData, productToken)
 
     val totalVapeVolume: BigDecimal =
       (weightOrVolume + previouslyDeclaredVapeVolume + vapeProductTotalVolume - originalVolume)

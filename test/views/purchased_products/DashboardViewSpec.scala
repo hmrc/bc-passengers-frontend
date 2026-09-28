@@ -29,10 +29,11 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
   private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (BigDecimal(50), 10)
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
 
-  private val alcoholProductPath: ProductPath    = ProductPath(path = "alcohol/wine")
-  private val tobaccoProductPath: ProductPath    = ProductPath(path = "tobacco/cigars")
-  private val vapingProductPath: ProductPath     = ProductPath(path = "vaping-products/vape")
-  private val otherGoodsProductPath: ProductPath = ProductPath(path = "other-goods/furniture")
+  private val alcoholProductPath: ProductPath      = ProductPath(path = "alcohol/wine")
+  private val tobaccoProductPath: ProductPath      = ProductPath(path = "tobacco/cigars")
+  private val vapingProductPath: ProductPath       = ProductPath(path = "vaping-products/vape")
+  private val otherGoodsProductPath: ProductPath   = ProductPath(path = "other-goods/furniture")
+  private val otherGoodsNIProductPath: ProductPath = ProductPath(path = "other-ni-goods/furniture")
 
   private val currency: Currency = Currency(
     code = "GBP",
@@ -87,6 +88,14 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     applicableLimits = Nil
   )
 
+  private val otherGoodsProductNITreeLeaf: ProductTreeLeaf = ProductTreeLeaf(
+    token = "furniture",
+    name = "label.other-ni-goods.furniture",
+    rateID = "OGD/FURN",
+    templateId = "other-ni-goods",
+    applicableLimits = Nil
+  )
+
   private val alcoholPurchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
     path = alcoholProductPath,
     iid = "iid0",
@@ -120,6 +129,16 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
   private val otherGoodsPurchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
     path = otherGoodsProductPath,
     iid = "iid2",
+    weightOrVolume = None,
+    noOfSticks = None,
+    country = Some(country),
+    currency = Some("GBP"),
+    cost = Some(100.00)
+  )
+
+  private val otherGoodsNIPurchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+    path = otherGoodsNIProductPath,
+    iid = "iid3",
     weightOrVolume = None,
     noOfSticks = None,
     country = Some(country),
@@ -161,6 +180,16 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     PurchasedItem(
       purchasedProductInstance = otherGoodsPurchasedProductInstance,
       productTreeLeaf = otherGoodsProductTreeLeaf,
+      currency = currency,
+      gbpCost = 400.00,
+      exchangeRate = exchangeRate
+    )
+  )
+
+  private def otherGoodsNIPurchasedItemList(fillNumber: Int = 1): List[PurchasedItem] = List.fill(fillNumber)(
+    PurchasedItem(
+      purchasedProductInstance = otherGoodsNIPurchasedProductInstance,
+      productTreeLeaf = otherGoodsProductNITreeLeaf,
       currency = currency,
       gbpCost = 400.00,
       exchangeRate = exchangeRate
@@ -272,7 +301,8 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     "show each item in a summary list with contextual edit and remove actions when wine-still-or-sparkling is ON" in {
       val doc = document(dashboardWith(appConfigToggle(enabled = true)))
 
-      doc.select("dl.goods-summary-list").size()               shouldBe 4
+      doc.select("dl.goods-summary-list").size() shouldBe 4
+
       doc.select("a.govuk-button[href*=add-an-item]").isEmpty  shouldBe true
       doc.select(".goods-summary-list__header").first().text() shouldBe "Item Price"
       doc
@@ -360,7 +390,8 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
             vapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
             otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
             previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(fillValue),
-            totalItems = alcoholPurchasedItemList.size + tobaccoPurchasedItemList.size + fillValue,
+            totalItems =
+              alcoholPurchasedItemList.size + tobaccoPurchasedItemList.size + vapingProductsPurchasedItemList.size + fillValue,
             totalOtherGoodsItems = fillValue,
             currentPage = 1,
             totalPages = 1,
