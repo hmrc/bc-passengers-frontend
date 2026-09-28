@@ -35,7 +35,7 @@ import services.NewPurchaseService
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
 import util.{BaseSpec, FakeSessionCookieCryptoFilter}
-import views.html.other_goods.other_goods_input
+import views.html.other_goods_ni.other_goods_input_ni
 
 import scala.concurrent.Future
 
@@ -47,14 +47,33 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[other_goods_input].toInstance(mock(classOf[other_goods_input])))
+    .overrides(bind[other_goods_input_ni].toInstance(mock(classOf[other_goods_input_ni])))
     .build()
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
     reset(injected[NewPurchaseService])
-    reset(injected[other_goods_input])
+    reset(injected[other_goods_input_ni])
   }
+
+  private val niPath: String = "other-ni-goods/books"
+
+  private def ppi(
+    weightOrVolume: Option[BigDecimal] = Some(BigDecimal(2)),
+    country: Option[Country] = Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+    currency: Option[String] = Some("EUR"),
+    cost: Option[BigDecimal] = Some(BigDecimal(12.99)),
+    path: ProductPath = ProductPath(niPath),
+    iid: String = "iid0"
+  ): PurchasedProductInstance =
+    PurchasedProductInstance(
+      path = path,
+      iid = iid,
+      weightOrVolume = weightOrVolume,
+      country = country,
+      currency = currency,
+      cost = cost
+    )
 
   trait LocalSetup {
 
@@ -68,18 +87,7 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            ProductPath("other-goods/books"),
-            "iid0",
-            None,
-            None,
-            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-            None,
-            Some("EUR"),
-            Some(BigDecimal(12.99))
-          )
-        )
+        purchasedProductInstances = List(ppi())
       )
     )
 
@@ -93,18 +101,7 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            ProductPath("other-goods/books"),
-            "iid0",
-            None,
-            None,
-            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-            None,
-            Some("EUR"),
-            Some(BigDecimal(12.99))
-          )
-        )
+        purchasedProductInstances = List(ppi())
       )
     )
 
@@ -118,28 +115,17 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         bringingOverAllowance = Some(true),
         privateCraft = Some(false),
         ageOver17 = Some(true),
-        purchasedProductInstances = List(
-          PurchasedProductInstance(
-            ProductPath("other-goods/books"),
-            "iid0",
-            None,
-            None,
-            Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-            None,
-            Some("EUR"),
-            Some(BigDecimal(12.99))
-          )
-        )
+        purchasedProductInstances = List(ppi())
       )
     )
 
-    val formCaptor: ArgumentCaptor[Form[OtherGoodsDto]] = ArgumentCaptor.forClass(classOf[Form[OtherGoodsDto]])
+    val formCaptor: ArgumentCaptor[Form[OtherGoodsNIDto]] = ArgumentCaptor.forClass(classOf[Form[OtherGoodsNIDto]])
 
-    def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedJourneyData))
+    private def stubCommon(journeyData: Option[JourneyData]): Unit = {
+      when(injected[Cache].fetch(any())).thenReturn(Future.successful(journeyData))
       when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
-      when(injected[Cache].storeJourneyData(any())(any())).thenReturn(Future.successful(cachedJourneyData))
-      val insertedPurchase = (cachedJourneyData.get, "pid")
+      when(injected[Cache].storeJourneyData(any())(any())).thenReturn(Future.successful(journeyData))
+      val insertedPurchase = (journeyData.get, "pid")
       when(
         injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
@@ -153,209 +139,137 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
-      ).thenReturn(cachedJourneyData.get)
-
+      ).thenReturn(journeyData.get)
       when(
-        injected[other_goods_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(
-            any(),
-            any(),
-            any()
-          )
+        injected[other_goods_input_ni]
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
+    }
 
+    def route[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
+      stubCommon(cachedJourneyData)
       rt(app, req)
     }
 
     def gbNIRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedGBNIJourneyData))
-      when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
-      val insertedPurchase = (cachedGBNIJourneyData.get, "pid")
-      when(
-        injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
-          any()
-        )
-      ).thenReturn(insertedPurchase)
-      when(
-        injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
-          any()
-        )
-      ).thenReturn(cachedGBNIJourneyData.get)
-
-      when(
-        injected[other_goods_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(
-            any(),
-            any(),
-            any()
-          )
-      ).thenReturn(Html(""))
-
+      stubCommon(cachedGBNIJourneyData)
       rt(app, req)
     }
 
     def euGBRoute[T](app: Application, req: Request[T])(implicit w: Writeable[T]): Option[Future[Result]] = {
-      when(injected[Cache].fetch(any())).thenReturn(Future.successful(cachedEUGBJourneyData))
-      when(injected[Cache].store(any())(any())).thenReturn(Future.successful(JourneyData()))
-      val insertedPurchase = (cachedEUGBJourneyData.get, "pid")
-      when(
-        injected[NewPurchaseService].insertPurchases(any(), any(), any(), any(), any(), any(), any(), any(), any())(
-          any()
-        )
-      ).thenReturn(insertedPurchase)
-      when(
-        injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
-          any()
-        )
-      ).thenReturn(cachedEUGBJourneyData.get)
-
-      when(
-        injected[other_goods_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(
-            any(),
-            any(),
-            any()
-          )
-      ).thenReturn(Html(""))
-
+      stubCommon(cachedEUGBJourneyData)
       rt(app, req)
     }
   }
 
   "Getting displayEditForm" should {
 
-    "return a 404 when given missing iid" in new LocalSetup {
-
+    "return a 404 when the iid is not present in the journey data" in new LocalSetup {
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/missing/edit")
       ).get
       status(result) shouldBe NOT_FOUND
     }
 
-    "return a 500 when purchase is missing country" in new LocalSetup {
-
+    "return a 500 when the purchase is missing its country" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
           arrivingNICheck = Some(true),
-          isVatResClaimed = None,
-          isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
           privateCraft = Some(false),
           ageOver17 = Some(true),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              ProductPath("other-goods/books"),
-              "iid0",
-              None,
-              None,
-              None,
-              None,
-              Some("EUR"),
-              Some(BigDecimal(12.99))
-            )
-          )
+          purchasedProductInstances = List(ppi(country = None))
         )
       )
 
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
       ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "return a 500 when missing currency" in new LocalSetup {
-
+    "return a 500 when the purchase is missing its currency" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
           arrivingNICheck = Some(true),
-          isVatResClaimed = None,
-          isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
           privateCraft = Some(false),
           ageOver17 = Some(true),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              ProductPath("other-goods/books"),
-              "iid0",
-              None,
-              None,
-              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None,
-              None,
-              Some(BigDecimal(12.99))
-            )
-          )
+          purchasedProductInstances = List(ppi(currency = None))
         )
       )
 
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
       ).get
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
 
-    "return a 404 when purchase has invalid iid" in new LocalSetup {
-
+    "return a 500 when the purchase is missing its weightOrVolume" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
           arrivingNICheck = Some(true),
-          isVatResClaimed = None,
-          isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
           privateCraft = Some(false),
           ageOver17 = Some(true),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              ProductPath("invalid/product/path"),
-              "iid1",
-              None,
-              None,
-              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None,
-              Some("EUR"),
-              Some(BigDecimal(12.99))
-            )
-          )
+          purchasedProductInstances = List(ppi(weightOrVolume = None))
         )
       )
 
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
+      ).get
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "return a 404 when the purchase has an invalid product path" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(ppi(path = ProductPath("invalid/product/path")))
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
       ).get
       status(result) shouldBe NOT_FOUND
     }
 
     "return a 200 when all is ok" in new LocalSetup {
-
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
       ).get
       status(result) shouldBe OK
     }
-    "pre-populate country and currency when editing an existing item" in new LocalSetup {
 
+    "pre-populate country and currency when editing an existing item" in new LocalSetup {
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
       ).get
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(
+      verify(injected[other_goods_input_ni], times(1))(
         formCaptor.capture(),
-        any(),
-        any(),
         any(),
         any(),
         any(),
@@ -371,72 +285,74 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
       capturedForm("country").value  shouldBe Some("FR")
       capturedForm("currency").value shouldBe Some("EUR")
     }
+
+    "redirect to previous-declaration page when amendState = pending-payment" in new LocalSetup {
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          amendState = Some("pending-payment"),
+          purchasedProductInstances = List(ppi())
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
+    }
   }
 
   "Getting displayAddForm" should {
 
     "return a 404 when given an invalid path" in new LocalSetup {
-
       val result: Future[Result] = route(
         app,
         enhancedFakeRequest(
           "GET",
-          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/invalid/path/tell-us"
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/invalid/path/tell-us"
         )
       ).get
       status(result) shouldBe NOT_FOUND
     }
 
     "return a 200 when given a valid path" in new LocalSetup {
-
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
       ).get
       status(result) shouldBe OK
     }
 
-    "display default searchTerm only (no country/currency) even if set in JourneyData" in new LocalSetup {
-
+    "prefill originCountry if defaultOriginCountry is set and non-empty" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
           Some("nonEuOnly"),
           arrivingNICheck = Some(true),
-          isVatResClaimed = None,
-          isBringingDutyFree = None,
           bringingOverAllowance = Some(true),
           privateCraft = Some(false),
           ageOver17 = Some(true),
-          selectedAliases = List(ProductAlias("Book", ProductPath("other-goods/books"))),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              ProductPath("other-goods/books"),
-              "iid0",
-              None,
-              None,
-              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None,
-              Some("EUR"),
-              Some(BigDecimal(12.99))
-            )
-          ),
-          defaultCountry = Some("FR"),
-          defaultCurrency = Some("EUR")
+          defaultOriginCountry = Some("FR"),
+          purchasedProductInstances = List(ppi())
         )
       )
 
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
       ).get
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(
+      verify(injected[other_goods_input_ni], times(1))(
         formCaptor.capture(),
-        any(),
-        any(),
         any(),
         any(),
         any(),
@@ -448,50 +364,19 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         any()
       )(any(), any(), any())
 
-      val data = formCaptor.getValue.data
-      data                 should not contain key("country")
-      data                 should not contain key("currency")
-      data("searchTerm") shouldBe "Book"
+      formCaptor.getValue.data.get("originCountry") shouldBe Some("FR")
     }
 
-    "not display default searchTerm, country and currency if not set in JourneyData" in new LocalSetup {
-
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(
-        JourneyData(
-          prevDeclaration = Some(false),
-          Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
-          isVatResClaimed = None,
-          isBringingDutyFree = None,
-          bringingOverAllowance = Some(true),
-          privateCraft = Some(false),
-          ageOver17 = Some(true),
-          purchasedProductInstances = List(
-            PurchasedProductInstance(
-              ProductPath("other-goods/books"),
-              "iid0",
-              None,
-              None,
-              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
-              None,
-              Some("EUR"),
-              Some(BigDecimal(12.99))
-            )
-          )
-        )
-      )
-
+    "not prefill originCountry if defaultOriginCountry is not set" in new LocalSetup {
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
       ).get
 
       status(result) shouldBe OK
 
-      verify(injected[other_goods_input], times(1))(
+      verify(injected[other_goods_input_ni], times(1))(
         formCaptor.capture(),
-        any(),
-        any(),
         any(),
         any(),
         any(),
@@ -503,14 +388,10 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         any()
       )(any(), any(), any())
 
-      val data = formCaptor.getValue.data
-      data                 should not contain key("country")
-      data                 should not contain key("currency")
-      data("searchTerm") shouldBe ""
+      formCaptor.getValue.data should not contain key("originCountry")
     }
 
-    "redirect to previous-declaration page when amendState = pending-payment set in JourneyData" in new LocalSetup {
-
+    "redirect to previous-declaration page when amendState = pending-payment" in new LocalSetup {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(
         JourneyData(
           prevDeclaration = Some(false),
@@ -524,89 +405,35 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(
         app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("GET", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
       ).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")
-    }
-    "prefill originCountry if defaultOriginCountry is set and non-empty" in new LocalSetup {
-
-      override lazy val cachedJourneyData: Option[JourneyData] = Some(
-        JourneyData(
-          prevDeclaration = Some(false),
-          Some("nonEuOnly"),
-          arrivingNICheck = Some(true),
-          bringingOverAllowance = Some(true),
-          privateCraft = Some(false),
-          ageOver17 = Some(true),
-          selectedAliases = List(ProductAlias("Book", ProductPath("other-goods/books"))),
-          defaultOriginCountry = Some("FR")
-        )
-      )
-
-      val result: Future[Result] = route(
-        app,
-        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-      ).get
-
-      status(result) shouldBe OK
-
-      verify(injected[other_goods_input], times(1))(
-        formCaptor.capture(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any()
-      )(any(), any(), any())
-
-      val data = formCaptor.getValue.data
-      data.get("originCountry") shouldBe Some("FR")
-      data                        should not contain key("country")
-      data                        should not contain key("currency")
     }
   }
 
   "Posting processAddForm" should {
 
     "return a 404 when given an invalid path" in new LocalSetup {
-
-      val result: Future[Result] = route(
-        app,
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
         enhancedFakeRequest(
           "POST",
-          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/invalid/path/tell-us"
+          "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/invalid/path/tell-us"
+        ).withFormUrlEncodedBody(
+          "country"  -> "FR",
+          "currency" -> "EUR",
+          "cost"     -> "12.12"
         )
-      ).get
+
+      val result: Future[Result] = route(app, req).get
       status(result) shouldBe NOT_FOUND
     }
 
-    "return a 400 if no action is supplied" in new LocalSetup {
-
+    "return a 400 when country is not present" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "country"  -> "",
-            "currency" -> ""
-          )
-
-      val result: Future[Result] = route(app, req).get
-      status(result) shouldBe BAD_REQUEST
-    }
-
-    "return a 400 when action == continue and country not present" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-          .withFormUrlEncodedBody(
-            "action"   -> "continue",
             "country"  -> "",
             "currency" -> "EUR",
             "cost"     -> "12.12"
@@ -616,12 +443,10 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "return a 400 when action == continue and country not valid" in new LocalSetup {
-
+    "return a 400 when country is not valid" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "action"   -> "continue",
             "country"  -> "Not a real country",
             "currency" -> "EUR",
             "cost"     -> "12.12"
@@ -631,12 +456,10 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "return a 400 when action == continue and currency not present" in new LocalSetup {
-
+    "return a 400 when currency is not present" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "action"   -> "continue",
             "country"  -> "FR",
             "currency" -> "",
             "cost"     -> "12.12"
@@ -646,27 +469,10 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "return a 400 when action == continue and currency not valid" in new LocalSetup {
-
+    "return a 400 when cost is not present" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "action"   -> "continue",
-            "country"  -> "FR",
-            "currency" -> "XXX",
-            "cost"     -> "12.12"
-          )
-
-      val result: Future[Result] = route(app, req).get
-      status(result) shouldBe BAD_REQUEST
-    }
-
-    "return a 400 when action == continue and cost not present" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-          .withFormUrlEncodedBody(
-            "action"   -> "continue",
             "country"  -> "FR",
             "currency" -> "EUR"
           )
@@ -675,39 +481,22 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
       status(result) shouldBe BAD_REQUEST
     }
 
-    "return a 400 when action == continue and cost contains ',' only" in new LocalSetup {
-
+    "add a PPI and redirect to the item CYA page for a non-EU journey" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "action"   -> "continue",
-            "country"  -> "FR",
-            "currency" -> "EUR",
-            "cost"     -> ","
-          )
-
-      val result: Future[Result] = route(app, req).get
-      status(result) shouldBe BAD_REQUEST
-    }
-
-    "add a number of PPIs to the JourneyData and redirect to next step when action == continue and iid is not present" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-          .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.womens_clothes",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
+            "weightOrVolume" -> "1",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "12.12"
           )
 
       val result: Future[Result] = route(app, req).get
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
-      verify(injected[NewPurchaseService], times(1)).insertPurchases(
-        meq(ProductPath("other-goods/adult/adult-clothing")),
+      verify(injected[NewPurchaseService], atLeastOnce()).insertPurchases(
+        meq(ProductPath(niPath)),
         any(),
         any(),
         meq("FR"),
@@ -718,28 +507,25 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         any()
       )(any())
 
-      verify(injected[Cache], times(1)).store(any())(any())
+      verify(injected[Cache], atLeastOnce()).store(any())(any())
     }
 
-    "add a PPI using submitted iid and redirect to next step when action == continue" in new LocalSetup {
-
+    "add a PPI using a submitted iid and redirect to the item CYA page" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "iid"        -> "ABCdef",
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.womens_clothes",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
+            "iid"      -> "ABCdef",
+            "country"  -> "FR",
+            "currency" -> "EUR",
+            "cost"     -> "12.12"
           )
 
       val result: Future[Result] = route(app, req).get
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
-      verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
-        meq(ProductPath("other-goods/adult/adult-clothing")),
+      verify(injected[NewPurchaseService], atLeastOnce()).insertPurchasesWithIid(
+        meq(ProductPath(niPath)),
         any(),
         any(),
         meq("FR"),
@@ -749,73 +535,28 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         meq("ABCdef"),
         any()
       )(any())
-
-      verify(injected[Cache], times(1)).store(any())(any())
     }
 
-    Seq(
-      ("other-goods/adult/adult-clothing", "label.other-goods.adult.adult-clothing"),
-      ("other-goods/adult/adult-footwear", "label.other-goods.adult.adult-footwear"),
-      ("other-goods/carpets-fabric/carpets", "label.other-goods.carpets-fabric.carpets"),
-      ("other-goods/carpets-fabric/fabrics", "label.other-goods.carpets-fabric.fabrics"),
-      ("other-goods/childrens/childrens-clothing", "label.other-goods.childrens.childrens-clothing"),
-      ("other-goods/childrens/childrens-footwear", "label.other-goods.childrens.childrens-footwear"),
-      ("other-goods/electronic-devices/televisions", "label.other-goods.electronic-devices.televisions"),
-      ("other-goods/electronic-devices/other", "label.other-goods.electronic-devices.other")
-    ).foreach { case (path, searchTerm) =>
-      s"add PPI to the JourneyData with path $path and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
-        val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-          enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-            .withFormUrlEncodedBody(
-              "searchTerm" -> searchTerm,
-              "country"    -> "FR",
-              "currency"   -> "EUR",
-              "cost"       -> "12.12"
-            )
-
-        val result: Future[Result] = gbNIRoute(app, req).get
-        status(result)           shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(
-          s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$path/pid/gb-ni-vat-check"
-        )
-      }
-    }
-
-    Seq(
-      ("other-goods/adult/adult-clothing", "label.other-goods.adult.adult-clothing"),
-      ("other-goods/adult/adult-footwear", "label.other-goods.adult.adult-footwear"),
-      ("other-goods/carpets-fabric/carpets", "label.other-goods.carpets-fabric.carpets"),
-      ("other-goods/carpets-fabric/fabrics", "label.other-goods.carpets-fabric.fabrics"),
-      ("other-goods/childrens/childrens-clothing", "label.other-goods.childrens.childrens-clothing"),
-      ("other-goods/childrens/childrens-footwear", "label.other-goods.childrens.childrens-footwear"),
-      ("other-goods/electronic-devices/televisions", "label.other-goods.electronic-devices.televisions"),
-      ("other-goods/electronic-devices/other", "label.other-goods.electronic-devices.other")
-    ).foreach { case (path, searchTerm) =>
-      s"add PPI to the JourneyData with path $path and redirect to the item CYA page" when {
-        "Non EU journey" in new LocalSetup {
-          val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-            enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-              .withFormUrlEncodedBody(
-                "searchTerm" -> searchTerm,
-                "country"    -> "FR",
-                "currency"   -> "EUR",
-                "cost"       -> "12.12"
-              )
-
-          val result: Future[Result] = route(app, req).get
-          status(result)             shouldBe SEE_OTHER
-          redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
-        }
-      }
-    }
-
-    "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
-
+    "add a PPI and redirect to the UKVatPaid page for a GBNI journey" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "action"        -> "continue",
-            "searchTerm"    -> "label.other-goods.adult.adult-clothing",
+            "country"  -> "FR",
+            "currency" -> "EUR",
+            "cost"     -> "12.12"
+          )
+
+      val result: Future[Result] = gbNIRoute(app, req).get
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/pid/gb-ni-vat-check"
+      )
+    }
+
+    "add a PPI and redirect to the EU Evidence page for an EUGB journey where originCountry is an EU country" in new LocalSetup {
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
+          .withFormUrlEncodedBody(
             "country"       -> "FR",
             "originCountry" -> "FR",
             "currency"      -> "EUR",
@@ -823,21 +564,16 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = euGBRoute(app, req).get
-
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/pid/eu-evidence-check"
+        s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/pid/eu-evidence-check"
       )
-
     }
 
-    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
-
+    "add a PPI and redirect to the item CYA page for an EUGB journey where originCountry is a non-EU country" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
+        enhancedFakeRequest("POST", s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/tell-us")
           .withFormUrlEncodedBody(
-            "action"        -> "continue",
-            "searchTerm"    -> "label.other-goods.adult.adult-clothing",
             "country"       -> "FR",
             "originCountry" -> "IN",
             "currency"      -> "EUR",
@@ -845,40 +581,18 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = euGBRoute(app, req).get
-
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
-    }
-
-    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a null value" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us")
-          .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.adult.adult-clothing",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
-          )
-
-      val result: Future[Result] = euGBRoute(app, req).get
-
-      status(result)             shouldBe SEE_OTHER
-      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
-
     }
   }
 
   "Posting processEditForm" should {
 
-    "return a 404 when action == continue and iid is not found in journey data" in new LocalSetup {
-
+    "return a 404 when the iid is not found in the journey data" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
         "POST",
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/missing-iid/edit"
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/missing/edit"
       ).withFormUrlEncodedBody(
-        "action"   -> "continue",
         "country"  -> "FR",
         "currency" -> "EUR",
         "cost"     -> "12.12"
@@ -886,43 +600,37 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe NOT_FOUND
-
     }
 
-    "return a 400 when action == continue and currency not present" in new LocalSetup {
-
+    "return a 400 when currency is not present" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
           .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.book",
-            "country"    -> "FR",
-            "currency"   -> "",
-            "cost"       -> "12.12"
+            "country"  -> "FR",
+            "currency" -> "",
+            "cost"     -> "12.12"
           )
 
       val result: Future[Result] = route(app, req).get
       status(result) shouldBe BAD_REQUEST
     }
 
-    "modify the relevant PPI in the JourneyData and redirect to next step when action == continue and iid is present" in new LocalSetup {
-
+    "modify the relevant PPI and redirect to the item CYA page for a non-EU journey" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
           .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.book",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
+            "weightOrVolume" -> "1",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "12.12"
           )
 
       val result: Future[Result] = route(app, req).get
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
-      verify(injected[NewPurchaseService], times(1)).updatePurchase(
-        meq(ProductPath("other-goods/books")),
+      verify(injected[NewPurchaseService], atLeastOnce()).updatePurchase(
+        meq(ProductPath(niPath)),
         meq("iid0"),
         any(),
         any(),
@@ -933,35 +641,29 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
         any()
       )(any())
 
-      verify(injected[Cache], times(2)).store(any())(any())
+      verify(injected[Cache], atLeastOnce()).store(any())(any())
     }
 
-    "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {
-
+    "modify a PPI and redirect to the UKVatPaid page for a GBNI journey" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
           .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.book",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
+            "country"  -> "FR",
+            "currency" -> "EUR",
+            "cost"     -> "12.12"
           )
 
       val result: Future[Result] = gbNIRoute(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/iid0/gb-ni-vat-check"
+        s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/iid0/gb-ni-vat-check"
       )
     }
 
-    "add a PPI to the JourneyData and redirect to Eu Evidence page for EUGB Journey where producedIn is an EU country" in new LocalSetup {
-
+    "modify a PPI and redirect to the EU Evidence page for an EUGB journey where originCountry is an EU country" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
           .withFormUrlEncodedBody(
-            "action"        -> "continue",
-            "searchTerm"    -> "label.other-goods.book",
             "country"       -> "FR",
             "originCountry" -> "FR",
             "currency"      -> "EUR",
@@ -969,21 +671,16 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = euGBRoute(app, req).get
-
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/iid0/eu-evidence-check"
+        s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$niPath/iid0/eu-evidence-check"
       )
-
     }
 
-    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn is a non-EU country" in new LocalSetup {
-
+    "modify a PPI and redirect to the item CYA page for an EUGB journey where originCountry is a non-EU country" in new LocalSetup {
       val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-ni-goods/iid0/edit")
           .withFormUrlEncodedBody(
-            "action"        -> "continue",
-            "searchTerm"    -> "label.other-goods.adult.adult-clothing",
             "country"       -> "FR",
             "originCountry" -> "IN",
             "currency"      -> "EUR",
@@ -991,29 +688,8 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = euGBRoute(app, req).get
-
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
-
-    }
-
-    "add a PPI to the JourneyData and redirect to next-step for EUGB Journey where producedIn has a null value" in new LocalSetup {
-
-      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
-        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit")
-          .withFormUrlEncodedBody(
-            "action"     -> "continue",
-            "searchTerm" -> "label.other-goods.adult.adult-clothing",
-            "country"    -> "FR",
-            "currency"   -> "EUR",
-            "cost"       -> "12.12"
-          )
-
-      val result: Future[Result] = euGBRoute(app, req).get
-
-      status(result)             shouldBe SEE_OTHER
-      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
-
     }
   }
 }
