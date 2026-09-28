@@ -59,9 +59,9 @@ object ViewUtils {
     }
 
   def radioOptionsForSelectProducts(
-                                     items: List[(String, String)],
-                                     selectedValue: Option[String] = None
-                                   )(implicit messages: Messages): Seq[RadioItem] =
+    items: List[(String, String)],
+    selectedValue: Option[String] = None
+  )(implicit messages: Messages): Seq[RadioItem] =
 
     items.map { case (value, label) =>
       RadioItem(
@@ -72,7 +72,7 @@ object ViewUtils {
         hint =
           if (
             label == "label.other-goods.stop-smoking-products" ||
-              label == "label.other-ni-goods.stop-smoking-products"
+            label == "label.other-ni-goods.stop-smoking-products"
           ) {
             Some(
               Hint(
@@ -81,9 +81,7 @@ object ViewUtils {
                 )
               )
             )
-          } else if (
-            label == "label.other-ni-goods.vaping-products-liquid"
-          ) {
+          } else if (label == "label.other-ni-goods.vaping-products-liquid") {
             Some(
               Hint(
                 content = Text(
@@ -91,9 +89,7 @@ object ViewUtils {
                 )
               )
             )
-          } else if (
-            label == "label.other-ni-goods.vaping-products-others"
-          ) {
+          } else if (label == "label.other-ni-goods.vaping-products-others") {
             Some(
               Hint(
                 content = Text(

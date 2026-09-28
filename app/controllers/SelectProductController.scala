@@ -158,16 +158,16 @@ class SelectProductController @Inject() (
 
         val result =
           Ok(
-              select_products(
-                form,
-                selectItems(path, children),
-                path,
-                if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
-                else backLinkModel.backLink,
-                customBackLink = useDashboardBackLink,
-                returnToAddedItemEditUrl = returnToAddedItemEditUrl,
-                returnToAddedItemProductPath = returnToAddedItemProductPath
-              )
+            select_products(
+              form,
+              selectItems(path, children),
+              path,
+              if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
+              else backLinkModel.backLink,
+              customBackLink = useDashboardBackLink,
+              returnToAddedItemEditUrl = returnToAddedItemEditUrl,
+              returnToAddedItemProductPath = returnToAddedItemProductPath
+            )
           )
         Future.successful(
           if (useDashboardBackLink) popReturnToAddedItem(result) else result
