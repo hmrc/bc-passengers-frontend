@@ -61,6 +61,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
             Some(TobaccoInputController.displayEditForm(iid))
           case matchedPath if matchedPath.contains("enter-goods/other-goods")     =>
             Some(OtherGoodsInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/other-ni-goods")     =>
+            Some(OtherGoodsInputNIController.displayEditForm(iid))
           case matchedPath if matchedPath.contains("enter-goods/vaping-products") =>
             Some(VapingProductsInputController.displayEditForm(iid))
         }
@@ -89,6 +91,14 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
             iid
           )
         )
+      case "gb-ni-exemptions" if context.request.path.contains("enter-goods/other-ni-goods")               =>
+        val iid = getIid(context.request.path)
+        Some(
+          UKVatPaidController.loadItemUKVatPaidPage(
+            context.getJourneyData.purchasedProductInstances.filter(ppi => ppi.iid == iid).head.path,
+            iid
+          )
+        )
       case "eu-evidence-check" if eucc.contains("euOnly") & !arN                                        =>
         val iid = getIid(context.request.path)
         context.request.path match {
@@ -97,6 +107,8 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
           case matchedPath if matchedPath.contains("enter-goods/tobacco")         =>
             Some(TobaccoInputController.displayEditForm(iid))
           case matchedPath if matchedPath.contains("enter-goods/other-goods")     =>
+            Some(OtherGoodsInputController.displayEditForm(iid))
+          case matchedPath if matchedPath.contains("enter-goods/other-ni-goods")     =>
             Some(OtherGoodsInputController.displayEditForm(iid))
           case matchedPath if matchedPath.contains("enter-goods/vaping-products") =>
             Some(VapingProductsInputController.displayEditForm(iid))
@@ -163,9 +175,10 @@ class BackLinkModel @Inject() (appConfig: AppConfig) {
           if path.contains("enter-goods/alcohol")
             || path.contains("enter-goods/tobacco")
             || path.contains("enter-goods/vaping-products")
-            || path.contains("enter-goods/other-goods") =>
+            || path.contains("enter-goods/other-goods")
+            || path.contains("enter-goods/other-ni-goods") =>
         Some(DashboardController.showDashboard)
-      case "alcohol" | "tobacco" | "vaping-products" | "other-goods" if path.contains("/select-goods/") =>
+      case "alcohol" | "tobacco" | "vaping-products" | "other-goods" | "other-ni-goods" if path.contains("/select-goods/") =>
         Some(AddItemController.show)
       case _                                                                                            =>
         None

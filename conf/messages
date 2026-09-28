@@ -758,6 +758,8 @@ label.time_of_arrival = Time of arrival
 label.scheduled_time_of_arrival = Scheduled time of arrival
 label.for_example_930 = For example, 9:30 or 14:55
 label.other_goods.vaping_product_hint = This does not include vaping products
+label.other_goods_ni.vaping_product_liquid_hint = This includes bottles of vaping liquid or any vaping devices such as vape pens, pods or refills that contain liquid
+label.other_goods_ni.vaping_product_other_hint = This includes vaping accessories and empty vaping devices such as vape pens or empty refillable pods
 label.other_goods.ni_vaping_product_hint = For all other goods including vaping products
 label.alcohol_tobacco_vaping = Alcohol, tobacco and vaping products
 label.alcohol_tobacco = Alcohol and tobacco
@@ -883,8 +885,8 @@ label.do_you_want_to_remove_.other-ni-goods.stop-smoking-products = Do you want 
 label.do_you_want_to_remove_.other-ni-goods.tableware = Do you want to remove this tableware or kitchenware?
 label.do_you_want_to_remove_.other-ni-goods.watches-clocks = Do you want to remove this watch or clock?
 label.do_you_want_to_remove_.other-ni-goods.other = Do you want to remove this item?
-label.do_you_want_to_remove_.other-ni-goods.vaping-products-liquid = Do you want to remove the vaping liquid?
-label.do_you_want_to_remove_.other-ni-goods.vaping-products-liquid = Do you want to remove the non-liquid vaping?
+label.do_you_want_to_remove_.other-ni-goods.vaping-products-liquid = Do you want to remove this item?
+label.do_you_want_to_remove_.other-ni-goods.vaping-products-others = Do you want to remove this item?
 
 label.do_you_want_to_remove_.vaping-products.vape = Do you want to remove the vaping product?
 

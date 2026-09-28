@@ -687,6 +687,9 @@ label.time_of_arrival=Amser cyrraedd
 label.scheduled_time_of_arrival = Amser cyrraedd disgwyliedig
 label.for_example_930=Er enghraifft, 9:30 neu 14:55
 label.other_goods.vaping_product_hint = Nid yw hyn yn cynnwys cynhyrchion fepio
+label.other_goods_ni.vaping_product_liquid_hint = Mae hyn yn cynnwys poteli o hylif fepio neu unrhyw ddyfeisiau fepio megis pennau fepio, podiau neu gynwysyddion y gellir eu hail-lenwi (refills) sy’n cynnwys hylif
+label.other_goods_ni.vaping_product_other_hint = Mae hyn yn cynnwys ategolion fepio a dyfeisiau fepio gwag megis pennau fepio neu podiau gwag y gellir eu hail-lenwi
+
 label.other_goods.ni_vaping_product_hint = Ar gyfer unrhyw nwyddau eraill, gan cynnwys cynhyrchion fepio
 label.alcohol_tobacco_vaping = Cynhyrchion alcohol, tybaco a fepio
 label.alcohol_tobacco = Alcohol a thybaco
@@ -788,6 +791,35 @@ label.do_you_want_to_remove_.other-goods.tableware=A ydych am dynnu’r llestri 
 label.do_you_want_to_remove_.other-goods.watches-clocks=A ydych am dynnu’r oriawr neu’r cloc hwn?
 label.do_you_want_to_remove_.other-goods.other=A ydych am dynnu’r eitem hon?
 label.do_you_want_to_remove_.other-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
+
+label.do_you_want_to_remove_this=A ydych am dynnu’r {0}?
+label.do_you_want_to_remove_.other-ni-goods.adult.adult-clothing=A ydych am dynnu’r eitem hon o ddillad i oedolion?
+label.do_you_want_to_remove_.other-ni-goods.adult.adult-footwear=A ydych am dynnu’r pâr hwn o esgidiau i oedolion?
+label.do_you_want_to_remove_.other-ni-goods.antiques=A ydych am dynnu’r hen beth hwn, yr eitem brin hon neu’r gwaith celf hwn?
+label.do_you_want_to_remove_.other-ni-goods.books=A ydych am dynnu’r llyfr neu’r cyhoeddiad hwn?
+label.do_you_want_to_remove_.other-ni-goods.carpets-fabric.carpets=A ydych am dynnu’r carped hwn?
+label.do_you_want_to_remove_.other-ni-goods.carpets-fabric.fabrics=A ydych am dynnu’r ffabrig hwn?
+label.do_you_want_to_remove_.other-ni-goods.car-seats=A ydych am dynnu’r sedd car hwn i blant?
+label.do_you_want_to_remove_.other-ni-goods.childrens.childrens-clothing=A ydych am dynnu’r eitem hon o ddillad i blant?
+label.do_you_want_to_remove_.other-ni-goods.childrens.childrens-footwear=A ydych am dynnu’r pâr hwn o esgidiau i blant?
+label.do_you_want_to_remove_.other-ni-goods.disability-equipment=A ydych am dynnu’r offer anabledd hyn?
+label.do_you_want_to_remove_.other-ni-goods.electronic-devices.televisions=A ydych am dynnu’r set deledu hon?
+label.do_you_want_to_remove_.other-ni-goods.electronic-devices.other=A ydych am dynnu’r ddyfais electronig hon?
+label.do_you_want_to_remove_.other-ni-goods.furniture=A ydych am dynnu’r dodrefn hyn?
+label.do_you_want_to_remove_.other-ni-goods.glassware=A ydych am dynnu’r eitemau gwydr hyn?
+label.do_you_want_to_remove_.other-ni-goods.jewellery=A ydych yn am dynnu’r gemwaith hwn?
+label.do_you_want_to_remove_.other-ni-goods.mobility-aids=A ydych am dynnu’r eitem cymorth symud hon?
+label.do_you_want_to_remove_.other-ni-goods.perfumes-cosmetics=A ydych am dynnu’r persawr neu gosmetig hwn?
+label.do_you_want_to_remove_.other-ni-goods.protective-helmets=A ydych am dynnu’r helmed ddiogelwch hon?
+label.do_you_want_to_remove_.other-ni-goods.sanitary-products=A ydych am dynnu’r cynhyrchion misglwyf hyn?
+label.do_you_want_to_remove_.other-ni-goods.stop-smoking-products=A ydych am dynnu’r cynhyrchion hyn ar gyfer rhoi’r gorau i ysmygu?
+label.do_you_want_to_remove_.other-ni-goods.tableware=A ydych am dynnu’r llestri neu’r cyfarpar cegin hyn?
+label.do_you_want_to_remove_.other-ni-goods.watches-clocks=A ydych am dynnu’r oriawr neu’r cloc hwn?
+label.do_you_want_to_remove_.other-ni-goods.other=A ydych am dynnu’r eitem hon?
+label.do_you_want_to_remove_.other-ni-goods.vaping-products = A ydych am dynnu’r cynnyrch fepio?
+label.do_you_want_to_remove_.other-ni-goods.vaping-products-liquid = A ydych am dynnu’r eitem hon?
+label.do_you_want_to_remove_.other-ni-goods.vaping-products-others = A ydych am dynnu’r eitem hon?
+
 
 label.do_you_want_to_remove_.vaping-products.vape = A ydych am dynnu’r cynnyrch fepio?
 

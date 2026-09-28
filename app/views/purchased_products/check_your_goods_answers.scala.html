@@ -75,7 +75,7 @@
   }
   val (quantityLabel, quantityUnit) = if (category == "tobacco") {
     ("label.total_weight_in_grams", "label.grams")
-  } else if (category == "vaping-products") {
+  } else if (category == "vaping-products" || itemType.contains(messages("label.other-ni-goods.vaping-products-liquid"))) {
     ("label.total_volume_in_millilitres", "label.millilitres")
   } else {
     ("label.total_volume_in_litres", "label.litres")
@@ -106,7 +106,7 @@
   backLink = Some(editCall.url)
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
-  @if(!appConfig.isWineStillOrSparklingEnabled || !appConfig.isVapingJourneyEnabled) {
+  @if(!appConfig.isWineStillOrSparklingEnabled && !appConfig.isVapingJourneyEnabled) {
     <h2 class="govuk-heading-m">@itemType</h2>
   }
 
