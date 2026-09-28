@@ -103,7 +103,7 @@ class DashboardController @Inject() (
               val vapingProductsItems = vapingProductsPurchasedItemList.reverse
               val otherGoodsItems     = otherGoodsPurchasedItemList.reverse
 
-              val allItems    = if(appConfig.isIrishBorderQuestionEnabled) {
+              val allItems = if (appConfig.isIrishBorderQuestionEnabled) {
                 alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
                   "vaping-products" -> _
                 ) ++ otherGoodsItems.map(
