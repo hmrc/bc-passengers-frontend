@@ -29,7 +29,7 @@
     limitExceededViewUtils:LimitExceededViewUtils,
     panelIndent: components.panelIndent
 )
-@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false, isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @labelToken = @{
     if(appConfig.isWineStillOrSparklingEnabled && token == "wine" && !showGroupMessage) "wine.still-or-sparkling"

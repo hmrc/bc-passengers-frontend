@@ -55,9 +55,9 @@ class LimitExceedController @Inject() (
     case token if token == "wine"           => checkProductExists(journeyData, "alcohol/sparkling-wine")
     case token if token == "sparkling-wine" => checkProductExists(journeyData, "alcohol/wine")
     case token if token == "other"          =>
-      !appConfig.isWineStillOrSparklingEnabled && checkProductExists(journeyData, "cider")
+      !isWineToggleEnabled(journeyData) && checkProductExists(journeyData, "cider")
     case token if token.contains("cider")   =>
-      !appConfig.isWineStillOrSparklingEnabled && checkProductExists(journeyData, "other")
+      !isWineToggleEnabled(journeyData) && checkProductExists(journeyData, "other")
     case _                                  => false
   }
 
@@ -73,6 +73,12 @@ class LimitExceedController @Inject() (
       checkProductExists(journeyData, "chewing-tobacco")
     }
 
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
+  }
+
   def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>
@@ -85,7 +91,7 @@ class LimitExceedController @Inject() (
             context.getJourneyData,
             BigDecimal(0),
             product.token,
-            appConfig.isWineStillOrSparklingEnabled
+            isWineToggleEnabled(context.getJourneyData)
           )
 
         val totalAccNoOfVolume: BigDecimal =
@@ -115,7 +121,8 @@ class LimitExceedController @Inject() (
                   product.token,
                   product.name,
                   showPanelIndent,
-                  showGroupMessage
+                  showGroupMessage,
+                  isWineToggleEnabled(context.getJourneyData)
                 )
               )
             )
@@ -264,7 +271,7 @@ class LimitExceedController @Inject() (
             userInputBigDecimal,
             product.token,
             iid,
-            appConfig.isWineStillOrSparklingEnabled
+            isWineToggleEnabled(context.getJourneyData)
           )
 
         val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
@@ -285,11 +292,12 @@ class LimitExceedController @Inject() (
                   userInput = userInputBigDecimalFormatted.stripTrailingZerosToString,
                   token = product.token,
                   productName = product.name,
-                  showGroupMessage = showGroupMessage
+                  showGroupMessage = showGroupMessage,
+                  isWineToggleEnabled(context.getJourneyData)
                 )
               )
             )
-          case _       =>
+          case _ =>
             logger.error("[LimitExceedController][onPageLoadEditAlcoholVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }

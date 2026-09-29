@@ -102,6 +102,7 @@ class DashboardController @Inject() (
               val tobaccoItems        = tobaccoPurchasedItemList.reverse
               val vapingProductsItems = vapingProductsPurchasedItemList.reverse
               val otherGoodsItems     = otherGoodsPurchasedItemList.reverse
+              val previousOtherGoodsItems = previousOtherGoodsPurchasedItemList.reverse
 
               val allItems = if (appConfig.isIrishBorderQuestionEnabled) {
                 alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
@@ -117,6 +118,14 @@ class DashboardController @Inject() (
                 )
               }
 
+              val previousOtherGoodsPageItems: List[(String, PurchasedItem)] =
+                if (appConfig.isIrishBorderQuestionEnabled) {
+                  previousOtherGoodsItems.map("other-ni-goods" -> _)
+                } else {
+                  previousOtherGoodsItems.map("other-goods" -> _)
+                }
+
+
               val totalItems  = allItems.size
               val totalPages  = math.max(1, math.ceil(totalItems.toDouble / itemsPerPage).toInt)
               val currentPage = math.min(requestedPage, totalPages)
@@ -127,6 +136,12 @@ class DashboardController @Inject() (
               val pageVapingProductsItems = pageItems.collect { case ("vaping-products", item) => item }
               val pageOtherGoodsItems     = pageItems.collect { case ("other-goods", item) => item }
               val pageOtherGoodsNIItems   = pageItems.collect { case ("other-ni-goods", item) => item }
+              val pagePreviousOtherGoodsItems: List[PurchasedItem] =
+                previousOtherGoodsPageItems.collect { case ("other-goods", item) => item }
+
+              val pagePreviousOtherGoodsNIItems: List[PurchasedItem] =
+                previousOtherGoodsPageItems.collect { case ("other-ni-goods", item) => item }
+
 
               val showCalculate = totalItems > 0
 
@@ -142,7 +157,7 @@ class DashboardController @Inject() (
                   pageTobaccoItems,
                   pageVapingProductsItems,
                   if (pageOtherGoodsItems.isEmpty) pageOtherGoodsNIItems else pageOtherGoodsItems,
-                  previousOtherGoodsPurchasedItemList.reverse,
+                  if (pagePreviousOtherGoodsItems.isEmpty) pagePreviousOtherGoodsNIItems else pagePreviousOtherGoodsItems,
                   totalItems,
                   otherGoodsItems.size,
                   currentPage,
