@@ -90,7 +90,7 @@ case class ProductTreeLeaf(
         for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
           yield
             if (purchasedProductInstance.path.toMessageKey.contains("vaping-products-liquid")) {
-              ("label.X_ml_X", List(weightOrVolume.toString, name))
+              ("label.other-ni-goods.vaping-products-liquid_ml", List(weightOrVolume.toString))
             } else {
               (name, Nil)
             }

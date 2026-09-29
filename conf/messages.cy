@@ -207,6 +207,7 @@ label.your_purchases=Yr hyn rydych wedi’i brynu
 label.17_or_over=yn 17 neu’n hŷn
 label.private_aircraft_or_private_boat=Awyren breifat neu gwch preifat
 label.other_goods=Nwyddau eraill
+label.other-ni-goods=Nwyddau eraill
 label.other_ni_goods=Nwyddau eraill
 label.vaping_products = Cynhyrchion fepio
 label.vaping-products.vape = Cynhyrchion fepio
@@ -596,6 +597,7 @@ label.other-ni-goods.e-liquid = E-hylif
 label.other-ni-goods.e-cigarettes = E-sigaréts
 label.other-ni-goods.vaping-products-liquid = Cynhyrchion fepio sy’n cynnwys hylif
 label.other-ni-goods.vaping-products-others = Cynhyrchion fepio sydd ddim yn cynnwys hylif
+label.other-ni-goods.vaping-products-liquid_ml = Cynhyrchion fepio sy’n cynnwys {0}ml o hylif
 
 
 label.what_currency_did_you_use_to_pay_for_this_=Pa arian cyfred y gwnaethoch ei ddefnyddio i dalu am y {0}?

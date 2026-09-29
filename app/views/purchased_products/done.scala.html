@@ -95,7 +95,9 @@
                 <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
+                        <b>
                         @messages(item.metadata.descriptionLabels.description, wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
+                        </b>
                     </td>
 
                     <td class="govuk-table__cell">
@@ -157,11 +159,9 @@
                 <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        @if(item.metadata.descriptionLabels.description == "label.other-ni-goods.vaping-products-liquid"){
-                            @messages(item.metadata.descriptionLabels.description+"_ml", item.weightOrVolume)
-                        } else {
-                            @messages( item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)* )
-                        }
+                        <b>
+                        @messages( item.metadata.descriptionLabels.description, item.metadata.descriptionLabels.args.map(messages(_).toLowerCase)* )
+                        </b>
                     </td>
                     <td class="govuk-table__cell">
                         @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)

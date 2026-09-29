@@ -177,16 +177,9 @@
           <dd class="govuk-summary-list__value">@messages("label.price")</dd>
           <dd class="govuk-summary-list__actions"></dd>
         </div>
-
         @otherGoodsPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
           @purchasedItem.descriptionLabels(long = false).map { description =>
-            @defining(
-              if(appConfig.isVapingJourneyEnabled && purchasedItem.productTreeLeaf.token == "vaping-products-liquid")
-                messages(description._1+"_ml", purchasedItem.purchasedProductInstance.weightOrVolume.get)
-              else messages(description._1, description._2.map(messages(_).toLowerCase)*)
-            ) { args =>
-                @displayItem(purchasedItem, args, if(purchasedItem.productTreeLeaf.templateId == "other-ni-goods") "nIOtherGoods" else "otherGoods", idx)
-            }
+            @displayItem(purchasedItem, messages(description._1, description._2.map(messages(_).toLowerCase)*), if(purchasedItem.productTreeLeaf.templateId == "other-ni-goods") "nIOtherGoods" else "otherGoods", idx)
           }
         }
       </dl>

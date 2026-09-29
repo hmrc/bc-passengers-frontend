@@ -89,7 +89,7 @@
   val price = item.cost.map(value => row("label.price_paid", formatMonetaryValueWithoutTrailingZeros(value), messages("label.price_paid").toLowerCase))
 
   Seq(
-    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase),
+    row("label.type_of_goods", messages(s"label.${category.replace("other-ni-goods", "other_ni_goods").replace("other-goods", "other_goods")}"), messages("label.type_of_goods").toLowerCase),
   ) ++
     Option.when(category != "vaping-products") {
       row(typeLabel, typeOfAlcohol, messages(typeLabel).toLowerCase)
