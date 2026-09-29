@@ -211,8 +211,6 @@
 }
 
 @if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= 100) {
-  <p>@totalOtherGoodsItems</p>
-  <p>@previousOtherGoodsPurchasedItemList.size</p>
   @formHelper(action = routes.CalculateDeclareController.calculate) {
     @inputRadio(
       form = addAnotherItemForm,
