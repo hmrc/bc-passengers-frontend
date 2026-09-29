@@ -210,7 +210,7 @@
   </nav>
 }
 
-@if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= 100) {
+@if(showCalculate && (totalOtherGoodsItems + previousOtherGoodsPurchasedItemList.size) <= appConfig.maxOtherGoods) {
   @formHelper(action = routes.CalculateDeclareController.calculate) {
     @inputRadio(
       form = addAnotherItemForm,
