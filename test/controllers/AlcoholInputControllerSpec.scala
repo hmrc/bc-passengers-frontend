@@ -978,7 +978,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "50"
           )
 
-      val onResult: Future[Result] = route(appWithWineStillOrSparklingEnabled, req).get
+      val onResult: Future[Result] = euGBRoute(appWithWineStillOrSparklingEnabled, req).get
       status(onResult)             shouldBe SEE_OTHER
       redirectLocation(onResult).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }

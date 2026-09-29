@@ -47,6 +47,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
       token = "cigars",
       productName = "label.tobacco.cigars",
       showGroupMessage = false,
+      isWineToggleOn = false,
       request = request,
       messages = messages,
       appConfig = appConfig
@@ -54,7 +55,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
 
   val viewViaF: HtmlFormat.Appendable =
     injected[limit_exceed_edit].ref
-      .f("110.2", "0", "0", "cigars", "label.tobacco.cigars", false)(request, messages, appConfig)
+      .f("110.2", "0", "0", "cigars", "label.tobacco.cigars", false, false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors
 
@@ -314,7 +315,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           val onConfig: AppConfig = appConfigToggleOn
           val view                =
             injected[limit_exceed_edit]
-              .apply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine", false)(request, messages, onConfig)
+              .apply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine", false, true)(request, messages, onConfig)
 
           val expectedContent =
             Seq(
@@ -341,7 +342,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
             val onConfig: AppConfig = appConfigToggleOn
             val view                =
               injected[limit_exceed_edit]
-                .apply("110.01", "9.00", "10.01", token, productName, false)(request, messages, onConfig)
+                .apply("110.01", "9.00", "10.01", token, productName, false, true)(request, messages, onConfig)
 
             val expectedContent =
               Seq(

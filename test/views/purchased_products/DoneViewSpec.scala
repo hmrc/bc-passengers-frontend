@@ -112,6 +112,7 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
+    isWineToggleOn = false,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -123,7 +124,8 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     Some(calculation),
     "0.00",
     true,
-    None
+    None,
+    false
   )(request, messages, appConfig)
 
   private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable = injected[done].apply(
@@ -132,7 +134,8 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     deltaCalc = Some(calculation),
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
-    backLink = None
+    backLink = None,
+    isWineToggleOn = enabled
   )(request, messages, appConfigToggle(enabled))
 
   "DoneView" when
