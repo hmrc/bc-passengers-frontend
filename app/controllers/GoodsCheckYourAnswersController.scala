@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-import models.{ProductPath, ProductTreeLeaf}
+import models.{JourneyData, ProductPath, ProductTreeLeaf}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.{AlcoholAndTobaccoCalculationService, CurrencyService, ProductTreeService, VapingProductsCalculationService}
@@ -59,9 +59,15 @@ class GoodsCheckYourAnswersController @Inject() (
     }
   }
 
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
+  }
+
   def submit(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
-    if (!appConfig.isWineStillOrSparklingEnabled) {
+    if (!isWineToggleEnabled(context.getJourneyData)) {
       Future.successful(Redirect(routes.SelectProductController.nextStep()))
     } else {
       val journeyData = context.getJourneyData
@@ -75,14 +81,14 @@ class GoodsCheckYourAnswersController @Inject() (
               journeyData,
               BigDecimal(0),
               productTreeLeaf.token,
-              appConfig.isWineStillOrSparklingEnabled
+              isWineToggleEnabled(context.getJourneyData)
             )
           if (
             alcoholVolumeConstraint(
               journeyData,
               totalVolumeForAlcohol,
               productTreeLeaf.token,
-              appConfig.isWineStillOrSparklingEnabled
+              isWineToggleEnabled(context.getJourneyData)
             )
           )
             Future.successful(Redirect(routes.SelectProductController.nextStep()))

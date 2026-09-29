@@ -111,6 +111,7 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
+    isWineToggleOn = false,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -122,7 +123,8 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     Some(calculation),
     "0.00",
     true,
-    None
+    None,
+    false
   )(request, messages, appConfig)
 
   "ZeroToDeclareView" when

@@ -135,7 +135,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countries = nonEuropeanCountries,
     countriesEU = europeanCountries,
     currencies = currencies,
-    journeyStart = None
+    journeyStart = None,
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,
@@ -153,6 +154,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countriesEU = europeanCountries,
     currencies = currencies,
     journeyStart = None,
+    isWineToggleOn = false,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -168,7 +170,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     nonEuropeanCountries,
     europeanCountries,
     currencies,
-    None
+    None,
+    false
   )(request, messages, appConfig)
 
   val euOnlyView: HtmlFormat.Appendable = injected[alcohol_input].apply(
@@ -181,7 +184,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countries = nonEuropeanCountries,
     countriesEU = europeanCountries,
     currencies = currencies,
-    journeyStart = Some("euOnly")
+    journeyStart = Some("euOnly"),
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,
@@ -198,7 +202,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countries = nonEuropeanCountries,
     countriesEU = europeanCountries,
     currencies = currencies,
-    journeyStart = None
+    journeyStart = None,
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,
@@ -216,7 +221,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
       countries = nonEuropeanCountries,
       countriesEU = europeanCountries,
       currencies = currencies,
-      journeyStart = None
+      journeyStart = None,
+      isWineToggleOn = false
     )(
       request = request,
       messages = messages,
@@ -267,7 +273,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         nonEuropeanCountries,
         europeanCountries,
         currencies,
-        None
+        None,
+        true
       )(request, messages, onConfig)
       document(view).getElementsByTag("h1").text should include(messages("label.alcohol.wine.still-or-sparkling"))
       document(view).title                       should include(messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
@@ -286,7 +293,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         nonEuropeanCountries,
         europeanCountries,
         currencies,
-        None
+        None,
+        true
       )(request, messages, onConfig)
       document(view).getElementsByTag("h1").text                    should not include "still or sparkling"
       document(view).getElementsByClass("govuk-input__suffix").text should not include messages("label.litres")
@@ -304,7 +312,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         nonEuropeanCountries,
         europeanCountries,
         currencies,
-        None
+        None,
+        true
       )(request, messages, onConfig)
       document(view).getElementsByClass("govuk-input__suffix").text should include(messages("label.litres"))
     }

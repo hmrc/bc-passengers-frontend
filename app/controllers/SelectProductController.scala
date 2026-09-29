@@ -112,9 +112,18 @@ class SelectProductController @Inject() (
       .map(_ => clearReturnToAddedItem(Redirect(routes.SelectProductController.askProductSelection(path))))
   }
 
-  private def selectItems(path: ProductPath, children: List[ProductTreeNode]): List[(String, String)] = {
+  private def isNonEuArrivingNI(journeyData: JourneyData): Boolean =
+    journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+
+  private def selectItems(
+    path: ProductPath,
+    children: List[ProductTreeNode],
+    journeyData: JourneyData
+  ): List[(String, String)] = {
     val items = children.map(i => (i.token, i.name))
-    if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol")) {
+    if (
+      appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol") && !isNonEuArrivingNI(journeyData)
+    ) {
       val transformed  = items
         .filterNot(_._1 == "sparkling-wine")
         .map {
@@ -160,7 +169,7 @@ class SelectProductController @Inject() (
           Ok(
             select_products(
               form,
-              selectItems(path, children),
+              selectItems(path, children, context.getJourneyData),
               path,
               if (useDashboardBackLink) Some(routes.DashboardController.showDashboard.url)
               else backLinkModel.backLink,
@@ -193,7 +202,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  selectItems(path, branch.children),
+                  selectItems(path, branch.children, context.getJourneyData),
                   path,
                   backLinkModel.backLink
                 )
@@ -248,7 +257,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  selectItems(path, branch.children),
+                  selectItems(path, branch.children, context.getJourneyData),
                   path,
                   backLinkModel.backLink
                 )

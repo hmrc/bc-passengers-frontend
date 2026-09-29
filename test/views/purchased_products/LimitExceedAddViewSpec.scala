@@ -47,6 +47,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
       productName = "label.tobacco.cigars",
       showPanelIndent = false,
       showGroupMessage = false,
+      isWineToggleOn = false,
       request = request,
       messages = messages,
       appConfig = appConfig
@@ -54,7 +55,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
 
   val viewViaF: HtmlFormat.Appendable =
     injected[limit_exceed_add].ref
-      .f("110.2", "0.02", "cigars", "label.tobacco.cigars", false, false)(request, messages, appConfig)
+      .f("110.2", "0.02", "cigars", "label.tobacco.cigars", false, false, false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors {
     val panelIndent = "#main-content > div > div > div > div.govuk-inset-text"
@@ -289,7 +290,8 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
                 userInput = "0.01",
                 token = "wine",
                 productName = "label.alcohol.wine",
-                showPanelIndent = true
+                showPanelIndent = true,
+                isWineToggleOn = true
               )(request, messages, onConfig)
 
           val expectedContent =
@@ -319,7 +321,8 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
                   userInput = "0.01",
                   token = token,
                   productName = productName,
-                  showPanelIndent = true
+                  showPanelIndent = true,
+                  isWineToggleOn = true
                 )(request, messages, onConfig)
 
             val expectedContent =

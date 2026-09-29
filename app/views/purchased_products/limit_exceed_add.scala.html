@@ -29,16 +29,16 @@
     limitExceededViewUtils:LimitExceededViewUtils,
     panelIndent: components.panelIndent
 )
-@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false, isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @labelToken = @{
-    if(appConfig.isWineStillOrSparklingEnabled && token == "wine" && !showGroupMessage) "wine.still-or-sparkling"
-    else if(appConfig.isWineStillOrSparklingEnabled && token.contains("cider") && !showGroupMessage) s"$token.still-or-sparkling"
+    if(isWineToggleOn && token == "wine" && !showGroupMessage) "wine.still-or-sparkling"
+    else if(isWineToggleOn && token.contains("cider") && !showGroupMessage) s"$token.still-or-sparkling"
     else token
 }
 
 @userInputSectionContent = {
-    @limitExceededViewUtils.addViewContent(productName, labelToken, totalAccAmount, showGroupMessage, appConfig.isWineStillOrSparklingEnabled)
+    @limitExceededViewUtils.addViewContent(productName, labelToken, totalAccAmount, showGroupMessage, isWineToggleOn)
 }
 
 @panelContent = {
