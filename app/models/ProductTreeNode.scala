@@ -87,7 +87,13 @@ case class ProductTreeLeaf(
       case "other-goods"           =>
         Some((name, Nil))
       case "other-ni-goods"        =>
-        Some((name, Nil))
+        for (weightOrVolume <- purchasedProductInstance.weightOrVolume)
+          yield
+            if (purchasedProductInstance.path.toMessageKey.contains("vaping-products-liquid")) {
+              ("label.X_ml_X", List(weightOrVolume.toString, name))
+            } else {
+              (name, Nil)
+            }
     }
 
   def isValid(purchasedProductInstance: PurchasedProductInstance): Boolean =

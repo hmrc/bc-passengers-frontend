@@ -597,6 +597,7 @@ label.other-ni-goods.e-liquid = E-liquid
 label.other-ni-goods.e-cigarettes = E-cigarettes
 label.other-ni-goods.vaping-products-liquid = Vaping products that contain liquid
 label.other-ni-goods.vaping-products-others = Vaping products that don’t contain liquid
+label.other-ni-goods.vaping-products-liquid_ml = Vaping products that contain {0}ml liquid
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
