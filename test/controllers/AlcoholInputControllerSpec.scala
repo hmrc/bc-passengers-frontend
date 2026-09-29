@@ -212,7 +212,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
 
       when(
         injected[alcohol_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -241,7 +241,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
 
       when(
         injected[alcohol_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -270,7 +270,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
 
       when(
         injected[alcohol_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -488,6 +488,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -569,6 +570,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -626,6 +628,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -670,6 +673,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
 
       verify(injected[views.html.alcohol.alcohol_input], times(1))(
         formCaptor.capture(),
+        any(),
         any(),
         any(),
         any(),
