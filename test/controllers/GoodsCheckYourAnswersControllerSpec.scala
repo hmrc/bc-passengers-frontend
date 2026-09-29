@@ -163,7 +163,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
     }
 
@@ -231,7 +231,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        "/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step"
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/vaping-products/vape/upper-limits/volume/vaping"
       )
     }
   }

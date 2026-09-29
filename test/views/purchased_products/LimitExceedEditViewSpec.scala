@@ -51,8 +51,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
       isWineToggleOn = false,
       request = request,
       messages = messages,
-      appConfig = appConfig,
-      isWineToggleOn = false
+      appConfig = appConfig
     )
 
   val viewViaF: HtmlFormat.Appendable =

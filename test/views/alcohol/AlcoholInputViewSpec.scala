@@ -157,8 +157,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     isWineToggleOn = false,
     request = request,
     messages = messages,
-    appConfig = appConfig,
-    isWineToggleOn = false
+    appConfig = appConfig
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[alcohol_input].ref.f(

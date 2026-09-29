@@ -116,8 +116,7 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     isWineToggleOn = false,
     request = request,
     messages = messages,
-    appConfig = appConfig,
-    isWineToggleOn = false
+    appConfig = appConfig
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[done].ref.f(

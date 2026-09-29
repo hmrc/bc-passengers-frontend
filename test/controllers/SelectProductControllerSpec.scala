@@ -178,7 +178,7 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
       val on       = appWithWineToggle(true)
       val doc      = selectPageDoc(on, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
       val messages = on.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
-      Option(doc.getElementById("tokens-sparkling-wine")) should not be None
+      Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
     }
 
     "not change other branches (cider) when the toggle is ON" in {
