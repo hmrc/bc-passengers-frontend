@@ -297,7 +297,7 @@ class LimitExceedController @Inject() (
                 )
               )
             )
-          case _ =>
+          case _       =>
             logger.error("[LimitExceedController][onPageLoadEditAlcoholVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
