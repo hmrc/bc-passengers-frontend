@@ -46,7 +46,7 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
 
   val requiredJourneyData: JourneyData = JourneyData(
     prevDeclaration = Some(false),
-    euCountryCheck = Some("nonEuOnly"),
+    euCountryCheck = Some("greatBritain"),
     arrivingNICheck = Some(true),
     isVatResClaimed = None,
     isBringingDutyFree = None,

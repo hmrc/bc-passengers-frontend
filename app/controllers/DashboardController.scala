@@ -88,13 +88,13 @@ class DashboardController @Inject() (
 
               val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" | tid == "other-ni-goods" && ppi.isEditable.contains(true) =>
+                    if (tid == "other-goods" || tid == "other-ni-goods") && ppi.isEditable.contains(true) =>
                   item
               }
 
               val previousOtherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" | tid == "other-ni-goods" && ppi.isEditable.contains(false) =>
+                    if (tid == "other-goods" || tid == "other-ni-goods") && ppi.isEditable.contains(false) =>
                   item
               }
 
