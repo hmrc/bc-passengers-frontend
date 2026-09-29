@@ -75,7 +75,7 @@ class OtherGoodsInputNIForm @Inject() (
       "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
       "cost"           -> text
         .transform[String](s => s.filter(_ != ','), identity)
-        .verifying(bigDecimalCostCheckConstraint(path.toMessageKey))
+        .verifying("error.required.other-ni-goods.price", _.trim.nonEmpty)
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid"      -> optional(boolean),
       "isUccRelief"    -> optional(boolean),

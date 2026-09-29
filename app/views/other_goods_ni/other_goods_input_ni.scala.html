@@ -24,6 +24,7 @@
     errorSummary: components.errorSummary,
     inputText: components.inputText,
     button: components.button,
+    p: components.p,
     autoCompleteList: components.autocompleteList,
     browserBackToEdit: components.browserBackToEdit
 )
@@ -44,6 +45,10 @@
         <span class="govuk-caption-xl">@messages("label.tell_us_about_the")</span>
         @messages(s"label.${path.toMessageKey}")
     </h1>
+
+    @p{@messages("label.you_can_ni")
+    <a class="govuk-link" href='@routes.SelectProductController.askProductSelection(ProductPath("other-ni-goods"))'>@messages("label.you_can_ni_link")</a>}
+    <br>
     <fieldset class="govuk-fieldset">
         <legend class="govuk-visually-hidden">@messages(s"label.${path.toMessageKey}")</legend>
     @if(product.token == "vaping-products-liquid"){

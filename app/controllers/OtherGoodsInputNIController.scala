@@ -298,7 +298,7 @@ class OtherGoodsInputNIController @Inject() (
                         dto.originCountry,
                         isAddJourney = false
                       ),
-                      routes.AlcoholInputController.displayEditForm(iid).url
+                      routes.OtherGoodsInputNIController.displayEditForm(iid).url
                     )
                   }
               )

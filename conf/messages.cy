@@ -387,6 +387,10 @@ label.you_can=Gallwch wneud y canlynol:
 label.go_back_and_change_the_items_value=mynd yn ôl a newid gwerth yr eitem
 label.go_to_the_red_channel_=mynd i’r sianel goch neu’r ffôn pwynt coch, neu siarad â Llu’r Ffiniau er mwyn datgan y nwyddau hyn. Os na fyddant ar gael, ewch i GOV.UK i gael gwybod beth i’w wneud.
 
+label.you_can_ni=Gallwch
+label.you_can_ni_link=newid eich eitem
+
+
 label.what_other_goods_are_= Pa nwyddau eraill rydych am eu hychwanegu?
 label.add_your_goods= Nodwch eich eitem
 label.if_there_are_no_search_results_ = Os nad oes canlyniadau chwilio ar gyfer y nwyddau rydych am eu hychwanegu
@@ -942,6 +946,8 @@ label.X_X_Xg={0} {1}, {2}g
 
 label.X_ml_X = {0} mililitrau {1}
 label.X_mls_X = {0} mililitrau {1}
+
+label.X_ml=ml
 
 label.calculate=Cyfrifo trethi a thollau
 
