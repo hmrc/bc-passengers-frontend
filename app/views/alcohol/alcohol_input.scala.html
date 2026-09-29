@@ -29,7 +29,7 @@
   browserBackToEdit: components.browserBackToEdit
 )
 
-@(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], isWineToggleOn: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @nameKey = @{
     if(isWineToggleOn && path.toMessageKey == "alcohol.wine") "label.alcohol.wine.still-or-sparkling"
