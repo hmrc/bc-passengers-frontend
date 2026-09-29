@@ -19,6 +19,7 @@ package forms
 import models.{OtherGoodsNIDto, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.*
+import play.api.data.validation.{Constraint, Valid}
 import services.{CountriesService, CurrencyService}
 import util.{bigDecimalCostCheckConstraint, formatMonetaryValue}
 
@@ -73,9 +74,18 @@ class OtherGoodsInputNIForm @Inject() (
       "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
       "originCountry"  -> optional(text),
       "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "cost"           -> text
+      "cost" -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying("error.required.other-ni-goods.price", _.trim.nonEmpty)
+        .verifying(
+          Constraint[String] { value =>
+            if (value.trim.isEmpty) {
+              Valid
+            } else {
+              bigDecimalCostCheckConstraint("other-ni-goods.price")(value)
+            }
+          }
+        )
         .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
       "isVatPaid"      -> optional(boolean),
       "isUccRelief"    -> optional(boolean),
