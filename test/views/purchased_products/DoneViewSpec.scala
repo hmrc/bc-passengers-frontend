@@ -98,7 +98,8 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     deltaCalc = Some(calculation),
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
-    backLink = None
+    backLink = None,
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,
@@ -115,7 +116,8 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     isWineToggleOn = false,
     request = request,
     messages = messages,
-    appConfig = appConfig
+    appConfig = appConfig,
+    isWineToggleOn = false
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[done].ref.f(

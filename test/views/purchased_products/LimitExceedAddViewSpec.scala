@@ -32,7 +32,9 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
       userInput = "0.01",
       token = "cigars",
       productName = "label.tobacco.cigars",
-      showPanelIndent = false
+      showPanelIndent = false,
+      showGroupMessage = false,
+      isWineToggleOn = false
     )(
       request = request,
       messages = messages,
@@ -67,10 +69,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
     item: String,
     productName: String,
     showPanel: Boolean = false,
-    showGroupMessage: Boolean = false
+    showGroupMessage: Boolean = false,
+    isWineToggleOn: Boolean = false
   ): HtmlFormat.Appendable =
     injected[limit_exceed_add]
-      .apply(amount, userInput, item, productName, showPanel, showGroupMessage)(
+      .apply(amount, userInput, item, productName, showPanel, showGroupMessage, isWineToggleOn)(
         request = request,
         messages = messages,
         appConfig = appConfig
@@ -89,7 +92,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.500", "0.05", "beer", "label.alcohol.beer")
+          val view = viewApply("110.500", "0.05", "beer", "label.alcohol.beer", false, false, false)
 
           val expectedContent =
             Seq(
@@ -291,7 +294,8 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
                 token = "wine",
                 productName = "label.alcohol.wine",
                 showPanelIndent = true,
-                isWineToggleOn = true
+                false,
+                true
               )(request, messages, onConfig)
 
           val expectedContent =
@@ -322,7 +326,8 @@ class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeatu
                   token = token,
                   productName = productName,
                   showPanelIndent = true,
-                  isWineToggleOn = true
+                  false,
+                  true
                 )(request, messages, onConfig)
 
             val expectedContent =

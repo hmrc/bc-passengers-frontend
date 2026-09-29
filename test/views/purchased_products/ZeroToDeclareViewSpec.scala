@@ -97,7 +97,8 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     deltaCalc = Some(calculation),
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
-    backLink = None
+    backLink = None,
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,

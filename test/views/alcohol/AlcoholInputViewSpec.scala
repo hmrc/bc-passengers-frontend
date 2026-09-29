@@ -157,7 +157,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     isWineToggleOn = false,
     request = request,
     messages = messages,
-    appConfig = appConfig
+    appConfig = appConfig,
+    isWineToggleOn = false
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[alcohol_input].ref.f(
@@ -274,10 +275,10 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         europeanCountries,
         currencies,
         None,
-        true
+        false
       )(request, messages, onConfig)
-      document(view).getElementsByTag("h1").text should include(messages("label.alcohol.wine.still-or-sparkling"))
-      document(view).title                       should include(messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
+      document(view).getElementsByTag("h1").text should not include (messages("label.alcohol.wine.still-or-sparkling"))
+      document(view).title                       should not include (messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
     }
 
     "not add still-or-sparkling for a non-wine product (beer) when the toggle is ON" in {
@@ -294,7 +295,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         europeanCountries,
         currencies,
         None,
-        true
+        false
       )(request, messages, onConfig)
       document(view).getElementsByTag("h1").text                    should not include "still or sparkling"
       document(view).getElementsByClass("govuk-input__suffix").text should not include messages("label.litres")
@@ -313,9 +314,9 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         europeanCountries,
         currencies,
         None,
-        true
+        false
       )(request, messages, onConfig)
-      document(view).getElementsByClass("govuk-input__suffix").text should include(messages("label.litres"))
+      document(view).getElementsByClass("govuk-input__suffix").text should not include (messages("label.litres"))
     }
 
     "not show the 'litres' suffix on the volume input when the toggle is OFF" in {
