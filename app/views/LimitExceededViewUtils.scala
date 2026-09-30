@@ -126,6 +126,8 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
         messages(s"limitExceeded.max.limit.group.$productToken")
       } else if (productToken.contains("cider")) {
         messages(s"limitExceeded.max.limit.$productToken", if (isWineStillOrSparklingEnabled) "110" else "20")
+      } else if (productToken.contains("vaping-products-liquid")) {
+        messages(s"limitExceeded.max.limit.$productToken", "1000")
       } else {
         messages(s"limitExceeded.max.limit.$productToken")
       }

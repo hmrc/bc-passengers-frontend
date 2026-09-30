@@ -27,7 +27,7 @@ class OtherGoodsNICalculationService extends InstanceDecider with ProductDetecto
       .filter { product =>
         checkVapingProductNIExists(
           productToken = productToken,
-          vapingProductsExists = product.path.toString.contains(productToken)
+          vapingProductsExists = product.path.toString.contains("vaping-products-liquid")
         )
       }
       .map(_.weightOrVolume.getOrElseZero)
@@ -38,7 +38,7 @@ class OtherGoodsNICalculationService extends InstanceDecider with ProductDetecto
       .filter { product =>
         checkVapingProductNIExists(
           productToken = productToken,
-          vapingProductsExists = product.path.toString.contains(productToken)
+          vapingProductsExists = product.path.toString.contains("vaping-products-liquid")
         )
       }
       .map(_.weightOrVolume.getOrElseZero)

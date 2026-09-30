@@ -46,7 +46,7 @@ trait ProductDetector {
     vapingProductsExists: Boolean
   ): Boolean =
     productToken match {
-      case token if token.contains("vaping-liquids") => vapingProductsExists
+      case token if token.contains("vaping-products-liquid") => vapingProductsExists
       case _                                         => false
     }
 

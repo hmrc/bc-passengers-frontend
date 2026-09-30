@@ -74,7 +74,7 @@ class OtherGoodsInputNIForm @Inject() (
       "country"        -> text.verifying("error.country.invalid", code => countriesService.isValidCountryCode(code)),
       "originCountry"  -> optional(text),
       "currency"       -> text.verifying("error.currency.invalid", code => currencyService.isValidCurrencyCode(code)),
-      "cost" -> text
+      "cost"           -> text
         .transform[String](s => s.filter(_ != ','), identity)
         .verifying("error.required.other-ni-goods.price", _.trim.nonEmpty)
         .verifying(
@@ -86,7 +86,10 @@ class OtherGoodsInputNIForm @Inject() (
             }
           }
         )
-        .transform[BigDecimal](BigDecimal.apply, formatMonetaryValue),
+        .transform[BigDecimal](
+          value => BigDecimal(value),
+          formatMonetaryValue
+        ),
       "isVatPaid"      -> optional(boolean),
       "isUccRelief"    -> optional(boolean),
       "isExcisePaid"   -> optional(boolean),
