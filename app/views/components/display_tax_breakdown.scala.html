@@ -21,7 +21,7 @@
   h2: components.h2,
 )
 
-@(calculatorResponseDto: CalculatorResponseDto, appConfig: config.AppConfig)(implicit messages: Messages)
+@(calculatorResponseDto: CalculatorResponseDto, appConfig: config.AppConfig, isWineToggleOn: Boolean = false)(implicit messages: Messages)
 
 @isVapingOn = @{ appConfig.isVapingJourneyEnabled }
 
@@ -49,10 +49,10 @@
         @calculatorResponseDto.items.map { item =>
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
-                <b>
+              <b>
                   @messages(item.metadata.descriptionLabels.description,
-                  wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, appConfig.isWineStillOrSparklingEnabled).map(messages(_).toLowerCase)*)
-                </b>
+                  wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
+              </b>
             </td>
             <td class="govuk-table__cell govuk-table__cell--numeric">
               &pound;@formatMonetaryValue(item.calculation.customs)
@@ -78,7 +78,7 @@
       <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">
               @messages(item.metadata.descriptionLabels.description,
-              wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, appConfig.isWineStillOrSparklingEnabled).map(messages(_).toLowerCase)*)
+              wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
           </th>
           <td class="govuk-table__cell govuk-table__cell--numeric">
               &pound;@formatMonetaryValue(item.calculation.customs)

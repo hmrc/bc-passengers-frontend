@@ -980,7 +980,9 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
 
       val onResult: Future[Result] = euGBRoute(appWithWineStillOrSparklingEnabled, req).get
       status(onResult)             shouldBe SEE_OTHER
-      redirectLocation(onResult).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+      redirectLocation(onResult).get should include(
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/pid"
+      )
     }
 
     "redirect to upper-limits/volume when wine-still-or-sparkling is OFF and the merged wine option is over the 90 litre limit" in new LocalSetup {
