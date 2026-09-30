@@ -49,8 +49,10 @@
         @calculatorResponseDto.items.map { item =>
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
-              @messages(item.metadata.descriptionLabels.description,
-              wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
+              <b>
+                  @messages(item.metadata.descriptionLabels.description,
+                  wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
+              </b>
             </td>
             <td class="govuk-table__cell govuk-table__cell--numeric">
               &pound;@formatMonetaryValue(item.calculation.customs)

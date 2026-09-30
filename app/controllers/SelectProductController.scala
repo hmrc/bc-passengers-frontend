@@ -49,8 +49,6 @@ class SelectProductController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private val isVapingJourneyEnabled: Boolean = appConfig.isVapingJourneyEnabled
-
   def cancel(): Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
       Future.successful(Redirect(routes.SelectProductController.nextStep()))

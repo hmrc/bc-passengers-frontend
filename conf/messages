@@ -208,6 +208,7 @@ label.17_or_over = 17 or over
 label.private_aircraft_or_private_boat = Private aircraft or private boat
 label.other_goods = Other goods
 label.other-ni-goods = Other goods
+label.other_ni_goods = Other goods
 label.vaping_products = Vaping Products
 label.vaping-products.vape = Vaping Products
 label.vaping-products = Vaping Products
@@ -388,12 +389,16 @@ label.you_can=You can:
 label.go_back_and_change_the_items_value=go back and change the item’s value
 label.go_to_the_red_channel_=go to the red channel, red-point phone or speak to Border Force to declare these goods. If they are not available go to GOV.UK to find out what to do.
 
+label.you_can_ni=You can
+label.you_can_ni_link=change your item
+
 label.what_other_goods_are_= What other goods do you want to add?
 label.add_your_goods= Enter your item
 label.if_there_are_no_search_results_ = If there are no search results for the goods you want to add
 label.search_through_our_lists_and = You can enter the name of your item or
 label.categorise_your_goods_yourself = choose your item from a list.
 error.required.search_for_goods = Enter your item
+
 
 error.required.tobacco.cigarettes = Enter the price of the cigarettes
 error.required.tobacco.cigarillos = Enter the price of the cigarillos
@@ -593,6 +598,7 @@ label.other-ni-goods.e-liquid = E-liquid
 label.other-ni-goods.e-cigarettes = E-cigarettes
 label.other-ni-goods.vaping-products-liquid = Vaping products that contain liquid
 label.other-ni-goods.vaping-products-others = Vaping products that don’t contain liquid
+label.other-ni-goods.vaping-products-liquid_ml = Vaping products that contain {0}ml liquid
 
 ## Currency Input
 label.what_currency_did_you_use_to_pay_for_this_ = What currency did you use to pay for this {0}?
@@ -1014,6 +1020,8 @@ label.X_X_Xg = {0} {1}, {2}g
 
 label.X_ml_X = {0} millilitre {1}
 label.X_mls_X = {0} millilitres {1}
+
+label.X_ml=ml
 
 label.calculate = Calculate taxes and duties
 
@@ -1812,6 +1820,7 @@ limitExceeded.rolling-tobacco = rolling tobacco
 limitExceeded.loose_tobacco = loose tobacco
 
 limitExceeded.you_cannot_use_this_service = You cannot use this service to declare more than {0}.
+
 limitExceeded.p3 = This item will be removed from your goods to declare.
 
 limitExceeded.p.panelIndent = {0}ml of vaping liquid
@@ -1863,6 +1872,7 @@ limitExceeded.max.limit.group.chewing-tobacco = 1000g of loose tobacco
 limitExceeded.max.limit.group.rolling-tobacco = 1000g of loose tobacco
 
 limitExceeded.max.limit.vape = 1000 millilitres of vaping products
+limitExceeded.max.limit.vaping-products-liquid = {0} millilitres of vaping liquid in yours vaping products
 
 limitExceeded.p1.edit.alcohol.a = You changed {0} {1} of {2} {3}.
 limitExceeded.p1.edit.alcohol.b = to {0} {1} of {2}

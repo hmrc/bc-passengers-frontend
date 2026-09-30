@@ -216,6 +216,47 @@ class LimitExceedController @Inject() (
       }
     }
 
+  def onPageLoadAddNIJourneyVapingVolume(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
+        val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
+
+        val totalAccPreviouslyAddedVolume =
+          vapingProductsCalculationService.vapeAddHelper(
+            context.getJourneyData,
+            BigDecimal(0),
+            product.token
+          )
+
+        val totalAccNoOfVolume: BigDecimal =
+          (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
+
+        val showPanelIndent: Boolean  = product.token.contains("vaping-products-liquid")
+        val showGroupMessage: Boolean = showVapingGroupMessage(context.getJourneyData, product.token)
+
+        userInput match {
+          case Some(_) =>
+            Future(
+              Ok(
+                limitExceedViewAdd(
+                  totalAccNoOfVolume.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
+                  product.token,
+                  product.name,
+                  showPanelIndent,
+                  showGroupMessage
+                )
+              )
+            )
+          case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyVapingVolume] no user input found in session")
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
   def onPageLoadAddJourneyNoOfSticks(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
       requireProduct(path) { product =>

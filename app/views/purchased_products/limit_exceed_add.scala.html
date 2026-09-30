@@ -49,7 +49,7 @@
 
     @h1(messages("limitExceeded.h1"))
 
-    @if(appConfig.isVapingJourneyEnabled && labelToken.contains("vape")){
+    @if(appConfig.isVapingJourneyEnabled && (labelToken.contains("vape") || labelToken.contains("vaping-products-liquid"))){
         @p{@messages("limitExceeded.p.you_have_entered", userInput)}
     }
     @userInputSectionContent
@@ -57,7 +57,7 @@
     @if(showPanelIndent) {
         @panelContent
     }
-    @if(appConfig.isVapingJourneyEnabled && labelToken.contains("vape")){
+    @if(appConfig.isVapingJourneyEnabled && (labelToken.contains("vape") || labelToken.contains("vaping-products-liquid"))){
         @panelIndent{
             @p{@messages("limitExceeded.p.panelIndent", userInput)}
         }
