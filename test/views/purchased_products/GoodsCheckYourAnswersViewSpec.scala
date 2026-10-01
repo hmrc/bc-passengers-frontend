@@ -85,7 +85,7 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparkli
         )
       )
 
-      doc.select("h2.govuk-heading-m").isEmpty shouldBe true
+      doc.select("h2.govuk-heading-m").isEmpty                                shouldBe true
       doc.select(".govuk-summary-list__key").eachText()                         should contain allOf (
         "Type of goods",
         "Type of alcohol",

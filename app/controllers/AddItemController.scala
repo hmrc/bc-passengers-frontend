@@ -57,7 +57,7 @@ class AddItemController @Inject() (
         goodsType =>
           Future.successful(
             goodsType.goodsType match {
-              case "other-goods" =>
+              case "other-goods"     =>
                 Redirect(routes.OtherGoodsInputController.displayAddForm())
                   .removingFromSession(OtherGoodsInputController.categorisedSessionKey)(using context.request)
               case "vaping-products" =>

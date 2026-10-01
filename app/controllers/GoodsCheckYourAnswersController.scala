@@ -246,11 +246,11 @@ class GoodsCheckYourAnswersController @Inject() (
     val nextPage = path.components.headOption match {
       case Some("other-goods") if context.getJourneyData.arrivingNICheck.contains(true) =>
         routes.SelectProductController.clearAndAskProductSelection(ProductPath("other-goods"))
-      case Some("other-ni-goods") =>
+      case Some("other-ni-goods")                                                       =>
         routes.SelectProductController.clearAndAskProductSelection(ProductPath("other-goods"))
-      case Some("other-goods")    => routes.OtherGoodsInputController.displayAddForm()
-      case Some(category)          => routes.SelectProductController.clearAndAskProductSelection(ProductPath(category))
-      case None                    => routes.DashboardController.showDashboard
+      case Some("other-goods")                                                          => routes.OtherGoodsInputController.displayAddForm()
+      case Some(category)                                                               => routes.SelectProductController.clearAndAskProductSelection(ProductPath(category))
+      case None                                                                         => routes.DashboardController.showDashboard
     }
     startItemReplacement(path, iid, nextPage)
   }
