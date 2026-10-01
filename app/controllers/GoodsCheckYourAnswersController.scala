@@ -19,10 +19,10 @@ package controllers
 import config.AppConfig
 import connectors.Cache
 import controllers.enforce.DashboardAction
-import models.{ProductPath, ProductTreeLeaf}
+import models.{JourneyData, ProductPath, ProductTreeLeaf}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Session}
-import services.{AlcoholAndTobaccoCalculationService, CurrencyService, ProductTreeService}
+import services.{AlcoholAndTobaccoCalculationService, CurrencyService, OtherGoodsNICalculationService, ProductTreeService, VapingProductsCalculationService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendController, FrontendHeaderCarrierProvider}
 import util.*
@@ -35,6 +35,8 @@ class GoodsCheckYourAnswersController @Inject() (
   productTreeService: ProductTreeService,
   currencyService: CurrencyService,
   alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
+  vapingProductsCalculationService: VapingProductsCalculationService,
+  otherGoodsNICalculationService: OtherGoodsNICalculationService,
   cache: Cache,
   val check_your_goods_answers: views.html.purchased_products.check_your_goods_answers,
   override val controllerComponents: MessagesControllerComponents,
@@ -59,37 +61,56 @@ class GoodsCheckYourAnswersController @Inject() (
     }
   }
 
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
+  }
+
+  private def isVapingToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNIJourney = journeyData.arrivingNICheck.contains(true)
+    appConfig.isVapingJourneyEnabled && isNIJourney
+  }
+
   def submit(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
-    if (!appConfig.isWineStillOrSparklingEnabled) {
+
+    if (!isWineToggleEnabled(context.getJourneyData) && path.toMessageKey.contains("alcohol")) {
       Future.successful(Redirect(routes.SelectProductController.nextStep()))
-    } else {
+    } else if (appConfig.isVapingJourneyEnabled) {
       val journeyData = context.getJourneyData
       val item        = journeyData.getPurchasedProductInstance(iid).filter(_.path == path)
       val product     = productTreeService.productTree.getDescendant(path).collect { case leaf: ProductTreeLeaf => leaf }
 
       (item, product) match {
-        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol" =>
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol"         =>
           val totalVolumeForAlcohol =
             alcoholAndTobaccoCalculationService.alcoholAddHelper(
               journeyData,
               BigDecimal(0),
               productTreeLeaf.token,
-              appConfig.isWineStillOrSparklingEnabled
+              isWineToggleEnabled(context.getJourneyData)
             )
           if (
             alcoholVolumeConstraint(
               journeyData,
               totalVolumeForAlcohol,
               productTreeLeaf.token,
-              appConfig.isWineStillOrSparklingEnabled
+              isWineToggleEnabled(context.getJourneyData)
             )
           )
             Future.successful(Redirect(routes.SelectProductController.nextStep()))
           else {
             implicit val headerCarrier: HeaderCarrier = hc(context.request)
-            cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
-              Redirect(routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path))
+            val isEdit                                = journeyData.workingInstance.exists(_.cost.isDefined)
+            val updatedJourneyData                    =
+              if (isEdit) journeyData.revertPurchasedProductInstance()
+              else journeyData.removePurchasedProductInstance(iid)
+            val limitExceedCall                       =
+              if (isEdit) routes.LimitExceedController.onPageLoadEditAlcoholVolume(path, iid)
+              else routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path)
+            cache.store(updatedJourneyData).map { _ =>
+              Redirect(limitExceedCall)
                 .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
                 .addingToSession(
                   s"user-amount-input-${productTreeLeaf.token}" ->
@@ -97,7 +118,121 @@ class GoodsCheckYourAnswersController @Inject() (
                 )
             }
           }
-        case _                                                                                       =>
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "vaping-products" =>
+          val totalVolumeForVape =
+            vapingProductsCalculationService
+              .vapeAddHelper(journeyData, BigDecimal(0), productTreeLeaf.token)
+          if (
+            vapeVolumeConstraint(
+              journeyData,
+              totalVolumeForVape,
+              productTreeLeaf.token
+            )
+          )
+            Future.successful(Redirect(routes.SelectProductController.nextStep()))
+          else {
+            implicit val headerCarrier: HeaderCarrier = hc(context.request)
+            cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
+              Redirect(routes.LimitExceedController.onPageLoadAddJourneyVapingVolume(path))
+                .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
+                .addingToSession(
+                  s"user-amount-input-${productTreeLeaf.token}" ->
+                    purchasedItem.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                )
+            }
+          }
+        case (Some(purchasedItem), Some(productTreeLeaf))
+            if purchasedItem.path.toMessageKey.contains("vaping-products-liquid") =>
+          val totalVolumeForVape =
+            otherGoodsNICalculationService
+              .vapeNIAddHelper(journeyData, BigDecimal(0), productTreeLeaf.token)
+          if (
+            vapeVolumeConstraint(
+              journeyData,
+              totalVolumeForVape,
+              productTreeLeaf.token
+            )
+          )
+            Future.successful(Redirect(routes.SelectProductController.nextStep()))
+          else {
+            implicit val headerCarrier: HeaderCarrier = hc(context.request)
+            cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
+              Redirect(routes.LimitExceedController.onPageLoadAddNIJourneyVapingVolume(path))
+                .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
+                .addingToSession(
+                  s"user-amount-input-${productTreeLeaf.token}" ->
+                    purchasedItem.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                )
+            }
+          }
+        case _                                                                                               =>
+          Future.successful(Redirect(routes.SelectProductController.nextStep()))
+      }
+    } else {
+      val journeyData = context.getJourneyData
+      val item        = journeyData.getPurchasedProductInstance(iid).filter(_.path == path)
+      val product     = productTreeService.productTree.getDescendant(path).collect { case leaf: ProductTreeLeaf => leaf }
+
+      (item, product) match {
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "alcohol"         =>
+          val totalVolumeForAlcohol =
+            alcoholAndTobaccoCalculationService.alcoholAddHelper(
+              journeyData,
+              BigDecimal(0),
+              productTreeLeaf.token,
+              isWineToggleEnabled(context.getJourneyData)
+            )
+          if (
+            alcoholVolumeConstraint(
+              journeyData,
+              totalVolumeForAlcohol,
+              productTreeLeaf.token,
+              isWineToggleEnabled(context.getJourneyData)
+            )
+          )
+            Future.successful(Redirect(routes.SelectProductController.nextStep()))
+          else {
+            implicit val headerCarrier: HeaderCarrier = hc(context.request)
+            val isEdit                                = journeyData.workingInstance.exists(_.cost.isDefined)
+            val updatedJourneyData                    =
+              if (isEdit) journeyData.revertPurchasedProductInstance()
+              else journeyData.removePurchasedProductInstance(iid)
+            val limitExceedCall                       =
+              if (isEdit) routes.LimitExceedController.onPageLoadEditAlcoholVolume(path, iid)
+              else routes.LimitExceedController.onPageLoadAddJourneyAlcoholVolume(path)
+            cache.store(updatedJourneyData).map { _ =>
+              Redirect(limitExceedCall)
+                .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
+                .addingToSession(
+                  s"user-amount-input-${productTreeLeaf.token}" ->
+                    purchasedItem.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                )
+            }
+          }
+        case (Some(purchasedItem), Some(productTreeLeaf)) if productTreeLeaf.templateId == "vaping-products" =>
+          val totalVolumeForVape =
+            vapingProductsCalculationService
+              .vapeAddHelper(journeyData, BigDecimal(0), productTreeLeaf.token)
+          if (
+            vapeVolumeConstraint(
+              journeyData,
+              totalVolumeForVape,
+              productTreeLeaf.token
+            )
+          )
+            Future.successful(Redirect(routes.SelectProductController.nextStep()))
+          else {
+            implicit val headerCarrier: HeaderCarrier = hc(context.request)
+            cache.store(journeyData.removePurchasedProductInstance(iid)).map { _ =>
+              Redirect(routes.LimitExceedController.onPageLoadAddJourneyVapingVolume(path))
+                .removingFromSession(s"user-amount-input-${productTreeLeaf.token}")
+                .addingToSession(
+                  s"user-amount-input-${productTreeLeaf.token}" ->
+                    purchasedItem.weightOrVolume.getOrElse(BigDecimal(0)).toString
+                )
+            }
+          }
+        case _                                                                                               =>
           Future.successful(Redirect(routes.SelectProductController.nextStep()))
       }
     }
@@ -109,9 +244,13 @@ class GoodsCheckYourAnswersController @Inject() (
 
   def changeProduct(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     val nextPage = path.components.headOption match {
-      case Some("other-goods") => routes.OtherGoodsInputController.displayAddForm()
-      case Some(category)      => routes.SelectProductController.clearAndAskProductSelection(ProductPath(category))
-      case None                => routes.DashboardController.showDashboard
+      case Some("other-goods") if context.getJourneyData.arrivingNICheck.contains(true) =>
+        routes.SelectProductController.clearAndAskProductSelection(ProductPath("other-goods"))
+      case Some("other-ni-goods") =>
+        routes.SelectProductController.clearAndAskProductSelection(ProductPath("other-goods"))
+      case Some("other-goods")    => routes.OtherGoodsInputController.displayAddForm()
+      case Some(category)          => routes.SelectProductController.clearAndAskProductSelection(ProductPath(category))
+      case None                    => routes.DashboardController.showDashboard
     }
     startItemReplacement(path, iid, nextPage)
   }

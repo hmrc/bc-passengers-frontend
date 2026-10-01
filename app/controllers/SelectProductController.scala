@@ -49,8 +49,6 @@ class SelectProductController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private val isVapingJourneyEnabled: Boolean = appConfig.isVapingJourneyEnabled
-
   def cancel(): Action[AnyContent] = dashboardAction { implicit context =>
     revertWorkingInstance {
       Future.successful(Redirect(routes.SelectProductController.nextStep()))
@@ -72,23 +70,31 @@ class SelectProductController @Inject() (
 
             case ProductTreeLeaf(_, _, _, templateId, _) =>
               templateId match {
-                case "alcohol"     =>
+                case "alcohol"         =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "cigarettes"  =>
+                case "cigarettes"      =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "cigars"      =>
+                case "cigars"          =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "tobacco"     =>
+                case "tobacco"         =>
                   Future.successful(
                     Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
                   )
-                case "other-goods" => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
+                case "vaping-products" =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "other-ni-goods"  =>
+                  Future.successful(
+                    Redirect("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/" + productPath + "/tell-us")
+                  )
+                case "other-goods"     => Future.successful(Redirect("/check-tax-on-goods-you-bring-into-the-uk/tell-us"))
               }
 
           }
@@ -104,9 +110,18 @@ class SelectProductController @Inject() (
       .map(_ => clearReturnToAddedItem(Redirect(routes.SelectProductController.askProductSelection(path))))
   }
 
-  private def selectItems(path: ProductPath, children: List[ProductTreeNode]): List[(String, String)] = {
+  private def isNonEuArrivingNI(journeyData: JourneyData): Boolean =
+    journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+
+  private def selectItems(
+    path: ProductPath,
+    children: List[ProductTreeNode],
+    journeyData: JourneyData
+  ): List[(String, String)] = {
     val items = children.map(i => (i.token, i.name))
-    if (appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol")) {
+    if (
+      appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol") && !isNonEuArrivingNI(journeyData)
+    ) {
       val transformed  = items
         .filterNot(_._1 == "sparkling-wine")
         .map {
@@ -128,7 +143,6 @@ class SelectProductController @Inject() (
   }
 
   def askProductSelection(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
-    val niJourney = context.getJourneyData.arrivingNICheck
     requireProductOrCategory(path) {
 
       case ProductTreeBranch(_, _, children) =>
@@ -150,41 +164,17 @@ class SelectProductController @Inject() (
 
         val result =
           Ok(
-            if (isVapingJourneyEnabled && path.toMessageKey.equals("other-goods")) {
-              val filteredChildren =
-                if (niJourney.contains(false))
-                  children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
-                else
-                  children
-              select_products(
-                form,
-                selectItems(path, filteredChildren),
-                path,
-                if (useDashboardBackLink) Some(routes.AddItemController.show.url)
-                else backLinkModel.backLink,
-                customBackLink = useDashboardBackLink,
-                returnToAddedItemEditUrl = returnToAddedItemEditUrl,
-                returnToAddedItemProductPath = returnToAddedItemProductPath
-              )
-            } else {
-              val filteredChildren =
-                if (niJourney.contains(true) || !isVapingJourneyEnabled)
-                  children.filterNot(_.name.equalsIgnoreCase("label.other-goods.vaping-products"))
-                else
-                  children
-              select_products(
-                form,
-                selectItems(path, filteredChildren),
-                path,
-                if (useDashboardBackLink) Some(routes.AddItemController.show.url)
-                else backLinkModel.backLink,
-                customBackLink = useDashboardBackLink,
-                returnToAddedItemEditUrl = returnToAddedItemEditUrl,
-                returnToAddedItemProductPath = returnToAddedItemProductPath
-              )
-            }
+            select_products(
+              form,
+              selectItems(path, children, context.getJourneyData),
+              path,
+              if (useDashboardBackLink) Some(routes.AddItemController.show.url)
+              else backLinkModel.backLink,
+              customBackLink = useDashboardBackLink,
+              returnToAddedItemEditUrl = returnToAddedItemEditUrl,
+              returnToAddedItemProductPath = returnToAddedItemProductPath
+            )
           )
-
         Future.successful(
           if (useDashboardBackLink) popReturnToAddedItem(result) else result
         )
@@ -209,7 +199,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  selectItems(path, branch.children),
+                  selectItems(path, branch.children, context.getJourneyData),
                   path,
                   backLinkModel.backLink
                 )
@@ -238,7 +228,13 @@ class SelectProductController @Inject() (
                         selectedProductPaths
                       )
                       .flatMap { journeyData =>
-                        purchasedProductService.clearWorkingInstance(journeyData) map { _ =>
+                        val cleanedJourneyData =
+                          if (appConfig.isWineStillOrSparklingEnabled) {
+                            purchasedProductService.revertWorkingInstance(journeyData)
+                          } else {
+                            purchasedProductService.clearWorkingInstance(journeyData)
+                          }
+                        cleanedJourneyData map { _ =>
                           Redirect(routes.SelectProductController.nextStep())
                         }
                       }
@@ -265,7 +261,7 @@ class SelectProductController @Inject() (
               BadRequest(
                 select_products(
                   formWithErrors,
-                  selectItems(path, branch.children),
+                  selectItems(path, branch.children, context.getJourneyData),
                   path,
                   backLinkModel.backLink
                 )

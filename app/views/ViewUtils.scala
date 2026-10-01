@@ -25,6 +25,13 @@ object ViewUtils {
   def toggledMessage(key: String, wineStillOrSparklingEnabled: Boolean)(implicit messages: Messages): String =
     if (wineStillOrSparklingEnabled) messages(s"$key.still-or-sparkling") else messages(key)
 
+  def wineStillOrSparklingArgs(args: Seq[String], wineStillOrSparklingEnabled: Boolean): Seq[String] =
+    if (wineStillOrSparklingEnabled) {
+      args.map(arg => if (arg == "label.alcohol.wine") "label.alcohol.wine.still-or-sparkling" else arg)
+    } else {
+      args
+    }
+
   def title(form: Form[?], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(
     implicit messages: Messages
   ): String =
@@ -51,19 +58,48 @@ object ViewUtils {
       )
     }
 
-  def radioOptionsForSelectProducts(items: List[(String, String)], selectedValue: Option[String] = None)(implicit
-    messages: Messages
-  ): Seq[RadioItem] =
-    items.zipWithIndex.map { case (value, _) =>
+  def radioOptionsForSelectProducts(
+    items: List[(String, String)],
+    selectedValue: Option[String] = None
+  )(implicit messages: Messages): Seq[RadioItem] =
+
+    items.map { case (value, label) =>
       RadioItem(
-        id = Some(messages(s"tokens-${value._1}")),
-        value = Some(value._1),
-        content = Text(messages(s"${value._2}")),
-        checked = selectedValue.contains(value._1),
+        id = Some(messages(s"tokens-$value")),
+        value = Some(value),
+        content = Text(messages(label)),
+        checked = selectedValue.contains(value),
         hint =
-          if (value._2.equals("label.other-goods.stop-smoking-products"))
-            Some(Hint(content = Text(messages("label.other_goods.vaping_product_hint"))))
-          else None
+          if (
+            label == "label.other-goods.stop-smoking-products" ||
+            label == "label.other-ni-goods.stop-smoking-products"
+          ) {
+            Some(
+              Hint(
+                content = Text(
+                  messages("label.other_goods.vaping_product_hint")
+                )
+              )
+            )
+          } else if (label == "label.other-ni-goods.vaping-products-liquid") {
+            Some(
+              Hint(
+                content = Text(
+                  messages("label.other_goods_ni.vaping_product_liquid_hint")
+                )
+              )
+            )
+          } else if (label == "label.other-ni-goods.vaping-products-others") {
+            Some(
+              Hint(
+                content = Text(
+                  messages("label.other_goods_ni.vaping_product_other_hint")
+                )
+              )
+            )
+          } else {
+            None
+          }
       )
     }
 }

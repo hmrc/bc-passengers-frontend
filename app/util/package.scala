@@ -113,6 +113,14 @@ package object util extends ProductDetector {
     }
   }
 
+  def vapeVolumeConstraint(journeyData: JourneyData, vapeVolume: BigDecimal, productToken: String): Boolean = {
+    val vapeLimit: BigDecimal = 1000
+    productToken match {
+      case "vape"                   => vapeVolume <= vapeLimit
+      case "vaping-products-liquid" => vapeVolume <= vapeLimit
+    }
+  }
+
   def calculatorLimitConstraint(
     limits: Map[String, BigDecimal] = Map.empty,
     applicableLimits: List[String] = Nil

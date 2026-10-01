@@ -107,7 +107,8 @@ class AlcoholInputController @Inject() (
                 countriesService.getAllCountries,
                 countriesService.getAllCountriesAndEu,
                 currencyService.getAllCurrencies,
-                context.getJourneyData.euCountryCheck
+                context.getJourneyData.euCountryCheck,
+                isWineToggleEnabled(context.getJourneyData)
               )
             )
           )
@@ -139,7 +140,8 @@ class AlcoholInputController @Inject() (
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
                     currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
+                    context.getJourneyData.euCountryCheck,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
               )
@@ -151,6 +153,12 @@ class AlcoholInputController @Inject() (
         }
       }
     }
+  }
+
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
   }
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
@@ -200,7 +208,8 @@ class AlcoholInputController @Inject() (
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
                     currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
+                    context.getJourneyData.euCountryCheck,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
               ),
@@ -234,15 +243,15 @@ class AlcoholInputController @Inject() (
                     context.getJourneyData,
                     dto.weightOrVolume,
                     product.token,
-                    appConfig.isWineStillOrSparklingEnabled
+                    isWineToggleEnabled(context.getJourneyData)
                   )
               if (
-                appConfig.isWineStillOrSparklingEnabled ||
+                isWineToggleEnabled(context.getJourneyData) ||
                 alcoholVolumeConstraint(
                   context.getJourneyData,
                   totalVolumeForAlcohol,
                   product.token,
-                  appConfig.isWineStillOrSparklingEnabled
+                  isWineToggleEnabled(context.getJourneyData)
                 )
               ) {
                 val (journeyData, item) = insertItem
@@ -299,7 +308,8 @@ class AlcoholInputController @Inject() (
                         countriesService.getAllCountries,
                         countriesService.getAllCountriesAndEu,
                         currencyService.getAllCurrencies,
-                        context.getJourneyData.euCountryCheck
+                        context.getJourneyData.euCountryCheck,
+                        isWineToggleEnabled(context.getJourneyData)
                       )
                     )
                   ),
@@ -311,15 +321,15 @@ class AlcoholInputController @Inject() (
                         dto.weightOrVolume,
                         product.token,
                         iid,
-                        appConfig.isWineStillOrSparklingEnabled
+                        isWineToggleEnabled(context.getJourneyData)
                       )
                   if (
-                    appConfig.isWineStillOrSparklingEnabled ||
+                    isWineToggleEnabled(context.getJourneyData) ||
                     alcoholVolumeConstraint(
                       context.getJourneyData,
                       totalVolumeForAlcohol,
                       product.token,
-                      appConfig.isWineStillOrSparklingEnabled
+                      isWineToggleEnabled(context.getJourneyData)
                     )
                   ) {
                     cache.store(

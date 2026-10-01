@@ -29,15 +29,15 @@
   browserBackToEdit: components.browserBackToEdit
 )
 
-@(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @nameKey = @{
-    if(appConfig.isWineStillOrSparklingEnabled && path.toMessageKey == "alcohol.wine") "label.alcohol.wine.still-or-sparkling"
+    if(isWineToggleOn && path.toMessageKey == "alcohol.wine") "label.alcohol.wine.still-or-sparkling"
     else s"label.${path.toMessageKey}"
 }
 
 @volumeSuffix = @{
-    if(appConfig.isWineStillOrSparklingEnabled && (path.toMessageKey == "alcohol.wine" || path.toMessageKey.startsWith("alcohol.cider"))) Some("label.litres")
+    if(isWineToggleOn && (path.toMessageKey == "alcohol.wine" || path.toMessageKey.startsWith("alcohol.cider"))) Some("label.litres")
     else None
 }
 

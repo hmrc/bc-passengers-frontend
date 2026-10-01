@@ -50,6 +50,9 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
   private def journeyDataWith(instance: PurchasedProductInstance): JourneyData =
     journeyData.copy(purchasedProductInstances = List(instance))
 
+  private def gbJourneyDataWith(instance: PurchasedProductInstance): JourneyData =
+    journeyDataWith(instance).copy(euCountryCheck = Some("euOnly"), arrivingNICheck = Some(false))
+
   private def appBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
@@ -150,7 +153,7 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
     "remove the item and redirect to the over-limit page when wine-still-or-sparkling is ON and the merged wine option is over the 90 litre limit" in {
       val overLimitWine =
         PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(95)))
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(overLimitWine))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(gbJourneyDataWith(overLimitWine))))
 
       val result =
         route(
@@ -196,6 +199,40 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+    }
+
+    "continue to the item completion route when the vaping item is within the limit" in {
+      val result =
+        route(
+          app,
+          enhancedFakeRequest(
+            "POST",
+            "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/vaping-products/vape/iid0"
+          )
+        ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+    }
+
+    "continue to the item completion route when the vaping item is over the limit" in {
+      val overLimit =
+        PurchasedProductInstance(ProductPath("vaping-products/vape"), "iid0", weightOrVolume = Some(BigDecimal(1001)))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(gbJourneyDataWith(overLimit))))
+
+      val result =
+        route(
+          app,
+          enhancedFakeRequest(
+            "POST",
+            "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/vaping-products/vape/iid0"
+          )
+        ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/vaping-products/vape/upper-limits/volume/vaping"
+      )
     }
   }
 

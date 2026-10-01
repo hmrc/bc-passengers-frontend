@@ -22,7 +22,7 @@ import controllers.enforce.LimitExceedAction
 import models.*
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService}
+import services.{AlcoholAndTobaccoCalculationService, CalculatorService, ProductTreeService, VapingProductsCalculationService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{FormatsAndConversions, InstanceDecider, ProductDetector}
 import views.html.purchased_products.{limit_exceed_add, limit_exceed_edit}
@@ -33,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LimitExceedController @Inject() (
   val cache: Cache,
   alcoholAndTobaccoCalculationService: AlcoholAndTobaccoCalculationService,
+  vapingProductsCalculationService: VapingProductsCalculationService,
   val productTreeService: ProductTreeService,
   val calculatorService: CalculatorService,
   limitExceedAction: LimitExceedAction,
@@ -54,10 +55,15 @@ class LimitExceedController @Inject() (
     case token if token == "wine"           => checkProductExists(journeyData, "alcohol/sparkling-wine")
     case token if token == "sparkling-wine" => checkProductExists(journeyData, "alcohol/wine")
     case token if token == "other"          =>
-      !appConfig.isWineStillOrSparklingEnabled && checkProductExists(journeyData, "cider")
+      !isWineToggleEnabled(journeyData) && checkProductExists(journeyData, "cider")
     case token if token.contains("cider")   =>
-      !appConfig.isWineStillOrSparklingEnabled && checkProductExists(journeyData, "other")
+      !isWineToggleEnabled(journeyData) && checkProductExists(journeyData, "other")
     case _                                  => false
+  }
+
+  private def showVapingGroupMessage(journeyData: JourneyData, productToken: String): Boolean = productToken match {
+    case token if token == "vape" => checkProductExists(journeyData, "vaping-products/vape")
+    case _                        => false
   }
 
   private def showLooseTobaccoGroupMessage(journeyData: JourneyData, productToken: String): Boolean =
@@ -66,6 +72,12 @@ class LimitExceedController @Inject() (
     } else {
       checkProductExists(journeyData, "chewing-tobacco")
     }
+
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
+  }
 
   def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
@@ -79,7 +91,7 @@ class LimitExceedController @Inject() (
             context.getJourneyData,
             BigDecimal(0),
             product.token,
-            appConfig.isWineStillOrSparklingEnabled
+            isWineToggleEnabled(context.getJourneyData)
           )
 
         val totalAccNoOfVolume: BigDecimal =
@@ -109,7 +121,8 @@ class LimitExceedController @Inject() (
                   product.token,
                   product.name,
                   showPanelIndent,
-                  showGroupMessage
+                  showGroupMessage,
+                  isWineToggleEnabled(context.getJourneyData)
                 )
               )
             )
@@ -157,6 +170,88 @@ class LimitExceedController @Inject() (
             )
           case _       =>
             logger.error("[LimitExceedController][onPageLoadAddJourneyTobaccoWeight] no user input found in session")
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadAddJourneyVapingVolume(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
+        val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
+
+        val totalAccPreviouslyAddedVolume =
+          vapingProductsCalculationService.vapeAddHelper(
+            context.getJourneyData,
+            BigDecimal(0),
+            product.token
+          )
+
+        val totalAccNoOfVolume: BigDecimal =
+          (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
+
+        val showPanelIndent: Boolean  = product.token.contains("vape")
+        val showGroupMessage: Boolean = showVapingGroupMessage(context.getJourneyData, product.token)
+
+        userInput match {
+          case Some(_) =>
+            Future(
+              Ok(
+                limitExceedViewAdd(
+                  totalAccNoOfVolume.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
+                  product.token,
+                  product.name,
+                  showPanelIndent,
+                  showGroupMessage
+                )
+              )
+            )
+          case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyVapingVolume] no user input found in session")
+            Future(InternalServerError(errorTemplate()))
+        }
+      }
+    }
+
+  def onPageLoadAddNIJourneyVapingVolume(path: ProductPath): Action[AnyContent] =
+    limitExceedAction { implicit context =>
+      requireProduct(path) { product =>
+        val userInput: Option[String]       = context.request.session.data.get(s"user-amount-input-${product.token}")
+        val userInputBigDecimal: BigDecimal = userInput.map(s => BigDecimal(s)).getOrElseZero
+        val userInputBigDecimalFormatted    = userInputBigDecimal.formatDecimalPlaces(3)
+
+        val totalAccPreviouslyAddedVolume =
+          vapingProductsCalculationService.vapeAddHelper(
+            context.getJourneyData,
+            BigDecimal(0),
+            product.token
+          )
+
+        val totalAccNoOfVolume: BigDecimal =
+          (totalAccPreviouslyAddedVolume + userInputBigDecimal).formatDecimalPlaces(3)
+
+        val showPanelIndent: Boolean  = product.token.contains("vaping-products-liquid")
+        val showGroupMessage: Boolean = showVapingGroupMessage(context.getJourneyData, product.token)
+
+        userInput match {
+          case Some(_) =>
+            Future(
+              Ok(
+                limitExceedViewAdd(
+                  totalAccNoOfVolume.stripTrailingZerosToString,
+                  userInputBigDecimalFormatted.stripTrailingZerosToString,
+                  product.token,
+                  product.name,
+                  showPanelIndent,
+                  showGroupMessage
+                )
+              )
+            )
+          case _       =>
+            logger.error("[LimitExceedController][onPageLoadAddJourneyVapingVolume] no user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -217,7 +312,7 @@ class LimitExceedController @Inject() (
             userInputBigDecimal,
             product.token,
             iid,
-            appConfig.isWineStillOrSparklingEnabled
+            isWineToggleEnabled(context.getJourneyData)
           )
 
         val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
@@ -238,7 +333,8 @@ class LimitExceedController @Inject() (
                   userInput = userInputBigDecimalFormatted.stripTrailingZerosToString,
                   token = product.token,
                   productName = product.name,
-                  showGroupMessage = showGroupMessage
+                  showGroupMessage = showGroupMessage,
+                  isWineToggleEnabled(context.getJourneyData)
                 )
               )
             )

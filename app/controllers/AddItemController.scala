@@ -60,7 +60,11 @@ class AddItemController @Inject() (
               case "other-goods" =>
                 Redirect(routes.OtherGoodsInputController.displayAddForm())
                   .removingFromSession(OtherGoodsInputController.categorisedSessionKey)(using context.request)
-              case _             =>
+              case "vaping-products" =>
+                Redirect(
+                  routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
+                )
+              case _                 =>
                 Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
             }
           )

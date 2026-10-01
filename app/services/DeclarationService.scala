@@ -560,6 +560,44 @@ class DeclarationService @Inject() (
         case None          => JsNull
       }
 
+    val declarationVaping =
+      calculatorResponse.vapingProducts match {
+        case Some(vapingProducts) =>
+          Json.obj(
+            "totalExciseVaping"     -> vapingProducts.calculation.excise,
+            "totalCustomsVaping"    -> vapingProducts.calculation.customs,
+            "totalVATVaping"        -> vapingProducts.calculation.vat,
+            "declarationItemVaping" -> vapingProducts.bands.flatMap { band =>
+              band.items.map { item =>
+                Json.obj(
+                  "commodityDescription" -> messages(item.metadata.name).take(40),
+                  "volume"               -> item.weightOrVolume.fold[JsValue](JsNull)(x => JsString(x.toString)),
+                  "goodsValue"           -> item.metadata.cost,
+                  "valueCurrency"        -> item.metadata.currency.code,
+                  "valueCurrencyName"    -> messages(item.metadata.currency.displayName),
+                  "originCountry"        -> item.metadata.country.alphaTwoCode,
+                  "originCountryName"    -> messages(item.metadata.country.countryName),
+                  "exchangeRate"         -> {
+                    val exchangeRate = BigDecimal(item.metadata.exchangeRate.rate)
+                    if (exchangeRate.scale < 2) exchangeRate.setScale(2).toString else exchangeRate.toString
+                  },
+                  "exchangeRateDate"     -> item.metadata.exchangeRate.date,
+                  "goodsValueGBP"        -> item.purchaseCost,
+                  "VATRESClaimed"        -> false,
+                  "exciseGBP"            -> item.calculation.excise,
+                  "customsGBP"           -> item.calculation.customs,
+                  "vatGBP"               -> item.calculation.vat,
+                  "ukVATPaid"            -> item.isVatPaid,
+                  "ukExcisePaid"         -> item.isExcisePaid,
+                  "madeIn"               -> item.metadata.originCountry.map(_.alphaTwoCode),
+                  "euCustomsRelief"      -> item.isCustomPaid
+                )
+              }
+            }
+          )
+        case None                 => JsNull
+      }
+
     val declarationOther =
       calculatorResponse.otherGoods match {
         case Some(other) =>
@@ -653,6 +691,7 @@ class DeclarationService @Inject() (
             "declarationHeader"         -> getDeclarationHeader,
             "declarationTobacco"        -> declarationTobacco,
             "declarationAlcohol"        -> declarationAlcohol,
+            "declarationVaping"         -> declarationVaping,
             "declarationOther"          -> declarationOther,
             "liabilityDetails"          -> getLiabilityDetails,
             "amendmentLiabilityDetails" -> getAmendmentLiability

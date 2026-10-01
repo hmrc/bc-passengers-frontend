@@ -34,9 +34,11 @@
   else itemType
 }
 @editCall = @{ category match {
-  case "alcohol" => routes.AlcoholInputController.displayEditForm(item.iid)
-  case "tobacco" => routes.TobaccoInputController.displayEditForm(item.iid)
-  case _ => routes.OtherGoodsInputController.displayEditForm(item.iid)
+  case "alcohol"          => routes.AlcoholInputController.displayEditForm(item.iid)
+  case "tobacco"          => routes.TobaccoInputController.displayEditForm(item.iid)
+  case "vaping-products"  => routes.VapingProductsInputController.displayEditForm(item.iid)
+  case "other-ni-goods"   => routes.OtherGoodsInputNIController.displayEditForm(item.iid)
+  case _                  => routes.OtherGoodsInputController.displayEditForm(item.iid)
 } }
 @changeTypeCall = @{ routes.GoodsCheckYourAnswersController.changeType(item.path, item.iid) }
 @changeProductCall = @{ routes.GoodsCheckYourAnswersController.changeProduct(item.path, item.iid) }
@@ -76,6 +78,8 @@
   }
   val (quantityLabel, quantityUnit) = if (category == "tobacco") {
     ("label.total_weight_in_grams", "label.grams")
+  } else if (category == "vaping-products" || itemType.contains(messages("label.other-ni-goods.vaping-products-liquid"))) {
+    ("label.total_volume_in_millilitres", "label.millilitres")
   } else {
     ("label.total_volume_in_litres", "label.litres")
   }
@@ -89,9 +93,21 @@
   val productType = if (category == "other-goods") item.searchTerm.map(term => messages(term.name)).getOrElse(itemType) else typeOfAlcohol
 
   Seq(
-    row("label.type_of_goods", messages(s"label.$category".replace("other-goods", "other_goods")), messages("label.type_of_goods").toLowerCase, changeTypeCall, showAction = !isEditMode),
-    row(typeLabel, productType, messages(typeLabel).toLowerCase, changeProductCall, showAction = !isEditMode)
-  ) ++ quantity ++ country ++ originCountry ++ currencyRow ++ price
+    row(
+      "label.type_of_goods",
+      messages(s"label.${category.replace("other-ni-goods", "other_ni_goods").replace("other-goods", "other_goods")}"),
+      messages("label.type_of_goods").toLowerCase,
+      changeTypeCall,
+      showAction = !isEditMode
+    )
+  ) ++
+    Option.when(category != "vaping-products") {
+      row(typeLabel, productType, messages(typeLabel).toLowerCase, changeProductCall, showAction = !isEditMode)
+    } ++
+    (if (category != "other-ni-goods" || item.path.toMessageKey == "other-ni-goods.vaping-products-liquid")
+      quantity
+    else
+      Seq.empty) ++ country ++ originCountry ++ currencyRow ++ price
 }
 
 @govukLayout(
