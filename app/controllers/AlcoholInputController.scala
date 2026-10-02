@@ -255,8 +255,10 @@ class AlcoholInputController @Inject() (
                 )
               ) {
                 val (journeyData, item) = insertItem
-                cache.store(journeyData) map { _ =>
-                  navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
+                cache.store(removeItemBeingReplaced(journeyData)) map { _ =>
+                  clearItemReplacement(
+                    navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
+                  )
                 }
               } else {
                 Future(
@@ -349,6 +351,8 @@ class AlcoholInputController @Inject() (
                           iid,
                           dto.originCountry,
                           isAddJourney = false
+                        ).addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                          context.request
                         ),
                         routes.AlcoholInputController.displayEditForm(iid).url
                       )

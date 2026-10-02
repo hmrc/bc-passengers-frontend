@@ -23,8 +23,8 @@ This service is written in [Scala](https://www.scala-lang.org/) and the [Play Fr
    ```
 ## Running the app locally
    ```
-   sbt run 
-      
+   sbt run
+
    ```
 ## Running the app locally for Test
    ```
