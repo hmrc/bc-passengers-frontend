@@ -18,8 +18,8 @@ package controllers
 
 import config.AppConfig
 import connectors.Cache
-import controllers.enforce.DashboardAction
 import controllers.ControllerHelpers
+import controllers.enforce.DashboardAction
 import models.{OtherGoodsDto, OtherGoodsSearchItem, ProductPath}
 import play.api.data.Form
 import play.api.data.Forms.{optional, *}
@@ -234,47 +234,62 @@ class OtherGoodsInputController @Inject() (
           ),
         dto =>
           requireProduct(dto.searchTerm.get.path) { _ =>
-            val jd = submittedIid.fold(
-              newPurchaseService.insertPurchases(
-                dto.searchTerm.get.path,
-                None,
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost),
-                dto.searchTerm
-              )
-            )(iid =>
-              newPurchaseService.insertPurchasesWithIid(
-                dto.searchTerm.get.path,
-                None,
-                None,
-                dto.country,
-                dto.originCountry,
-                dto.currency,
-                List(dto.cost),
-                iid,
-                dto.searchTerm
-              )
-            )
-            cache.store(jd._1) map { _ =>
-              markReturnToAddedItem(
-                (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
-                  case (Some(true), Some("greatBritain")) =>
-                    Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
-                  case (Some(false), Some("euOnly"))      =>
-                    if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
-                      Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
-                    } else {
-                      Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
-                    }
-                  case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
-                },
-                routes.OtherGoodsInputController.displayEditForm(jd._2).url,
-                dto.searchTerm.get.path,
-                Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url)
-              )
+            (itemBeingReplaced, itemReplacementCyaUrl) match {
+              case (Some(item), Some(cyaUrl)) if item.path == dto.searchTerm.get.path =>
+                Future.successful(clearItemReplacement(Redirect(cyaUrl)))
+
+              case _ =>
+                val jd = submittedIid.fold(
+                  newPurchaseService.insertPurchases(
+                    dto.searchTerm.get.path,
+                    None,
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    dto.searchTerm
+                  )
+                )(iid =>
+                  newPurchaseService.insertPurchasesWithIid(
+                    dto.searchTerm.get.path,
+                    None,
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    iid,
+                    dto.searchTerm
+                  )
+                )
+                cache.store(removeItemBeingReplaced(jd._1)) map { _ =>
+                  clearItemReplacement(
+                    markReturnToAddedItem(
+                      (context.getJourneyData.arrivingNICheck, context.getJourneyData.euCountryCheck) match {
+                        case (Some(true), Some("greatBritain")) =>
+                          Redirect(routes.UKVatPaidController.loadItemUKVatPaidPage(dto.searchTerm.get.path, jd._2))
+                        case (Some(false), Some("euOnly"))      =>
+                          if (countriesService.isInEu(dto.originCountry.getOrElse(""))) {
+                            Redirect(routes.EUEvidenceController.loadEUEvidenceItemPage(dto.searchTerm.get.path, jd._2))
+                          } else {
+                            Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
+                          }
+                        case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2))
+                      },
+                      routes.OtherGoodsInputController.displayEditForm(jd._2).url,
+                      dto.searchTerm.get.path,
+                      Some(routes.GoodsCheckYourAnswersController.show(dto.searchTerm.get.path, jd._2).url),
+                      Option
+                        .when(
+                          !context.request.session.get(OtherGoodsInputController.categorisedSessionKey).contains("true")
+                        )(
+                          routes.AddItemController.show.url
+                        ),
+                      Seq(OtherGoodsInputController.categorisedSessionKey)
+                    )
+                  )
+                }
             }
           }
       )
@@ -335,7 +350,9 @@ class OtherGoodsInputController @Inject() (
                   case _                                  => Redirect(routes.GoodsCheckYourAnswersController.show(ppi.path, iid))
                 }
                 clearReturnToAddedItemUnlessCurrentEdit(
-                  result,
+                  result.addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                    context.request
+                  ),
                   routes.OtherGoodsInputController.displayEditForm(iid).url
                 )
               }
@@ -346,4 +363,8 @@ class OtherGoodsInputController @Inject() (
     }
   }
 
+}
+
+object OtherGoodsInputController {
+  val categorisedSessionKey = "categorised-other-goods"
 }

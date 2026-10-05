@@ -69,7 +69,8 @@ class VapingProductsInputController @Inject() (
         result,
         routes.VapingProductsInputController.displayEditForm(iid).url,
         productPath,
-        Some(routes.GoodsCheckYourAnswersController.show(productPath, iid).url)
+        Some(routes.GoodsCheckYourAnswersController.show(productPath, iid).url),
+        selectionUrl = Some(routes.AddItemController.show.url)
       )
     else result
 
@@ -125,7 +126,10 @@ class VapingProductsInputController @Inject() (
                 Ok(
                   vaping_products_input(
                     vapingProductsInputForm.vapingProductsForm(ppi.path).fill(dto),
-                    backLinkModel.backLink,
+                    backLinkForAddedItemEdit(
+                      backLinkModel.backLink,
+                      routes.VapingProductsInputController.displayEditForm(iid).url
+                    ),
                     customBackLink = true,
                     ppi.path,
                     Some(iid),
@@ -255,7 +259,10 @@ class VapingProductsInputController @Inject() (
                   BadRequest(
                     vaping_products_input(
                       formWithErrors,
-                      backLinkModel.backLink,
+                      backLinkForAddedItemEdit(
+                        backLinkModel.backLink,
+                        routes.VapingProductsInputController.displayEditForm(iid).url
+                      ),
                       customBackLink = true,
                       ppi.path,
                       Some(iid),

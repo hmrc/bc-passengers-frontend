@@ -24,11 +24,11 @@
   formHelper: FormWithCSRF
 )
 
-@(form: Form[GoodsTypeDto], journeyData: models.JourneyData)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[GoodsTypeDto], journeyData: models.JourneyData, backLink: Option[String] = None)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @govukLayout(
   pageTitle = Some(title(form, "heading.which_type_of_goods_do_you_want_to_add")),
-  backLink = Some(routes.DashboardController.showDashboard.url)
+  backLink = backLink.orElse(Some(routes.DashboardController.showDashboard.url))
 ) {
   @formHelper(action = routes.AddItemController.submit) {
     @errorSummary(form.errors, Some("alcohol"))
@@ -37,7 +37,7 @@
       form = form,
       legend = "heading.which_type_of_goods_do_you_want_to_add",
       name = "goodsType",
-      classes = "govuk-fieldset__legend--l",
+      classes = "govuk-fieldset__legend--l add-item__heading",
       items = Seq(
         RadioItem(
           id = Some("goodsType-alcohol"),
