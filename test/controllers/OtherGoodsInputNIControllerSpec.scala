@@ -646,6 +646,7 @@ class OtherGoodsInputNIControllerSpec extends BaseSpec {
       )(any())
 
       verify(injected[Cache], atLeastOnce()).store(any())(any())
+      session(result).get(ControllerHelpers.checkYourItemEditModeSessionKey) shouldBe Some("iid0")
     }
 
     "modify a PPI and redirect to the UKVatPaid page for a GBNI journey" in new LocalSetup {

@@ -141,14 +141,34 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparkli
     }
 
     "hide type change actions in edit mode" in {
-      val doc = document(
-        injected[check_your_goods_answers]
-          .apply(item, product, Some(currency), isEditMode = true)(request, messages, appConfig)
-      )
+      val niItems = Seq("vaping-products-liquid", "vaping-products-others", "carpets").map { token =>
+        (
+          item.copy(path = ProductPath(s"other-ni-goods/$token")),
+          ProductTreeLeaf(token, s"label.other-ni-goods.$token", "OGD/OTHER", "other-ni-goods", Nil)
+        )
+      }
+      (Seq(
+        (item, product),
+        (tobaccoItem, tobaccoProduct),
+        (otherItem, otherProduct),
+        (vapingProductsItem, vapingProducts)
+      ) ++ niItems).foreach { case (editedItem, editedProduct) =>
+        val doc = document(
+          injected[check_your_goods_answers]
+            .apply(editedItem, editedProduct, Some(currency), isEditMode = true)(request, messages, appConfig)
+        )
 
-      doc.select(".govuk-summary-list__row").get(0).select(".govuk-summary-list__actions").isEmpty shouldBe true
-      doc.select(".govuk-summary-list__row").get(1).select(".govuk-summary-list__actions").isEmpty shouldBe true
-      doc.select(".govuk-summary-list__row").get(2).select(".govuk-summary-list__actions").isEmpty shouldBe false
+        doc.select("a[href*=change-type]").isEmpty      shouldBe true
+        doc.select("a[href*=change-product]").isEmpty   shouldBe true
+        doc.select(".govuk-summary-list__key").eachText() should contain("Type of goods")
+        doc.select("a[href*=/edit]").isEmpty            shouldBe false
+
+        val newItemDoc = document(
+          injected[check_your_goods_answers]
+            .apply(editedItem, editedProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+        )
+        newItemDoc.select("a[href*=change-type]").isEmpty shouldBe false
+      }
     }
 
     "show the vaping products volume in millilitres" in {
