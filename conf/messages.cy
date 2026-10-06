@@ -27,7 +27,6 @@ heading.if_you_bring_more_than_your_allowance = Os byddwch yn mynd dros y lwfans
 text.you_do_not_need_to_tell_us_ = Nid oes angen i chi roi gwybod i ni am nwyddau sy’n dod i mewn o wledydd yn yr UE. Os ydych yn gwneud hynny, efallai y byddwch yn talu mwy na’r hyn sydd ei angen.
 text.there_are_separate_allowances_ = Mae lwfansau rhydd o dreth a lwfansau rhydd o dollau gwahanol ar gyfer dod ag alcohol, tybaco a nwyddau eraill i mewn i Ogledd Iwerddon.
 text.if_you_travelling_to_ni_ = Os ydych chi’n teithio i Ogledd Iwerddon, gallwch chi ddod â maint penodol o nwyddau i mewn heb dalu treth na tholl arnyn nhw. Yr enw ar hyn yw ‘eich lwfans personol’. Mae gwahanol lwfansau ar gyfer alcohol, tybaco a nwyddau eraill. Nid oes lwfans ar gyfer dod â chynhyrchion fepio i Ogledd Iwerddon.
-text.there_is_not_an_allowance_ = Gallwch ddatgan eich cynhyrchion fepio fel rhan o’ch lwfans ar gyfer nwyddau eraill.
 text.alcohol_allowance = Lwfans alcohol
 text.allowance_for_alcohol = Eich lwfans ar gyfer alcohol
 text.you_can_bring_in = Gallwch ddod â’r canlynol i mewn:
