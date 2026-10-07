@@ -869,6 +869,7 @@ class VapingProductsInputControllerSpec extends BaseSpec {
       )(any())
 
       verify(injected[Cache], times(2)).store(any())(any())
+      session(result).get(ControllerHelpers.checkYourItemEditModeSessionKey) shouldBe Some("iid0")
     }
 
     "modify a PPI in the JourneyData and redirect to UKVatPaid page when GBNI journey" in new LocalSetup {

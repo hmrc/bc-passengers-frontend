@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.enforce.DashboardAction
-import models.{GoodsTypeDto, ProductPath}
+import models.{GoodsTypeDto, ProductPath, PurchasedProductInstance}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -39,10 +39,25 @@ class AddItemController @Inject() (
   private def itemReplacementCyaUrl(implicit context: LocalContext): Option[String] =
     context.request.session.get(ControllerHelpers.itemReplacementCyaUrlSessionKey)
 
+  private def itemBeingReplaced(implicit context: LocalContext): Option[PurchasedProductInstance] =
+    context.request.session
+      .get(ControllerHelpers.itemBeingReplacedSessionKey)
+      .flatMap(context.getJourneyData.getPurchasedProductInstance)
+
   def show: Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
+    val form                                  = itemBeingReplaced.flatMap(_.path.components.headOption).fold(GoodsTypeDto.form) { category =>
+      val goodsType =
+        if (
+          category == "other-goods" && appConfig.isVapingJourneyEnabled && context.getJourneyData.arrivingNICheck
+            .contains(true)
+        )
+          "other-ni-goods"
+        else category
+      GoodsTypeDto.form.fill(GoodsTypeDto(goodsType))
+    }
     Future.successful(
-      Ok(add_item(GoodsTypeDto.form, context.getJourneyData, itemReplacementCyaUrl))
+      Ok(add_item(form, context.getJourneyData, itemReplacementCyaUrl))
         .removingFromSession(ControllerHelpers.returnToAddedItemSessionKeys*)(using context.request)
     )
   }
@@ -61,9 +76,17 @@ class AddItemController @Inject() (
                 Redirect(routes.OtherGoodsInputController.displayAddForm())
                   .removingFromSession(OtherGoodsInputController.categorisedSessionKey)(using context.request)
               case "vaping-products" =>
-                Redirect(
-                  routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
-                )
+                itemBeingReplaced
+                  .filter(_.path == ProductPath("vaping-products/vape"))
+                  .flatMap(_ => itemReplacementCyaUrl) match {
+                  case Some(cyaUrl) =>
+                    Redirect(cyaUrl)
+                      .removingFromSession(ControllerHelpers.itemReplacementSessionKeys*)(using context.request)
+                  case None         =>
+                    Redirect(
+                      routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
+                    )
+                }
               case _                 =>
                 Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
             }
