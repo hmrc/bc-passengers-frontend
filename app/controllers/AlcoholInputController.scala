@@ -107,7 +107,8 @@ class AlcoholInputController @Inject() (
                 countriesService.getAllCountries,
                 countriesService.getAllCountriesAndEu,
                 currencyService.getAllCurrencies,
-                context.getJourneyData.euCountryCheck
+                context.getJourneyData.euCountryCheck,
+                isWineToggleEnabled(context.getJourneyData)
               )
             )
           )
@@ -139,7 +140,8 @@ class AlcoholInputController @Inject() (
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
                     currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
+                    context.getJourneyData.euCountryCheck,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
               )
@@ -151,6 +153,12 @@ class AlcoholInputController @Inject() (
         }
       }
     }
+  }
+
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
   }
 
   def processAddForm(path: ProductPath): Action[AnyContent] = dashboardAction { implicit context =>
@@ -200,40 +208,57 @@ class AlcoholInputController @Inject() (
                     countriesService.getAllCountries,
                     countriesService.getAllCountriesAndEu,
                     currencyService.getAllCurrencies,
-                    context.getJourneyData.euCountryCheck
+                    context.getJourneyData.euCountryCheck,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
               ),
             dto => {
+              def insertItem                 =
+                submittedIid.fold(
+                  newPurchaseService.insertPurchases(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost)
+                  )
+                )(iid =>
+                  newPurchaseService.insertPurchasesWithIid(
+                    path,
+                    Some(dto.weightOrVolume),
+                    None,
+                    dto.country,
+                    dto.originCountry,
+                    dto.currency,
+                    List(dto.cost),
+                    iid
+                  )
+                )
               lazy val totalVolumeForAlcohol =
                 alcoholAndTobaccoCalculationService
-                  .alcoholAddHelper(context.getJourneyData, dto.weightOrVolume, product.token)
-              if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
-                val (journeyData, item) =
-                  submittedIid.fold(
-                    newPurchaseService.insertPurchases(
-                      path,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost)
-                    )
-                  )(iid =>
-                    newPurchaseService.insertPurchasesWithIid(
-                      path,
-                      Some(dto.weightOrVolume),
-                      None,
-                      dto.country,
-                      dto.originCountry,
-                      dto.currency,
-                      List(dto.cost),
-                      iid
-                    )
+                  .alcoholAddHelper(
+                    context.getJourneyData,
+                    dto.weightOrVolume,
+                    product.token,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
-                cache.store(journeyData) map { _ =>
-                  navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
+              if (
+                isWineToggleEnabled(context.getJourneyData) ||
+                alcoholVolumeConstraint(
+                  context.getJourneyData,
+                  totalVolumeForAlcohol,
+                  product.token,
+                  isWineToggleEnabled(context.getJourneyData)
+                )
+              ) {
+                val (journeyData, item) = insertItem
+                cache.store(removeItemBeingReplaced(journeyData)) map { _ =>
+                  clearItemReplacement(
+                    navigationHelper(context.getJourneyData, path, item, dto.originCountry, isAddJourney = true)
+                  )
                 }
               } else {
                 Future(
@@ -283,15 +308,30 @@ class AlcoholInputController @Inject() (
                         countriesService.getAllCountries,
                         countriesService.getAllCountriesAndEu,
                         currencyService.getAllCurrencies,
-                        context.getJourneyData.euCountryCheck
+                        context.getJourneyData.euCountryCheck,
+                        isWineToggleEnabled(context.getJourneyData)
                       )
                     )
                   ),
                 success = dto => {
                   lazy val totalVolumeForAlcohol =
                     alcoholAndTobaccoCalculationService
-                      .alcoholEditHelper(context.getJourneyData, dto.weightOrVolume, product.token, iid)
-                  if (alcoholVolumeConstraint(context.getJourneyData, totalVolumeForAlcohol, product.token)) {
+                      .alcoholEditHelper(
+                        context.getJourneyData,
+                        dto.weightOrVolume,
+                        product.token,
+                        iid,
+                        isWineToggleEnabled(context.getJourneyData)
+                      )
+                  if (
+                    isWineToggleEnabled(context.getJourneyData) ||
+                    alcoholVolumeConstraint(
+                      context.getJourneyData,
+                      totalVolumeForAlcohol,
+                      product.token,
+                      isWineToggleEnabled(context.getJourneyData)
+                    )
+                  ) {
                     cache.store(
                       newPurchaseService.updatePurchase(
                         ppi.path,
@@ -311,6 +351,8 @@ class AlcoholInputController @Inject() (
                           iid,
                           dto.originCountry,
                           isAddJourney = false
+                        ).addingToSession(ControllerHelpers.checkYourItemEditModeSessionKey -> iid)(using
+                          context.request
                         ),
                         routes.AlcoholInputController.displayEditForm(iid).url
                       )

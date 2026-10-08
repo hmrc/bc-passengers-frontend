@@ -21,6 +21,8 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+
+import scala.jdk.CollectionConverters.*
 import org.mockito.ArgumentMatchers.{eq => meq, *}
 import org.mockito.Mockito.*
 import org.scalatest.Inspectors.*
@@ -28,22 +30,23 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import play.api.test.Helpers.{route => rt, *}
 import repositories.BCPassengersSessionRepository
 import services.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
 import views.html.errorTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectProductControllerSpec extends BaseSpec {
+class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
 
   val requiredJourneyData: JourneyData = JourneyData(
     prevDeclaration = Some(false),
-    euCountryCheck = Some("nonEuOnly"),
+    euCountryCheck = Some("greatBritain"),
     arrivingNICheck = Some(true),
     isVatResClaimed = None,
     isBringingDutyFree = None,
@@ -52,14 +55,17 @@ class SelectProductControllerSpec extends BaseSpec {
     privateCraft = Some(false)
   )
 
-  override given app: Application = GuiceApplicationBuilder()
+  private def appWithWineToggle(enabled: Boolean): Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
     .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .configure(wineStillOrSparklingKey -> enabled)
     .build()
+
+  override given app: Application = appWithWineToggle(false)
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
@@ -150,6 +156,39 @@ class SelectProductControllerSpec extends BaseSpec {
     }
   }
 
+  private def selectPageDoc(testApp: Application, url: String): Document = {
+    val cache = testApp.injector.instanceOf[Cache]
+    when(cache.fetch(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    when(cache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    val res   = rt(testApp, enhancedFakeRequest("GET", url)).get
+    status(res) shouldBe OK
+    Jsoup.parse(contentAsString(res))
+  }
+
+  "Invoking askProductSelection for the alcohol branch with the wine-still-or-sparkling toggle" should {
+
+    "show Sparkling wine as a separate option when the toggle is OFF" in {
+      val doc =
+        selectPageDoc(appWithWineToggle(false), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      Option(doc.getElementById("tokens-sparkling-wine")) should not be None
+      Option(doc.getElementById("tokens-wine"))           should not be None
+    }
+
+    "drop Sparkling wine and relabel Wine when the toggle is ON but is NI journey" in {
+      val on       = appWithWineToggle(true)
+      val doc      = selectPageDoc(on, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      val messages = on.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+      Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
+    }
+
+    "not change other branches (cider) when the toggle is ON" in {
+      val doc =
+        selectPageDoc(appWithWineToggle(true), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/cider")
+      Option(doc.getElementById("tokens-sparkling-cider"))     should not be None
+      Option(doc.getElementById("tokens-non-sparkling-cider")) should not be None
+    }
+  }
+
   "Invoking askProductSelection for branch items" should {
 
     "return the select products alcohol page given path /alcohol (branch)" in new LocalSetup {
@@ -193,7 +232,7 @@ class SelectProductControllerSpec extends BaseSpec {
       status(result) shouldBe OK
 
       doc.getElementById("tokens-spirits").hasAttr("checked")              shouldBe true
-      doc.select("a.govuk-back-link").attr("href")                         shouldBe "/check-tax-on-goods-you-bring-into-the-uk/tell-us"
+      doc.select("a.govuk-back-link").attr("href")                         shouldBe "/check-tax-on-goods-you-bring-into-the-uk/add-an-item"
       doc.select("input[name=returnToAddedItemEditUrl]").attr("value")     shouldBe
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
       doc.select("input[name=returnToAddedItemProductPath]").attr("value") shouldBe "alcohol/spirits"
@@ -350,6 +389,33 @@ class SelectProductControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
       )
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
+    }
+
+    "return to CYA without changing the item when the replacement selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        requiredJourneyData.copy(
+          purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0"))
+        )
+      )
+
+      override val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+          .withSession(
+            ControllerHelpers.itemBeingReplacedSessionKey     -> "iid0",
+            ControllerHelpers.itemReplacementCyaUrlSessionKey ->
+              "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+          )
+          .withFormUrlEncodedBody("tokens" -> "beer")
+      ).get
+
+      status(result)                                                     shouldBe SEE_OTHER
+      redirectLocation(result)                                           shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+      )
+      session(result).get(ControllerHelpers.itemBeingReplacedSessionKey) shouldBe None
       verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
     }
   }

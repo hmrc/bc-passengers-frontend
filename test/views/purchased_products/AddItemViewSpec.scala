@@ -16,7 +16,7 @@
 
 package views.purchased_products
 
-import models.GoodsTypeDto
+import models.{GoodsTypeDto, JourneyData}
 import models.GoodsTypeDto.form
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,12 +27,14 @@ class AddItemViewSpec extends BaseViewSpec {
 
   private val validForm: Form[GoodsTypeDto] = form.bind(Map("goodsType" -> "alcohol"))
 
-  val viewViaApply: HtmlFormat.Appendable = injected[add_item].apply(validForm)(request, messages, appConfig)
+  val viewViaApply: HtmlFormat.Appendable =
+    injected[add_item].apply(validForm, JourneyData(None))(request, messages, appConfig)
 
   val viewViaRender: HtmlFormat.Appendable =
-    injected[add_item].render(validForm, request, messages, appConfig)
+    injected[add_item].render(validForm, JourneyData(None), None, request, messages, appConfig)
 
-  val viewViaF: HtmlFormat.Appendable = injected[add_item].ref.f(validForm)(request, messages, appConfig)
+  val viewViaF: HtmlFormat.Appendable =
+    injected[add_item].ref.f(validForm, JourneyData(None), None)(request, messages, appConfig)
 
   "AddItemView" when {
     renderViewTest(
@@ -46,6 +48,15 @@ class AddItemViewSpec extends BaseViewSpec {
       doc.select("#goodsType-alcohol").attr("value")     shouldBe "alcohol"
       doc.select("#goodsType-tobacco").attr("value")     shouldBe "tobacco"
       doc.select("#goodsType-other-goods").attr("value") shouldBe "other-goods"
+    }
+
+    "use the supplied back link" in {
+      val doc = document(
+        injected[add_item]
+          .apply(validForm, JourneyData(None), Some("/check-your-item/alcohol/beer/iid0"))(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-back-link").attr("href") shouldBe "/check-your-item/alcohol/beer/iid0"
     }
   }
 }

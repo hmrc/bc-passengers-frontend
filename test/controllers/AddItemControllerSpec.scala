@@ -17,10 +17,10 @@
 package controllers
 
 import connectors.Cache
-import models.JourneyData
+import models.{JourneyData, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{mock, reset, when}
+import org.mockito.Mockito.{mock, never, reset, verify, when}
 import org.scalatest.Inspectors.*
 import play.api.Application
 import play.api.inject.bind
@@ -60,12 +60,67 @@ class AddItemControllerSpec extends BaseSpec {
     "display the goods type page" in {
       val result = route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")).get
 
-      status(result)                                           shouldBe OK
-      Jsoup.parse(contentAsString(result)).select("h1").text() shouldBe "Which type of goods do you want to add?"
+      status(result)                                                                        shouldBe OK
+      Jsoup.parse(contentAsString(result)).select("h1").text()                              shouldBe "Which type of goods do you want to add?"
+      Jsoup.parse(contentAsString(result)).select("input[name=goodsType][checked]").isEmpty shouldBe true
+    }
+
+    forAll(
+      Seq(
+        ("vaping-products/vape", false, "vaping-products"),
+        ("other-ni-goods/vaping-products-liquid", true, "other-ni-goods")
+      )
+    ) { case (path, arrivingNI, goodsType) =>
+      s"preselect $goodsType when changing the type of $path for arrivingNI=$arrivingNI" in {
+        val item   = PurchasedProductInstance(ProductPath(path), "iid0")
+        when(injected[Cache].fetch(any())).thenReturn(
+          Future.successful(
+            Some(
+              journeyData.copy(arrivingNICheck = Some(arrivingNI), purchasedProductInstances = List(item))
+            )
+          )
+        )
+        val result = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")
+            .withSession(ControllerHelpers.itemBeingReplacedSessionKey -> item.iid)
+        ).get
+
+        status(result)                                                                              shouldBe OK
+        Jsoup.parse(contentAsString(result)).select("input[name=goodsType][checked]").attr("value") shouldBe goodsType
+        verify(injected[Cache], never()).store(any())(any())
+      }
     }
   }
 
   "POST /add-an-item" should {
+    "retain the existing vaping item when its goods type is unchanged" in {
+      val item   = PurchasedProductInstance(ProductPath("vaping-products/vape"), "iid0", cost = Some(BigDecimal(30)))
+      val cyaUrl = "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/vaping-products/vape/iid0"
+      when(injected[Cache].fetch(any())).thenReturn(
+        Future.successful(
+          Some(
+            journeyData.copy(arrivingNICheck = Some(false), purchasedProductInstances = List(item))
+          )
+        )
+      )
+      val result = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")
+          .withSession(
+            ControllerHelpers.itemBeingReplacedSessionKey     -> item.iid,
+            ControllerHelpers.itemReplacementCyaUrlSessionKey -> cyaUrl
+          )
+          .withFormUrlEncodedBody("goodsType" -> "vaping-products")
+      ).get
+
+      status(result)                                                         shouldBe SEE_OTHER
+      redirectLocation(result)                                               shouldBe Some(cyaUrl)
+      session(result).get(ControllerHelpers.itemBeingReplacedSessionKey)     shouldBe None
+      session(result).get(ControllerHelpers.itemReplacementCyaUrlSessionKey) shouldBe None
+      verify(injected[Cache], never()).store(any())(any())
+    }
+
     forAll(
       Seq(
         "alcohol" -> "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol",
@@ -97,11 +152,24 @@ class AddItemControllerSpec extends BaseSpec {
       )
     }
 
+    "redirect to the vaping products input page when vaping products are selected" in {
+      val result = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")
+          .withFormUrlEncodedBody("goodsType" -> "vaping-products")
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/vaping-products/vape/tell-us"
+      )
+    }
+
     "show an error when no goods type is selected" in {
       val result = route(app, enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/add-an-item")).get
 
       status(result)        shouldBe BAD_REQUEST
-      contentAsString(result) should include("Select the type of goods you want to add")
+      contentAsString(result) should include("Select which type of goods you want to add")
     }
   }
 }

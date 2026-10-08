@@ -18,4 +18,5 @@ package config
 
 object ConfigKeys {
   val wineStillOrSparklingFeature: String = "features.wine-still-or-sparkling"
+  val vapingProductsFeature: String       = "toggle.isVapingJourneyEnabled"
 }

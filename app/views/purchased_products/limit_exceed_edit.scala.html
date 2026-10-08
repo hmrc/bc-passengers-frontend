@@ -29,10 +29,16 @@
     limitExceededEditUtils:LimitExceededViewUtils
 )
 
-@(totalEnteredAmount: String, originalAmountEntered:String, userInput:String, token: String, productName: String, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(totalEnteredAmount: String, originalAmountEntered:String, userInput:String, token: String, productName: String, showGroupMessage: Boolean = false, isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@labelToken = @{
+    if(isWineToggleOn && token == "wine" && !showGroupMessage) "wine.still-or-sparkling"
+    else if(isWineToggleOn && token.contains("cider") && !showGroupMessage) s"$token.still-or-sparkling"
+    else token
+}
 
 @calculationSectionContent = {
-    @limitExceededEditUtils.editViewContent(productName, token, totalEnteredAmount, originalAmountEntered, userInput, showGroupMessage)
+    @limitExceededEditUtils.editViewContent(productName, labelToken, totalEnteredAmount, originalAmountEntered, userInput, showGroupMessage, isWineToggleOn)
 }
 
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {

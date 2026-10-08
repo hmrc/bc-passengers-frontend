@@ -16,18 +16,19 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.Cache
-import models._
+import models.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers.{route => rt, _}
+import play.api.test.Helpers.{route as rt, *}
 import repositories.BCPassengersSessionRepository
 import services.{CalculatorService, PurchasedProductService}
 import uk.gov.hmrc.mongo.MongoComponent
@@ -37,6 +38,9 @@ import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends BaseSpec {
+
+  val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+
   override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
@@ -91,6 +95,35 @@ class DashboardControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk")
 
       verify(controller.cache, times(1)).fetch(any())
+    }
+
+    "respond with 200 using an empty JourneyData when the cache holds no journey data on the second fetch" in new LocalSetup {
+      override val cachedJourneyData: Option[JourneyData] = None
+
+      when(injected[Cache].fetch(any()))
+        .thenReturn(Future.successful(Some(travelDetailsJourneyData)))
+        .thenReturn(Future.successful(None))
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any()))
+        .thenReturn(Future.successful(None))
+
+      val result: Future[Result] =
+        rt(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us")).get
+
+      status(result) shouldBe OK
+    }
+
+    "respond with 200 for a GB-NI journey and honour the page query parameter" in new LocalSetup {
+      override val cachedJourneyData: Option[JourneyData] = Some(
+        travelDetailsJourneyData.copy(euCountryCheck = Some("greatBritain"), arrivingNICheck = Some(true))
+      )
+
+      when(injected[CalculatorService].journeyDataToCalculatorRequest(any(), any())(any()))
+        .thenReturn(Future.successful(None))
+
+      val result: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/tell-us?page=2")).get
+
+      status(result) shouldBe OK
     }
 
     "respond with 200, display the page if all travel details exist & display button's text for declaration:Calculate taxes and duties" in new LocalSetup {
@@ -197,7 +230,12 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()             shouldBe "You have added 3 items"
+      if (appConfig.isVapingJourneyEnabled) {
+        doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
+      } else {
+        doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
+      }
+
       doc.getElementsByClass("govuk-button").text() shouldBe "Save and continue"
     }
 
@@ -329,7 +367,12 @@ class DashboardControllerSpec extends BaseSpec {
       val content: String = contentAsString(result)
       val doc: Document   = Jsoup.parse(content)
 
-      doc.getElementsByTag("h1").text()             shouldBe "You have added 3 items"
+      if (appConfig.isVapingJourneyEnabled) {
+        doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
+      } else {
+        doc.getElementsByTag("h1").text() shouldBe "You have added 3 items"
+      }
+
       doc.getElementsByClass("govuk-button").text() shouldBe "Save and continue"
     }
 
@@ -396,6 +439,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -406,6 +450,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("1.00", "1.00", "1.00", "3.00"),
               withinFreeAllowance = false,
@@ -464,6 +509,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -474,6 +520,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("1.00", "7.00", "90000.00", "98000.00"),
               withinFreeAllowance = false,
@@ -537,6 +584,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -547,6 +595,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("1.00", "7.00", "90000.00", "98000.00"),
               withinFreeAllowance = false,
@@ -637,6 +686,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -647,6 +697,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("100.00", "100.00", "100.00", "300.00"),
               withinFreeAllowance = false,
@@ -732,6 +783,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -742,6 +794,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = false,
@@ -827,6 +880,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -837,6 +891,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = false,
@@ -931,6 +986,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -941,6 +997,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = false,
@@ -1034,6 +1091,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1044,6 +1102,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("100.00", "100.00", "100.00", "300.00"),
               withinFreeAllowance = false,
@@ -1136,6 +1195,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1146,6 +1206,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = true,
@@ -1236,6 +1297,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1246,6 +1308,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = true,
@@ -1336,6 +1399,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1346,6 +1410,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("1.00", "1.00", "1.00", "300.00"),
               withinFreeAllowance = false,
@@ -1399,6 +1464,7 @@ class DashboardControllerSpec extends BaseSpec {
                           None,
                           None,
                           None,
+                          None,
                           None
                         )
                       ),
@@ -1409,6 +1475,7 @@ class DashboardControllerSpec extends BaseSpec {
                 )
               ),
               Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+              Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
               Calculation("1.00", "1.00", "1.00", "300.00"),
               withinFreeAllowance = false,
@@ -1463,6 +1530,7 @@ class DashboardControllerSpec extends BaseSpec {
                         None,
                         None,
                         None,
+                        None,
                         None
                       )
                     ),
@@ -1473,6 +1541,7 @@ class DashboardControllerSpec extends BaseSpec {
               )
             ),
             Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+            Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Calculation("0.00", "0.00", "0.00", "0.00"),
             withinFreeAllowance = true,
@@ -1533,6 +1602,7 @@ class DashboardControllerSpec extends BaseSpec {
                         None,
                         None,
                         None,
+                        None,
                         None
                       )
                     ),
@@ -1543,6 +1613,7 @@ class DashboardControllerSpec extends BaseSpec {
               )
             ),
             Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+            Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Calculation("0.00", "0.00", "0.00", "0.00"),
             withinFreeAllowance = true,
@@ -1576,6 +1647,7 @@ class DashboardControllerSpec extends BaseSpec {
           CalculatorResponse(
             Some(Alcohol(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+            Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(
               OtherGoods(
                 List(
@@ -1598,6 +1670,7 @@ class DashboardControllerSpec extends BaseSpec {
                           ExchangeRate("1.20", "2018-10-29"),
                           None
                         ),
+                        None,
                         None,
                         None,
                         None,
@@ -1667,6 +1740,7 @@ class DashboardControllerSpec extends BaseSpec {
                         None,
                         None,
                         None,
+                        None,
                         None
                       )
                     ),
@@ -1677,6 +1751,7 @@ class DashboardControllerSpec extends BaseSpec {
               )
             ),
             Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+            Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
             Some(
               OtherGoods(
                 List(
@@ -1699,6 +1774,7 @@ class DashboardControllerSpec extends BaseSpec {
                           ExchangeRate("1.20", "2018-10-29"),
                           None
                         ),
+                        None,
                         None,
                         None,
                         None,

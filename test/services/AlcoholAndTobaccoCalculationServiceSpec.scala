@@ -417,6 +417,119 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
       }
     }
 
+    "cider de-pooling for .alcoholAddHelper with the wine-still-or-sparkling toggle" when {
+
+      val ciderJourneyData: JourneyData = JourneyData(
+        purchasedProductInstances = List(
+          PurchasedProductInstance(
+            ProductPath("alcohol/cider/non-sparkling-cider"),
+            iid = "iid0",
+            weightOrVolume = Some(0.5)
+          ),
+          PurchasedProductInstance(
+            ProductPath("alcohol/cider/sparkling-cider"),
+            iid = "iid1",
+            weightOrVolume = Some(0.5)
+          ),
+          PurchasedProductInstance(
+            ProductPath("alcohol/cider/sparkling-cider-up"),
+            iid = "iid2",
+            weightOrVolume = Some(0.6)
+          )
+        )
+      )
+
+      "the toggle is OFF" should {
+        "pool all cider variants into one total" in {
+          service.alcoholAddHelper(ciderJourneyData, BigDecimal(0), "non-sparkling-cider") shouldBe BigDecimal(1.6)
+        }
+      }
+
+      "the toggle is ON" should {
+        "sum only the same cider variant, not the other cider variants" in {
+          service.alcoholAddHelper(
+            ciderJourneyData,
+            BigDecimal(0),
+            "non-sparkling-cider",
+            isWineStillOrSparklingEnabled = true
+          ) shouldBe BigDecimal(0.5)
+        }
+
+        "not treat 'sparkling-cider' and 'sparkling-cider-up' as the same variant" in {
+          service.alcoholAddHelper(
+            ciderJourneyData,
+            BigDecimal(0),
+            "sparkling-cider",
+            isWineStillOrSparklingEnabled = true
+          ) shouldBe BigDecimal(0.5)
+          service.alcoholAddHelper(
+            ciderJourneyData,
+            BigDecimal(0),
+            "sparkling-cider-up",
+            isWineStillOrSparklingEnabled = true
+          ) shouldBe BigDecimal(0.6)
+        }
+
+        "add together multiple instances of the same cider variant" in {
+          val sameVariant: JourneyData = JourneyData(
+            purchasedProductInstances = List(
+              PurchasedProductInstance(
+                ProductPath("alcohol/cider/non-sparkling-cider"),
+                iid = "iid0",
+                weightOrVolume = Some(0.5)
+              ),
+              PurchasedProductInstance(
+                ProductPath("alcohol/cider/non-sparkling-cider"),
+                iid = "iid1",
+                weightOrVolume = Some(0.6)
+              )
+            )
+          )
+          service.alcoholAddHelper(
+            sameVariant,
+            BigDecimal(0),
+            "non-sparkling-cider",
+            isWineStillOrSparklingEnabled = true
+          ) shouldBe BigDecimal(1.1)
+        }
+      }
+    }
+
+    "other de-pooling for .alcoholAddHelper with the wine-still-or-sparkling toggle" when {
+
+      val ciderAndOtherJourneyData: JourneyData = JourneyData(
+        purchasedProductInstances = List(
+          PurchasedProductInstance(
+            ProductPath("alcohol/cider/non-sparkling-cider"),
+            iid = "iid0",
+            weightOrVolume = Some(0.5)
+          ),
+          PurchasedProductInstance(
+            ProductPath("alcohol/other"),
+            iid = "iid1",
+            weightOrVolume = Some(2.3)
+          )
+        )
+      )
+
+      "the toggle is OFF" should {
+        "pool other together with cider" in {
+          service.alcoholAddHelper(ciderAndOtherJourneyData, BigDecimal(0), "other") shouldBe BigDecimal(2.8)
+        }
+      }
+
+      "the toggle is ON" should {
+        "sum only other, not cider" in {
+          service.alcoholAddHelper(
+            ciderAndOtherJourneyData,
+            BigDecimal(0),
+            "other",
+            isWineStillOrSparklingEnabled = true
+          ) shouldBe BigDecimal(2.3)
+        }
+      }
+    }
+
     "edit product helpers" when {
       ".alcoholEditHelper" when {
         "there are multiple wine products" should {

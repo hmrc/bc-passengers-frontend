@@ -17,23 +17,35 @@
 package config
 
 import org.scalatest.matchers.should.Matchers
-import util.BaseSpec
+import util.{BaseSpec, VapingProductsFeature, WineStillOrSparklingFeature}
 
-class AppConfigSpec extends BaseSpec with Matchers {
+class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature with VapingProductsFeature {
+
+  val appConfig: AppConfig = injected[AppConfig]
 
   "AppConfig" should {
+    "read isVapingJourneyEnabled as true when toggle.isVapingJourneyEnabled is true" in {
+      appConfigVpToggleOn.isVapingJourneyEnabled shouldBe true
+    }
+
+    "read isVapingJourneyEnabled as false when toggle.isVapingJourneyEnabled is false" in {
+      appConfigVpToggleOff.isVapingJourneyEnabled shouldBe false
+    }
 
     "return the correct declareGoodsUrl" in {
-      val appConfig = injected[AppConfig]
       appConfig.declareGoodsUrl shouldBe "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
     }
 
+    "return the correct govUKUrl" in {
+      appConfig.govUK shouldBe "https://www.gov.uk"
+    }
+
     "read isWineStillOrSparklingEnabled as true when features.wine-still-or-sparkling is true" in {
-      appConfigWith("features.wine-still-or-sparkling" -> true).isWineStillOrSparklingEnabled shouldBe true
+      appConfigToggleOn.isWineStillOrSparklingEnabled shouldBe true
     }
 
     "read isWineStillOrSparklingEnabled as false when features.wine-still-or-sparkling is false" in {
-      appConfigWith("features.wine-still-or-sparkling" -> false).isWineStillOrSparklingEnabled shouldBe false
+      appConfigToggleOff.isWineStillOrSparklingEnabled shouldBe false
     }
   }
 }

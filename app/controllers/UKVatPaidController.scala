@@ -72,7 +72,7 @@ class UKVatPaidController @Inject() (
           cache
             .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
             .map(_ =>
-              if (path.toString.contains("other-goods")) {
+              if (path.toString.contains("other-goods") || path.toString.contains("other-ni-goods")) {
                 if (context.getJourneyData.isUKResident.isDefined && !context.getJourneyData.isUKResident.get) {
                   Redirect(routes.UccReliefController.loadUccReliefItemPage(path, iid))
                 } else {

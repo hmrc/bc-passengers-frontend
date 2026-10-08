@@ -16,11 +16,15 @@
 
 package views.purchased_products
 
+import config.AppConfig
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.{BaseSelectors, BaseViewSpec}
 import views.html.purchased_products.limit_exceed_add
 
-class LimitExceedAddViewSpec extends BaseViewSpec {
+class LimitExceedAddViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
+
+  override val appConfig: AppConfig = appConfigToggleOff
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_add].apply(
@@ -28,7 +32,9 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
       userInput = "0.01",
       token = "cigars",
       productName = "label.tobacco.cigars",
-      showPanelIndent = false
+      showPanelIndent = false,
+      showGroupMessage = false,
+      isWineToggleOn = false
     )(
       request = request,
       messages = messages,
@@ -43,6 +49,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
       productName = "label.tobacco.cigars",
       showPanelIndent = false,
       showGroupMessage = false,
+      isWineToggleOn = false,
       request = request,
       messages = messages,
       appConfig = appConfig
@@ -50,7 +57,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
   val viewViaF: HtmlFormat.Appendable =
     injected[limit_exceed_add].ref
-      .f("110.2", "0.02", "cigars", "label.tobacco.cigars", false, false)(request, messages, appConfig)
+      .f("110.2", "0.02", "cigars", "label.tobacco.cigars", false, false, false)(request, messages, appConfig)
 
   object Selectors extends BaseSelectors {
     val panelIndent = "#main-content > div > div > div > div.govuk-inset-text"
@@ -62,10 +69,11 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
     item: String,
     productName: String,
     showPanel: Boolean = false,
-    showGroupMessage: Boolean = false
+    showGroupMessage: Boolean = false,
+    isWineToggleOn: Boolean = false
   ): HtmlFormat.Appendable =
     injected[limit_exceed_add]
-      .apply(amount, userInput, item, productName, showPanel, showGroupMessage)(
+      .apply(amount, userInput, item, productName, showPanel, showGroupMessage, isWineToggleOn)(
         request = request,
         messages = messages,
         appConfig = appConfig
@@ -84,7 +92,7 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.500", "0.05", "beer", "label.alcohol.beer")
+          val view = viewApply("110.500", "0.05", "beer", "label.alcohol.beer", false, false, false)
 
           val expectedContent =
             Seq(
@@ -273,6 +281,64 @@ class LimitExceedAddViewSpec extends BaseViewSpec {
             )
 
           behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        "the user enters too much wine with the wine-still-or-sparkling toggle ON" should {
+
+          val onConfig: AppConfig = appConfigToggleOn
+          val view                =
+            injected[limit_exceed_add]
+              .apply(
+                totalAccAmount = "90.01",
+                userInput = "0.01",
+                token = "wine",
+                productName = "label.alcohol.wine",
+                showPanelIndent = true,
+                false,
+                true
+              )(request, messages, onConfig)
+
+          val expectedContent =
+            Seq(
+              Selectors.p(1)        -> "You have entered a total of 90.01 litres of wine (still or sparkling).",
+              Selectors.p(
+                2
+              )                     -> "You cannot use this service to declare more than 90 litres of wine (still or sparkling).",
+              Selectors.panelIndent -> "0.01 litres of wine (still or sparkling)"
+            )
+
+          behave like pageWithExpectedMessages(view, expectedContent)
+        }
+
+        Seq(
+          ("non-sparkling-cider", "label.alcohol.non-sparkling-cider", "non-sparkling cider"),
+          ("sparkling-cider", "label.alcohol.sparkling-cider", "sparkling cider (1.3% to 5.5%)"),
+          ("sparkling-cider-up", "label.alcohol.sparkling-cider-up", "sparkling cider (5.6% to 8.4%)")
+        ).foreach { case (token, productName, expectedName) =>
+          s"the user enters too much $token with the wine-still-or-sparkling toggle ON" should {
+
+            val onConfig: AppConfig = appConfigToggleOn
+            val view                =
+              injected[limit_exceed_add]
+                .apply(
+                  totalAccAmount = "110.01",
+                  userInput = "0.01",
+                  token = token,
+                  productName = productName,
+                  showPanelIndent = true,
+                  false,
+                  true
+                )(request, messages, onConfig)
+
+            val expectedContent =
+              Seq(
+                Selectors.p(1)        -> s"You have entered a total of 110.01 litres of $expectedName.",
+                Selectors.p(2)        -> s"You cannot use this service to declare more than 110 litres of $expectedName.",
+                Selectors.panelIndent -> s"0.01 litres of $expectedName"
+              )
+
+            behave like pageWithExpectedMessages(view, expectedContent)
+          }
         }
 
         "the user enters too much wine when sparkling wine has been previously added" should {

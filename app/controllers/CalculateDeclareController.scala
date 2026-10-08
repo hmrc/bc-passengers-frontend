@@ -82,6 +82,7 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
+    isWineToggleEnabled(context.getJourneyData)
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
@@ -114,6 +115,12 @@ class CalculateDeclareController @Inject() (
         }
       }
     }
+  }
+
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
   }
 
   def whatIsYourName: Action[AnyContent] = userInfoAction { implicit context =>
@@ -676,7 +683,8 @@ class CalculateDeclareController @Inject() (
                     deltaCalc,
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -689,7 +697,8 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = false,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -702,7 +711,8 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = true,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -714,7 +724,8 @@ class CalculateDeclareController @Inject() (
                     deltaCalc,
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -726,7 +737,8 @@ class CalculateDeclareController @Inject() (
                     deltaCalc,
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
             }
@@ -740,7 +752,8 @@ class CalculateDeclareController @Inject() (
                     None,
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -753,7 +766,8 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = false,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -766,7 +780,8 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = true,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -778,7 +793,8 @@ class CalculateDeclareController @Inject() (
                     None,
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -790,7 +806,8 @@ class CalculateDeclareController @Inject() (
                     None,
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
             }

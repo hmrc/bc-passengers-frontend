@@ -80,7 +80,8 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
       isVatPaid = Some(false),
       isCustomPaid = Some(false),
       isExcisePaid = Some(false),
-      isUccRelief = Some(false)
+      isUccRelief = Some(false),
+      itemKeyName = Some("alcohol")
     )
   )
 
@@ -96,7 +97,8 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     deltaCalc = Some(calculation),
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
-    backLink = None
+    backLink = None,
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,
@@ -110,6 +112,7 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
+    isWineToggleOn = false,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -121,7 +124,8 @@ class ZeroToDeclareViewSpec extends BaseViewSpec {
     Some(calculation),
     "0.00",
     true,
-    None
+    None,
+    false
   )(request, messages, appConfig)
 
   "ZeroToDeclareView" when {

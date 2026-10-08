@@ -16,11 +16,15 @@
 
 package models
 
-import models.BringingOverAllowanceDto.form
+import config.AppConfig
+import models.BringingOverAllowanceDto.{form, formForJourney}
+import org.mockito.Mockito.{mock, when}
 import play.api.data.{Form, FormError}
 import util.BaseSpec
 
 class BringingOverAllowanceDtoSpec extends BaseSpec {
+
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   private val validatedForm: Form[BringingOverAllowanceDto] = form.bind(
     Map(
@@ -35,7 +39,7 @@ class BringingOverAllowanceDtoSpec extends BaseSpec {
       errors shouldBe empty
     }
 
-    "return error with empty data" in {
+    "return error with empty data isVapingJourneyEnabled toggle is off" in {
       val validatedForm: Form[BringingOverAllowanceDto] = form.bind(
         Map(
           "bringingOverAllowance" -> ""
@@ -44,6 +48,18 @@ class BringingOverAllowanceDtoSpec extends BaseSpec {
       val errors: Seq[FormError]                        = validatedForm.errors
 
       errors shouldBe List(FormError("bringingOverAllowance", List("error.bringing_over_allowance")))
+    }
+
+    "return error with empty data isVapingJourneyEnabled toggle is on" in {
+      when(mockAppConfig.isVapingJourneyEnabled).thenReturn(true)
+      val validatedForm: Form[BringingOverAllowanceDto] = formForJourney(mockAppConfig.isVapingJourneyEnabled).bind(
+        Map(
+          "bringingOverAllowance" -> ""
+        )
+      )
+      val errors: Seq[FormError]                        = validatedForm.errors
+
+      errors shouldBe List(FormError("bringingOverAllowance", List("error.bringing_over_allowance_ni")))
     }
 
     "return the correct result when filled" in {

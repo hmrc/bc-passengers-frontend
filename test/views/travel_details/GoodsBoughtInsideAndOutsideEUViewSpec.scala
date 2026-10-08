@@ -20,16 +20,24 @@ import models.BringingOverAllowanceDto
 import models.BringingOverAllowanceDto.form
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import util.{VapingProductsFeature, WineStillOrSparklingFeature}
 import views.BaseViewSpec
 import views.html.travel_details.goods_bought_inside_and_outside_eu
 
-class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
+class GoodsBoughtInsideAndOutsideEUViewSpec
+    extends BaseViewSpec
+    with WineStillOrSparklingFeature
+    with VapingProductsFeature {
 
   private val validForm: Form[BringingOverAllowanceDto] = form.bind(Map("bringingOverAllowance" -> "true"))
 
-  private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable =
+  private def viewWith(wineStillOrSparkling: Boolean, vaping: Boolean): HtmlFormat.Appendable =
     injected[goods_bought_inside_and_outside_eu]
-      .apply(validForm, None)(request, messages, appConfigWith("features.wine-still-or-sparkling" -> enabled))
+      .apply(validForm, None)(
+        request,
+        messages,
+        appConfigWith(wineStillOrSparklingKey -> wineStillOrSparkling, vapingProductsFeatureKey -> vaping)
+      )
 
   val viewViaApply: HtmlFormat.Appendable = injected[goods_bought_inside_and_outside_eu].apply(
     form = validForm,
@@ -53,15 +61,14 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
     None
   )(request, messages, appConfig)
 
-  "GoodsBoughtInsideAndOutsideEUView" when
-    renderViewTest(
-      title = "Goods brought into Great Britain or the Isle of Man - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "Goods brought into Great Britain or the Isle of Man"
-    )
-
   "GoodsBoughtInsideAndOutsideEUView with the wine-still-or-sparkling toggle ON" should {
 
-    lazy val body = viewWithToggle(true).body
+    lazy val view = viewWith(wineStillOrSparkling = true, vaping = false)
+    lazy val body = view.body
+
+    "show the still-or-sparkling title header" in {
+      document(view).select("h1").text shouldBe messages("heading.goods_brought_into_gb.still-or-sparkling")
+    }
 
     "show the personal-allowance intro" in {
       body should include(messages("text.gb.allowance.still-or-sparkling"))
@@ -89,6 +96,13 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
       body should include(messages("text.gb.allowance.alc_3.still-or-sparkling"))
     }
 
+    "show the 'use this service to value your other goods' block" in {
+      body should include(messages("text.allowance.other_goods_value_intro.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_1.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_2.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_3.still-or-sparkling"))
+    }
+
     "stack the Yes/No buttons" in {
       body should not include "govuk-radios--inline"
     }
@@ -96,7 +110,12 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
 
   "GoodsBoughtInsideAndOutsideEUView with the wine-still-or-sparkling toggle OFF" should {
 
-    lazy val body = viewWithToggle(false).body
+    lazy val view = viewWith(wineStillOrSparkling = false, vaping = false)
+    lazy val body = view.body
+
+    "show the original title header" in {
+      document(view).select("h1").text shouldBe messages("heading.goods_brought_into_gb")
+    }
 
     "show the original intro and section heading" in {
       body should include(messages("text.gb.allowance"))
@@ -114,8 +133,24 @@ class GoodsBoughtInsideAndOutsideEUViewSpec extends BaseViewSpec {
       body should not include messages("text.gb.allowance.alc_2.still-or-sparkling")
     }
 
+    "not show the 'use this service to value your other goods' block" in {
+      body should not include messages("text.allowance.other_goods_value_intro.still-or-sparkling")
+    }
+
     "keep the Yes/No buttons inline" in {
       body should include("govuk-radios--inline")
+    }
+  }
+
+  "GoodsBoughtInsideAndOutsideEUView with the vaping toggle ON" should {
+
+    lazy val body = viewWith(wineStillOrSparkling = false, vaping = true).body
+
+    "show the 'use this service to value your other goods' block" in {
+      body should include(messages("text.allowance.other_goods_value_intro.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_1.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_2.still-or-sparkling"))
+      body should include(messages("text.allowance.other_goods_value_3.still-or-sparkling"))
     }
   }
 }

@@ -108,9 +108,73 @@ object TobaccoDto {
   )
 }
 
+object OtherGoodsNIDto {
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[OtherGoodsNIDto] = for {
+    country        <- purchasedProductInstance.country
+    currency       <- purchasedProductInstance.currency
+    weightOrVolume <- purchasedProductInstance.weightOrVolume
+    cost           <- purchasedProductInstance.cost
+  } yield OtherGoodsNIDto(
+    weightOrVolume,
+    country.code,
+    purchasedProductInstance.originCountry.map(_.code),
+    currency,
+    cost,
+    purchasedProductInstance.isVatPaid,
+    purchasedProductInstance.isUccRelief,
+    purchasedProductInstance.isExcisePaid,
+    purchasedProductInstance.isCustomPaid,
+    purchasedProductInstance.hasEvidence
+  )
+}
+
+case class OtherGoodsNIDto(
+  weightOrVolume: BigDecimal,
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isUccRelief: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
+
+object VapeDto {
+  def fromPurchasedProductInstance(purchasedProductInstance: PurchasedProductInstance): Option[VapeDto] = for {
+    country        <- purchasedProductInstance.country
+    currency       <- purchasedProductInstance.currency
+    weightOrVolume <- purchasedProductInstance.weightOrVolume
+    cost           <- purchasedProductInstance.cost
+  } yield VapeDto(
+    weightOrVolume,
+    country.code,
+    purchasedProductInstance.originCountry.map(_.code),
+    currency,
+    cost,
+    purchasedProductInstance.isVatPaid,
+    purchasedProductInstance.isExcisePaid,
+    purchasedProductInstance.isCustomPaid,
+    purchasedProductInstance.hasEvidence
+  )
+}
+
 case class TobaccoDto(
   noOfSticks: Option[Int],
   weightOrVolume: Option[BigDecimal],
+  country: String,
+  originCountry: Option[String],
+  currency: String,
+  cost: BigDecimal,
+  isVatPaid: Option[Boolean],
+  isExcisePaid: Option[Boolean],
+  isCustomPaid: Option[Boolean],
+  hasEvidence: Option[Boolean]
+)
+
+case class VapeDto(
+  weightOrVolume: BigDecimal,
   country: String,
   originCountry: Option[String],
   currency: String,
@@ -138,6 +202,20 @@ object BringingOverAllowanceDto {
     mapping(
       "bringingOverAllowance" -> optional(boolean)
         .verifying("error.bringing_over_allowance", _.isDefined)
+        .transform[Boolean](_.get, b => Option(b))
+    )(BringingOverAllowanceDto.apply)(o => Some(o.bringingOverAllowance))
+  )
+
+  def formForJourney(isVapingJourneyEnabled: Boolean): Form[BringingOverAllowanceDto] = Form(
+    mapping(
+      "bringingOverAllowance" -> optional(boolean)
+        .verifying(
+          if (isVapingJourneyEnabled)
+            "error.bringing_over_allowance_ni"
+          else
+            "error.bringing_over_allowance",
+          _.isDefined
+        )
         .transform[Boolean](_.get, b => Option(b))
     )(BringingOverAllowanceDto.apply)(o => Some(o.bringingOverAllowance))
   )
@@ -225,7 +303,7 @@ case class SelectProductsDto(tokens: List[String])
 
 object GoodsTypeDto {
 
-  private val validGoodsTypes = Set("alcohol", "tobacco", "other-goods")
+  private val validGoodsTypes = Set("alcohol", "tobacco", "other-goods", "other-ni-goods", "vaping-products")
 
   val form: Form[GoodsTypeDto] = Form(
     mapping(

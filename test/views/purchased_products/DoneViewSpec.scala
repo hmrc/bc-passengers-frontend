@@ -18,10 +18,11 @@ package views.purchased_products
 
 import models._
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.done
 
-class DoneViewSpec extends BaseViewSpec {
+class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
   private val weightOrVolume: BigDecimal = 40
 
@@ -80,7 +81,8 @@ class DoneViewSpec extends BaseViewSpec {
       isVatPaid = Some(false),
       isCustomPaid = Some(false),
       isExcisePaid = Some(false),
-      isUccRelief = Some(false)
+      isUccRelief = Some(false),
+      itemKeyName = Some("alcohol")
     )
   )
 
@@ -96,7 +98,8 @@ class DoneViewSpec extends BaseViewSpec {
     deltaCalc = Some(calculation),
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
-    backLink = None
+    backLink = None,
+    isWineToggleOn = false
   )(
     request = request,
     messages = messages,
@@ -110,6 +113,7 @@ class DoneViewSpec extends BaseViewSpec {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
+    isWineToggleOn = false,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -121,8 +125,19 @@ class DoneViewSpec extends BaseViewSpec {
     Some(calculation),
     "0.00",
     true,
-    None
+    None,
+    false
   )(request, messages, appConfig)
+
+  private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable = injected[done].apply(
+    previousDeclaration = true,
+    calculatorResponseDto = calculatorResponseDto,
+    deltaCalc = Some(calculation),
+    oldAllTax = "0.00",
+    hideExchangeRateInfo = true,
+    backLink = None,
+    isWineToggleOn = enabled
+  )(request, messages, appConfigToggle(enabled))
 
   "DoneView" when {
     renderViewTest(
@@ -133,6 +148,17 @@ class DoneViewSpec extends BaseViewSpec {
     "link to the start again confirmation page" in {
       document(viewViaApply).select("#start-again").attr("href") shouldBe
         "/check-tax-on-goods-you-bring-into-the-uk/start-again-are-you-sure"
+    }
+  }
+
+  "DoneView with the wine-still-or-sparkling toggle" should {
+
+    "show the wine line item as 'wine (still or sparkling)' when ON" in {
+      viewWithToggle(true).body should include(messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
+    }
+
+    "show the plain wine line item without 'still or sparkling' when OFF" in {
+      viewWithToggle(false).body should not include "(still or sparkling)"
     }
   }
 }
