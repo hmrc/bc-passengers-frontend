@@ -74,6 +74,40 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
   }
 
   "GET /check-your-item" should {
+    Seq(false -> "gb-ni-exemptions", true -> "gb-ni-vat-check").foreach { case (isUKResident, destination) =>
+      s"link back to $destination for GB to NI other goods when UK residency is $isUKResident" in {
+        val book = PurchasedProductInstance(ProductPath("other-goods/books"), "iid0")
+        val data = journeyDataWith(book).copy(
+          euCountryCheck = Some("greatBritain"),
+          isUKResident = Some(isUKResident)
+        )
+        when(mockCache.fetch(any())).thenReturn(Future.successful(Some(data)))
+
+        val result = route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/other-goods/books/iid0")
+        ).get
+
+        status(result)                                                    shouldBe OK
+        Jsoup.parse(contentAsString(result)).select("#back").attr("href") shouldBe
+          s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/books/iid0/$destination"
+      }
+    }
+
+    "keep the goods details back link for other goods arriving from outside the EU" in {
+      val book = PurchasedProductInstance(ProductPath("other-goods/books"), "iid0")
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(book))))
+
+      val result = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/other-goods/books/iid0")
+      ).get
+
+      status(result)                                                    shouldBe OK
+      Jsoup.parse(contentAsString(result)).select("#back").attr("href") shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/iid0/edit"
+    }
+
     "display the item CYA page" in {
       val result = route(
         app,

@@ -27,7 +27,7 @@
 
 @(form: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, "heading.ucc_item")), customBackLink = false) {
+@govukLayout(pageTitle = Some(title(form, "heading.ucc_item")), backLink = backLink) {
 
     @formHelper(action = routes.UccReliefController.postUccReliefItemPage(path, iid)){
 
