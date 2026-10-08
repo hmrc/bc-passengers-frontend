@@ -1,0 +1,59 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.ViewUtils._
+
+@this(
+  govukLayout: templates.GovukLayoutWrapper,
+  errorSummary: components.errorSummary,
+  inputRadio: components.inputRadio,
+  button: components.button,
+  formHelper: FormWithCSRF
+)
+
+@(form: Form[Boolean], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@govukLayout(pageTitle = Some(title(form, "heading.start_again_are_you_sure")), backLink = backLink) {
+
+  @formHelper(action = routes.StartAgainController.submit) {
+
+    @errorSummary(form.errors, Some("yes"))
+
+    @inputRadio(
+      form = form,
+      legend = messages("heading.start_again_are_you_sure"),
+      name = "startAgain",
+      hint = Some(Html(messages("text.start_again_goods_deleted"))),
+      classes = "govuk-fieldset__legend--l start-again__heading",
+      items = Seq(
+        RadioItem(
+          id = Some("startAgain-yes"),
+          value = Some("true"),
+          content = Text(messages("label.start_again_yes")),
+          checked = form("startAgain").value.contains("true")
+        ),
+        RadioItem(
+          id = Some("startAgain-no"),
+          value = Some("false"),
+          content = Text(messages("label.start_again_no")),
+          checked = form("startAgain").value.contains("false")
+        )
+      )
+    )
+
+    @button("label.start_again_continue")
+  }
+}

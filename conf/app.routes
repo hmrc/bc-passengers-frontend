@@ -78,6 +78,10 @@ GET        /new-session                                                         
 
 GET        /keep-alive                                                                 controllers.TravelDetailsController.keepAlive
 
+GET        /start-again-are-you-sure                                                  controllers.StartAgainController.show
+POST       /start-again-are-you-sure                                                  controllers.StartAgainController.submit
+GET        /your-declaration-has-been-deleted                                         controllers.StartAgainController.declarationDeleted
+
 GET        /previous-goods                                                             controllers.PreviousGoodsController.showPreviousGoods
 
 GET        /tell-us                                                                    controllers.DashboardController.showDashboard

@@ -44,6 +44,10 @@ class PreviousDeclarationController @Inject() (
   implicit def convertContextToRequest(implicit localContext: LocalContext): Request[?] = localContext.request
 
   val loadPreviousDeclarationPage: Action[AnyContent] = previousDeclarationAction { implicit context =>
+    val startAgain = context.request.getQueryString("startAgain").contains("true")
+    val backLink   =
+      if (startAgain) Some(routes.StartAgainController.declarationDeleted.url) else backLinkModel.backLink
+
     Future.successful {
       context.journeyData match {
         case Some(
@@ -78,9 +82,9 @@ class PreviousDeclarationController @Inject() (
                 _
               )
             ) =>
-          Ok(previousDeclarationPage(PrevDeclarationForm.validateForm().fill(prevDeclaration), backLinkModel.backLink))
+          Ok(previousDeclarationPage(PrevDeclarationForm.validateForm().fill(prevDeclaration), backLink))
         case _ =>
-          Ok(previousDeclarationPage(PrevDeclarationForm.validateForm(), backLinkModel.backLink))
+          Ok(previousDeclarationPage(PrevDeclarationForm.validateForm(), backLink))
       }
     }
   }
