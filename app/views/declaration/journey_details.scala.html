@@ -103,7 +103,8 @@
                 </span>
             }
             @if(arrivingNICheck.contains(true)){
-                @autoCompleteList(form,
+                @autoCompleteList(
+                    form,
                     id = "placeOfArrival.selectPlaceOfArrival",
                     name = "placeOfArrival.selectPlaceOfArrival",
                     isPageHint = true,
@@ -113,21 +114,30 @@
                     hintText = messages("label.select_a_country"),
                     list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
-                    labelClass = true
+                    labelClass = true,
+                    
                 )
             } else {
-                @autoCompleteList(form,
+                        
+            @autoCompleteList(
+                    form,
                     id = "placeOfArrival.selectPlaceOfArrival",
                     name = "placeOfArrival.selectPlaceOfArrival",
                     isPageHint = true,
                     hint = messages("label.for_example_heathrow_airport_or_dover"),
                     isPageHeading = false,
-                    label = messages(s"label.place_of_arrival_uk"),
+                    label = messages("label.place_of_arrival_uk"),
                     hintText = messages("label.enter_place_of_arrival"),
-                    list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
+                    list = portsOfArrival.map(c => (c.code, messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
-                    labelClass = true
-                )
+                    labelClass = true,
+                    describedBy =
+                        if (form("placeOfArrival").hasErrors)
+                            Some("placeOfArrival-error")
+                        else
+                            None
+                    )
+
             }
             <details class="govuk-details govuk-!-margin-bottom-6">
 
