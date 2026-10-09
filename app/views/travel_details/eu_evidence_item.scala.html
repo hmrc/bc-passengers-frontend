@@ -18,12 +18,10 @@
 @this(
     govukLayout: templates.GovukLayoutWrapper,
     errorSummary: components.errorSummary,
-    yesNoRadio: components.yesNoRadio,
+    inputRadio: components.inputRadio,
     button: components.button,
     formHelper: FormWithCSRF,
-    p: components.p,
-    fieldset: components.fieldset,
-    panelIndent: components.panelIndent
+    p: components.p
 )
 
 @(form: Form[Boolean], backLink: Option[String], path: ProductPath, iid: String)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
@@ -32,11 +30,14 @@
 
     @formHelper(action = routes.EUEvidenceController.postEUEvidenceItemPage(path,iid)){
         @errorSummary(form.errors, Some("value-yes"))
-        @fieldset(s"heading.evidence_eu_item") {
 
-            @p{@messages("text.evidence_include")}
+        <h1 class="govuk-heading-xl">@messages("heading.evidence_eu_item")</h1>
 
-            <ul class="govuk-list govuk-list--bullet">
+        @p(Html(messages("text.evidence_eu_item.intro")))
+
+        @p(Html(messages("text.evidence_include")))
+
+        <ul class="govuk-list govuk-list--bullet">
             <li>
                 @messages("label.packaging_or_label")
             </li>
@@ -49,16 +50,32 @@
             <li>
                 @messages("label.statement_on_origin")
             </li>
-            </ul>
-            @panelIndent{
-            @p{@messages("label.appropriate_evidence")}
-            }
+        </ul>
 
-        @yesNoRadio(form, name = "eUEvidenceItem", isPageHeading= true)
+        @inputRadio(
+            form = form,
+            legend = "label.evidence_eu_item.question",
+            legendAsHeading = false,
+            name = "eUEvidenceItem",
+            hint = Some(Html(messages("label.appropriate_evidence"))),
+            classes = "govuk-fieldset__legend--m",
+            items = Seq(
+                RadioItem(
+                    id = Some("eUEvidenceItem-value-yes"),
+                    value = Some("true"),
+                    content = Text(messages("label.yes")),
+                    checked = form("eUEvidenceItem").value.contains("true")
+                ),
+                RadioItem(
+                    id = Some("eUEvidenceItem-value-no"),
+                    value = Some("false"),
+                    content = Text(messages("label.no")),
+                    checked = form("eUEvidenceItem").value.contains("false")
+                )
+            )
+        )
 
         @button("label.continue")
-
-        }
     }
 
 }
