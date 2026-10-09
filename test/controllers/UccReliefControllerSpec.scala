@@ -85,6 +85,8 @@ class UccReliefControllerSpec extends BaseSpec {
       val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Tax and duty exemptions for non-UK residents"
+      doc.select("#back").attr("href")  shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/adult/adult-clothing/someIid/gb-ni-vat-check"
     }
 
     "load the page and populate uccRelief as true" in {
