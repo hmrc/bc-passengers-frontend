@@ -46,6 +46,7 @@ class TravelDetailsController @Inject() (
   val no_need_to_use_service: views.html.travel_details.no_need_to_use_service,
   val goods_brought_into_gb: views.html.travel_details.goods_bought_inside_and_outside_eu,
   val goods_brought_into_ni: views.html.travel_details.goods_bought_outside_eu,
+  val goods_brought_into_ni_vp: views.html.travel_details.goods_bought_outside_eu_vp,
   val goods_bought_inside_eu: views.html.travel_details.goods_bought_inside_eu,
   val confirm_age: views.html.travel_details.confirm_age,
   val private_travel: views.html.travel_details.private_travel,
@@ -76,7 +77,8 @@ class TravelDetailsController @Inject() (
     with I18nSupport
     with ControllerHelpers {
 
-  private val logger = Logger(this.getClass)
+  private val logger                          = Logger(this.getClass)
+  private val isVapingJourneyEnabled: Boolean = appConfig.isVapingJourneyEnabled
 
   val newSession: Action[AnyContent] = Action.async { implicit request =>
     Future.successful {
@@ -331,23 +333,43 @@ class TravelDetailsController @Inject() (
                 _
               )
             ) =>
+          val form = BringingOverAllowanceDto
+            .formForJourney(isVapingJourneyEnabled)
+            .bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString))
           Ok(
-            goods_brought_into_ni(
-              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
-              backLinkModel.backLink
-            )
+            if (isVapingJourneyEnabled) {
+              goods_brought_into_ni_vp(form, backLinkModel.backLink)
+            } else {
+              goods_brought_into_ni(form, backLinkModel.backLink)
+            }
           )
         case _ =>
-          Ok(goods_brought_into_ni(BringingOverAllowanceDto.form, backLinkModel.backLink))
+          val form = BringingOverAllowanceDto.formForJourney(isVapingJourneyEnabled)
+          val view =
+            if (isVapingJourneyEnabled) {
+              goods_brought_into_ni_vp(form, backLinkModel.backLink)
+            } else {
+              goods_brought_into_ni(form, backLinkModel.backLink)
+            }
+          Ok(view)
       }
     }
   }
 
   val goodsBoughtIntoNIPost: Action[AnyContent] = goodsBoughtIntoNIAction { implicit context =>
-    BringingOverAllowanceDto.form
+    BringingOverAllowanceDto
+      .formForJourney(isVapingJourneyEnabled)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(goods_brought_into_ni(formWithErrors, backLinkModel.backLink))),
+        formWithErrors =>
+          val view =
+            if (isVapingJourneyEnabled) {
+              goods_brought_into_ni_vp(formWithErrors, backLinkModel.backLink)
+            } else {
+              goods_brought_into_ni(formWithErrors, backLinkModel.backLink)
+            }
+          Future.successful(BadRequest(view))
+        ,
         overAllowanceDto =>
           travelDetailsService.storeBringingOverAllowance(context.journeyData)(
             overAllowanceDto.bringingOverAllowance
@@ -398,18 +420,27 @@ class TravelDetailsController @Inject() (
             ) =>
           Ok(
             goods_brought_into_gb(
-              BringingOverAllowanceDto.form.bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
+              BringingOverAllowanceDto
+                .formForJourney(isVapingJourneyEnabled)
+                .bind(Map("bringingOverAllowance" -> bringingOverAllowance.toString)),
               backLinkModel.backLink
             )
           )
         case _ =>
-          Ok(goods_brought_into_gb(BringingOverAllowanceDto.form, backLinkModel.backLink))
+          Ok(
+            goods_brought_into_gb(
+              BringingOverAllowanceDto
+                .formForJourney(isVapingJourneyEnabled),
+              backLinkModel.backLink
+            )
+          )
       }
     }
   }
 
   val goodsBoughtIntoGBPost: Action[AnyContent] = goodsBoughtIntoGBAction { implicit context =>
-    BringingOverAllowanceDto.form
+    BringingOverAllowanceDto
+      .formForJourney(isVapingJourneyEnabled)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(goods_brought_into_gb(formWithErrors, backLinkModel.backLink))),

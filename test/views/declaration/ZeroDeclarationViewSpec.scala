@@ -83,7 +83,8 @@ class ZeroDeclarationViewSpec extends BaseViewSpec {
       isVatPaid = Some(false),
       isCustomPaid = Some(false),
       isExcisePaid = Some(false),
-      isUccRelief = Some(false)
+      isUccRelief = Some(false),
+      itemKeyName = Some("alcohol")
     )
   )
 
@@ -121,6 +122,7 @@ class ZeroDeclarationViewSpec extends BaseViewSpec {
   private val calculatorResponse: CalculatorResponse = CalculatorResponse(
     alcohol = Some(alcohol),
     tobacco = None,
+    vapingProducts = None,
     otherGoods = None,
     calculation = calculation,
     withinFreeAllowance = true,

@@ -16,14 +16,18 @@
 
 package views.purchased_products
 
+import config.AppConfig
 import models.SelectProductsDto.form
 import models.{ProductPath, SelectProductsDto}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.select_products
 
-class SelectAlcoholProductsViewSpec extends BaseViewSpec {
+class SelectAlcoholProductsViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
+
+  override val appConfig: AppConfig = appConfigToggleOff
 
   private val productPath: ProductPath = ProductPath(path = "alcohol")
 
@@ -62,13 +66,19 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec {
     request = request,
     messages = messages,
     appConfig = appConfig,
-    backLink = None
+    backLink = None,
+    customBackLink = false,
+    returnToAddedItemEditUrl = None,
+    returnToAddedItemProductPath = None
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[select_products].ref.f(
     validForm,
     items,
     productPath,
+    None,
+    false,
+    None,
     None
   )(request, messages, appConfig)
 

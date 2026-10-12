@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class DashboardController @Inject() (
@@ -46,6 +47,11 @@ class DashboardController @Inject() (
   implicit val ec: ExecutionContext
 ) extends FrontendController(controllerComponents)
     with ControllerHelpers {
+
+  private val itemsPerPage = 10
+
+  private def requestedPage(implicit context: LocalContext): Int =
+    context.request.getQueryString("page").flatMap(value => Try(value.toInt).toOption).filter(_ > 0).getOrElse(1)
 
   def showDashboard: Action[AnyContent] = dashboardAction { implicit context =>
     given lang: Lang = context.request.lang
@@ -74,35 +80,95 @@ class DashboardController @Inject() (
                   item
               }
 
+              val vapingProductsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
+                    if tid == "vaping-products" && ppi.isEditable.contains(true) =>
+                  item
+              }
+
               val otherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" && ppi.isEditable.contains(true) =>
+                    if (tid == "other-goods" || tid == "other-ni-goods") && ppi.isEditable.contains(true) =>
                   item
               }
 
               val previousOtherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
-                    if tid == "other-goods" && ppi.isEditable.contains(false) =>
+                    if (tid == "other-goods" || tid == "other-ni-goods") && ppi.isEditable.contains(false) =>
                   item
               }
 
-              val showCalculate =
-                !(alcoholPurchasedItemList.isEmpty && tobaccoPurchasedItemList.isEmpty && otherGoodsPurchasedItemList.isEmpty)
+              val alcoholItems            = alcoholPurchasedItemList.reverse
+              val tobaccoItems            = tobaccoPurchasedItemList.reverse
+              val vapingProductsItems     = vapingProductsPurchasedItemList.reverse
+              val otherGoodsItems         = otherGoodsPurchasedItemList.reverse
+              val previousOtherGoodsItems = previousOtherGoodsPurchasedItemList.reverse
+
+              val allItems = if (appConfig.isIrishBorderQuestionEnabled) {
+                alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
+                  "vaping-products" -> _
+                ) ++ otherGoodsItems.map(
+                  "other-ni-goods" -> _
+                )
+              } else {
+                alcoholItems.map("alcohol" -> _) ++ tobaccoItems.map("tobacco" -> _) ++ vapingProductsItems.map(
+                  "vaping-products" -> _
+                ) ++ otherGoodsItems.map(
+                  "other-goods" -> _
+                )
+              }
+
+              val previousOtherGoodsPageItems: List[(String, PurchasedItem)] =
+                if (appConfig.isIrishBorderQuestionEnabled) {
+                  previousOtherGoodsItems.map("other-ni-goods" -> _)
+                } else {
+                  previousOtherGoodsItems.map("other-goods" -> _)
+                }
+
+              val totalItems  = allItems.size
+              val totalPages  = math.max(1, math.ceil(totalItems.toDouble / itemsPerPage).toInt)
+              val currentPage = math.min(requestedPage, totalPages)
+              val pageItems   = allItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+              val pageAlcoholItems                                 = pageItems.collect { case ("alcohol", item) => item }
+              val pageTobaccoItems                                 = pageItems.collect { case ("tobacco", item) => item }
+              val pageVapingProductsItems                          = pageItems.collect { case ("vaping-products", item) => item }
+              val pageOtherGoodsItems                              = pageItems.collect { case ("other-goods", item) => item }
+              val pageOtherGoodsNIItems                            = pageItems.collect { case ("other-ni-goods", item) => item }
+              val pagePreviousOtherGoodsItems: List[PurchasedItem] =
+                previousOtherGoodsPageItems.collect { case ("other-goods", item) => item }
+
+              val pagePreviousOtherGoodsNIItems: List[PurchasedItem] =
+                previousOtherGoodsPageItems.collect { case ("other-ni-goods", item) => item }
+
+              val showCalculate = totalItems > 0
+
+              val backLink = context.request.session
+                .get(returnToAddedItemDashboardUrlSessionKey)
+                .orElse(context.request.session.get(returnToAddedItemSessionKey))
+                .orElse(backLinkModel.backLink)
 
               Ok(
                 dashboard(
                   jd,
-                  alcoholPurchasedItemList.reverse,
-                  tobaccoPurchasedItemList.reverse,
-                  otherGoodsPurchasedItemList.reverse,
-                  previousOtherGoodsPurchasedItemList.reverse,
+                  pageAlcoholItems,
+                  pageTobaccoItems,
+                  pageVapingProductsItems,
+                  if (pageOtherGoodsItems.isEmpty) pageOtherGoodsNIItems else pageOtherGoodsItems,
+                  if (pagePreviousOtherGoodsItems.isEmpty) pagePreviousOtherGoodsNIItems
+                  else pagePreviousOtherGoodsItems,
+                  totalItems,
+                  otherGoodsItems.size,
+                  currentPage,
+                  totalPages,
                   showCalculate,
                   isAmendment,
-                  backLinkModel.backLink,
+                  backLink,
                   appConfig.isIrishBorderQuestionEnabled,
                   jd.euCountryCheck.contains("greatBritain") && jd.arrivingNICheck.contains(true),
                   jd.euCountryCheck.contains("euOnly"),
-                  jd.isUKResident.contains(true)
+                  jd.isUKResident.contains(true),
+                  context.request.getQueryString("addAnotherItemError").contains("true")
                 )
               )
           }

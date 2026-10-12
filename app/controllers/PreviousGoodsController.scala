@@ -73,6 +73,12 @@ class PreviousGoodsController @Inject() (
                   item
               }
 
+              val previousVapingProductsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
+                case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
+                    if tid == "vaping-products" && ppi.isEditable.contains(false) =>
+                  item
+              }
+
               val previousOtherGoodsPurchasedItemList: List[PurchasedItem] = purchasedItemList.collect {
                 case item @ PurchasedItem(ppi, ProductTreeLeaf(_, _, _, tid, _), _, _, _)
                     if tid == "other-goods" && ppi.isEditable.contains(false) =>
@@ -84,6 +90,7 @@ class PreviousGoodsController @Inject() (
                   jd,
                   previousAlcoholPurchasedItemList.reverse,
                   previousTobaccoPurchasedItemList.reverse,
+                  previousVapingProductsPurchasedItemList.reverse,
                   previousOtherGoodsPurchasedItemList.reverse,
                   backLinkModel.backLink,
                   appConfig.isIrishBorderQuestionEnabled,

@@ -26,37 +26,52 @@
     warning: components.warning,
     button: components.button,
     formHelper: FormWithCSRF,
-    limitExceededViewUtils:LimitExceededViewUtils
+    limitExceededViewUtils:LimitExceededViewUtils,
+    panelIndent: components.panelIndent
 )
-@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(totalAccAmount: String, userInput:String, token: String, productName: String, showPanelIndent: Boolean, showGroupMessage: Boolean = false, isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+
+@labelToken = @{
+    if(isWineToggleOn && token == "wine" && !showGroupMessage) "wine.still-or-sparkling"
+    else if(isWineToggleOn && token.contains("cider") && !showGroupMessage) s"$token.still-or-sparkling"
+    else token
+}
 
 @userInputSectionContent = {
-    @limitExceededViewUtils.addViewContent(productName, token, totalAccAmount, showGroupMessage)
+    @limitExceededViewUtils.addViewContent(productName, labelToken, totalAccAmount, showGroupMessage, isWineToggleOn)
 }
 
 @panelContent = {
-    @limitExceededViewUtils.addViewPanelContent(productName, token, userInput)
+    @limitExceededViewUtils.addViewPanelContent(productName, labelToken, userInput)
 }
 
 @govukLayout(pageTitle = Some(messages("limitExceeded.title")  + " - " + messages("service.name") + " - " + messages("site.govuk"))) {
 
     @h1(messages("limitExceeded.h1"))
 
+    @if(appConfig.isVapingJourneyEnabled && (labelToken.contains("vape") || labelToken.contains("vaping-products-liquid"))){
+        @p{@messages("limitExceeded.p.you_have_entered", userInput)}
+    }
     @userInputSectionContent
 
     @if(showPanelIndent) {
         @panelContent
     }
-
-    <p class="govuk-body">
-        @Html(
+    @if(appConfig.isVapingJourneyEnabled && (labelToken.contains("vape") || labelToken.contains("vaping-products-liquid"))){
+        @panelIndent{
+            @p{@messages("limitExceeded.p.panelIndent", userInput)}
+        }
+    } else {
+        <p class="govuk-body">
+            @Html(
             messages(
             "limitExceeded.moreInfo.sentence",
             s"""<a class="govuk-link" target="_blank" rel="noreferrer noopener"
-                    href="${messages("limitExceeded.moreInfo.href")}">${messages("limitExceeded.moreInfo.link")}</a>"""
+                   href="${messages("limitExceeded.moreInfo.href")}">${messages("limitExceeded.moreInfo.link")}</a>"""
             )
-        )
-    </p>
+            )
+        </p>
+    }
 
     @h2(messages("limitExceeded.h2a"), id = Some("what-you-must-do"))
 

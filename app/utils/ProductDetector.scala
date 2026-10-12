@@ -32,6 +32,24 @@ trait ProductDetector {
       case _                                                           => beerOrSpiritExists
     }
 
+  def checkVapingProductExists(
+    productToken: String,
+    vapingProductsExists: Boolean
+  ): Boolean =
+    productToken match {
+      case token if token.contains("vape") => vapingProductsExists
+      case _                               => false
+    }
+
+  def checkVapingProductNIExists(
+    productToken: String,
+    vapingProductsExists: Boolean
+  ): Boolean =
+    productToken match {
+      case token if token.contains("vaping-products-liquid") => vapingProductsExists
+      case _                                                 => false
+    }
+
   def checkProductExists(journeyData: JourneyData, path: String): Boolean =
     checkProductExistsInPurchasedProductInstances(
       journeyData,

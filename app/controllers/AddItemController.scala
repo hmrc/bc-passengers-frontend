@@ -1,0 +1,96 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import config.AppConfig
+import controllers.enforce.DashboardAction
+import models.{GoodsTypeDto, ProductPath, PurchasedProductInstance}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
+class AddItemController @Inject() (
+  dashboardAction: DashboardAction,
+  val add_item: views.html.purchased_products.add_item,
+  override val controllerComponents: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  implicit override val messagesApi: MessagesApi,
+  implicit val ec: ExecutionContext
+) extends FrontendController(controllerComponents)
+    with I18nSupport {
+
+  private def itemReplacementCyaUrl(implicit context: LocalContext): Option[String] =
+    context.request.session.get(ControllerHelpers.itemReplacementCyaUrlSessionKey)
+
+  private def itemBeingReplaced(implicit context: LocalContext): Option[PurchasedProductInstance] =
+    context.request.session
+      .get(ControllerHelpers.itemBeingReplacedSessionKey)
+      .flatMap(context.getJourneyData.getPurchasedProductInstance)
+
+  def show: Action[AnyContent] = dashboardAction { implicit context =>
+    implicit val request: Request[AnyContent] = context.request
+    val form                                  = itemBeingReplaced.flatMap(_.path.components.headOption).fold(GoodsTypeDto.form) { category =>
+      val goodsType =
+        if (
+          category == "other-goods" && appConfig.isVapingJourneyEnabled && context.getJourneyData.arrivingNICheck
+            .contains(true)
+        )
+          "other-ni-goods"
+        else category
+      GoodsTypeDto.form.fill(GoodsTypeDto(goodsType))
+    }
+    Future.successful(
+      Ok(add_item(form, context.getJourneyData, itemReplacementCyaUrl))
+        .removingFromSession(ControllerHelpers.returnToAddedItemSessionKeys*)(using context.request)
+    )
+  }
+
+  def submit: Action[AnyContent] = dashboardAction { implicit context =>
+    implicit val request: Request[AnyContent] = context.request
+    GoodsTypeDto.form
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          Future.successful(BadRequest(add_item(formWithErrors, context.getJourneyData, itemReplacementCyaUrl))),
+        goodsType =>
+          Future.successful(
+            goodsType.goodsType match {
+              case "other-goods"     =>
+                Redirect(routes.OtherGoodsInputController.displayAddForm())
+                  .removingFromSession(OtherGoodsInputController.categorisedSessionKey)(using context.request)
+              case "vaping-products" =>
+                itemBeingReplaced
+                  .filter(_.path == ProductPath("vaping-products/vape"))
+                  .flatMap(_ => itemReplacementCyaUrl) match {
+                  case Some(cyaUrl) =>
+                    Redirect(cyaUrl)
+                      .removingFromSession(ControllerHelpers.itemReplacementSessionKeys*)(using context.request)
+                  case None         =>
+                    Redirect(
+                      routes.VapingProductsInputController.displayAddForm(ProductPath(goodsType.goodsType + "/vape"))
+                    )
+                }
+              case _                 =>
+                Redirect(routes.SelectProductController.clearAndAskProductSelection(ProductPath(goodsType.goodsType)))
+            }
+          )
+      )
+  }
+}

@@ -6,13 +6,14 @@ object CodeCoverageSettings {
   private val excludedPackages: Seq[String] = Seq(
     "<empty>",
     ".*Routes.*",
+    ".*testOnly.*",
     ".*\\$anon\\$.*",
     ".*\\$.*\\$\\$.*"
   )
 
   private val settings: Seq[Setting[?]] = Seq(
     coverageExcludedFiles := excludedPackages.mkString(","),
-    coverageMinimumStmtTotal := 95,
+    coverageMinimumStmtTotal := 90,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )

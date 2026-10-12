@@ -867,6 +867,7 @@ class JourneyDataSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -877,6 +878,7 @@ class JourneyDataSpec extends BaseSpec {
         )
       ),
       Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("1.00", "1.00", "1.00", "300.00"),
       withinFreeAllowance = false,
@@ -1168,6 +1170,7 @@ class JourneyDataSpec extends BaseSpec {
                   None,
                   None,
                   None,
+                  None,
                   None
                 )
               ),
@@ -1178,6 +1181,7 @@ class JourneyDataSpec extends BaseSpec {
         )
       ),
       Some(Tobacco(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
+      Some(VapingProducts(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Some(OtherGoods(Nil, Calculation("0.00", "0.00", "0.00", "0.00"))),
       Calculation("1.00", "1.00", "1.00", "300.00"),
       withinFreeAllowance = false,

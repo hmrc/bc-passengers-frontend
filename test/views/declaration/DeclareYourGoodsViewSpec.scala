@@ -46,7 +46,7 @@ class DeclareYourGoodsViewSpec extends BaseViewSpec {
 
   "DeclareYourGoodsView" when
     renderViewTest(
-      title = "Amend your declaration - Check tax on goods you bring into the UK - GOV.UK",
-      heading = "Amend your declaration"
+      title = "Declare your additional goods - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Declare your additional goods"
     )
 }

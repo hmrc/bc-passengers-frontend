@@ -35,26 +35,38 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
 import views.html.alcohol.alcohol_input
 
 import scala.concurrent.Future
 
-class AlcoholInputControllerSpec extends BaseSpec with Injecting {
+class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillOrSparklingFeature {
 
-  val injectedCache: Cache                           = inject[Cache]
-  val injectedNewPurchaseService: NewPurchaseService = inject[NewPurchaseService]
-  val injectedAlcoholInput: alcohol_input            = inject[alcohol_input]
+  private val mockCache: Cache                           = mock(classOf[Cache])
+  private val mockNewPurchaseService: NewPurchaseService = mock(classOf[NewPurchaseService])
+  private val mockCalculatorService: CalculatorService   = mock(classOf[CalculatorService])
+  private val mockAlcoholInput: alcohol_input            = mock(classOf[alcohol_input])
 
-  override implicit lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
+  val injectedCache: Cache                           = mockCache
+  val injectedNewPurchaseService: NewPurchaseService = mockNewPurchaseService
+  val injectedAlcoholInput: alcohol_input            = mockAlcoholInput
+
+  private def appBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder()
+    .overrides(bind[Cache].toInstance(mockCache))
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
-    .overrides(bind[NewPurchaseService].toInstance(mock(classOf[NewPurchaseService])))
-    .overrides(bind[CalculatorService].toInstance(mock(classOf[CalculatorService])))
+    .overrides(bind[NewPurchaseService].toInstance(mockNewPurchaseService))
+    .overrides(bind[CalculatorService].toInstance(mockCalculatorService))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .overrides(bind[alcohol_input].toInstance(mock(classOf[alcohol_input])))
-    .build()
+    .overrides(bind[alcohol_input].toInstance(mockAlcoholInput))
+
+  override implicit lazy val app: Application = appBuilder.build()
+
+  private lazy val appWithWineStillOrSparklingEnabled: Application =
+    appBuilder.configure(wineStillOrSparklingKey -> true).build()
+
+  private lazy val appWithWineStillOrSparklingDisabled: Application =
+    appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
   override def beforeEach(): Unit = {
     reset(injectedCache)
@@ -189,6 +201,10 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         )
       ).thenReturn(insertedPurchase)
       when(
+        injected[NewPurchaseService]
+          .insertPurchasesWithIid(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())
+      ).thenReturn(insertedPurchase)
+      when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
@@ -196,7 +212,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       when(
         injected[alcohol_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -225,7 +241,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       when(
         injected[alcohol_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -254,7 +270,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       when(
         injected[alcohol_input]
-          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+          .apply(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Html(""))
 
       rt(app, req)
@@ -472,6 +488,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -553,6 +570,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -610,6 +628,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any(), any(), any())
 
@@ -654,6 +673,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       verify(injected[views.html.alcohol.alcohol_input], times(1))(
         formCaptor.capture(),
+        any(),
         any(),
         any(),
         any(),
@@ -860,7 +880,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             "cost"           -> "12.50"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/volume"
@@ -881,7 +901,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         "cost"           -> "50"
       )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits/volume"
@@ -901,11 +921,106 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             "cost"           -> "50"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is disabled and sparkling-wine is within the 60 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINESP" -> "1.0")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] = enhancedFakeRequest(
+        "POST",
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/sparkling-wine/tell-us"
+      ).withFormUrlEncodedBody(
+        "weightOrVolume" -> "60",
+        "country"        -> "FR",
+        "currency"       -> "EUR",
+        "cost"           -> "50"
+      )
+
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is disabled and wine is within the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.0")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "90",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is ON and the merged wine option is over the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "95",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val onResult: Future[Result] = euGBRoute(appWithWineStillOrSparklingEnabled, req).get
+      status(onResult)             shouldBe SEE_OTHER
+      redirectLocation(onResult).get should include(
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/pid"
+      )
+    }
+
+    "redirect to upper-limits/volume when wine-still-or-sparkling is OFF and the merged wine option is over the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "95",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val offResult: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      status(offResult)           shouldBe SEE_OTHER
+      redirectLocation(offResult) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
+      )
+    }
+
+    "redirect to check-your-item when wine-still-or-sparkling is enabled and the merged wine option is within the 90 litre limit" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.0")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/wine/tell-us")
+          .withFormUrlEncodedBody(
+            "weightOrVolume" -> "50",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "cost"           -> "50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }
 
     "add a PPI to the JourneyData and redirect to next step" in new LocalSetup {
@@ -922,8 +1037,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("alcohol/beer")),
@@ -934,6 +1049,39 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
         meq("EUR"),
         meq(List(BigDecimal(12.50))),
         any(),
+        any()
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "add a PPI using submitted iid and redirect to next step" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map("L-BEER" -> "1.0", "L-WINE" -> "1.1")
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us")
+          .withFormUrlEncodedBody(
+            "iid"            -> "ABCdef",
+            "country"        -> "FR",
+            "currency"       -> "EUR",
+            "weightOrVolume" -> "20.0",
+            "cost"           -> "12.50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+
+      verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
+        meq(ProductPath("alcohol/beer")),
+        meq(Some(BigDecimal(20.0))),
+        any(),
+        meq("FR"),
+        any(),
+        meq("EUR"),
+        meq(List(BigDecimal(12.50))),
+        meq("ABCdef"),
         any()
       )(any())
 
@@ -1000,8 +1148,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -1020,8 +1168,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
   }
@@ -1061,7 +1209,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
             "cost"           -> "12.50"
           )
 
-      val result: Future[Result] = route(app, req).get
+      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/iid0/edit/volume"
@@ -1082,8 +1230,9 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)                                                         shouldBe SEE_OTHER
+      redirectLocation(result).get                                             should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+      session(result).get(ControllerHelpers.checkYourItemEditModeSessionKey) shouldBe Some("iid0")
 
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
         meq(ProductPath("alcohol/beer")),
@@ -1160,8 +1309,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -1180,8 +1329,8 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
   }

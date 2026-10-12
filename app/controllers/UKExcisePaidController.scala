@@ -139,7 +139,7 @@ class UKExcisePaidController @Inject() (
             }
             cache
               .store(context.getJourneyData.copy(purchasedProductInstances = ppInstances))
-              .map(_ => Redirect(routes.SelectProductController.nextStep()))
+              .map(_ => Redirect(routes.GoodsCheckYourAnswersController.show(path, iid)))
           }
         )
   }

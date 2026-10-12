@@ -28,9 +28,9 @@
 
 @(calculatorResponseDto: CalculatorResponseDto, hideExchangeRateInfo: Boolean, isAmendment: Boolean, backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(if(isAmendment) messages("label.amend_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.declare_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
+@govukLayout(pageTitle = Some(if(isAmendment) messages("label.declare_your_additional_goods") + " - " + messages("service.name") + " - " + messages("site.govuk") else messages("label.declare_your_goods") + " - " + messages("service.name") + " - " + messages("site.govuk")), backLink = backLink) {
     @if(isAmendment){
-        @h1(messages("label.amend_your_goods"))
+        @h1(messages("label.declare_your_additional_goods"))
     } else{
         @h1(messages("label.declare_your_goods"))
     }
@@ -46,7 +46,7 @@
 
     @if(isAmendment) {
         @formHelper(action = routes.CalculateDeclareController.processAmendment) {
-            @button(messages("label.amend_your_goods"))
+            @button(messages("label.declare_goods"))
         }
     }else {
         @formHelper(action = routes.CalculateDeclareController.whatIsYourName) {

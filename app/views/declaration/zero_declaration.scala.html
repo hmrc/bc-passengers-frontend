@@ -74,7 +74,7 @@
         @messages("label.date_of_arrival")
       </dt>
       <dd class="govuk-summary-list__value">
-        @formatLocalDate(userInformation.get.dateOfArrival, "dd MMMM YYYY")
+        @formatLocalDate(userInformation.get.dateOfArrival, "dd MMMM yyyy", messages.lang.toLocale)
       </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -216,6 +216,6 @@
   <br>
 
   @p{
-    <a href="https://www.tax.service.gov.uk/feedback/passengers" class="govuk-link" target="_blank">@messages("label.declaration.what_you_think_of_service")</a>
+    <a href="https://www.tax.service.gov.uk/feedback/passengers?useServiceNavigation" class="govuk-link" target="_blank">@messages("label.declaration.what_you_think_of_service")</a>
   }
 }

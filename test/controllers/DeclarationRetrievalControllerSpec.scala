@@ -105,9 +105,10 @@ class DeclarationRetrievalControllerSpec extends BaseSpec {
       status(result) shouldBe OK
       val content = contentAsString(result)
       val doc     = Jsoup.parse(content)
-      doc.getElementsByTag("h1").text()             shouldBe "Add goods to your previous declaration"
-      doc.getElementById("lastName").`val`()        shouldBe "Smith"
-      doc.getElementById("referenceNumber").`val`() shouldBe "XAPR1234567890"
+      doc.getElementsByTag("h1").text()                   shouldBe "Add goods to your previous declaration"
+      doc.getElementById("lastName").`val`()              shouldBe "Smith"
+      doc.getElementById("lastName").attr("autocomplete") shouldBe "family-name"
+      doc.getElementById("referenceNumber").`val`()       shouldBe "XAPR1234567890"
     }
 
     "load the page with empty form when no data in keyStore" in {

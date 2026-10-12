@@ -80,7 +80,8 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
       isVatPaid = Some(false),
       isCustomPaid = Some(false),
       isExcisePaid = Some(false),
-      isUccRelief = Some(false)
+      isUccRelief = Some(false),
+      itemKeyName = None
     )
   )
 
@@ -112,6 +113,7 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
     hideExchangeRateInfo = true,
     underNinePounds = true,
     backLink = None,
+    isWineToggleOn = false,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -124,7 +126,8 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
     "0.00",
     true,
     true,
-    None
+    None,
+    false
   )(request, messages, appConfig)
 
   "NothingToDeclareView" when

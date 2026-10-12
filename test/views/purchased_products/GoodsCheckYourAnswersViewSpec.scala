@@ -1,0 +1,194 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package views.purchased_products
+
+import models.*
+import play.twirl.api.HtmlFormat
+import util.WineStillOrSparklingFeature
+import util.VapingProductsFeature
+import views.BaseViewSpec
+import views.html.purchased_products.check_your_goods_answers
+
+class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparklingFeature with VapingProductsFeature {
+
+  private val country        = Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)
+  private val item           = PurchasedProductInstance(
+    path = ProductPath("alcohol/beer"),
+    iid = "iid0",
+    weightOrVolume = Some(BigDecimal(5)),
+    country = Some(country),
+    originCountry = Some(country),
+    currency = Some("EUR"),
+    cost = Some(BigDecimal(50))
+  )
+  private val product        = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A1/BEER", "alcohol", List("L-BEER"))
+  private val currency       = Currency("EUR", "title.euro_eur", None, Nil)
+  private val tobaccoItem    = item.copy(
+    path = ProductPath("tobacco/cigars"),
+    noOfSticks = Some(10),
+    weightOrVolume = Some(BigDecimal(100))
+  )
+  private val tobaccoProduct =
+    ProductTreeLeaf("cigars", "label.tobacco.cigars", "TOB/A1/CIGAR", "cigars", List("L-CIGAR"))
+
+  private val otherItem    = item.copy(
+    path = ProductPath("other-goods/car-seats")
+  )
+  private val otherProduct =
+    ProductTreeLeaf("car-seats", "label.other-goods.car-seats", "OGD/MOB/MISC", "other-goods", Nil)
+
+  private val vapingProductsItem = item.copy(
+    path = ProductPath("vaping-products/vape"),
+    weightOrVolume = Some(BigDecimal(100))
+  )
+  private val vapingProducts     =
+    ProductTreeLeaf("vape", "label.vaping-products", "VAP/V1/VPRODUCTS", "vaping-products", List("L-VPRODUCTS"))
+
+  val viewViaApply: HtmlFormat.Appendable =
+    injected[check_your_goods_answers]
+      .apply(item, product, Some(currency), isEditMode = false)(request, messages, appConfig)
+
+  val viewViaRender: HtmlFormat.Appendable =
+    injected[check_your_goods_answers]
+      .render(item, product, Some(currency), isEditMode = false, request, messages, appConfig)
+
+  val viewViaF: HtmlFormat.Appendable =
+    injected[check_your_goods_answers].ref
+      .f(item, product, Some(currency), false)(request, messages, appConfig)
+
+  "GoodsCheckYourAnswersView" when {
+    renderViewTest(
+      title = "Check your answers - Check tax on goods you bring into the UK - GOV.UK",
+      heading = "Check your answers"
+    )
+
+    "show the selected item and its answers in a summary list, with the item type heading when the toggle is OFF" in {
+      val doc = document(
+        injected[check_your_goods_answers].apply(item, product, Some(currency), isEditMode = false)(
+          request,
+          messages,
+          appConfigToggle(enabled = false)
+        )
+      )
+
+      doc.select("h2.govuk-heading-m").isEmpty                                shouldBe true
+      doc.select(".govuk-summary-list__key").eachText()                         should contain allOf (
+        "Type of goods",
+        "Type of alcohol",
+        "Total volume in litres",
+        "Price paid"
+      )
+      doc.select(".govuk-summary-list").text()                                  should include("50")
+      doc.select("a.govuk-link[href*=enter-goods/alcohol/iid0/edit]").isEmpty shouldBe false
+      doc.select("a[href*=change-type]").isEmpty                              shouldBe false
+      doc.select("a[href*=change-product]").isEmpty                           shouldBe false
+      doc.select("button.govuk-button").text()                                shouldBe "Save and continue"
+    }
+
+    "hide the item type heading when the wine-still-or-sparkling toggle is ON" in {
+      val doc = document(
+        injected[check_your_goods_answers].apply(item, product, Some(currency), isEditMode = false)(
+          request,
+          messages,
+          appConfigToggle(enabled = true)
+        )
+      )
+
+      doc.select("h2.govuk-heading-m").isEmpty        shouldBe true
+      doc.select(".govuk-summary-list__key").eachText() should contain("Type of alcohol")
+    }
+
+    "show the tobacco weight in grams" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(tobaccoItem, tobaccoProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__key").eachText() should contain("Total weight in grams")
+      doc.select(".govuk-summary-list").text()          should include("100 grams")
+    }
+
+    "show the entered other-goods term" in {
+      val otherGoodsItem    = item.copy(
+        path = ProductPath("other-goods/electronic-devices/other"),
+        searchTerm =
+          Some(OtherGoodsSearchItem("label.other-goods.computer", ProductPath("other-goods/electronic-devices/other")))
+      )
+      val otherGoodsProduct =
+        ProductTreeLeaf("other", "label.other-goods.electronic-devices.other", "OGD/DIGI/OTHER", "other-goods", Nil)
+
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(otherGoodsItem, otherGoodsProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list").text() should include("Computer")
+      doc.select(".govuk-summary-list").text() should not include "Electronic device"
+    }
+
+    "hide type change actions in edit mode" in {
+      val niItems = Seq("vaping-products-liquid", "vaping-products-others", "carpets").map { token =>
+        (
+          item.copy(path = ProductPath(s"other-ni-goods/$token")),
+          ProductTreeLeaf(token, s"label.other-ni-goods.$token", "OGD/OTHER", "other-ni-goods", Nil)
+        )
+      }
+      (Seq(
+        (item, product),
+        (tobaccoItem, tobaccoProduct),
+        (otherItem, otherProduct),
+        (vapingProductsItem, vapingProducts)
+      ) ++ niItems).foreach { case (editedItem, editedProduct) =>
+        val doc = document(
+          injected[check_your_goods_answers]
+            .apply(editedItem, editedProduct, Some(currency), isEditMode = true)(request, messages, appConfig)
+        )
+
+        doc.select("a[href*=change-type]").isEmpty      shouldBe true
+        doc.select("a[href*=change-product]").isEmpty   shouldBe true
+        doc.select(".govuk-summary-list__key").eachText() should contain("Type of goods")
+        doc.select("a[href*=/edit]").isEmpty            shouldBe false
+
+        val newItemDoc = document(
+          injected[check_your_goods_answers]
+            .apply(editedItem, editedProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+        )
+        newItemDoc.select("a[href*=change-type]").isEmpty shouldBe false
+      }
+    }
+
+    "show the vaping products volume in millilitres" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(vapingProductsItem, vapingProducts, Some(currency), isEditMode = false)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__key").eachText() should contain("Total volume of liquid in millilitres")
+      doc.select(".govuk-summary-list").text()          should include("100 millilitres")
+    }
+
+    "show the other goods cost" in {
+      val doc = document(
+        injected[check_your_goods_answers]
+          .apply(otherItem, otherProduct, Some(currency), isEditMode = false)(request, messages, appConfig)
+      )
+
+      doc.select(".govuk-summary-list__key").eachText() should contain("Type of goods")
+      doc.select(".govuk-summary-list").text()          should include("car seat")
+    }
+  }
+}

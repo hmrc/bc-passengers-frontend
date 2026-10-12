@@ -52,6 +52,11 @@ package object util extends ProductDetector {
     if (value < 1) "0" + df.format(value) else df.format(value)
   }
 
+  def formatMonetaryValueWithoutTrailingZeros(value: BigDecimal): String = {
+    val df = new DecimalFormat("#,##0.##")
+    df.format(value)
+  }
+
   implicit class EnhancedJsObject(jsObject: JsObject) {
     def stripNulls: JsObject =
       alterFields { case (_, JsNull) =>
@@ -85,19 +90,34 @@ package object util extends ProductDetector {
     looseTobaccoWeight <= oneThousandGrams
   }
 
-  def alcoholVolumeConstraint(journeyData: JourneyData, alcoholVolume: BigDecimal, productToken: String): Boolean = {
+  def alcoholVolumeConstraint(
+    journeyData: JourneyData,
+    alcoholVolume: BigDecimal,
+    productToken: String,
+    isWineStillOrSparklingEnabled: Boolean = false
+  ): Boolean = {
     val wineLimit: BigDecimal          = 90
-    val sparklingWineLimit: BigDecimal = if (checkProductExists(journeyData, "alcohol/wine")) 90 else 60
+    val sparklingWineLimit: BigDecimal = if (isWineStillOrSparklingEnabled) 90 else 60
     val beerLimit: BigDecimal          = 110
     val spiritsLimit: BigDecimal       = 10
-    val ciderOrOtherLimit: BigDecimal  = 20
+    val ciderLimit: BigDecimal         = if (isWineStillOrSparklingEnabled) 110 else 20
+    val otherLimit: BigDecimal         = 20
 
     productToken match {
-      case "wine"           => alcoholVolume <= wineLimit
-      case "sparkling-wine" => alcoholVolume <= sparklingWineLimit
-      case "beer"           => alcoholVolume <= beerLimit
-      case "spirits"        => alcoholVolume <= spiritsLimit
-      case _                => alcoholVolume <= ciderOrOtherLimit
+      case "wine"                           => alcoholVolume <= wineLimit
+      case "sparkling-wine"                 => alcoholVolume <= sparklingWineLimit
+      case "beer"                           => alcoholVolume <= beerLimit
+      case "spirits"                        => alcoholVolume <= spiritsLimit
+      case token if token.contains("cider") => alcoholVolume <= ciderLimit
+      case _                                => alcoholVolume <= otherLimit
+    }
+  }
+
+  def vapeVolumeConstraint(journeyData: JourneyData, vapeVolume: BigDecimal, productToken: String): Boolean = {
+    val vapeLimit: BigDecimal = 1000
+    productToken match {
+      case "vape"                   => vapeVolume <= vapeLimit
+      case "vaping-products-liquid" => vapeVolume <= vapeLimit
     }
   }
 
@@ -174,6 +194,6 @@ package object util extends ProductDetector {
   def parseLocalDate(date: String): LocalDate =
     LocalDate.parse(date, localDateFormat)
 
-  def formatLocalDate(date: LocalDate, pattern: String): String =
-    date.format(DateTimeFormatter.ofPattern(pattern, Locale.UK))
+  def formatLocalDate(date: LocalDate, pattern: String, locale: Locale = Locale.UK): String =
+    date.format(DateTimeFormatter.ofPattern(pattern, locale))
 }

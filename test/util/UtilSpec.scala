@@ -162,7 +162,7 @@ class UtilSpec extends BaseSpec {
         ("beer", 109),
         ("spirits", 9),
         ("wine", 89),
-        ("sparkling-wine", 89),
+        ("sparkling-wine", 59),
         ("other", 19),
         ("non-sparkling-cider", 19),
         ("sparkling-cider", 19),
@@ -177,7 +177,7 @@ class UtilSpec extends BaseSpec {
         ("beer", 110),
         ("spirits", 10),
         ("wine", 90),
-        ("sparkling-wine", 90),
+        ("sparkling-wine", 60),
         ("other", 20),
         ("non-sparkling-cider", 20),
         ("sparkling-cider", 20),
@@ -201,6 +201,53 @@ class UtilSpec extends BaseSpec {
     ).foreach { case (productToken, volume) =>
       s"return false when supplied volume is greater than the limit for $productToken" in {
         alcoholVolumeConstraint(journeyData(Nil), volume, productToken) shouldBe false
+      }
+    }
+  }
+
+  "validating vaping-products volume" should {
+    val purchasedProductInstance: PurchasedProductInstance = PurchasedProductInstance(
+      path = ProductPath("vaping-products/vape"),
+      iid = "iid0",
+      weightOrVolume = Some(20.00),
+      currency = Some("GBP"),
+      cost = Some(100.00)
+    )
+
+    def journeyData(purchasedProductInstances: List[PurchasedProductInstance]): JourneyData = JourneyData(
+      prevDeclaration = Some(false),
+      euCountryCheck = Some("greatBritain"),
+      arrivingNICheck = Some(true),
+      bringingOverAllowance = Some(true),
+      isUKResident = Some(false),
+      privateCraft = Some(false),
+      ageOver17 = Some(true),
+      purchasedProductInstances = purchasedProductInstances
+    )
+
+    "return true" when {
+      Seq(
+        ("vape", 49)
+      ).foreach { case (productToken, volume) =>
+        s"supplied volume is less than the limit for $productToken" in {
+          vapeVolumeConstraint(journeyData(List(purchasedProductInstance)), volume, productToken) shouldBe true
+        }
+      }
+
+      Seq(
+        ("vape", 1000)
+      ).foreach { case (productToken, volume) =>
+        s"supplied volume is equal to the limit for $productToken" in {
+          vapeVolumeConstraint(journeyData(List(purchasedProductInstance)), volume, productToken) shouldBe true
+        }
+      }
+    }
+
+    Seq(
+      ("vape", 1001)
+    ).foreach { case (productToken, volume) =>
+      s"return false when supplied volume is greater than the limit for $productToken" in {
+        vapeVolumeConstraint(journeyData(Nil), volume, productToken) shouldBe false
       }
     }
   }

@@ -63,6 +63,7 @@ class CalculateDeclareController @Inject() (
   val telephone_number: views.html.declaration.phone_number,
   val what_is_your_email: views.html.declaration.what_is_your_email,
   val journey_details: views.html.declaration.journey_details,
+  val check_your_answers: views.html.declaration.check_your_answers,
   val errorTemplate: views.html.errorTemplate,
   val irish_border: views.html.travel_details.irish_border,
   val purchase_price_out_of_bounds: views.html.errors.purchase_price_out_of_bounds,
@@ -81,6 +82,7 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
+    isWineToggleEnabled(context.getJourneyData)
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
@@ -113,6 +115,12 @@ class CalculateDeclareController @Inject() (
         }
       }
     }
+  }
+
+  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
+    val isNonEuNiJourney =
+      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
+    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
   }
 
   def whatIsYourName: Action[AnyContent] = userInfoAction { implicit context =>
@@ -421,56 +429,86 @@ class CalculateDeclareController @Inject() (
             )
           )
         ),
-      journeyDetailsDto => {
-        val correlationId = UUID.randomUUID.toString
-
+      journeyDetailsDto =>
         preUserInformationService
           .storeCompleteUserInformation(context.getJourneyData, journeyDetailsDto, rawMonthOpt)
-          .flatMap { journeyData =>
-            val userInformation = getBasicUserInfo(journeyData.preUserInformation)
+          .map(_ => Redirect(routes.CalculateDeclareController.checkYourAnswers))
+    )
+  }
 
-            requireCalculatorResponse { calculatorResponse =>
-              val allTax            = BigDecimal(calculatorResponse.calculation.allTax)
-              val declarationResult = declarationService.submitDeclaration(
-                userInformation,
-                calculatorResponse,
-                context.getJourneyData,
-                receiptDateTime,
-                correlationId
-              )
-              declarationResult.flatMap {
-                case DeclarationServiceFailureResponse     =>
-                  Future.successful(InternalServerError(errorTemplate()))
-                case DeclarationServiceSuccessResponse(cr) =>
-                  declarationService
-                    .storeChargeReference(journeyData, userInformation, cr.value)
-                    .flatMap { _ =>
-                      if (
-                        allTax == 0 && context.getJourneyData.euCountryCheck
-                          .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
-                      ) {
-                        Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
-                      } else {
-                        payApiService
-                          .requestPaymentUrl(
-                            cr,
-                            userInformation,
-                            calculatorResponse,
-                            (allTax * 100).toInt,
-                            isAmendment = false,
-                            None
-                          )
-                          .flatMap {
-                            case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
-                            case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
-                          }
-                      }
-                    }
+  def checkYourAnswers: Action[AnyContent] = userInfoAction { implicit context =>
+    context.getJourneyData.buildUserInformation match {
+      case Some(userInformation) =>
+        val placeOfArrivalValue = portsOfArrivalService
+          .getDisplayNameByCode(userInformation.selectPlaceOfArrival)
+          .map(messagesApi.preferred(context.request).apply(_))
+          .getOrElse(userInformation.enterPlaceOfArrival)
+
+        Future.successful(
+          Ok(
+            check_your_answers(
+              userInformation,
+              placeOfArrivalValue,
+              backLinkModel.backLink
+            )
+          )
+        )
+      case None                  =>
+        Future.successful(Redirect(routes.CalculateDeclareController.whatAreYourJourneyDetails))
+    }
+  }
+
+  def processCheckYourAnswers: Action[AnyContent] = userInfoAction { implicit context =>
+    context.getJourneyData.buildUserInformation match {
+      case Some(_) => submitDeclarationAndRedirect(context.getJourneyData, UUID.randomUUID.toString)
+      case None    => Future.successful(Redirect(routes.CalculateDeclareController.whatAreYourJourneyDetails))
+    }
+  }
+
+  private def submitDeclarationAndRedirect(journeyData: JourneyData, correlationId: String)(implicit
+    context: LocalContext
+  ): Future[Result] = {
+    val userInformation = getBasicUserInfo(journeyData.preUserInformation)
+
+    requireCalculatorResponse { calculatorResponse =>
+      val allTax            = BigDecimal(calculatorResponse.calculation.allTax)
+      val declarationResult = declarationService.submitDeclaration(
+        userInformation,
+        calculatorResponse,
+        journeyData,
+        receiptDateTime,
+        correlationId
+      )
+      declarationResult.flatMap {
+        case DeclarationServiceFailureResponse     =>
+          Future.successful(InternalServerError(errorTemplate()))
+        case DeclarationServiceSuccessResponse(cr) =>
+          declarationService
+            .storeChargeReference(journeyData, userInformation, cr.value)
+            .flatMap { _ =>
+              if (
+                allTax == 0 && journeyData.euCountryCheck
+                  .contains("greatBritain") && calculatorResponse.isAnyItemOverAllowance
+              ) {
+                Future.successful(Redirect(routes.ZeroDeclarationController.loadDeclarationPage()))
+              } else {
+                payApiService
+                  .requestPaymentUrl(
+                    cr,
+                    userInformation,
+                    calculatorResponse,
+                    (allTax * 100).toInt,
+                    isAmendment = false,
+                    None
+                  )
+                  .flatMap {
+                    case PayApiServiceFailureResponse      => Future.successful(InternalServerError(errorTemplate()))
+                    case PayApiServiceSuccessResponse(url) => Future.successful(Redirect(url))
+                  }
               }
             }
-          }
       }
-    )
+    }
   }
 
   private def getPortsFor(context: LocalContext): List[PortsOfArrival] =
@@ -575,7 +613,20 @@ class CalculateDeclareController @Inject() (
   }
 
   def calculate: Action[AnyContent] = dashboardAction { implicit context =>
-    doCalculateAction(context.getJourneyData)
+    context.request.body.asFormUrlEncoded.flatMap(_.get("addAnotherItem").flatMap(_.headOption)) match {
+      case Some("true")  =>
+        Future.successful(
+          Redirect(routes.AddItemController.show)
+            .addingToSession(AddAnotherItemDto.sessionKey -> "true")(using context.request)
+        )
+      case Some("false") =>
+        doCalculateAction(context.getJourneyData)
+          .map(_.addingToSession(AddAnotherItemDto.sessionKey -> "false")(using context.request))
+      case _             =>
+        Future.successful(
+          Redirect(s"${routes.DashboardController.showDashboard.url}?addAnotherItemError=true")
+        )
+    }
   }
 
   private def doCalculateAction(journeyData: JourneyData)(implicit context: LocalContext): Future[Result] =
@@ -632,7 +683,8 @@ class CalculateDeclareController @Inject() (
                     deltaCalc,
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -645,7 +697,8 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = false,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -658,7 +711,8 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = true,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -670,7 +724,8 @@ class CalculateDeclareController @Inject() (
                     deltaCalc,
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -682,7 +737,8 @@ class CalculateDeclareController @Inject() (
                     deltaCalc,
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
             }
@@ -696,7 +752,8 @@ class CalculateDeclareController @Inject() (
                     None,
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -709,7 +766,8 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = false,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -722,7 +780,8 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = true,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -734,7 +793,8 @@ class CalculateDeclareController @Inject() (
                     None,
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
 
@@ -746,7 +806,8 @@ class CalculateDeclareController @Inject() (
                     None,
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
-                    backLinkModel.backLink
+                    backLinkModel.backLink,
+                    isWineToggleEnabled(context.getJourneyData)
                   )
                 )
             }

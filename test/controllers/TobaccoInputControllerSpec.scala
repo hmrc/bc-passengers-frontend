@@ -175,6 +175,10 @@ class TobaccoInputControllerSpec extends BaseSpec {
         )
       ).thenReturn(insertedPurchase)
       when(
+        injected[NewPurchaseService]
+          .insertPurchasesWithIid(any(), any(), any(), any(), any(), any(), any(), any(), any())(any())
+      ).thenReturn(insertedPurchase)
+      when(
         injected[NewPurchaseService].updatePurchase(any(), any(), any(), any(), any(), any(), any(), any(), any())(
           any()
         )
@@ -751,8 +755,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/cigarettes")),
@@ -763,6 +767,43 @@ class TobaccoInputControllerSpec extends BaseSpec {
         meq("EUR"),
         meq(List(BigDecimal(92.50))),
         any(),
+        any()
+      )(any())
+
+      verify(injected[Cache], times(1)).store(any())(any())
+    }
+
+    "add a PPI using submitted iid and redirect to next step for cigarettes" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/cigarettes")
+      override def weightOrVolume: Option[BigDecimal] = None
+      override def noOfSticks: Option[Int]            = Some(400)
+
+      val req: FakeRequest[AnyContentAsFormUrlEncoded] =
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/cigarettes/tell-us")
+          .withFormUrlEncodedBody(
+            "iid"        -> "ABCdef",
+            "country"    -> "FR",
+            "currency"   -> "EUR",
+            "noOfSticks" -> "400",
+            "cost"       -> "92.50"
+          )
+
+      val result: Future[Result] = route(app, req).get
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+
+      verify(injected[NewPurchaseService], times(1)).insertPurchasesWithIid(
+        meq(ProductPath("tobacco/cigarettes")),
+        any(),
+        meq(Some(400)),
+        meq("FR"),
+        any(),
+        meq("EUR"),
+        meq(List(BigDecimal(92.50))),
+        meq("ABCdef"),
         any()
       )(any())
 
@@ -841,8 +882,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -865,8 +906,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -1043,8 +1084,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
       )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/heated-tobacco")),
@@ -1236,8 +1277,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/rolling-tobacco")),
@@ -1614,8 +1655,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
       verify(injected[NewPurchaseService], times(1)).insertPurchases(
         meq(ProductPath("tobacco/cigars")),
@@ -1948,6 +1989,114 @@ class TobaccoInputControllerSpec extends BaseSpec {
       ).get
       status(result) shouldBe OK
     }
+
+    "return a 200 and render the weight input when editing loose tobacco (rolling-tobacco)" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/rolling-tobacco")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.25))
+      override def noOfSticks: Option[Int]            = None
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("tobacco/rolling-tobacco"),
+              "iid0",
+              weightOrVolume,
+              None,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(92.50))
+            )
+          )
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[weight_or_volume_input], times(1))(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
+    }
+
+    "return a 200 and render the no-of-sticks-and-weight input when editing cigars" in new LocalSetup {
+
+      override lazy val fakeLimits: Map[String, String] = Map[String, String]()
+
+      override def productPath: ProductPath           = ProductPath("tobacco/cigars")
+      override def weightOrVolume: Option[BigDecimal] = Some(BigDecimal(0.6))
+      override def noOfSticks: Option[Int]            = Some(5)
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        JourneyData(
+          prevDeclaration = Some(false),
+          Some("nonEuOnly"),
+          arrivingNICheck = Some(true),
+          isVatResClaimed = None,
+          isBringingDutyFree = None,
+          bringingOverAllowance = Some(true),
+          privateCraft = Some(false),
+          ageOver17 = Some(true),
+          purchasedProductInstances = List(
+            PurchasedProductInstance(
+              ProductPath("tobacco/cigars"),
+              "iid0",
+              weightOrVolume,
+              noOfSticks,
+              Some(Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)),
+              None,
+              Some("EUR"),
+              Some(BigDecimal(92.50))
+            )
+          )
+        )
+      )
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/tobacco/iid0/edit")
+      ).get
+
+      status(result) shouldBe OK
+
+      verify(injected[no_of_sticks_weight_or_volume_input], times(1))(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any(), any(), any())
+    }
   }
 
   "Posting processEditForm" should {
@@ -1993,8 +2142,9 @@ class TobaccoInputControllerSpec extends BaseSpec {
           )
 
       val result: Future[Result] = route(app, req).get
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)                                                         shouldBe SEE_OTHER
+      redirectLocation(result).get                                             should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
+      session(result).get(ControllerHelpers.checkYourItemEditModeSessionKey) shouldBe Some("iid0")
 
       verify(injected[NewPurchaseService], times(1)).updatePurchase(
         meq(ProductPath("tobacco/cigars")),
@@ -2083,8 +2233,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 
@@ -2108,8 +2258,8 @@ class TobaccoInputControllerSpec extends BaseSpec {
 
       val result: Future[Result] = euGBRoute(app, req).get
 
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+      status(result)             shouldBe SEE_OTHER
+      redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
 
     }
 

@@ -28,12 +28,29 @@
     selectProductsForm: Form[SelectProductsDto],
     items: List[(String, String)],
     path: ProductPath,
-    backLink: Option[String]
+    backLink: Option[String],
+    customBackLink: Boolean = false,
+    returnToAddedItemEditUrl: Option[String] = None,
+    returnToAddedItemProductPath: Option[String] = None
 )(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(selectProductsForm, messages(s"select_products.heading.${path.toMessageKey}"))), customBackLink = false) {
+@headingKey = @{
+    if(appConfig.isWineStillOrSparklingEnabled && path.toMessageKey == "alcohol") {
+        "select_products.heading.alcohol.still-or-sparkling"
+    } else {
+        s"select_products.heading.${path.toMessageKey}"
+    }
+}
+
+@govukLayout(pageTitle = Some(title(selectProductsForm, messages(headingKey))), backLink = backLink, customBackLink = customBackLink) {
 
     @formHelper(action = routes.SelectProductController.processProductSelection(path)) {
+    @returnToAddedItemEditUrl.map { editUrl =>
+        <input type="hidden" name="returnToAddedItemEditUrl" value="@editUrl">
+    }
+    @returnToAddedItemProductPath.map { productPath =>
+        <input type="hidden" name="returnToAddedItemProductPath" value="@productPath">
+    }
 
     @if(selectProductsForm.errors){
         @otherGoodsErrorSummary(selectProductsForm.errors, Some(path.toMessageKey), Some(s"tokens-${items(0)._1}"))
@@ -42,20 +59,30 @@
     <fieldset class="govuk-fieldset" aria-describedby="select-products-hint">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
-                @Html(messages(s"select_products.heading.${path.toMessageKey}"))
+                @Html(messages(headingKey))
             </h1>
         </legend>
+        @if(!appConfig.isVapingJourneyEnabled){
+            <div id="select-products-hint" class="govuk-hint">
+                @messages("label.select_all_that_apply")
+            </div>
+        }
+        @if(appConfig.isVapingJourneyEnabled){
+            @radios(
+                field = selectProductsForm("tokens"),
+                items = radioOptionsForSelectProducts(items, selectProductsForm("tokens").value),
+                name = "tokens",
+                path = Some(path)
+            )
+        } else {
+            @radios(
+                field = selectProductsForm("tokens"),
+                items = radioOptions(items, selectProductsForm("tokens").value),
+                name = "tokens",
+                path = Some(path)
+            )
+        }
 
-        <div id="select-products-hint" class="govuk-hint">
-            @messages("label.select_all_that_apply")
-        </div>
-
-        @radios(
-            field = selectProductsForm("tokens"),
-            items = radioOptions(items),
-            name = "tokens",
-            path = Some(path)
-        )
     </fieldset>
 
     @button("label.continue")

@@ -35,6 +35,21 @@ class PurchasedProductService @Inject() (val cache: Cache) {
     cache.store(updatedJourneyData).map(_ => updatedJourneyData)
   }
 
+  def revertWorkingInstance(
+    journeyData: JourneyData
+  )(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[JourneyData] = {
+
+    val updatedJourneyData = journeyData.workingInstance match {
+      case Some(workingInstance) if workingInstance.cost.isDefined =>
+        journeyData.revertPurchasedProductInstance().clearingWorking
+      case Some(workingInstance)                                   =>
+        journeyData.removePurchasedProductInstance(workingInstance.iid).clearingWorking
+      case None                                                    =>
+        journeyData.clearingWorking
+    }
+    cache.store(updatedJourneyData).map(_ => updatedJourneyData)
+  }
+
   // TODO - move to NewPurchaseService
   def removePurchasedProductInstance(journeyData: JourneyData, iid: String)(implicit
     hc: HeaderCarrier,

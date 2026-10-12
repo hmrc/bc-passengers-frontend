@@ -73,6 +73,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
               None,
               None,
               None,
+              None,
               Calculation("0.00", "0.00", "0.00", "0.00"),
               withinFreeAllowance = true,
               Map.empty,
@@ -120,6 +121,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
         Future.successful(
           CalculatorServiceSuccessResponse(
             CalculatorResponse(
+              None,
               None,
               None,
               None,
@@ -204,6 +206,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
                 None,
                 None,
                 None,
+                None,
                 Calculation("0.00", "0.00", "0.00", "0.00"),
                 withinFreeAllowance = true,
                 Map.empty,
@@ -239,6 +242,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
                 None,
                 None,
                 None,
+                None,
                 Calculation("0.00", "0.00", "0.00", "0.00"),
                 withinFreeAllowance = true,
                 Map.empty,
@@ -271,6 +275,7 @@ class PendingPaymentControllerSpec extends BaseSpec {
           JourneyData(
             calculatorResponse = Some(
               CalculatorResponse(
+                None,
                 None,
                 None,
                 None,

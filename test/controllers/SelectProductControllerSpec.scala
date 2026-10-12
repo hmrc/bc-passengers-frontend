@@ -21,6 +21,8 @@ import connectors.Cache
 import models.{JourneyData, ProductAlias, ProductPath, PurchasedProductInstance}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+
+import scala.jdk.CollectionConverters.*
 import org.mockito.ArgumentMatchers.{eq => meq, *}
 import org.mockito.Mockito.*
 import org.scalatest.Inspectors.*
@@ -28,22 +30,23 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import play.api.test.Helpers.{route => rt, *}
 import repositories.BCPassengersSessionRepository
 import services.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
 import views.html.errorTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectProductControllerSpec extends BaseSpec {
+class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
 
   val requiredJourneyData: JourneyData = JourneyData(
     prevDeclaration = Some(false),
-    euCountryCheck = Some("nonEuOnly"),
+    euCountryCheck = Some("greatBritain"),
     arrivingNICheck = Some(true),
     isVatResClaimed = None,
     isBringingDutyFree = None,
@@ -52,14 +55,17 @@ class SelectProductControllerSpec extends BaseSpec {
     privateCraft = Some(false)
   )
 
-  override given app: Application = GuiceApplicationBuilder()
+  private def appWithWineToggle(enabled: Boolean): Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
     .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
+    .configure(wineStillOrSparklingKey -> enabled)
     .build()
+
+  override given app: Application = appWithWineToggle(false)
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
@@ -121,15 +127,65 @@ class SelectProductControllerSpec extends BaseSpec {
       override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
       override val result: Future[Result] =
-        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")).get
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-new-goods/alcohol")
+            .withSession(
+              "return-to-added-item-url"          ->
+                "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid",
+              "return-to-added-item-select-url"   -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
+              "return-to-added-item-product-path" -> "alcohol/beer",
+              "return-to-added-item-stack"        ->
+                ("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid|" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/beer")
+            )
+        ).get
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+
+      session(result).get("return-to-added-item-url")          shouldBe None
+      session(result).get("return-to-added-item-select-url")   shouldBe None
+      session(result).get("return-to-added-item-product-path") shouldBe None
+      session(result).get("return-to-added-item-stack")        shouldBe None
 
       verify(injected[Cache], times(1)).storeJourneyData(meq(localRequiredJourneyData.copy(selectedAliases = Nil)))(
         any()
       )
 
+    }
+  }
+
+  private def selectPageDoc(testApp: Application, url: String): Document = {
+    val cache = testApp.injector.instanceOf[Cache]
+    when(cache.fetch(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    when(cache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    val res   = rt(testApp, enhancedFakeRequest("GET", url)).get
+    status(res) shouldBe OK
+    Jsoup.parse(contentAsString(res))
+  }
+
+  "Invoking askProductSelection for the alcohol branch with the wine-still-or-sparkling toggle" should {
+
+    "show Sparkling wine as a separate option when the toggle is OFF" in {
+      val doc =
+        selectPageDoc(appWithWineToggle(false), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      Option(doc.getElementById("tokens-sparkling-wine")) should not be None
+      Option(doc.getElementById("tokens-wine"))           should not be None
+    }
+
+    "drop Sparkling wine and relabel Wine when the toggle is ON but is NI journey" in {
+      val on       = appWithWineToggle(true)
+      val doc      = selectPageDoc(on, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+      val messages = on.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+      Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
+    }
+
+    "not change other branches (cider) when the toggle is ON" in {
+      val doc =
+        selectPageDoc(appWithWineToggle(true), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/cider")
+      Option(doc.getElementById("tokens-sparkling-cider"))     should not be None
+      Option(doc.getElementById("tokens-non-sparkling-cider")) should not be None
     }
   }
 
@@ -150,6 +206,41 @@ class SelectProductControllerSpec extends BaseSpec {
       ) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
+    }
+
+    "return the select products alcohol page with the added item selected when returning from the dashboard" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result: Future[Result] =
+        route(
+          app,
+          enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+            .withSession(
+              "return-to-added-item-url"          ->
+                "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid",
+              "return-to-added-item-select-url"   -> "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol",
+              "return-to-added-item-product-path" -> "alcohol/spirits",
+              "return-to-added-item-stack"        ->
+                ("/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid-1|" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/beer\n" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid|" +
+                  "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol|alcohol/spirits")
+            )
+        ).get
+
+      status(result) shouldBe OK
+
+      doc.getElementById("tokens-spirits").hasAttr("checked")              shouldBe true
+      doc.select("a.govuk-back-link").attr("href")                         shouldBe "/check-tax-on-goods-you-bring-into-the-uk/add-an-item"
+      doc.select("input[name=returnToAddedItemEditUrl]").attr("value")     shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
+      doc.select("input[name=returnToAddedItemProductPath]").attr("value") shouldBe "alcohol/spirits"
+
+      session(result).get("return-to-added-item-url")          shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/tell-us/iid-1"
+      )
+      session(result).get("return-to-added-item-product-path") shouldBe Some("alcohol/beer")
     }
 
     "return the select products tobacco page given path /tobacco (branch)" in new LocalSetup {
@@ -278,6 +369,55 @@ class SelectProductControllerSpec extends BaseSpec {
         .addSelectedProductsAsAliases(meq(localRequiredJourneyData), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[Cache], times(1)).fetch(any())
     }
+
+    "redirect to the added item edit page when the selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+          .withFormUrlEncodedBody(
+            "tokens"                       -> "spirits",
+            "returnToAddedItemEditUrl"     ->
+              "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid",
+            "returnToAddedItemProductPath" -> "alcohol/spirits"
+          )
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/spirits/tell-us/iid"
+      )
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
+    }
+
+    "return to CYA without changing the item when the replacement selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(
+        requiredJourneyData.copy(
+          purchasedProductInstances = List(PurchasedProductInstance(ProductPath("alcohol/beer"), "iid0"))
+        )
+      )
+
+      override val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+          .withSession(
+            ControllerHelpers.itemBeingReplacedSessionKey     -> "iid0",
+            ControllerHelpers.itemReplacementCyaUrlSessionKey ->
+              "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+          )
+          .withFormUrlEncodedBody("tokens" -> "beer")
+      ).get
+
+      status(result)                                                     shouldBe SEE_OTHER
+      redirectLocation(result)                                           shouldBe Some(
+        "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0"
+      )
+      session(result).get(ControllerHelpers.itemBeingReplacedSessionKey) shouldBe None
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
+    }
   }
 
   "Invoking processProductSelectionOtherGoods" should {
@@ -330,6 +470,25 @@ class SelectProductControllerSpec extends BaseSpec {
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/other-goods/tell-us"
       )
+    }
+
+    "redirect to the added other goods edit page when the selection has not changed" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/other-goods/adult")
+          .withFormUrlEncodedBody(
+            "tokens"                       -> "adult-clothing",
+            "returnToAddedItemEditUrl"     -> "/check-tax-on-goods-you-bring-into-the-uk/tell-us/iid",
+            "returnToAddedItemProductPath" -> "other-goods/adult/adult-clothing"
+          )
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/tell-us/iid")
+      verify(injected[SelectProductService], never()).addSelectedProductsAsAliases(any(), any())(any())
     }
 
     Seq(

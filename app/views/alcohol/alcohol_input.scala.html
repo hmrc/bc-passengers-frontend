@@ -25,20 +25,34 @@
   inputText: components.inputText,
   button: components.button,
   h1Product: components.h1Product,
-  autoCompleteList: components.autocompleteList
+  autoCompleteList: components.autocompleteList,
+  browserBackToEdit: components.browserBackToEdit
 )
 
-@(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(form: Form[AlcoholDto], backLink: Option[String], customBackLink: Boolean, product: ProductTreeLeaf, path: ProductPath, iid: Option[String], countries: List[Country], countriesEU: List[Country], currencies: List[Currency], journeyStart: Option[String], isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(s"label.${path.toMessageKey}").toLowerCase())), backLink = backLink, customBackLink = customBackLink) {
+@nameKey = @{
+    if(isWineToggleOn && path.toMessageKey == "alcohol.wine") "label.alcohol.wine.still-or-sparkling"
+    else s"label.${path.toMessageKey}"
+}
+
+@volumeSuffix = @{
+    if(isWineToggleOn && (path.toMessageKey == "alcohol.wine" || path.toMessageKey.startsWith("alcohol.cider"))) Some("label.litres")
+    else None
+}
+
+@govukLayout(pageTitle = Some(title(form, messages("label.tell_us_about_the") + " " + messages(nameKey).toLowerCase())), backLink = backLink, customBackLink = customBackLink) {
 
     @formHelper(action = iid.fold(routes.AlcoholInputController.processAddForm(path))(iid => routes.AlcoholInputController.processEditForm(iid))) {
+        @if(iid.isEmpty) {
+            @browserBackToEdit(routes.AlcoholInputController.displayEditForm("iid").url)
+        }
         @if(form.errors){
             @errorSummary(form.errors)
         }
         <fieldset class="govuk-fieldset">
 
-        @h1Product("label.tell_us_about_the", s"label.${path.toMessageKey}", form.errors)
+        @h1Product("label.tell_us_about_the", nameKey, form.errors)
 
         @inputText(
            form,
@@ -47,7 +61,8 @@
            label = "label.total_volume_in_litres",
            hint = Some(Html(messages("label.you_cannot_use_this_service_"))),
            isPageHeading = false,
-           classes = Some("govuk-input govuk-!-width-one-half")
+           classes = Some("govuk-input govuk-!-width-one-half"),
+           suffix = volumeSuffix
         )
 
         @autoCompleteList(form,
@@ -78,8 +93,8 @@
         @autoCompleteList(form,
             id = "currency",
             name = "currency",
-            isPageHint = false,
-            hint = "",
+            isPageHint = true,
+            hint = messages("label.currency_used_hint"),
             isPageHeading = false,
             label = messages(s"label.currency_used_to_buy_this_alcohol"),
             hintText = messages("label.enter_currency"),
@@ -99,7 +114,7 @@
 
         </fieldset>
 
-    @button("label.continue")
+    @button("label.save_and_continue")
 
   }
 }
