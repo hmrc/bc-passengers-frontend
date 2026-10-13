@@ -95,6 +95,12 @@
 
         @h1("label.what_are_your_journey_details")     
    
+        @fieldset(
+            legend = "label.place_of_arrival",
+            asHeading = false,
+            legendClasses = "govuk-visually-hidden"
+        ) {
+
         <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
             @form.errors.filter(_.key == "placeOfArrival").map { error =>
@@ -158,6 +164,8 @@
                 </div>
             </details>
         </div>
+
+        }
 
         @if(form("dateTimeOfArrival").hasErrors){
             <div class="govuk-form-group govuk-form-group--error" id="dateOfArrival.date">
