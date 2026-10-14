@@ -53,9 +53,18 @@ class GoodsCheckYourAnswersController @Inject() (
 
     (item, product) match {
       case (Some(purchasedItem), Some(productTreeLeaf)) =>
-        val currency   = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
-        val isEditMode = context.request.session.get(ControllerHelpers.checkYourItemEditModeSessionKey).contains(iid)
-        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, isEditMode)))
+        val currency    = purchasedItem.currency.flatMap(currencyService.getCurrencyByCode)
+        val isEditMode  = context.request.session.get(ControllerHelpers.checkYourItemEditModeSessionKey).contains(iid)
+        val journeyData = context.getJourneyData
+        val backLink    = Option.when(
+          journeyData.euCountryCheck.contains("greatBritain") &&
+            journeyData.arrivingNICheck.contains(true) &&
+            Set("other-goods", "other-ni-goods").contains(path.components.headOption.getOrElse(""))
+        ) {
+          if (journeyData.isUKResident.contains(false)) routes.UccReliefController.loadUccReliefItemPage(path, iid).url
+          else routes.UKVatPaidController.loadItemUKVatPaidPage(path, iid).url
+        }
+        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, isEditMode, backLink)))
       case _                                            =>
         Future.successful(Redirect(routes.DashboardController.showDashboard))
     }
