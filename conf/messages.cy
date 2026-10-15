@@ -173,7 +173,7 @@ text.start_again_goods_deleted=Bydd eich nwyddau’n cael eu dileu a bydd yn rha
 label.start_again_yes=Iawn, rwyf am ddileu fy eitemau a dechrau eto
 label.start_again_no=Na, rwyf am barhau â’m datganiad
 label.start_again_continue=Parhau
-error.start_again=Dewiswch ‘Iawn’ os ydych am ddileu'r datganiad hwn a dechrau eto
+error.start_again=Dewiswch ‘Iawn’ os ydych am ddileu’r datganiad hwn a dechrau eto
 heading.declaration_deleted=Mae’ch datganiad wedi’i ddileu
 text.declaration_deleted=Gallwch barhau i ddechrau datganiad newydd
 heading.you_do_not_need_to_tell_us_about_goods_=Nid oes angen i chi roi gwybod i ni am eich nwyddau
@@ -1855,7 +1855,7 @@ label.additional_tax_due_on_these_goods = Treth ychwanegol sy’n ddyledus ar y 
 label.tax_due_on_declaration = Treth sy’n ddyledus ar ddatganiad
 label.incomplete_payment = Taliad anghyflawn ar gyfer eich datganiad
 
-error.summary.title = Mae problem wedi codi
+error.summary.title = Mae problem
 error.browser.title.prefix = Gwall:
 
 site.govuk = GOV.UK/CYMRAEG
