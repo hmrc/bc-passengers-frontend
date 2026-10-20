@@ -75,6 +75,33 @@ class PreviousDeclarationControllerSpec extends BaseSpec {
       doc.getElementsByTag("h1").text() shouldBe "What do you want to do?"
     }
 
+    "retain the existing back link for a normal journey" in {
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData())))
+
+      val result =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration")).get
+
+      status(result)                                                    shouldBe OK
+      Jsoup.parse(contentAsString(result)).select("#back").attr("href") shouldBe
+        "https://www.gov.uk/duty-free-goods/declare-tax-or-duty-on-goods"
+    }
+
+    "link back to the declaration deleted page after starting again" in {
+      when(mockCache.fetch(any())).thenReturn(Future.successful(None))
+
+      val result = route(
+        app,
+        enhancedFakeRequest(
+          "GET",
+          "/check-tax-on-goods-you-bring-into-the-uk/previous-declaration?startAgain=true"
+        )
+      ).get
+
+      status(result)                                                    shouldBe OK
+      Jsoup.parse(contentAsString(result)).select("#back").attr("href") shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/your-declaration-has-been-deleted"
+    }
+
     "redirect to start page when the amendments feature is off" in {
       when(injected[AppConfig].isAmendmentsEnabled).thenReturn(false)
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(JourneyData(Some(false)))))
