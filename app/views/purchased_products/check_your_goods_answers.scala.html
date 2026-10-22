@@ -25,7 +25,7 @@
   button: components.button
 )
 
-@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency], isEditMode: Boolean)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency], isEditMode: Boolean, backLink: Option[String] = None)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
@@ -112,7 +112,7 @@
 
 @govukLayout(
   pageTitle = Some(messages("heading.check_your_answer") + " - " + messages("service.name") + " - " + messages("site.govuk")),
-  backLink = Some(editCall.url)
+  backLink = backLink.orElse(Some(editCall.url))
 ) {
   <h1 class="govuk-heading-l">@messages("heading.check_your_answer")</h1>
 

@@ -64,11 +64,11 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparkli
 
   val viewViaRender: HtmlFormat.Appendable =
     injected[check_your_goods_answers]
-      .render(item, product, Some(currency), isEditMode = false, request, messages, appConfig)
+      .render(item, product, Some(currency), isEditMode = false, None, request, messages, appConfig)
 
   val viewViaF: HtmlFormat.Appendable =
     injected[check_your_goods_answers].ref
-      .f(item, product, Some(currency), false)(request, messages, appConfig)
+      .f(item, product, Some(currency), false, None)(request, messages, appConfig)
 
   "GoodsCheckYourAnswersView" when {
     renderViewTest(
