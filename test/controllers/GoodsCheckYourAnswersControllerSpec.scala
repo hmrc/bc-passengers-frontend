@@ -74,6 +74,28 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
   }
 
   "GET /check-your-item" should {
+    Seq("alcohol/beer", "tobacco/cigars").foreach { productPath =>
+      Seq(false, true).foreach { isUKResident =>
+        s"link back to excise for GB to NI $productPath when UK residency is $isUKResident" in {
+          val instance = PurchasedProductInstance(ProductPath(productPath), "iid0")
+          val data     = journeyDataWith(instance).copy(
+            euCountryCheck = Some("greatBritain"),
+            isUKResident = Some(isUKResident)
+          )
+          when(mockCache.fetch(any())).thenReturn(Future.successful(Some(data)))
+
+          val result = route(
+            app,
+            enhancedFakeRequest("GET", s"/check-tax-on-goods-you-bring-into-the-uk/check-your-item/$productPath/iid0")
+          ).get
+
+          status(result)                                                    shouldBe OK
+          Jsoup.parse(contentAsString(result)).select("#back").attr("href") shouldBe
+            s"/check-tax-on-goods-you-bring-into-the-uk/enter-goods/$productPath/iid0/gb-ni-excise-check"
+        }
+      }
+    }
+
     Seq(false -> "gb-ni-exemptions", true -> "gb-ni-vat-check").foreach { case (isUKResident, destination) =>
       s"link back to $destination for GB to NI other goods when UK residency is $isUKResident" in {
         val book = PurchasedProductInstance(ProductPath("other-goods/books"), "iid0")
@@ -114,8 +136,10 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
         enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/beer/iid0")
       ).get
 
-      status(result)                                           shouldBe OK
-      Jsoup.parse(contentAsString(result)).select("h1").text() shouldBe "Check your answers"
+      status(result)                                                    shouldBe OK
+      Jsoup.parse(contentAsString(result)).select("h1").text()          shouldBe "Check your answers"
+      Jsoup.parse(contentAsString(result)).select("#back").attr("href") shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/iid0/edit"
     }
 
     "display the item CYA page resolving the currency when the item has one" in {

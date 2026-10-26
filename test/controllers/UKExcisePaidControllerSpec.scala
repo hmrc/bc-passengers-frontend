@@ -237,6 +237,8 @@ class UKExcisePaidControllerSpec extends BaseSpec {
       val doc     = Jsoup.parse(content)
 
       doc.getElementsByTag("h1").text() shouldBe "Did you pay UK excise duty when buying this item?"
+      doc.select("#back").attr("href")  shouldBe
+        "/check-tax-on-goods-you-bring-into-the-uk/enter-goods/alcohol/beer/brTuNh/gb-ni-vat-check"
     }
 
     "load the page and populate isExcisePaid as true" in {
