@@ -59,9 +59,14 @@ class GoodsCheckYourAnswersController @Inject() (
         val backLink    = Option.when(
           journeyData.euCountryCheck.contains("greatBritain") &&
             journeyData.arrivingNICheck.contains(true) &&
-            Set("other-goods", "other-ni-goods").contains(path.components.headOption.getOrElse(""))
+            Set("alcohol", "tobacco", "other-goods", "other-ni-goods").contains(
+              path.components.headOption.getOrElse("")
+            )
         ) {
-          if (journeyData.isUKResident.contains(false)) routes.UccReliefController.loadUccReliefItemPage(path, iid).url
+          if (Set("alcohol", "tobacco").contains(path.components.headOption.getOrElse("")))
+            routes.UKExcisePaidController.loadUKExcisePaidItemPage(path, iid).url
+          else if (journeyData.isUKResident.contains(false))
+            routes.UccReliefController.loadUccReliefItemPage(path, iid).url
           else routes.UKVatPaidController.loadItemUKVatPaidPage(path, iid).url
         }
         Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, isEditMode, backLink)))
