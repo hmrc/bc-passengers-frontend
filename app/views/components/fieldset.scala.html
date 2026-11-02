@@ -19,17 +19,23 @@
 @(
   legend: String,
   asHeading: Boolean = true,
+  legendClasses: String = "",
   headingMessageArgs: Seq[String] = Seq(),
   describedBy: Option[String] = None
 )(content: Html)(implicit messages: Messages)
 
 @govukFieldset(
     Fieldset(
-        legend = Some(Legend(
-            content = Text(messages(legend, headingMessageArgs*)),
-            classes = if(asHeading) "govuk-fieldset__legend--xl" else "",
-            isPageHeading = asHeading
-            )),
+       legend = Some(
+            Legend(
+                content = Text(messages(legend, headingMessageArgs*)),
+                classes =
+                    if (legendClasses.nonEmpty) legendClasses
+                    else if (asHeading) "govuk-fieldset__legend--xl"
+                    else "",
+                isPageHeading = asHeading
+            )
+        ),
         describedBy = describedBy,
         html = content
     )
