@@ -142,7 +142,7 @@ class VapingProductsInputController @Inject() (
               )
             case None      =>
               logAndRenderError(
-                "[VapingProductsInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
+                "Unable to construct dto from PurchasedProductInstance"
               )
           }
         }

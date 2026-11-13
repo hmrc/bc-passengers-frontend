@@ -85,7 +85,7 @@ class BCPassengersSessionRepository @Inject() (
       case _        =>
         Future.failed(
           new Exception(
-            "[BCPassengersSessionRepository][updateUpdatedAtTimestamp]Could not find sessionId in HeaderCarrier"
+            "Could not find sessionId in HeaderCarrier"
           )
         )
     }

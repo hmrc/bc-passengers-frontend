@@ -127,7 +127,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadAddJourneyAlcoholVolume] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -169,7 +169,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadAddJourneyTobaccoWeight] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -210,7 +210,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadAddJourneyVapingVolume] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -251,7 +251,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadAddJourneyVapingVolume] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -289,7 +289,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadAddJourneyNoOfSticks] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -339,7 +339,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadEditAlcoholVolume] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -386,7 +386,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadEditTobaccoWeight] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
@@ -423,7 +423,7 @@ class LimitExceedController @Inject() (
               )
             )
           case _       =>
-            logger.error("[LimitExceedController][onPageLoadEditNoOfSticks] no user input found in session")
+            logger.error("No user input found in session")
             Future(InternalServerError(errorTemplate()))
         }
       }
