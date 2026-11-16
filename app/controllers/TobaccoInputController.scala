@@ -202,7 +202,7 @@ class TobaccoInputController @Inject() (
           .fromPurchasedProductInstance(ppi)
           .fold(
             logAndRenderError(
-              "[TobaccoInputController][displayEditForm] Unable to construct dto from PurchasedProductInstance"
+              "Unable to construct dto from PurchasedProductInstance"
             )
           ) { dto =>
             Future.successful {

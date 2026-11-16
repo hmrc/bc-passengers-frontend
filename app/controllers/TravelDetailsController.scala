@@ -282,11 +282,11 @@ class TravelDetailsController @Inject() (
                     Redirect(routes.TravelDetailsController.bringingDutyFreeQuestionMix)
                   case Some(_)                                          =>
                     throw new RuntimeException(
-                      "[TravelDetailsController][dutyFreePost] Unable to determine the next step based on the euCountryCheck value"
+                      "Unable to determine the next step based on the euCountryCheck value"
                     )
                   case _                                                =>
                     throw new RuntimeException(
-                      "[TravelDetailsController][dutyFreePost] No user answers found in the cache to determine the next step"
+                      "No user answers found in the cache to determine the next step"
                     )
                 }
               }
@@ -680,7 +680,7 @@ class TravelDetailsController @Inject() (
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
     cache.updateUpdatedAtTimestamp.map(_ => Ok("Ok")).recover { case e =>
-      logger.error(s"[TravelDetailsController][keepAlive] failed to keep session alive because ${e.getMessage}")
+      logger.error(s"Failed to keep session alive because ${e.getMessage}")
       InternalServerError(e.getMessage)
     }
   }

@@ -199,7 +199,7 @@ trait ControllerHelpers
   )(implicit context: LocalContext): Future[Result] =
     context.getJourneyData.calculatorResponse.fold(
       logAndRedirect(
-        "[ControllerHelpers][requireCalculatorResponse] Missing calculator response in journeyData! Redirecting to dashboard...",
+        "Missing calculator response in journeyData! Redirecting to dashboard...",
         routes.DashboardController.showDashboard
       )
     )(block)
@@ -212,7 +212,7 @@ trait ControllerHelpers
         case LimitUsageSuccessResponse(r) =>
           block(r.map(x => (x._1, BigDecimal(x._2))))
         case _                            =>
-          logAndRenderError("[ControllerHelpers][requireLimitUsage] Fetching limits was unsuccessful")
+          logAndRenderError("Fetching limits was unsuccessful")
       }
 
     }
@@ -225,7 +225,7 @@ trait ControllerHelpers
         block(journeyData)
       case None              =>
         logAndRedirect(
-          "[ControllerHelpers][requireJourneyData] Unable to get journeyData! Starting a new session...",
+          "Unable to get journeyData! Starting a new session...",
           routes.TravelDetailsController.newSession
         )
     }
@@ -260,7 +260,7 @@ trait ControllerHelpers
           }
         case None      =>
           logAndRenderError(
-            s"[ControllerHelpers][requirePurchasedProductInstance] No purchasedProductInstance found in journeyData for iid: $iid!",
+            s"No purchasedProductInstance found in journeyData for iid: $iid!",
             NotFound
           )
       }
@@ -286,7 +286,7 @@ trait ControllerHelpers
       case Some(node) => block(node)
       case None       =>
         logAndRenderError(
-          s"[ControllerHelpers][requireProductOrCategory] Product or category not found at $path!",
+          s"Product or category not found at $path!",
           NotFound
         )
     }
@@ -297,7 +297,7 @@ trait ControllerHelpers
     requireProductOrCategory(path) {
       case leaf: ProductTreeLeaf => block(leaf)
       case _                     =>
-        logAndRenderError(s"[ControllerHelpers][requireProduct] Product not found at $path!", NotFound)
+        logAndRenderError(s"Product not found at $path!", NotFound)
     }
 
   def requireCategory(path: ProductPath)(
@@ -306,7 +306,7 @@ trait ControllerHelpers
     requireProductOrCategory(path) {
       case branch: ProductTreeBranch => block(branch)
       case _                         =>
-        logAndRenderError(s"[ControllerHelpers][requireCategory] Category not found at $path!", NotFound)
+        logAndRenderError(s"Category not found at $path!", NotFound)
     }
 
   def withDefaults(jd: JourneyData)(

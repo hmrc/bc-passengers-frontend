@@ -122,7 +122,7 @@ class BCPassengersSessionRepositoryISpec
 
       intercept[Exception](
         await(repository.updateUpdatedAtTimestamp)
-      ).getMessage shouldBe "[BCPassengersSessionRepository][updateUpdatedAtTimestamp]Could not find sessionId in HeaderCarrier"
+      ).getMessage shouldBe "Could not find sessionId in HeaderCarrier"
     }
   }
 
