@@ -143,10 +143,15 @@ class DashboardController @Inject() (
 
               val showCalculate = totalItems > 0
 
-              val backLink = context.request.session
-                .get(returnToAddedItemDashboardUrlSessionKey)
-                .orElse(context.request.session.get(returnToAddedItemSessionKey))
-                .orElse(backLinkModel.backLink)
+              val backLink =
+                if (isAmendment) {
+                  Some(routes.PreviousGoodsController.showPreviousGoods.url)
+                } else {
+                  context.request.session
+                    .get(returnToAddedItemDashboardUrlSessionKey)
+                    .orElse(context.request.session.get(returnToAddedItemSessionKey))
+                    .orElse(backLinkModel.backLink)
+                }
 
               Ok(
                 dashboard(
