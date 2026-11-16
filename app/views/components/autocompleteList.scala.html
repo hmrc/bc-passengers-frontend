@@ -34,9 +34,10 @@
   list: Seq[(String, String)],
   jsonData: String,
   labelClass: Boolean = false,
-  describedBy: Option[String] = None)(implicit messages: Messages, requestHeader: RequestHeader)
+    describedBy: Option[String] = None,
+    errorKey: Option[String] = None)(implicit messages: Messages, requestHeader: RequestHeader)
 
-<div class='@govukToClasses("govuk-form-group", if(form(id).hasErrors) "govuk-form-group--error" else "")'>
+<div class='@govukToClasses("govuk-form-group", if(form(errorKey.getOrElse(id)).hasErrors) "govuk-form-group--error" else "")'>
 
     @if(isPageHeading) {
         <h1 class="govuk-label-wrapper">
@@ -70,7 +71,7 @@
 
         if (ids.nonEmpty) Some(ids.mkString(" ")) else None
         },
-        errorMessage = form(id).error.map(fe => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(messages(fe.message)))),
+        errorMessage = form(errorKey.getOrElse(id)).error.map(fe => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(messages(fe.message)))),
         items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
             case (k,v) => SelectItem(
                 value = Some(k),

@@ -96,18 +96,13 @@
         @h1("label.what_are_your_journey_details")     
    
         @fieldset(
-            legend = "label.place_of_arrival",
+            legend = if (arrivingNICheck.contains(true)) "label.place_of_arrival_ni" else "label.place_of_arrival_uk",
             asHeading = false,
             legendClasses = "govuk-visually-hidden"
         ) {
 
         <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
-            @form.errors.filter(_.key == "placeOfArrival").map { error =>
-                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span>
-                    @messages(error.message)
-                </span>
-            }
             @if(arrivingNICheck.contains(true)){
                 @autoCompleteList(
                     form,
@@ -121,7 +116,7 @@
                     list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
                     labelClass = true,
-                    
+                    errorKey = Some("placeOfArrival")
                 )
             } else {
                         
@@ -137,11 +132,7 @@
                     list = portsOfArrival.map(c => (c.code, messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
                     labelClass = true,
-                    describedBy =
-                        if (form("placeOfArrival").hasErrors)
-                            Some("placeOfArrival-error")
-                        else
-                            None
+                    errorKey = Some("placeOfArrival")
                     )
 
             }
