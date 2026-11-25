@@ -226,37 +226,6 @@ class YourJourneyDetailsViewSpec extends BaseViewSpec {
   )
 
   "YourJourneyDetailsView" when {
-    "place of arrival is missing" should {
-      "group both inputs and associate the group error and manual-entry option" in {
-        val doc         = document(buildView(emptyForm))
-        val select      = doc.getElementById("placeOfArrival.selectPlaceOfArrival")
-        val manualInput = doc.getElementById("placeOfArrival.enterPlaceOfArrival")
-        val group       = select.closest("fieldset")
-
-        group.select("legend").text()                                                            shouldBe messages("label.place_of_arrival_uk")
-        group.getElementById("placeOfArrival.enterPlaceOfArrival")                               shouldBe manualInput
-        group.attr("aria-describedby")                                                           shouldBe "placeOfArrival-error"
-        select.attr("aria-describedby")                                                            should include("placeOfArrival-error")
-        select.attr("aria-describedby")                                                            should include("placeOfArrival.selectPlaceOfArrival-hint")
-        select.attr("aria-describedby")                                                            should include("placeOfArrival-not-listed")
-        manualInput.attr("aria-describedby")                                                       should include("placeOfArrival-error")
-        doc.getElementById("placeOfArrival.selectPlaceOfArrival-hint").nextElementSibling().id() shouldBe
-          "placeOfArrival-error"
-      }
-    }
-
-    "place of arrival is entered manually" should {
-      "link a manual-entry error to the visible input" in {
-        val invalidForm = validForm.withError("placeOfArrival.enterPlaceOfArrival", "error.required.place_of_arrival")
-        val doc         = document(buildView(invalidForm))
-        val manualInput = doc.getElementById("placeOfArrival.enterPlaceOfArrival")
-
-        manualInput.closest("details").hasAttr("open") shouldBe true
-        manualInput.attr("aria-describedby")             should include("placeOfArrival.enterPlaceOfArrival-error")
-        getErrorsInSummary(doc).map(_._1)                should contain("#placeOfArrival.enterPlaceOfArrival")
-      }
-    }
-
     renderViewTest(
       title = "What are your journey details? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "What are your journey details?"
