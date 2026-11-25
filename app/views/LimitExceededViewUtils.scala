@@ -53,7 +53,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     productToken: String,
     totalAmount: String,
     showGroupMessage: Boolean,
-    isWineStillOrSparklingEnabled: Boolean = false
+    isNonEuArrivingNI: Boolean = false
   )(implicit messages: Messages): Html = {
 
     val p1 =
@@ -125,7 +125,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
       if (showGroupMessage) {
         messages(s"limitExceeded.max.limit.group.$productToken")
       } else if (productToken.contains("cider")) {
-        messages(s"limitExceeded.max.limit.$productToken", if (isWineStillOrSparklingEnabled) "110" else "20")
+        messages(s"limitExceeded.max.limit.$productToken", if (!isNonEuArrivingNI) "110" else "20")
       } else if (productToken.contains("vaping-products-liquid")) {
         messages(s"limitExceeded.max.limit.$productToken", "1000")
       } else {
@@ -217,7 +217,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
     originalAmountFormatted: String,
     userInput: String,
     showGroupMessage: Boolean,
-    isWineStillOrSparklingEnabled: Boolean = false
+    isNonEuArrivingNI: Boolean = false
   )(implicit messages: Messages): Html = {
 
     val p1Content =
@@ -358,7 +358,7 @@ class LimitExceededViewUtils @Inject() (p: views.html.components.p, panelIndent:
       if (showGroupMessage) {
         messages(s"limitExceeded.max.limit.group.$productToken")
       } else if (productToken.contains("cider")) {
-        messages(s"limitExceeded.max.limit.$productToken", if (isWineStillOrSparklingEnabled) "110" else "20")
+        messages(s"limitExceeded.max.limit.$productToken", if (!isNonEuArrivingNI) "110" else "20")
       } else {
         messages(s"limitExceeded.max.limit.$productToken")
       }

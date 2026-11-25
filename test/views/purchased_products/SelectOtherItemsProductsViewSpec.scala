@@ -61,7 +61,8 @@ class SelectOtherItemsProductsViewSpec extends BaseViewSpec {
     backLink = None,
     customBackLink = false,
     returnToAddedItemEditUrl = None,
-    returnToAddedItemProductPath = None
+    returnToAddedItemProductPath = None,
+    isNonEuArrivingNI = false
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[select_products].ref.f(
@@ -71,7 +72,8 @@ class SelectOtherItemsProductsViewSpec extends BaseViewSpec {
     None,
     false,
     None,
-    None
+    None,
+    false
   )(request, messages, appConfig)
 
   "SelectOtherItemsProductsViewSpec" when {

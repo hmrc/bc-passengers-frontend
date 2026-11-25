@@ -55,9 +55,9 @@ class LimitExceedController @Inject() (
     case token if token == "wine"           => checkProductExists(journeyData, "alcohol/sparkling-wine")
     case token if token == "sparkling-wine" => checkProductExists(journeyData, "alcohol/wine")
     case token if token == "other"          =>
-      !isWineToggleEnabled(journeyData) && checkProductExists(journeyData, "cider")
+      isNonEuArrivingNI(journeyData) && checkProductExists(journeyData, "cider")
     case token if token.contains("cider")   =>
-      !isWineToggleEnabled(journeyData) && checkProductExists(journeyData, "other")
+      isNonEuArrivingNI(journeyData) && checkProductExists(journeyData, "other")
     case _                                  => false
   }
 
@@ -73,11 +73,8 @@ class LimitExceedController @Inject() (
       checkProductExists(journeyData, "chewing-tobacco")
     }
 
-  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
-    val isNonEuNiJourney =
-      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
-    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
-  }
+  private def isNonEuArrivingNI(journeyData: JourneyData): Boolean =
+    journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
 
   def onPageLoadAddJourneyAlcoholVolume(path: ProductPath): Action[AnyContent] =
     limitExceedAction { implicit context =>
@@ -91,7 +88,7 @@ class LimitExceedController @Inject() (
             context.getJourneyData,
             BigDecimal(0),
             product.token,
-            isWineToggleEnabled(context.getJourneyData)
+            isNonEuArrivingNI(context.getJourneyData)
           )
 
         val totalAccNoOfVolume: BigDecimal =
@@ -122,7 +119,7 @@ class LimitExceedController @Inject() (
                   product.name,
                   showPanelIndent,
                   showGroupMessage,
-                  isWineToggleEnabled(context.getJourneyData)
+                  isNonEuArrivingNI(context.getJourneyData)
                 )
               )
             )
@@ -312,7 +309,7 @@ class LimitExceedController @Inject() (
             userInputBigDecimal,
             product.token,
             iid,
-            isWineToggleEnabled(context.getJourneyData)
+            isNonEuArrivingNI(context.getJourneyData)
           )
 
         val userInputBigDecimalFormatted = userInputBigDecimal.formatDecimalPlaces(3)
@@ -334,7 +331,7 @@ class LimitExceedController @Inject() (
                   token = product.token,
                   productName = product.name,
                   showGroupMessage = showGroupMessage,
-                  isWineToggleEnabled(context.getJourneyData)
+                  isNonEuArrivingNI(context.getJourneyData)
                 )
               )
             )

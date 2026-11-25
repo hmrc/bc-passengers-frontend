@@ -24,7 +24,7 @@
   p: components.p
 )
 
-@(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String], isWineToggleOn: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(previousDeclaration: Boolean, calculatorResponseDto: CalculatorResponseDto, deltaCalc: Option[Calculation], oldAllTax:String, hideExchangeRateInfo: Boolean, backLink: Option[String], isNonEuArrivingNI: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 @isVapingOn = @{ appConfig.isVapingJourneyEnabled }
 @govukLayout(pageTitle = Some(if(deltaCalc.isDefined){messages("label.additional_tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}else{messages("label.tax_due_on_these_goods")+ " - " + messages("service.name") + " - " + messages("site.govuk")}), backLink = backLink) {
 
@@ -95,7 +95,7 @@
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">
           <b>
-          @messages(item.metadata.descriptionLabels.description, wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
+          @messages(item.metadata.descriptionLabels.description, nonEuArrivingNIArgs(item.metadata.descriptionLabels.args, isNonEuArrivingNI).map(messages(_).toLowerCase)*)
           </b>
         </td>
 
@@ -203,7 +203,7 @@
       @calculatorResponseDto.items.map { item =>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">
-          @messages(item.metadata.descriptionLabels.description, wineStillOrSparklingArgs(item.metadata.descriptionLabels.args, isWineToggleOn).map(messages(_).toLowerCase)*)
+          @messages(item.metadata.descriptionLabels.description, nonEuArrivingNIArgs(item.metadata.descriptionLabels.args, isNonEuArrivingNI).map(messages(_).toLowerCase)*)
         </th>
         <td class="govuk-table__cell">
           @formatMonetaryValue(item.metadata.cost) @messages(item.metadata.currency.displayName)
@@ -260,7 +260,7 @@
     <a class="govuk-link" href="@controllers.routes.DashboardController.showDashboard">@messages("label.change_your_goods")</a>
   </p>
 
-  @displayTaxBreakdown(calculatorResponseDto, appConfig, isWineToggleOn)
+  @displayTaxBreakdown(calculatorResponseDto, appConfig, isNonEuArrivingNI)
   <br>
 
   @if(!hideExchangeRateInfo) {

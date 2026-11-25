@@ -69,17 +69,25 @@ class GoodsCheckYourAnswersController @Inject() (
             routes.UccReliefController.loadUccReliefItemPage(path, iid).url
           else routes.UKVatPaidController.loadItemUKVatPaidPage(path, iid).url
         }
-        Future.successful(Ok(check_your_goods_answers(purchasedItem, productTreeLeaf, currency, isEditMode, backLink)))
+        Future.successful(
+          Ok(
+            check_your_goods_answers(
+              purchasedItem,
+              productTreeLeaf,
+              currency,
+              isEditMode,
+              backLink,
+              isNonEuArrivingNI = isNonEuArrivingNI(journeyData)
+            )
+          )
+        )
       case _                                            =>
         Future.successful(Redirect(routes.DashboardController.showDashboard))
     }
   }
 
-  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
-    val isNonEuNiJourney =
-      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
-    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
-  }
+  private def isNonEuArrivingNI(journeyData: JourneyData): Boolean =
+    journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
 
   private def isVapingToggleEnabled(journeyData: JourneyData): Boolean = {
     val isNIJourney = journeyData.arrivingNICheck.contains(true)
@@ -89,7 +97,7 @@ class GoodsCheckYourAnswersController @Inject() (
   def submit(path: ProductPath, iid: String): Action[AnyContent] = dashboardAction { implicit context =>
     implicit val request: Request[AnyContent] = context.request
 
-    if (!isWineToggleEnabled(context.getJourneyData) && path.toMessageKey.contains("alcohol")) {
+    if (isNonEuArrivingNI(context.getJourneyData) && path.toMessageKey.contains("alcohol")) {
       Future.successful(Redirect(routes.SelectProductController.nextStep()))
     } else if (appConfig.isVapingJourneyEnabled) {
       val journeyData = context.getJourneyData
@@ -103,14 +111,14 @@ class GoodsCheckYourAnswersController @Inject() (
               journeyData,
               BigDecimal(0),
               productTreeLeaf.token,
-              isWineToggleEnabled(context.getJourneyData)
+              isNonEuArrivingNI(context.getJourneyData)
             )
           if (
             alcoholVolumeConstraint(
               journeyData,
               totalVolumeForAlcohol,
               productTreeLeaf.token,
-              isWineToggleEnabled(context.getJourneyData)
+              isNonEuArrivingNI(context.getJourneyData)
             )
           )
             Future.successful(Redirect(routes.SelectProductController.nextStep()))
@@ -194,14 +202,14 @@ class GoodsCheckYourAnswersController @Inject() (
               journeyData,
               BigDecimal(0),
               productTreeLeaf.token,
-              isWineToggleEnabled(context.getJourneyData)
+              isNonEuArrivingNI(context.getJourneyData)
             )
           if (
             alcoholVolumeConstraint(
               journeyData,
               totalVolumeForAlcohol,
               productTreeLeaf.token,
-              isWineToggleEnabled(context.getJourneyData)
+              isNonEuArrivingNI(context.getJourneyData)
             )
           )
             Future.successful(Redirect(routes.SelectProductController.nextStep()))

@@ -98,7 +98,7 @@ class OverNinetySevenThousandPoundsViewSpec extends BaseViewSpec {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
-    isWineToggleOn = false
+    isNonEuArrivingNI = true
   )(
     request = request,
     messages = messages,
@@ -112,7 +112,7 @@ class OverNinetySevenThousandPoundsViewSpec extends BaseViewSpec {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
-    isWineToggleOn = false,
+    isNonEuArrivingNI = true,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -125,7 +125,7 @@ class OverNinetySevenThousandPoundsViewSpec extends BaseViewSpec {
     "0.00",
     true,
     None,
-    false
+    true
   )(request, messages, appConfig)
 
   "OverNinetySevenThousandPoundsView" when {

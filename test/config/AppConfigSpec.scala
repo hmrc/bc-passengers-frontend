@@ -17,9 +17,9 @@
 package config
 
 import org.scalatest.matchers.should.Matchers
-import util.{BaseSpec, VapingProductsFeature, WineStillOrSparklingFeature}
+import util.{BaseSpec, VapingProductsFeature}
 
-class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeature with VapingProductsFeature {
+class AppConfigSpec extends BaseSpec with Matchers with VapingProductsFeature {
 
   val appConfig: AppConfig = injected[AppConfig]
 
@@ -38,14 +38,6 @@ class AppConfigSpec extends BaseSpec with Matchers with WineStillOrSparklingFeat
 
     "return the correct govUKUrl" in {
       appConfig.govUK shouldBe "https://www.gov.uk"
-    }
-
-    "read isWineStillOrSparklingEnabled as true when features.wine-still-or-sparkling is true" in {
-      appConfigToggleOn.isWineStillOrSparklingEnabled shouldBe true
-    }
-
-    "read isWineStillOrSparklingEnabled as false when features.wine-still-or-sparkling is false" in {
-      appConfigToggleOff.isWineStillOrSparklingEnabled shouldBe false
     }
   }
 }

@@ -119,9 +119,7 @@ class SelectProductController @Inject() (
     journeyData: JourneyData
   ): List[(String, String)] = {
     val items = children.map(i => (i.token, i.name))
-    if (
-      appConfig.isWineStillOrSparklingEnabled && path.components == List("alcohol") && !isNonEuArrivingNI(journeyData)
-    ) {
+    if (path.components == List("alcohol") && !isNonEuArrivingNI(journeyData)) {
       val transformed  = items
         .filterNot(_._1 == "sparkling-wine")
         .map {
@@ -172,7 +170,8 @@ class SelectProductController @Inject() (
               else backLinkModel.backLink,
               customBackLink = useDashboardBackLink,
               returnToAddedItemEditUrl = returnToAddedItemEditUrl,
-              returnToAddedItemProductPath = returnToAddedItemProductPath
+              returnToAddedItemProductPath = returnToAddedItemProductPath,
+              isNonEuArrivingNI = isNonEuArrivingNI(context.getJourneyData)
             )
           )
         Future.successful(
@@ -201,7 +200,8 @@ class SelectProductController @Inject() (
                   formWithErrors,
                   selectItems(path, branch.children, context.getJourneyData),
                   path,
-                  backLinkModel.backLink
+                  backLinkModel.backLink,
+                  isNonEuArrivingNI = isNonEuArrivingNI(context.getJourneyData)
                 )
               )
             },
@@ -229,7 +229,7 @@ class SelectProductController @Inject() (
                       )
                       .flatMap { journeyData =>
                         val cleanedJourneyData =
-                          if (appConfig.isWineStillOrSparklingEnabled) {
+                          if (!isNonEuArrivingNI(journeyData)) {
                             purchasedProductService.revertWorkingInstance(journeyData)
                           } else {
                             purchasedProductService.clearWorkingInstance(journeyData)
@@ -263,7 +263,8 @@ class SelectProductController @Inject() (
                   formWithErrors,
                   selectItems(path, branch.children, context.getJourneyData),
                   path,
-                  backLinkModel.backLink
+                  backLinkModel.backLink,
+                  isNonEuArrivingNI = isNonEuArrivingNI(context.getJourneyData)
                 )
               )
             },

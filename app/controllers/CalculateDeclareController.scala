@@ -82,7 +82,6 @@ class CalculateDeclareController @Inject() (
   def receiptDateTime: LocalDateTime = dateTimeProviderService.now
 
   def declareYourGoods: Action[AnyContent] = declareAction { implicit context =>
-    isWineToggleEnabled(context.getJourneyData)
     def checkZeroPoundCondition(calculatorResponse: CalculatorResponse): Boolean                                  = {
       val calcTax = BigDecimal(calculatorResponse.calculation.allTax)
       calculatorResponse.isAnyItemOverAllowance && context.getJourneyData.euCountryCheck.contains(
@@ -117,11 +116,8 @@ class CalculateDeclareController @Inject() (
     }
   }
 
-  private def isWineToggleEnabled(journeyData: JourneyData): Boolean = {
-    val isNonEuNiJourney =
-      journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
-    appConfig.isWineStillOrSparklingEnabled && !isNonEuNiJourney
-  }
+  private def isNonEuArrivingNI(journeyData: JourneyData): Boolean =
+    journeyData.euCountryCheck.contains("nonEuOnly") && journeyData.arrivingNICheck.contains(true)
 
   def whatIsYourName: Action[AnyContent] = userInfoAction { implicit context =>
     context.getJourneyData.preUserInformation match {
@@ -684,7 +680,7 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -698,7 +694,7 @@ class CalculateDeclareController @Inject() (
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = false,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -712,7 +708,7 @@ class CalculateDeclareController @Inject() (
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = true,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -725,7 +721,7 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -738,7 +734,7 @@ class CalculateDeclareController @Inject() (
                     oldTax,
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
             }
@@ -753,7 +749,7 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -767,7 +763,7 @@ class CalculateDeclareController @Inject() (
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = false,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -781,7 +777,7 @@ class CalculateDeclareController @Inject() (
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     underNinePounds = true,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -794,7 +790,7 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
 
@@ -807,7 +803,7 @@ class CalculateDeclareController @Inject() (
                     "",
                     hideExchangeRateInfo = calculatorResponse.allItemsUseGBP,
                     backLinkModel.backLink,
-                    isWineToggleEnabled(context.getJourneyData)
+                    isNonEuArrivingNI(context.getJourneyData)
                   )
                 )
             }

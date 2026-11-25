@@ -417,7 +417,7 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
       }
     }
 
-    "cider de-pooling for .alcoholAddHelper with the wine-still-or-sparkling toggle" when {
+    "cider de-pooling for .alcoholAddHelper" when {
 
       val ciderJourneyData: JourneyData = JourneyData(
         purchasedProductInstances = List(
@@ -439,19 +439,24 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
         )
       )
 
-      "the toggle is OFF" should {
+      "a non-EU, NI journey" should {
         "pool all cider variants into one total" in {
-          service.alcoholAddHelper(ciderJourneyData, BigDecimal(0), "non-sparkling-cider") shouldBe BigDecimal(1.6)
+          service.alcoholAddHelper(
+            ciderJourneyData,
+            BigDecimal(0),
+            "non-sparkling-cider",
+            isNonEuArrivingNI = true
+          ) shouldBe BigDecimal(1.6)
         }
       }
 
-      "the toggle is ON" should {
+      "a non-EU, GB journey" should {
         "sum only the same cider variant, not the other cider variants" in {
           service.alcoholAddHelper(
             ciderJourneyData,
             BigDecimal(0),
             "non-sparkling-cider",
-            isWineStillOrSparklingEnabled = true
+            isNonEuArrivingNI = false
           ) shouldBe BigDecimal(0.5)
         }
 
@@ -460,13 +465,13 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             ciderJourneyData,
             BigDecimal(0),
             "sparkling-cider",
-            isWineStillOrSparklingEnabled = true
+            isNonEuArrivingNI = false
           ) shouldBe BigDecimal(0.5)
           service.alcoholAddHelper(
             ciderJourneyData,
             BigDecimal(0),
             "sparkling-cider-up",
-            isWineStillOrSparklingEnabled = true
+            isNonEuArrivingNI = false
           ) shouldBe BigDecimal(0.6)
         }
 
@@ -489,13 +494,13 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
             sameVariant,
             BigDecimal(0),
             "non-sparkling-cider",
-            isWineStillOrSparklingEnabled = true
+            isNonEuArrivingNI = false
           ) shouldBe BigDecimal(1.1)
         }
       }
     }
 
-    "other de-pooling for .alcoholAddHelper with the wine-still-or-sparkling toggle" when {
+    "other de-pooling for .alcoholAddHelper" when {
 
       val ciderAndOtherJourneyData: JourneyData = JourneyData(
         purchasedProductInstances = List(
@@ -512,19 +517,24 @@ class AlcoholAndTobaccoCalculationServiceSpec extends BaseSpec {
         )
       )
 
-      "the toggle is OFF" should {
+      "a non-EU, NI journey" should {
         "pool other together with cider" in {
-          service.alcoholAddHelper(ciderAndOtherJourneyData, BigDecimal(0), "other") shouldBe BigDecimal(2.8)
+          service.alcoholAddHelper(
+            ciderAndOtherJourneyData,
+            BigDecimal(0),
+            "other",
+            isNonEuArrivingNI = true
+          ) shouldBe BigDecimal(2.8)
         }
       }
 
-      "the toggle is ON" should {
+      "a non-EU, GB journey" should {
         "sum only other, not cider" in {
           service.alcoholAddHelper(
             ciderAndOtherJourneyData,
             BigDecimal(0),
             "other",
-            isWineStillOrSparklingEnabled = true
+            isNonEuArrivingNI = false
           ) shouldBe BigDecimal(2.3)
         }
       }

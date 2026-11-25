@@ -23,6 +23,5 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Features @Inject() (config: Configuration) {
-  val wineStillOrSparklingEnabled = new Feature(ConfigKeys.wineStillOrSparklingFeature, config)
-  val vapingProductsEnabled       = new Feature(ConfigKeys.vapingProductsFeature, config)
+  val vapingProductsEnabled = new Feature(ConfigKeys.vapingProductsFeature, config)
 }

@@ -31,11 +31,11 @@ import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.concurrent.Future
 
-class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
+class LimitExceedControllerSpec extends BaseSpec {
 
   private val mockCache: Cache = mock(classOf[Cache])
 
@@ -53,12 +53,6 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
 
   override implicit lazy val app: Application = appBuilder.build()
-
-  private lazy val appWithWineStillOrSparklingEnabled: Application =
-    appBuilder.configure(wineStillOrSparklingKey -> true).build()
-
-  private lazy val appWithWineStillOrSparklingDisabled: Application =
-    appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -103,12 +97,14 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
   private def journeyData(
     purchasedProductInstances: List[PurchasedProductInstance] = Nil,
     workingInstance: Option[PurchasedProductInstance] = None,
-    declarationResponse: Option[DeclarationResponse] = None
+    declarationResponse: Option[DeclarationResponse] = None,
+    euCountryCheck: String = "greatBritain",
+    arrivingNICheck: Boolean = true
   ) =
     JourneyData(
       prevDeclaration = Some(false),
-      euCountryCheck = Some("greatBritain"),
-      arrivingNICheck = Some(true),
+      euCountryCheck = Some(euCountryCheck),
+      arrivingNICheck = Some(arrivingNICheck),
       bringingOverAllowance = Some(true),
       ageOver17 = Some(true),
       privateCraft = Some(false),
@@ -202,7 +198,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
           }
         }
 
-        "display the group content for other when cider has been added and wine-still-or-sparkling is disabled" in {
+        "display the group content for other when cider has been added for a non-EU, NI journey" in {
           when(mockCache.fetch(any())).thenReturn(
             Future.successful(
               Some(
@@ -214,14 +210,15 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                       weightOrVolume = Some(10.0),
                       noOfSticks = None
                     )
-                  )
+                  ),
+                  euCountryCheck = "nonEuOnly"
                 )
               )
             )
           )
 
           val result: Future[Result] = route(
-            appWithWineStillOrSparklingDisabled,
+            app,
             FakeRequest(
               "GET",
               "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/other/upper-limits/volume"
@@ -236,7 +233,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
             .text() shouldBe s"You have entered a total of 40.01 litres of $ciderOtherAlcoholGroupMessage"
         }
 
-        "display the individual cider content and not the group content when cider and other have both been added and wine-still-or-sparkling is ON" in {
+        "display the individual cider content and not the group content when cider and other have both been added for a non-EU, GB journey" in {
           when(mockCache.fetch(any())).thenReturn(
             Future.successful(
               Some(
@@ -254,14 +251,16 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                       weightOrVolume = Some(10.0),
                       noOfSticks = None
                     )
-                  )
+                  ),
+                  euCountryCheck = "nonEuOnly",
+                  arrivingNICheck = false
                 )
               )
             )
           )
 
           val result: Future[Result] = route(
-            appWithWineStillOrSparklingEnabled,
+            app,
             FakeRequest(
               "GET",
               "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/volume"
@@ -280,7 +279,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
             .text() shouldBe "You cannot use this service to declare more than 110 litres of non-sparkling cider."
         }
 
-        "display the individual cider content and not the group content when cider and other have both been added and wine-still-or-sparkling is OFF" in {
+        "display the individual cider content and not the group content when cider and other have both been added for a non-EU, NI journey" in {
           when(mockCache.fetch(any())).thenReturn(
             Future.successful(
               Some(
@@ -298,14 +297,15 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                       weightOrVolume = Some(10.0),
                       noOfSticks = None
                     )
-                  )
+                  ),
+                  euCountryCheck = "nonEuOnly"
                 )
               )
             )
           )
 
           val result: Future[Result] = route(
-            appWithWineStillOrSparklingDisabled,
+            app,
             FakeRequest(
               "GET",
               "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/volume"
@@ -449,7 +449,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
           }
         }
 
-        "display the group content for other when cider has been added and wine-still-or-sparkling is disabled" in {
+        "display the group content for other when cider has been added for a non-EU, NI journey" in {
           when(mockCache.fetch(any())).thenReturn(
             Future.successful(
               Some(
@@ -471,14 +471,15 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                         noOfSticks = None
                       )
                     )
-                  )
+                  ),
+                  euCountryCheck = "nonEuOnly"
                 )
               )
             )
           )
 
           val result: Future[Result] = route(
-            appWithWineStillOrSparklingDisabled,
+            app,
             FakeRequest(
               "GET",
               "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/other/upper-limits/volume"
@@ -812,7 +813,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
     ".onPageLoadEditAlcoholVolume" when {
       "making a first declaration" should {
         Seq("non-sparkling-cider", "sparkling-cider", "sparkling-cider-up").foreach { productToken =>
-          s"load limit exceed page and display the content specifically for cider ($productToken) when wine-still-or-sparkling is ON" in {
+          s"load limit exceed page and display the content specifically for cider ($productToken) for a non-EU, GB journey" in {
             when(mockCache.fetch(any())).thenReturn(
               Future.successful(
                 Some(
@@ -832,14 +833,16 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                         weightOrVolume = Some(20.0),
                         noOfSticks = None
                       )
-                    )
+                    ),
+                    euCountryCheck = "nonEuOnly",
+                    arrivingNICheck = false
                   )
                 )
               )
             )
 
             val result: Future[Result] = route(
-              appWithWineStillOrSparklingEnabled,
+              app,
               FakeRequest(
                 "GET",
                 s"/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/$productToken/upper-limits/iid0/edit/volume"
@@ -867,7 +870,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
           }
         }
 
-        "load limit exceed page and display the generic cider content when wine-still-or-sparkling is OFF" in {
+        "load limit exceed page and display the generic cider content for a non-EU, NI journey" in {
           when(mockCache.fetch(any())).thenReturn(
             Future.successful(
               Some(
@@ -887,14 +890,15 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                       weightOrVolume = Some(20.0),
                       noOfSticks = None
                     )
-                  )
+                  ),
+                  euCountryCheck = "nonEuOnly"
                 )
               )
             )
           )
 
           val result: Future[Result] = route(
-            appWithWineStillOrSparklingDisabled,
+            app,
             FakeRequest(
               "GET",
               "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/iid0/edit/volume"
@@ -984,7 +988,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
 
       "making an amendment to a previous declaration" should {
         Seq("non-sparkling-cider", "sparkling-cider", "sparkling-cider-up").foreach { productToken =>
-          s"load limit exceed page and display the content specifically for cider ($productToken) when wine-still-or-sparkling is ON" in {
+          s"load limit exceed page and display the content specifically for cider ($productToken) for a non-EU, GB journey" in {
             when(mockCache.fetch(any())).thenReturn(
               Future.successful(
                 Some(
@@ -1014,14 +1018,16 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                           noOfSticks = None
                         )
                       )
-                    )
+                    ),
+                    euCountryCheck = "nonEuOnly",
+                    arrivingNICheck = false
                   )
                 )
               )
             )
 
             val result: Future[Result] = route(
-              appWithWineStillOrSparklingEnabled,
+              app,
               FakeRequest(
                 "GET",
                 s"/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/$productToken/upper-limits/iid1/edit/volume"
@@ -1049,7 +1055,7 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
           }
         }
 
-        "load limit exceed page and display the generic cider content when wine-still-or-sparkling is OFF" in {
+        "load limit exceed page and display the generic cider content for a non-EU, NI journey" in {
           when(mockCache.fetch(any())).thenReturn(
             Future.successful(
               Some(
@@ -1079,14 +1085,15 @@ class LimitExceedControllerSpec extends BaseSpec with WineStillOrSparklingFeatur
                         noOfSticks = None
                       )
                     )
-                  )
+                  ),
+                  euCountryCheck = "nonEuOnly"
                 )
               )
             )
           )
 
           val result: Future[Result] = route(
-            appWithWineStillOrSparklingDisabled,
+            app,
             FakeRequest(
               "GET",
               "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/cider/non-sparkling-cider/upper-limits/iid1/edit/volume"

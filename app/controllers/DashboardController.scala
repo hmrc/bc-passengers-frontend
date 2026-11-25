@@ -150,7 +150,7 @@ class DashboardController @Inject() (
 
               Ok(
                 dashboard(
-                  jd,
+                  jd.euCountryCheck.contains("nonEuOnly") && jd.arrivingNICheck.contains(true),
                   pageAlcoholItems,
                   pageTobaccoItems,
                   pageVapingProductsItems,

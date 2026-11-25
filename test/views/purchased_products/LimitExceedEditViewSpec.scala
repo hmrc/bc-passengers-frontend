@@ -16,15 +16,11 @@
 
 package views.purchased_products
 
-import config.AppConfig
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import views.{BaseSelectors, BaseViewSpec}
 import views.html.purchased_products.limit_exceed_edit
 
-class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
-
-  override val appConfig: AppConfig = appConfigToggleOff
+class LimitExceedEditViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable =
     injected[limit_exceed_edit].apply(
@@ -33,7 +29,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
       userInput = "0",
       token = "cigars",
       productName = "label.tobacco.cigars",
-      isWineToggleOn = false
+      isNonEuArrivingNI = false
     )(
       request = request,
       messages = messages,
@@ -48,7 +44,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
       token = "cigars",
       productName = "label.tobacco.cigars",
       showGroupMessage = false,
-      isWineToggleOn = false,
+      isNonEuArrivingNI = false,
       request = request,
       messages = messages,
       appConfig = appConfig
@@ -67,10 +63,10 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
     item: String,
     productName: String,
     showGroupMessage: Boolean = false,
-    isWineToggleOn: Boolean = false
+    isNonEuArrivingNI: Boolean = true
   ): HtmlFormat.Appendable =
     injected[limit_exceed_edit]
-      .apply(amount, originalAmountEntered, userInput, item, productName, showGroupMessage, isWineToggleOn)(
+      .apply(amount, originalAmountEntered, userInput, item, productName, showGroupMessage, isNonEuArrivingNI)(
         request = request,
         messages = messages,
         appConfig = appConfig
@@ -89,7 +85,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
 
         "the user enters a single litre of alcohol" should {
 
-          val view = viewApply("110.5", "9.00", "1.00", "beer", "label.alcohol.beer", false, true)
+          val view = viewApply("110.5", "9.00", "1.00", "beer", "label.alcohol.beer", false, false)
 
           val expectedContent =
             Seq(
@@ -116,7 +112,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
 
         "the user enters too much beer" should {
 
-          val view = viewApply("110.5", "9.00", "10.5", "beer", "label.alcohol.beer", false, true)
+          val view = viewApply("110.5", "9.00", "10.5", "beer", "label.alcohol.beer", false, false)
 
           val expectedContent =
             Seq(
@@ -141,10 +137,10 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters too much non-sparkling cider" should {
+        "the user enters too much non-sparkling cider for a non-EU, NI journey" should {
 
           val view =
-            viewApply("20.01", "15", "5.01", "non-sparkling-cider", "label.alcohol.non-sparkling-cider", false, false)
+            viewApply("20.01", "15", "5.01", "non-sparkling-cider", "label.alcohol.non-sparkling-cider", false, true)
 
           val expectedContent =
             Seq(
@@ -170,10 +166,10 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters too much sparkling-cider" should {
+        "the user enters too much sparkling-cider for a non-EU, NI journey" should {
 
           val view =
-            viewApply("20.01", "3.00", "5.01", "sparkling-cider", "label.alcohol.sparkling-cider", false, false)
+            viewApply("20.01", "3.00", "5.01", "sparkling-cider", "label.alcohol.sparkling-cider", false, true)
 
           val expectedContent =
             Seq(
@@ -198,10 +194,10 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters too much sparkling-cider-up" should {
+        "the user enters too much sparkling-cider-up for a non-EU, NI journey" should {
 
           val view =
-            viewApply("20.01", "3.00", "5.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up", false, false)
+            viewApply("20.01", "3.00", "5.01", "sparkling-cider-up", "label.alcohol.sparkling-cider-up", false, true)
 
           val expectedContent =
             Seq(
@@ -285,7 +281,7 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters too much wine" should {
+        "the user enters too much wine for a non-EU, NI journey" should {
 
           val view = viewApply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine")
 
@@ -315,12 +311,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           behave like pageWithExpectedMessages(view, expectedContent)
         }
 
-        "the user enters too much wine with the wine-still-or-sparkling toggle ON" should {
+        "the user enters too much wine for a non-EU, GB journey" should {
 
-          val onConfig: AppConfig = appConfigToggleOn
-          val view                =
+          val view =
             injected[limit_exceed_edit]
-              .apply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine", false, true)(request, messages, onConfig)
+              .apply("90.01", "9.00", "10.01", "wine", "label.alcohol.wine", false, false)(request, messages, appConfig)
 
           val expectedContent =
             Seq(
@@ -342,12 +337,11 @@ class LimitExceedEditViewSpec extends BaseViewSpec with WineStillOrSparklingFeat
           ("sparkling-cider", "label.alcohol.sparkling-cider", "sparkling cider (1.3% to 5.5%)"),
           ("sparkling-cider-up", "label.alcohol.sparkling-cider-up", "sparkling cider (5.6% to 8.4%)")
         ).foreach { case (token, productName, expectedName) =>
-          s"the user edits too much $token with the wine-still-or-sparkling toggle ON" should {
+          s"the user edits too much $token for a non-EU, GB journey" should {
 
-            val onConfig: AppConfig = appConfigToggleOn
-            val view                =
+            val view =
               injected[limit_exceed_edit]
-                .apply("110.01", "9.00", "10.01", token, productName, false, true)(request, messages, onConfig)
+                .apply("110.01", "9.00", "10.01", token, productName, false, false)(request, messages, appConfig)
 
             val expectedContent =
               Seq(

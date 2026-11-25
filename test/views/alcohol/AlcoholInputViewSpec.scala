@@ -16,18 +16,14 @@
 
 package views.alcohol
 
-import config.AppConfig
 import forms.AlcoholInputForm
 import models.*
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.alcohol.alcohol_input
 
-class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
-
-  override val appConfig: AppConfig = appConfigToggleOff
+class AlcoholInputViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "alcohol/wine")
 
@@ -136,7 +132,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countriesEU = europeanCountries,
     currencies = currencies,
     journeyStart = None,
-    isWineToggleOn = false
+    isNonEuArrivingNI = true
   )(
     request = request,
     messages = messages,
@@ -154,7 +150,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countriesEU = europeanCountries,
     currencies = currencies,
     journeyStart = None,
-    isWineToggleOn = false,
+    isNonEuArrivingNI = true,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -171,7 +167,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     europeanCountries,
     currencies,
     None,
-    false
+    true
   )(request, messages, appConfig)
 
   val euOnlyView: HtmlFormat.Appendable = injected[alcohol_input].apply(
@@ -185,7 +181,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countriesEU = europeanCountries,
     currencies = currencies,
     journeyStart = Some("euOnly"),
-    isWineToggleOn = false
+    isNonEuArrivingNI = true
   )(
     request = request,
     messages = messages,
@@ -203,7 +199,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
     countriesEU = europeanCountries,
     currencies = currencies,
     journeyStart = None,
-    isWineToggleOn = false
+    isNonEuArrivingNI = true
   )(
     request = request,
     messages = messages,
@@ -222,7 +218,7 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
       countriesEU = europeanCountries,
       currencies = currencies,
       journeyStart = None,
-      isWineToggleOn = false
+      isNonEuArrivingNI = true
     )(
       request = request,
       messages = messages,
@@ -261,9 +257,8 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
       heading = "Tell us about the Wine"
     )
 
-    "show 'Wine (still or sparkling)' in the heading and title when the wine-still-or-sparkling toggle is ON" in {
-      val onConfig: AppConfig = appConfigToggleOn
-      val view                = injected[alcohol_input].apply(
+    "not show 'Wine (still or sparkling)' in the heading and title for a non-EU, NI journey" in {
+      val view = injected[alcohol_input].apply(
         validForm,
         None,
         false,
@@ -274,16 +269,15 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         europeanCountries,
         currencies,
         None,
-        false
-      )(request, messages, onConfig)
+        true
+      )(request, messages, appConfig)
       document(view).getElementsByTag("h1").text should not include (messages("label.alcohol.wine.still-or-sparkling"))
       document(view).title                       should not include (messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
     }
 
-    "not add still-or-sparkling for a non-wine product (beer) when the toggle is ON" in {
-      val onConfig: AppConfig = appConfigToggleOn
-      val beerLeaf            = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A2/BEER", "alcohol", List("L-BEER"))
-      val view                = injected[alcohol_input].apply(
+    "not add still-or-sparkling for a non-wine product (beer) regardless of journey type" in {
+      val beerLeaf = ProductTreeLeaf("beer", "label.alcohol.beer", "ALC/A2/BEER", "alcohol", List("L-BEER"))
+      val view     = injected[alcohol_input].apply(
         validForm,
         None,
         false,
@@ -294,15 +288,14 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         europeanCountries,
         currencies,
         None,
-        false
-      )(request, messages, onConfig)
+        true
+      )(request, messages, appConfig)
       document(view).getElementsByTag("h1").text                    should not include "still or sparkling"
       document(view).getElementsByClass("govuk-input__suffix").text should not include messages("label.litres")
     }
 
-    "show the 'litres' suffix on the volume input when the wine-still-or-sparkling toggle is ON" in {
-      val onConfig: AppConfig = appConfigToggleOn
-      val view                = injected[alcohol_input].apply(
+    "not show the 'litres' suffix on the volume input for a non-EU, NI journey" in {
+      val view = injected[alcohol_input].apply(
         validForm,
         None,
         false,
@@ -313,12 +306,12 @@ class AlcoholInputViewSpec extends BaseViewSpec with WineStillOrSparklingFeature
         europeanCountries,
         currencies,
         None,
-        false
-      )(request, messages, onConfig)
+        true
+      )(request, messages, appConfig)
       document(view).getElementsByClass("govuk-input__suffix").text should not include (messages("label.litres"))
     }
 
-    "not show the 'litres' suffix on the volume input when the toggle is OFF" in {
+    "not show the 'litres' suffix on the volume input for a non-EU, NI journey (default view)" in {
       document(viewViaApply).getElementsByClass("govuk-input__suffix").text should not include messages("label.litres")
     }
 

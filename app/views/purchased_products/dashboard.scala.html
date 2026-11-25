@@ -30,7 +30,7 @@
   errorSummary: components.errorSummary
 )
 
-@(journeyData: JourneyData,
+@(isNonEuArrivingNI: Boolean,
   alcoholPurchasedItemList: List[PurchasedItem],
   tobaccoPurchasedItemList: List[PurchasedItem],
   vapingProductsPurchasedItemList: List[PurchasedItem],
@@ -102,7 +102,7 @@
       @alcoholPurchasedItemList.zipWithIndex.map { case (purchasedItem, idx) =>
         @purchasedItem.descriptionLabels(long = false).map { description =>
           @defining(
-            if(appConfig.isWineStillOrSparklingEnabled && purchasedItem.productTreeLeaf.token == "wine")
+            if(!isNonEuArrivingNI && purchasedItem.productTreeLeaf.token == "wine")
               description._2.map(arg => if(arg == "label.alcohol.wine") "label.alcohol.wine.still-or-sparkling" else arg)
             else description._2
           ) { args =>

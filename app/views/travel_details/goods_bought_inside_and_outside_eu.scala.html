@@ -28,21 +28,18 @@
 )
 @(form: Form[BringingOverAllowanceDto], backLink: Option[String])(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
-@isWineOn = @{ appConfig.isWineStillOrSparklingEnabled }
 
 @isVapingOn = @{ appConfig.isVapingJourneyEnabled }
 
 @msgKey(key: String) = @{
-    if(isWineOn) s"$key.still-or-sparkling" else key
+    s"$key.still-or-sparkling"
 }
 
-@headingKey = @{ if(isWineOn || isVapingOn) "heading.goods_brought_into_gb.still-or-sparkling" else "heading.goods_brought_into_gb" }
+@headingKey = @{ if(isVapingOn) "heading.goods_brought_into_gb.still-or-sparkling" else "heading.goods_brought_into_gb" }
 
 @introKey = @{
     if(isVapingOn) {
         "text.gb.allowance.still-or-sparkling_vp"
-    } else if(isWineOn) {
-        "text.gb.allowance.still-or-sparkling"
     } else {
         "text.gb.allowance"
     }
@@ -57,7 +54,7 @@
 
         @p{@messages(introKey)}
 
-        @if(isWineOn || isVapingOn) {
+        @if(isVapingOn) {
             @panelIndent {
                 @p{
                     @if(isVapingOn) {
@@ -80,7 +77,7 @@
 
         @p{@messages(msgKey("text.gb.allowance.msg_1"))}
 
-        @if(isWineOn || isVapingOn) {
+        @if(isVapingOn) {
             <h3 class="govuk-heading-s">@messages("text.gb.allowance.over_heading.still-or-sparkling")</h3>
             @p{@messages("text.gb.allowance.alcohol_over.still-or-sparkling")}
             @p{@messages("text.gb.allowance.alcohol_over_example.still-or-sparkling")}
@@ -92,7 +89,7 @@
         }
 
         @h2(messages(msgKey("text.tobacco_allowance")))
-        @p{@messages(if(isWineOn) "text.you_can_bring_in.still-or-sparkling" else "text.you_can_bring_in_either")}
+        @p{@messages("text.you_can_bring_in.still-or-sparkling")}
 
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("text.allowance.tob_1")</li>
@@ -104,7 +101,7 @@
 
         @p{@messages(msgKey("text.allowance.msg_4"))}
 
-        @if(isWineOn || isVapingOn) {
+        @if(isVapingOn) {
             <h3 class="govuk-heading-s">@messages("text.gb.allowance.over_heading.still-or-sparkling")</h3>
             @p{@messages("text.allowance.tobacco_over.still-or-sparkling")}
             @p{@messages("text.allowance.tobacco_over_example.still-or-sparkling")}
@@ -126,7 +123,7 @@
 
         @h2(messages(msgKey("text.other_goods_allowance")))
 
-        @if(isWineOn || isVapingOn) {
+        @if(isVapingOn) {
             @p{@messages("text.allowance.otg_1.still-or-sparkling")}
             @p{@messages("text.allowance.other_goods_value_intro.still-or-sparkling")}
             <ul class="govuk-list govuk-list--bullet">
@@ -144,7 +141,7 @@
             @p{@messages("text.allowance.msg_7")}
         }
 
-        @if(isWineOn || isVapingOn) {
+        @if(isVapingOn) {
             @summaryYesNo(
                 form = form,
                 h2Message = Some("heading.are_you_bringing_in_goods_over_your_allowance"),
