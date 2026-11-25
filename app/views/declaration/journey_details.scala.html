@@ -95,13 +95,10 @@
 
         @h1("label.what_are_your_journey_details")     
    
+        <fieldset class="govuk-fieldset" @if(form("placeOfArrival").hasErrors){aria-describedby="placeOfArrival-error"}>
+            <legend class="govuk-fieldset__legend govuk-visually-hidden">@messages(if(arrivingNICheck.contains(true)) "label.place_of_arrival_ni" else "label.place_of_arrival_uk")</legend>
         <div class="govuk-form-group @{if(form("placeOfArrival").hasErrors) "govuk-form-group--error" else "" }" id="placeOfArrival">
 
-            @form.errors.filter(_.key == "placeOfArrival").map { error =>
-                <span class="govuk-error-message" id="placeOfArrival-error"> <span class="govuk-visually-hidden">@messages("label.error") </span>
-                    @messages(error.message)
-                </span>
-            }
             @if(arrivingNICheck.contains(true)){
                 @autoCompleteList(form,
                     id = "placeOfArrival.selectPlaceOfArrival",
@@ -113,7 +110,12 @@
                     hintText = messages("label.select_a_country"),
                     list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
-                    labelClass = true
+                    labelClass = true,
+                    groupError = form("placeOfArrival").error,
+                    describedBy = Some(Seq(
+                        Option.when(form("placeOfArrival").hasErrors)("placeOfArrival-error"),
+                        Some("placeOfArrival-not-listed")
+                    ).flatten.mkString(" "))
                 )
             } else {
                 @autoCompleteList(form,
@@ -126,13 +128,18 @@
                     hintText = messages("label.enter_place_of_arrival"),
                     list = portsOfArrival.map(c => (c.code,messages(c.displayName))),
                     jsonData = Json.toJson(portsOfArrival.map(_.toAutoCompleteJson)).toString,
-                    labelClass = true
+                    labelClass = true,
+                    groupError = form("placeOfArrival").error,
+                    describedBy = Some(Seq(
+                        Option.when(form("placeOfArrival").hasErrors)("placeOfArrival-error"),
+                        Some("placeOfArrival-not-listed")
+                    ).flatten.mkString(" "))
                 )
             }
-            <details class="govuk-details govuk-!-margin-bottom-6">
+            <details class="govuk-details govuk-!-margin-bottom-6" @if(form("placeOfArrival.enterPlaceOfArrival").value.exists(_.trim.nonEmpty) || form("placeOfArrival.enterPlaceOfArrival").hasErrors){open}>
 
                 <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">@messages("label.place_of_arrival_not_listed")</span>
+                    <span class="govuk-details__summary-text" id="placeOfArrival-not-listed">@messages("label.place_of_arrival_not_listed")</span>
                 </summary>
 
                 <div class="govuk-details__text">
@@ -143,11 +150,13 @@
                             label = "label.enter_place_of_arrival",
                             isPageHeading = false,
                             classes = Some("govuk-input govuk-!-width-one-half"),
-                            labelClasses = Some("govuk-!-font-weight-bold")
+                            labelClasses = Some("govuk-!-font-weight-bold"),
+                            describedBy = Option.when(form("placeOfArrival").hasErrors)("placeOfArrival-error")
                         )
                 </div>
             </details>
         </div>
+        </fieldset>
 
         @if(form("dateTimeOfArrival").hasErrors){
             <div class="govuk-form-group govuk-form-group--error" id="dateOfArrival.date">
