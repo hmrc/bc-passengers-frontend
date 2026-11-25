@@ -33,7 +33,9 @@
   hintText: String,
   list: Seq[(String, String)],
   jsonData: String,
-  labelClass: Boolean = false)(implicit messages: Messages, requestHeader: RequestHeader)
+  labelClass: Boolean = false,
+  describedBy: Option[String] = None,
+  groupError: Option[FormError] = None)(implicit messages: Messages, requestHeader: RequestHeader)
 
 <div class='@govukToClasses("govuk-form-group", if(form(id).hasErrors) "govuk-form-group--error" else "")'>
 
@@ -53,10 +55,19 @@
         </label>
     }
     @if(isPageHint){<span id="@id-hint" class="govuk-hint">@hint</span>}
+    @groupError.map { error =>
+        <p class="govuk-error-message" id="@{error.key}-error">
+            <span class="govuk-visually-hidden">@messages("label.error") </span>@messages(error.message, error.args*)
+        </p>
+    }
     @select(hmrcComponent.Select(
         id = id,
         name = name,
-        describedBy = if(hint) {Some(id + s"-hint")} else {None},
+        describedBy = Some(Seq(
+            Option.when(isPageHint && hint.nonEmpty)(s"$id-hint"),
+            describedBy
+        ).flatten.mkString(" ")).filter(_.nonEmpty),
+        classes = if(groupError.isDefined) "govuk-select--error" else "",
         errorMessage = form(id).error.map(fe => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = HtmlContent(messages(fe.message)))),
         items = Seq(SelectItem(value = Some(""), text=(hintText))) ++ list.map {
             case (k,v) => SelectItem(
