@@ -18,46 +18,19 @@ package testOnly.controllers
 
 import config.AppConfig
 import play.api.libs.json.Json
-import forms.FeatureSwitchForm
-import models.FeatureSwitchModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import testOnly.views.html.FeatureSwitchView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import play.api.libs.json.Json
 
 import javax.inject.Inject
 
 class FeatureSwitchController @Inject() (
-  mcc: MessagesControllerComponents,
-  featureSwitchView: FeatureSwitchView
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) {
-
-  def featureSwitch: Action[AnyContent] = Action { implicit request =>
-    Ok(
-      featureSwitchView(
-        FeatureSwitchForm.form.fill(
-          FeatureSwitchModel(wineStillOrSparklingEnabled = appConfig.features.wineStillOrSparklingEnabled())
-        )
-      )
-    )
-  }
 
   def featureSwitchVaping: Action[AnyContent] = Action {
     Ok(Json.toJson(appConfig.isVapingJourneyEnabled))
   }
 
-  def submitFeatureSwitch: Action[AnyContent] = Action { implicit request =>
-    FeatureSwitchForm.form
-      .bindFromRequest()
-      .fold(
-        _ => Redirect(routes.FeatureSwitchController.featureSwitch),
-        handleSuccess
-      )
-  }
-
-  private def handleSuccess(model: FeatureSwitchModel): Result = {
-    appConfig.features.wineStillOrSparklingEnabled(model.wineStillOrSparklingEnabled)
-    Redirect(routes.FeatureSwitchController.featureSwitch)
-  }
 }

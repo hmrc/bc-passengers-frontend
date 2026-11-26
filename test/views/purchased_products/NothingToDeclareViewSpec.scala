@@ -98,7 +98,8 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     underNinePounds = true,
-    backLink = None
+    backLink = None,
+    isNonEuArrivingNI = true
   )(
     request = request,
     messages = messages,
@@ -113,7 +114,7 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
     hideExchangeRateInfo = true,
     underNinePounds = true,
     backLink = None,
-    isWineToggleOn = false,
+    isNonEuArrivingNI = true,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -127,7 +128,7 @@ class NothingToDeclareViewSpec extends BaseViewSpec {
     true,
     true,
     None,
-    false
+    true
   )(request, messages, appConfig)
 
   "NothingToDeclareView" when {

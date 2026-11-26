@@ -35,12 +35,12 @@ import services.{CalculatorService, LimitUsageSuccessResponse, NewPurchaseServic
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.alcohol.alcohol_input
 
 import scala.concurrent.Future
 
-class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillOrSparklingFeature {
+class AlcoholInputControllerSpec extends BaseSpec with Injecting {
 
   private val mockCache: Cache                           = mock(classOf[Cache])
   private val mockNewPurchaseService: NewPurchaseService = mock(classOf[NewPurchaseService])
@@ -61,12 +61,6 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
     .overrides(bind[alcohol_input].toInstance(mockAlcoholInput))
 
   override implicit lazy val app: Application = appBuilder.build()
-
-  private lazy val appWithWineStillOrSparklingEnabled: Application =
-    appBuilder.configure(wineStillOrSparklingKey -> true).build()
-
-  private lazy val appWithWineStillOrSparklingDisabled: Application =
-    appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
   override def beforeEach(): Unit = {
     reset(injectedCache)
@@ -880,7 +874,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "12.50"
           )
 
-      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/volume"
@@ -901,7 +895,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
         "cost"           -> "50"
       )
 
-      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/sparkling-wine/upper-limits/volume"
@@ -921,14 +915,14 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "50"
           )
 
-      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
     }
 
-    "redirect to check-your-item when wine-still-or-sparkling is disabled and sparkling-wine is within the 60 litre limit" in new LocalSetup {
+    "redirect to check-your-item for a non-EU, NI journey when sparkling-wine is within the 60 litre limit" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-WINESP" -> "1.0")
 
@@ -942,12 +936,12 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
         "cost"           -> "50"
       )
 
-      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val result: Future[Result] = route(app, req).get
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }
 
-    "redirect to check-your-item when wine-still-or-sparkling is disabled and wine is within the 90 litre limit" in new LocalSetup {
+    "redirect to check-your-item for a non-EU, NI journey when wine is within the 90 litre limit" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.0")
 
@@ -960,12 +954,12 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "50"
           )
 
-      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val result: Future[Result] = route(app, req).get
       status(result)             shouldBe SEE_OTHER
       redirectLocation(result).get should include("/check-tax-on-goods-you-bring-into-the-uk/check-your-item/")
     }
 
-    "redirect to check-your-item when wine-still-or-sparkling is ON and the merged wine option is over the 90 litre limit" in new LocalSetup {
+    "redirect to check-your-item for a EU-only, GB journey when the merged wine option is over the 90 litre limit" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
 
@@ -978,14 +972,14 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "50"
           )
 
-      val onResult: Future[Result] = euGBRoute(appWithWineStillOrSparklingEnabled, req).get
+      val onResult: Future[Result] = euGBRoute(app, req).get
       status(onResult)             shouldBe SEE_OTHER
       redirectLocation(onResult).get should include(
         "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/pid"
       )
     }
 
-    "redirect to upper-limits/volume when wine-still-or-sparkling is OFF and the merged wine option is over the 90 litre limit" in new LocalSetup {
+    "redirect to upper-limits/volume for a non-EU, NI journey when the merged wine option is over the 90 litre limit" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.1")
 
@@ -998,14 +992,14 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "50"
           )
 
-      val offResult: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val offResult: Future[Result] = route(app, req).get
       status(offResult)           shouldBe SEE_OTHER
       redirectLocation(offResult) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/wine/upper-limits/volume"
       )
     }
 
-    "redirect to check-your-item when wine-still-or-sparkling is enabled and the merged wine option is within the 90 litre limit" in new LocalSetup {
+    "redirect to check-your-item for a non-EU, NI journey when the merged wine option is within the 90 litre limit" in new LocalSetup {
 
       override lazy val fakeLimits: Map[String, String] = Map("L-WINE" -> "1.0")
 
@@ -1209,7 +1203,7 @@ class AlcoholInputControllerSpec extends BaseSpec with Injecting with WineStillO
             "cost"           -> "12.50"
           )
 
-      val result: Future[Result] = route(appWithWineStillOrSparklingDisabled, req).get
+      val result: Future[Result] = route(app, req).get
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         "/check-tax-on-goods-you-bring-into-the-uk/goods/alcohol/beer/upper-limits/iid0/edit/volume"

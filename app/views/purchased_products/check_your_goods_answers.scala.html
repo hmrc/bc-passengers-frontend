@@ -25,12 +25,12 @@
   button: components.button
 )
 
-@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency], isEditMode: Boolean, backLink: Option[String] = None)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
+@(item: PurchasedProductInstance, product: ProductTreeLeaf, currency: Option[Currency], isEditMode: Boolean, backLink: Option[String] = None, isNonEuArrivingNI: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @category = @{ item.path.components.headOption.getOrElse("other-goods") }
 @itemType = @{ messages(s"label.${item.path.toMessageKey}") }
 @typeOfAlcohol = @{
-  if(appConfig.isWineStillOrSparklingEnabled && item.path.toMessageKey == "alcohol.wine") messages("label.alcohol.wine.still-or-sparkling")
+  if(!isNonEuArrivingNI && item.path.toMessageKey == "alcohol.wine") messages("label.alcohol.wine.still-or-sparkling")
   else itemType
 }
 @editCall = @{ category match {

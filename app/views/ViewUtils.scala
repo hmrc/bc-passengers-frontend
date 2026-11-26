@@ -22,11 +22,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, RadioItem, Text}
 
 object ViewUtils {
 
-  def toggledMessage(key: String, wineStillOrSparklingEnabled: Boolean)(implicit messages: Messages): String =
-    if (wineStillOrSparklingEnabled) messages(s"$key.still-or-sparkling") else messages(key)
-
-  def wineStillOrSparklingArgs(args: Seq[String], wineStillOrSparklingEnabled: Boolean): Seq[String] =
-    if (wineStillOrSparklingEnabled) {
+  def nonEuArrivingNIArgs(args: Seq[String], isNonEuArrivingNI: Boolean): Seq[String] =
+    if (!isNonEuArrivingNI) {
       args.map(arg => if (arg == "label.alcohol.wine") "label.alcohol.wine.still-or-sparkling" else arg)
     } else {
       args

@@ -28,11 +28,11 @@ import play.api.test.Helpers.*
 import repositories.BCPassengersSessionRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 
 import scala.concurrent.Future
 
-class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
+class GoodsCheckYourAnswersControllerSpec extends BaseSpec {
 
   private val mockCache: Cache = mock(classOf[Cache])
 
@@ -60,12 +60,6 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
 
   override given app: Application = appBuilder.build()
-
-  private lazy val appWithWineStillOrSparklingEnabled: Application =
-    appBuilder.configure(wineStillOrSparklingKey -> true).build()
-
-  private lazy val appWithWineStillOrSparklingDisabled: Application =
-    appBuilder.configure(wineStillOrSparklingKey -> false).build()
 
   override def beforeEach(): Unit = {
     reset(mockCache)
@@ -178,14 +172,14 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
-    "continue to the item completion route when wine-still-or-sparkling is disabled even if the item is over the limit" in {
+    "continue to the item completion route for a non-EU, NI journey even if the item is over the limit" in {
       val overLimitWine =
         PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(95)))
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(overLimitWine))))
 
       val result =
         route(
-          appWithWineStillOrSparklingDisabled,
+          app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
         ).get
 
@@ -193,14 +187,14 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
-    "continue to the item completion route when wine-still-or-sparkling is enabled and the merged wine option is within the 90 litre limit" in {
+    "continue to the item completion route for a EU-only, GB journey when the merged wine option is within the 90 litre limit" in {
       val withinLimitWine =
         PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(90)))
-      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(withinLimitWine))))
+      when(mockCache.fetch(any())).thenReturn(Future.successful(Some(gbJourneyDataWith(withinLimitWine))))
 
       val result =
         route(
-          appWithWineStillOrSparklingEnabled,
+          app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
         ).get
 
@@ -208,14 +202,14 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
     }
 
-    "remove the item and redirect to the over-limit page when wine-still-or-sparkling is ON and the merged wine option is over the 90 litre limit" in {
+    "remove the item and redirect to the over-limit page for a EU-only, GB journey when the merged wine option is over the 90 litre limit" in {
       val overLimitWine =
         PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(95)))
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(gbJourneyDataWith(overLimitWine))))
 
       val result =
         route(
-          appWithWineStillOrSparklingEnabled,
+          app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
         ).get
 
@@ -225,14 +219,14 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       )
     }
 
-    "remove the item and redirect to the over-limit page when wine-still-or-sparkling is OFF and the merged wine option is over the 90 litre limit" in {
+    "remove the item and redirect to the over-limit page for a non-EU, NI journey when the merged wine option is over the 90 litre limit" in {
       val overLimitWine =
         PurchasedProductInstance(ProductPath("alcohol/wine"), "iid0", weightOrVolume = Some(BigDecimal(95)))
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(overLimitWine))))
 
       val result =
         route(
-          appWithWineStillOrSparklingDisabled,
+          app,
           enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/alcohol/wine/iid0")
         ).get
 
@@ -242,13 +236,13 @@ class GoodsCheckYourAnswersControllerSpec extends BaseSpec with WineStillOrSpark
       )
     }
 
-    "continue to the item completion route when wine-still-or-sparkling is ON and the item is not alcohol" in {
+    "continue to the item completion route for a non-EU, NI journey when the item is not alcohol" in {
       val tobacco = PurchasedProductInstance(ProductPath("tobacco/cigarettes"), "iid0")
       when(mockCache.fetch(any())).thenReturn(Future.successful(Some(journeyDataWith(tobacco))))
 
       val result =
         route(
-          appWithWineStillOrSparklingEnabled,
+          app,
           enhancedFakeRequest(
             "POST",
             "/check-tax-on-goods-you-bring-into-the-uk/check-your-item/tobacco/cigarettes/iid0"

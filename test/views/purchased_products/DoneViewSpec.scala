@@ -18,11 +18,10 @@ package views.purchased_products
 
 import models._
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.done
 
-class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
+class DoneViewSpec extends BaseViewSpec {
 
   private val weightOrVolume: BigDecimal = 40
 
@@ -99,7 +98,7 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
-    isWineToggleOn = false
+    isNonEuArrivingNI = true
   )(
     request = request,
     messages = messages,
@@ -113,7 +112,7 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
-    isWineToggleOn = false,
+    isNonEuArrivingNI = true,
     request = request,
     messages = messages,
     appConfig = appConfig
@@ -126,18 +125,18 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     "0.00",
     true,
     None,
-    false
+    true
   )(request, messages, appConfig)
 
-  private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable = injected[done].apply(
+  private def viewFor(isNonEuArrivingNI: Boolean): HtmlFormat.Appendable = injected[done].apply(
     previousDeclaration = true,
     calculatorResponseDto = calculatorResponseDto,
     deltaCalc = Some(calculation),
     oldAllTax = "0.00",
     hideExchangeRateInfo = true,
     backLink = None,
-    isWineToggleOn = enabled
-  )(request, messages, appConfigToggle(enabled))
+    isNonEuArrivingNI = isNonEuArrivingNI
+  )(request, messages, appConfig)
 
   "DoneView" when {
     renderViewTest(
@@ -151,14 +150,16 @@ class DoneViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     }
   }
 
-  "DoneView with the wine-still-or-sparkling toggle" should {
+  "DoneView" should {
 
-    "show the wine line item as 'wine (still or sparkling)' when ON" in {
-      viewWithToggle(true).body should include(messages("label.alcohol.wine.still-or-sparkling").toLowerCase)
+    "show the wine line item as 'wine (still or sparkling)' for a non-EU, GB journey" in {
+      viewFor(isNonEuArrivingNI = false).body should include(
+        messages("label.alcohol.wine.still-or-sparkling").toLowerCase
+      )
     }
 
-    "show the plain wine line item without 'still or sparkling' when OFF" in {
-      viewWithToggle(false).body should not include "(still or sparkling)"
+    "show the plain wine line item without 'still or sparkling' for a non-EU, NI journey" in {
+      viewFor(isNonEuArrivingNI = true).body should not include "(still or sparkling)"
     }
   }
 }

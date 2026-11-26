@@ -31,11 +31,12 @@
     backLink: Option[String],
     customBackLink: Boolean = false,
     returnToAddedItemEditUrl: Option[String] = None,
-    returnToAddedItemProductPath: Option[String] = None
+    returnToAddedItemProductPath: Option[String] = None,
+    isNonEuArrivingNI: Boolean = false
 )(implicit request: Request[?], messages: Messages, appConfig: config.AppConfig)
 
 @headingKey = @{
-    if(appConfig.isWineStillOrSparklingEnabled && path.toMessageKey == "alcohol") {
+    if(!isNonEuArrivingNI && path.toMessageKey == "alcohol") {
         "select_products.heading.alcohol.still-or-sparkling"
     } else {
         s"select_products.heading.${path.toMessageKey}"

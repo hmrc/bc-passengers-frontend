@@ -37,8 +37,7 @@ class AppConfig @Inject() (val runModeConfiguration: Configuration, servicesConf
   lazy val isAmendmentsEnabled: Boolean          = runModeConfiguration.get[Boolean]("features.amendments")
   val features: config.features.Features         = new config.features.Features(runModeConfiguration)
 
-  def isWineStillOrSparklingEnabled: Boolean = features.wineStillOrSparklingEnabled()
-  def isVapingJourneyEnabled: Boolean        = features.vapingProductsEnabled()
+  def isVapingJourneyEnabled: Boolean = features.vapingProductsEnabled()
 
   lazy val timeout: Int        = servicesConfig.getInt("timeout.timeout")
   lazy val countdown: Int      = servicesConfig.getInt("timeout.countdown")

@@ -16,18 +16,14 @@
 
 package views.purchased_products
 
-import config.AppConfig
 import models.SelectProductsDto.form
 import models.{ProductPath, SelectProductsDto}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.select_products
 
-class SelectAlcoholProductsViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
-
-  override val appConfig: AppConfig = appConfigToggleOff
+class SelectAlcoholProductsViewSpec extends BaseViewSpec {
 
   private val productPath: ProductPath = ProductPath(path = "alcohol")
 
@@ -45,12 +41,13 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec with WineStillOrSparkli
     ("label.alcohol.other", "other")
   )
 
-  private def buildView(form: Form[SelectProductsDto]): HtmlFormat.Appendable =
+  private def buildView(form: Form[SelectProductsDto], isNonEuArrivingNI: Boolean = true): HtmlFormat.Appendable =
     injected[select_products].apply(
       selectProductsForm = form,
       items = items,
       path = productPath,
-      None
+      None,
+      isNonEuArrivingNI = isNonEuArrivingNI
     )(
       request = request,
       messages = messages,
@@ -69,7 +66,8 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec with WineStillOrSparkli
     backLink = None,
     customBackLink = false,
     returnToAddedItemEditUrl = None,
-    returnToAddedItemProductPath = None
+    returnToAddedItemProductPath = None,
+    isNonEuArrivingNI = true
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[select_products].ref.f(
@@ -79,7 +77,33 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec with WineStillOrSparkli
     None,
     false,
     None,
-    None
+    None,
+    true
+  )(request, messages, appConfig)
+
+  val viewViaApplyGB: HtmlFormat.Appendable  = buildView(form = validForm, isNonEuArrivingNI = false)
+  val viewViaRenderGB: HtmlFormat.Appendable = injected[select_products].render(
+    selectProductsForm = validForm,
+    items = items,
+    path = productPath,
+    request = request,
+    messages = messages,
+    appConfig = appConfig,
+    backLink = None,
+    customBackLink = false,
+    returnToAddedItemEditUrl = None,
+    returnToAddedItemProductPath = None,
+    isNonEuArrivingNI = false
+  )
+  val viewViaFGB: HtmlFormat.Appendable      = injected[select_products].ref.f(
+    validForm,
+    items,
+    productPath,
+    None,
+    false,
+    None,
+    None,
+    false
   )(request, messages, appConfig)
 
   "SelectAlcoholProductsViewSpec" when {
@@ -87,6 +111,23 @@ class SelectAlcoholProductsViewSpec extends BaseViewSpec with WineStillOrSparkli
       title = "What type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK",
       heading = "What type of alcohol do you want to add?"
     )
+
+    "rendered for a GB journey" should {
+      "display the correct title" in {
+        document(viewViaApplyGB).title  shouldBe
+          "Which type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
+        document(viewViaRenderGB).title shouldBe
+          "Which type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
+        document(viewViaFGB).title      shouldBe
+          "Which type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
+      }
+
+      "display the correct heading" in {
+        document(viewViaApplyGB).select("h1").text  shouldBe "Which type of alcohol do you want to add?"
+        document(viewViaRenderGB).select("h1").text shouldBe "Which type of alcohol do you want to add?"
+        document(viewViaFGB).select("h1").text      shouldBe "Which type of alcohol do you want to add?"
+      }
+    }
 
     "formWithErrors" should {
 

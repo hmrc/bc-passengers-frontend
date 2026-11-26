@@ -37,12 +37,12 @@ import repositories.BCPassengersSessionRepository
 import services.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCryptoFilter
-import util.{BaseSpec, FakeSessionCookieCryptoFilter, WineStillOrSparklingFeature}
+import util.{BaseSpec, FakeSessionCookieCryptoFilter}
 import views.html.errorTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeature {
+class SelectProductControllerSpec extends BaseSpec {
 
   val requiredJourneyData: JourneyData = JourneyData(
     prevDeclaration = Some(false),
@@ -55,21 +55,29 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
     privateCraft = Some(false)
   )
 
-  private def appWithWineToggle(enabled: Boolean): Application = GuiceApplicationBuilder()
+  val nonEuNiJourneyData: JourneyData = requiredJourneyData.copy(
+    euCountryCheck = Some("nonEuOnly"),
+    arrivingNICheck = Some(true)
+  )
+
+  val nonEuGbJourneyData: JourneyData = requiredJourneyData.copy(
+    euCountryCheck = Some("nonEuOnly"),
+    arrivingNICheck = Some(false)
+  )
+
+  override given app: Application = GuiceApplicationBuilder()
     .overrides(bind[BCPassengersSessionRepository].toInstance(mock(classOf[BCPassengersSessionRepository])))
     .overrides(bind[MongoComponent].toInstance(mock(classOf[MongoComponent])))
     .overrides(bind[SelectProductService].toInstance(mock(classOf[SelectProductService])))
     .overrides(bind[PurchasedProductService].toInstance(mock(classOf[PurchasedProductService])))
     .overrides(bind[Cache].toInstance(mock(classOf[Cache])))
     .overrides(bind[SessionCookieCryptoFilter].to[FakeSessionCookieCryptoFilter])
-    .configure(wineStillOrSparklingKey -> enabled)
     .build()
-
-  override given app: Application = appWithWineToggle(false)
 
   override def beforeEach(): Unit = {
     reset(injected[Cache])
     reset(injected[SelectProductService])
+    reset(injected[PurchasedProductService])
   }
 
   val controllerHelpers: ControllerHelpers = new Object with ControllerHelpers {
@@ -102,6 +110,11 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
       )
 
       when(injected[PurchasedProductService].clearWorkingInstance(any())(any(), any())).thenReturn(
+        Future.successful(
+          cachedJourneyData.get
+        )
+      )
+      when(injected[PurchasedProductService].revertWorkingInstance(any())(any(), any())).thenReturn(
         Future.successful(
           cachedJourneyData.get
         )
@@ -156,34 +169,39 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
     }
   }
 
-  private def selectPageDoc(testApp: Application, url: String): Document = {
+  private def selectPageDoc(
+    testApp: Application,
+    url: String,
+    journeyData: JourneyData = requiredJourneyData
+  ): Document = {
     val cache = testApp.injector.instanceOf[Cache]
-    when(cache.fetch(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
-    when(cache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(requiredJourneyData)))
+    when(cache.fetch(any())).thenReturn(Future.successful(Some(journeyData)))
+    when(cache.storeJourneyData(any())(any())).thenReturn(Future.successful(Some(journeyData)))
     val res   = rt(testApp, enhancedFakeRequest("GET", url)).get
     status(res) shouldBe OK
     Jsoup.parse(contentAsString(res))
   }
 
-  "Invoking askProductSelection for the alcohol branch with the wine-still-or-sparkling toggle" should {
+  "Invoking askProductSelection for the alcohol branch" should {
 
-    "show Sparkling wine as a separate option when the toggle is OFF" in {
+    "show Sparkling wine as a separate option for a non-EU, NI journey" in {
       val doc =
-        selectPageDoc(appWithWineToggle(false), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+        selectPageDoc(app, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol", nonEuNiJourneyData)
       Option(doc.getElementById("tokens-sparkling-wine")) should not be None
       Option(doc.getElementById("tokens-wine"))           should not be None
     }
 
-    "drop Sparkling wine and relabel Wine when the toggle is ON but is NI journey" in {
-      val on       = appWithWineToggle(true)
-      val doc      = selectPageDoc(on, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
-      val messages = on.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+    "drop Sparkling wine and relabel Wine for a non-EU journey arriving in GB" in {
+      val doc = selectPageDoc(app, "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol", nonEuGbJourneyData)
       Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
     }
 
-    "not change other branches (cider) when the toggle is ON" in {
-      val doc =
-        selectPageDoc(appWithWineToggle(true), "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/cider")
+    "not change other branches (cider) for a non-EU journey arriving in GB" in {
+      val doc = selectPageDoc(
+        app,
+        "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol/cider",
+        nonEuGbJourneyData
+      )
       Option(doc.getElementById("tokens-sparkling-cider"))     should not be None
       Option(doc.getElementById("tokens-non-sparkling-cider")) should not be None
     }
@@ -191,9 +209,27 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
 
   "Invoking askProductSelection for branch items" should {
 
-    "return the select products alcohol page given path /alcohol (branch)" in new LocalSetup {
+    "return the select products alcohol page given path /alcohol (branch) for a GB journey" in new LocalSetup {
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(requiredJourneyData)
+
+      override val result: Future[Result] =
+        route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
+
+      status(result)                                      shouldBe OK
+      h1                                                  shouldBe "Which type of alcohol do you want to add?"
+      title                                               shouldBe "Which type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
+      forAll(
+        List("tokens-beer", "tokens-wine", "tokens-cider", "tokens-spirits")
+      ) { cb =>
+        Option(doc.getElementById(cb)) should not be None
+      }
+      Option(doc.getElementById("tokens-sparkling-wine")) shouldBe None
+    }
+
+    "return the select products alcohol page given path /alcohol (branch) for a non-EU, NI journey" in new LocalSetup {
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(nonEuNiJourneyData)
 
       override val result: Future[Result] =
         route(app, enhancedFakeRequest("GET", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")).get
@@ -202,7 +238,7 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
       h1             shouldBe "What type of alcohol do you want to add?"
       title          shouldBe "What type of alcohol do you want to add? - Check tax on goods you bring into the UK - GOV.UK"
       forAll(
-        List("tokens-beer", "tokens-wine", "tokens-cider", "tokens-spirits", "tokens-wine", "tokens-sparkling-wine")
+        List("tokens-beer", "tokens-wine", "tokens-cider", "tokens-spirits", "tokens-sparkling-wine")
       ) { cb =>
         Option(doc.getElementById(cb)) should not be None
       }
@@ -346,13 +382,15 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
       status(result) shouldBe BAD_REQUEST
     }
 
-    "addSelectedProducts to keystore and then redirect to nextStep given valid product" in new LocalSetup {
+    "addSelectedProducts to keystore and then redirect to nextStep given valid product for a GB journey" in new LocalSetup {
 
       val localRequiredJourneyData: JourneyData = requiredJourneyData.copy(selectedAliases =
         List(
           ProductAlias("alcohol.beer", ProductPath("alcohol/beer"))
         )
       )
+
+      override def addSelectedProductsAsAliasesResult(): JourneyData = localRequiredJourneyData
 
       override lazy val cachedJourneyData: Option[JourneyData] = Some(localRequiredJourneyData)
 
@@ -368,6 +406,36 @@ class SelectProductControllerSpec extends BaseSpec with WineStillOrSparklingFeat
       verify(injected[SelectProductService], times(1))
         .addSelectedProductsAsAliases(meq(localRequiredJourneyData), meq(List(ProductPath("alcohol/beer"))))(any())
       verify(injected[Cache], times(1)).fetch(any())
+      verify(injected[PurchasedProductService], times(1)).revertWorkingInstance(any())(any(), any())
+      verify(injected[PurchasedProductService], times(0)).clearWorkingInstance(any())(any(), any())
+    }
+
+    "addSelectedProducts to keystore and then redirect to nextStep given valid product for a non-EU, NI journey" in new LocalSetup {
+
+      val localNonEuNiJourneyData: JourneyData = nonEuNiJourneyData.copy(selectedAliases =
+        List(
+          ProductAlias("alcohol.beer", ProductPath("alcohol/beer"))
+        )
+      )
+
+      override def addSelectedProductsAsAliasesResult(): JourneyData = localNonEuNiJourneyData
+
+      override lazy val cachedJourneyData: Option[JourneyData] = Some(localNonEuNiJourneyData)
+
+      override val result: Future[Result] = route(
+        app,
+        enhancedFakeRequest("POST", "/check-tax-on-goods-you-bring-into-the-uk/select-goods/alcohol")
+          .withFormUrlEncodedBody("tokens" -> "beer")
+      ).get
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/check-tax-on-goods-you-bring-into-the-uk/select-goods/next-step")
+
+      verify(injected[SelectProductService], times(1))
+        .addSelectedProductsAsAliases(meq(localNonEuNiJourneyData), meq(List(ProductPath("alcohol/beer"))))(any())
+      verify(injected[Cache], times(1)).fetch(any())
+      verify(injected[PurchasedProductService], times(1)).clearWorkingInstance(any())(any(), any())
+      verify(injected[PurchasedProductService], times(0)).revertWorkingInstance(any())(any(), any())
     }
 
     "redirect to the added item edit page when the selection has not changed" in new LocalSetup {

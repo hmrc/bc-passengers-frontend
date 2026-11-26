@@ -17,14 +17,10 @@
 package views.travel_details
 
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.travel_details.goods_bought_inside_eu
 
-class GoodsBoughtInsideEUViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
-
-  private def viewWithToggle(enabled: Boolean): HtmlFormat.Appendable =
-    injected[goods_bought_inside_eu].apply(backLink = None)(request, messages, appConfigToggle(enabled))
+class GoodsBoughtInsideEUViewSpec extends BaseViewSpec {
 
   val viewViaApply: HtmlFormat.Appendable = injected[goods_bought_inside_eu].apply(backLink = None)(
     request = request,
@@ -47,13 +43,12 @@ class GoodsBoughtInsideEUViewSpec extends BaseViewSpec with WineStillOrSparkling
       heading = "You do not need to tell us about your goods"
     )
 
-  "GoodsBoughtInsideEUView with the wine-still-or-sparkling toggle ON" should {
+  "GoodsBoughtInsideEUView" should {
 
-    lazy val body = viewWithToggle(true).body
+    lazy val body = viewViaApply.body
 
-    "show the 'bringing in goods to sell' customs intro instead of the table intro" in {
+    "show the 'bringing in goods to sell' customs intro" in {
       body should include(messages("text.tell_us.customs_sell.still-or-sparkling"))
-      body should not include messages("text.customs_officers_are_more_likely_")
     }
 
     "show the merged Alcohol section (beer or cider, wine still or sparkling, spirits, fortified)" in {
@@ -66,22 +61,6 @@ class GoodsBoughtInsideEUViewSpec extends BaseViewSpec with WineStillOrSparkling
     "show the Tobacco section" in {
       body should include(messages("label.tell_us.tobacco.cigarettes.still-or-sparkling"))
       body should include(messages("label.tell_us.tobacco.heated.still-or-sparkling"))
-    }
-  }
-
-  "GoodsBoughtInsideEUView with the wine-still-or-sparkling toggle OFF" should {
-
-    lazy val body = viewWithToggle(false).body
-
-    "show the original customs intro and the goods table" in {
-      body should include(messages("text.customs_officers_are_more_likely_"))
-      body should include(messages("label.type_of_goods"))
-      body should include(messages("label.110_litres"))
-    }
-
-    "not show the restructured Alcohol/Tobacco content" in {
-      body should not include messages("text.tell_us.customs_sell.still-or-sparkling")
-      body should not include messages("label.tell_us.alcohol.beer_cider.still-or-sparkling")
     }
   }
 }

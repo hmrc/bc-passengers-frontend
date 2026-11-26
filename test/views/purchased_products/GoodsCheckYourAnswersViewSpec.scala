@@ -18,12 +18,11 @@ package views.purchased_products
 
 import models.*
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import util.VapingProductsFeature
 import views.BaseViewSpec
 import views.html.purchased_products.check_your_goods_answers
 
-class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparklingFeature with VapingProductsFeature {
+class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with VapingProductsFeature {
 
   private val country        = Country("FR", "title.france", "FR", isEu = true, isCountry = true, Nil)
   private val item           = PurchasedProductInstance(
@@ -64,11 +63,11 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparkli
 
   val viewViaRender: HtmlFormat.Appendable =
     injected[check_your_goods_answers]
-      .render(item, product, Some(currency), isEditMode = false, None, request, messages, appConfig)
+      .render(item, product, Some(currency), isEditMode = false, None, false, request, messages, appConfig)
 
   val viewViaF: HtmlFormat.Appendable =
     injected[check_your_goods_answers].ref
-      .f(item, product, Some(currency), false, None)(request, messages, appConfig)
+      .f(item, product, Some(currency), false, None, false)(request, messages, appConfig)
 
   "GoodsCheckYourAnswersView" when {
     renderViewTest(
@@ -76,12 +75,12 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparkli
       heading = "Check your answers"
     )
 
-    "show the selected item and its answers in a summary list, with the item type heading when the toggle is OFF" in {
+    "show the selected item and its answers in a summary list" in {
       val doc = document(
         injected[check_your_goods_answers].apply(item, product, Some(currency), isEditMode = false)(
           request,
           messages,
-          appConfigToggle(enabled = false)
+          appConfig
         )
       )
 
@@ -97,19 +96,6 @@ class GoodsCheckYourAnswersViewSpec extends BaseViewSpec with WineStillOrSparkli
       doc.select("a[href*=change-type]").isEmpty                              shouldBe false
       doc.select("a[href*=change-product]").isEmpty                           shouldBe false
       doc.select("button.govuk-button").text()                                shouldBe "Save and continue"
-    }
-
-    "hide the item type heading when the wine-still-or-sparkling toggle is ON" in {
-      val doc = document(
-        injected[check_your_goods_answers].apply(item, product, Some(currency), isEditMode = false)(
-          request,
-          messages,
-          appConfigToggle(enabled = true)
-        )
-      )
-
-      doc.select("h2.govuk-heading-m").isEmpty        shouldBe true
-      doc.select(".govuk-summary-list__key").eachText() should contain("Type of alcohol")
     }
 
     "show the tobacco weight in grams" in {

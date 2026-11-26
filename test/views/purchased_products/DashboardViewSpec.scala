@@ -20,11 +20,10 @@ import config.AppConfig
 import models._
 import play.api.i18n.Lang
 import play.twirl.api.HtmlFormat
-import util.WineStillOrSparklingFeature
 import views.BaseViewSpec
 import views.html.purchased_products.dashboard
 
-class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
+class DashboardViewSpec extends BaseViewSpec {
 
   private val (weightOrVolume, noOfSticks): (BigDecimal, Int)                            = (BigDecimal(50), 10)
   private val (fillValueForEqualToMaxGoods, fillValueForGreaterThanMaxGoods): (Int, Int) = (25, 50)
@@ -197,7 +196,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
   )
 
   val viewViaApply: HtmlFormat.Appendable = injected[dashboard].apply(
-    journeyData = JourneyData(),
+    isNonEuArrivingNI = false,
     alcoholPurchasedItemList = alcoholPurchasedItemList,
     tobaccoPurchasedItemList = tobaccoPurchasedItemList,
     vapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
@@ -222,7 +221,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
   )
 
   val viewViaRender: HtmlFormat.Appendable = injected[dashboard].render(
-    journeyData = JourneyData(),
+    isNonEuArrivingNI = false,
     alcoholPurchasedItemList = alcoholPurchasedItemList,
     tobaccoPurchasedItemList = tobaccoPurchasedItemList,
     vapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
@@ -247,7 +246,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
   )
 
   val viewViaF: HtmlFormat.Appendable = injected[dashboard].ref.f(
-    JourneyData(),
+    false,
     alcoholPurchasedItemList,
     tobaccoPurchasedItemList,
     vapingProductsPurchasedItemList,
@@ -267,30 +266,31 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
     false
   )(request, messagesApi, Lang("en"), appConfig)
 
-  private def dashboardWith(config: AppConfig): HtmlFormat.Appendable = injected[dashboard].apply(
-    journeyData = JourneyData(),
-    alcoholPurchasedItemList = alcoholPurchasedItemList,
-    tobaccoPurchasedItemList = tobaccoPurchasedItemList,
-    vapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
-    otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
-    previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
-    totalItems = 3,
-    totalOtherGoodsItems = 1,
-    currentPage = 1,
-    totalPages = 1,
-    showCalculate = true,
-    isAmendment = true,
-    backLink = None,
-    isIrishBorderQuestionEnabled = true,
-    isGbNi = true,
-    isEU = false,
-    isUkResident = true
-  )(
-    request = request,
-    messagesApi = messagesApi,
-    lang = Lang("en"),
-    appConfig = config
-  )
+  private def dashboardWith(config: AppConfig, isNonEuArrivingNI: Boolean = false): HtmlFormat.Appendable =
+    injected[dashboard].apply(
+      isNonEuArrivingNI = isNonEuArrivingNI,
+      alcoholPurchasedItemList = alcoholPurchasedItemList,
+      tobaccoPurchasedItemList = tobaccoPurchasedItemList,
+      vapingProductsPurchasedItemList = vapingProductsPurchasedItemList,
+      otherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+      previousOtherGoodsPurchasedItemList = otherGoodsPurchasedItemList(),
+      totalItems = 3,
+      totalOtherGoodsItems = 1,
+      currentPage = 1,
+      totalPages = 1,
+      showCalculate = true,
+      isAmendment = true,
+      backLink = None,
+      isIrishBorderQuestionEnabled = true,
+      isGbNi = true,
+      isEU = false,
+      isUkResident = true
+    )(
+      request = request,
+      messagesApi = messagesApi,
+      lang = Lang("en"),
+      appConfig = config
+    )
 
   "DashboardView" when {
     renderViewTest(
@@ -298,8 +298,8 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
       heading = "You have added 3 items"
     )
 
-    "show each item in a summary list with contextual edit and remove actions when wine-still-or-sparkling is ON" in {
-      val doc = document(dashboardWith(appConfigToggle(enabled = true)))
+    "show each item in a summary list with contextual edit and remove actions for a non-EU, GB journey" in {
+      val doc = document(dashboardWith(appConfig, isNonEuArrivingNI = false))
 
       doc.select("dl.goods-summary-list").size() shouldBe 4
 
@@ -318,8 +318,8 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
       doc.select("button.govuk-button").text()                 shouldBe "Save and continue"
     }
 
-    "show each item in a summary list with contextual edit and remove actions when wine-still-or-sparkling is OFF" in {
-      val doc = document(dashboardWith(appConfigToggle(enabled = false)))
+    "show each item in a summary list with contextual edit and remove actions for a non-EU, NI journey" in {
+      val doc = document(dashboardWith(appConfig, isNonEuArrivingNI = true))
 
       if (appConfig.isVapingJourneyEnabled) {
         doc.select("dl.goods-summary-list").size() shouldBe 4
@@ -343,7 +343,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
 
     "show pagination when there is more than one page of items" in {
       val paginatedView = injected[dashboard].apply(
-        journeyData = JourneyData(),
+        isNonEuArrivingNI = false,
         alcoholPurchasedItemList = Nil,
         tobaccoPurchasedItemList = Nil,
         vapingProductsPurchasedItemList = Nil,
@@ -386,7 +386,7 @@ class DashboardViewSpec extends BaseViewSpec with WineStillOrSparklingFeature {
             "Use the red ‘goods to declare’ channel or the red-point phone."
 
           val viewViaApply: HtmlFormat.Appendable = injected[dashboard].apply(
-            journeyData = JourneyData(),
+            isNonEuArrivingNI = false,
             alcoholPurchasedItemList = alcoholPurchasedItemList,
             tobaccoPurchasedItemList = tobaccoPurchasedItemList,
             vapingProductsPurchasedItemList = vapingProductsPurchasedItemList,

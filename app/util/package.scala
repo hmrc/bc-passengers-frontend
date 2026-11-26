@@ -94,13 +94,13 @@ package object util extends ProductDetector {
     journeyData: JourneyData,
     alcoholVolume: BigDecimal,
     productToken: String,
-    isWineStillOrSparklingEnabled: Boolean = false
+    isNonEuArrivingNI: Boolean = true
   ): Boolean = {
     val wineLimit: BigDecimal          = 90
-    val sparklingWineLimit: BigDecimal = if (isWineStillOrSparklingEnabled) 90 else 60
+    val sparklingWineLimit: BigDecimal = if (!isNonEuArrivingNI) 90 else 60
     val beerLimit: BigDecimal          = 110
     val spiritsLimit: BigDecimal       = 10
-    val ciderLimit: BigDecimal         = if (isWineStillOrSparklingEnabled) 110 else 20
+    val ciderLimit: BigDecimal         = if (!isNonEuArrivingNI) 110 else 20
     val otherLimit: BigDecimal         = 20
 
     productToken match {
